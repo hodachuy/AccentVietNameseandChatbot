@@ -1,0 +1,33 @@
+﻿Ứng dụng chuyển đổi Tiếng Việt không dấu sang có dấu.
+
+
+
+
+// Chạy với ứng dụng console
++ Nhớ chép 2 file ngram 1 và 2, test.txt bỏ vào folder debug của ứng dụng console
+Accent.ConsoleApplication
+
+// Chạy với ứng dụng Web, Web API
+Accent.Web
++ Nhớ chép 2 file ngram 1 và 2, test.txt bỏ vào folder Datasets
+
+// Chạy với ứng dụng WebService
+Accent.WebService
++ Nhớ chép 2 file ngram 1 và 2, test.txt bỏ vào folder Datasets
+
+Performances:
+//----- Test -----//
+Tốc độ : 350 câu/giây ~ 3500 từ/ giây
+Độ chính xác: 96.52% on test.txt
+Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
+
+Ví dụ:
+Do cong viec thuong xuyen phai uong ruou bia nhieu, lam the nao de giai doc gan
+ --> 
+Do công việc em thường xuyên phải uống rượu bia nhiều, làm thế nào để giải độc gan
+
+AccentPredictor accent = new AccentPredictor();
+accent.predictAccents(text)
+
+
+

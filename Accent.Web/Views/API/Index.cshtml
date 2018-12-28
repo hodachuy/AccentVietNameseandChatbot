@@ -1,0 +1,166 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string domain = System.Configuration.ConfigurationManager.AppSettings["Domain"];
+}
+<script src="https://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script>
+<style>
+    .content table {
+        margin-bottom: 1em;
+        overflow: auto;
+    }
+
+        .content table tr:nth-child(odd) > td {
+            background-color: #f9fbfc;
+        }
+
+        .content table td {
+            padding: 10px;
+        }
+
+    .content-code {
+        background-color: rgba(0,0,0,0.05);
+        padding: 3px;
+        border-radius: 3px;
+    }
+</style>
+<h2>Chuyển tiếng Việt không dấu tới có dấu</h2>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        @*<textarea id="txtSearch" style="height:150px;width:580px;resize:none;border:none;box-shadow:0 0 10px 0 gainsboro;padding:5px" placeholder="Nhập nội dung..."></textarea>*@
+        <div id="txtSearch" data-placeholder="Nhập nội dung..." contenteditable="true" spellcheck="false"></div>
+        <br />
+        <span id="accent-vn" data-toggle="popover" data-placement="bottom" style="color:grey"></span>
+    </div>
+    <div class="col-md-6">
+        @*<h4>Giới thiệu</h4>
+            <p>
+                Dự án áp dụng công nghệ Machine Learning để giúp phân tích ngữ pháp và ngữ cảnh trong văn bản tiếng Việt. Với các thư viện từ ngữ lớn (big data) và thông qua quá trình luyện máy để suy diễn ngữ nghĩa một văn bản theo hướng trong sáng nhất có thể.
+            </p>
+            <p>
+                Do tính chất đa nghĩa của từ ngữ Việt Nam dự án còn có thiếu sót, nhưng có thể chấp nhận được và hỗ trợ cho người dùng trong việc soạn thảo văn bản và duyệt lại một văn bản không dấu.
+            </p>
+            <p>Source code:Java và C#</p>
+            <hr />*@
+        <div id="test1">abc</div>
+        <p>HTTP Request</p>
+        <p class="content-code">GET @domain getAccentVN?text={query_string} </p>
+        <p class="content-code">GET @domain api/GetMultiMatchesAccentVN?text={query_string} </p>
+        <br />
+        <p>Example: Do cong viec em thuong xuyen phai uong ruou bia nhieu, lam the nao de giai doc gan</p>
+        <p>Response:Do công việc em thường xuyên phải uống rượu bia nhiều, làm thế nào để giải độc gan</p>
+
+        <img src="@Url.Content("~/Content/img/demo.png")" width=550 height="450" />;
+    </div>
+
+</div>
+<div class="row">
+    <h2>Chat bot lĩnh vực</h2>
+    <div class="col-md-8">
+        <span style="float:left"><i class="fa fa-file" style="color:royalblue"></i> AIML file</span>
+        <span style="float:right;cursor:pointer;" onclick="saveAIML()"><i class="fa fa-save" style="color:royalblue"></i> Lưu</span>
+        <hr />
+        <ul class="nav nav-tabs" id="tabAttribute">
+            <li class="active"><a href="#aiml_legal" data-toggle="tab" class="title_attribute">AIML LUẬT</a></li>
+            <li><a href="#aiml_med" data-toggle="tab" class="title_attribute">AIML Y TẾ</a></li>
+            <li><a href="#aiml_edu" data-toggle="tab" class="title_attribute">AIML GIÁO DỤC</a></li>
+            <li><a href="#aiml_tour" data-toggle="tab" class="title_attribute">AIML DU LỊCH</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="aiml_legal">
+                <div id="editorAIML_legal">
+
+                </div>
+            </div>
+            <div class="tab-pane" id="aiml_med">
+                <div id="editorAIML_med">
+
+                </div>
+            </div>
+            <div class="tab-pane" id="aiml_edu">
+                <div id="editorAIML_edu">
+
+                </div>
+            </div>
+            <div class="tab-pane" id="aiml_tour">
+                <div id="editorAIML_tour">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h4>API CHATBOT</h4>
+        <p>HTTP Request</p>
+        <p class="content-code">GET @domain api/chatbot?text={query_string}&group={query_string} </p>
+        <table class="content table">
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <th>Required</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>text</td>
+                    <td>Yes</td>
+                    <td>Nội dung từ độc giả</td>
+                </tr>
+                <tr>
+                    <td>group</td>
+                    <td>Yes</td>
+                    <td>Nhóm lĩnh vực {med:y tế,leg:pháp luật,edu:giáo dục}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!--box CHATBOT-->
+    <div id="chat-circle" class="btn btn-raised">
+        <div id="chat-overlay"></div>
+        <i class="material-icons"><i class="fa fa-comment"></i></i>
+    </div>
+    <div class="chat-box">
+        <div class="chat-box-header">
+            <div class="chat-box-name">
+                ChatBot Pháp luật
+            </div>
+            <div class="chat-box-icon">
+                <label for="chkSettings"><i class="fa fa-gear"></i></label><input type="checkbox" id="chkSettings" />
+                @*<a href="javascript:void(0);" id="chat-bot-setting"><i class="fa fa-gear"></i></a>*@
+                <div class="settings-popup">
+                    <input type="checkbox" class="chk-setting-bot" id="chk-stt-accent"/> Hỗ trợ hiểu không dấu <br />
+                    <input type="checkbox"  class="chk-setting-bot" id="chk-stt-popup"/> Hiển thị không chuyển trang
+                    @*<ul style="list-style:none">
+                        <li><input type="checkbox" /> Hổ trợ hiểu không dấu </li>
+                        <li><input type="checkbox" /> Hiển thị thông tin cùng trang</li>
+                    </ul>*@
+                </div>
+                <a href="javascript:void(0);" id="chat-bot-close"><i class="fa fa-close"></i></a> 
+            </div>
+
+
+            @*<span class="chat-box-toggle"><i class="fa fa-close"></i></span>*@
+        </div>
+        <div class="chat-box-body">
+            <div class="chat-box-overlay">
+            </div>
+            <div class="chat-logs">
+            </div><!--chat-log -->
+        </div>
+        <div class="chat-input">
+            <form>
+                <input type="text" id="chat-input" placeholder="Gửi tin nhắn..." />
+                <button type="submit" class="chat-submit" id="chat-submit">Gửi</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    var _Host = '@domain';
+</script>
+
+<script src="~/Scripts/common.js"></script>
