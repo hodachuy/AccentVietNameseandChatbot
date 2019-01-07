@@ -97,7 +97,12 @@
     <Content Include="ConfigurationFiles\Splitters.xml" />
     <Content Include="ConfigurationFiles\Substitutions.xml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Accent.Utils\Accent.Utils.csproj">
+      <Project>{FA7E7A50-114F-4713-9107-A1E4C41DDC32}</Project>
+      <Name>Accent.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
