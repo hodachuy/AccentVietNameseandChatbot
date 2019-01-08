@@ -176,37 +176,37 @@ $(document).ready(function () {
               boundingBox: '#editorAIML_legal',
               mode: 'xml',
               value: html,
-              height: '1000',
-              width: '750',
+              height: '550',
+              width: '100%',
           }
         ).render();
-        editorMed = new Y.AceEditor(
-          {
-              boundingBox: '#editorAIML_med',
-              mode: 'xml',
-              value: '<?xml version="1.0" encoding="UTF-8"?>',
-              height: '1000',
-              width: '750'
-          }
-        ).render();
-        editorEdu = new Y.AceEditor(
-        {
-            boundingBox: '#editorAIML_edu',
-            mode: 'xml',
-            value: '<?xml version="1.0" encoding="UTF-8"?>',
-            height: '1000',
-            width: '750'
-        }
-       ).render();
-        editorTour = new Y.AceEditor(
-         {
-             boundingBox: '#editorAIML_tour',
-             mode: 'xml',
-             value: '<?xml version="1.0" encoding="UTF-8"?>',
-             height: '1000',
-             width: '750'
-         }
-        ).render();
+       // editorMed = new Y.AceEditor(
+       //   {
+       //       boundingBox: '#editorAIML_med',
+       //       mode: 'xml',
+       //       value: '<?xml version="1.0" encoding="UTF-8"?>',
+       //       height: '1000',
+       //       width: '750'
+       //   }
+       // ).render();
+       // editorEdu = new Y.AceEditor(
+       // {
+       //     boundingBox: '#editorAIML_edu',
+       //     mode: 'xml',
+       //     value: '<?xml version="1.0" encoding="UTF-8"?>',
+       //     height: '1000',
+       //     width: '750'
+       // }
+       //).render();
+       // editorTour = new Y.AceEditor(
+       //  {
+       //      boundingBox: '#editorAIML_tour',
+       //      mode: 'xml',
+       //      value: '<?xml version="1.0" encoding="UTF-8"?>',
+       //      height: '1000',
+       //      width: '750'
+       //  }
+       // ).render();
     });
 })
 

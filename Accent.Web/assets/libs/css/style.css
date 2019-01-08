@@ -163,6 +163,7 @@ body {
     color: #71748d;
     background-color: #efeff6;
     -webkit-font-smoothing: antialiased;
+    overflow:hidden;
 }
 
 h1,
@@ -1237,7 +1238,7 @@ Top Header
     margin-right: 1rem;
     line-height: inherit;
     white-space: nowrap;
-    padding: 11px 20px;
+    padding: 11px 20px 0px 20px;
     font-size: 30px;
     /*text-transform: uppercase;*/
     font-weight: 600;
@@ -2067,8 +2068,8 @@ Pageheader
     color: #71748d;
     background-color: #fff;
     width: 100%;
-    position: absolute; 
-    bottom: 0;
+    /*position: absolute; 
+    bottom: 0;*/
 }
 
 .footer-links {}
@@ -5830,12 +5831,13 @@ Vertical Timeline - by CodyHouse.co
     text-align: center;
     min-width: 19px;
     margin-right: 6px;
+        margin-left: 6px;
     color: #71748d;
 }
 
 .aside-nav .nav li.active a {
     color: #f12257;
-    background: #fff0f4;
+    /*background: #fff0f4;*/
 }
 
 .aside-nav .nav li.active a .icon {
@@ -5882,6 +5884,36 @@ Vertical Timeline - by CodyHouse.co
 .aside-content .nav li a:hover {
     text-decoration: none;
     background-color: #efeff6;
+}
+
+.aside-content .nav li a span.arrow:after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    font-size:23px;
+    margin-top: 8px;
+    left: -10px;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+}
+
+.aside-content .nav li a.nav-link[data-toggle="collapse"][aria-expanded="false"] span.arrow:after {
+    transform: rotate(-90deg);
+}
+
+.aside-content .nav li a.nav-link[data-toggle="collapse"] span.arrow:after {
+    transition: transform .35s ease, opacity .35s ease;
+    opacity: .5;
+}
+
+
+.aside-nav .submenu{
+        padding-left: 30px;
 }
 
 .aside-nav .nav li.active a .icon {

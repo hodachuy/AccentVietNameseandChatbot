@@ -1,5 +1,6 @@
 ﻿@{ 
     Layout = null;
+    string domain = System.Configuration.ConfigurationManager.AppSettings["Domain"];
 }
 <!doctype html>
 <html lang="en">
@@ -14,7 +15,38 @@
     <link rel="stylesheet" href="~/assets/libs/css/style.css">
     <link rel="stylesheet" href="~/assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
     <link rel="stylesheet" href="~/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
-    <title>Concept - Bootstrap 4 Admin Dashboard Template</title>
+    <title>Lacvietbots - Dashboard</title>
+    <script src="https://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script>
+    <style>
+        .edit_bottom {
+    position: absolute;
+    margin-top:10px;
+    right: 0px;
+    left: 320px;
+    /*bottom: 8px;*/
+    font-size: 12px;
+}
+        .nav-tabs li.active{
+                background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
+
+    text-align: center;
+    width: 180px;
+    height: 100%;
+    float: none;
+    margin-bottom: -1px;
+    position: relative;
+    display: inline-block;
+
+    border-radius: 4px 4px 0 0;
+        }
+        .email-body {
+    background-color: #fff;
+    border-top: 1px solid #e6e6f2;
+    padding: 0;
+}
+    </style>
 </head>
 
 <body>
@@ -27,7 +59,7 @@
         <!-- ============================================================== -->
         <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="../index.html">Lacvietbots</a>
+                <a class="navbar-brand" href="/">Lacvietbots</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -157,7 +189,7 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav flex-column">
                             <li class="nav-divider">
-                                <a class="pb-fixed-side__link" style="float: left;padding: 10px 0 15px 10px;">
+                                <a class="pb-fixed-side__link" style="float: left;padding: 10px 0 15px 0px;color:white">
                                     <i class="fa fa-comments fa-icons-right"></i>
                                     <span class="pb-upper">my bots</span>
                                 </a>
@@ -216,6 +248,9 @@
                                     </ul>
                                 </div>
                             </li>
+                            <li class="nav-divider">
+                                Documents
+                            </li>
                         </ul>
                     </div>
                 </nav>
@@ -241,12 +276,58 @@
                         </div>
                         <div class="aside-nav collapse">
                             <ul class="nav">
-                                <li class="active"><a href="#"><span class="icon"><i class="fas fa-fw fa-folder-open fa-envelope"></i></span>AIML</a></li>
-                                <li><a href="#"><span class="icon"><i class="fas fa-fw fa-folder-open"></i></span>Maps</a></li>
-                                @*<li><a href="#"><span class="icon"><i class="fas fa-fw fa-briefcase"></i></span>Important</a></li>
-                                <li><a href="#"><span class="icon"><i class="fas fa-fw fa-file"></i></span>Drafts</a></li>
-                                <li><a href="#"><span class="icon"><i class="fas fa-fw fa-star"></i></span>Tags</a></li>*@
-                                <li><a href="#"><span class="icon"><i class="fas fa-fw fa-folder-open"></i></span>Systems</a></li>
+                                <li>
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#filemenu-1" aria-controls="filemenu-1">
+                                        <span class="arrow"></span>
+                                        <span class="icon">
+                                            <i class="fas fa-fw fa-folder-open" style="color:burlywood"></i>
+                                        </span>
+                                        AIML
+                                    </a>
+                                    <div id="filemenu-1" class="collapse submenu" style="">
+                                        <ul class="nav flex-column">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="../dashboard-finance.html">
+                                                    <span class="icon">
+                                                        <i class="fa fa-file-code"></i>
+                                                    </span>
+                                                    Default
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="../dashboard-sales.html">
+                                                    <span class="icon">
+                                                        <i class="fa fa-file-code"></i>
+                                                    </span>
+                                                Sales
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false"  data-target="#filemenu-2" aria-controls="filemenu-2">
+                                        <span class="arrow"></span>
+                                        <span class="icon">
+                                            <i class="fas fa-fw fa-folder-open" style="color:burlywood"></i>
+                                        </span>Maps
+                                    </a>
+                                    <div id="filemenu-2" class="collapse submenu" style="">
+                                        
+                                    </div>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false"  data-target="#filemenu-3" aria-controls="filemenu-3">
+                                        <span class="arrow"></span>
+                                        <span class="icon">
+                                            <i class="fas fa-fw fa-folder-open" style="color:burlywood"></i>
+                                        </span>
+                                        Systems
+                                    </a>
+                                    <div id="filemenu-3" class="collapse submenu" style="">
+                                        
+                                    </div>
+                                </li>
                             </ul>
 
                             <span class="title" style="border-top:1px solid #808080">File Tranning QnA</span>
@@ -257,55 +338,51 @@
                                         List QnA
                                     </a>
                                 </li>
-                                @*<li>
-                                    <a href="#">
-                                        <i class="m-r-10 mdi mdi-label text-primary"></i> Business
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="m-r-10 mdi mdi-label text-brand"></i>
-                                        Inspiration
-                                    </a>
-                                </li>*@
                             </ul>
                             <div class="aside-compose"><a class="btn btn-lg btn-primary btn-block" href="#">Create QnA</a></div>
                         </div>
                     </div>
                 </aside>
                 <div class="main-content container-fluid p-0">
-                    @*<div class="email-head">
-                        <div class="email-head-subject">
-                            <div class="title">
-                                <a class="active" href="#"><span class="icon"><i class="fas fa-star"></i></span></a> <span>Development Files</span>
-                                <div class="icons"><a href="#" class="icon"><i class="fas fa-reply"></i></a><a href="#" class="icon"><i class="fas fa-print"></i></a><a href="#" class="icon"><i class="fas fa-trash"></i></a></div>
+
+                    @*<ul class="nav nav-tabs" id="tabAttribute">
+                        <li class="active">
+                            <a href="#aiml_legal" data-toggle="tab" class="title_attribute">AIML LUẬT</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="aiml_legal">
+                            <div id="editorAIML_legal">
+
                             </div>
                         </div>
-                        <div class="email-head-sender">
-                            <div class="date">August 23, 3:37</div>
-                            <div class="avatar"><img src="~/assets/images/avatar-2.jpg" alt="Avatar" class="rounded-circle user-avatar-md"></div>
-                            <div class="sender">
-                                <a href="#">Justine Myranda</a> to <a href="#">me</a>
-                                <div class="actions">
-                                    <a class="icon toggle-dropdown" href="#" data-toggle="dropdown"><i class="fas fa-caret-down"></i></a>
-                                    <div class="dropdown-menu" role="menu">
-                                        <a class="dropdown-item" href="#">Mark as read</a><a class="dropdown-item" href="#">Mark as unread</a><a class="dropdown-item" href="#">Spam</a>
-                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="#">Delete</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    </div>*@
+
                     <div class="email-body">
-                        <p>Hello,</p>
+                        @*<p>Hello,</p>
                         <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
                         <p>Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
                         <p>
                             <strong>Regards</strong>,
                             <br> Justine Myranda
-                        </p>
+                        </p>*@
+                        <ul class="nav nav-tabs" id="tabAttribute">
+                            <li class="active">
+                                
+                                <a class="right"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                <a href="#aiml_legal" data-toggle="tab" class="title_attribute">aiml luật</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="aiml_legal">
+                                <div id="editorAIML_legal">
+
+                                </div>
+                                <div class="edit_bottom"><button title="Insert Category Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-magic"></i></button><button title="Insert URL Button Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-circle"></i></button><button title="Insert Postback Button Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-circle-o"></i></button><button title="Insert Link Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-link"></i></button><button title="Insert Image Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-image"></i></button><button title="Insert Video Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-film"></i></button><button title="Insert Card Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-id-card"></i></button><button title="Insert Carousel Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-id-card" style="margin-right: 2px; margin-left: -5px;"></i><i class="fa fa-plus" style="margin-right: -5px;"></i></button><button title="Insert Postback Reply Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-reply"></i></button><button title="Insert Typing Delay Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-ellipsis-h"></i></button><button title="Insert Ordered List Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-list-ol"></i></button><button title="Insert Bulleted List Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-list-ul"></i></button><div class="pb-emoji-menu btn btn-default btn-md"><div class="pb-emoji-menu__button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="#333" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200-89.7 200-200 200zm84-143.4c-20.8 25-51.5 39.4-84 39.4s-63.2-14.3-84-39.4c-8.5-10.2-23.6-11.5-33.8-3.1-10.2 8.5-11.5 23.6-3.1 33.8 30 36 74.1 56.6 120.9 56.6s90.9-20.6 120.9-56.6c8.5-10.2 7.1-25.3-3.1-33.8-10.2-8.4-25.3-7.1-33.8 3.1zM168 240c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32z"></path></svg></div></div></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="email-attachments">
+                    @*<div class="email-attachments">
                         <div class="title">Attachments <span>(2 files, 16,24 KB)</span></div>
                         <ul>
                             <li><a href="#"><span class="icon mdi mdi-attachment-alt"></span> new-release.zip <span>(5.12 KB)</span></a></li>
@@ -347,6 +424,11 @@
     <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="~/assets/vendor/slimscroll/jquery.slimscroll.js"></script>
     <script src="~/assets/libs/js/main-js.js"></script>
+    <script>
+    var _Host = '@domain';
+    </script>
+
+    <script src="~/Scripts/common.js"></script>
 </body>
 
 </html>

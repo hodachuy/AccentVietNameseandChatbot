@@ -223,6 +223,7 @@
     <Content Include="assets\images\card-img-2.jpg" />
     <Content Include="assets\images\card-img-3.jpg" />
     <Content Include="assets\images\card-img.jpg" />
+    <Content Include="assets\images\cd-icons.svg" />
     <Content Include="assets\images\down-arrow.png" />
     <Content Include="assets\images\drag-indicator.png" />
     <Content Include="assets\images\dribbble.png" />
