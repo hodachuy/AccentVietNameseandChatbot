@@ -169,45 +169,62 @@ var editorLegal,
     editorTour,
     mode;
 $(document).ready(function () {
+    
     loadAIML();
-    YUI().use('aui-ace-editor', function (Y) {
-        editorLegal = new Y.AceEditor(
-          {
-              boundingBox: '#editorAIML_legal',
-              mode: 'xml',
-              value: html,
-              height: '550',
-              width: '100%',
-          }
-        ).render();
-       // editorMed = new Y.AceEditor(
-       //   {
-       //       boundingBox: '#editorAIML_med',
-       //       mode: 'xml',
-       //       value: '<?xml version="1.0" encoding="UTF-8"?>',
-       //       height: '1000',
-       //       width: '750'
-       //   }
-       // ).render();
-       // editorEdu = new Y.AceEditor(
-       // {
-       //     boundingBox: '#editorAIML_edu',
-       //     mode: 'xml',
-       //     value: '<?xml version="1.0" encoding="UTF-8"?>',
-       //     height: '1000',
-       //     width: '750'
-       // }
-       //).render();
-       // editorTour = new Y.AceEditor(
-       //  {
-       //      boundingBox: '#editorAIML_tour',
-       //      mode: 'xml',
-       //      value: '<?xml version="1.0" encoding="UTF-8"?>',
-       //      height: '1000',
-       //      width: '750'
-       //  }
-       // ).render();
-    });
+    setTimeout(function () {
+        var e = ace.edit("editorTest");
+        e.getSession().setMode("ace/mode/xml");
+        e.setTheme("ace/theme/textmate");
+        e.setValue(html);
+       
+
+        var editorMed = ace.edit("editorTest-med");
+        editorMed.getSession().setMode("ace/mode/xml");
+        editorMed.setTheme("ace/theme/textmate");
+        editorMed.setValue("<xml?>");
+
+
+    },1000)
+
+
+    //YUI().use('aui-ace-editor', function (Y) {
+    //    editorLegal = new Y.AceEditor(
+    //      {
+    //          boundingBox: '#editorAIML_legal',
+    //          mode: 'xml',
+    //          value: html,
+    //          height: '550',
+    //          width: '100%',
+    //      }
+    //    ).render();
+    //    editorMed = new Y.AceEditor(
+    //      {
+    //          boundingBox: '#editorAIML_med',
+    //          mode: 'xml',
+    //          value: '<?xml version="1.0" encoding="UTF-8"?>',
+    //          height: '1000',
+    //          width: '750'
+    //      }
+    //    ).render();
+    //    editorEdu = new Y.AceEditor(
+    //    {
+    //        boundingBox: '#editorAIML_edu',
+    //        mode: 'xml',
+    //        value: '<?xml version="1.0" encoding="UTF-8"?>',
+    //        height: '1000',
+    //        width: '750'
+    //    }
+    //   ).render();
+    //    editorTour = new Y.AceEditor(
+    //     {
+    //         boundingBox: '#editorAIML_tour',
+    //         mode: 'xml',
+    //         value: '<?xml version="1.0" encoding="UTF-8"?>',
+    //         height: '1000',
+    //         width: '750'
+    //     }
+    //    ).render();
+    //});
 })
 
 function loadAIML() {

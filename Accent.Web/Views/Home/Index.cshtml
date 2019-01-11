@@ -1,4 +1,4 @@
-﻿@{ 
+﻿@{
     Layout = null;
     string domain = System.Configuration.ConfigurationManager.AppSettings["Domain"];
 }
@@ -9,43 +9,20 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Lacvietbots - Dashboard</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/assets/vendor/bootstrap/css/bootstrap.min.css">
     <link href="~/assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
     <link rel="stylesheet" href="~/assets/libs/css/style.css">
     <link rel="stylesheet" href="~/assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
     <link rel="stylesheet" href="~/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
-    <title>Lacvietbots - Dashboard</title>
-    <script src="https://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="~/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
     <style>
-        .edit_bottom {
-    position: absolute;
-    margin-top:10px;
-    right: 0px;
-    left: 320px;
-    /*bottom: 8px;*/
-    font-size: 12px;
-}
-        .nav-tabs li.active{
-                background-color: #fff;
-    border: 1px solid #ddd;
-    border-bottom-color: transparent;
-
-    text-align: center;
-    width: 180px;
-    height: 100%;
-    float: none;
-    margin-bottom: -1px;
-    position: relative;
-    display: inline-block;
-
-    border-radius: 4px 4px 0 0;
-        }
-        .email-body {
-    background-color: #fff;
-    border-top: 1px solid #e6e6f2;
-    padding: 0;
-}
+        .editor-file-aiml{
+            height:550px;
+        }       
     </style>
 </head>
 
@@ -59,102 +36,102 @@
         <!-- ============================================================== -->
         <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="/">Lacvietbots</a>
+                <a class="navbar-brand" href="/">Lacviet-bots</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse " id="navbarSupportedContent">
                     <ul class="navbar-nav ml-auto navbar-right-top">
                         @*<li class="nav-item">
-                            <div id="custom-search" class="top-search-bar">
-                                <input class="form-control" type="text" placeholder="Search..">
-                            </div>
-                        </li>*@
+                                <div id="custom-search" class="top-search-bar">
+                                    <input class="form-control" type="text" placeholder="Search..">
+                                </div>
+                            </li>*@
                         @*<li class="nav-item dropdown notification">
-                            <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
-                            <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
-                                <li>
-                                    <div class="notification-title"> Notification</div>
-                                    <div class="notification-list">
-                                        <div class="list-group">
-                                            <a href="#" class="list-group-item list-group-item-action active">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="~/assets/images/avatar-2.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block">
-                                                        <span class="notification-list-user-name">Jeremy Rakestraw</span>accepted your invitation to join the team.
-                                                        <div class="notification-date">2 min ago</div>
+                                <a class="nav-link nav-icons" href="#" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-bell"></i> <span class="indicator"></span></a>
+                                <ul class="dropdown-menu dropdown-menu-right notification-dropdown">
+                                    <li>
+                                        <div class="notification-title"> Notification</div>
+                                        <div class="notification-list">
+                                            <div class="list-group">
+                                                <a href="#" class="list-group-item list-group-item-action active">
+                                                    <div class="notification-info">
+                                                        <div class="notification-list-user-img"><img src="~/assets/images/avatar-2.jpg" alt="" class="user-avatar-md rounded-circle"></div>
+                                                        <div class="notification-list-user-block">
+                                                            <span class="notification-list-user-name">Jeremy Rakestraw</span>accepted your invitation to join the team.
+                                                            <div class="notification-date">2 min ago</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="~/assets/images/avatar-3.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block">
-                                                        <span class="notification-list-user-name">
-                                                            John Abraham
-                                                        </span>is now following you
-                                                        <div class="notification-date">2 days ago</div>
+                                                </a>
+                                                <a href="#" class="list-group-item list-group-item-action">
+                                                    <div class="notification-info">
+                                                        <div class="notification-list-user-img"><img src="~/assets/images/avatar-3.jpg" alt="" class="user-avatar-md rounded-circle"></div>
+                                                        <div class="notification-list-user-block">
+                                                            <span class="notification-list-user-name">
+                                                                John Abraham
+                                                            </span>is now following you
+                                                            <div class="notification-date">2 days ago</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="~/assets/images/avatar-4.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block">
-                                                        <span class="notification-list-user-name">Monaan Pechi</span> is watching your main repository
-                                                        <div class="notification-date">2 min ago</div>
+                                                </a>
+                                                <a href="#" class="list-group-item list-group-item-action">
+                                                    <div class="notification-info">
+                                                        <div class="notification-list-user-img"><img src="~/assets/images/avatar-4.jpg" alt="" class="user-avatar-md rounded-circle"></div>
+                                                        <div class="notification-list-user-block">
+                                                            <span class="notification-list-user-name">Monaan Pechi</span> is watching your main repository
+                                                            <div class="notification-date">2 min ago</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
-                                            <a href="#" class="list-group-item list-group-item-action">
-                                                <div class="notification-info">
-                                                    <div class="notification-list-user-img"><img src="~/assets/images/avatar-5.jpg" alt="" class="user-avatar-md rounded-circle"></div>
-                                                    <div class="notification-list-user-block">
-                                                        <span class="notification-list-user-name">Jessica Caruso</span>accepted your invitation to join the team.
-                                                        <div class="notification-date">2 min ago</div>
+                                                </a>
+                                                <a href="#" class="list-group-item list-group-item-action">
+                                                    <div class="notification-info">
+                                                        <div class="notification-list-user-img"><img src="~/assets/images/avatar-5.jpg" alt="" class="user-avatar-md rounded-circle"></div>
+                                                        <div class="notification-list-user-block">
+                                                            <span class="notification-list-user-name">Jessica Caruso</span>accepted your invitation to join the team.
+                                                            <div class="notification-date">2 min ago</div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </a>
+                                                </a>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="list-footer"> <a href="#">View all notifications</a></div>
-                                </li>
-                            </ul>
-                        </li>*@
+                                    </li>
+                                    <li>
+                                        <div class="list-footer"> <a href="#">View all notifications</a></div>
+                                    </li>
+                                </ul>
+                            </li>*@
                         @*<li class="nav-item dropdown connection">
-                            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-fw fa-th"></i> </a>
-                            <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
-                                <li class="connection-list">
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="~/assets/images/github.png" alt=""> <span>Github</span></a>
+                                <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-fw fa-th"></i> </a>
+                                <ul class="dropdown-menu dropdown-menu-right connection-dropdown">
+                                    <li class="connection-list">
+                                        <div class="row">
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                                <a href="#" class="connection-item"><img src="~/assets/images/github.png" alt=""> <span>Github</span></a>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                                <a href="#" class="connection-item"><img src="~/assets/images/dribbble.png" alt=""> <span>Dribbble</span></a>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                                <a href="#" class="connection-item"><img src="~/assets/images/dropbox.png" alt=""> <span>Dropbox</span></a>
+                                            </div>
                                         </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="~/assets/images/dribbble.png" alt=""> <span>Dribbble</span></a>
+                                        <div class="row">
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                                <a href="#" class="connection-item"><img src="~/assets/images/bitbucket.png" alt=""> <span>Bitbucket</span></a>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                                <a href="#" class="connection-item"><img src="~/assets/images/mail_chimp.png" alt=""><span>Mail chimp</span></a>
+                                            </div>
+                                            <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
+                                                <a href="#" class="connection-item"><img src="~/assets/images/slack.png" alt=""> <span>Slack</span></a>
+                                            </div>
                                         </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="~/assets/images/dropbox.png" alt=""> <span>Dropbox</span></a>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="~/assets/images/bitbucket.png" alt=""> <span>Bitbucket</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="~/assets/images/mail_chimp.png" alt=""><span>Mail chimp</span></a>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12 ">
-                                            <a href="#" class="connection-item"><img src="~/assets/images/slack.png" alt=""> <span>Slack</span></a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="conntection-footer"><a href="#">More</a></div>
-                                </li>
-                            </ul>
-                        </li>*@
+                                    </li>
+                                    <li>
+                                        <div class="conntection-footer"><a href="#">More</a></div>
+                                    </li>
+                                </ul>
+                            </li>*@
                         <li class="nav-item dropdown nav-user">
                             <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-user-circle"></i></a>
                             <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
@@ -205,51 +182,39 @@
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="index.html" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-2" aria-controls="submenu-1-2">E-Commerce</a>
-                                            <div id="submenu-1-2" class="collapse submenu" style="">
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="../index.html">E Commerce Dashboard</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="../ecommerce-product.html">Product List</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="../ecommerce-product-single.html">Product Single</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="../ecommerce-product-checkout.html">Product Checkout</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <a class="nav-link" href="../dashboard-finance.html"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="../dashboard-finance.html">Finance</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="../dashboard-sales.html">Sales</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1-1" aria-controls="submenu-1-1">Infulencer</a>
-                                            <div id="submenu-1-1" class="collapse submenu" style="">
-                                                <ul class="nav flex-column">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="../dashboard-influencer.html">Influencer</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="../influencer-finder.html">Influencer Finder</a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" href="../influencer-profile.html">Influencer Profile</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <a class="nav-link" href="../dashboard-sales.html"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
-                            <li class="nav-divider">
-                                Documents
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#docmenu-1" aria-controls="docmenu-1">
+                                    <i class="fa fa-question-circle"></i>
+                                    <span class="pb-upper">Hướng dẫn</span>
+                                </a>
+                                <div id="docmenu-1" class="collapse submenu" style="">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="../dashboard-finance.html">Tài liệu</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#featuremenu-1" aria-controls="featuremenu-1">
+                                    <i class="fas fa-cog"></i>
+                                    <span class="pb-upper">Tính năng khác</span>
+                                </a>
+                                <div id="featuremenu-1" class="collapse submenu" style="">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="../dashboard-finance.html">Chuyển không dấu tới có dấu</a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                         </ul>
                     </div>
@@ -277,55 +242,69 @@
                         <div class="aside-nav collapse">
                             <ul class="nav">
                                 <li>
-                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#filemenu-1" aria-controls="filemenu-1">
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#aimlmenu-1" aria-controls="aimlmenu-1">
                                         <span class="arrow"></span>
                                         <span class="icon">
                                             <i class="fas fa-fw fa-folder-open" style="color:burlywood"></i>
                                         </span>
                                         AIML
                                     </a>
-                                    <div id="filemenu-1" class="collapse submenu" style="">
+                                    <div id="aimlmenu-1" class="collapse submenu" style="">
                                         <ul class="nav flex-column">
                                             <li class="nav-item">
                                                 <a class="nav-link" href="../dashboard-finance.html">
                                                     <span class="icon">
                                                         <i class="fa fa-file-code"></i>
                                                     </span>
-                                                    Default
-                                                </a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="../dashboard-sales.html">
-                                                    <span class="icon">
-                                                        <i class="fa fa-file-code"></i>
-                                                    </span>
-                                                Sales
+                                                    default
                                                 </a>
                                             </li>
                                         </ul>
                                     </div>
                                 </li>
                                 <li>
-                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false"  data-target="#filemenu-2" aria-controls="filemenu-2">
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#mapsmenu-2" aria-controls="mapsmenu-2">
                                         <span class="arrow"></span>
                                         <span class="icon">
                                             <i class="fas fa-fw fa-folder-open" style="color:burlywood"></i>
                                         </span>Maps
                                     </a>
-                                    <div id="filemenu-2" class="collapse submenu" style="">
-                                        
+                                    <div id="mapsmenu-2" class="collapse submenu" style="">
+
                                     </div>
                                 </li>
                                 <li>
-                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false"  data-target="#filemenu-3" aria-controls="filemenu-3">
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-2" aria-controls="setsmenu-2">
+                                        <span class="arrow"></span>
+                                        <span class="icon">
+                                            <i class="fas fa-fw fa-folder-open" style="color:burlywood"></i>
+                                        </span>Sets
+                                    </a>
+                                    <div id="setsmenu-2" class="collapse submenu" style="">
+
+                                    </div>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#substitutionsmenu-2" aria-controls="substitutionsmenu-2">
+                                        <span class="arrow"></span>
+                                        <span class="icon">
+                                            <i class="fas fa-fw fa-folder-open" style="color:burlywood"></i>
+                                        </span>Substitutions
+                                    </a>
+                                    <div id="substitutionsmenu-2" class="collapse submenu" style="">
+
+                                    </div>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#systems-3" aria-controls="systems-3">
                                         <span class="arrow"></span>
                                         <span class="icon">
                                             <i class="fas fa-fw fa-folder-open" style="color:burlywood"></i>
                                         </span>
                                         Systems
                                     </a>
-                                    <div id="filemenu-3" class="collapse submenu" style="">
-                                        
+                                    <div id="systems-3" class="collapse submenu" style="">
+
                                     </div>
                                 </li>
                             </ul>
@@ -344,51 +323,35 @@
                     </div>
                 </aside>
                 <div class="main-content container-fluid p-0">
-
-                    @*<ul class="nav nav-tabs" id="tabAttribute">
-                        <li class="active">
-                            <a href="#aiml_legal" data-toggle="tab" class="title_attribute">AIML LUẬT</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="aiml_legal">
-                            <div id="editorAIML_legal">
-
-                            </div>
-                        </div>
-                    </div>*@
-
                     <div class="email-body">
-                        @*<p>Hello,</p>
-                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
-                        <p>Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
-                        <p>
-                            <strong>Regards</strong>,
-                            <br> Justine Myranda
-                        </p>*@
+
                         <ul class="nav nav-tabs" id="tabAttribute">
                             <li class="active">
-                                
-                                <a class="right"><i class="fa fa-times" aria-hidden="true"></i></a>
-                                <a href="#aiml_legal" data-toggle="tab" class="title_attribute">aiml luật</a>
+                                <a href="#" class="left"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                <a href="#" class="right"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                <a href="#aiml-legal" data-toggle="tab" class="title_attribute">default</a>
+                            </li>
+                            <li>
+                                <a href="#" class="left"><i class="fa fa-save" aria-hidden="true"></i></a>
+                                <a href="#" class="right"><i class="fa fa-times" aria-hidden="true"></i></a>
+                                <a href="#aiml-med" data-toggle="tab" class="title_attribute">med</a>
                             </li>
                         </ul>
                         <div class="tab-content">
-                            <div class="tab-pane active" id="aiml_legal">
-                                <div id="editorAIML_legal">
+                            <div class="tab-pane active" id="aiml-legal">
+                                <div id="editorTest" class="editor-file-aiml">
+                            
+                                </div>
+                                <div class="edit_bottom"><button title="Insert Category Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-magic"></i></button><button title="Insert URL Button Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-circle"></i></button><button title="Insert Postback Button Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-circle-o"></i></button><button title="Insert Link Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-link"></i></button><button title="Insert Image Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-image"></i></button><button title="Insert Video Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-film"></i></button><button title="Insert Card Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-id-card"></i></button><button title="Insert Carousel Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-id-card" style="margin-right: 2px; margin-left: -5px;"></i><i class="fa fa-plus" style="margin-right: -5px;"></i></button><button title="Insert Postback Reply Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-reply"></i></button><button title="Insert Typing Delay Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-ellipsis-h"></i></button><button title="Insert Ordered List Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-list-ol"></i></button><button title="Insert Bulleted List Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-list-ul"></i></button><div class="pb-emoji-menu btn btn-default btn-md"><div class="pb-emoji-menu__button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="#333" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200-89.7 200-200 200zm84-143.4c-20.8 25-51.5 39.4-84 39.4s-63.2-14.3-84-39.4c-8.5-10.2-23.6-11.5-33.8-3.1-10.2 8.5-11.5 23.6-3.1 33.8 30 36 74.1 56.6 120.9 56.6s90.9-20.6 120.9-56.6c8.5-10.2 7.1-25.3-3.1-33.8-10.2-8.4-25.3-7.1-33.8 3.1zM168 240c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32z"></path></svg></div></div></div>
+                            </div>
+                            <div class="tab-pane" id="aiml-med">
+                                <div id="editorTest-med" class="editor-file-aiml">
 
                                 </div>
                                 <div class="edit_bottom"><button title="Insert Category Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-magic"></i></button><button title="Insert URL Button Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-circle"></i></button><button title="Insert Postback Button Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-circle-o"></i></button><button title="Insert Link Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-link"></i></button><button title="Insert Image Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-image"></i></button><button title="Insert Video Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-film"></i></button><button title="Insert Card Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-id-card"></i></button><button title="Insert Carousel Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-id-card" style="margin-right: 2px; margin-left: -5px;"></i><i class="fa fa-plus" style="margin-right: -5px;"></i></button><button title="Insert Postback Reply Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-reply"></i></button><button title="Insert Typing Delay Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-ellipsis-h"></i></button><button title="Insert Ordered List Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-list-ol"></i></button><button title="Insert Bulleted List Template" class="btn btn-default btn-md" style="margin: 0px 5px;"><i class="fa fa-list-ul"></i></button><div class="pb-emoji-menu btn btn-default btn-md"><div class="pb-emoji-menu__button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><path fill="#333" d="M248 8C111 8 0 119 0 256s111 248 248 248 248-111 248-248S385 8 248 8zm0 448c-110.3 0-200-89.7-200-200S137.7 56 248 56s200 89.7 200 200-89.7 200-200 200zm84-143.4c-20.8 25-51.5 39.4-84 39.4s-63.2-14.3-84-39.4c-8.5-10.2-23.6-11.5-33.8-3.1-10.2 8.5-11.5 23.6-3.1 33.8 30 36 74.1 56.6 120.9 56.6s90.9-20.6 120.9-56.6c8.5-10.2 7.1-25.3-3.1-33.8-10.2-8.4-25.3-7.1-33.8 3.1zM168 240c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32zm160 0c17.7 0 32-14.3 32-32s-14.3-32-32-32-32 14.3-32 32 14.3 32 32 32z"></path></svg></div></div></div>
                             </div>
                         </div>
                     </div>
-                    @*<div class="email-attachments">
-                        <div class="title">Attachments <span>(2 files, 16,24 KB)</span></div>
-                        <ul>
-                            <li><a href="#"><span class="icon mdi mdi-attachment-alt"></span> new-release.zip <span>(5.12 KB)</span></a></li>
-                            <li><a href="#"><span class="icon mdi mdi-attachment-alt"></span> guidelines.pdf <span>(11.3 MB)</span></a></li>
-                        </ul>
-                    </div>*@
                 </div>
 
             </div>
@@ -416,16 +379,57 @@
         <!-- end footer -->
         <!-- ============================================================== -->
     </div>
+    <!--box CHATBOT-->
+    <div id="chat-circle" class="btn btn-raised">
+        <div id="chat-overlay"></div>
+        <i class="material-icons"><i class="fa fa-comment"></i></i>
+    </div>
+    <div class="chat-box">
+        <div class="chat-box-header">
+            <div class="chat-box-name">
+                ChatBot Pháp luật
+            </div>
+            <div class="chat-box-icon">
+                <label for="chkSettings"><i class="fa fa-gear"></i></label><input type="checkbox" id="chkSettings" />
+                @*<a href="javascript:void(0);" id="chat-bot-setting"><i class="fa fa-gear"></i></a>*@
+                <div class="settings-popup">
+                    <input type="checkbox" class="chk-setting-bot" id="chk-stt-accent" /> Hỗ trợ hiểu không dấu <br />
+                    <input type="checkbox" class="chk-setting-bot" id="chk-stt-popup" /> Hiển thị không chuyển trang
+                    @*<ul style="list-style:none">
+                            <li><input type="checkbox" /> Hổ trợ hiểu không dấu </li>
+                            <li><input type="checkbox" /> Hiển thị thông tin cùng trang</li>
+                        </ul>*@
+                </div>
+                <a href="javascript:void(0);" id="chat-bot-close"><i class="fa fa-close"></i></a>
+            </div>
+
+
+            @*<span class="chat-box-toggle"><i class="fa fa-close"></i></span>*@
+        </div>
+        <div class="chat-box-body">
+            <div class="chat-box-overlay">
+            </div>
+            <div class="chat-logs">
+            </div><!--chat-log -->
+        </div>
+        <div class="chat-input">
+            <form>
+                <input type="text" id="chat-input" placeholder="Gửi tin nhắn..." />
+                <button type="submit" class="chat-submit" id="chat-submit">Gửi</button>
+            </form>
+        </div>
+    </div>
     <!-- ============================================================== -->
     <!-- end main wrapper -->
     <!-- ============================================================== -->
     <!-- Optional JavaScript -->
-    <script src="~/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+
     <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    @*<script src="~/Scripts/bootstrap.min.js"></script>*@
     <script src="~/assets/vendor/slimscroll/jquery.slimscroll.js"></script>
     <script src="~/assets/libs/js/main-js.js"></script>
     <script>
-    var _Host = '@domain';
+        var _Host = '@domain';
     </script>
 
     <script src="~/Scripts/common.js"></script>
