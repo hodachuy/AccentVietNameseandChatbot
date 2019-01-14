@@ -13,5 +13,10 @@ namespace Accent.Web.Controllers
         {
             return View();
         }
+
+        public ActionResult QnA()
+        {
+            return View();
+        }
     }
 }

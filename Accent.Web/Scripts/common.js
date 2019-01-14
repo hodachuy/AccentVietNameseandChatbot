@@ -168,11 +168,12 @@ var editorLegal,
     editorEdu,
     editorTour,
     mode;
+var e;
 $(document).ready(function () {
     
     loadAIML();
     setTimeout(function () {
-        var e = ace.edit("editorTest");
+        e = ace.edit("editorTest");
         e.getSession().setMode("ace/mode/xml");
         e.setTheme("ace/theme/textmate");
         e.setValue(html);
@@ -226,7 +227,18 @@ $(document).ready(function () {
     //    ).render();
     //});
 })
+function TestInsert() {
 
+    var xml =  "\n<category>\n"+
+                "   <pattern></pattern>\n" +
+                "   <template></template>\n" +
+                "</category>\n";
+
+    var cursorPosition = e.getCursorPosition();
+
+    e.session.insert(cursorPosition, xml);
+   
+}
 function loadAIML() {
     $.ajax({
         url: _Host + 'api/LoadAIML',

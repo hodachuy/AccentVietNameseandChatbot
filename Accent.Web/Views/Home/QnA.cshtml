@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "QnA";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- ============================================================== -->
+<!-- pageheader -->
+<!-- ============================================================== -->
+<style>
+    .card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: unset;
+}
+        .table thead th{
+                padding: 0px;
+        }
+        .table tbody tr td{
+            height: 70px;
+            border-right: 2px solid #e6e6f2;
+
+        }
+        .table-responsive{
+            overflow-x:unset;
+        }
+</style>
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-b-20 p-t-20">
+        <div class="d-flex">
+            <h5 class="pageheader-title">myapplication phapluat-bot </h5>
+
+            <div class="toolbar ml-auto p-r-10">
+                <a href="#" class="btn btn-success btn-sm "><i class="fas fa-sync-alt"></i> Save and retrain</a>
+                <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>
+            </div>
+        </div>
+        <div class="d-flex">
+            <div class="ml-auto" style="font-size:13px;padding-right:100px">Retrained 2 phút trước</div>
+        </div>
+    </div>
+</div>
+<!-- ============================================================== -->
+<!-- end pageheader -->
+<!-- ============================================================== -->
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="card">
+        <div class="card-header" style="background-color:lightgray">
+            <div class="row">
+                <div class="col-lg-6">
+                    <p>KNOWLEDGE BASE | 2 QnA pairs</p>
+                </div>
+                <div class="col-lg-6">
+                    <a href="#" style="float:right;" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-upload"></i>Import Excel</a>
+                    <a href="#" style="float:right;margin-right:10px" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus-circle"></i>Add new QnA pair</a>
+                </div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add QnA Marker</h5>
+                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </a>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">Question</label>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">Answer</label>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-primary">Save changes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive ">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width:1%"></th>
+                            <th scope="col" style="width:41%">Question</th>
+                            <th scope="col" style="width:58%">Answer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Hi</td>
+                            <td>Hello</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Hello</td>
+                            <td>Chào bạn</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

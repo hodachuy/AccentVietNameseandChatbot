@@ -4,6 +4,130 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     string domain = System.Configuration.ConfigurationManager.AppSettings["Domain"];
 }
+<style>
+    /* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+
+    .options {
+        background: none repeat scroll 0 0 white;
+        position: absolute;
+        top: auto;
+        left: 0;
+        z-index: 100;
+        box-shadow: 0 0 8px #555;
+        margin: 0;
+        margin-top: 5px;
+        padding: 0.8rem;
+        width: 300px;
+    }
+
+        .options li {
+            float: left;
+            font-size: 13pt;
+            display: block;
+            color: initial;
+            margin: 0;
+            /*padding: 6px;*/
+            cursor: pointer;
+            padding:5px;
+        }
+
+            .options li.cancel-btn {
+                background: none repeat scroll 0 0 white;
+                border-radius: 50%;
+                box-shadow: 0 0 8px #000;
+                color: black;
+                float: none;
+                font-size: 1.25rem;
+                height: 20px;
+                padding: 0;
+                position: absolute;
+                right: -15px;
+                text-align: center;
+                top: -15px;
+                width: 20px;
+                font: normal normal normal 18px/1 FontAwesome;
+            }
+
+            .options li.odd-choice {
+                background: #c2d5d6;
+            }
+
+            .options li.even-choice {
+                background-color: #d5fabe;
+            }
+
+    textarea {
+        max-width: 580px;
+    }
+
+    /*ul li {
+        font-size: 11pt;
+        padding: 5px;
+        font-style: italic;
+        color: #4d90f0;
+    }*/
+
+    .popover {
+        max-width: 100%;
+    }
+
+    .spell-correct-text {
+        font-size: 11pt;
+        font-style: italic;
+        color: #4d90f0;
+        font-weight: bold;
+    }
+
+    #txtSearch {
+        -moz-appearance: textfield-multiline;
+        -webkit-appearance: textarea;
+        border: 1px solid gray;
+        font: medium -moz-fixed;
+        font-size: 13pt;
+        font: sans-serif;
+        height: 150px;
+        overflow: auto;
+        padding: 2px;
+        resize: none;
+        width: 580px;
+        border: none;
+        box-shadow: 0 0 10px 0 gainsboro;
+        padding: 0.5em;
+        white-space: pre;
+    }
+
+    div:empty:before {
+        content: attr(data-placeholder);
+        color: dimgray;
+        font-size: 10.5pt;
+    }
+
+    #txtSearch span {
+        cursor: pointer;
+    }
+
+    .span word {
+        position: relative;
+    }
+    /*chat bot*/
+
+
+    #center-text {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+</style>
 <script src="https://cdn.alloyui.com/3.0.1/aui/aui-min.js"></script>
 <style>
     .content table {
@@ -24,6 +148,23 @@
         padding: 3px;
         border-radius: 3px;
     }
+    #txtSearch {
+    -moz-appearance: textfield-multiline;
+    -webkit-appearance: textarea;
+    border: 1px solid gray;
+    font: medium -moz-fixed;
+    font-size: 13pt;
+    font: sans-serif;
+    height: 150px;
+    overflow: auto;
+    padding: 2px;
+    resize: none;
+    width: 580px;
+    border: none;
+    box-shadow: 0 0 10px 0 gainsboro;
+    padding: 0.5em;
+    white-space: pre;
+}
 </style>
 <h2>Chuyển tiếng Việt không dấu tới có dấu</h2>
 <hr />
