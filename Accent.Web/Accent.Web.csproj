@@ -199,8 +199,6 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\LegalController.cs" />
-    <Compile Include="Controllers\MedController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -705,8 +703,6 @@
     <Folder Include="Datasets_BOT\aiml_edu\" />
     <Folder Include="Datasets_BOT\aiml_med\" />
     <Folder Include="Datasets_BOT\aiml_travel\" />
-    <Folder Include="Views\Legal\" />
-    <Folder Include="Views\Med\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

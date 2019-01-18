@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Accent.Web", "Accent.Web\Ac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AIML.BOT", "AIML.BOT\AIML.BOT.csproj", "{586D1D3C-04D0-4981-8EE0-89CDA0AA9CFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchEngine.ConsoleApplication", "SearchEngine.ConsoleApplication\SearchEngine.ConsoleApplication.csproj", "{96023BAF-5F29-44DE-BFD8-9319957DB425}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchEngine.Data", "SearchEngine.Data\SearchEngine.Data.csproj", "{3D2F5B2A-12BE-42E0-BE1B-27F736523378}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{586D1D3C-04D0-4981-8EE0-89CDA0AA9CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{586D1D3C-04D0-4981-8EE0-89CDA0AA9CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{586D1D3C-04D0-4981-8EE0-89CDA0AA9CFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96023BAF-5F29-44DE-BFD8-9319957DB425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96023BAF-5F29-44DE-BFD8-9319957DB425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96023BAF-5F29-44DE-BFD8-9319957DB425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96023BAF-5F29-44DE-BFD8-9319957DB425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2F5B2A-12BE-42E0-BE1B-27F736523378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2F5B2A-12BE-42E0-BE1B-27F736523378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2F5B2A-12BE-42E0-BE1B-27F736523378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2F5B2A-12BE-42E0-BE1B-27F736523378}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

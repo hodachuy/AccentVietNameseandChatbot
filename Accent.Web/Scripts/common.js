@@ -172,21 +172,7 @@ var e;
 $(document).ready(function () {
     
     loadAIML();
-    setTimeout(function () {
-        e = ace.edit("editorTest");
-        e.getSession().setMode("ace/mode/xml");
-        e.setTheme("ace/theme/textmate");
-        e.setValue(html);
-       
-
-        var editorMed = ace.edit("editorTest-med");
-        editorMed.getSession().setMode("ace/mode/xml");
-        editorMed.setTheme("ace/theme/textmate");
-        editorMed.setValue("<xml?>");
-
-
-    },1000)
-
+   
 
     //YUI().use('aui-ace-editor', function (Y) {
     //    editorLegal = new Y.AceEditor(
@@ -246,9 +232,20 @@ function loadAIML() {
         type: 'GET',
         success: function (result) {
             html = result;
+            setTimeout(function () {
+                e = ace.edit("editorTest");
+                e.getSession().setMode("ace/mode/xml");
+                e.setTheme("ace/theme/textmate");
+                e.setValue(html);
+
+
+                var editorMed = ace.edit("editorTest-med");
+                editorMed.getSession().setMode("ace/mode/xml");
+                editorMed.setTheme("ace/theme/textmate");
+                editorMed.setValue("<xml?>");
+            }, 1000)
         },
     });
-    return html;
 }
 
 function saveAIML() {
