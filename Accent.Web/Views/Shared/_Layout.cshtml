@@ -23,6 +23,10 @@
         }
     </style>
     @{string domain = System.Configuration.ConfigurationManager.AppSettings["Domain"]; }
+    <script>
+        var _Host = '@domain';
+    </script>
+
 </head>
 
 <body>
@@ -94,7 +98,10 @@
                                             <a class="nav-link" href="/"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" href="../dashboard-sales.html"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>
+                                            <a class="nav-link" href="@Url.Content("~/Home/QnA")"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -107,7 +114,7 @@
                                 <div id="docmenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="../dashboard-finance.html">Tài liệu</a>
+                                            <a class="nav-link" href="#">Tài liệu</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -120,7 +127,7 @@
                                 <div id="featuremenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="../dashboard-finance.html">Chuyển không dấu tới có dấu</a>
+                                            <a class="nav-link" href="#">Chuyển không dấu tới có dấu</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -214,10 +221,6 @@
     @*<script src="~/Scripts/bootstrap.min.js"></script>*@
     <script src="~/assets/vendor/slimscroll/jquery.slimscroll.js"></script>
     <script src="~/assets/libs/js/main-js.js"></script>
-    <script>
-        var _Host = '@domain';
-    </script>
-
     <script src="~/Scripts/common.js"></script>
 </body>
 

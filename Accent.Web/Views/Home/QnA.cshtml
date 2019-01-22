@@ -2,110 +2,111 @@
     ViewBag.Title = "QnA";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<style>
+    .list-group-item {
+    position: relative;
+    display: block;
+    padding: 16px 20px;
+    margin-bottom: -1px;
+    border: 1px solid #e6e6f2;
+    text-align: justify;
+}
+
+
+    /*pagintation*/
+    /*
+Hi! If my code is useful for you can you donate me some money? 
+https://www.paypal.me/melnik909
+*/
+
+/*
+=====
+LEVEL 0. RESET BROWSER'S STYLES
+=====
+*/
+
+.pagination__list{
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  list-style: none;  
+}
+
+/*
+=====
+LEVEL 1. CORE COMPONENT STYLES
+=====
+*/
+
+.pagination{
+  height:35px;
+  font-size: 13px;
+}
+
+.pagination__list{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination__item:not(.pagination__control_prev):not(.pagination__item_active){
+  padding-left: .5em;
+}
+
+.pagination__item:not(.pagination__control_next):not(.pagination__item_active){
+  padding-right: .5em;
+}
+
+.pagination__item{
+  display: inline-block;
+  line-height: 1;
+}
+
+.pagination__control{
+  position: relative;
+}
+
+.pagination__control:before, .pagination__control:after{
+  font-size: 12px;
+  line-height: 1;
+  
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.pagination__control_prev{
+  padding-left: calc(22px + 5px);
+}
+
+.pagination__control_prev:before{
+  content: "←";
+  left: 0;
+}
+
+.pagination__control_next{
+  padding-right: calc(22px + 5px);
+}
+
+.pagination__control_next:after{
+  content: "→";
+  right: 0;
+}
+
+.pagination__item_active{
+  padding: .5875em .8em;
+  margin-right: .5em;
+  margin-left: .5em;
+}
+
+</style>
 <!-- ============================================================== -->
 <!-- pageheader -->
 <!-- ============================================================== -->
-<style>
-    .card-body {
-    -ms-flex: 1 1 auto;
-    flex: 1 1 auto;
-    padding: unset;
-}
-        .table thead th{
-                padding: 0px;
-        }
-        .table tbody tr td{
-            height: 70px;
-            border-right: 2px solid #e6e6f2;
-
-        }
-        .table-responsive{
-            overflow-x:unset;
-        }
-
-
-        /*Search label*/
-        #search-label{
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center; /* center flex items inside vertically */
-    width: 60px;
-    height: 40px;
-    z-index: 100;
-}
-        div#searchcontainer{
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    display: block;
-    background: floralwhite;
-    left: -100%; /* initially position search container out of view */
-    top: 0px; /* shift container downwards so the header is still visible when search is shown */
-    padding-top: 50px;
-    opacity: 0;
-    cursor: crosshair;
-    text-align: center;
-    font: bold 16px 'Bitter', sans-serif; /* use google font */
-    -webkit-transform: scale(.9) translate3d(-0, -50px, 0);
-    transform: scale(.9) translate3d(-0, -50px, 0);
-    -webkit-transition: -webkit-transform .5s, opacity .5s, left 0s .5s;
-    transition: transform .5s, opacity .5s, left 0s .5s;
-}
- 
-div#searchcontainer div{
-    padding: 5px;
-    color: white;
-}
- 
-div#searchcontainer form{
-    opacity: 0;
-    -webkit-transform: translate3d(0, 50px, 0);
-    transform: translate3d(0, 50px, 0);
-    -webkit-transition: all .5s 0s;
-    transition: all .5s 0s;
-}
- 
-div#searchcontainer form textarea[type="text"]{
-    width: 70%;
-    top: 0;
-    left: 0;
-    z-index: 99;
-    padding: 10px;
-    border: none;
-    border-bottom: 2px solid gray;
-    outline: none;
-    font-size: 15pt;
-    background: floralwhite;
-}
- 
- 
-div#searchcontainer.opensearch{
-    left: 0;
-    opacity: 1;
-    -webkit-transform: scale(1) translate3d(0, 0, 0);
-    transform: scale(1) translate3d(0, 0, 0);
-    -webkit-transition: -webkit-transform .5s, opacity .5s, left 0s 0s;
-    transition: transform .5s, opacity .5s, left 0s 0s;
-}
- 
-div#searchcontainer.opensearch form{
-    opacity: 1;
-    -webkit-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
-    transition: all .5s .5s;
-    transition: all .5s .5s;
-}
- 
-@@media (max-width: 480px){
-    div#searchcontainer form textarea[type="text"]{
-    width: 95%;
-}
-}
-</style>
 <div class="row">
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-b-20 p-t-20">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
         <div class="d-flex">
             <h5 class="pageheader-title">myapplication phapluat-bot </h5>
 
@@ -115,7 +116,7 @@ div#searchcontainer.opensearch form{
             </div>
         </div>
         <div class="d-flex">
-            <div style="font-size:13px;padding-left:20px" id="search-label" for="search-terms">Search <i class="fas fa-search"></i></div>
+            <p style="font-size:13pt;padding-left:20px;color:darkblue;text-decoration:underline" id="search-label" for="search-terms"><i class="fas fa-search"></i> Test search</p>
             <div class="ml-auto" style="font-size:13px;padding-right:100px">Retrained 2 phút trước</div>
         </div>
     </div>
@@ -123,7 +124,65 @@ div#searchcontainer.opensearch form{
 <div id="searchcontainer">
     <form id="search" action="#" method="post">
         <textarea type="text" name="search-terms" id="search-terms" placeholder="Tìm kiếm..."></textarea>
+        <a class="close-form-search"></a>
+        <div jscontroller="tg8oTe" class="UUbT9" style="" jsname="UUbT9" jsaction="h5M12e;mouseover:IgJl9c;mouseout:ItzDCd;mouseleave:MWfikb;YMFC3:VKssTb">
+            @*display:none*@
+            <div class="RjPuVb" jsname="RjPuVb" style="display: none; width: 0px;">
+            </div>
+            <div class="aajZCb" jsname="aajZCb">
+                <ul class="erkvQe" jsname="erkvQe" role="listbox">
+                    <li data-view-type="1" class="sbct" role="presentation" jsaction="touchstart:.CLIENT;touchend:.CLIENT;touchcancel:.CLIENT;touchmove:.CLIENT;contextmenu:.CLIENT">
+                        <div class="suggestions-inner-container">
+                            <div class="sbtc" role="option">
+                                <div class="sbl1 sbl1p">
+                                    <span>elasticsearch 5<b>.</b>6<b>.</b>5<b> vs 5.4.1</b></span>
+                                </div>
+                            </div>
+                            <div class="sbab" jsaction="click:.CLIENT;contextmenu:.CLIENT">
+                                <div class="sbai sbdb">Xóa</div>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-view-type="1" class="sbct" role="presentation" jsaction="touchstart:.CLIENT;touchend:.CLIENT;touchcancel:.CLIENT;touchmove:.CLIENT;contextmenu:.CLIENT">
+                        <div class="suggestions-inner-container">
+                            <div class="sbtc" role="option">
+                                <div class="sbl1"><span>elasticsearch 5<b>.</b>6<b>.</b>5</span></div>
+                            </div>
+                            <div class="sbab" style="display: none;"><div class="sbai">Xóa</div></div>
+                        </div>
+                    </li>
+                    <li data-view-type="1" class="sbct" role="presentation" jsaction="touchstart:.CLIENT;touchend:.CLIENT;touchcancel:.CLIENT;touchmove:.CLIENT;contextmenu:.CLIENT">
+                        <div class="suggestions-inner-container">
+                            <div class="sbtc" role="option">
+                                <div class="sbl1">
+                                    <span>elasticsearch 5<b>.</b>5 5<b>.</b>6</span>
+                                </div>
+                            </div>
+                            <div class="sbab" style="display: none;"><div class="sbai">Xóa</div></div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </form>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 col-sm-12 col-12">
+            <div class="card">
+                @*<h5 class="card-header">Danh sách tìm kiếm</h5>*@
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">Thuế suất thuế GTGT đối với lượng nhiên liệu còn tồn trên tàu khi bàn giao cho người thuê tàu tại các cảng nước ngoài?</li>
+                        <li class="list-group-item">Giải đáp vướng mắc trong hoàn thuế GTGT của Công ty CP PPI?</li>
+                        <li class="list-group-item">Chính sách thuế GTGT đối với dịch vụ tiêm vắc xin?</li>
+                        <li class="list-group-item">Kê khai, nộp thuế GTGT đối với hoạt động kinh doanh LPG và condensate sản xuất tại Nhà máy chế biến khí Cà Mau?</li>
+                        <li class="list-group-item">Về việc khấu trừ thuế GTGT đã nộp thay cho nhà thầu nước ngoài?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>   
 </div>
 <!-- ============================================================== -->
 <!-- end pageheader -->
@@ -171,7 +230,7 @@ div#searchcontainer.opensearch form{
         </div>
         <div class="card-body">
             <div class="table-responsive ">
-                <table class="table">
+                <table class="table table-striped table-bordered table-sm" id="table-data">
                     <thead>
                         <tr>
                             <th scope="col" style="width:1%"></th>
@@ -179,20 +238,20 @@ div#searchcontainer.opensearch form{
                             <th scope="col" style="width:58%">Answer</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Thuế TNCN là gì?</td>
-                            <td>...</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Thuế GTGT là gì?</td>
-                            <td>...</td>
-                        </tr>
+                    <tbody id="table-data-training">
+                       
                     </tbody>
                 </table>
             </div>
+            <nav class="pagination pagination_type1">
+                <ol class="pagination__list">
+                    <li class="pagination__group"><a href="#0" class="pagination__item pagination__control pagination__control_prev">prev</a></li>
+                    <li class="pagination__group"><a href="#0" class="pagination__item">1</a></li>
+                    <li class="pagination__group"><span class="pagination__item pagination__item_active">2</span></li>
+                    <li class="pagination__group"><a href="#0" class="pagination__item">3</a></li>
+                    <li class="pagination__group"><a href="#0" class="pagination__item pagination__control pagination__control_next">next</a></li>
+                </ol>
+            </nav>
         </div>
     </div>
 </div>
@@ -217,11 +276,51 @@ div#searchcontainer.opensearch form{
     }, false)
 
     document.addEventListener(touchorclick, function (e) { // when user clicks anywhere in document
-        console.log(e.target.className)
-        if (e.target.className != "opensearch") {
+        if (e.target.className == "close-form-search") {
             searchcontainer.classList.remove('opensearch')
             searchfield.blur()
         }
 
     }, false)
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        getDataTraining();
+
+    })
+
+    function renderTable(data) {
+        var html = '';
+        if (data.length != 0) {
+            $.each(data, function (index, item) {
+                index = index + 1;
+                html += '<tr>';
+                html += '<td>' + index + '</td>';
+                html += '<td>' + item.Body + '</td>';
+                html += '<td></td>';
+                html += '</tr>';
+            })
+        }
+
+        $("#table-data-training").empty().append(html);
+    }
+
+    function getDataTraining() {
+        var param = {
+            page: 0,
+            pageSize: 10
+        }
+        param = JSON.stringify(param)
+        $.ajax({
+            url: _Host + 'api/GetAll',
+            contentType: 'application/json; charset=utf-8',
+            data: param,
+            type: 'POST',
+            success: function (result) {
+                renderTable(result.Items);
+            },
+        });
+    }
 </script>

@@ -10,11 +10,14 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using SearchEngine.Data;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
+using SearchEngine.Service;
 using System.Xml;
+using Accent.Web.Infrastructure.Core;
 
 namespace Accent.Web.Controllers
 {
@@ -27,8 +30,15 @@ namespace Accent.Web.Controllers
         private User user;
         private string pathAIML = HostingEnvironment.MapPath("~/Datasets_BOT/aiml_legal");
         Dictionary<string, string> NOT_MATCH;
+
+        private ElasticSearch _elastic;
+
         public ApiController() : base(){
+
+            _elastic = new ElasticSearch();
+
             _accent = AccentService.AccentInstance;
+
             bot = new Bot();
             string userName = "user" + Guid.NewGuid();
             user = new User(userName, bot);
@@ -236,6 +246,31 @@ namespace Accent.Web.Controllers
             return responseString;
         }
 
+        #endregion
+
+        #region --SEARCH ENGINE ELASTICSEARCH--
+        public JsonResult GetAll(int page = 0, int pageSize = 10)
+        {
+            int totalRow = 0;
+            int from = page * pageSize;
+
+            var lstData = _elastic.GetAll(from, pageSize);
+
+            if(lstData.Count() != 0)
+            {
+                totalRow = lstData[0].Total;
+            }
+
+            var paginationSet = new PaginationSet<Question>()
+            {
+                Items = lstData,
+                Page = page,
+                TotalCount = totalRow,
+                TotalPages = (int)Math.Ceiling((decimal)totalRow / pageSize)
+            };
+
+            return Json(paginationSet, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
     }

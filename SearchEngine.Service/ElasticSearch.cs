@@ -85,14 +85,39 @@ namespace SearchEngine.Service
                                                                 )
                                                             )
                                                         );
-
-
             }
 
             if (indexSettings.Exists)
             {
                 Console.WriteLine("Created");
             }
+        }
+
+        public List<Question> GetAll(int from = 0 , int pageSize = 10)
+        {
+            List<Question> lstQuestion = new List<Question>();
+            Console.InputEncoding = Encoding.Unicode;
+            int index = 0;
+            var searchResponse = _client.Search<Question>(s => s
+                                                            .From(from)
+                                                            .Size(pageSize)
+                                                            .Query(q => q.MatchAll())
+                                                            );
+            if (searchResponse.Hits.Count() != 0)
+            {
+                Console.WriteLine("######## Result ########## ");
+                foreach (var item in searchResponse.Hits)
+                {
+                    index++;
+
+                    Question question = new Question();
+                    question.Body = item.Source.Body;
+                    question.Total = (int)searchResponse.Total;
+                    lstQuestion.Add(question);
+                }
+            }
+
+            return lstQuestion;
         }
         public List<Question> Search(string text)
         {
