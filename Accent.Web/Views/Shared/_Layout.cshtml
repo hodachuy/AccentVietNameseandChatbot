@@ -13,8 +13,9 @@
     <link rel="stylesheet" href="~/assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
     <link rel="stylesheet" href="~/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="~/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+    @*<script src="~/Scripts/bootstrap.min.js"></script>*@
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/easing.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
 
     <style>
@@ -172,43 +173,37 @@
         <!-- end footer -->
         <!-- ============================================================== -->
     </div>
-    <!--box CHATBOT-->
-    <div id="chat-circle" class="btn btn-raised">
+
+    <!--CHATBOT-->
+    <a id="chat-circle" class="btn btn-raised" style="cursor: pointer;z-index:1000;" onclick="show_close_cb_box()">
         <div id="chat-overlay"></div>
         <i class="material-icons"><i class="fa fa-comment"></i></i>
-    </div>
-    <div class="chat-box">
+    </a>
+    <div class="chat-box" style="z-index:1000;">
         <div class="chat-box-header">
             <div class="chat-box-name">
                 ChatBot Pháp luật
             </div>
             <div class="chat-box-icon">
                 <label for="chkSettings"><i class="fa fa-gear"></i></label><input type="checkbox" id="chkSettings" />
-                @*<a href="javascript:void(0);" id="chat-bot-setting"><i class="fa fa-gear"></i></a>*@
                 <div class="settings-popup">
                     <input type="checkbox" class="chk-setting-bot" id="chk-stt-accent" /> Hỗ trợ hiểu không dấu <br />
                     <input type="checkbox" class="chk-setting-bot" id="chk-stt-popup" /> Hiển thị không chuyển trang
-                    @*<ul style="list-style:none">
-                            <li><input type="checkbox" /> Hổ trợ hiểu không dấu </li>
-                            <li><input type="checkbox" /> Hiển thị thông tin cùng trang</li>
-                        </ul>*@
                 </div>
-                <a href="javascript:void(0);" id="chat-bot-close"><i class="fa fa-close"></i></a>
+                <a id="chat-bot-close" onclick="show_close_cb_box()" style="cursor: pointer;"><i class="fa fa-close"></i></a>
             </div>
-
-
-            @*<span class="chat-box-toggle"><i class="fa fa-close"></i></span>*@
         </div>
         <div class="chat-box-body">
             <div class="chat-box-overlay">
             </div>
             <div class="chat-logs">
-            </div><!--chat-log -->
+            </div>
         </div>
         <div class="chat-input">
             <form>
                 <input type="text" id="chat-input" placeholder="Gửi tin nhắn..." />
-                <button type="submit" class="chat-submit" id="chat-submit">Gửi</button>
+                <button type="submit" class="chat-submit" id="chat-submit"><i class="fa fa-paper-plane"></i></button>
+                <img onclick="startDictation('chat-input')" src="//i.imgur.com/cHidSVu.gif" class="chat-submit-voice" style="position:absolute;width:35px;height:35px;bottom:3px;right:5px" title="Nhập dữ liệu bằng giọng nói" />
             </form>
         </div>
     </div>

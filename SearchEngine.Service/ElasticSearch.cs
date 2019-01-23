@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace SearchEngine.Service
 {
@@ -12,9 +13,10 @@ namespace SearchEngine.Service
     {
         private ConnectionSettings _settings;
         private ElasticClient _client;
+        private string _urlAPI = ReadString("UrlSearchAPI");
         public ElasticSearch()
         {
-            _settings = new ConnectionSettings(new Uri("http://localhost:9200"));
+            _settings = new ConnectionSettings(new Uri(_urlAPI));
             _settings.DefaultIndex("sample");
             _settings.DisableDirectStreaming(true);
             _client = new ElasticClient(_settings);
@@ -56,7 +58,7 @@ namespace SearchEngine.Service
                                                                         .Custom("autocomplete", ca => ca
                                                                             .CharFilters("html_strip")
                                                                             .Tokenizer("vi_tokenizer")
-                                                                            .Filters("lowercase", "single_filter")//,"icu_folding","single_filter"
+                                                                            .Filters("lowercase", "single_filter")//,"icu_folding"
                                                                         )
                                                                         .Custom("vi_analyzer", ca => ca
                                                                             .CharFilters("html_strip")
@@ -158,25 +160,18 @@ namespace SearchEngine.Service
                     Question question = new Question();
                     question.Body = item.Source.Body;
                     lstQuestion.Add(question);
-                    Console.WriteLine(index + " : " + item.Source.Body);
+                    //Console.WriteLine(index + " : " + item.Source.Body);
 
-                    Console.WriteLine(index + " Highligh : " + item.Highlights.Values.Select(x => x.Highlights.FirstOrDefault().ToString()).FirstOrDefault());
+                    //Console.WriteLine(index + " Highligh : " + item.Highlights.Values.Select(x => x.Highlights.FirstOrDefault().ToString()).FirstOrDefault());
                 }
             }
             return lstQuestion;
         }
-        public void AutoComplete(string text, int sizeSearch = 3, int sizeAutoSuggester = 7)
+        public List<string> AutoComplete(string text, int sizeSearch = 3, int sizeAutoSuggester = 7)
         {
-            List<Question> lstQuestion = new List<Question>();
-
+            List<string> lstSuggest = new List<string>();
             Console.InputEncoding = Encoding.Unicode;
-            int index = 0;
-
             string patternText = text + ".*";
-
-            //PatternTokenizer pattern = new PatternTokenizer();
-            //pattern.Pattern = patternText;
-
             var searchResponse = _client.Search<Question>(s => s
                                                              .Size(0)
                                                              .Aggregations(a => a
@@ -188,25 +183,8 @@ namespace SearchEngine.Service
                                                                      .Include(patternText)
                                                                     )
                                                                 )
-                                                         //.Query(q => q
-                                                         //    .Match(x => x
-                                                         //       .Field(f => f.Body)
-                                                         //       .Analyzer("vi_analyzer")
-                                                         //       .Boost(1.1)
-                                                         //       .Query(text)
-                                                         //       )
-                                                         //)
-                                                         //.Highlight(h => h
-                                                         //    .Fields(f => f
-                                                         //       .Field(m => m.Body)
-                                                         //           .FragmentSize(150)
-                                                         //           .NumberOfFragments(3)
-                                                         //))
-
                                                          );
-
             var resultSuggester = searchResponse.Aggs.Terms("autoComplete");
-            Console.WriteLine("######## AutoComplete ########## ");
             if (resultSuggester.Buckets.Count != 0)
             {
                 foreach (var item in resultSuggester.Buckets)
@@ -215,17 +193,52 @@ namespace SearchEngine.Service
                     {
                         if (text != item.Key)
                         {
-                            Console.WriteLine(item.Key);
+                            lstSuggest.Add(item.Key);
                         }
-
                     }
 
                 }
-            }
-            else
+            }else
             {
-                ElasticSearch e = new ElasticSearch();
-                e.Search(text);
+                List<Question> lstQuestion = new List<Question>();
+                lstQuestion = Search(text);
+                if(lstQuestion.Count != 0)
+                {
+                    foreach(var item in lstQuestion)
+                    {
+                        lstSuggest.Add(item.Body);
+                    }
+                }
+            }
+
+            return lstSuggest;
+        }
+
+
+        public static string ReadString(string key)
+        {
+            try
+            {
+                string path = System.AppDomain.CurrentDomain.BaseDirectory +"AppSettings.config";
+                XmlDocument doc = new XmlDocument();
+                doc.Load(path);
+                XmlNode node = doc.SelectSingleNode("AppSettings");
+                XmlNodeList prop = node.SelectNodes("add");
+
+                foreach (XmlNode item in prop)
+                {
+                    var objKey = item.Attributes["key"];
+                    var objVal = item.Attributes["value"];
+                    if (objKey.Value == key)
+                    {
+                        return objVal.Value;
+                    }
+                }
+                return "";
+            }
+            catch
+            {
+                return "";
             }
         }
     }

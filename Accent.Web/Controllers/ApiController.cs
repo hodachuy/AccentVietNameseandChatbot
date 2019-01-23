@@ -249,10 +249,10 @@ namespace Accent.Web.Controllers
         #endregion
 
         #region --SEARCH ENGINE ELASTICSEARCH--
-        public JsonResult GetAll(int page = 0, int pageSize = 10)
+        public JsonResult GetAll(int page = 1, int pageSize = 10)
         {
             int totalRow = 0;
-            int from = page * pageSize;
+            int from = (page - 1) * pageSize;
 
             var lstData = _elastic.GetAll(from, pageSize);
 
@@ -271,6 +271,44 @@ namespace Accent.Web.Controllers
 
             return Json(paginationSet, JsonRequestBehavior.AllowGet);
         }
+
+        public JsonResult Search(string text, bool isAccentVN = false)
+        {
+            if (!String.IsNullOrEmpty(text))
+                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
+
+            if (isAccentVN)
+            {
+                text = _accent.GetAccentVN(text);
+            }
+
+            var lstData = _elastic.Search(text);
+
+            var paginationSet = new PaginationSet<Question>()
+            {
+                Items = lstData,
+                Page = 1,
+                TotalCount = 1,
+                TotalPages = 1
+            };
+
+            return Json(paginationSet, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult Suggest(string text, bool isAccentVN = false)
+        {
+            if (!String.IsNullOrEmpty(text))
+                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
+
+            if (isAccentVN)
+            {
+                text = _accent.GetAccentVN(text);
+            }
+
+            var lstSuggest = _elastic.AutoComplete(text);
+            return Json(lstSuggest, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
     }

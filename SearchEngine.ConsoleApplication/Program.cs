@@ -31,26 +31,27 @@ namespace SearchEngine.ConsoleApplication
             Console.OutputEncoding = Encoding.UTF8;
 
             ElasticSearch elastic = new ElasticSearch();
-            while (true)
-            {
-                Console.InputEncoding = Encoding.Unicode;
-                Console.WriteLine("Nhap chuoi :");
-                string text = Console.ReadLine();
-                if (text == "exit")
-                {
-                    break;
-                }
-                var list = elastic.Search(text);
-                if (list.Count() != 0)
-                {
-                    foreach(var item in list)
-                    {
-                        Console.WriteLine(item.Body);
-                    }
+            elastic.CreateIndex();
+            //while (true)
+            //{
+            //    Console.InputEncoding = Encoding.Unicode;
+            //    Console.WriteLine("Nhap chuoi :");
+            //    string text = Console.ReadLine();
+            //    if (text == "exit")
+            //    {
+            //        break;
+            //    }
+            //    var list = elastic.Search(text);
+            //    if (list.Count() != 0)
+            //    {
+            //        foreach(var item in list)
+            //        {
+            //            Console.WriteLine(item.Body);
+            //        }
 
-                }
-                //AutoComplete(text);
-            }
+            //    }
+            //    //AutoComplete(text);
+            //}
         }
 
 
