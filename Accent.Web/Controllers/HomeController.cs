@@ -18,5 +18,9 @@ namespace Accent.Web.Controllers
         {
             return View();
         }
+        public ActionResult AccentVN()
+        {
+            return View();
+        }
     }
 }

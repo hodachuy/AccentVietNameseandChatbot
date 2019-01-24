@@ -7,15 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Lacvietbots - Dashboard</title>
     <!-- Bootstrap CSS -->
+
     <link rel="stylesheet" href="~/assets/vendor/bootstrap/css/bootstrap.min.css">
     <link href="~/assets/vendor/fonts/circular-std/style.css" rel="stylesheet">
     <link rel="stylesheet" href="~/assets/libs/css/style.css">
     <link rel="stylesheet" href="~/assets/vendor/fonts/fontawesome/css/fontawesome-all.css">
     <link rel="stylesheet" href="~/assets/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    @*<script src="~/Scripts/bootstrap.min.js"></script>*@
-    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
-    <script src="~/Scripts/easing.js"></script>
+    <script src="~/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
 
     <style>
@@ -40,7 +39,7 @@
         <!-- ============================================================== -->
         <div class="dashboard-header">
             <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="/">Lacviet-bots</a>
+                <a class="navbar-brand" href="@Url.Content("~")">Lacviet-bots</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -96,7 +95,7 @@
                                 <div id="submenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="/"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
+                                            <a class="nav-link" href="@Url.Content("~")"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="@Url.Content("~/Home/QnA")"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>
@@ -128,7 +127,7 @@
                                 <div id="featuremenu-1" class="collapse submenu" style="">
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="#">Chuyển không dấu tới có dấu</a>
+                                            <a class="nav-link" href="@Url.Content("~/Home/AccentVN")">Chuyển không dấu tới có dấu</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -147,7 +146,6 @@
         <div class="dashboard-wrapper">
             <div class="container-fluid">
                 @RenderBody()
-
             </div>
         </div>
         <!-- ============================================================== -->
@@ -197,6 +195,7 @@
             <div class="chat-box-overlay">
             </div>
             <div class="chat-logs">
+
             </div>
         </div>
         <div class="chat-input">
@@ -211,10 +210,9 @@
     <!-- end main wrapper -->
     <!-- ============================================================== -->
     <!-- Optional JavaScript -->
-
     <script src="~/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
-    @*<script src="~/Scripts/bootstrap.min.js"></script>*@
     <script src="~/assets/vendor/slimscroll/jquery.slimscroll.js"></script>
+    <script src="~/Scripts/easing.js"></script>
     <script src="~/assets/libs/js/main-js.js"></script>
     <script src="~/Scripts/common.js"></script>
 </body>

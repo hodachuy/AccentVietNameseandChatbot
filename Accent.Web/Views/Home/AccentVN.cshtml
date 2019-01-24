@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = "AccentVN";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string domain = System.Configuration.ConfigurationManager.AppSettings["Domain"];
+}
+<style>
+    /* Set width on the form input elements since they're 100% wide by default */
+    input,
+    select,
+    textarea {
+        max-width: 280px;
+    }
+
+
+    .options {
+        background: none repeat scroll 0 0 white;
+        position: absolute;
+        top: auto;
+        left: 0;
+        z-index: 100;
+        box-shadow: 0 0 8px #555;
+        margin: 0;
+        margin-top: 5px;
+        padding: 0.8rem;
+        width: 300px;
+    }
+
+        .options li {
+            float: left;
+            font-size: 13pt;
+            display: block;
+            color: initial;
+            margin: 0;
+            /*padding: 6px;*/
+            cursor: pointer;
+            padding: 5px;
+        }
+
+            .options li.cancel-btn {
+                background: none repeat scroll 0 0 white;
+                border-radius: 50%;
+                box-shadow: 0 0 8px #000;
+                color: black;
+                float: none;
+                font-size: 1.25rem;
+                height: 20px;
+                padding: 0;
+                position: absolute;
+                right: -15px;
+                text-align: center;
+                top: -15px;
+                width: 20px;
+                font: normal normal normal 18px/1 FontAwesome;
+            }
+
+            .options li.odd-choice {
+                background: #c2d5d6;
+            }
+
+            .options li.even-choice {
+                background-color: #d5fabe;
+            }
+
+    textarea {
+        max-width: 580px;
+    }
+
+    /*ul li {
+        font-size: 11pt;
+        padding: 5px;
+        font-style: italic;
+        color: #4d90f0;
+    }*/
+
+    .popover {
+        max-width: 100%;
+    }
+
+    .spell-correct-text {
+        font-size: 11pt;
+        font-style: italic;
+        color: #4d90f0;
+        font-weight: bold;
+    }
+
+    .popover-body ul li {
+    margin-left: 5px;
+    font-size: 11pt;
+    padding: 5px;
+    font-style: italic;
+    color: #4d90f0;
+}
+
+    #txtSearch {
+        -moz-appearance: textfield-multiline;
+        -webkit-appearance: textarea;
+        border: 1px solid gray;
+        font: medium -moz-fixed;
+        font-size: 13pt;
+        font: sans-serif;
+        height: 150px;
+        overflow: auto;
+        padding: 2px;
+        resize: none;
+        width: 580px;
+        border: none;
+        box-shadow: 0 0 10px 0 gainsboro;
+        padding: 0.5em;
+        white-space: pre;
+    }
+
+    div:empty:before {
+        content: attr(data-placeholder);
+        color: dimgray;
+        font-size: 10.5pt;
+    }
+
+    #txtSearch span {
+        cursor: pointer;
+    }
+
+    .span word {
+        position: relative;
+    }
+    /*chat bot*/
+
+
+    #center-text {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+</style>
+
+<!-- ============================================================== -->
+<!-- pageheader -->
+<!-- ============================================================== -->
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
+        <div class="d-flex">
+            <h5 class="pageheader-title">Chuyển không dấu tới có dấu Tiếng Việt </h5>
+        </div>
+    </div>
+</div>
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="card">
+        <div class="row">
+            <div class="col-md-6">
+                @*<textarea id="txtSearch" style="height:150px;width:580px;resize:none;border:none;box-shadow:0 0 10px 0 gainsboro;padding:5px" placeholder="Nhập nội dung..."></textarea>*@
+                <div id="txtSearch" data-placeholder="Nhập nội dung..." contenteditable="true" spellcheck="false"></div>
+                <br />
+                <span id="accent-vn" data-toggle="popover" data-placement="bottom" style="color:grey"></span>
+            </div>
+            <div class="col-md-6">
+                <p>HTTP Request</p>
+                <p class="content-code">GET @domain getAccentVN?text={query_string} </p>
+                <p class="content-code">GET @domain api/GetMultiMatchesAccentVN?text={query_string} </p>
+                <br />
+                <p>Example: Do cong viec em thuong xuyen phai uong ruou bia nhieu, lam the nao de giai doc gan</p>
+                <p>Response:Do công việc em thường xuyên phải uống rượu bia nhiều, làm thế nào để giải độc gan</p>
+
+                <img src="@Url.Content("~/Content/img/demo.png")" width=550 height="450" />;
+            </div>
+        </div>
+
+
+    </div>
+</div>

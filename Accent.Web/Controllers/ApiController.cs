@@ -266,6 +266,7 @@ namespace Accent.Web.Controllers
                 Items = lstData,
                 Page = page,
                 TotalCount = totalRow,
+                MaxPage = pageSize,
                 TotalPages = (int)Math.Ceiling((decimal)totalRow / pageSize)
             };
 
