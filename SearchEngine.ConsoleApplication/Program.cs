@@ -31,7 +31,11 @@ namespace SearchEngine.ConsoleApplication
             Console.OutputEncoding = Encoding.UTF8;
 
             ElasticSearch elastic = new ElasticSearch();
-            elastic.CreateIndex();
+            //elastic.importExcel("a").Wait();
+
+            //elastic.CreateIndex();
+            //var id = elastic.DeleteById("5");
+            //Console.WriteLine(id);
             //while (true)
             //{
             //    Console.InputEncoding = Encoding.Unicode;

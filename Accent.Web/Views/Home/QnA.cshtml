@@ -3,109 +3,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<style>
-    .list-group-item {
-    position: relative;
-    display: block;
-    padding: 16px 20px;
-    margin-bottom: -1px;
-    border: 1px solid #e6e6f2;
-    text-align: justify;
-}
-    #ul-list-search .list-group-item a{
-        color:#0056b3;
-    }
-
-
-    /*pagintation*/
-    /*
-Hi! If my code is useful for you can you donate me some money? 
-https://www.paypal.me/melnik909
-*/
-
-/*
-=====
-LEVEL 0. RESET BROWSER'S STYLES
-=====
-*/
-
-.pagination__list{
-  padding-left: 0;
-  margin-top: 0;
-  margin-bottom: 0;
-  list-style: none;  
-}
-
-/*
-=====
-LEVEL 1. CORE COMPONENT STYLES
-=====
-*/
-
-.pagination{
-  height:35px;
-  font-size: 13px;
-}
-
-.pagination__list{
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.pagination__item:not(.pagination__control_prev):not(.pagination__item_active){
-  padding-left: .5em;
-}
-
-.pagination__item:not(.pagination__control_next):not(.pagination__item_active){
-  padding-right: .5em;
-}
-
-.pagination__item{
-  display: inline-block;
-  line-height: 1;
-}
-
-.pagination__control{
-  position: relative;
-}
-
-.pagination__control:before, .pagination__control:after{
-  font-size: 12px;
-  line-height: 1;
-  
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.pagination__control_prev{
-  padding-left: calc(22px + 5px);
-}
-
-.pagination__control_prev:before{
-  content: "←";
-  left: 0;
-}
-
-.pagination__control_next{
-  padding-right: calc(22px + 5px);
-}
-
-.pagination__control_next:after{
-  content: "→";
-  right: 0;
-}
-
-.pagination__item_active{
-  padding: .5875em .8em;
-  margin-right: .5em;
-  margin-left: .5em;
-  color:blue;
-}
-
-</style>
 <!-- ============================================================== -->
 <!-- pageheader -->
 <!-- ============================================================== -->
@@ -125,16 +22,20 @@ LEVEL 1. CORE COMPONENT STYLES
         </div>
     </div>
 </div>
+
+<!-- ============================================================== -->
+<!-- form search -->
+<!-- ============================================================== -->
 <div id="searchcontainer">
-    <form id="search" action="#" method="post">
-        <textarea type="text" name="search-terms" id="search-terms" placeholder="Tìm kiếm..."></textarea>
+    <div id="search">
+        <input type="text" name="search-terms" id="search-terms" placeholder="Tìm kiếm..." autocomplete="off">
 
         <button type="button" class="btn btn-all" id="btnSearch">
             <i class="fa fa-search" aria-hidden="true"></i>
         </button>
 
         <a class="close-form-search"></a>
-        <div id="div-suggest" jscontroller="tg8oTe" class="UUbT9" style="display:none;padding-left:10%;padding-right:10%" jsname="UUbT9" jsaction="h5M12e;mouseover:IgJl9c;mouseout:ItzDCd;mouseleave:MWfikb;YMFC3:VKssTb">
+        <div id="div-suggest" jscontroller="tg8oTe" class="UUbT9" style="display:none;padding-left:13%;padding-right:13%" jsname="UUbT9" jsaction="h5M12e;mouseover:IgJl9c;mouseout:ItzDCd;mouseleave:MWfikb;YMFC3:VKssTb">
             <div class="RjPuVb" jsname="RjPuVb" style="display: none; width: 0px;"></div>
             <div class="aajZCb" jsname="aajZCb">
                 <ul class="erkvQe" jsname="erkvQe" role="listbox" id="ul-suggest">
@@ -142,7 +43,7 @@ LEVEL 1. CORE COMPONENT STYLES
                 </ul>
             </div>
         </div>
-    </form>
+    </div>
     <div class="row">
         <div class="col-md-2"></div>
         <div class="col-md-8 col-sm-12 col-12" style="height:700px;overflow-y:auto;overflow-x:hidden">
@@ -158,9 +59,7 @@ LEVEL 1. CORE COMPONENT STYLES
         <div class="col-md-2"></div>
     </div>   
 </div>
-<!-- ============================================================== -->
-<!-- end pageheader -->
-<!-- ============================================================== -->
+
 
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
     <div class="card">

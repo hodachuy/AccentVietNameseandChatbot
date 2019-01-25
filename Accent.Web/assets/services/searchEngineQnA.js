@@ -6,12 +6,15 @@ $(document).ready(function () {
     
     $("#btnSearch").off().on('click', function () {
         var content = $("#search-terms").val();
-        if (content.trim() == "") return false;
-        else search(content);
+        search(content);
     })
 
     // writting show suggest
     $("#search-terms").keyup(function (e) {
+        //e.preventDefault();
+        if (e.keyCode == 13) {
+            return;
+        }
         if (e.keyCode == 40 || e.keyCode == 38) {
             $(this).focusToEnd();
             return false;
@@ -66,6 +69,7 @@ function getSuggest(content) {
 
 function search(content) {
     $("#div-suggest").css('display', 'none');
+    if (content.trim() == "") return false;
     var param = {
         text: content,
         isAccentVN: true
@@ -188,9 +192,17 @@ renderTemplate = function (data) {
             var key = e.keyCode,
                 $selected = $listItems.filter('.suggest-selected');
 
-            if (key != 40 && key != 38) return;
+            if (key != 40 && key != 38) {
+                if (key == 13) {
+                    e.preventDefault();
+                    var content = $("#search-terms").val();
+                    search(content);                   
+                }
+                return;
+            } 
 
             $listItems.removeClass('suggest-selected');
+
             if (document.getElementById('ul-suggest') !== null) {
                 if (key == 40) // Down key
                 {
@@ -225,7 +237,6 @@ renderTemplate = function (data) {
         // select text suggest to search
         $(".sbtc").off().on('click', function () {
             var content = $(this).text();
-            $("#div-suggest").css('display', 'none');
             $("#search-terms").val(content);
             search(content);
         })

@@ -1,11 +1,14 @@
 ﻿using Nest;
 using SearchEngine.Data;
+using SearchEngine.Service.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace SearchEngine.Service
 {
@@ -16,6 +19,7 @@ namespace SearchEngine.Service
         private string _urlAPI = ReadString("UrlSearchAPI");
         public ElasticSearch()
         {
+            _urlAPI = (String.IsNullOrEmpty(_urlAPI) == true ? "http://172.16.13.120:9200" : _urlAPI);
             _settings = new ConnectionSettings(new Uri(_urlAPI));
             _settings.DefaultIndex("sample");
             _settings.DisableDirectStreaming(true);
@@ -95,7 +99,7 @@ namespace SearchEngine.Service
             }
         }
 
-        public List<Question> GetAll(int from = 0 , int pageSize = 10)
+        public List<Question> GetAll(int from = 0, int pageSize = 10)
         {
             List<Question> lstQuestion = new List<Question>();
             Console.InputEncoding = Encoding.Unicode;
@@ -198,13 +202,14 @@ namespace SearchEngine.Service
                     }
 
                 }
-            }else
+            }
+            else
             {
                 List<Question> lstQuestion = new List<Question>();
                 lstQuestion = Search(text);
-                if(lstQuestion.Count != 0)
+                if (lstQuestion.Count != 0)
                 {
-                    foreach(var item in lstQuestion)
+                    foreach (var item in lstQuestion)
                     {
                         lstSuggest.Add(item.Body);
                     }
@@ -214,12 +219,133 @@ namespace SearchEngine.Service
             return lstSuggest;
         }
 
+        public async Task<string> Create(string quesID, string body)
+        {
+            Question question = new Question();
+            question.Id = Int32.Parse(quesID);
+            question.Score = 1;
+            question.CreationDate = DateTime.Now;
+            question.Body = body;
+
+            var response = await _client.IndexAsync<Question>(question, x => x
+                      .Index("sample")
+                      .Type(TypeName.From<Question>())
+                      .Id(question.Id)
+                      .Refresh(Elasticsearch.Net.Refresh.True));
+
+            return response.Id.ToString();
+        }
+
+        public string Update(string quesID, string body)
+        {
+            var response = _client.Update<Question, QuestionViewModel>(Int32.Parse(quesID), d => d
+              .Index("sample")
+              .Type("integer")
+              .Doc(new QuestionViewModel
+              {
+                  Body = body
+              })
+              .Refresh(Elasticsearch.Net.Refresh.True));
+
+            return response.Id;
+        }
+        public void DeleteAll()
+        {
+            _client.DeleteByQuery<Question>(x => x
+                                            .Query(q => q
+                                                .MatchAll())
+                                            .Refresh(true));
+        }
+
+        public string DeleteById(string quesID)
+        {
+            var response = _client.DeleteByQuery<Question>(x => x
+                                        .Query(q => q
+                                            .Match(m => m
+                                                .Field(f => f.Id)
+                                                .Query(quesID)))
+                                                .Refresh(true)
+            );
+            if (response.Total != 0)
+                return quesID;
+
+            return "404";
+
+        }
+
+        public async Task importExcel(string path)
+        {
+            ConnectionSettings settings = new ConnectionSettings(new Uri(_urlAPI));
+
+            settings.DefaultIndex("sample");
+            ElasticClient esClient = new ElasticClient(settings);
+
+            //Create COM Objects. Create a COM object for everything that is referenced
+            Excel.Application xlApp = new Excel.Application();
+            Excel.Workbook xlWorkbook = xlApp.Workbooks.Open(path);//@"D:\HDHUY-DATA\DATA-THUE\HOI DAP_THUE VA HOA DON CHUNG TU 2018.xlsx"
+            Excel._Worksheet xlWorksheet = xlWorkbook.Sheets[1];
+            Excel.Range xlRange = xlWorksheet.UsedRange;
+
+            int rowCount = xlRange.Rows.Count;
+            int colCount = xlRange.Columns.Count;
+
+            //iterate over the rows and columns and print to the console as it appears in the file
+            //excel is not zero based!!
+            Console.OutputEncoding = UTF8Encoding.UTF8;
+            for (int i = 2; i <= rowCount; i++)
+            {
+                int j = 2;
+                //for (int j = 2; j <= colCount; j++)
+                //{
+                ////new line
+                //if (j == 1)
+                //    Console.Write("\r\n");
+
+                //write the value to the console
+                if (xlRange.Cells[i, j] != null && xlRange.Cells[i, j].Value2 != null)
+                {
+                    Console.Write(xlRange.Cells[i, 1].Value2.ToString() + "\t" + xlRange.Cells[i, j].Value2.ToString() + "\r\n");
+
+                    Question question = new Question();
+                    question.Id = i;
+                    question.Score = 1;
+                    question.CreationDate = DateTime.Now;
+                    question.Body = xlRange.Cells[i, j].Value2.ToString();
+                    await esClient.IndexAsync<Question>(question, x => x
+                                          .Index("sample")
+                                          .Type(TypeName.From<Question>())
+                                          .Id(question.Id)
+                                          .Refresh(Elasticsearch.Net.Refresh.True));
+                }
+            }
+
+            //cleanup
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+
+            //rule of thumb for releasing com objects:
+            //  never use two dots, all COM objects must be referenced and released individually
+            //  ex: [somthing].[something].[something] is bad
+
+            //release com objects to fully kill excel process from running in the background
+            Marshal.ReleaseComObject(xlRange);
+            Marshal.ReleaseComObject(xlWorksheet);
+
+            //close and release
+            xlWorkbook.Close();
+            Marshal.ReleaseComObject(xlWorkbook);
+
+            //quit and release
+            xlApp.Quit();
+            Marshal.ReleaseComObject(xlApp);
+        }
+
 
         public static string ReadString(string key)
         {
             try
             {
-                string path = System.AppDomain.CurrentDomain.BaseDirectory +"AppSettings.config";
+                string path = System.AppDomain.CurrentDomain.BaseDirectory + "AppSettings.config";
                 XmlDocument doc = new XmlDocument();
                 doc.Load(path);
                 XmlNode node = doc.SelectSingleNode("AppSettings");
