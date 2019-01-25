@@ -1,12 +1,15 @@
 ﻿//############ Table and Search Engine #############//
 var pageSize = 10;
+//var allowed = true;
+
 $(document).ready(function () {
     // init data
     getDataTable(1, pageSize);
-    
+
     $("#btnSearch").off().on('click', function () {
         var content = $("#search-terms").val();
         search(content);
+        return false;
     })
 
     // writting show suggest
@@ -27,6 +30,12 @@ $(document).ready(function () {
         pageSize = $(this).children("option:selected").val();
         getDataTable(1, pageSize);
     });
+
+    if (typeof (Storage) !== "undefined") {
+        sessionStorage.setItem("_search", "");
+    } else {
+        console.log("Sorry, your browser does not support Web Storage...");
+    }
 })
 
 function getDataTable(page, pageSize) {
@@ -70,6 +79,7 @@ function getSuggest(content) {
 function search(content) {
     $("#div-suggest").css('display', 'none');
     if (content.trim() == "") return false;
+    if (content.trim() == sessionStorage.getItem("_search").trim()) return false;
     var param = {
         text: content,
         isAccentVN: true
@@ -82,6 +92,7 @@ function search(content) {
         type: 'POST',
         success: function (result) {
             new renderTemplate(result.Items).Search();
+            sessionStorage.setItem("_search", content);
         },
     });
 }
@@ -191,15 +202,17 @@ renderTemplate = function (data) {
         $("#search-terms").keydown(function (e) {
             var key = e.keyCode,
                 $selected = $listItems.filter('.suggest-selected');
-
+            if (key == 13) {
+                //e.preventDefault();            
+                $("#btnSearch").click();
+                //outsite focus tag input search
+                $("#search-terms").blur();
+                return false;
+            }
             if (key != 40 && key != 38) {
-                if (key == 13) {
-                    e.preventDefault();
-                    var content = $("#search-terms").val();
-                    search(content);                   
-                }
+
                 return;
-            } 
+            }
 
             $listItems.removeClass('suggest-selected');
 
