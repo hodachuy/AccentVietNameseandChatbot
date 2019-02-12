@@ -310,6 +310,16 @@ namespace Accent.Web.Controllers
             return Json(lstSuggest, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult AddQnA(string question, string answer)
+        {
+            string message = "";
+            if (!String.IsNullOrEmpty(question))
+            {
+                return Json(message, JsonRequestBehavior.AllowGet);
+            }
+            var result = _elastic.Create(question, answer);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
     }

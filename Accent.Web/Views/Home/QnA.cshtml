@@ -2,7 +2,14 @@
     ViewBag.Title = "QnA";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<style>
+    @@media (min-width: 576px) {
+        .modal-dialog {
+            max-width: 650px;
+            margin: 1.75rem auto;
+        }
+    }
+</style>
 <!-- ============================================================== -->
 <!-- pageheader -->
 <!-- ============================================================== -->
@@ -38,9 +45,7 @@
         <div id="div-suggest" jscontroller="tg8oTe" class="UUbT9" style="display:none;padding-left:13%;padding-right:13%" jsname="UUbT9" jsaction="h5M12e;mouseover:IgJl9c;mouseout:ItzDCd;mouseleave:MWfikb;YMFC3:VKssTb">
             <div class="RjPuVb" jsname="RjPuVb" style="display: none; width: 0px;"></div>
             <div class="aajZCb" jsname="aajZCb">
-                <ul class="erkvQe" jsname="erkvQe" role="listbox" id="ul-suggest">
-
-                </ul>
+                <ul class="erkvQe" jsname="erkvQe" role="listbox" id="ul-suggest"></ul>
             </div>
         </div>
     </div>
@@ -50,16 +55,13 @@
             <div class="card">
                 <h5 class="card-header" id="header-search" style="display:none;">Danh sách tìm kiếm</h5>
 
-                    <ul class="list-group list-group-flush" id="ul-list-search">
+                <ul class="list-group list-group-flush" id="ul-list-search"></ul>
 
-                    </ul>
-                
             </div>
         </div>
         <div class="col-md-2"></div>
-    </div>   
+    </div>
 </div>
-
 
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
     <div class="card">
@@ -69,10 +71,10 @@
                     <p>KNOWLEDGE BASE | 2 QnA pairs</p>
                 </div>
                 <div class="col-lg-6">
-                    <a href="#" style="float:right;" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-upload"></i>Import Excel</a>
-                    <a href="#" style="float:right;margin-right:10px" data-toggle="modal" data-target="#exampleModal"><i class="fa fa-plus-circle"></i>Add new QnA pair</a>
+                    <a href="#" style="float:right;" data-toggle="modal" data-target="#excelQnAModal"><i class="fa fa-upload"></i>Import Excel</a>
+                    <a href="#" style="float:right;margin-right:10px" data-toggle="modal" data-target="#addQnAModal"><i class="fa fa-plus-circle"></i>Add new QnA pair</a>
                 </div>
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display: none;">
+                <div class="modal fade" id="addQnAModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -85,16 +87,41 @@
                                 <form>
                                     <div class="form-group">
                                         <label for="exampleFormControlTextarea1">Question</label>
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                        <textarea class="form-control" id="txtQuestion" rows="3"></textarea>
                                     </div>
                                     <div class="form-group">
                                         <label for="exampleFormControlTextarea1">Answer</label>
-                                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                        <textarea class="form-control" id="txtAnswer" rows="3"></textarea>
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <a href="#" class="btn btn-primary">Save changes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="excelQnAModal" tabindex="-2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Import Excel QnA Marker</h5>
+                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </a>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="input-group input-file">
+                                        <input type="text" class="form-control" placeholder='Choose a file...' />
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-choose" type="button">Choose</button>
+                                        </span>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-primary">Upload</a>
                             </div>
                         </div>
                     </div>
@@ -111,15 +138,11 @@
                             <th scope="col" style="width:58%">Answer</th>
                         </tr>
                     </thead>
-                    <tbody id="table-data-training">
-                       
-                    </tbody>
+                    <tbody id="table-data-training"></tbody>
                 </table>
             </div>
             <nav class="pagination pagination_type1">
-                <ol class="pagination__list" id="pagination-list">
-
-                </ol>
+                <ol class="pagination__list" id="pagination-list"></ol>
                 <div class="pagination__list m-l-20">
                     <select id="results-pp">
                         <option value="5">5</option>

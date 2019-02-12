@@ -26,13 +26,13 @@ namespace SearchEngine.Service
             _client = new ElasticClient(_settings);
 
         }
-        public void CreateIndex()
+        public void CreateIndex(string nameIndex)
         {
-            _client.DeleteIndex(Indices.Index("sample"));
-            var indexSettings = _client.IndexExists("sample");
+            //_client.DeleteIndex(Indices.Index("sample"));//sample
+            var indexSettings = _client.IndexExists(nameIndex);
             if (!indexSettings.Exists)
             {
-                var createIndexResponse = _client.CreateIndex("sample", c => c
+                var createIndexResponse = _client.CreateIndex(nameIndex, c => c
                                                             .Settings(s => s
                                                                 //.NumberOfReplicas(0)
                                                                 //.RefreshInterval(-1)

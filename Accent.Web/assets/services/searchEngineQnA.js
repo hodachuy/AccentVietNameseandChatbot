@@ -1,7 +1,7 @@
 ﻿//############ Table and Search Engine #############//
 var pageSize = 10;
 //var allowed = true;
-
+var debounceTimeout = null;
 $(document).ready(function () {
     // init data
     getDataTable(1, pageSize);
@@ -14,15 +14,20 @@ $(document).ready(function () {
 
     // writting show suggest
     $("#search-terms").keyup(function (e) {
-        //e.preventDefault();
-        if (e.keyCode == 13) {
-            return;
-        }
+       // e.preventDefault();
+        //if (e.keyCode == 13) {
+        //    return false;
+        //}
         if (e.keyCode == 40 || e.keyCode == 38) {
             $(this).focusToEnd();
             return false;
         }
-        getSuggest($(this).val());
+
+        clearTimeout(debounceTimeout);
+
+        debounceTimeout = setTimeout(getSuggest($(this).val()), 500);
+
+
     })
 
     // select number show table
@@ -56,6 +61,7 @@ function getDataTable(page, pageSize) {
 }
 
 function getSuggest(content) {
+
     if (content.trim() == "") {
         $("#div-suggest").css('display', 'none');
         return false;
@@ -77,6 +83,7 @@ function getSuggest(content) {
 }
 
 function search(content) {
+
     $("#div-suggest").css('display', 'none');
     if (content.trim() == "") return false;
     if (content.trim() == sessionStorage.getItem("_search").trim()) return false;
@@ -97,6 +104,23 @@ function search(content) {
     });
 }
 
+function addQnA() {
+    var questionContent = $("#txtQuestion").text();
+    var answerContent = $("#txtAnswer").text();
+
+    if (questionContent == "" && answerContent == "") return;
+    if (questionContent == "") return;
+
+    var param = {
+        question: question,
+        answer: answer
+    }
+    $.ajax({
+
+    })
+
+}
+
 renderTemplate = function (data) {
     this.Table = function () {
 
@@ -110,7 +134,7 @@ renderTemplate = function (data) {
 
         var paginationTextHtml = '';
         var fromPP = 0;
-        var ToPP = 0;
+        var toPP = 0;
         var totalPP = 0;
 
         if (dataTable.length != 0) {
@@ -202,8 +226,9 @@ renderTemplate = function (data) {
         $("#search-terms").keydown(function (e) {
             var key = e.keyCode,
                 $selected = $listItems.filter('.suggest-selected');
-            if (key == 13) {
-                //e.preventDefault();            
+
+            if (e.keyCode == 13) {
+                e.stopImmediatePropagation();
                 $("#btnSearch").click();
                 //outsite focus tag input search
                 $("#search-terms").blur();

@@ -31,6 +31,9 @@ namespace SearchEngine.ConsoleApplication
             Console.OutputEncoding = Encoding.UTF8;
 
             ElasticSearch elastic = new ElasticSearch();
+            //elastic.CreateIndex("QnA");
+
+            //elastic.importExcel(@"D:\HDHUY-DATA\DATA-THUE\HOI DAP_THUE VA HOA DON CHUNG TU 2018.xlsx").Wait();
             //elastic.importExcel("a").Wait();
 
             //elastic.CreateIndex();
