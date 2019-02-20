@@ -22,5 +22,9 @@ namespace Accent.Web.Controllers
         {
             return View();
         }
+        public ActionResult BotLearning()
+        {
+            return View();
+        }
     }
 }

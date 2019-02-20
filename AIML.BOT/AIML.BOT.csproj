@@ -51,6 +51,7 @@
     <Compile Include="AIMLTagHandlers\input.cs" />
     <Compile Include="AIMLTagHandlers\javascript.cs" />
     <Compile Include="AIMLTagHandlers\learn.cs" />
+    <Compile Include="AIMLTagHandlers\link.cs" />
     <Compile Include="AIMLTagHandlers\lowercase.cs" />
     <Compile Include="AIMLTagHandlers\person.cs" />
     <Compile Include="AIMLTagHandlers\person2.cs" />

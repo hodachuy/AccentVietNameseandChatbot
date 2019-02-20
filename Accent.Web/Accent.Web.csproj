@@ -45,6 +45,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExcelDataReader, Version=3.4.2.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.3.4.2\lib\net45\ExcelDataReader.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="ExcelDataReader.DataSet, Version=3.4.2.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelDataReader.DataSet.3.4.2\lib\net35\ExcelDataReader.DataSet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AI.Agent.Intercept, Version=1.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ApplicationInsights.Agent.Intercept.1.2.1\lib\net45\Microsoft.AI.Agent.Intercept.dll</HintPath>
       <Private>True</Private>
@@ -78,6 +86,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -86,6 +97,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -207,7 +219,6 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\QuestionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -246,6 +257,7 @@
     <Content Include="assets\images\product-pic.jpg" />
     <Content Include="assets\images\slack.png" />
     <Content Include="assets\images\switch.png" />
+    <Content Include="assets\libs\css\common-bot.css" />
     <Content Include="assets\libs\css\style.css" />
     <Content Include="assets\libs\js\dashboard-ecommerce.js" />
     <Content Include="assets\libs\js\dashboard-finance.js" />
@@ -255,6 +267,7 @@
     <Content Include="assets\libs\js\google_map.js" />
     <Content Include="assets\libs\js\jvectormap.custom.js" />
     <Content Include="assets\libs\js\main-js.js" />
+    <Content Include="assets\services\botLearning.js" />
     <Content Include="assets\services\searchEngineQnA.js" />
     <Content Include="assets\vendor\bootstrap-colorpicker\%40claviska\jquery-minicolors\jquery.minicolors.css" />
     <Content Include="assets\vendor\bootstrap-colorpicker\%40claviska\jquery-minicolors\jquery.minicolors.min.js" />
@@ -622,6 +635,7 @@
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
     <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="Scripts\boostrap-select.min.js" />
+    <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -629,7 +643,9 @@
     </Content>
     <Content Include="Datasets\news1gram" />
     <Content Include="Datasets\news2grams" />
-    <Content Include="AppSettings.config" />
+    <Content Include="AppSettings.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Datasets_BOT\aiml_legal\legal.aiml">
       <SubType>Designer</SubType>
     </Content>
@@ -688,7 +704,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -705,6 +723,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\QnA.cshtml" />
     <Content Include="Views\Home\AccentVN.cshtml" />
+    <Content Include="Views\Home\BotLearning.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -18,6 +18,10 @@ using System.Web.Script.Serialization;
 using SearchEngine.Service;
 using System.Xml;
 using Accent.Web.Infrastructure.Core;
+using System.Data;
+using Excel = Microsoft.Office.Interop.Excel;
+using ExcelDataReader;
+using SearchEngine.Service.Model;
 
 namespace Accent.Web.Controllers
 {
@@ -33,7 +37,8 @@ namespace Accent.Web.Controllers
 
         private ElasticSearch _elastic;
 
-        public ApiController() : base(){
+        public ApiController() : base()
+        {
 
             _elastic = new ElasticSearch();
 
@@ -100,7 +105,7 @@ namespace Accent.Web.Controllers
                 rs.ArrItems = arrTextVN.Split(',').Distinct().Skip(1).ToArray();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string message = "ERROR_400";
                 return Json(message, JsonRequestBehavior.AllowGet);
@@ -131,7 +136,7 @@ namespace Accent.Web.Controllers
         #endregion
 
         #region --CHATBOT--
-        public JsonResult chatbot(string text,string group)
+        public JsonResult chatbot(string text, string group)
         {
             string result = "";
             AIMLbot.Request r = new Request(text, user, bot);
@@ -171,8 +176,8 @@ namespace Accent.Web.Controllers
                 {
                     var content = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<string>(contentAIML);
                     textAIML = HttpUtility.HtmlDecode(content);
-
                 }
+
                 string pathAIML = HostingEnvironment.MapPath("~/Datasets_BOT/aiml_legal");
                 System.IO.File.WriteAllText(Path.Combine(pathAIML, "legal.aiml"), textAIML);
                 message = "success";
@@ -256,7 +261,7 @@ namespace Accent.Web.Controllers
 
             var lstData = _elastic.GetAll(from, pageSize);
 
-            if(lstData.Count() != 0)
+            if (lstData.Count() != 0)
             {
                 totalRow = lstData[0].Total;
             }
@@ -320,8 +325,99 @@ namespace Accent.Web.Controllers
             var result = _elastic.Create(question, answer);
             return Json(result, JsonRequestBehavior.AllowGet);
         }
-        #endregion
 
+        public JsonResult ImportExcelQnA()
+        {
+            if (Request.Files.Count > 0)
+                try
+                {
+                    HttpPostedFileBase file = Request.Files[0];
+                    string pathtempt = Helper.ReadString("ExcelTemplateTemptPath1");
+                    if (!Directory.Exists(pathtempt))
+                    {
+                        Directory.CreateDirectory(pathtempt);
+                    }
+                    string path = System.IO.Path.Combine(pathtempt, file.FileName + "_" + DateTime.Now.Ticks.ToString());
+                    file.SaveAs(path);
+                    DataTable dt = ReadExcelFileToDataTable(path);
+                    return ReadFileExcelQnA(dt);
+                }
+                catch (Exception ex)
+                {
+                    return Json("ERROR:" + ex.Message.ToString());
+                }
+            else
+            {
+                return Json("Bạn chưa chọn file để tải lên.");
+            }
+        }
+
+        private DataTable ReadExcelFileToDataTable(string path)
+        {
+            string POCpath = @"" + path;
+            POCpath = POCpath.Replace("\\\\", "\\");
+            IExcelDataReader dataReader;
+            FileStream fileStream = new FileStream(POCpath, FileMode.Open);
+            if (path.EndsWith(".xls"))
+            {
+                dataReader = ExcelReaderFactory.CreateBinaryReader(fileStream);
+            }
+            else
+            {
+                dataReader = ExcelReaderFactory.CreateOpenXmlReader(fileStream);
+            }
+            DataSet result = dataReader.AsDataSet();
+
+            DataTable dt = result.Tables[0];
+            return dt;
+        }
+
+        public JsonResult ReadFileExcelQnA(DataTable dt)
+        {
+            try
+            {
+                //edit by ntvy
+                if (dt.Rows.Count > 0)
+                {
+                    var quesList = new List<QuestionViewModel>();
+                    for (var i = 1; i < dt.Rows.Count; i++)
+                    {
+                        var question = new QuestionViewModel();
+                        var item = dt.Rows[i];
+                        question.Id = i;
+                        question.Score = 1;
+                        question.CreationDate = DateTime.Now;
+                        question.Body = item[1] == null ? "" : item[1].ToString();
+                        string mess = "";
+                        bool flag = false;
+
+                        if (string.IsNullOrEmpty(question.Body))
+                        {
+                            mess += "Câu hỏi không được để trống";
+                            flag = true;
+                        }
+                        if (flag)
+                        {
+                            return Json("File Excel có lỗi ở dòng thứ " + (i + 1) + ":<br/>" + mess);
+                        }
+
+                        quesList.Add(question);
+                        //CreateQuesForImport("", ques.AreaTitle, ques.ContentsText, ques.AnsContents, null, null, null, null
+                        //, null, null, null);
+                    }
+                    return Json(new { listques = quesList, status = "Thêm dữ liệu thành công!" });
+                }
+                else
+                {
+                    return Json("File không có dữ liệu");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json("Lỗi: " + ex.Message.ToString());
+            }
+        }
+        #endregion
     }
 
     public class Result
@@ -329,6 +425,4 @@ namespace Accent.Web.Controllers
         public string Item { get; set; }
         public string[] ArrItems { get; set; }
     }
-   
-
 }

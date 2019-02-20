@@ -113,15 +113,15 @@
                             <div class="modal-body">
                                 <form>
                                     <div class="input-group input-file">
-                                        <input type="text" class="form-control" placeholder='Choose a file...' />
-                                        <span class="input-group-btn">
+                                        <input class="form-control" placeholder='Choose a file...' type="file" name="file" id="file"/>
+                                        @*<span class="input-group-btn">
                                             <button class="btn btn-default btn-choose" type="button">Choose</button>
-                                        </span>
+                                        </span>*@
                                     </div>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <a href="#" class="btn btn-primary">Upload</a>
+                                <a href="javascript:void(0);" class="btn btn-primary" onclick="importExcelQnA()">Upload</a>
                             </div>
                         </div>
                     </div>

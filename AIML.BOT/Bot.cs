@@ -546,7 +546,7 @@ namespace AIMLbot
             }
             if (!this.GlobalSettings.containsSettingCalled("stripperregex"))
             {
-                this.GlobalSettings.addSetting("stripperregex", "\\s");//[^0-9a-zA-Z] bỏ chữ Tiếng Việt
+                this.GlobalSettings.addSetting("stripperregex", "\\s");//[^0-9a-zA-Z] bỏ ký tự chứa dấu "chữ Tiếng Việt"
             }
 
             // Load the dictionaries for this Bot from the various configuration files
@@ -887,6 +887,9 @@ namespace AIMLbot
                             break;
                         case "version":
                             tagHandler = new AIMLTagHandlers.version(this, user, query, request, result, node);
+                            break;
+                        case "link":
+                            tagHandler = new AIMLTagHandlers.link(this, user, query, request, result, node);
                             break;
                         default:
                             tagHandler = null;

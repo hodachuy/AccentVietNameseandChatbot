@@ -163,7 +163,8 @@ body {
     color: #71748d;
     background-color: #efeff6;
     -webkit-font-smoothing: antialiased;
-    overflow: hidden;
+    /*overflow: hidden;*/
+    overflow-x: hidden;
 }
 
 h1,
@@ -8227,7 +8228,7 @@ div#searchcontainer {
             outline: none;
             font-size: 15pt;
             background: white; /*//floralwhite*/
-            height:50px;
+            height: 50px;
         }
 
 
@@ -8480,4 +8481,195 @@ ol, ul, li {
 
 #ul-list-search .list-group-item a {
     color: #0056b3;
+}
+
+
+
+
+
+.switchery {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    width: 44px;
+    height: 22px;
+    vertical-align: middle;
+    position: relative;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+.checkbox-switchery .switchery {
+    position: absolute;
+    left: 0;
+    margin-top: -2px;
+}
+
+.switchery > small {
+    background-color: #fff;
+    border-radius: 5px;
+    width: 22px;
+    height: 22px;
+    position: absolute;
+    top: 0;
+    -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.checkbox.checkbox-switchery {
+    margin-bottom: 14px;
+    padding-left: 0;
+}
+
+    .checkbox.checkbox-switchery.disabled .switchery {
+        cursor: not-allowed;
+    }
+
+.checkbox[class*=switchery-], .checkbox-inline[class*=switchery-] {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.switchery-lg.checkbox-switchery {
+    margin-bottom: 18px;
+}
+
+    .switchery-lg.checkbox-switchery .switchery {
+        margin-top: -4px;
+    }
+
+label.switchery-lg {
+    margin-bottom: 0;
+}
+
+.switchery-lg .switchery {
+    height: 26px;
+    width: 52px;
+}
+
+    .switchery-lg .switchery > small {
+        height: 26px;
+        width: 26px;
+    }
+
+.switchery-sm.checkbox-switchery {
+    margin-bottom: 10px;
+}
+
+    .switchery-sm.checkbox-switchery .switchery {
+        margin-top: 0;
+    }
+
+label.switchery-sm {
+    margin-bottom: 0;
+}
+
+.switchery-sm .switchery {
+    height: 18px;
+    width: 36px;
+}
+
+    .switchery-sm .switchery > small {
+        height: 18px;
+        width: 18px;
+    }
+
+.switchery-xs.checkbox-switchery {
+    margin-bottom: 6px;
+}
+
+    .switchery-xs.checkbox-switchery .switchery {
+        margin-top: 2px;
+    }
+
+label.switchery-xs {
+    margin-bottom: 0;
+}
+
+.switchery-xs .switchery {
+    height: 14px;
+    width: 28px;
+}
+
+    .switchery-xs .switchery > small {
+        height: 14px;
+        width: 14px;
+    }
+
+.checkbox-switchery label, label.checkbox-switchery {
+    position: relative;
+    padding-left: 56px;
+    margin: 0;
+    cursor: pointer;
+}
+
+    .checkbox-switchery.switchery-lg label, label.checkbox-switchery.switchery-lg {
+        padding-left: 64px;
+    }
+
+    .checkbox-switchery.switchery-sm label, label.checkbox-switchery.switchery-sm {
+        padding-left: 48px;
+    }
+
+    .checkbox-switchery.switchery-xs label, label.checkbox-switchery.switchery-xs {
+        padding-left: 40px;
+    }
+
+.checkbox-switchery.checkbox-inline {
+    margin-bottom: 0;
+}
+
+.checkbox-switchery.checkbox-right .switchery {
+    left: auto;
+    right: 0;
+}
+
+.checkbox-switchery.checkbox-right label, label.checkbox-switchery.checkbox-right {
+    padding-left: 0;
+    padding-right: 56px;
+}
+
+    .checkbox-switchery.checkbox-right.switchery-lg label, label.checkbox-switchery.checkbox-right.switchery-lg {
+        padding-left: 0;
+        padding-right: 64px;
+    }
+
+    .checkbox-switchery.checkbox-right.switchery-sm label, label.checkbox-switchery.checkbox-right.switchery-sm {
+        padding-left: 0;
+        padding-right: 48px;
+    }
+
+    .checkbox-switchery.checkbox-right.switchery-xs label, label.checkbox-switchery.checkbox-right.switchery-xs {
+        padding-left: 0;
+        padding-right: 40px;
+    }
+
+.switchery-double .switchery {
+    position: relative;
+    margin-left: 7px;
+    margin-right: 7px;
+    margin-top: -7px;
+    margin-bottom: -5px;
+}
+
+.switchery-double.checkbox-switchery label, label.switchery-double.checkbox-switchery {
+    padding: 0;
+}
+
+.switchery-double.switchery-lg .switchery {
+    margin-top: -8px;
+    margin-bottom: -6px;
+}
+
+.switchery-double.switchery-sm .switchery {
+    margin-top: -6px;
+    margin-bottom: -4px;
+}
+
+.switchery-double.switchery-xs .switchery {
+    margin-top: -5px;
+    margin-bottom: -3px;
 }

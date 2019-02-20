@@ -28,11 +28,11 @@ namespace SearchEngine.ConsoleApplication
             // pr.CreateDataDemo().Wait();
 
             //Test();
-            Console.OutputEncoding = Encoding.UTF8;
+            //Console.OutputEncoding = Encoding.UTF8;
 
-            ElasticSearch elastic = new ElasticSearch();
-            //elastic.CreateIndex("QnA");
-
+            //ElasticSearch elastic = new ElasticSearch();
+            //elastic.CreateIndex("sample");
+            //CreateIndexSample();
             //elastic.importExcel(@"D:\HDHUY-DATA\DATA-THUE\HOI DAP_THUE VA HOA DON CHUNG TU 2018.xlsx").Wait();
             //elastic.importExcel("a").Wait();
 
@@ -192,83 +192,83 @@ namespace SearchEngine.ConsoleApplication
         //    }
         //    return lstQuestion;
         //}
-        //public static void CreateIndexSample()
-        //{
-        //    ConnectionSettings settings = new ConnectionSettings(new Uri("http://localhost:9200"));
-        //    settings.DefaultIndex("sample");
-        //    ElasticClient client = new ElasticClient(settings);
-        //    client.DeleteIndex(Indices.Index("sample"));
-        //    var indexSettings = client.IndexExists("sample");
-        //    if (!indexSettings.Exists)
-        //    {
-        //        var createIndexResponse = client.CreateIndex("sample", c => c
-        //                                                    .Settings(s => s
-        //                                                        //.NumberOfReplicas(0)
-        //                                                        //.RefreshInterval(-1)
-        //                                                        .NumberOfShards(1)
-        //                                                        .Analysis(a => a
-        //                                                            .TokenFilters(tf => tf
-        //                                                                        .Stop("stop", x => x
-        //                                                                                     .StopWords("bị", "bởi", "cả", "các", "cái", "cần", "càng", "chỉ", "chiếc", "cho", "chứ", "chưa", "chuyện",
-        //                                                                                     "có", "có thể", "cứ", "của", "cùng", "cũng", "đã", "đang", "đây", "để", "đến nỗi", "đều", "điều",
-        //                                                                                     "do", "đó", "được", "dưới", "gì", "khi", "không", "là", "lại", "lên", "lúc", "mà", "mỗi", "một cách",
-        //                                                                                     "này", "nên", "nếu", "ngay", "nhiều", "như", "nhưng", "những", "nơi", "nữa", "phải", "qua", "ra",
-        //                                                                                     "rằng", "rằng", "rất", "rất", "rồi", "sau", "sẽ", "so", "sự", "tại", "theo", "thì", "trên", "trước",
-        //                                                                                     "từ", "từng", "và", "vẫn", "vào", "vậy", "vì", "việc", "với", "vừa"))
-        //                                                                        .SynonymGraph("synonym_filter", m => m
-        //                                                                                         .Synonyms("nbcb => nhuận bút cơ bản",
-        //                                                                                                    "nbsl => nhuận bút số lượng",
-        //                                                                                                    "gtgt => giá trị gia tăng",
-        //                                                                                                    "tncn => thu nhập cá nhân",
-        //                                                                                                    "thu nhập cá nhân => tncn")
-        //                                                                                         .Tokenizer("vi_tokenizer")
-        //                                                                                         )
-        //                                                                        .Shingle("single_filter", stf => stf
-        //                                                                                 .MaxShingleSize(20)
-        //                                                                                 .MinShingleSize(2))
-        //                                                                                )
-        //                                                            .Analyzers(an => an
-        //                                                                .Custom("autocomplete", ca => ca
-        //                                                                    .CharFilters("html_strip")
-        //                                                                    .Tokenizer("vi_tokenizer")
-        //                                                                    .Filters("lowercase", "single_filter")//,"icu_folding","single_filter"
-        //                                                                )
-        //                                                                .Custom("vi_analyzer", ca => ca
-        //                                                                    .CharFilters("html_strip")
-        //                                                                    .Tokenizer("vi_tokenizer")
-        //                                                                    .Filters("lowercase", "stop", "synonym_filter", "icu_folding")//,"icu_folding"
-        //                                                                )
-        //                                                            )
-        //                                                        )
-        //                                                    )
-        //                                                    .Mappings(m => m
-        //                                                        .Map<Question>(mm => mm
-        //                                                            .AutoMap()
-        //                                                            .Properties(p => p
-        //                                                                .Text(z => z
-        //                                                                    .Name(g => g.AutoComplete)
-        //                                                                    .Analyzer("autocomplete")
-        //                                                                    .Fielddata(true)
-        //                                                                    )
-        //                                                                .Text(t => t
-        //                                                                    .Name(n => n.Body)
-        //                                                                    .Analyzer("vi_analyzer")
-        //                                                                    .CopyTo(x => x
-        //                                                                    .Fields(y => y.AutoComplete))
-        //                                                               )
-        //                                                            )
-        //                                                        )
-        //                                                    )
-        //                                                );
+        public static void CreateIndexSample()
+        {
+            ConnectionSettings settings = new ConnectionSettings(new Uri("http://localhost:9200"));
+            settings.DefaultIndex("sample");
+            ElasticClient client = new ElasticClient(settings);
+            client.DeleteIndex(Indices.Index("sample"));
+            var indexSettings = client.IndexExists("sample");
+            if (!indexSettings.Exists)
+            {
+                var createIndexResponse = client.CreateIndex("sample", c => c
+                                                            .Settings(s => s
+                                                                //.NumberOfReplicas(0)
+                                                                //.RefreshInterval(-1)
+                                                                .NumberOfShards(1)
+                                                                .Analysis(a => a
+                                                                    .TokenFilters(tf => tf
+                                                                                .Stop("stop", x => x
+                                                                                             .StopWords("bị", "bởi", "cả", "các", "cái", "cần", "càng", "chỉ", "chiếc", "cho", "chứ", "chưa", "chuyện",
+                                                                                             "có", "có thể", "cứ", "của", "cùng", "cũng", "đã", "đang", "đây", "để", "đến nỗi", "đều", "điều",
+                                                                                             "do", "đó", "được", "dưới", "gì", "khi", "không", "là", "lại", "lên", "lúc", "mà", "mỗi", "một cách",
+                                                                                             "này", "nên", "nếu", "ngay", "nhiều", "như", "nhưng", "những", "nơi", "nữa", "phải", "qua", "ra",
+                                                                                             "rằng", "rằng", "rất", "rất", "rồi", "sau", "sẽ", "so", "sự", "tại", "theo", "thì", "trên", "trước",
+                                                                                             "từ", "từng", "và", "vẫn", "vào", "vậy", "vì", "việc", "với", "vừa"))
+                                                                                .SynonymGraph("synonym_filter", m => m
+                                                                                                 .Synonyms("nbcb => nhuận bút cơ bản",
+                                                                                                            "nbsl => nhuận bút số lượng",
+                                                                                                            "gtgt => giá trị gia tăng",
+                                                                                                            "tncn => thu nhập cá nhân",
+                                                                                                            "thu nhập cá nhân => tncn")
+                                                                                                 .Tokenizer("vi_tokenizer")
+                                                                                                 )
+                                                                                .Shingle("single_filter", stf => stf
+                                                                                         .MaxShingleSize(20)
+                                                                                         .MinShingleSize(2))
+                                                                                        )
+                                                                    .Analyzers(an => an
+                                                                        .Custom("autocomplete", ca => ca
+                                                                            .CharFilters("html_strip")
+                                                                            .Tokenizer("vi_tokenizer")
+                                                                            .Filters("lowercase", "single_filter")//,"icu_folding","single_filter"
+                                                                        )
+                                                                        .Custom("vi_analyzer", ca => ca
+                                                                            .CharFilters("html_strip")
+                                                                            .Tokenizer("vi_tokenizer")
+                                                                            .Filters("lowercase", "stop", "synonym_filter", "icu_folding")//,"icu_folding"
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                            .Mappings(m => m
+                                                                .Map<Question>(mm => mm
+                                                                    .AutoMap()
+                                                                    .Properties(p => p
+                                                                        .Text(z => z
+                                                                            .Name(g => g.AutoComplete)
+                                                                            .Analyzer("autocomplete")
+                                                                            .Fielddata(true)
+                                                                            )
+                                                                        .Text(t => t
+                                                                            .Name(n => n.Body)
+                                                                            .Analyzer("vi_analyzer")
+                                                                            .CopyTo(x => x
+                                                                            .Fields(y => y.AutoComplete))
+                                                                       )
+                                                                    )
+                                                                )
+                                                            )
+                                                        );
 
 
-        //    }
+            }
 
-        //    if (indexSettings.Exists)
-        //    {
-        //        Console.WriteLine("Created");
-        //    }
-        //}
+            if (indexSettings.Exists)
+            {
+                Console.WriteLine("Created");
+            }
+        }
         public static void Test()
         {
             ConnectionSettings settings = new ConnectionSettings(new Uri("http://localhost:9200"));

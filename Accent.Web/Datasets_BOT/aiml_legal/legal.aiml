@@ -2,6 +2,17 @@
 <aiml>
   <!-- <có thể call tới database sẽ custome trên aiml cho dễ sài/>-->
   <!-- <sẽ làm hỗ trợ viết javascript trên này để gọi api, hiện tại đang xử lý call api từ bước return trả về dữ liệu ở code behide />-->
+  
+<category>
+   <pattern>test123</pattern>
+   <template>
+    <link>
+       <text>123</text>
+       <url>http://localhost:47887/</url>
+    </link>
+	</template>
+</category>
+  
  <category>
     <pattern>TEST SCRIPT</pattern>
     <template>

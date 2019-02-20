@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="~/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.2/ace.js"></script>
-
+    <script src="~/Scripts/bootbox.min.js"></script>
     <style>
         .editor-file-aiml {
             height: 550px;
@@ -96,6 +96,9 @@
                                     <ul class="nav flex-column">
                                         <li class="nav-item">
                                             <a class="nav-link" href="@Url.Content("~")"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="@Url.Content("~/Home/BotLearning")"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện bot</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="@Url.Content("~/Home/QnA")"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>

@@ -19,7 +19,7 @@ namespace SearchEngine.Service
         private string _urlAPI = ReadString("UrlSearchAPI");
         public ElasticSearch()
         {
-            _urlAPI = (String.IsNullOrEmpty(_urlAPI) == true ? "http://172.16.13.120:9200" : _urlAPI);
+            _urlAPI = (String.IsNullOrEmpty(_urlAPI) == true ? "http://172.16.13.105:9200" : _urlAPI);
             _settings = new ConnectionSettings(new Uri(_urlAPI));
             _settings.DefaultIndex("sample");
             _settings.DisableDirectStreaming(true);
@@ -28,7 +28,7 @@ namespace SearchEngine.Service
         }
         public void CreateIndex(string nameIndex)
         {
-            //_client.DeleteIndex(Indices.Index("sample"));//sample
+            _client.DeleteIndex(Indices.Index("sample"));//sample
             var indexSettings = _client.IndexExists(nameIndex);
             if (!indexSettings.Exists)
             {
@@ -203,18 +203,18 @@ namespace SearchEngine.Service
 
                 }
             }
-            else
-            {
-                List<Question> lstQuestion = new List<Question>();
-                lstQuestion = Search(text);
-                if (lstQuestion.Count != 0)
-                {
-                    foreach (var item in lstQuestion)
-                    {
-                        lstSuggest.Add(item.Body);
-                    }
-                }
-            }
+            //else
+            //{
+            //    List<Question> lstQuestion = new List<Question>();
+            //    lstQuestion = Search(text);
+            //    if (lstQuestion.Count != 0)
+            //    {
+            //        foreach (var item in lstQuestion)
+            //        {
+            //            lstSuggest.Add(item.Body);
+            //        }
+            //    }
+            //}
 
             return lstSuggest;
         }

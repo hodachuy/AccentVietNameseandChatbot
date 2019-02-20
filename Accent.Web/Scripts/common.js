@@ -221,18 +221,80 @@ $(document).ready(function () {
     //    ).render();
     //});
 })
-function TestInsert() {
 
-    var xml = "\n<category>\n" +
+var templateAIML = {
+    category: "\n<category>\n" +
                 "   <pattern></pattern>\n" +
                 "   <template></template>\n" +
-                "</category>\n";
+                "</category>\n",
 
-    var cursorPosition = e.getCursorPosition();
+    url: "\n<button>\n" +
+                "   <text></text>\n" +
+                "   <url></url>\n" +
+                "</button>\n",
 
-    e.session.insert(cursorPosition, xml);
+    link: "\n<link>\n" +
+            "   <text></text>\n" +
+            "   <url></url>\n" +
+            "</link>\n",
 
+    image: "\n<image></image>\n",
+
+    video: "\n<video></video>\n",
+
+    card: "\n<card>\n" +
+            "   <image></image>\n" +
+            "   <title></title>\n" +
+            "   <subtitle></subtitle>\n" +
+            "   <button>\n" +
+            "       <text></text>\n" +
+            "       <postback></postback>\n" +
+            "   </button>\n" +
+            "</card>\n",
+
+    carousel: "\n<carousel>\n" +
+            "   <card>\n" +
+            "       <image></image>\n" +
+            "       <title></title>\n" +
+            "       <subtitle></subtitle>\n" +
+            "       <button>\n" +
+            "           <text></text>\n" +
+            "           <postback></postback>\n" +
+            "       </button>\n" +
+            "   </card>\n" +
+            "</carousel>\n",
 }
+
+$(".btn-insert-template").off().on('click', function () {
+    var cursorPosition = e.getCursorPosition();
+    var type = $(this).attr("data-value");
+    switch (type) {
+        case "category":
+            return e.session.insert(cursorPosition, templateAIML.category);
+            break;
+        case "url":
+            return e.session.insert(cursorPosition, templateAIML.url);
+            break;
+        case "link":
+            return e.session.insert(cursorPosition, templateAIML.link);
+            break;
+        case "image":
+            return e.session.insert(cursorPosition, templateAIML.image);
+            break;
+        case "video":
+            return e.session.insert(cursorPosition, templateAIML.video);
+            break;
+        case "card":
+            return e.session.insert(cursorPosition, templateAIML.card);
+            break;
+        case "carousel":
+            return e.session.insert(cursorPosition, templateAIML.carousel);
+            break;
+        default:
+            break;
+    }
+})
+
 function loadAIML() {
     $.ajax({
         url: _Host + 'api/LoadAIML',
@@ -245,7 +307,6 @@ function loadAIML() {
                 e.getSession().setMode("ace/mode/xml");
                 e.setTheme("ace/theme/textmate");
                 e.setValue(html);
-
 
                 //var editorMed = ace.edit("editorTest-med");
                 //editorMed.getSession().setMode("ace/mode/xml");

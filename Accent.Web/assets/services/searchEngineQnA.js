@@ -12,7 +12,7 @@ $(document).ready(function () {
         return false;
     })
 
-    // writting show suggest
+    // writing show suggest
     $("#search-terms").keyup(function (e) {
        // e.preventDefault();
         //if (e.keyCode == 13) {
@@ -115,9 +115,9 @@ function addQnA() {
         question: question,
         answer: answer
     }
-    $.ajax({
+    //$.ajax({
 
-    })
+    //})
 
 }
 
@@ -329,3 +329,80 @@ document.addEventListener(touchorclick, function (e) { // when user clicks anywh
     }
 
 }, false)
+
+
+//Import excel QnA
+importExcelQnA = function () {
+    if ($("#file").val() == '') {
+        alert("Bạn chưa chọn file để tải lên");
+    }
+    else if (!checkFileExtension()) {
+        alert("Bạn chỉ được tải lên file excel với định dạng .xls hoặc .xlsx");
+    }
+    else {
+        // Checking whether FormData is available in browser  
+        if (window.FormData !== undefined) {
+
+            var fileUpload = $("#file").get(0);
+            var files = fileUpload.files;
+
+            // Create FormData object  
+            var fileData = new FormData();
+
+            // Looping over all files and add it to FormData object  
+            for (var i = 0; i < files.length; i++) {
+                fileData.append(files[i].name, files[i]);
+            }
+
+            // Adding one more key to FormData object  
+            //fileData.append('username', 'QALaw');
+
+            $.ajax({
+                url: _Host + 'api/ImportExcelQnA',
+                type: "POST",
+                contentType: false,
+                processData: false,
+                data: fileData,
+                beforeSend: function () {
+                    $("body").append('<div class="wt-waiting wt-fixed wt-large"></div>');
+                },
+                complete: function () {
+                    // Handle the complete event
+                    $(".wt-waiting").remove();
+                },
+                success: function (result) {
+                    console.log(result);
+                    //if (result.listques != null) {
+                        //listQues = result.listques;
+                        //AlertDialog("Thông báo", result.status, function () { });
+
+                    //} else {
+                        //AlertDialog("Thông báo", result, function () { });
+                    //}
+                },
+                error: function (err) {
+                }
+            });
+        } else {
+            alert("FormData is not supported.");
+        }
+    }
+}
+
+checkFileExtension = function () {
+    // get the file name, possibly with path (depends on browser)
+    var filename = $("#file").val();
+    // Use a regular expression to trim everything before final dot
+    var extension = filename.replace(/^.*\./, '');
+    if (extension == filename) {
+        extension = '';
+    } else {
+        extension = extension.toLowerCase();
+    }
+    switch (extension) {
+        case 'xls':
+        case 'xlsx':
+            return true;
+    }
+    return false;
+}
