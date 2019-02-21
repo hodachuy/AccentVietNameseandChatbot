@@ -2,8 +2,24 @@
     ViewBag.Title = "BotLearning";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <link href="~/assets/libs/css/common-bot.css" rel="stylesheet" />
+<link href="~/assets/libs/css/card.css" rel="stylesheet" />
+
+@*<script type="text/javascript" src="https://platform.messnow.com/js/plugins/forms/selects/selectboxit.min.js"></script>*@
+<script type="text/javascript" src="https://platform.messnow.com/js/hekate/autosize.min.js"></script>
+<script type="text/javascript" src="https://platform.messnow.com/js/plugins/forms/selects/select2.min.js"></script>
+<script type="text/javascript" src="https://platform.messnow.com/js/plugins/sortable/autogrow.js"></script>
+<script type="text/javascript" src="https://platform.messnow.com/js/plugins/sortable/jquery.sortable.js"></script>
+
+<style>
+    @@media (min-width: 576px) {
+        .modal-card {
+            max-width: 1320px;
+            margin: 1.75rem auto;
+        }
+    }
+
+</style>
 
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
@@ -27,90 +43,25 @@
         @*<div class="panel-flat"><div class="pull-right"><select class="form-control limitPage"><option value="5" selected="">5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option></select></div></div>*@
     </div>
     @*<nav class="pagination pagination_type1">
-        <ol class="pagination__list" id="pagination-list"></ol>
-        <div class="pagination__list m-l-20">
-            <select id="results-pp">
-                <option value="5">5</option>
-                <option value="10" selected>10</option>
-                <option value="20">20</option>
-                <option value="100">100</option>
-                <option value="All">Tất cả</option>
-            </select>
-            <span class="m-l-10">Số lượng hiển thị</span>
-        </div>
-        <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
-    </nav>*@
+            <ol class="pagination__list" id="pagination-list"></ol>
+            <div class="pagination__list m-l-20">
+                <select id="results-pp">
+                    <option value="5">5</option>
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="100">100</option>
+                    <option value="All">Tất cả</option>
+                </select>
+                <span class="m-l-10">Số lượng hiển thị</span>
+            </div>
+            <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
+        </nav>*@
+
     <div class="card">
-        <div class="wrap-content" data-countpanel="5">
+        <div class="wrap-content" data-countpanel="1">
             <div class="panel panel-flat" indexpanel="1">
                 <div class="panel-body">
-                    <i class="fa fa-trash rmCt" style="display: inline;"></i>
-                    <div class="wrMove">
-                        <i class="fa fa-arrow-up moveTop" style="display: inline;"></i>
-                        <i class="fa fa-arrow-down moveBot" style="display: inline;"></i>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-5 userSay">
-                            <label>Người dùng nói</label>
-                            <div class="input-group">
-                                <ul class="tags checkvalid">
-                                    <li class="addedTag">
-                                        thuế thu nhập cá nhân là gi?<span class="tagRemove">x</span>
-                                        <input type="hidden" value="thuế thu nhập cá nhân là gi?" name="data[answer][0][]">
-                                    </li>
-                                    <li class="tagAdd taglist">
-                                        <input type="text" class="search-field" style="display: inline-block;">
-                                    </li>
-                                </ul>
-                                <span class="input-group-addon">
-                                    <input type="checkbox" class="styled" name="data[exactly][0]">
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-5 botReply">
-                            <label>Bot trả lời với</label>
-                            <label class="learn_switchbot">
-                                <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="checked">
-                                <span class="learn_sliderbot learn_roundbot"></span>
-                            </label>
-                            <div class="checkbox checkbox-switchery switchery-xs pull-right pd0">
-                                <label>
-                                    <input type="checkbox" class="switchery randomText" data-switchery="true" style="display: none;">
-                                    <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>
-                                    Ngẫu nhiên
-                                </label>
-                            </div>
-                            <div class="wrbutton" indexbt="1">
-                                <div class="bt">
-                                    <input type="text" name="data[question][0][]" class="form-control checkvalid" placeholder="Nhập câu trả lời" value="Là thuế của bạn phải nộp.....">
-                                    <i class="fa fa-remove rmText icon-bin"></i>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">
-                                <i class="fa fa-plus"></i> Thêm câu trả lời
-                            </button>
-                        </div>
-                        <div class="col-lg-2 userSay">
-                            <label>Thể loại</label>
-                            <div class="input-group">
-                                <ul class="tags checkvalid">
-                                    <li class="addedTag">
-                                        pháp luật<span class="tagRemove">x</span>
-                                        <input type="hidden" value="pháp luật" name="data[answer][0][]">
-                                    </li>
-                                    <li class="tagAdd taglist">
-                                        <input type="text" class="search-field" style="display: inline-block;">
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel panel-flat" indexpanel="2">
-                <div class="panel-body">
-                    <i class="fa fa-trash rmCt" style="display: inline;"></i>
+                    <i class="fa fa-trash icon-bin rmCt"></i>
                     <div class="wrMove">
                         <i class="fa fa-arrow-up moveTop" style="display: inline;"></i>
                         <i class="fa fa-arrow-down moveBot" style="display: inline;"></i>
@@ -120,257 +71,149 @@
                             <label>Người dùng nói</label>
                             <div class="input-group">
                                 <ul class="tags checkvalid">
-                                    <li class="addedTag">
-                                        thuế thu nhập cá nhân là gi?<span class="tagRemove">x</span>
-                                        <input type="hidden" value="thuế thu nhập cá nhân là gi?" name="data[answer][0][]">
-                                    </li>
                                     <li class="tagAdd taglist">
-                                        <input type="text" class="search-field" style="display: inline-block;">
+                                        <input type="text" class="search-field">
                                     </li>
                                 </ul>
                                 <span class="input-group-addon">
-                                    <input type="checkbox" class="styled" name="data[exactly][0]">
+                                    <input type="checkbox" class="styled" name="data[exactly][1]" checked="checked">
                                 </span>
                             </div>
                         </div>
                         <div class="col-lg-6 botReply">
-                            <label>Bot trả lời với</label>
+                            <label>Bot trả lời với&nbsp;</label>
                             <label class="learn_switchbot">
-                                <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="checked">
+                                <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="">
                                 <span class="learn_sliderbot learn_roundbot"></span>
                             </label>
+                            @*<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>*@
                             <div class="checkbox checkbox-switchery switchery-xs pull-right pd0">
                                 <label>
-                                    <input type="checkbox" class="switchery randomText" data-switchery="true" style="display: none;">
-                                    <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>
-                                    Ngẫu nhiên
-                                </label>
-                            </div>
-                            <div class="wrbutton" indexbt="1">
-                                <div class="bt">
-                                    <input type="text" name="data[question][0][]" class="form-control checkvalid" placeholder="Nhập câu trả lời" value="Là thuế của bạn phải nộp.....">
-                                    <i class="fa fa-remove rmText"></i>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-success btn-rounded mt20 w100 hidden ">
-                                <i class="fa fa-plus"></i> Thêm câu trả lời
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-flat" indexpanel="3">
-                <div class="panel-body">
-                    <i class="fa fa-trash rmCt" style="display: inline;"></i>
-                    <div class="wrMove">
-                        <i class="fa fa-arrow-up moveTop" style="display: inline;"></i>
-                        <i class="fa fa-arrow-down moveBot" style="display: inline;"></i>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 userSay">
-                            <label>Người dùng nói</label>
-                            <div class="input-group">
-                                <ul class="tags checkvalid">
-                                    <li class="addedTag">
-                                        cho tôi biết về luật thuế<span class="tagRemove">x</span>
-                                        <input type="hidden" value="cho tôi biết về luật thuế" name="data[answer][1][]">
-                                    </li>
-                                    <li class="tagAdd taglist">
-                                        <input type="text" class="search-field" style="display: inline-block;">
-                                    </li>
-                                </ul>
-                                <span class="input-group-addon">
-                                    <input type="checkbox" class="styled" name="data[exactly][1]">
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 botReply">
-                            <label>Bot trả lời với</label>
-                            <label class="learn_switchbot">
-                                <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="checked">
-                                <span class="learn_sliderbot learn_roundbot"></span>
-                            </label>
-                            <div class="checkbox checkbox-switchery switchery-xs pull-right pd0">
-                                <label>
-                                    <input type="checkbox" class="switchery randomText" data-switchery="true" style="display: none;">
-                                    <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>
-                                    Ngẫu nhiên
-                                </label>
-                            </div>
-                            <div class="wrbutton" indexbt="1">
-                                <div class="bt">
-                                    <input type="text" name="data[question][1][]" class="form-control checkvalid" placeholder="Nhập câu trả lời" value="Luật thuế Việt Nam được quy đinh như sau: .....">
-                                    <i class="fa fa-remove rmText"></i>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-success btn-rounded mt20 w100 hidden ">
-                                <i class="fa fa-plus"></i> Thêm câu trả lời
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel panel-flat" indexpanel="4">
-                <div class="panel-body">
-                    <i class="fa fa-trash rmCt" style="display: inline;"></i>
-                    <div class="wrMove">
-                        <i class="fa fa-arrow-up moveTop" style="display: inline;"></i>
-                        <i class="fa fa-arrow-down moveBot" style="display: inline;"></i>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 userSay">
-                            <label>Người dùng nói</label>
-                            <div class="input-group">
-                                <ul class="tags checkvalid">
-                                    <li class="addedTag">
-                                        thuế thu nhập cá nhân là gi?<span class="tagRemove">x</span>
-                                        <input type="hidden" value="thuế thu nhập cá nhân là gi?" name="data[answer][0][]">
-                                    </li>
-                                    <li class="tagAdd taglist">
-                                        <input type="text" class="search-field" style="display: inline-block;">
-                                    </li>
-                                </ul>
-                                <span class="input-group-addon">
-                                    <input type="checkbox" class="styled" name="data[exactly][0]">
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 botReply">
-                            <label>Bot trả lời với</label>
-                            <label class="learn_switchbot">
-                                <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="checked">
-                                <span class="learn_sliderbot learn_roundbot"></span>
-                            </label>
-                            <div class="checkbox checkbox-switchery switchery-xs pull-right pd0">
-                                <label>
-                                    <input type="checkbox" class="switchery randomText" data-switchery="true" style="display: none;">
-                                    <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>
-                                    Ngẫu nhiên
-                                </label>
-                            </div>
-                            <div class="wrbutton" indexbt="1">
-                                <div class="bt">
-                                    <input type="text" name="data[question][0][]" class="form-control checkvalid" placeholder="Nhập câu trả lời" value="Là thuế của bạn phải nộp.....">
-                                    <i class="fa fa-remove rmText"></i>
-                                </div>
-                            </div>
-                            <button type="button" class="btn btn-success btn-rounded mt20 w100 hidden ">
-                                <i class="fa fa-plus"></i> Thêm câu trả lời
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-flat" indexpanel="5" style="">
-                <div class="panel-body">
-                    <i class="fa fa-trash rmCt" style="display: inline;"></i>
-                    <div class="wrMove">
-                        <i class="fa fa-arrow-up moveTop" style="display: inline;"></i>
-                        <i class="fa fa-arrow-down moveBot" style="display: inline;"></i>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6 userSay">
-                            <label>Người dùng nói</label>
-                            <div class="input-group">
-                                <ul class="tags checkvalid">
-                                    <li class="addedTag">
-                                        hello<span class="tagRemove">x</span>
-                                        <input type="hidden" value="hello" name="data[answer][2][]">
-                                    </li>
-                                    <li class="addedTag">
-                                        chào<span class="tagRemove">x</span>
-                                        <input type="hidden" value="chào" name="data[answer][2][]">
-                                    </li>
-                                    <li class="addedTag">
-                                        hi<span class="tagRemove">x</span>
-                                        <input type="hidden" value="hi" name="data[answer][2][]">
-                                    </li>
-                                    <li class="tagAdd taglist">
-                                        <input type="text" class="search-field" style="display: inline-block;">
-                                    </li>
-                                </ul>
-                                <span class="input-group-addon">
-                                    <input type="checkbox" class="styled" name="data[exactly][2]" checked="checked">
-                                </span>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 botReply">
-                            <label>Bot trả lời với</label>
-                            <label class="learn_switchbot">
-                                <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput">
-                                <span class="learn_sliderbot learn_roundbot"></span>
-                            </label>
-                            <div class="checkbox checkbox-switchery switchery-xs pull-right pd0">
-                                <label>
-                                    <input type="checkbox" checked="checked" class="switchery randomText" data-switchery="true" style="display: none;">
-                                    <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;">
-                                        <small style="left: 14px; background-color: rgb(255, 255, 255); transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>
+                                    <input type="checkbox" class="switchery randomText" style="display:none">
+                                    <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;">
+                                        <small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>
                                     </span>
                                     Ngẫu nhiên
                                 </label>
                             </div>
-                            <div class="wrbutton" indexbt="4">
+                            <div class="wrbutton" indexbt="1">
                                 <div class="bt">
-                                    <select name="data[question][2][]" class="form-control selectKeyword checkvalid bs-select-hidden" data-live-search="true">
-                                        <option value="5c00dc63c941482ab456a094" selected="">BẮT ĐẦU</option>
-                                    </select>
-                                    <div class="btn-group bootstrap-select form-control selectKeyword checkvalid">
-                                        <button type="button" class="btn dropdown-toggle btn-default" data-toggle="dropdown" title="BẮT ĐẦU">
-                                            <span class="filter-option pull-left">BẮT ĐẦU</span>
-                                            &nbsp;
-                                            <span class="caret"></span>
-                                        </button>
-                                        <div class="dropdown-menu open">
-                                            <div class="bs-searchbox">
-                                                <input type="text" class="form-control" autocomplete="off">
-                                            </div>
-                                            <ul class="dropdown-menu inner" role="menu">
-                                                <li data-original-index="0" class="active">
-                                                    <a tabindex="0" class="" style="" data-tokens="null">
-                                                        <span class="text">BẮT ĐẦU</span>
-                                                        <span class="glyphicon glyphicon-ok check-mark"></span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <i class="fa fa-remove rmText" style="display: block;"></i>
-                                </div>
-                                <div class="bt">
-                                    <label class="mt6">Or </label><label class="learn_switchbot">
-                                        <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="checked">
-                                        <span class="learn_sliderbot learn_roundbot"></span>
-                                    </label>
-                                    <input type="text" name="data[question][2][]" class="form-control checkvalid" placeholder="Nhập câu trả lời" value="Lĩnh vực Sở hữu trí tuệ, Hiện tại có 23100 văn bản luật và 2600 câu hỏi liên quan đến lĩnh vực bạn quan tâm. Bạn có thể gửi câu hỏi cho tôi?">
-                                    <i class="fa fa-remove rmText" style="display: block;"></i>
-                                </div>
-                                <div class="bt">
-                                    <label class="mt6">Or </label>
-                                    <label class="learn_switchbot">
-                                        <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="checked">
-                                        <span class="learn_sliderbot learn_roundbot"></span>
-                                    </label>
-                                    <input type="text" name="data[question][2][]" class="form-control checkvalid" placeholder="Nhập câu trả lời" value="Lĩnh vực Thuế. Hiện tại có 5100 văn bản luật và 1600 câu hỏi liên quan đến lĩnh vực bạn quan tâm.       Bạn vui lòng đặt câu hỏi cho tôi?">
-                                    <i class="fa fa-remove rmText" style="display: block;"></i>
-                                </div>
-                                <div class="bt">
-                                    <label class="mt6">Or </label>
-                                    <label class="learn_switchbot">
-                                        <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="checked">
-                                        <span class="learn_sliderbot learn_roundbot"></span>
-                                    </label><input type="text" name="data[question][2][]" class="form-control checkvalid" placeholder="Nhập câu trả lời" value="Rất tiếc tôi chưa có dữ liệu về lĩnh bạn quan tâm! Ban vui lòng quay lại sau nhé.">
-                                    <i class="fa fa-remove rmText" style="display: block;"></i>
+                                    <input type="text" name="data[question][1][]" class="form-control checkvalid" maxlength="320">
+                                    <i class="fa fa-remove icon-bin rmText"></i>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-success btn-rounded mt20 w100 ">
-                                <i class="fa fa-plus"></i> Thêm câu trả lời
+                            <button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">
+                                <i class="icon-plus22"></i> Thêm câu trả lời
                             </button>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="model-tag-bot" tabindex="-1" role="dialog" aria-labelledby="ModalTagBot" aria-hidden="true" style="display:none;">
+            <div class="modal-dialog modal-card" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Trả lời với thẻ</h5>
+                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </a>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="addCard fom-group">
+                                <ul class="list-inline">
+                                    <li class="card_galery"><i class="fa fa-copy"></i><span>Thẻ hình và chữ</span></li>
+                                    <li class="card_text"><i class="fa fa-file"></i><span>Thẻ văn bản</span></li>
+                                    <li class="card_list"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
+                                    <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
+                                    <li class="card_file"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
+                                </ul>
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea1"><input type="text" maxlength="25" id="name_card" value="Tên Thẻ" autofocus="autofocus"></label>
+                                <div id="wr_multi" class="scroll">
+                                    <div id="multi" style="width: 1320px;">
+                                    </div>
+                                </div>
+                            </div>
+                            @*<hr />
+                                <div class="form-group">
+
+                                </div>
+                                <hr />
+                                <div class="form-group">
+
+                                </div>*@
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-primary">Save changes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="modal_button" class="modal fade in" style="display: none;">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="pr_bt_name">
+                            <input type="text" class="form-control bt_name" placeholder="Nhập tên nút" maxlength="20">
+                            <span>20</span>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="bl_bt">
+                            <div class="bl_bt_content">
+                                <ul class="list-inline">
+                                    <li class="bl_bt_a add_card active">
+                                        <i class="icon-popout"></i> Thẻ
+                                    </li>
+                                    <li class="bl_bt_a add_url">
+                                        <i class="icon-link"></i> URL
+                                    </li>
+                                    <li class="bl_bt_a add_phone">
+                                        <i class="icon-phone2"></i> Điện thoại
+                                    </li>
+                                    <li class="bl_bt_a add_module"><i class="icon-power-cord"></i> Mô-đun</li>
+                                </ul>
+                                <div class="bl_bt_input">
+                                    <div class="blSelect">
+                                        <div class="select2-container select" id="s2id_autogen82">
+                                            <a href="javascript:void(0)" class="select2-choice select2-default" tabindex="-1">
+                                                <span class="select2-chosen" id="select2-chosen-83">Chọn  thẻ của bạn</span>
+                                                <abbr class="select2-search-choice-close"></abbr>
+                                                <span class="select2-arrow" role="presentation">
+                                                    <b role="presentation"></b>
+                                                </span>
+                                            </a>
+                                            <label for="s2id_autogen83" class="select2-offscreen"></label>
+                                            <input class="select2-focusser select2-offscreen" type="text" aria-haspopup="true" role="button" aria-labelledby="select2-chosen-83" id="s2id_autogen83">
+                                            <div class="select2-drop select2-display-none select2-with-searchbox">
+                                                <div class="select2-search">
+                                                    <label for="s2id_autogen83_search" class="select2-offscreen"></label>
+                                                    <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="select2-input" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-owns="select2-results-83" id="s2id_autogen83_search" placeholder="">
+                                                </div>
+                                                <ul class="select2-results" role="listbox" id="select2-results-83"></ul>
+                                            </div>
+                                        </div>
+                                        <select data-placeholder="Chọn  thẻ của bạn" class="select select2-offscreen" tabindex="-1" title="">
+                                            <option></option>
+                                            <optgroup label="THÔNG TIN">
+                                                <option value="5c00dc63c941482ab456a094">BẮT ĐẦU</option>
+                                                <option value="5c00dc63c941482ab456a09e">CÂU MẶC ĐỊNH</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button><button type="button" class="btn btn-primary bt_done">Xong</button></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <script src="~/assets/services/botLearning.js"></script>
+<script src="~/assets/services/card.js"></script>

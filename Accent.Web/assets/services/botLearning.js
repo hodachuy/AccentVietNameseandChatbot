@@ -12,6 +12,27 @@ $(document).ready(function () {
     // loading
     appendPaging(countData, limitpage);
 
+    $('.selectKeyword').selectpicker();
+    $('.selectKeyword').on('show.bs.select', function (e) {
+        var val = $(this).selectpicker('val');
+        $(this).parents('.bt').find('.selectKeyword option').remove();
+        $(this).parents('.bt').find('select.selectKeyword').append(card());
+        $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+        $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
+    });
+
+    $('.selectKeyword').on('hidden.bs.select', function (e) {
+        var val = $(this).selectpicker('val');
+        $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
+            if ($(el).find('[value="' + val + '"]').length <= 0) {
+                $(el).remove();
+            }
+        });
+        $(this).parents('.bt').find('.selectKeyword option:not([value="' + val + '"])').remove();
+        $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+    });
+
+
     var checkAlert = false;
     $('body').on('click', '.moveTop', function (event) {
         var el_index = $(this).closest('.panel-flat').index();
@@ -225,8 +246,9 @@ $(document).ready(function () {
 							'<label>Bot trả lời với&nbsp;</label>' +
 							'<label class="learn_switchbot">' +
 								'<input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="">' +
-								'<div class="learn_sliderbot learn_roundbot"></div>' +
+								'<span class="learn_sliderbot learn_roundbot"></span>' +
 							'</label>' +
+                            '<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>'+
 							'<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">' +
 								'<label>' +
 									'<input type="checkbox" class="switchery randomText" style="display:none">' +
@@ -361,6 +383,7 @@ $(document).ready(function () {
     })
 
     $('body').on('click', '.learn_switchinput', function (event) {
+        //console.log($(this).parent().next().eq(0))
         if ($(this).parents('.wrbutton').length > 0) {
             elParent = $(this).parents('.bt');
         } else {
@@ -369,15 +392,19 @@ $(document).ready(function () {
         if ($(this).is(':checked')) {
             vt = $(this).parents('.panel-flat').attr('indexpanel');
             elParent.find('.selectKeyword').remove();
+            elParent.find('.plus-tag').remove();
             strHtml = '<input type="text" name="data[question][' + (vt - 1) + '][]" class="form-control checkvalid" maxlength="640" placeholder="' + txtplholder + '">';
             elParent.find('.rmText').before(strHtml);
-        } else {
+           // $($(this).parent().next().eq(0)).addClass('hidden');
+        } else {          
             vt = $(this).parents('.panel-flat').attr('indexpanel');
             elParent.find('input[type=text]').remove();
             strHtml = '<select data-live-search="true" name="data[question][' + (vt - 1) + '][]" class="form-control selectKeyword checkvalid">' +
 					card() +
 					'</select>';
+            plusTagHtml = '<i class="fa fa-plus-circle plus-tag"></i>';
             elParent.find('.rmText').before(strHtml);
+            elParent.find('.rmText').after(plusTagHtml)
             elParent.find('.rmText').parent().find('.selectKeyword').selectpicker();
 
             elParent.find('.rmText').parent().find('.selectKeyword').on('show.bs.select', function (e) {
@@ -399,8 +426,13 @@ $(document).ready(function () {
                 $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
             });
 
+           // $($(this).parent().next().eq(0)).removeClass('hidden');
         }
     });
+
+    $('body').on('click', '.plus-tag', function () {
+        $('#model-tag-bot').modal('show');
+    })
 
     $('body').on('click', '.rmCt', function (event) {
         var element = $(this);
@@ -502,6 +534,150 @@ $(document).ready(function () {
             }
         }
     });
+
+    $('.saveKeyword').click(function () {
+        if ($('.error-tag').length > 0) {
+            if (!checkAlert) {
+                checkAlert = true;
+                bootbox.alert({
+                    message: txtAlert,
+                    callback: function () {
+                        checkAlert = false;
+                    }
+                });
+            }
+            return false;
+        }
+
+        // Validate Form
+        var checkvalid = true;
+        $('.wrap-content .panel-flat').each(function (index, el) {
+            if ($('.wrap-content .panel-flat').length >= 1) {
+                $(this).find('.checkvalid:not(".bootstrap-select")').each(function (index1, el1) {
+
+                    if (!$(this).is('select') && !$(this).hasClass('tags')) {
+                        var validVal = $(this).val();
+                        if (validVal.trim() == '') {
+                            if ($(this).parents('.bt').length) {
+                                $(this).parents('.bt').addClass('has-error');
+                            } else {
+                                $(this).parents('.input-group').addClass('has-error');
+                            }
+                            checkvalid = false;
+                        } else {
+                            $(this).parents('.has-error').removeClass('has-error');
+                        }
+                    } else if ($(this).hasClass('tags')) {
+                        if ($(this).children('.addedTag').size() <= 0) {
+                            $(this).parent().addClass('has-error');
+                        } else {
+                            $(this).parent().removeClass('has-error');
+                        }
+                    } else {
+                        var validVal = $(this).val();
+                        if (validVal == null) {
+                            if ($(this).parents('.bt').length) {
+                                $(this).parents('.bt').addClass('has-error');
+                            } else {
+                                $(this).parents('.input-group').addClass('has-error');
+                            }
+                            checkvalid = false;
+                        } else {
+                            $(this).parents('.has-error').removeClass('has-error');
+                        }
+                    }
+
+                });
+            }
+        });
+
+        if ($('.titleLearning').val() == '') {
+            $('.titleLearning').parent().addClass('has-error');
+            checkvalid = false;
+        } else {
+            $('.titleLearning').parent().removeClass('has-error');
+        }
+
+        $('.wrap-content .panel-flat').each(function (index, el) {
+            if (!$(this).find('.randomText').is(':checked')) {
+                $(this).find('.wrbutton .bt').not(":eq(0)").remove();
+            }
+        });
+        // End Validate Form
+        if (checkvalid) {
+            $.blockUI({
+                message: '<i class="icon-spinner4 spinner"></i>',
+                overlayCSS: {
+                    backgroundColor: '#000',
+                    opacity: 0.85,
+                    cursor: 'wait'
+                },
+                css: {
+                    border: 0,
+                    padding: 0,
+                    backgroundColor: 'transparent',
+                    color: '#fff',
+                }
+            });
+
+            var arData = [];
+            $('.wrap-content .panel-flat').each(function (index, el) {
+                var userSays = [];
+                $(this).find('.tags .addedTag').each(function (index1, el1) {
+                    userSays.push(decodeEntities($(el1).children('input').val()).trim());
+                })
+
+                var userExactly = $(this).find('.userSay .styled').is(':checked');
+                userExactly = userExactly ? 1 : 0;
+                var botReplys = [];
+                $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
+                    if ($(this).find('select.selectKeyword').length > 0) {
+                        botReplys.push([$(this).find('select.selectKeyword').val()]);
+                    } else {
+                        botReplys.push($(this).find('input[type=text]').val());
+                    }
+                });
+                var ojData = {
+                    'userSays': userSays.join(),
+                    'exactly': userExactly,
+                    'botReplys': botReplys
+                }
+                arData.push(ojData);
+            });
+
+            $.ajax({
+                url: urlKeywordsAdd,
+                type: 'POST',
+                data: {
+                    _id: $('[name="_id"]').val(),
+                    idBot: $('[name="idBot"]').val(),
+                    idPage: $('[name="idPage"]').val(),
+                    Status: $('[name="Status"]').val(),
+                    timezone: $('[name="timezone"]').val(),
+                    lang: $('[name="lang"]').val(),
+                    idGroup: $('[name="id"]').val(),
+                    group: $('[name="group"]').val(),
+                    learning: arData
+                },
+            }).done(function (val) {
+                if (val == 1) {
+                    window.location.href = urlKeywordIndex;
+                } else {
+                    $.unblockUI();
+                }
+            }).fail(function () {
+                $.unblockUI();
+            })
+        } else {
+            swal({
+                title: "Error",
+                text: txtError,
+                confirmButtonColor: "#ed4956",
+                type: "error"
+            });
+        }
+    })
+
 })
 
 
@@ -540,5 +716,5 @@ function fn_htmlPaging(countData, limitpage) {
 }
 
 function card() {
-    var htmlListCard = '<optgroup label="THÔNG TIN"><option  value="5c00dc63c941482ab456a094">BẮT ĐẦU</option><option  value="5c00dc63c941482ab456a09e">CÂU MẶC ĐỊNH</option><option  value="5c00dc63c941482ab456a0a1">LIÊN HỆ</option><option  value="5c00dc63c941482ab456a0a2">CÁC CHUYÊN MỤC</option><option  value="5c00dc63c941482ab456a0a3">TRANG CHỦ</option></optgroup><optgroup label="MÔ-ĐUN"><option  value="5c00dc63c941482ab456a095">TIN MỚI</option><option  value="5c00dc63c941482ab456a096">THỜI SỰ</option><option  value="5c00dc63c941482ab456a097">THẾ GIỚI</option><option  value="5c00dc63c941482ab456a098">KINH DOANH</option><option  value="5c00dc63c941482ab456a099">STARTUP</option><option  value="5c00dc63c941482ab456a09a">GIẢI TRÍ</option><option  value="5c00dc63c941482ab456a09b">THỂ THAO</option><option  value="5c00dc63c941482ab456a09c">PHÁP LUẬT</option><option  value="5c00dc63c941482ab456a09d">GIÁO DỤC</option><option  value="5c00dc63c941482ab456a09f">CHAT VỚI ADMIN</option><option  value="5c00dc63c941482ab456a0a0">GỬI PHẢN HỒI</option></optgroup><optgroup label="ok"></optgroup><optgroup label="Nhóm 4"></optgroup>';    return htmlListCard;
+    var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="5c00dc63c941482ab456a094">BẮT ĐẦU</option><option  value="5c00dc63c941482ab456a09e">CÂU MẶC ĐỊNH</option><option  value="5c00dc63c941482ab456a0a1">LIÊN HỆ</option><option  value="5c00dc63c941482ab456a0a2">CÁC CHUYÊN MỤC</option><option  value="5c00dc63c941482ab456a0a3">TRANG CHỦ</option></optgroup>';    return htmlListCard;
 }

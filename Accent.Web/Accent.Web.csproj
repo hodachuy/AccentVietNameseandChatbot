@@ -257,6 +257,7 @@
     <Content Include="assets\images\product-pic.jpg" />
     <Content Include="assets\images\slack.png" />
     <Content Include="assets\images\switch.png" />
+    <Content Include="assets\libs\css\card.css" />
     <Content Include="assets\libs\css\common-bot.css" />
     <Content Include="assets\libs\css\style.css" />
     <Content Include="assets\libs\js\dashboard-ecommerce.js" />
@@ -268,6 +269,7 @@
     <Content Include="assets\libs\js\jvectormap.custom.js" />
     <Content Include="assets\libs\js\main-js.js" />
     <Content Include="assets\services\botLearning.js" />
+    <Content Include="assets\services\card.js" />
     <Content Include="assets\services\searchEngineQnA.js" />
     <Content Include="assets\vendor\bootstrap-colorpicker\%40claviska\jquery-minicolors\jquery.minicolors.css" />
     <Content Include="assets\vendor\bootstrap-colorpicker\%40claviska\jquery-minicolors\jquery.minicolors.min.js" />
@@ -636,6 +638,7 @@
     <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="Scripts\boostrap-select.min.js" />
     <Content Include="Scripts\bootbox.min.js" />
+    <Content Include="Scripts\bootstrap-select-1.7.2.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
