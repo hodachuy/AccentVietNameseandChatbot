@@ -41,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AIMLTagHandlers\bot.cs" />
+    <Compile Include="AIMLTagHandlers\button.cs" />
+    <Compile Include="AIMLTagHandlers\card.cs" />
+    <Compile Include="AIMLTagHandlers\carousel.cs" />
     <Compile Include="AIMLTagHandlers\condition.cs" />
     <Compile Include="AIMLTagHandlers\date.cs" />
     <Compile Include="AIMLTagHandlers\formal.cs" />
@@ -48,6 +51,7 @@
     <Compile Include="AIMLTagHandlers\get.cs" />
     <Compile Include="AIMLTagHandlers\gossip.cs" />
     <Compile Include="AIMLTagHandlers\id.cs" />
+    <Compile Include="AIMLTagHandlers\image.cs" />
     <Compile Include="AIMLTagHandlers\input.cs" />
     <Compile Include="AIMLTagHandlers\javascript.cs" />
     <Compile Include="AIMLTagHandlers\learn.cs" />

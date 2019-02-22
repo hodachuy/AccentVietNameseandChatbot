@@ -5,7 +5,7 @@
 <link href="~/assets/libs/css/common-bot.css" rel="stylesheet" />
 <link href="~/assets/libs/css/card.css" rel="stylesheet" />
 
-@*<script type="text/javascript" src="https://platform.messnow.com/js/plugins/forms/selects/selectboxit.min.js"></script>*@
+
 <script type="text/javascript" src="https://platform.messnow.com/js/hekate/autosize.min.js"></script>
 <script type="text/javascript" src="https://platform.messnow.com/js/plugins/forms/selects/select2.min.js"></script>
 <script type="text/javascript" src="https://platform.messnow.com/js/plugins/sortable/autogrow.js"></script>
@@ -16,6 +16,10 @@
         .modal-card {
             max-width: 1320px;
             margin: 1.75rem auto;
+            max-height: 100%;
+            position: relative;
+            overflow: auto !important;
+            padding-right:unset;
         }
     }
 
@@ -209,7 +213,8 @@
                                 </div>
                             </div>
                         </div>
-                    </div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button><button type="button" class="btn btn-primary bt_done">Xong</button></div>
+                    </div>
+                    <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button><button type="button" class="btn btn-primary bt_done">Xong</button></div>
                 </div>
             </div>
         </div>

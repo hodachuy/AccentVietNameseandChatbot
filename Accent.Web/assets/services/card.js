@@ -24,7 +24,7 @@
         txtCard10 = "Thẻ mô-đun bắt buộc phải nằm cuối cùng dưới tất cả các thẻ còn lại",
         txtCard11 = "Tải âm thanh lên",
         txtCard12 = "Tải video lên",
-        txtCard13 = "Tải tệp PDF lên",
+        txtCard13 = "Tải tệp lên",
         txtCard14 = "Tải ảnh lên",
         txtCard15 = "Thay thế",
         txtCard16 = "Xóa",
@@ -148,8 +148,8 @@ $(document).ready(function () {
         mouseenter: function () {
             if($(this).attr('type-button')!='element_add'){
                 var str_bthv = '<div class="action_bt">'+
-                                    '<span class="list_edBt"><i class="icon-pencil6"></i></span>'+
-                                    '<span class="list_rmBt"><i class="icon-bin"></i></span>'+
+                                    '<span class="list_edBt"><i class="icon-pencil6 fa fa-edit"></i></span>'+
+                                    '<span class="list_rmBt"><i class="icon-bin fa fa-remove"></i></span>'+
                                 '</div>';
                 $(this).append(str_bthv);
             }
@@ -1287,9 +1287,9 @@ $(document).ready(function () {
             '<div class="layer tile">'+
                 '<div class="bt_move_horizontal">'+
                     '<div class="layer_move">'+
-                        '<i class="icon-arrow-left13 pull-left"></i>'+
+                        '<i class="icon-arrow-left13 pull-left fa fa-arrow-left"></i>'+
                         '<i class="icon-move"></i>'+
-                        '<i class="icon-arrow-right14 pull-right"></i>'+
+                        '<i class="icon-arrow-right14 pull-right fa fa-arrow-right"></i>'+
                     '</div>'+
                     '<div class="layer_rm">'+
                         '<i class="icon-bin fa fa-trash"></i>'+
@@ -2057,9 +2057,9 @@ $(document).ready(function () {
         var htmlLayerAdd = '<div class="layer tile">'+
                 '<div class="bt_move_horizontal">'+
                     '<div class="layer_move">'+
-                        '<i class="icon-arrow-left13 pull-left "></i>'+
+                        '<i class="icon-arrow-left13 pull-left fa fa-arrow-left"></i>'+
                         '<i class="icon-move"></i>'+
-                        '<i class="icon-arrow-right14 pull-right"></i>'+
+                        '<i class="icon-arrow-right14 pull-right fa fa-arrow-right"></i>'+
                     '</div>'+
                     '<div class="layer_rm">'+
                         '<i class="icon-bin fa fa-trash"></i>'+
@@ -2711,8 +2711,8 @@ $(document).ready(function () {
         mouseenter: function () {
             if($(this).attr('type-button')!='element_add'){
                 var str_bthv = '<div class="action_bt">'+
-                                    '<span class="bt_ed"><i class="icon-pencil6"></i></span>'+
-                                    '<span class="bt_rm"><i class="icon-bin"></i></span>'+
+                                    '<span class="bt_ed"><i class="icon-pencil6 fa fa-edit"></i></span>'+
+                                    '<span class="bt_rm"><i class="icon-bin fa fa-remove"></i></span>'+
                                 '</div>';
                 $(this).append(str_bthv);
             }
