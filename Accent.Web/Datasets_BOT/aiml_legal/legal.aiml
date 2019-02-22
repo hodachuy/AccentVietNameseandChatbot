@@ -3,6 +3,122 @@
   <!-- <có thể call tới database sẽ custome trên aiml cho dễ sài/>-->
   <!-- <sẽ làm hỗ trợ viết javascript trên này để gọi api, hiện tại đang xử lý call api từ bước return trả về dữ liệu ở code behide />-->
   
+   <category>
+      <pattern>GiỚI THIỆU BOT</pattern>
+      <template>
+          tên tôi là <bot name ="name"/><br />
+          gia đình của tôi <bot name="family" /><br />
+          giới tính <bot name = "gender"/><br />
+          ngày sinh <bot name = "birthday"/><br />
+      </template>  
+ </category>
+  
+ <category>
+      <pattern>TÔI GIỚI TÍNH *</pattern>
+      <template>
+         giới tính <set name = "gender"><star/></set> à
+      </template>  
+ </category> 
+ 
+<category>
+<pattern>BẠN THẤY TÔI HẤP DẪN *</pattern>
+<template>
+  <condition name="gender">
+    <li value="nam">I find you very handsome.</li>
+    <li value="nỮ">I find you very pretty.</li>
+    <li>I find you very attractive.</li>
+  </condition>
+</template>
+</category>  
+
+
+
+<category>
+   <pattern>testbutton</pattern>
+   <template>
+        <button>
+           <text>bcbc</text>
+           <url>http://localhost:47887/</url>
+        </button>
+   </template>
+</category>
+
+<category>
+   <pattern>testcard</pattern>
+   <template>
+        <card>
+           <image>http://localhost:47887/</image>
+           <title>a</title>
+           <subtitle>b</subtitle>
+            <link>
+               <text>AB</text>
+               <url>C</url>
+            </link>
+           <button>
+               <text>c</text>
+               <postback>http://localhost:47887/</postback>
+           </button>
+           <button>
+               <text>D</text>
+               <postback>http://localhost:47887/</postback>
+           </button>
+        </card>
+   </template>
+</category>
+
+<category>
+   <pattern>testcarousel</pattern>
+   <template>
+            <carousel>
+             <card>
+                 <image>ABC</image>
+                 <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+                 <subtitle>Câu hỏi liên quan</subtitle>
+                 <button>
+                     <text>A</text>
+                     <postback>B</postback>
+                 </button>
+                                 <button>
+                    <text>C</text>
+                    <postback>C</postback>
+                </button>
+             </card>
+            <card>
+                <image>ABCA</image>
+                <title>Trường hợp nào thì bị coi là xâm phạm quyền đối với nhãn hiệu nỗi tiếng?</title>
+                <subtitle>Câu hỏi liên quan</subtitle>
+                <button>
+                    <text>B</text>
+                    <postback>B</postback>
+                </button>
+            </card>
+            <card>
+                <image>ÁDS</image>
+                <title>Thế nào là xử lý hình sự tội xâm phạm quyền sở hữu công nghiệp?</title>
+                <subtitle>Câu hỏi liên quan</subtitle>
+                <button>
+                    <text>C</text>
+                    <postback>C</postback>
+                </button>
+            </card>
+         </carousel>
+         <button>
+           <text>bcbc</text>
+           <url>http://localhost:47887/</url>
+        </button>
+         <card>
+             <image>V</image>
+                 <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+                 <subtitle>Câu hỏi liên quan</subtitle>
+                 <button>
+                     <text>A</text>
+                     <postback>B</postback>
+                 </button>
+             </card>
+	</template>
+</category>
+  
+  
 <category>
    <pattern>test123</pattern>
    <template>
@@ -13,6 +129,7 @@
 	</template>
 </category>
   
+
  <category>
     <pattern>TEST SCRIPT</pattern>
     <template>
@@ -300,20 +417,20 @@
   <category>
     <pattern>BẠN BIẾT TÊN TÔI *</pattern>
     <template>
-      <get name="username1" />
+      bạn tên <get name="user"/>
     </template>
   </category>
   <category>
     <pattern>BẠN CÓ BIẾT TÊN TÔI *</pattern>
     <template>
-      <get name="username1" />
+      bạn tên <get name="user"/>
     </template>
   </category>
 
   <category>
     <pattern>TÔI TÊN *</pattern>
     <template>
-      Xin chào <set name = "username1">
+      Xin chào <set name = "user">
         <star/>
       </set>
       ! Cảm ơn bạn đã tham gia tư vấn cùng tôi.

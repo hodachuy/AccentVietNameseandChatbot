@@ -30,8 +30,8 @@ namespace Accent.Web.Controllers
         private AccentService _accent;
         private readonly string UrlAPI = Helper.ReadString("UrlAPI");
         private readonly string KeyAPI = Helper.ReadString("KeyAPI");
-        private Bot bot;
-        private User user;
+        private BotService _bot;
+        //private User user;
         private string pathAIML = HostingEnvironment.MapPath("~/Datasets_BOT/aiml_legal");
         Dictionary<string, string> NOT_MATCH;
 
@@ -44,15 +44,15 @@ namespace Accent.Web.Controllers
 
             _accent = AccentService.AccentInstance;
 
-            bot = new Bot();
-            string userName = "user" + Guid.NewGuid();
-            user = new User(userName, bot);
-            string pathSetting = HostingEnvironment.MapPath("~/Datasets_BOT/config/Settings.xml");
-            bot.loadSettings(pathSetting);
-            bot.loadAIMLFromFiles(pathAIML);
+            _bot = BotService.BotInstance;
+            //string userName = "user" + Guid.NewGuid();
+            //user = new User(userName, bot);
+            //string pathSetting = HostingEnvironment.MapPath("~/Datasets_BOT/config/Settings.xml");
+            //bot.loadSettings(pathSetting);
+            //bot.loadAIMLFromFiles(pathAIML);
 
-            bot.isAcceptingUserInput = false;
-            bot.isAcceptingUserInput = true;
+            //bot.isAcceptingUserInput = false;
+            //bot.isAcceptingUserInput = true;
 
             NOT_MATCH = new Dictionary<string, string>();
             NOT_MATCH.Add("NOT_MATCH_01", "Xin lỗi, Tôi không hiểu");
@@ -139,8 +139,10 @@ namespace Accent.Web.Controllers
         public JsonResult chatbot(string text, string group)
         {
             string result = "";
-            AIMLbot.Request r = new Request(text, user, bot);
-            AIMLbot.Result res = bot.Chat(r);
+            AIMLbot.Result res = _bot.Chat(text);
+
+            //AIMLbot.Request r = new Request(text, user, bot);
+            //AIMLbot.Result res = bot.Chat(r);
             result = res.OutputSentences[0].ToString();
             if (result.Contains("NOT_MATCH"))
             {
@@ -189,7 +191,7 @@ namespace Accent.Web.Controllers
             }
 
             Thread.Sleep(1000);
-            bot.loadAIMLFromFiles(pathAIML);
+            _bot.loadAIMLFromFiles(pathAIML);
 
             return message;
         }
