@@ -45,6 +45,7 @@ namespace Accent.Web.Controllers
             _accent = AccentService.AccentInstance;
 
             _bot = BotService.BotInstance;
+            _bot.loadAIMLFromFiles(pathAIML);
             //string userName = "user" + Guid.NewGuid();
             //user = new User(userName, bot);
             //string pathSetting = HostingEnvironment.MapPath("~/Datasets_BOT/config/Settings.xml");

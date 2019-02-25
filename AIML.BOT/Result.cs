@@ -109,6 +109,11 @@ namespace AIMLbot
         public List<string> OutputSentences = new List<string>();
 
         /// <summary>
+        /// The individual sentences produced by the bot that form the complete response
+        /// </summary>
+        public List<string> OutputHtml = new List<string>();
+
+        /// <summary>
         /// The individual sentences that constitute the raw input from the user
         /// </summary>
         public List<string> InputSentences = new List<string>();

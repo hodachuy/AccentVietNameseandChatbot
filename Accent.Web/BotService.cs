@@ -13,18 +13,15 @@ namespace Accent.Web
         private User user;
         private static BotService botInstance = null;
         private static readonly object lockObject = new object();
-        private string pathAIML = HostingEnvironment.MapPath("~/Datasets_BOT/aiml_legal");
+        private string pathSetting = HostingEnvironment.MapPath("~/Datasets_BOT/config");// HostingEnvironment.MapPath("~/Datasets_BOT/config/Settings.xml");
+
         private BotService()
         {
              _bot = new Bot();
-
             string userName = "user" + Guid.NewGuid();
             user = new User(userName, _bot);
 
-            string pathSetting = HostingEnvironment.MapPath("~/Datasets_BOT/config");// HostingEnvironment.MapPath("~/Datasets_BOT/config/Settings.xml");
-            _bot.loadSettings(pathSetting);
-            _bot.loadAIMLFromFiles(pathAIML);
-
+            _bot.loadSettings(pathSetting);           
             _bot.isAcceptingUserInput = false;
             _bot.isAcceptingUserInput = true;
         }

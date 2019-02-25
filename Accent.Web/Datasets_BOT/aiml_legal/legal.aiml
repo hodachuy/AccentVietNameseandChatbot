@@ -270,6 +270,65 @@
       </random>
     </template>
   </category>
+  
+  
+  <category>
+    <pattern>CHÀO123</pattern>
+    <template>
+        <random>
+        <li>Chào bạn! Tôi là chatbot Pháp luật. Ban vui lòng chọn lĩnh vực để được tư vấn?
+            <button>
+                <text>Sở hửu trí tuệ</text>
+                <postback>SHTT</postback>
+            </button>
+
+            <button>
+                <text>Thuế-Phí-Lệ Phí</text>
+                <postback>THUE</postback>
+           </button>
+
+            <button>
+                <text>Du lịch</text>
+                <postback>DULICH</postback>
+            </button>
+        </li>
+        <li>Mình có thể trả lời các câu hỏi thường gặp về luật. Bạn quan tâm lĩnh vực nào dưới đây?
+            <button>
+                <text>Sở hửu trí tuệ</text>
+                <postback>SHTT</postback>
+            </button>
+
+            <button>
+                <text>Thuế-Phí-Lệ Phí</text>
+                <postback>THUE</postback>
+           </button>
+
+            <button>
+                <text>Du lịch</text>
+                <postback>DULICH</postback>
+            </button>
+        </li>
+        <li>Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
+            <button>
+                <text>Sở hửu trí tuệ</text>
+                <postback>SHTT</postback>
+            </button>
+
+            <button>
+                <text>Thuế-Phí-Lệ Phí</text>
+                <postback>THUE</postback>
+           </button>
+
+            <button>
+                <text>Du lịch</text>
+                <postback>DULICH</postback>
+            </button>
+        </li>
+        </random>
+    </template>
+</category>
+    
+    
 
   <!-- __________tag script sẽ làm hỗ trợ sau __________-->
   <category>
@@ -488,12 +547,14 @@
   <category>
     <pattern>THÔNG TIN VỀ LUẬT *</pattern>
     <template>
-      Thông tin chi tiết <set name = "about">
-        <star/>
-      </set>
+      Thông tin chi tiết <set name = "about"><star/></set> 
       <button>
         <text>Xem chi tiết</text>
         <url>http://qa.surelrn.vn/van-ban-phap-luat.html</url>
+      </button>       
+      <button>
+        <text>CO</text>
+        <postback>YES</postback>
       </button>
     </template>
   </category>

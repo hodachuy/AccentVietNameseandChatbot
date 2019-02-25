@@ -24,7 +24,7 @@ namespace AIMLbot
     /// </summary>
     public class Bot
     {
-#region Attributes
+        #region Attributes
 
         /// <summary>
         /// A dictionary object that looks after all the settings associated with this bot
@@ -146,7 +146,7 @@ namespace AIMLbot
         {
             get
             {
-                return new Regex(this.GlobalSettings.grabSetting("stripperregex"),RegexOptions.IgnorePatternWhitespace);
+                return new Regex(this.GlobalSettings.grabSetting("stripperregex"), RegexOptions.IgnorePatternWhitespace);
             }
         }
 
@@ -244,7 +244,7 @@ namespace AIMLbot
                 switch (sex)
                 {
                     case -1:
-                        result=Gender.Unknown;
+                        result = Gender.Unknown;
                         break;
                     case 0:
                         result = Gender.Female;
@@ -325,7 +325,7 @@ namespace AIMLbot
         /// If set to false the input from AIML files will undergo the same normalization process that
         /// user input goes through. If true the bot will assume the AIML is correct. Defaults to true.
         /// </summary>
-        public bool TrustAIML=true;
+        public bool TrustAIML = true;
 
         /// <summary>
         /// The maximum number of characters a "that" element of a path is allowed to be. Anything above
@@ -335,29 +335,29 @@ namespace AIMLbot
         /// </summary>
         public int MaxThatSize = 256;
 
-#endregion
+        #endregion
 
-#region Delegates
+        #region Delegates
 
         public delegate void LogMessageDelegate();
 
-#endregion
+        #endregion
 
-#region Events
+        #region Events
 
         public event LogMessageDelegate WrittenToLog;
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Ctor
         /// </summary>
         public Bot()
         {
-            this.setup();  
+            this.setup();
         }
 
-#region Settings methods
+        #region Settings methods
 
         /// <summary>
         /// Loads AIML from .aiml files into the graphmaster "brain" of the bot
@@ -396,7 +396,7 @@ namespace AIMLbot
             this.Substitutions = new SettingsDictionary(this);
             this.DefaultPredicates = new SettingsDictionary(this);
             this.CustomTags = new Dictionary<string, TagHandler>();
-            this.Graphmaster = new AIMLbot.Utils.Node(); 
+            this.Graphmaster = new AIMLbot.Utils.Node();
         }
 
         /// <summary>
@@ -412,7 +412,7 @@ namespace AIMLbot
                 Environment.CurrentDirectory,
 #endif
                 Path.Combine("config", "Settings.xml"));
-            this.loadSettings(path);          
+            this.loadSettings(path);
         }
 
         /// <summary>
@@ -625,14 +625,14 @@ namespace AIMLbot
                 this.Splitters.Add(";");
             }
         }
-#endregion
+        #endregion
 
-#region Logging methods
+        #region Logging methods
 
         /// <summary>
         /// The last message to be entered into the log (for testing purposes)
         /// </summary>
-        public string LastLogMessage=string.Empty;
+        public string LastLogMessage = string.Empty;
 
         /// <summary>
         /// Writes a (timestamped) message to the bot's log.
@@ -646,7 +646,7 @@ namespace AIMLbot
             if (this.IsLogging)
             {
                 this.LogBuffer.Add(DateTime.Now.ToString() + ": " + message + Environment.NewLine);
-                if (this.LogBuffer.Count > this.MaxLogBufferSize-1)
+                if (this.LogBuffer.Count > this.MaxLogBufferSize - 1)
                 {
                     // Write out to log file
                     DirectoryInfo logDirectory = new DirectoryInfo(this.PathToLogs);
@@ -655,8 +655,8 @@ namespace AIMLbot
                         logDirectory.Create();
                     }
 
-                    string logFileName = DateTime.Now.ToString("yyyyMMdd")+".log";
-                    FileInfo logFile = new FileInfo(Path.Combine(this.PathToLogs,logFileName));
+                    string logFileName = DateTime.Now.ToString("yyyyMMdd") + ".log";
+                    FileInfo logFile = new FileInfo(Path.Combine(this.PathToLogs, logFileName));
                     StreamWriter writer;
                     if (!logFile.Exists)
                     {
@@ -686,9 +686,9 @@ namespace AIMLbot
             }
         }
 
-#endregion
+        #endregion
 
-#region Conversation methods
+        #region Conversation methods
 
         /// <summary>
         /// Given some raw input and a unique ID creates a response for a new user
@@ -701,7 +701,7 @@ namespace AIMLbot
             Request request = new Request(rawInput, new User(UserGUID, this), this);
             return this.Chat(request);
         }
-       
+
         /// <summary>
         /// Given a request containing user input, produces a result from the bot
         /// </summary>
@@ -741,9 +741,18 @@ namespace AIMLbot
                         {
                             XmlNode templateNode = AIMLTagHandler.getNode(query.Template);
                             string outputSentence = this.processNode(templateNode, query, request, result, request.user);
+
+                            XmlNode resultNodeToHtml = AIMLTagHandler.getNode("<html>" + outputSentence + "</html>");
+                            string outputHtml = this.processTagToHtml(resultNodeToHtml);
+
                             if (outputSentence.Length > 0)
                             {
                                 result.OutputSentences.Add(outputSentence);
+                            }
+
+                            if (outputHtml.Length > 0)
+                            {
+                                result.OutputHtml.Add(outputHtml);
                             }
                         }
                         catch (Exception e)
@@ -783,11 +792,11 @@ namespace AIMLbot
             // check for timeout (to avoid infinite loops)
             if (request.StartedOn.AddMilliseconds(request.bot.TimeOut) < DateTime.Now)
             {
-                request.bot.writeToLog("WARNING! Request timeout. User: " + request.user.UserID + " raw input: \"" + request.rawInput + "\" processing template: \""+query.Template+"\"");
+                request.bot.writeToLog("WARNING! Request timeout. User: " + request.user.UserID + " raw input: \"" + request.rawInput + "\" processing template: \"" + query.Template + "\"");
                 request.hasTimedOut = true;
                 return string.Empty;
             }
-                        
+
             // process the node
             string tagName = node.Name.ToLower();
             if (tagName == "template")
@@ -931,9 +940,9 @@ namespace AIMLbot
                             {
                                 if (childNode.NodeType != XmlNodeType.Text)
                                 {
-                                    if(childNode.Name == "card")
+                                    if (childNode.Name == "card")
                                     {
-                                        childNode.InnerXml = childNode.OuterXml.Replace("<card>","").Replace("</card>","");
+                                        childNode.InnerXml = childNode.OuterXml.Replace("<card>", "").Replace("</card>", "");
                                     }
                                     else if (childNode.Name == "button")
                                     {
@@ -960,26 +969,173 @@ namespace AIMLbot
                     {
                         string resultNodeInnerXML = tagHandler.Transform();
                         XmlNode resultNode = AIMLTagHandler.getNode("<node>" + resultNodeInnerXML + "</node>");
-                        //if (resultNode.HasChildNodes)
-                        //{
-                        //    StringBuilder recursiveResult = new StringBuilder();
-                        //    // recursively check
-                        //    foreach (XmlNode childNode in resultNode.ChildNodes)
-                        //    {
-                        //        recursiveResult.Append(this.processNode(childNode, query, request, result, user));
-                        //    }
-                        //    return recursiveResult.ToString();
-                        //}
-                        //else
-                        //{
-                        //    return resultNode.InnerXml;
-                        //}
-                        return resultNode.InnerXml;
+                        if (resultNode.HasChildNodes)
+                        {
+                            StringBuilder recursiveResult = new StringBuilder();
+                            // recursively check
+                            foreach (XmlNode childNode in resultNode.ChildNodes)
+                            {
+                                recursiveResult.Append(this.processNode(childNode, query, request, result, user));
+                            }
+                            return recursiveResult.ToString();
+                        }
+                        else
+                        {
+                            return resultNode.InnerXml;
+                        }
+                        //return resultNode.InnerXml;
                     }
                 }
             }
         }
 
+        private string processTagToHtml(XmlNode node)
+        {
+            // process the node
+            string tagName = node.Name.ToLower();
+            string html = string.Empty;
+            if (tagName == "html")
+            {
+                StringBuilder templateResult = new StringBuilder();
+                if (node.HasChildNodes)
+                {
+                    foreach (XmlNode childNode in node.ChildNodes)
+                    {
+                        if (childNode.NodeType == XmlNodeType.Text)
+                        {
+                            html = childNode.InnerText;
+                        }
+                        else
+                        {
+                            html = childNode.OuterXml;
+                            html = renderTagToHtml(childNode.Name, childNode.OuterXml, childNode.InnerXml);
+                            //if (childNode.Name == "button")
+                            //{
+                            //    if (html.Contains("<postback>"))
+                            //    {
+                            //        string dataPostback = new Regex("<postback>(.*)</postback>", RegexOptions.IgnoreCase).Match(html).Groups[1].Value;
+                            //        html = html.Replace("<button>", "<button class={{postback_button}} data-postback =\"" + dataPostback + "\">");
+                            //        html = Regex.Replace(html, @"<postback>(.*?)</postback>", String.Empty);
+                            //    }
+                            //    else if (html.Contains("<url>"))
+                            //    {
+                            //        string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(html).Groups[1].Value;
+                            //        html = html.Replace("<button>", "<button class={{url_button}} data-url =\"" + dataUrl + "\">");
+                            //        html = Regex.Replace(html, @"<url>(.*?)</url>", String.Empty);
+                            //    }
+                            //}
+                            //else if (childNode.Name == "link")
+                            //{
+                            //    string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(html).Groups[1].Value;
+                            //    html = html.Replace("<link>", "<a href=\"" + dataUrl + "\">").Replace("</link>","</a>");
+                            //    html = Regex.Replace(html, @"<url>(.*?)</url>", String.Empty);
+                            //}
+                            //else if (childNode.Name == "image")
+                            //{
+                            //    string dataImage = new Regex("<image>(.*)</image>", RegexOptions.IgnoreCase).Match(html).Groups[1].Value;
+                            //    html = html.Replace("</image>", "").Replace("<image>", "<img src=\""+dataImage+"\"/>");
+                            //}
+                            //if (childNode.Name == "card")
+                            //{
+                            //    XmlNode resultNode = AIMLTagHandler.getNode("<node>" + childNode.InnerXml + "</node>");
+                            //    if (resultNode.HasChildNodes)
+                            //    {
+                            //        foreach (XmlNode cNode in resultNode.ChildNodes)
+                            //        {
+                            //            html = renderTagToHtml(cNode.Name, cNode.OuterXml);
+                            //        }
+                            //    }
+                            //}
+                            //else if(childNode.Name == "carousel")
+                            //{
+
+                            //}
+                        }
+                        templateResult.Append(html);
+                    }
+                }
+                return templateResult.ToString();
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+        private string renderTagToHtml(string tagName, string outerTagContent, string innerTagContent)
+        {
+            string result = string.Empty;
+            outerTagContent = Regex.Replace(outerTagContent, "<text>", "");
+            outerTagContent = Regex.Replace(outerTagContent, "</text>", "");
+            switch (tagName)
+            {
+                case "button":
+                    if (outerTagContent.Contains("<postback>"))
+                    {
+                        string dataPostback = new Regex("<postback>(.*)</postback>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+                        outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_postback_button}}\" data-postback =\"" + dataPostback + "\">");
+                        outerTagContent = Regex.Replace(outerTagContent, @"<postback>(.*?)</postback>", String.Empty);
+                    }
+                    else if (outerTagContent.Contains("<url>"))
+                    {
+                        string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+                        outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_url_button}}\" data-url =\"" + dataUrl + "\">");
+                        outerTagContent = Regex.Replace(outerTagContent, @"<url>(.*?)</url>", String.Empty);
+                    }
+                    break;
+                case "link":
+                    string dataLink = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+                    outerTagContent = outerTagContent.Replace("<link>", "<a class=\"{{lvbot_link}}\" target=\"_blank\" href=\"" + dataLink + "\">").Replace("</link>", "</a>");
+                    outerTagContent = Regex.Replace(outerTagContent, @"<url>(.*?)</url>", String.Empty);
+                    break;
+                case "image":
+                    string dataImage = new Regex("<image>(.*)</image>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+                    outerTagContent = Regex.Replace(outerTagContent, @"<image>(.*?)</image>", String.Empty);
+                    outerTagContent = "<img class=\"{{lvbot_image}}\" src=\"" + dataImage + "\"/>";
+                    break;
+                case "title":
+                    outerTagContent = outerTagContent.Replace("<title>", "<div class=\"{{lvbot_card_title}}\">")
+                                                    .Replace("</title>","</div>");
+                    break;
+                case "subtitle":
+                    outerTagContent = outerTagContent.Replace("<subtitle>", "<div class=\"{{lvbot_card_subtitle}}\">")
+                                .Replace("</subtitle>", "</div>");
+                    break;
+                default:
+                    break;
+            }
+
+            result = outerTagContent;
+
+            if (tagName == "card")
+            {
+                XmlNode resultNode = AIMLTagHandler.getNode("<node>" + innerTagContent + "</node>");
+                if (resultNode.HasChildNodes)
+                {
+                    string htmlCard = "";
+                    foreach (XmlNode cNode in resultNode.ChildNodes)
+                    {
+                        htmlCard += renderTagToHtml(cNode.Name, cNode.OuterXml,"");
+                    }
+                    result = htmlCard;
+                }
+            }
+            if(tagName == "carousel")
+            {
+                XmlNode resultNode = AIMLTagHandler.getNode("<node>" + innerTagContent + "</node>");
+                if (resultNode.HasChildNodes)
+                {
+                    string htmlCarousel = "";
+                    foreach (XmlNode cNode in resultNode.ChildNodes)
+                    {
+                        htmlCarousel += renderTagToHtml(cNode.Name, cNode.OuterXml, cNode.InnerXml);
+                    }
+                    result = htmlCarousel;
+                }
+            }
+
+            return result;
+        }
         /// <summary>
         /// Searches the CustomTag collection and processes the AIML if an appropriate tag handler is found
         /// </summary>
@@ -996,7 +1152,7 @@ namespace AIMLbot
                 TagHandler customTagHandler = (TagHandler)this.CustomTags[node.Name.ToLower()];
 
                 AIMLTagHandler newCustomTag = customTagHandler.Instantiate(this.LateBindingAssemblies);
-                if(object.Equals(null,newCustomTag))
+                if (object.Equals(null, newCustomTag))
                 {
                     return null;
                 }
@@ -1017,9 +1173,9 @@ namespace AIMLbot
             }
         }
 
-#endregion
+        #endregion
 
-#region Serialization
+        #region Serialization
 #if !NETSTANDARD
 
         /// <summary>
@@ -1055,9 +1211,9 @@ namespace AIMLbot
         }
 
 #endif
-#endregion
+        #endregion
 
-#region Latebinding custom-tag dll handlers
+        #region Latebinding custom-tag dll handlers
 
         /// <summary>
         /// Loads any custom tag handlers found in the dll referenced in the argument
@@ -1085,7 +1241,7 @@ namespace AIMLbot
                         // We've found a custom tag handling class
                         // so store the assembly and store it away in the Dictionary<,> as a TagHandler class for 
                         // later usage
-                        
+
                         // store Assembly
                         if (!this.LateBindingAssemblies.ContainsKey(tagDLL.FullName))
                         {
@@ -1109,9 +1265,9 @@ namespace AIMLbot
                 }
             }
         }
-#endregion
+        #endregion
 
-#region Phone Home
+        #region Phone Home
         /// <summary>
         /// Attempts to send an email to the botmaster at the AdminEmail address setting with error messages
         /// resulting from a query to the bot
@@ -1178,7 +1334,7 @@ The AIMLbot program.
                 // if we get here then we can't really do much more
             }
 #else
-            MailMessage msg = new MailMessage("donotreply@aimlbot.com",this.AdminEmail);
+            MailMessage msg = new MailMessage("donotreply@aimlbot.com", this.AdminEmail);
             msg.Subject = "WARNING! AIMLBot has encountered a problem...";
             string message = @"Dear Botmaster,
 
@@ -1209,13 +1365,13 @@ The AIMLbot program.
             message = message.Replace("*RAWINPUT*", request.rawInput);
             message = message.Replace("*USER*", request.user.UserID);
             StringBuilder paths = new StringBuilder();
-            foreach(string path in request.result.NormalizedPaths)
+            foreach (string path in request.result.NormalizedPaths)
             {
-                paths.Append(path+Environment.NewLine);
+                paths.Append(path + Environment.NewLine);
             }
             message = message.Replace("*PATHS*", paths.ToString());
             msg.Body = message;
-            msg.IsBodyHtml=false;
+            msg.IsBodyHtml = false;
             try
             {
                 if (msg.To.Count > 0)
@@ -1230,6 +1386,6 @@ The AIMLbot program.
             }
 #endif
         }
-#endregion
+        #endregion
     }
 }
