@@ -1008,48 +1008,7 @@ namespace AIMLbot
                         else
                         {
                             html = childNode.OuterXml;
-                            html = renderTagToHtml(childNode.Name, childNode.OuterXml, childNode.InnerXml);
-                            //if (childNode.Name == "button")
-                            //{
-                            //    if (html.Contains("<postback>"))
-                            //    {
-                            //        string dataPostback = new Regex("<postback>(.*)</postback>", RegexOptions.IgnoreCase).Match(html).Groups[1].Value;
-                            //        html = html.Replace("<button>", "<button class={{postback_button}} data-postback =\"" + dataPostback + "\">");
-                            //        html = Regex.Replace(html, @"<postback>(.*?)</postback>", String.Empty);
-                            //    }
-                            //    else if (html.Contains("<url>"))
-                            //    {
-                            //        string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(html).Groups[1].Value;
-                            //        html = html.Replace("<button>", "<button class={{url_button}} data-url =\"" + dataUrl + "\">");
-                            //        html = Regex.Replace(html, @"<url>(.*?)</url>", String.Empty);
-                            //    }
-                            //}
-                            //else if (childNode.Name == "link")
-                            //{
-                            //    string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(html).Groups[1].Value;
-                            //    html = html.Replace("<link>", "<a href=\"" + dataUrl + "\">").Replace("</link>","</a>");
-                            //    html = Regex.Replace(html, @"<url>(.*?)</url>", String.Empty);
-                            //}
-                            //else if (childNode.Name == "image")
-                            //{
-                            //    string dataImage = new Regex("<image>(.*)</image>", RegexOptions.IgnoreCase).Match(html).Groups[1].Value;
-                            //    html = html.Replace("</image>", "").Replace("<image>", "<img src=\""+dataImage+"\"/>");
-                            //}
-                            //if (childNode.Name == "card")
-                            //{
-                            //    XmlNode resultNode = AIMLTagHandler.getNode("<node>" + childNode.InnerXml + "</node>");
-                            //    if (resultNode.HasChildNodes)
-                            //    {
-                            //        foreach (XmlNode cNode in resultNode.ChildNodes)
-                            //        {
-                            //            html = renderTagToHtml(cNode.Name, cNode.OuterXml);
-                            //        }
-                            //    }
-                            //}
-                            //else if(childNode.Name == "carousel")
-                            //{
-
-                            //}
+                            html = renderTagToHtml(childNode.Name, childNode.OuterXml, childNode.InnerXml);                            
                         }
                         templateResult.Append(html);
                     }
@@ -1133,7 +1092,6 @@ namespace AIMLbot
                     result = htmlCarousel;
                 }
             }
-
             return result;
         }
         /// <summary>

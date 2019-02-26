@@ -260,6 +260,25 @@
     <Content Include="assets\images\switch.png" />
     <Content Include="assets\libs\css\card.css" />
     <Content Include="assets\libs\css\common-bot.css" />
+    <Content Include="assets\libs\css\form-chat.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c10_Ft5ovaKZZ_s.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c11_hZOCwdDXbub.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c12_lg5y1PL83FJ.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c13_29AQiV_7KWW.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c14_dfqeVEN1uIb.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c16_NBmlZsJMwcg.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c17_Y8U2p4FZgyH.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c18_Iq_mLA6uRtL.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c7_BQWrbCxwKTG.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c2_7E4oLQ9UO5V.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c1_YoRGRY8zOwk.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c3_PqmL6kgI3br.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c4_H5jZEVJpC2C.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c5_rouofWlolT7.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c6_t7hqTmVKZ.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c8_D4caviXZRzb.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c9_qa0aCGHSAgX.css" />
+    <Content Include="assets\libs\css\lvbot-chat-dialog\c15_ThXTQTvkXzY.css" />
     <Content Include="assets\libs\css\style.css" />
     <Content Include="assets\libs\js\dashboard-ecommerce.js" />
     <Content Include="assets\libs\js\dashboard-finance.js" />
@@ -728,6 +747,8 @@
     <Content Include="Views\Home\QnA.cshtml" />
     <Content Include="Views\Home\AccentVN.cshtml" />
     <Content Include="Views\Home\BotLearning.cshtml" />
+    <Content Include="Views\Home\BubleChatBot.cshtml" />
+    <Content Include="Views\Home\FormChatBot.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
