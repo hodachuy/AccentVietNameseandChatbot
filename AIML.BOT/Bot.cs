@@ -6,6 +6,8 @@ using System.IO;
 using System.Xml;
 using System.Text;
 using System.Reflection;
+using AIML.BOT.Utils;
+using AIML.BOT;
 #if NETSTANDARD
 using MailKit.Net.Smtp;
 using MimeKit;
@@ -743,17 +745,17 @@ namespace AIMLbot
                             string outputSentence = this.processNode(templateNode, query, request, result, request.user);
 
                             XmlNode resultNodeToHtml = AIMLTagHandler.getNode("<html>" + outputSentence + "</html>");
-                            string outputHtml = this.processTagToHtml(resultNodeToHtml);
+                            ResultHtml outputHtml = this.ProcessTagToHtml(resultNodeToHtml);
 
                             if (outputSentence.Length > 0)
                             {
                                 result.OutputSentences.Add(outputSentence);
                             }
 
-                            if (outputHtml.Length > 0)
-                            {
-                                result.OutputHtml.Add(outputHtml);
-                            }
+                            //if (outputHtml.Length > 0)
+                            //{
+                            //    result.OutputHtml.Add(outputHtml);
+                            //}
                         }
                         catch (Exception e)
                         {
@@ -989,111 +991,62 @@ namespace AIMLbot
             }
         }
 
-        private string processTagToHtml(XmlNode node)
+        private ResultHtml ProcessTagToHtml(XmlNode node)
         {
+            ResultHtml result = new ResultHtml();
+            string color = "background - color: rgb(241, 240, 240);";
+            string srcImageBot = "https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307";
             // process the node
             string tagName = node.Name.ToLower();
             string html = string.Empty;
             if (tagName == "html")
             {
-                StringBuilder templateResult = new StringBuilder();
                 if (node.HasChildNodes)
                 {
+                    TagHtml tagHtml = new TagHtml();
+                    StringBuilder sb = new StringBuilder();
+
+                    sb.AppendLine("<div class=\"_4xkn clearfix\">");
+                    sb.AppendLine("     <div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
+                    sb.AppendLine("         <div class=\"_4cqr\">");
+                    sb.AppendLine("             <img class=\"profilePicture img\" src=\"" + srcImageBot + "\" alt=\"\">");
+                    sb.AppendLine("             <div class=\"clearfix\"></div>");
+                    sb.AppendLine("         </div>");
+                    sb.AppendLine("     </div>");
+                    sb.AppendLine("     <div class=\"messages\">");
+                    sb.AppendLine("         <div class=\"_21c3\">");
+                    sb.AppendLine("             <div class=\"clearfix _2a0-\">");
+
                     foreach (XmlNode childNode in node.ChildNodes)
                     {
                         if (childNode.NodeType == XmlNodeType.Text)
                         {
                             html = childNode.InnerText;
+                            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"" + color + "\">");
+                            sb.AppendLine("     <span>");
+                            sb.AppendLine("         <span>"+ html + "</span>");
+                            sb.AppendLine("     </span>");
+                            sb.AppendLine("</div>");
                         }
                         else
                         {
                             html = childNode.OuterXml;
-                            html = renderTagToHtml(childNode.Name, childNode.OuterXml, childNode.InnerXml);                            
-                        }
-                        templateResult.Append(html);
-                    }
-                }
-                return templateResult.ToString();
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
+                            tagHtml = Render.RenderTagToHtml(childNode.Name, childNode.OuterXml, childNode.InnerXml);
+                            result.TextPostback.Add(tagHtml.ButtonPostback);
 
-        private string renderTagToHtml(string tagName, string outerTagContent, string innerTagContent)
-        {
-            string result = string.Empty;
-            outerTagContent = Regex.Replace(outerTagContent, "<text>", "");
-            outerTagContent = Regex.Replace(outerTagContent, "</text>", "");
-            switch (tagName)
-            {
-                case "button":
-                    if (outerTagContent.Contains("<postback>"))
-                    {
-                        string dataPostback = new Regex("<postback>(.*)</postback>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                        outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_postback_button}}\" data-postback =\"" + dataPostback + "\">");
-                        outerTagContent = Regex.Replace(outerTagContent, @"<postback>(.*?)</postback>", String.Empty);
+                            sb.Append(tagHtml.Body);
+                        }      
                     }
-                    else if (outerTagContent.Contains("<url>"))
-                    {
-                        string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                        outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_url_button}}\" data-url =\"" + dataUrl + "\">");
-                        outerTagContent = Regex.Replace(outerTagContent, @"<url>(.*?)</url>", String.Empty);
-                    }
-                    break;
-                case "link":
-                    string dataLink = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                    outerTagContent = outerTagContent.Replace("<link>", "<a class=\"{{lvbot_link}}\" target=\"_blank\" href=\"" + dataLink + "\">").Replace("</link>", "</a>");
-                    outerTagContent = Regex.Replace(outerTagContent, @"<url>(.*?)</url>", String.Empty);
-                    break;
-                case "image":
-                    string dataImage = new Regex("<image>(.*)</image>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                    outerTagContent = Regex.Replace(outerTagContent, @"<image>(.*?)</image>", String.Empty);
-                    outerTagContent = "<img class=\"{{lvbot_image}}\" src=\"" + dataImage + "\"/>";
-                    break;
-                case "title":
-                    outerTagContent = outerTagContent.Replace("<title>", "<div class=\"{{lvbot_card_title}}\">")
-                                                    .Replace("</title>","</div>");
-                    break;
-                case "subtitle":
-                    outerTagContent = outerTagContent.Replace("<subtitle>", "<div class=\"{{lvbot_card_subtitle}}\">")
-                                .Replace("</subtitle>", "</div>");
-                    break;
-                default:
-                    break;
-            }
-
-            result = outerTagContent;
-
-            if (tagName == "card")
-            {
-                XmlNode resultNode = AIMLTagHandler.getNode("<node>" + innerTagContent + "</node>");
-                if (resultNode.HasChildNodes)
-                {
-                    string htmlCard = "";
-                    foreach (XmlNode cNode in resultNode.ChildNodes)
-                    {
-                        htmlCard += renderTagToHtml(cNode.Name, cNode.OuterXml,"");
-                    }
-                    result = htmlCard;
-                }
-            }
-            if(tagName == "carousel")
-            {
-                XmlNode resultNode = AIMLTagHandler.getNode("<node>" + innerTagContent + "</node>");
-                if (resultNode.HasChildNodes)
-                {
-                    string htmlCarousel = "";
-                    foreach (XmlNode cNode in resultNode.ChildNodes)
-                    {
-                        htmlCarousel += renderTagToHtml(cNode.Name, cNode.OuterXml, cNode.InnerXml);
-                    }
-                    result = htmlCarousel;
-                }
+                    sb.AppendLine("       </div>");
+                    sb.AppendLine("    </div>");
+                    sb.AppendLine("  </div>");
+                    sb.AppendLine("</div>");
+                    result.Message = sb.ToString();
+                }             
             }
             return result;
         }
+
         /// <summary>
         /// Searches the CustomTag collection and processes the AIML if an appropriate tag handler is found
         /// </summary>

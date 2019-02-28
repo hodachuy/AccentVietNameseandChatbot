@@ -81,6 +81,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request.cs" />
     <Compile Include="Result.cs" />
+    <Compile Include="ResultHtml.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Utils\AIMLLoader.cs" />
     <Compile Include="Utils\AIMLTagHandler.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Utils\Gender.cs" />
     <Compile Include="Utils\MatchState.cs" />
     <Compile Include="Utils\Node.cs" />
+    <Compile Include="Utils\Render.cs" />
     <Compile Include="Utils\SettingsDictionary.cs" />
     <Compile Include="Utils\SubQuery.cs" />
     <Compile Include="Utils\TagHandler.cs" />

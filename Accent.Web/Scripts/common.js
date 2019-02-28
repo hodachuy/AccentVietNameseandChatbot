@@ -228,10 +228,18 @@ var templateAIML = {
                 "   <template></template>\n" +
                 "</category>\n",
 
-    url: "\n<button>\n" +
+    btnUrl: "\n<button>\n" +
                 "   <text></text>\n" +
                 "   <url></url>\n" +
                 "</button>\n",
+    btnPostback: "\n<button>\n" +
+            "   <text></text>\n" +
+            "   <postback></postback>\n" +
+            "</button>\n",
+    btnMenu: "\n<button>\n" +
+            "   <text></text>\n" +
+            "   <menu></menu>\n" +
+            "</button>\n",
 
     link: "\n<link>\n" +
             "   <text></text>\n" +
@@ -272,8 +280,14 @@ $(".btn-insert-template").off().on('click', function () {
         case "category":
             return e.session.insert(cursorPosition, templateAIML.category);
             break;
-        case "url":
-            return e.session.insert(cursorPosition, templateAIML.url);
+        case "btn-url":
+            return e.session.insert(cursorPosition, templateAIML.btnUrl);
+            break;
+        case "btn-postback":
+            return e.session.insert(cursorPosition, templateAIML.btnPostback);
+            break;
+        case "btn-menu":
+            return e.session.insert(cursorPosition, templateAIML.btnMenu);
             break;
         case "link":
             return e.session.insert(cursorPosition, templateAIML.link);

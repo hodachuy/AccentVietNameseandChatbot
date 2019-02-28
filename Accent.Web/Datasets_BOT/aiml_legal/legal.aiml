@@ -547,6 +547,7 @@
   <category>
     <pattern>THÔNG TIN VỀ LUẬT *</pattern>
     <template>
+      <image>https://static.xx.fbcdn.net/images/emoji.php/v9/t9f/1/16/26c5.png</image>
       Thông tin chi tiết <set name = "about"><star/></set> 
       <button>
         <text>Xem chi tiết</text>
