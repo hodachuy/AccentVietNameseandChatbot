@@ -1043,6 +1043,8 @@ namespace AIMLbot
 					sbTemplateBtnMenu.AppendLine("                                                                                        </div>");
 					sbTemplateBtnMenu.AppendLine("                                                                                    </div>");
 
+					//Tao list string cho cac button menu roi` add vao , sau do foreach va gan' vao string builder
+
 					foreach (XmlNode childNode in node.ChildNodes)
 					{
 						if (childNode.NodeType == XmlNodeType.Text)
