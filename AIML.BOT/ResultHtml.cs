@@ -9,8 +9,8 @@ namespace AIML.BOT
     public class ResultHtml
     {
         public string Message { get; set; }
-        public List<string> TextPostback { get; set; }
-        public int TotalPostback { get; set; }
+		public string Postback { get; set; }
+        public List<string> ButtonPostback { get; set; }
     }
     public class TagHtml
     {

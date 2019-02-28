@@ -11,22 +11,36 @@ namespace AIML.BOT.Utils
 {
     public class Render
     {
-        public static TagHtml RenderTagToHtml(string tagName, string outerTagContent, string innerTagContent)
+		private string _color = "";
+		private string _srcImageBot = "";
+		private bool _isFlag = true;
+		public Render(string color, string srcImageBot)
+		{
+			_color = color;
+			_srcImageBot = srcImageBot;
+		}
+        public TagHtml RenderTagToHtml(string tagName, string outerTagContent, string innerTagContent)
         {
             TagHtml rs = new TagHtml();
             StringBuilder sb = new StringBuilder();
-            outerTagContent = Regex.Replace(outerTagContent, "<text>", "");
-            outerTagContent = Regex.Replace(outerTagContent, "</text>", "");
+            //outerTagContent = Regex.Replace(outerTagContent, "<text>", "");
+            //outerTagContent = Regex.Replace(outerTagContent, "</text>", "");
             switch (tagName)
             {
                 case "button":
                     if (outerTagContent.Contains("<postback>"))
                     {
                         string dataPostback = new Regex("<postback>(.*)</postback>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                        outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_postback_button}}\" data-postback =\"" + dataPostback + "\">");
-                        outerTagContent = Regex.Replace(outerTagContent, @"<postback>(.*?)</postback>", String.Empty);
+						string dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+						//outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_postback_button}}\" data-postback =\"" + dataPostback + "\">");
+                        //outerTagContent = Regex.Replace(outerTagContent, @"<postback>(.*?)</postback>", String.Empty);
+						//outerTagContent = Regex.Replace(outerTagContent, @"<text>(.*?)</text>", String.Empty);
 
-                        rs.ButtonPostback = outerTagContent;
+						sb.AppendLine(" <div class=\"_2zgz\">");
+						sb.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + dataPostback + "\" style=\"border-color: "+ _color + " color: "+ _color + "\">"+ dataText + "</div>");
+						sb.AppendLine(" </div>");
+
+						rs.ButtonPostback = sb.ToString();
                     }
                     else if (outerTagContent.Contains("<url>"))
                     {
@@ -37,11 +51,27 @@ namespace AIML.BOT.Utils
                     }
                     else if (outerTagContent.Contains("<menu>"))
                     {
-                        string dataMenu = new Regex("<menu>(.*)</menu>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                        outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_menu_button}}\" data-url =\"" + dataMenu + "\">");
-                        outerTagContent = Regex.Replace(outerTagContent, @"<menu>(.*?)</menu>", String.Empty);
-                        rs.Body = outerTagContent;
-                    }
+						string dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+						string dataMenu = new Regex("<menu>(.*)</menu>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+						//outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_menu_button}}\" data-url =\"" + dataMenu + "\">");
+						//outerTagContent = Regex.Replace(outerTagContent, @"<menu>(.*?)</menu>", String.Empty);
+						if (_isFlag)
+						{
+							sb.AppendLine("<div class=\"_6isd _6ir5\">");
+						}else
+						{
+							sb.AppendLine("<div class=\"_6ir5\">");
+						}
+
+						sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
+						sb.AppendLine("          <a class=\"_6ir4\" data-postback =\"" + dataMenu + "\" href=\"#\" style=\"color: " + _color + "\">"+ dataText + "</a>");
+						sb.AppendLine("     </div>");
+						sb.AppendLine("</div>");
+
+						_isFlag = false;
+
+						rs.Body = sb.ToString();
+					}
                     break;
                 case "link":
                     string dataLink = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
