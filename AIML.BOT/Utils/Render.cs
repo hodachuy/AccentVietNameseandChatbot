@@ -14,105 +14,138 @@ namespace AIML.BOT.Utils
 		private string _color = "";
 		private string _srcImageBot = "";
 		private bool _isFlag = true;
+        private TagHtml _tagHtml;
 		public Render(string color, string srcImageBot)
 		{
 			_color = color;
 			_srcImageBot = srcImageBot;
-		}
+            _tagHtml = new TagHtml();
+            _tagHtml.TotalBtnPostback = 0;
+        }
         public TagHtml RenderTagToHtml(string tagName, string outerTagContent, string innerTagContent)
         {
-            TagHtml rs = new TagHtml();
             StringBuilder sb = new StringBuilder();
-            //outerTagContent = Regex.Replace(outerTagContent, "<text>", "");
-            //outerTagContent = Regex.Replace(outerTagContent, "</text>", "");
+            string dataText = "";
             switch (tagName)
             {
                 case "button":
                     if (outerTagContent.Contains("<postback>"))
                     {
                         string dataPostback = new Regex("<postback>(.*)</postback>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-						string dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-						//outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_postback_button}}\" data-postback =\"" + dataPostback + "\">");
-                        //outerTagContent = Regex.Replace(outerTagContent, @"<postback>(.*?)</postback>", String.Empty);
-						//outerTagContent = Regex.Replace(outerTagContent, @"<text>(.*?)</text>", String.Empty);
-
+						dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
 						sb.AppendLine(" <div class=\"_2zgz\">");
 						sb.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + dataPostback + "\" style=\"border-color: "+ _color + " color: "+ _color + "\">"+ dataText + "</div>");
 						sb.AppendLine(" </div>");
-
-						rs.ButtonPostback = sb.ToString();
+                        _tagHtml.Body = "";
+                        _tagHtml.ButtonPostback = sb.ToString();
                     }
                     else if (outerTagContent.Contains("<url>"))
                     {
+                        dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
                         string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                        outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_url_button}}\" data-url =\"" + dataUrl + "\">");
-                        outerTagContent = Regex.Replace(outerTagContent, @"<url>(.*?)</url>", String.Empty);
-                        rs.Body = outerTagContent;
+                        sb.AppendLine("<div class=\"_6isd _6ir5\">");
+                        sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
+                        sb.AppendLine("          <a class=\"_6ir4 _6ir4_url\" target=\"_blank\" href=\"" + dataUrl + "\" style=\"color: " + _color + "\">" + dataText + "</a>");
+                        sb.AppendLine("     </div>");
+                        sb.AppendLine("</div>");
+
+                        _tagHtml.Body = sb.ToString();
                     }
                     else if (outerTagContent.Contains("<menu>"))
                     {
-						string dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+						dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
 						string dataMenu = new Regex("<menu>(.*)</menu>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-						//outerTagContent = outerTagContent.Replace("<button>", "<button class=\"{{lvbot_menu_button}}\" data-url =\"" + dataMenu + "\">");
-						//outerTagContent = Regex.Replace(outerTagContent, @"<menu>(.*?)</menu>", String.Empty);
-						if (_isFlag)
-						{
-							sb.AppendLine("<div class=\"_6isd _6ir5\">");
-						}else
-						{
-							sb.AppendLine("<div class=\"_6ir5\">");
-						}
-
-						sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
-						sb.AppendLine("          <a class=\"_6ir4\" data-postback =\"" + dataMenu + "\" href=\"#\" style=\"color: " + _color + "\">"+ dataText + "</a>");
+						//if (_isFlag)
+						//{
+						//	sb.AppendLine("<div class=\"_6isd _6ir5\">");
+						//}else
+						//{
+						//	sb.AppendLine("<div class=\"_6ir5\">");
+						//}
+                        sb.AppendLine("<div class=\"_6isd _6ir5\">");
+                        sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
+						sb.AppendLine("          <a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + dataMenu + "\" href=\"#\" style=\"color: " + _color + "\">"+ dataText + "</a>");
 						sb.AppendLine("     </div>");
 						sb.AppendLine("</div>");
-
-						_isFlag = false;
-
-						rs.Body = sb.ToString();
+						//_isFlag = false;
+                        _tagHtml.Body = sb.ToString();
 					}
                     break;
                 case "link":
+                    dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
                     string dataLink = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                    outerTagContent = outerTagContent.Replace("<link>", "<a class=\"{{lvbot_link}}\" target=\"_blank\" href=\"" + dataLink + "\">").Replace("</link>", "</a>");
-                    outerTagContent = Regex.Replace(outerTagContent, @"<url>(.*?)</url>", String.Empty);
-                    rs.Body = outerTagContent;
+                    sb.AppendLine("<div class=\"_6j0y\">");
+                    sb.AppendLine("    <a target=\"_blank\" href=\"" + dataLink + "\">");
+                    sb.AppendLine("           " + dataText + "");
+                    sb.AppendLine("    </a>");
+                    sb.AppendLine("</div>");
+                    _tagHtml.Body = sb.ToString();
                     break;
                 case "image":
                     string dataImage = new Regex("<image>(.*)</image>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                    outerTagContent = Regex.Replace(outerTagContent, @"<image>(.*?)</image>", String.Empty);
-                    outerTagContent = "<img class=\"{{lvbot_image}}\" src=\"" + dataImage + "\"/>";
-                    rs.Body = outerTagContent;
+                    sb.AppendLine("<div class=\"_6j0s\" style=\"background-image:url(&quot;"+ dataImage + "&quot;); background-position: center center; height: 150px; width: 100%;\"></div>");
+                    _tagHtml.Body = sb.ToString();
                     break;
                 case "title":
-                    outerTagContent = outerTagContent.Replace("<title>", "<div class=\"{{lvbot_card_title}}\">")
-                                                    .Replace("</title>", "</div>");
-                    rs.Body = outerTagContent;
+                    string dataTitle = new Regex("<title>(.*)</title>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+                    sb.AppendLine("<div class=\"_6j0t _4ik4 _4ik5 _6j0t_title\" style=\"-webkit-line-clamp: 3;\">");
+                    sb.AppendLine("" + dataTitle + "");
+                    sb.AppendLine("</div>");
+                    _tagHtml.Body = sb.ToString();
+
                     break;
                 case "subtitle":
-                    outerTagContent = outerTagContent.Replace("<subtitle>", "<div class=\"{{lvbot_card_subtitle}}\">")
-                                .Replace("</subtitle>", "</div>");
-                    rs.Body = outerTagContent;
+                    string dataSubTitle = new Regex("<subtitle>(.*)</subtitle>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+                    sb.Append("<div class=\"_6j0v _6j0v_subtitle\">");
+                    sb.AppendLine(" <div class=\"_6j0u _6j0w\">");
+                    sb.AppendLine("    " + dataSubTitle + "");
+                    sb.AppendLine(" </div>");
+                    sb.AppendLine(" <div class=\"_6j0u _6j0x _4ik4 _4ik5\" style=\"-webkit-line-clamp: 2;\">");
+                    sb.AppendLine("    <div>");
+                    sb.AppendLine("    " + dataSubTitle + "");
+                    sb.AppendLine("    </div>");
+                    sb.AppendLine(" </div>");
+                    sb.AppendLine(" </div>");
+                    _tagHtml.Body = sb.ToString();
                     break;
                 default:
+                    _tagHtml.Body = String.Empty;
                     break;
             }
-
-            //result = outerTagContent;
-
             if (tagName == "card")
             {
                 XmlNode resultNode = AIMLTagHandler.getNode("<node>" + innerTagContent + "</node>");
                 if (resultNode.HasChildNodes)
                 {
+                    StringBuilder sbBtnPostback = new StringBuilder();
+                    StringBuilder sbCard = new StringBuilder();
+                    sbCard.AppendLine("<div class=\"_6j2i\">");
                     string htmlCard = "";
                     foreach (XmlNode cNode in resultNode.ChildNodes)
                     {
-                        htmlCard += RenderTagToHtml(cNode.Name, cNode.OuterXml, "");
+                        htmlCard = RenderTagToHtml(cNode.Name, cNode.OuterXml, "").Body;
+                        if (cNode.Name == "title")
+                        {
+                            htmlCard = "<div class=\"_6j2g\">" + htmlCard;
+                        }
+                        if(cNode.Name == "link")
+                        {
+                            htmlCard =  htmlCard + "</div>";
+                        }                      
+                        if(cNode.Name == "button")
+                        {
+                            if (cNode.OuterXml.Contains("<postback>"))
+                            {
+                                _tagHtml.TotalBtnPostback = _tagHtml.TotalBtnPostback + 1;
+                            }
+                        }
+                        sbCard.AppendLine(htmlCard);
+                        sbBtnPostback.AppendLine(RenderTagToHtml(cNode.Name, cNode.OuterXml, "").ButtonPostback);                        
                     }
 
-                    rs.Body = htmlCard;
+                    sbCard.AppendLine("</div>");
+                    _tagHtml.Body = sbCard.ToString();
+                    _tagHtml.ButtonPostback = sbBtnPostback.ToString();
                 }
             }
             if (tagName == "carousel")
@@ -120,15 +153,15 @@ namespace AIML.BOT.Utils
                 XmlNode resultNode = AIMLTagHandler.getNode("<node>" + innerTagContent + "</node>");
                 if (resultNode.HasChildNodes)
                 {
-                    string htmlCarousel = "";
+                    StringBuilder sbCarousel = new StringBuilder();
                     foreach (XmlNode cNode in resultNode.ChildNodes)
                     {
-                        htmlCarousel += RenderTagToHtml(cNode.Name, cNode.OuterXml, cNode.InnerXml);
+                        sbCarousel.AppendLine("<div class=\"_2zgz\"> <div class=\"_6j2h\">" + RenderTagToHtml(cNode.Name, cNode.OuterXml, cNode.InnerXml).Body + "</div></div>");
                     }
-                    rs.Body = htmlCarousel;
+                    _tagHtml.Body = sbCarousel.ToString();
                 }
             }
-            return rs;
+            return _tagHtml;
         }
     }
 }

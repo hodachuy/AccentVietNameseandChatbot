@@ -10,12 +10,12 @@ namespace AIML.BOT
     {
         public string Message { get; set; }
 		public string Postback { get; set; }
-        public List<string> ButtonPostback { get; set; }
     }
     public class TagHtml
     {
         public string Body { get; set; }
         public string ButtonPostback { get; set; }
+        public int TotalBtnPostback { get; set; }
     }
     
 }

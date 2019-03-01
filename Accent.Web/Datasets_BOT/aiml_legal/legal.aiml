@@ -47,20 +47,40 @@
    <pattern>testcard</pattern>
    <template>
         <card>
-           <image>http://localhost:47887/</image>
-           <title>a</title>
-           <subtitle>b</subtitle>
+           <image>https://external.xx.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+           <title>Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!</title>
+           <subtitle>Emai: support@messnow.com</subtitle>
             <link>
-               <text>AB</text>
-               <url>C</url>
+               <text>facebook.com</text>
+               <url>https://www.facebook.com/</url>
             </link>
            <button>
-               <text>c</text>
-               <postback>http://localhost:47887/</postback>
+               <text>🙎 Chat với admin</text>
+               <menu>CHATADMIN</menu>
            </button>
            <button>
-               <text>D</text>
-               <postback>http://localhost:47887/</postback>
+               <text>📞 Đường dây nóng</text>
+               <menu>HOTLINE</menu>
+           </button>
+           <button>
+               <text> Hủy</text>
+               <postback>CANCEL</postback>
+           </button>
+           <button>
+               <text> Quay về</text>
+               <postback>BACK</postback>
+           </button>
+            <button>
+               <text> Liên hệ </text>
+               <postback>BACK</postback>
+           </button>
+            <button>
+               <text> Giải trí</text>
+               <postback>BACK</postback>
+           </button>
+            <button>
+               <text> Tin tức</text>
+               <postback>BACK</postback>
            </button>
         </card>
    </template>
@@ -71,7 +91,7 @@
    <template>
             <carousel>
              <card>
-                 <image>ABC</image>
+                 <image>http://localhost:47887/</image>
                  <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
                  <subtitle>Câu hỏi liên quan</subtitle>
                  <button>
