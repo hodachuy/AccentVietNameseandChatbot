@@ -13,14 +13,15 @@ namespace AIML.BOT.Utils
     {
 		private string _color = "";
 		private string _srcImageBot = "";
-		private bool _isFlag = true;
         private TagHtml _tagHtml;
 		public Render(string color, string srcImageBot)
 		{
 			_color = color;
 			_srcImageBot = srcImageBot;
+
             _tagHtml = new TagHtml();
             _tagHtml.TotalBtnPostback = 0;
+			_tagHtml.TotalCarousel = 0;
         }
         public TagHtml RenderTagToHtml(string tagName, string outerTagContent, string innerTagContent)
         {
@@ -43,7 +44,7 @@ namespace AIML.BOT.Utils
                     {
                         dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
                         string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                        sb.AppendLine("<div class=\"_6isd _6ir5\">");
+                        sb.AppendLine("<div class=\"_6ir5\">");
                         sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
                         sb.AppendLine("          <a class=\"_6ir4 _6ir4_url\" target=\"_blank\" href=\"" + dataUrl + "\" style=\"color: " + _color + "\">" + dataText + "</a>");
                         sb.AppendLine("     </div>");
@@ -62,7 +63,7 @@ namespace AIML.BOT.Utils
 						//{
 						//	sb.AppendLine("<div class=\"_6ir5\">");
 						//}
-                        sb.AppendLine("<div class=\"_6isd _6ir5\">");
+                        sb.AppendLine("<div class=\"_6ir5\">");
                         sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
 						sb.AppendLine("          <a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + dataMenu + "\" href=\"#\" style=\"color: " + _color + "\">"+ dataText + "</a>");
 						sb.AppendLine("     </div>");
@@ -151,15 +152,16 @@ namespace AIML.BOT.Utils
             if (tagName == "carousel")
             {
                 XmlNode resultNode = AIMLTagHandler.getNode("<node>" + innerTagContent + "</node>");
-                if (resultNode.HasChildNodes)
+				StringBuilder sbCarousel = new StringBuilder();
+				if (resultNode.HasChildNodes)
                 {
-                    StringBuilder sbCarousel = new StringBuilder();
                     foreach (XmlNode cNode in resultNode.ChildNodes)
-                    {
-                        sbCarousel.AppendLine("<div class=\"_2zgz\"> <div class=\"_6j2h\">" + RenderTagToHtml(cNode.Name, cNode.OuterXml, cNode.InnerXml).Body + "</div></div>");
-                    }
+                    {					
+						sbCarousel.AppendLine("<div class=\"_2zgz\"> <div class=\"_6j2h\">" + RenderTagToHtml(cNode.Name, cNode.OuterXml, cNode.InnerXml).Body + "</div></div>");
+						_tagHtml.TotalCarousel = _tagHtml.TotalCarousel + 1;
+					}
                     _tagHtml.Body = sbCarousel.ToString();
-                }
+                }				
             }
             return _tagHtml;
         }

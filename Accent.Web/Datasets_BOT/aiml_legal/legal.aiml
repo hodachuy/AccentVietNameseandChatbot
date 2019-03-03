@@ -43,11 +43,86 @@
    </template>
 </category>
 
+  <category>
+   <pattern>testcarouseltext</pattern>
+   <template>
+            <carousel>
+             <card>
+               <image></image>
+               <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+                 <subtitle>Câu hỏi liên quan</subtitle>
+               <link></link>
+               <button>
+                 <text>📞 Đường dây nóng</text>
+                 <menu>HOTLINE</menu>
+               </button>
+               <button>
+                 <text>📞 Đường dây nóng</text>
+                 <menu>HOTLINE</menu>
+               </button>
+             </card>
+            <card>
+              <image></image>
+              <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+              <subtitle>Câu hỏi liên quan</subtitle>
+              <link></link>
+              <button>
+                <text>📞 Đường dây nóng</text>
+                <menu>HOTLINE</menu>
+              </button>
+              <button>
+                <text>📞 Đường dây nóng</text>
+                <menu>HOTLINE</menu>
+              </button>
+            </card>
+            <card>
+              <image></image>
+              <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+              <subtitle>Câu hỏi liên quan</subtitle>
+              <link></link>
+              <button>
+                <text>📞 Đường dây nóng</text>
+                <menu>HOTLINE</menu>
+              </button>
+              <button>
+                <text>📞 Đường dây nóng</text>
+                <menu>HOTLINE</menu>
+              </button>
+            </card>
+         </carousel>
+         <button>
+           <text> Giải trí</text>
+           <postback>BACK</postback>
+         </button>
+         <button>
+           <text> Tin tức</text>
+           <postback>BACK</postback>
+         </button>
+	</template>
+</category>
+  
+<category>
+   <pattern>testcardtext</pattern>
+   <template>
+      <image></image>
+           <title>Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!</title>
+           <subtitle>Emai: support@messnow.com</subtitle>
+            <link>
+               <text>facebook.com</text>
+               <url>https://www.facebook.com/</url>
+            </link>
+           <button>
+               <text>Xem chi tiết</text>
+               <menu>CHATADMIN</menu>
+           </button>
+   </template>
+</category>    
+    
 <category>
    <pattern>testcard</pattern>
    <template>
         <card>
-           <image>https://external.xx.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+           <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
            <title>Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!</title>
            <subtitle>Emai: support@messnow.com</subtitle>
             <link>
@@ -91,50 +166,56 @@
    <template>
             <carousel>
              <card>
-                 <image>http://localhost:47887/</image>
-                 <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+               <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+               <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
                  <subtitle>Câu hỏi liên quan</subtitle>
-                 <button>
-                     <text>A</text>
-                     <postback>B</postback>
-                 </button>
-                                 <button>
-                    <text>C</text>
-                    <postback>C</postback>
-                </button>
+               <link></link>
+               <button>
+                 <text>📞 Đường dây nóng</text>
+                 <menu>HOTLINE</menu>
+               </button>
+               <button>
+                 <text>📞 Đường dây nóng</text>
+                 <menu>HOTLINE</menu>
+               </button>
              </card>
             <card>
-                <image>ABCA</image>
-                <title>Trường hợp nào thì bị coi là xâm phạm quyền đối với nhãn hiệu nỗi tiếng?</title>
-                <subtitle>Câu hỏi liên quan</subtitle>
-                <button>
-                    <text>B</text>
-                    <postback>B</postback>
-                </button>
+              <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+              <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+              <subtitle>Câu hỏi liên quan</subtitle>
+              <link></link>
+              <button>
+                <text>📞 Đường dây nóng</text>
+                <menu>HOTLINE</menu>
+              </button>
+              <button>
+                <text>📞 Đường dây nóng</text>
+                <menu>HOTLINE</menu>
+              </button>
             </card>
             <card>
-                <image>ÁDS</image>
-                <title>Thế nào là xử lý hình sự tội xâm phạm quyền sở hữu công nghiệp?</title>
-                <subtitle>Câu hỏi liên quan</subtitle>
-                <button>
-                    <text>C</text>
-                    <postback>C</postback>
-                </button>
+              <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+              <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+              <subtitle>Câu hỏi liên quan</subtitle>
+              <link></link>
+              <button>
+                <text>📞 Đường dây nóng</text>
+                <menu>HOTLINE</menu>
+              </button>
+              <button>
+                <text>📞 Đường dây nóng</text>
+                <menu>HOTLINE</menu>
+              </button>
             </card>
          </carousel>
          <button>
-           <text>bcbc</text>
-           <url>http://localhost:47887/</url>
-        </button>
-         <card>
-             <image>V</image>
-                 <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
-                 <subtitle>Câu hỏi liên quan</subtitle>
-                 <button>
-                     <text>A</text>
-                     <postback>B</postback>
-                 </button>
-             </card>
+           <text> Giải trí</text>
+           <postback>BACK</postback>
+         </button>
+         <button>
+           <text> Tin tức</text>
+           <postback>BACK</postback>
+         </button>
 	</template>
 </category>
   
@@ -240,50 +321,59 @@
       <random>
         <li>
           Chào bạn! Tôi là chatbot Pháp luật. Ban vui lòng chọn lĩnh vực để được tư vấn?
-          <button class="btn-postback-area" data-postback="SHTT">
-            <!--attr set css bên dự án-->
-            Sở hữu trí tuệ
-          </button>
+          <button>
+          <text>Sở hửu trí tuệ</text>
+          <menu>SHTT</menu>
+        </button>
 
-          <button class="btn-postback-area"  data-postback="DULICH">
-            Du lịch
-          </button>
+        <button>
+          <text>Thuế-Phí-Lệ Phí</text>
+          <menu>THUE</menu>
+        </button>
 
-          <button class="btn-postback-area" data-postback="THUE">
-            Thuế-Phí-Lệ Phí
-          </button>
+        <button>
+          <text>Du lịch</text>
+          <menu>DULICH</menu>
+        </button>
+
 
 
         </li>
         <li>
           Mình có thể trả lời các câu hỏi thường gặp về luật. Bạn quan tâm lĩnh vực nào dưới đây?
-          <button class="btn-postback-area" data-postback="SHTT">
-            Sở hữu trí tuệ
-          </button>
+                <button>
+          <text>Sở hửu trí tuệ</text>
+                  <menu>SHTT</menu>
+        </button>
 
-          <button class="btn-postback-area" data-postback="DULICH">
-            Du lịch
-          </button>
+        <button>
+          <text>Thuế-Phí-Lệ Phí</text>
+          <menu>THUE</menu>
+        </button>
 
-          <button class="btn-postback-area" data-postback="THUE">
-            Thuế-Phí-Lệ Phí
-          </button>
+        <button>
+          <text>Du lịch</text>
+          <menu>DULICH</menu>
+        </button>
 
 
         </li>
         <li>
           Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
-          <button class="btn-postback-area" data-postback="SHTT">
-            Sở hữu trí tuệ
-          </button>
+          <button>
+          <text>Sở hửu trí tuệ</text>
+            <menu>SHTT</menu>
+        </button>
 
-          <button class="btn-postback-area" data-postback="DULICH">
-            Du lịch
-          </button>
+        <button>
+          <text>Thuế-Phí-Lệ Phí</text>
+          <menu>THUE</menu>
+        </button>
 
-          <button class="btn-postback-area" data-postback="THUE">
-            Thuế-Phí-Lệ Phí
-          </button>
+        <button>
+          <text>Du lịch</text>
+          <menu>DULICH</menu>
+        </button>
 
 
         </li>

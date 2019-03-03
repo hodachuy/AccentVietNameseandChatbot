@@ -5,18 +5,13 @@
 
 <!DOCTYPE html>
 
-<html lang="vi" id="facebook" class="svg ">
-<head>
-    <meta charset="utf-8">
-    <meta name="referrer" content="origin-when-crossorigin" id="meta_referrer">
-
-</head>
+<html lang="vi">
 <head>
     <meta charset="utf-8">
     <meta name="referrer" content="origin-when-crossorigin" id="meta_referrer">
 
     <link rel="manifest" href="/data/manifest/" crossorigin="use-credentials">
-    <title>Facebook</title>
+    <title>ChatBot</title>
     <link href="~/assets/libs/css/lvbot-chat-dialog/c1_YoRGRY8zOwk.css" rel="stylesheet" />
     <link href="~/assets/libs/css/lvbot-chat-dialog/c2_7E4oLQ9UO5V.css" rel="stylesheet" />
     <link href="~/assets/libs/css/lvbot-chat-dialog/c3_PqmL6kgI3br.css" rel="stylesheet" />
@@ -124,16 +119,17 @@
                                                 </a>
                                             </div>
                                         </div>
-                                        <div class="_5f0v uiScrollableArea fade contentBefore contentAfter" height="100%" tabindex="0" style="height: 100%;">
-                                            <div class="uiScrollableAreaTrack hidden_elem" tabindex="0" style="opacity: 0;">
-                                                <div class="uiScrollableAreaGripper"></div>
-                                            </div>
+                                        @*contentAfter uiScrollableAreaTrackOver uiScrollableAreaDragging contentBefore*@
+                                        <div class="_5f0v uiScrollableArea fade ">
+                                            @*<div class="uiScrollableAreaTrack hidden_elem" tabindex="0" style="opacity: 0;">
+                                                <div class="uiScrollableAreaGripper" style="top: 0px; height: 71.4043px;"></div>
+                                            </div>*@
                                             <div class="uiScrollableAreaWrap scrollable" id="js_0" style="overscroll-behavior: contain contain;">
                                                 <div class="uiScrollableAreaBody" style="margin-right: -17px;">
                                                     <div class="uiScrollableAreaContent">
                                                         <div>
                                                             <div class="preventScrollOverflow">
-                                                                <div class="conversationContainer">
+                                                                <div class="conversationContainer" id="js_scroll">
                                                                     @*<h4 class="datebreak _497p _2lpt">
                                                                             <time class="_3oh-">T2 16:26</time>
                                                                         </h4>
@@ -608,7 +604,7 @@
                                             <!--INPUT TEXT-->
                                             <div class="_4fwe">
                                                 <label class="_58ak _3ct8">
-                                                    <input class="_58al _58al_input_txt" id="58al-input-text" type="text" placeholder="Nhập tin nhắn..." value="">
+                                                    <input class="_58al _58al_input_txt" id="58al-input-text" type="text" autocomplete="off" placeholder="Nhập tin nhắn..." value="">
                                                 </label>
                                             </div>
                                             <div class="_kmd">
@@ -694,5 +690,6 @@
         </div>
     </div>
     <script src="~/assets/services/formChatBot.js"></script>
+
 </body>
 </html>

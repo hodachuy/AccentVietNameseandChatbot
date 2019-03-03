@@ -16,6 +16,7 @@ namespace AIML.BOT
         public string Body { get; set; }
         public string ButtonPostback { get; set; }
         public int TotalBtnPostback { get; set; }
-    }
+		public int TotalCarousel { get; set; }
+	}
     
 }

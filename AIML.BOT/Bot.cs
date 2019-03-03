@@ -1021,13 +1021,13 @@ namespace AIMLbot
                     List<string> lstCard = new List<string>();
                     List<string> lstCarousel = new List<string>();
                     int totalBtnPostback = 0;
-
+					int totalCarousel = 0;
                     foreach (XmlNode childNode in node.ChildNodes)
                     {
                         if (childNode.NodeType == XmlNodeType.Text)
                         {
                             //html = childNode.InnerText;
-                            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:" + color + "\">");
+                            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); \">");
                             sb.AppendLine("     <span>");
                             sb.AppendLine("         <span>" + childNode.InnerText + "</span>");
                             sb.AppendLine("     </span>");
@@ -1053,7 +1053,7 @@ namespace AIMLbot
                                     lstCarousel.Add(tagHtml.Body);
                                     break;
                                 default:
-                                    sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:" + color + "\">");
+                                    sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); \">");
                                     sb.AppendLine(tagHtml.Body);
                                     sb.AppendLine("</div>");
                                     break;
@@ -1063,7 +1063,9 @@ namespace AIMLbot
                                 lstBtnPostback.Add(tagHtml.ButtonPostback);
                             }
                             totalBtnPostback = tagHtml.TotalBtnPostback;
-                        }
+							totalCarousel = tagHtml.TotalCarousel;
+
+						}
                     }
 
                     if (lstBtnMenuUrl.Count != 0)
@@ -1115,7 +1117,7 @@ namespace AIMLbot
                         sbTempCarousel.AppendLine("                                                                                                    </div>");
                         sbTempCarousel.AppendLine("                                                                                                </div>");
                         sbTempCarousel.AppendLine("");
-                        if (lstCarousel.Count >= 2)
+                        if (lstCarousel.Count >= 2 || totalCarousel >= 2)
                         {
                             sbTempCarousel.AppendLine("                                                                                                <a class=\"_32rk _32rg _1cy6 gl_back_carousel\" href=\"#\" style=\"display:none;\">");
                             sbTempCarousel.AppendLine("                                                                                                    <div direction=\"backward\" class=\"_10sf _5x5- _5x60\">");

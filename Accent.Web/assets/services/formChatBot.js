@@ -2,14 +2,14 @@
     _srcLogo = "https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&_nc_ht=scontent.fsgn5-5.fna&oh=640bca2a8956c9770fc0b391498e79e9&oe=5CDC1307";
 
 $(document).ready(function () {
-    $('._5f0v').mouseenter(function () {
-        $('.uiScrollableAreaTrack').removeClass('hidden_elem');
-        $('.uiScrollableAreaTrack').css('opacity', '1');
-    })
-        .mouseleave(function () {
-            $('.uiScrollableAreaTrack').addClass('hidden_elem');
-            $('.uiScrollableAreaTrack').css('opacity', '0');
-        });
+    //$('._5f0v').mouseenter(function () {
+    //    $('.uiScrollableAreaTrack').removeClass('hidden_elem');
+    //    $('.uiScrollableAreaTrack').css('opacity', '1');
+    //})
+    //    .mouseleave(function () {
+    //        $('.uiScrollableAreaTrack').addClass('hidden_elem');
+    //        $('.uiScrollableAreaTrack').css('opacity', '0');
+    //    });
 
     $("body").on('click', '.gl_next_carousel', function () {
         var $form = $(this).closest('.form_carousel');
@@ -124,16 +124,23 @@ $(document).ready(function () {
 })
 
 function submitMessage(text) {
+    //return message user
     var messageUser = getMessageUser(text);
+    setDateCurrent();
     $(".conversationContainer").append(messageUser);
 
-    // return message bot
+    //return buble writing
     $("#_12cd_event_button").empty();
     var writing = getMessageWriting();
     $(".conversationContainer").append(writing);
+
+    // return message bot
     setTimeout(function () {
-        getMessageBot(text)
-    },1000)
+        getMessageBot(text);
+    }, 1000)
+
+    //scrollbar to bottom
+    scrollBar();
 }
 
 function getMessageBot(text) {    
@@ -156,6 +163,8 @@ function getMessageBot(text) {
             $("._4xkn_writing").remove();
             $(".conversationContainer").append(message);
             $("#_12cd_event_button").empty().append(postback);
+            scrollBar();
+
         }
     });
 }
@@ -204,3 +213,54 @@ function getMessageWriting() {
 
     return html;
 }
+
+/*
+#####################################
+            SCROLLBAR
+#####################################
+*/
+function scrollBar() {
+    $(".uiScrollableAreaWrap").scrollTop($(".uiScrollableAreaWrap").prop('scrollHeight'));
+}
+
+
+/*
+#####################################
+       GET DATECURRENT MESSAGE
+#####################################
+*/
+var date, hours, minutes;
+
+function formatAMPM(date) {
+    hours = date.getHours();
+    minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    var strTime = hours + ':' + minutes;
+    return strTime;
+}
+
+// append time cho tin nhắn tiếp theo khi trò chuyện không trao đổi trong phút đó
+
+function setDateCurrent() {
+    var html = '';
+    date = new Date()
+
+    if (minutes != date.getMinutes()) {
+        html +='<h4 class="datebreak _497p _2lpt">';
+        html += '    <time class="_3oh-">' + formatAMPM(date) + '</time>';
+        html += '</h4>';
+    }
+    return html;
+}
+
+//<div class="_21c3">
+//   <h4 class="datebreak _497p _2lpt"><time class="_3oh-">T6 16:52</time></h4>
+//   <div class="clearfix _2a0-">
+//      <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: rgb(234, 82, 105);"><span><span><img alt="↩️" class="_1ift _2560 img" src="https://static.xx.fbcdn.net/images/emoji.php/v9/t20/1/16/21a9.png"> Khởi Động Lại</span></span></div>
+//      <a class="_6934 noDisplay" href="#">This message didn't send. Click to try again.<span class="_21c6 error" title="Đã chuyển"></span></a>
+//   </div>
+//   <span style="animation: fadeIn 0.1s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 normal both running; clear: both; color: rgba(0, 0, 0, 0.4); float: right; font-size: 12px; font-weight: 500; padding-left: 0px; padding-right: 7px;">Đã xem</span>
+//</div>
