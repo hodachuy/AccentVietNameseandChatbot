@@ -1026,12 +1026,16 @@ namespace AIMLbot
                     {
                         if (childNode.NodeType == XmlNodeType.Text)
                         {
-                            //html = childNode.InnerText;
-                            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); \">");
-                            sb.AppendLine("     <span>");
-                            sb.AppendLine("         <span>" + childNode.InnerText + "</span>");
-                            sb.AppendLine("     </span>");
-                            sb.AppendLine("</div>");
+							if(childNode.InnerText != ".")
+							{
+								//html = childNode.InnerText;
+								sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); \">");
+								sb.AppendLine("     <span>");
+								sb.AppendLine("         <span>" + childNode.InnerText + "</span>");
+								sb.AppendLine("     </span>");
+								sb.AppendLine("</div>");
+							}
+
                         }
                         else
                         {
@@ -1052,12 +1056,12 @@ namespace AIMLbot
                                 case "carousel":
                                     lstCarousel.Add(tagHtml.Body);
                                     break;
-                                default:
-                                    sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); \">");
-                                    sb.AppendLine(tagHtml.Body);
-                                    sb.AppendLine("</div>");
-                                    break;
-                            }
+								default:
+									sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); \">");
+									sb.AppendLine(tagHtml.Body);
+									sb.AppendLine("</div>");
+									break;
+							}
                             if (!String.IsNullOrEmpty(tagHtml.ButtonPostback))
                             {
                                 lstBtnPostback.Add(tagHtml.ButtonPostback);

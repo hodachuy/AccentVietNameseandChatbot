@@ -256,6 +256,8 @@ function setDateCurrent() {
     return html;
 }
 
+// mai lam` click text message show thoi` gian va` da~ xem.
+
 //<div class="_21c3">
 //   <h4 class="datebreak _497p _2lpt"><time class="_3oh-">T6 16:52</time></h4>
 //   <div class="clearfix _2a0-">

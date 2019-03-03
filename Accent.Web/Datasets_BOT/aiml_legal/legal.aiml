@@ -3,7 +3,7 @@
   <!-- <có thể call tới database sẽ custome trên aiml cho dễ sài/>-->
   <!-- <sẽ làm hỗ trợ viết javascript trên này để gọi api, hiện tại đang xử lý call api từ bước return trả về dữ liệu ở code behide />-->
   
-   <category>
+<category>
       <pattern>GiỚI THIỆU BOT</pattern>
       <template>
           tên tôi là <bot name ="name"/><br />
