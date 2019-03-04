@@ -111,19 +111,58 @@ $(document).ready(function () {
             if (text !== "") {
                 $("._4bqf_btn_submit").hide();
                 $(this).val('');
-                submitMessage(text);
+                submitMessage(text,'');
             }
         }
     })
     $('body').on('click', '._4bqf_btn_submit', function (e) {
         var text = $("#58al-input-text").val();
         if (text !== "") {
-            submitMessage(text);
+            submitMessage(text,'');
         }
+    })
+
+    // view datetime message
+    //$('body').on('click', '._4xko', function () {
+    //    $('.datebreak').removeClass('hide').addClass('hide');
+    //    $('.viewed').removeClass('hide').addClass('hide');
+    //    if ($(this).parent().prev().hasClass('hide')) {
+    //        $(this).parent().prev().removeClass('hide');
+    //        $(this).parent().next().removeClass('hide');
+    //    }
+    //})
+    $('body').click(function (e) {
+        if (!$(e.target).closest('._4xko').length) {
+            $('.datebreak').removeClass('hide').addClass('hide');
+            $('.viewed').removeClass('hide').addClass('hide');
+        } else {
+            $('.datebreak').removeClass('hide').addClass('hide');
+            $('.viewed').removeClass('hide').addClass('hide');
+            if ($(e.target).closest('._4xko').parent().prev().hasClass('hide')) {
+                $(e.target).closest('._4xko').parent().prev().removeClass('hide');
+                $(e.target).closest('._4xko').parent().next().removeClass('hide');
+            }
+        }
+    });
+
+    // postback
+    $('body').on('click', '._2zgz', function () {
+        var dataText = $(this).children().eq(0).text();
+        var dataPostback = $(this).children().eq(0).attr('data-postback');
+        submitMessage(dataText, dataPostback);
+        e.stopPropagation();
+    })
+    //menu
+    $('body').on('click', '._6ir5', function (e) {
+        var dataText = $(this).children().children().eq(0).text();
+        var dataPostback = $(this).children().children().eq(0).attr('data-postback');
+        submitMessage(dataText, dataPostback);
+        // chặn ảnh hưởng tới thẻ a href next
+        e.stopPropagation();
     })
 })
 
-function submitMessage(text) {
+function submitMessage(text, textPostback) {
     //return message user
     var messageUser = getMessageUser(text);
     setDateCurrent();
@@ -133,10 +172,14 @@ function submitMessage(text) {
     $("#_12cd_event_button").empty();
     var writing = getMessageWriting();
     $(".conversationContainer").append(writing);
-
     // return message bot
     setTimeout(function () {
-        getMessageBot(text);
+        if (textPostback != "") {
+            getMessageBot(textPostback);
+        }
+        else {
+            getMessageBot(text);
+        }
     }, 1000)
 
     //scrollbar to bottom
@@ -157,9 +200,7 @@ function getMessageBot(text) {
         success: function (result) {
             var message = result.message[0];
             var postback = result.postback[0]
-            console.log(result);
-            console.log(message);
-            console.log(postback);
+
             $("._4xkn_writing").remove();
             $(".conversationContainer").append(message);
             $("#_12cd_event_button").empty().append(postback);
@@ -169,9 +210,11 @@ function getMessageBot(text) {
     });
 }
 function getMessageUser(text) {
+
     var html = '<div class="_4xkn clearfix">' +
                     '<div class="messages">' +
                     '    <div class="_21c3">' +
+                    '        <h4 class="datebreak _497p _2lpt hide"><time class="_3oh-">T6 16:52</time></h4>' +
                     '        <div class="clearfix _2a0-">' +
                     '            <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: ' + _color + '">' +
                     '                 <span>' +
@@ -185,6 +228,8 @@ function getMessageUser(text) {
                     '                 <span class="_21c6 error" title="Đã chuyển"></span>' +
                     '             </a>' +
                     '        </div>' +
+                             '<span class="viewed hide" style="animation: fadeIn 0.1s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 normal both running; clear: both; color: rgba(0, 0, 0, 0.4); float: right; font-size: 12px; font-weight: 500; padding-left: 0px; padding-right: 7px;">Đã xem</span>';
+
                     '     </div>' +
                     '</div>' +
                 '</div>';

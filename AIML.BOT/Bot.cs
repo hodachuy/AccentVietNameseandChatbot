@@ -1018,12 +1018,14 @@ namespace AIMLbot
                     //Tao list string cho cac button menu roi` add vao , sau do foreach va gan' vao string builder
                     List<string> lstBtnPostback = new List<string>();
                     List<string> lstBtnMenuUrl = new List<string>();
-                    List<string> lstCard = new List<string>();
-                    List<string> lstCarousel = new List<string>();
+
                     int totalBtnPostback = 0;
 					int totalCarousel = 0;
                     foreach (XmlNode childNode in node.ChildNodes)
                     {
+                        List<string> lstCard = new List<string>();
+                        List<string> lstCarousel = new List<string>();
+
                         if (childNode.NodeType == XmlNodeType.Text)
                         {
 							if(childNode.InnerText != ".")
@@ -1070,6 +1072,72 @@ namespace AIMLbot
 							totalCarousel = tagHtml.TotalCarousel;
 
 						}
+                        if (lstCard.Count != 0)
+                        {
+                            StringBuilder sbTempCard = new StringBuilder();
+                            sbTempCard.AppendLine("<div class=\"_4xko _2k7w _4xkr bot_reply\" tabindex=\"0\" role=\"button\">");
+                            sbTempCard.AppendLine("   <div class=\"_2k7x\">");
+                            sbTempCard.AppendLine(lstCard[lstCard.Count - 1]);
+                            sbTempCard.AppendLine("   </div>");
+                            sbTempCard.AppendLine("</div>");
+
+                            sb.AppendLine(sbTempCard.ToString());
+                        }
+
+                        if (lstCarousel.Count != 0)
+                        {
+                            StringBuilder sbTempCarousel = new StringBuilder();
+                            sbTempCarousel.AppendLine("           <div class=\"_4xko _2k7w _4xkr bot_reply\">");
+                            sbTempCarousel.AppendLine("                                                                                        <div class=\"\">");
+                            sbTempCarousel.AppendLine("                                                                                            <div currentselectedindex=\"0\" maxchangeamount=\"1\" class=\"_23n- form_carousel\">");
+                            sbTempCarousel.AppendLine("                                                                                                <div class=\"_4u-c\">");
+                            sbTempCarousel.AppendLine("                                                                                                    <div index=\"0\" class=\"_a28\">");
+                            sbTempCarousel.AppendLine("                                                                                                        <div class=\"_a2e\">");
+
+                            sbTempCarousel.AppendLine(lstCarousel[lstCarousel.Count - 1]);
+
+                            sbTempCarousel.AppendLine("                                                                                                        </div>");
+                            sbTempCarousel.AppendLine("                                                                                                    </div>");
+                            sbTempCarousel.AppendLine("                                                                                                    <div class=\"_4u-f\">");
+                            sbTempCarousel.AppendLine("                                                                                                        <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+                            sbTempCarousel.AppendLine("                                                                                                    </div>");
+                            sbTempCarousel.AppendLine("                                                                                                </div>");
+                            sbTempCarousel.AppendLine("");
+                            if (lstCarousel.Count >= 2 || totalCarousel >= 2)
+                            {
+                                sbTempCarousel.AppendLine("                                                                                                <a class=\"_32rk _32rg _1cy6 gl_back_carousel\" href=\"#\" style=\"display:none;\">");
+                                sbTempCarousel.AppendLine("                                                                                                    <div direction=\"backward\" class=\"_10sf _5x5- _5x60\">");
+                                sbTempCarousel.AppendLine("                                                                                                        <div class=\"_5x6d\">");
+                                sbTempCarousel.AppendLine("                                                                                                            <div class=\"_3bwv _3bww\">");
+                                sbTempCarousel.AppendLine("                                                                                                                <div class=\"_3bwy\">");
+                                sbTempCarousel.AppendLine("                                                                                                                    <div class=\"_3bwx\"><i class=\"_3-8w img sp_bfeq6p sx_c4c7bc\" alt=\"\"></i></div>");
+                                sbTempCarousel.AppendLine("                                                                                                                </div>");
+                                sbTempCarousel.AppendLine("                                                                                                            </div>");
+                                sbTempCarousel.AppendLine("                                                                                                        </div>");
+                                sbTempCarousel.AppendLine("                                                                                                    </div>");
+                                sbTempCarousel.AppendLine("                                                                                                </a>");
+                                sbTempCarousel.AppendLine("");
+                                sbTempCarousel.AppendLine("                                                                                                <a class=\"_32rk _32rh _1cy6 gl_next_carousel\" href=\"#\">");
+                                sbTempCarousel.AppendLine("                                                                                                    <div direction=\"forward\" class=\"_10sf _5x5_\">");
+                                sbTempCarousel.AppendLine("                                                                                                        <div class=\"_5x6d\">");
+                                sbTempCarousel.AppendLine("                                                                                                            <div class=\"_3bwv _3bww\">");
+                                sbTempCarousel.AppendLine("                                                                                                                <div class=\"_3bwy\">");
+                                sbTempCarousel.AppendLine("                                                                                                                    <div class=\"_3bwx\">");
+                                sbTempCarousel.AppendLine("                                                                                                                        <i class=\"_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74\" alt=\"\"></i>");
+                                sbTempCarousel.AppendLine("                                                                                                                    </div>");
+                                sbTempCarousel.AppendLine("                                                                                                                </div>");
+                                sbTempCarousel.AppendLine("                                                                                                            </div>");
+                                sbTempCarousel.AppendLine("                                                                                                        </div>");
+                                sbTempCarousel.AppendLine("                                                                                                    </div>");
+                                sbTempCarousel.AppendLine("                                                                                                </a>");
+                            }
+                            sbTempCarousel.AppendLine("                                                                                            </div>");
+                            sbTempCarousel.AppendLine("                                                                                        </div>");
+                            sbTempCarousel.AppendLine("                                                                                    </div>");
+
+                            sb.AppendLine(sbTempCarousel.ToString());
+
+                        }
                     }
 
                     if (lstBtnMenuUrl.Count != 0)
@@ -1090,73 +1158,7 @@ namespace AIMLbot
                         sb.AppendLine(sbTempBtnMenuUrl.ToString());
                     }
 
-                    if (lstCard.Count != 0)
-                    {
-                        StringBuilder sbTempCard = new StringBuilder();
-                        sbTempCard.AppendLine("<div class=\"_4xko _2k7w _4xkr bot_reply\" tabindex=\"0\" role=\"button\">");
-                        sbTempCard.AppendLine("   <div class=\"_2k7x\">");
-                        sbTempCard.AppendLine(lstCard[lstCard.Count - 1]);
-                        sbTempCard.AppendLine("   </div>");
-                        sbTempCard.AppendLine("</div>");
-
-                        sb.AppendLine(sbTempCard.ToString());
-                    }
-
-                    if (lstCarousel.Count != 0)
-                    {
-                        StringBuilder sbTempCarousel = new StringBuilder();
-                        sbTempCarousel.AppendLine("           <div class=\"_4xko _2k7w _4xkr bot_reply\">");
-                        sbTempCarousel.AppendLine("                                                                                        <div class=\"\">");
-                        sbTempCarousel.AppendLine("                                                                                            <div currentselectedindex=\"0\" maxchangeamount=\"1\" class=\"_23n- form_carousel\">");
-                        sbTempCarousel.AppendLine("                                                                                                <div class=\"_4u-c\">");
-                        sbTempCarousel.AppendLine("                                                                                                    <div index=\"0\" class=\"_a28\">");
-                        sbTempCarousel.AppendLine("                                                                                                        <div class=\"_a2e\">");
-
-                        sbTempCarousel.AppendLine(lstCarousel[lstCarousel.Count - 1]);
-
-                        sbTempCarousel.AppendLine("                                                                                                        </div>");
-                        sbTempCarousel.AppendLine("                                                                                                    </div>");
-                        sbTempCarousel.AppendLine("                                                                                                    <div class=\"_4u-f\">");
-                        sbTempCarousel.AppendLine("                                                                                                        <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
-                        sbTempCarousel.AppendLine("                                                                                                    </div>");
-                        sbTempCarousel.AppendLine("                                                                                                </div>");
-                        sbTempCarousel.AppendLine("");
-                        if (lstCarousel.Count >= 2 || totalCarousel >= 2)
-                        {
-                            sbTempCarousel.AppendLine("                                                                                                <a class=\"_32rk _32rg _1cy6 gl_back_carousel\" href=\"#\" style=\"display:none;\">");
-                            sbTempCarousel.AppendLine("                                                                                                    <div direction=\"backward\" class=\"_10sf _5x5- _5x60\">");
-                            sbTempCarousel.AppendLine("                                                                                                        <div class=\"_5x6d\">");
-                            sbTempCarousel.AppendLine("                                                                                                            <div class=\"_3bwv _3bww\">");
-                            sbTempCarousel.AppendLine("                                                                                                                <div class=\"_3bwy\">");
-                            sbTempCarousel.AppendLine("                                                                                                                    <div class=\"_3bwx\"><i class=\"_3-8w img sp_bfeq6p sx_c4c7bc\" alt=\"\"></i></div>");
-                            sbTempCarousel.AppendLine("                                                                                                                </div>");
-                            sbTempCarousel.AppendLine("                                                                                                            </div>");
-                            sbTempCarousel.AppendLine("                                                                                                        </div>");
-                            sbTempCarousel.AppendLine("                                                                                                    </div>");
-                            sbTempCarousel.AppendLine("                                                                                                </a>");
-                            sbTempCarousel.AppendLine("");
-                            sbTempCarousel.AppendLine("                                                                                                <a class=\"_32rk _32rh _1cy6 gl_next_carousel\" href=\"#\">");
-                            sbTempCarousel.AppendLine("                                                                                                    <div direction=\"forward\" class=\"_10sf _5x5_\">");
-                            sbTempCarousel.AppendLine("                                                                                                        <div class=\"_5x6d\">");
-                            sbTempCarousel.AppendLine("                                                                                                            <div class=\"_3bwv _3bww\">");
-                            sbTempCarousel.AppendLine("                                                                                                                <div class=\"_3bwy\">");
-                            sbTempCarousel.AppendLine("                                                                                                                    <div class=\"_3bwx\">");
-                            sbTempCarousel.AppendLine("                                                                                                                        <i class=\"_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74\" alt=\"\"></i>");
-                            sbTempCarousel.AppendLine("                                                                                                                    </div>");
-                            sbTempCarousel.AppendLine("                                                                                                                </div>");
-                            sbTempCarousel.AppendLine("                                                                                                            </div>");
-                            sbTempCarousel.AppendLine("                                                                                                        </div>");
-                            sbTempCarousel.AppendLine("                                                                                                    </div>");
-                            sbTempCarousel.AppendLine("                                                                                                </a>");
-                        }
-                        sbTempCarousel.AppendLine("                                                                                            </div>");
-                        sbTempCarousel.AppendLine("                                                                                        </div>");
-                        sbTempCarousel.AppendLine("                                                                                    </div>");
-
-                        sb.AppendLine(sbTempCarousel.ToString());
-
-                    }
-
+                   // card and carousel
 
                     sb.AppendLine("       </div>");
                     sb.AppendLine("    </div>");
@@ -1167,7 +1169,7 @@ namespace AIMLbot
                     {
                         StringBuilder sbPostback = new StringBuilder();
                         sbPostback.AppendLine("<div class=\"_6biu\">");
-                        sbPostback.AppendLine("                                                                    <div currentselectedindex=\"0\" maxchangeamount=\"1\" class=\"_23n- form_carousel\">");
+                        sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
                         sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
                         sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
                         sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");

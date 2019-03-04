@@ -101,6 +101,13 @@
 	</template>
 </category>
   
+  <category>
+    <pattern>HOTLINE</pattern>
+    <template>
+      DA BAM HOTLINE
+    </template>
+  </category>
+
 <category>
    <pattern>testcardtext</pattern>
    <template>
@@ -164,14 +171,14 @@
 <category>
    <pattern>testcarousel</pattern>
    <template>
-            <carousel>
+         <carousel>
              <card>
                <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
                <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
                  <subtitle>Câu hỏi liên quan</subtitle>
                <link></link>
                <button>
-                 <text>📞 Đường dây nóng</text>
+                 <text>📞 ABC</text>
                  <menu>HOTLINE</menu>
                </button>
                <button>
@@ -185,7 +192,7 @@
               <subtitle>Câu hỏi liên quan</subtitle>
               <link></link>
               <button>
-                <text>📞 Đường dây nóng</text>
+                <text>📞 XYZ</text>
                 <menu>HOTLINE</menu>
               </button>
               <button>
@@ -207,7 +214,7 @@
                 <menu>HOTLINE</menu>
               </button>
             </card>
-         </carousel>
+         </carousel>    
          <button>
            <text> Giải trí</text>
            <postback>BACK</postback>
@@ -218,6 +225,12 @@
          </button>
 	</template>
 </category>
+  <category>
+   <pattern>BACK</pattern>
+   <template>
+    Bam back
+	</template>
+</category> 
   
   
 <category>
@@ -453,10 +466,9 @@
   <category>
     <pattern>SHTT</pattern>
     <template>
-      Lĩnh vực Sở hữu trí tuệ, <!--<set name = "arename"><star/> </set>-->
+      Lĩnh vực Sở hữu trí tuệ,
       Hiện tại có 23100 văn bản luật và 2600 câu hỏi liên quan đến lĩnh vực bạn quan tâm.
       Bạn có thể gửi câu hỏi cho tôi?
-      <!--<set name = "countLawDoc"><star/> </set>-->
     </template>
   </category>
 
