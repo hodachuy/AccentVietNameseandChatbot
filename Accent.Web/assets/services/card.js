@@ -1227,46 +1227,48 @@ $(document).ready(function () {
 
         if(checkCard){
             var element = $(this);
-            var block = element.parents('body');
-            $(block).block({
-                message: '<i class="icon-spinner4 spinner"></i>',
-                overlayCSS: {
-                    backgroundColor: '#000',
-                    opacity: 0.8,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
+            //var block = element.parents('body');
+            //$(block).block({
+            //    message: '<i class="icon-spinner4 spinner"></i>',
+            //    overlayCSS: {
+            //        backgroundColor: '#000',
+            //        opacity: 0.8,
+            //        cursor: 'wait'
+            //    },
+            //    css: {
+            //        border: 0,
+            //        padding: 0,
+            //        backgroundColor: 'transparent'
+            //    }
+            //});
+            console.log(objectCard)
+            console.log(arLink)
+            //$.ajax({
+            //    url: ajaxSave,
+            //    type: 'POST',
+            //    data: {
+            //        data        : objectCard,
+            //        // listUpdate  : listUpdate,
+            //        arLink      : arLink
+            //    },
+            //}).done(function(val) {
+            //    if(val!=false){
+            //        window.location.href = urlBuild;
+            //    }else{
+            //        $(block).unblock();
+            //    }
+            //}).fail(function() {
+            //    $(block).unblock();
+            //});
 
-            $.ajax({
-                url: ajaxSave,
-                type: 'POST',
-                data: {
-                    data        : objectCard,
-                    // listUpdate  : listUpdate,
-                    arLink      : arLink
-                },
-            }).done(function(val) {
-                if(val!=false){
-                    window.location.href = urlBuild;
-                }else{
-                    $(block).unblock();
-                }
-            }).fail(function() {
-                $(block).unblock();
-            });
-
-        }else{
+        } else {
+            $("#model-tag-bot").modal('hide');
             swal({
                 title: txtCard57,
                 text: txtCard58,
                 confirmButtonColor: "#EF5350",
                 type: "error"
-            });
+            }, function () { $("#model-tag-bot").modal('show'); });
         }
     });
     // ====================================================================
@@ -2559,6 +2561,8 @@ $(document).ready(function () {
             elrm.parents('.wr_image').css('background-image', '');
         }
     });
+
+    // Input Image
     $('#multi').on('change', '.inputfile', function(event) {
         var file = $(this)[0].files[0];
         var el = $(this);
