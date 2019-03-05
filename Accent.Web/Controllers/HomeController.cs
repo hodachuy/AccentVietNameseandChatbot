@@ -26,10 +26,6 @@ namespace Accent.Web.Controllers
         {
             return View();
         }
-        public ActionResult BubleChatBot()
-        {
-            return View();
-        }
         public ActionResult FormChatBot()
         {
             return View();

@@ -2,20 +2,13 @@
     ViewBag.Title = "BotLearning";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/assets/libs/css/common-bot.css" rel="stylesheet" />
-<link href="~/assets/libs/css/card.css" rel="stylesheet" />
-
-
-<script type="text/javascript" src="https://platform.messnow.com/js/hekate/autosize.min.js"></script>
-<script type="text/javascript" src="https://platform.messnow.com/js/plugins/forms/selects/select2.min.js"></script>
-<script type="text/javascript" src="https://platform.messnow.com/js/plugins/sortable/autogrow.js"></script>
-<script type="text/javascript" src="https://platform.messnow.com/js/plugins/sortable/jquery.sortable.js"></script>
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.selectboxit/3.8.0/jquery.selectBoxIt.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.js"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css.map" rel="stylesheet" type="application/json">
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
+<link href="~/assets/libs/css/common-bot.css" rel="stylesheet" />
+<link href="~/assets/libs/css/card.css" rel="stylesheet" />
 <style>
     @@media (min-width: 576px) {
         .modal-card {
@@ -29,9 +22,35 @@
     }
 
 </style>
+<style>
+    .select2-dropdown {
+        z-index: 999999;
+    }
 
+    .select2-dropdown {
+        background-color: white;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        left: -100000px;
+        width: 100%;
+        z-index: 999999;
+    }
+    .select2{
+        width:100%;
+    }
+    select + .select2-container {
+  width: 100% !important;
+}
+    .product-colors input[type=checkbox], input[type=radio] {
+    box-sizing: border-box;
+    padding: 0;
+    display: block;
+}
+</style>
 <div class="row">
-    <div></div>
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
         <div class="d-flex">
             <h5 class="pageheader-title">myapplication phapluat-bot </h5>
@@ -140,23 +159,28 @@
                                     <li class="card_list"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
                                     <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
                                     <li class="card_file"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
+                                    <li class="card_quickReply"><i class="fa fa-flickr"></i><span>Trả lời nhanh</span></li>
                                 </ul>
                             </div>
-                            <div class="form-group">
-                                <label for="exampleFormControlTextarea1"><input type="text" maxlength="25" id="name_card" value="Tên Thẻ" autofocus="autofocus"></label>
+                            <div class="form-group content-wrapper">
+                                <label for="exampleFormControlTextarea1">
+                                    <input type="text" maxlength="25" id="name_card" value="Tên Thẻ">
+                                </label>
+
                                 <div id="wr_multi" class="scroll">
                                     <div id="multi" style="width: 1320px;">
                                     </div>
                                 </div>
-                            </div>
-                            @*<hr />
-                                <div class="form-group">
 
+                                <div id="wr_reply" style="display: none;">
+                                    <h3><i class="icon-primitive-dot position-left"></i>Trả lời nhanh <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
+                                    <ul id="blReply" class="list-inline">
+                                        <li class="add_reply">
+                                            <div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div>
+                                        </li>
+                                    </ul>
                                 </div>
-                                <hr />
-                                <div class="form-group">
-
-                                </div>*@
+                            </div>
                         </form>
                     </div>
                     <div class="modal-footer">
@@ -166,66 +190,19 @@
             </div>
         </div>
         <div id="modal_button" class="modal fade in" style="display: none;">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="pr_bt_name">
-                            <input type="text" class="form-control bt_name" placeholder="Nhập tên nút" maxlength="20">
-                            <span>20</span>
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div class="bl_bt">
-                            <div class="bl_bt_content">
-                                <ul class="list-inline">
-                                    <li class="bl_bt_a add_card active">
-                                        <i class="icon-popout"></i> Thẻ
-                                    </li>
-                                    <li class="bl_bt_a add_url">
-                                        <i class="icon-link"></i> URL
-                                    </li>
-                                    <li class="bl_bt_a add_phone">
-                                        <i class="icon-phone2"></i> Điện thoại
-                                    </li>
-                                    <li class="bl_bt_a add_module"><i class="icon-power-cord"></i> Mô-đun</li>
-                                </ul>
-                                <div class="bl_bt_input">
-                                    <div class="blSelect">
-                                        <div class="select2-container select" id="s2id_autogen82">
-                                            <a href="javascript:void(0)" class="select2-choice select2-default" tabindex="-1">
-                                                <span class="select2-chosen" id="select2-chosen-83">Chọn  thẻ của bạn</span>
-                                                <abbr class="select2-search-choice-close"></abbr>
-                                                <span class="select2-arrow" role="presentation">
-                                                    <b role="presentation"></b>
-                                                </span>
-                                            </a>
-                                            <label for="s2id_autogen83" class="select2-offscreen"></label>
-                                            <input class="select2-focusser select2-offscreen" type="text" aria-haspopup="true" role="button" aria-labelledby="select2-chosen-83" id="s2id_autogen83">
-                                            <div class="select2-drop select2-display-none select2-with-searchbox">
-                                                <div class="select2-search">
-                                                    <label for="s2id_autogen83_search" class="select2-offscreen"></label>
-                                                    <input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="select2-input" role="combobox" aria-expanded="true" aria-autocomplete="list" aria-owns="select2-results-83" id="s2id_autogen83_search" placeholder="">
-                                                </div>
-                                                <ul class="select2-results" role="listbox" id="select2-results-83"></ul>
-                                            </div>
-                                        </div>
-                                        <select data-placeholder="Chọn  thẻ của bạn" class="select select2-offscreen" tabindex="-1" title="">
-                                            <option></option>
-                                            <optgroup label="THÔNG TIN">
-                                                <option value="5c00dc63c941482ab456a094">BẮT ĐẦU</option>
-                                                <option value="5c00dc63c941482ab456a09e">CÂU MẶC ĐỊNH</option>
-                                            </optgroup>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button><button type="button" class="btn btn-primary bt_done">Xong</button></div>
-                </div>
-            </div>
+          
         </div>
     </div>
 </div>
+<script>
+
+
+    function card() {
+        var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="BATDAU">BẮT ĐẦU</option><option  value="CAUMACDINH">CÂU MẶC ĐỊNH</option><option  value="LIENHE">LIÊN HỆ</option><option  value="5c00dc63c941482ab456a0a2">CÁC CHUYÊN MỤC</option><option  value="5c00dc63c941482ab456a0a3">TRANG CHỦ</option></optgroup>';        return htmlListCard;
+    }
+    function module() {
+        var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>'; return htmlListModule;
+    }
+</script>
 <script src="~/assets/services/botLearning.js"></script>
 <script src="~/assets/services/card.js"></script>

@@ -6,7 +6,7 @@
         ajaxSave = "/bots/saveCard",
         urlBuild = "/bots/build/5c00dc63c941482ab456a090",
         srcRmcard = "/bots/rmCard",
-        srcLayoutModule = "/bots/getLayoutModule/5c00dc63c941482ab456a090",
+        srcLayoutModule = "https://platform.messnow.com/bots/getLayoutModule/5c00dc63c941482ab456a090",
         srcGetStates = "/bots/getState",
         srcGetCities = "/bots/getCity",
         srcClipboard = "/api/shortener",
@@ -1512,7 +1512,8 @@ $(document).ready(function () {
                     type: 'POST',
                     data: {id: e.val},
                 })
-                .done(function(val) {
+                .done(function (val) {
+                    console.log(val)
                     if(val!=''){
                         $('#multi .bl_bt_input .blSelectModule .moduleExtension').empty();
                         $('#multi .bl_bt_input .blSelectModule .moduleExtension').append(val);
@@ -1739,7 +1740,8 @@ $(document).ready(function () {
                     type: 'POST',
                     data: {id: idMo,dataMo:moduleId},
                 })
-                .done(function(val) {
+                .done(function (val) {
+                    console.log(val)
                     if(val!=''){
                         $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').empty();
                         $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').append(val);
@@ -2188,8 +2190,10 @@ $(document).ready(function () {
             iconTitle = '',
             classTitle = 'no-img';
 
-        if(elContent.find('.modal-body .bl_bt_content li.active').hasClass('add_card')){
-            var done_data = elContent.find(".modal-body .bl_bt_content .bl_bt_input .select").select2("data");
+        if (elContent.find('.modal-body .bl_bt_content li.active').hasClass('add_card')) {
+            var arrDataForButton = elContent.find(".modal-body .bl_bt_content .bl_bt_input .select").select2("data");
+            var done_data = arrDataForButton[0];
+            console.log(done_data)
             type_button = 'postback';
 
             if(str_bt_title==''){
@@ -2331,7 +2335,7 @@ $(document).ready(function () {
             }
             var moduleExt = "_"+modExt;
             var done_data = elContent.find(".modal-body .bl_bt_content .bl_bt_input .select").select2("data");
-            str_btct = '<span module-id="'+done_data.id+moduleExt+'">'+done_data.text+'</span>';
+            str_btct = '<span module-id="'+done_data[0].id+moduleExt+'">'+done_data[0].text+'</span>';
             type_button = 'module';
         }else if(elContent.find('.modal-body .bl_bt_content li.active').hasClass('add_location')){
             str_bt_title = txtCard27;
@@ -2455,8 +2459,8 @@ $(document).ready(function () {
 
                 var str_bt = '<li class="reply">'+
                     '<div class="reply_action">'+
-                        '<div class="reply_rm"><i class="icon-bin"></i></div>'+
-                        '<div class="reply_move"><i class="icon-move"></i></div>'+
+                        '<div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div>'+
+                        '<div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div>'+
                     '</div>'+
                     '<div class="wr_reply_btcontent" attr-reply="'+type_button+'">'+
                         iconTitle+

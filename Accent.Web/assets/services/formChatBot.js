@@ -146,7 +146,7 @@ $(document).ready(function () {
     });
 
     // postback
-    $('body').on('click', '._2zgz', function () {
+    $('body').on('click', '._2zgz', function (e) {
         var dataText = $(this).children().eq(0).text();
         var dataPostback = $(this).children().eq(0).attr('data-postback');
         submitMessage(dataText, dataPostback);

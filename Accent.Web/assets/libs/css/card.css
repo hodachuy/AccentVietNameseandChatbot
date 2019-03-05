@@ -1046,8 +1046,8 @@ div.sortable-placeholder {
         }
 
 .reply_title_input {
-    width: 200px;
-    margin: auto;
+    /*width: 200px;
+    margin: auto;*/
     position: relative;
 }
 
@@ -1056,7 +1056,7 @@ div.sortable-placeholder {
     height: 40px;
     border-radius: 50%;
     position: absolute;
-    left: -50px;
+    left: 50px;
     top: -2px;
     border: 1px solid #448af1;
     text-align: center;

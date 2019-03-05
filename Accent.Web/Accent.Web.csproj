@@ -748,7 +748,6 @@
     <Content Include="Views\Home\QnA.cshtml" />
     <Content Include="Views\Home\AccentVN.cshtml" />
     <Content Include="Views\Home\BotLearning.cshtml" />
-    <Content Include="Views\Home\BubleChatBot.cshtml" />
     <Content Include="Views\Home\FormChatBot.cshtml" />
   </ItemGroup>
   <ItemGroup>

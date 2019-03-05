@@ -715,6 +715,3 @@ function fn_htmlPaging(countData, limitpage) {
     return htmlPag;
 }
 
-function card() {
-    var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="5c00dc63c941482ab456a094">BẮT ĐẦU</option><option  value="5c00dc63c941482ab456a09e">CÂU MẶC ĐỊNH</option><option  value="5c00dc63c941482ab456a0a1">LIÊN HỆ</option><option  value="5c00dc63c941482ab456a0a2">CÁC CHUYÊN MỤC</option><option  value="5c00dc63c941482ab456a0a3">TRANG CHỦ</option></optgroup>';    return htmlListCard;
-}
