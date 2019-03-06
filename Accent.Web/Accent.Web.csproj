@@ -224,7 +224,6 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="assets\assets\images\background\img5.html" />
     <Content Include="assets\images\avatar-1.jpg" />
     <Content Include="assets\images\avatar-2.jpg" />
     <Content Include="assets\images\avatar-3.jpg" />
@@ -260,6 +259,7 @@
     <Content Include="assets\images\switch.png" />
     <Content Include="assets\libs\css\card.css" />
     <Content Include="assets\libs\css\common-bot.css" />
+    <Content Include="assets\libs\css\components.css" />
     <Content Include="assets\libs\css\form-chat.css" />
     <Content Include="assets\libs\css\lvbot-chat-dialog\c10_Ft5ovaKZZ_s.css" />
     <Content Include="assets\libs\css\lvbot-chat-dialog\c11_hZOCwdDXbub.css" />

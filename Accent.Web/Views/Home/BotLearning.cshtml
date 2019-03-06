@@ -9,6 +9,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
 <link href="~/assets/libs/css/common-bot.css" rel="stylesheet" />
 <link href="~/assets/libs/css/card.css" rel="stylesheet" />
+<link href="~/assets/libs/css/components.css" rel="stylesheet" />
 <style>
     @@media (min-width: 576px) {
         .modal-card {
@@ -21,6 +22,18 @@
         }
     }
 
+    .icon-spinner4.spinner{
+        color: #fff;
+    }
+    .icon-spinner4.spinner{
+        font-size: 30px;
+    }
+
+    .has-error .form-control {
+    border-color: #ed4956;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+}
 </style>
 <style>
     .select2-dropdown {
@@ -54,9 +67,9 @@
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
         <div class="d-flex">
             <h5 class="pageheader-title">myapplication phapluat-bot </h5>
-
+            
             <div class="toolbar ml-auto p-r-10">
-                <a href="#" class="btn btn-success btn-sm "><i class="fas fa-sync-alt"></i> Save and retrain</a>
+                <a href="#" class="btn btn-success btn-sm saveKeyword"><i class="fas fa-sync-alt"></i> Save and retrain</a>
                 <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>
             </div>
         </div>
@@ -127,7 +140,7 @@
                             </div>
                             <div class="wrbutton" indexbt="1">
                                 <div class="bt">
-                                    <input type="text" name="data[question][1][]" class="form-control checkvalid" maxlength="320">
+                                    <input type="text" name="data[question][1][]" autocomplete="off" class="form-control checkvalid" maxlength="320">
                                     <i class="fa fa-remove icon-bin rmText"></i>
                                 </div>
                             </div>

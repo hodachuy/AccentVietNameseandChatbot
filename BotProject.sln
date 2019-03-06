@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotProject.Common", "BotPro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotProject.Service", "BotProject.Service\BotProject.Service.csproj", "{FCACCE39-AD3A-451B-B3C4-AFE7EEE88F91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotProject.Web", "BotProject.Web\BotProject.Web.csproj", "{477FD7A4-913F-442B-BBF4-6C4F45A98861}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{FCACCE39-AD3A-451B-B3C4-AFE7EEE88F91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FCACCE39-AD3A-451B-B3C4-AFE7EEE88F91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FCACCE39-AD3A-451B-B3C4-AFE7EEE88F91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{477FD7A4-913F-442B-BBF4-6C4F45A98861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{477FD7A4-913F-442B-BBF4-6C4F45A98861}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{477FD7A4-913F-442B-BBF4-6C4F45A98861}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{477FD7A4-913F-442B-BBF4-6C4F45A98861}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -117,7 +117,7 @@ $(document).ready(function () {
         var file = $(this)[0].files[0];
         if (file && file.type.match('image.*')) {
             el.removeClass('error');
-            el.append('<div class="img-loading"><i class="icon-spinner4 spinner"></i></div>');
+            el.append('<div class="img-loading"><i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i></div>');
             data = new FormData();
             data.append('file', file);
             data.append('botId',botId);
@@ -1229,7 +1229,7 @@ $(document).ready(function () {
             var element = $(this);
             //var block = element.parents('body');
             //$(block).block({
-            //    message: '<i class="icon-spinner4 spinner"></i>',
+            //    message: '<i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i>',
             //    overlayCSS: {
             //        backgroundColor: '#000',
             //        opacity: 0.8,
@@ -1640,7 +1640,7 @@ $(document).ready(function () {
             callback: function(result) {
                 if(result){
                     $(block).block({
-                        message: '<i class="icon-spinner4 spinner"></i>',
+                        message: '<i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i>',
                         overlayCSS: {
                             backgroundColor: '#000',
                             opacity: 0.8,
@@ -2581,31 +2581,32 @@ $(document).ready(function () {
 
         if (file && file.type.match('image.*')) {
             el.parents('.wr_image').removeClass('error');
-            el.parents('.wr_image').append('<div class="img-loading"><i class="icon-spinner4 spinner"></i></div>');
+            el.parents('.wr_image').append('<div class="img-loading"><i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i></div>');
             data = new FormData();
             data.append('file', file);
-            data.append('botId',botId);
-            $.ajax({
-                url: srcAddImg,
-                type: "POST",
-                data: data,
-                enctype: 'multipart/form-data',
-                processData: false,
-                contentType: false
-            })
-            .done(function(val) {
-                val = JSON.parse(val);
-                if(el.parents('.wr_image').css('background-image')!='none'){
-                    removeImage(el.parents('.wr_image').css('background-image'),attachment_id);
-                }
-                el.parents('.wr_image').attr('attachment_id', val.attachment_id);
-                el.parents('.wr_image').css('background-image', 'url("'+val.url+'")');
-                el.parents('.wr_image').find('.clickinput').hide();
-                el.parents('.wr_image').find('span').removeClass('hide');
-                setTimeout(function() {
-                    el.parents('.wr_image').find('.img-loading').remove();
-                }, 500);
-            })
+            data.append('botId', botId);
+            console.log(file)
+            //$.ajax({
+            //    url: srcAddImg,
+            //    type: "POST",
+            //    data: data,
+            //    enctype: 'multipart/form-data',
+            //    processData: false,
+            //    contentType: false
+            //})
+            //.done(function(val) {
+            //    val = JSON.parse(val);
+            //    if(el.parents('.wr_image').css('background-image')!='none'){
+            //        removeImage(el.parents('.wr_image').css('background-image'),attachment_id);
+            //    }
+            //    el.parents('.wr_image').attr('attachment_id', val.attachment_id);
+            //    el.parents('.wr_image').css('background-image', 'url("'+val.url+'")');
+            //    el.parents('.wr_image').find('.clickinput').hide();
+            //    el.parents('.wr_image').find('span').removeClass('hide');
+            //    setTimeout(function() {
+            //        el.parents('.wr_image').find('.img-loading').remove();
+            //    }, 500);
+            //})
         }else{
             if(file){
                 el.parents('.wr_image').addClass('error');
@@ -2636,7 +2637,7 @@ $(document).ready(function () {
         if (file && file.type.match(extend_suport) && file.size<=1048576*10
             || file.type=='application/pdf') {
             el.parents('.layer').removeClass('error');
-            el.parents('.wr_file').append('<div class="img-loading"><i class="icon-spinner4 spinner"></i></div>');
+            el.parents('.wr_file').append('<div class="img-loading"><i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i></div>');
             data = new FormData();
             data.append('file' , file );
             data.append('botId', botId);

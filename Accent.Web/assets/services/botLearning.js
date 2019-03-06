@@ -20,7 +20,6 @@ $(document).ready(function () {
         $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
         $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
     });
-
     $('.selectKeyword').on('hidden.bs.select', function (e) {
         var val = $(this).selectpicker('val');
         $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
@@ -172,7 +171,7 @@ $(document).ready(function () {
             }
 
             var val = $(this).children('input').val().trim();
-            var html = '<li class="tagAdd taglist"><input type="text" attr-data="' + val + '" class="search-field" value="" style="display: inline-block;"></li>';
+            var html = '<li class="tagAdd taglist"><input type="text" autocomplete="off" attr-data="' + val + '" class="search-field" value="" style="display: inline-block;"></li>';
             $(this).replaceWith(html);
             elParent.find('.search-field').focus().val(val);
         }
@@ -233,7 +232,7 @@ $(document).ready(function () {
 							'<div class="input-group">' +
 								'<ul class="tags checkvalid">' +
 						            '<li class="tagAdd taglist">' +
-						                '<input type="text" class="search-field">' +
+						                '<input type="text" autocomplete="off" class="search-field">' +
 						            '</li>' +
 						        '</ul>' +
 								'<span class="input-group-addon">' +
@@ -258,7 +257,7 @@ $(document).ready(function () {
 							'</div>' +
 							'<div class="wrbutton" indexbt="1">' +
 								'<div class="bt">' +
-									'<input type="text" name="data[question][' + sizeCT + '][]" class="form-control checkvalid" maxlength="320">' +
+									'<input type="text" autocomplete="off" name="data[question][' + sizeCT + '][]" class="form-control checkvalid" maxlength="320">' +
 									'<i class="fa fa-remove icon-bin rmText"></i>' +
 								'</div>' +
 							'</div>' +
@@ -326,11 +325,7 @@ $(document).ready(function () {
             }
             if (size == 1) {
                 $(this).parents('.col-lg-6').find('.rmText').hide();
-            }
-            if (size == 5) {
-                $(this).parents('.col-lg-6').find('.btn').addClass('hidden');
-                $(this).parents('.col-lg-6').find('.rmText').show();
-            }
+            }          
             else {
                 $(this).parents('.col-lg-6').find('.rmText').show();
             }
@@ -356,7 +351,7 @@ $(document).ready(function () {
 						'<input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="">' +
 						'<div class="learn_sliderbot learn_roundbot"></div>' +
 					'</label>' +
-					'<input type="text" name="data[question][' + (panel - 1) + '][]" class="form-control checkvalid" maxlength="320">' +
+					'<input type="text" autocomplete="off" name="data[question][' + (panel - 1) + '][]" class="form-control checkvalid" maxlength="320">' +
 					'<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>' +
 				'</div>';
             $(this).siblings('.wrbutton').attr('indexbt', (parseInt(bt) + 1));
@@ -374,7 +369,13 @@ $(document).ready(function () {
         }
         $(this).parents('.wrbutton').attr('indexbt', parseInt(si) - 1);
         $(this).parents('.col-lg-6').find('.btn').removeClass('hidden');
+        // nếu xóa phần tử đầu tiên
         if ($(this).parents('.bt').index() == 0) {
+            var $labelSwitchIdx1Clone = $(this).parents('.wrbutton').find('.bt').eq(1).find('.learn_switchbot').eq(0).clone();
+            var $labelSwitchDefault = $(this).parent().parent().parent().children().next().eq(0);
+            $labelSwitchDefault.remove();
+            var $labelText = $(this).parents('.botReply').find('label').eq(0);
+            $labelSwitchIdx1Clone.insertAfter($labelText)
             $(this).parents('.wrbutton').find('.bt').eq(1).find('label').remove();
             $(this).parents('.bt').remove();
         } else {
@@ -393,7 +394,7 @@ $(document).ready(function () {
             vt = $(this).parents('.panel-flat').attr('indexpanel');
             elParent.find('.selectKeyword').remove();
             elParent.find('.plus-tag').remove();
-            strHtml = '<input type="text" name="data[question][' + (vt - 1) + '][]" class="form-control checkvalid" maxlength="640" placeholder="' + txtplholder + '">';
+            strHtml = '<input type="text" autocomplete="off" name="data[question][' + (vt - 1) + '][]" class="form-control checkvalid" maxlength="640" placeholder="' + txtplholder + '">';
             elParent.find('.rmText').before(strHtml);
            // $($(this).parent().next().eq(0)).addClass('hidden');
         } else {          
@@ -404,10 +405,11 @@ $(document).ready(function () {
 					'</select>';
             plusTagHtml = '<i class="fa fa-plus-circle plus-tag"></i>';
             elParent.find('.rmText').before(strHtml);
-            elParent.find('.rmText').after(plusTagHtml)
-            elParent.find('.rmText').parent().find('.selectKeyword').selectpicker();
+            elParent.find('.rmText').after(plusTagHtml);
 
-            elParent.find('.rmText').parent().find('.selectKeyword').on('show.bs.select', function (e) {
+            var $elSelectCard = elParent.find('.rmText').parent().find('.selectKeyword').eq(0);
+            $elSelectCard.selectpicker();
+            $elSelectCard.on('show.bs.select', function (e) {
                 var val = $(this).selectpicker('val');
                 $(this).parents('.bt').find('.selectKeyword option').remove();
                 $(this).parents('.bt').find('select.selectKeyword').append(card());
@@ -415,7 +417,7 @@ $(document).ready(function () {
                 $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
             });
 
-            elParent.find('.rmText').parent().find('.selectKeyword').on('hidden.bs.select', function (e) {
+            $elSelectCard.on('hidden.bs.select', function (e) {
                 var val = $(this).selectpicker('val');
                 $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
                     if ($(el).find('[value="' + val + '"]').length <= 0) {
@@ -425,8 +427,6 @@ $(document).ready(function () {
                 $(this).parents('.bt').find('.selectKeyword option:not([value="' + val + '"])').remove();
                 $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
             });
-
-           // $($(this).parent().next().eq(0)).removeClass('hidden');
         }
     });
 
@@ -605,20 +605,20 @@ $(document).ready(function () {
         });
         // End Validate Form
         if (checkvalid) {
-            $.blockUI({
-                message: '<i class="icon-spinner4 spinner"></i>',
-                overlayCSS: {
-                    backgroundColor: '#000',
-                    opacity: 0.85,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    padding: 0,
-                    backgroundColor: 'transparent',
-                    color: '#fff',
-                }
-            });
+            //$.blockUI({
+            //    message: '<i class="icon-spinner4 spinner"></i>',
+            //    overlayCSS: {
+            //        backgroundColor: '#000',
+            //        opacity: 0.85,
+            //        cursor: 'wait'
+            //    },
+            //    css: {
+            //        border: 0,
+            //        padding: 0,
+            //        backgroundColor: 'transparent',
+            //        color: '#fff',
+            //    }
+            //});
 
             var arData = [];
             $('.wrap-content .panel-flat').each(function (index, el) {
@@ -645,29 +645,31 @@ $(document).ready(function () {
                 arData.push(ojData);
             });
 
-            $.ajax({
-                url: urlKeywordsAdd,
-                type: 'POST',
-                data: {
-                    _id: $('[name="_id"]').val(),
-                    idBot: $('[name="idBot"]').val(),
-                    idPage: $('[name="idPage"]').val(),
-                    Status: $('[name="Status"]').val(),
-                    timezone: $('[name="timezone"]').val(),
-                    lang: $('[name="lang"]').val(),
-                    idGroup: $('[name="id"]').val(),
-                    group: $('[name="group"]').val(),
-                    learning: arData
-                },
-            }).done(function (val) {
-                if (val == 1) {
-                    window.location.href = urlKeywordIndex;
-                } else {
-                    $.unblockUI();
-                }
-            }).fail(function () {
-                $.unblockUI();
-            })
+            console.log(arData)
+
+            //$.ajax({
+            //    url: urlKeywordsAdd,
+            //    type: 'POST',
+            //    data: {
+            //        _id: $('[name="_id"]').val(),
+            //        idBot: $('[name="idBot"]').val(),
+            //        idPage: $('[name="idPage"]').val(),
+            //        Status: $('[name="Status"]').val(),
+            //        timezone: $('[name="timezone"]').val(),
+            //        lang: $('[name="lang"]').val(),
+            //        idGroup: $('[name="id"]').val(),
+            //        group: $('[name="group"]').val(),
+            //        learning: arData
+            //    },
+            //}).done(function (val) {
+            //    if (val == 1) {
+            //        window.location.href = urlKeywordIndex;
+            //    } else {
+            //        $.unblockUI();
+            //    }
+            //}).fail(function () {
+            //    $.unblockUI();
+            //})
         } else {
             swal({
                 title: "Error",
@@ -715,3 +717,26 @@ function fn_htmlPaging(countData, limitpage) {
     return htmlPag;
 }
 
+var decodeEntities = (function () {
+    // this prevents any overhead from creating the object each time
+    var element = document.createElement('div');
+
+    function decodeHTMLEntities(str) {
+        if (str && typeof str === 'string') {
+            // strip script/html tags
+            str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+            str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+            // replace special character in string
+            str = str.replace(/[&\/\\#,+()$~%.'":*?<>!]/g, ' ');
+            str = str.replace(/  +/g, ' ');
+            console.log(str)
+            element.innerHTML = str;
+            str = element.textContent;
+            element.textContent = '';
+        }
+
+        return str;
+    }
+
+    return decodeHTMLEntities;
+})();
