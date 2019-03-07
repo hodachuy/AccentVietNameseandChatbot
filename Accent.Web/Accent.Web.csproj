@@ -749,6 +749,7 @@
     <Content Include="Views\Home\AccentVN.cshtml" />
     <Content Include="Views\Home\BotLearning.cshtml" />
     <Content Include="Views\Home\FormChatBot.cshtml" />
+    <Content Include="Views\Home\TempCard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -246,7 +246,7 @@
     white-space: nowrap;
 }
 
-    .select2-search:after {
+    /*.select2-search:after {
         content: '\e98e';
         font-family: 'icomoon';
         position: absolute;
@@ -261,7 +261,7 @@
         -moz-osx-font-smoothing: grayscale;
         opacity: .6;
         filter: alpha(opacity=60);
-    }
+    }*/
 
     .select2-search input {
         width: 100%;

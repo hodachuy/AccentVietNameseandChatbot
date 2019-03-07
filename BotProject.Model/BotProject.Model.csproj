@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,13 +60,18 @@
   <ItemGroup>
     <Compile Include="Abstract\Auditable.cs" />
     <Compile Include="Abstract\IAuditable.cs" />
+    <Compile Include="Models\Answer.cs" />
     <Compile Include="Models\ApplicationGroup.cs" />
     <Compile Include="Models\ApplicationRole.cs" />
     <Compile Include="Models\ApplicationRoleGroup.cs" />
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ApplicationUserGroup.cs" />
+    <Compile Include="Models\Bot.cs" />
+    <Compile Include="Models\Button.cs" />
+    <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\Notify.cs" />
+    <Compile Include="Models\Question.cs" />
     <Compile Include="Models\SystemConfig.cs" />
     <Compile Include="Models\VisitorStatistic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

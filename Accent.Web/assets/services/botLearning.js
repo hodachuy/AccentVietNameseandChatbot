@@ -334,7 +334,7 @@ $(document).ready(function () {
         } else {
             $(this).parents('.col-lg-6').find('.btn').addClass('hidden');
             $(this).parents('.col-lg-6').find('.bt').hide();
-            $(this).parents('.col-lg-6').find('.bt').first().show();
+            $(this).parents('.col-lg-6').find('.bt').eq(0).show();
             $(this).parents('.col-lg-6').find('.wrbutton').attr('indexbt', 1);
             $(this).parents('.col-lg-6').find('.rmText').hide();
         }

@@ -30,7 +30,7 @@ namespace Accent.Web.Controllers
         {
             return View();
         }
-        public ActionResult SettingCard()
+        public ActionResult TempCard()
         {
             return View();
         }

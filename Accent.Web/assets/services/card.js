@@ -1242,7 +1242,7 @@ $(document).ready(function () {
             //    }
             //});
             console.log(objectCard)
-            console.log(arLink)
+            //console.log(arLink)
             //$.ajax({
             //    url: ajaxSave,
             //    type: 'POST',

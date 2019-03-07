@@ -26,6 +26,7 @@ namespace BotProject.Model.Models
             return userIdentity;
         }
 
+        public virtual IEnumerable<Bot> Bots { set; get; }
         //public virtual IEnumerable<Order> Orders { set; get; }
     }
 }
