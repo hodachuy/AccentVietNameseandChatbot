@@ -162,6 +162,7 @@ $(document).ready(function () {
     })
 })
 
+// send message
 function submitMessage(text, textPostback) {
     //return message user
     var messageUser = getMessageUser(text);
@@ -172,6 +173,7 @@ function submitMessage(text, textPostback) {
     $("#_12cd_event_button").empty();
     var writing = getMessageWriting();
     $(".conversationContainer").append(writing);
+
     // return message bot
     setTimeout(function () {
         if (textPostback != "") {
@@ -199,18 +201,24 @@ function getMessageBot(text) {
         type: 'POST',
         success: function (result) {
             var message = result.message[0];
-            var postback = result.postback[0]
+            var postback = result.postback[0];
+            var resultAPI = result.messageai[0];
+            if (resultAPI.includes("[{")) {
+
+            }
+
+
 
             $("._4xkn_writing").remove();
             $(".conversationContainer").append(message);
             $("#_12cd_event_button").empty().append(postback);
+
             scrollBar();
 
         }
     });
 }
 function getMessageUser(text) {
-
     var html = '<div class="_4xkn clearfix">' +
                     '<div class="messages">' +
                     '    <div class="_21c3">' +
@@ -258,6 +266,18 @@ function getMessageWriting() {
 
     return html;
 }
+
+
+/*
+############################################
+            Template Carousel With API
+############################################
+*/
+templateCarousel = function () {
+    var html = '';
+
+}
+
 
 /*
 #####################################

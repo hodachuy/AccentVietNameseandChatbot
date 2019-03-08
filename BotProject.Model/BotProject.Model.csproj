@@ -67,12 +67,19 @@
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ApplicationUserGroup.cs" />
     <Compile Include="Models\Bot.cs" />
-    <Compile Include="Models\Button.cs" />
+    <Compile Include="Models\ButtonPostback.cs" />
+    <Compile Include="Models\ButtonShare.cs" />
+    <Compile Include="Models\ButtonUrl.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Error.cs" />
+    <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Notify.cs" />
     <Compile Include="Models\Question.cs" />
+    <Compile Include="Models\QuickReply.cs" />
     <Compile Include="Models\SystemConfig.cs" />
+    <Compile Include="Models\TemplateGenericItem.cs" />
+    <Compile Include="Models\TemplateGeneric.cs" />
+    <Compile Include="Models\TemplateText.cs" />
     <Compile Include="Models\VisitorStatistic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

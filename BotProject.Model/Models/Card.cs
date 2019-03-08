@@ -32,6 +32,6 @@ namespace BotProject.Model.Models
         [ForeignKey("BotID")]
         public virtual Bot Bot { set; get; }
 
-        public virtual IEnumerable<Button> Buttons { set; get; }
+        public virtual IEnumerable<ButtonPostback> ButtonPostbacks { set; get; }
     }
 }

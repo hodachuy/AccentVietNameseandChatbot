@@ -1242,6 +1242,8 @@ $(document).ready(function () {
             //    }
             //});
             console.log(objectCard)
+            var strObj = JSON.stringify(objectCard.cardContent[0])
+            console.log(strObj)
             //console.log(arLink)
             //$.ajax({
             //    url: ajaxSave,

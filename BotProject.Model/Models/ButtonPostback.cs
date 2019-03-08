@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-    [Table("Buttons")]
-    public class Button
+    [Table("ButtonPostbacks")]
+    public class ButtonPostback
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -17,15 +17,18 @@ namespace BotProject.Model.Models
 
         public string Type { set; get; }
 
-        public string PostbackCard { set; get; }
+        public string Payload { set; get; }
 
         public string Title { set; get; }
 
-        public string Url { set; get; }
+        public int TempGenericItemID { set; get; }
+
+        public int TempTextID { set; get; }
 
         public int CardID { set; get; }
 
         [ForeignKey("CardID")]
         public virtual Card Card { set; get; }
+
     }
 }

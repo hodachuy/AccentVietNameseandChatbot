@@ -139,23 +139,23 @@ namespace Accent.Web.Controllers
         #region --CHATBOT--
         public JsonResult chatbot(string text, string group)
         {
-            //string result = "";
+            string result = "";
             AIMLbot.Result res = _bot.Chat(text);
 
             //AIMLbot.Request r = new Request(text, user, bot);
             //AIMLbot.Result res = bot.Chat(r);
 
-            //result = res.OutputSentences[0].ToString();
-            //if (result.Contains("NOT_MATCH"))
-            //{
-            //    result = CauHoiLienQuan(text, group);
-            //    if (String.IsNullOrEmpty(result))
-            //    {
-            //        result = NOT_MATCH[res.OutputSentences[0]];
-            //    }
-            //}
-
-            return Json(new { message = res.OutputHtmlMessage, postback = res.OutputHtmlPostback }, JsonRequestBehavior.AllowGet);
+            result = res.OutputSentences[0].ToString();
+            if (result.Contains("NOT_MATCH"))
+            {
+                result = CauHoiLienQuan(text, group);
+                if (String.IsNullOrEmpty(result))
+                {
+                    //result = NOT_MATCH[res.OutputSentences[0]];
+                    result = res.OutputSentences[0].ToString();
+                }
+            }
+            return Json(new { message = res.OutputHtmlMessage, postback = res.OutputHtmlPostback , messageai = result }, JsonRequestBehavior.AllowGet);
         }
 
         public string LoadAIML()
