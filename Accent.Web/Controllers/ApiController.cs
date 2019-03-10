@@ -142,20 +142,22 @@ namespace Accent.Web.Controllers
             string result = "";
             AIMLbot.Result res = _bot.Chat(text);
 
+			bool isMatch = true;
             //AIMLbot.Request r = new Request(text, user, bot);
             //AIMLbot.Result res = bot.Chat(r);
 
             result = res.OutputSentences[0].ToString();
             if (result.Contains("NOT_MATCH"))
             {
-                result = CauHoiLienQuan(text, group);
+				isMatch = false;
+				result = CauHoiLienQuan(text, group);
                 if (String.IsNullOrEmpty(result))
                 {
                     //result = NOT_MATCH[res.OutputSentences[0]];
                     result = res.OutputSentences[0].ToString();
                 }
             }
-            return Json(new { message = res.OutputHtmlMessage, postback = res.OutputHtmlPostback , messageai = result }, JsonRequestBehavior.AllowGet);
+            return Json(new { message = res.OutputHtmlMessage, postback = res.OutputHtmlPostback , messageai = result, isCheck = isMatch }, JsonRequestBehavior.AllowGet);
         }
 
         public string LoadAIML()
