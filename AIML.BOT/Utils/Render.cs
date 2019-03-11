@@ -34,7 +34,7 @@ namespace AIML.BOT.Utils
                     {
                         string dataPostback = new Regex("<postback>(.*)</postback>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
 						dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-						sb.AppendLine(" <div class=\"_2zgz\">");
+						sb.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
 						sb.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + dataPostback + "\" style=\"border-color: "+ _color + " color: "+ _color + "\">"+ dataText + "</div>");
 						sb.AppendLine(" </div>");
                         _tagHtml.Body = "";

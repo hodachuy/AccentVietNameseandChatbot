@@ -698,10 +698,10 @@ namespace AIMLbot
         /// <param name="rawInput">the raw input</param>
         /// <param name="UserGUID">an ID for the new user (referenced in the result object)</param>
         /// <returns>the result to be output to the user</returns>
-        public Result Chat(string rawInput, string UserGUID)
+        public Result Chat(string rawInput, string UserGUID, string color, string imgBot)
         {
             Request request = new Request(rawInput, new User(UserGUID, this), this);
-            return this.Chat(request);
+            return this.Chat(request,color, imgBot);
         }
 
         /// <summary>
@@ -709,7 +709,7 @@ namespace AIMLbot
         /// </summary>
         /// <param name="request">the request from the user</param>
         /// <returns>the result to be output to the user</returns>
-        public Result Chat(Request request)
+        public Result Chat(Request request, string color, string imgBot)
         {
             Result result = new Result(request.user, this, request);
 
@@ -745,7 +745,7 @@ namespace AIMLbot
                             string outputSentence = this.processNode(templateNode, query, request, result, request.user);
 
                             XmlNode resultNodeToHtml = AIMLTagHandler.getNode("<html>" + outputSentence + "</html>");
-                            ResultHtml outputHtml = this.ProcessTagToHtml(resultNodeToHtml);
+                            ResultHtml outputHtml = this.ProcessTagToHtml(resultNodeToHtml, color,imgBot);
                             result.OutputHtmlMessage.Add(outputHtml.Message);
                             result.OutputHtmlPostback.Add(outputHtml.Postback);
                             if (outputSentence.Length > 0)
@@ -987,11 +987,11 @@ namespace AIMLbot
             }
         }
 
-        private ResultHtml ProcessTagToHtml(XmlNode node)
+        private ResultHtml ProcessTagToHtml(XmlNode node, string colorBot , string imgBot)
         {
             ResultHtml result = new ResultHtml();
-            string color = "rgb(234, 82, 105);";
-            string srcImageBot = "https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307";
+            string color = colorBot;//"rgb(234, 82, 105);";
+            string srcImageBot = imgBot;
             // process the node
             string tagName = node.Name.ToLower();
             //string html = string.Empty;

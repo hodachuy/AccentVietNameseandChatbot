@@ -1,15 +1,26 @@
 ﻿var _color = "rgb(234, 82, 105);",
-    _srcLogo = "https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&_nc_ht=scontent.fsgn5-5.fna&oh=640bca2a8956c9770fc0b391498e79e9&oe=5CDC1307";
+    _srcLogo = _Host + "Content/img/user_bot.jpg";
 
 var MESSAGE = {
     ERROR_01: "Xin lỗi, Tôi không hiểu",
     ERROR_02: "Bạn có thể giải thích thêm được không?",
-    ERROR_03:"Tôi không thể tìm thấy, bạn có thể nói rõ hơn?",
-    ERROR_04:"Xin lỗi, Bạn có thể giải thích thêm được không?",
-    ERROR_05:"Tôi không thể tìm thấy",
+    ERROR_03: "Tôi không thể tìm thấy, bạn có thể nói rõ hơn?",
+    ERROR_04: "Xin lỗi, Bạn có thể giải thích thêm được không?",
+    ERROR_05: "Tôi không thể tìm thấy",
     ERROR_06: "Tôi chưa hiểu?"
 }
 $(document).ready(function () {
+
+    // window.addEventListener('message', function (event) {
+    // if (event.origin !== 'http://localhost:63951') return;
+    // console.log('message received:  ' + event.data, event);
+    // event.source.postMessage('holla back youngin!', event.origin);
+    // }, false);
+
+
+
+
+
     //$('._5f0v').mouseenter(function () {
     //    $('.uiScrollableAreaTrack').removeClass('hidden_elem');
     //    $('.uiScrollableAreaTrack').css('opacity', '1');
@@ -89,7 +100,7 @@ $(document).ready(function () {
             $form.find('.btn_back_carousel').css('display', 'none');
         }
         $form.find('.btn_next_carousel').css('display', 'block');
-        
+
     })
 
     $('body').on('click', '._661n_btn_menu_chat', function () {
@@ -101,16 +112,6 @@ $(document).ready(function () {
     })
 
     // INPUT TEXT
-
-    //$('#58al-input-text').keydown(function (e) {
-    //    var text = $(this).val();
-    //    if (text == "") {
-    //        $("._4bqf_btn_submit").hide();
-    //    } else {
-    //        $("._4bqf_btn_submit").show();
-    //    }
-    //})
-
     $('#58al-input-text').keydown(function (e) {
         var text = $(this).val();
         $("._4bqf_btn_submit").show();
@@ -119,26 +120,18 @@ $(document).ready(function () {
             if (text !== "") {
                 $("._4bqf_btn_submit").hide();
                 $(this).val('');
-                submitMessage(text,'');
+                submitMessage(text, '');
             }
         }
     })
     $('body').on('click', '._4bqf_btn_submit', function (e) {
         var text = $("#58al-input-text").val();
         if (text !== "") {
-            submitMessage(text,'');
+            submitMessage(text, '');
         }
     })
 
-    // view datetime message
-    //$('body').on('click', '._4xko', function () {
-    //    $('.datebreak').removeClass('hide').addClass('hide');
-    //    $('.viewed').removeClass('hide').addClass('hide');
-    //    if ($(this).parent().prev().hasClass('hide')) {
-    //        $(this).parent().prev().removeClass('hide');
-    //        $(this).parent().next().removeClass('hide');
-    //    }
-    //})
+
     $('body').click(function (e) {
         if (!$(e.target).closest('._4xko').length) {
             $('.datebreak').removeClass('hide').addClass('hide');
@@ -154,27 +147,76 @@ $(document).ready(function () {
     });
 
     // postback
-    $('body').on('click', '._2zgz', function (e) {
+    $('body').on('click', '._2zgz_postback', function (e) {
         var dataText = $(this).children().eq(0).text();
         var dataPostback = $(this).children().eq(0).attr('data-postback');
         submitMessage(dataText, dataPostback);
         e.stopPropagation();
     })
     //menu
-    $('body').on('click', '._6ir5', function (e) {
-        var dataText = $(this).children().children().eq(0).text();
-        var dataPostback = $(this).children().children().eq(0).attr('data-postback');
+    $('body').on('click', '._6ir4_menu', function (e) {
+        var dataText = $(this).text();
+        var dataPostback = $(this).attr('data-postback');
         submitMessage(dataText, dataPostback);
         // chặn ảnh hưởng tới thẻ a href next
         e.stopPropagation();
     })
+    //popup
+    $('body').on('click', '._6ir4_popup', function (e) {
+        //show 1 popup ngoài iframe
+        var quesID = $(this).attr('data-id');
+        var domain = 'http://localhost:63951';
+        parent.postMessage(quesID, domain);
+
+
+        // var domain = 'http://localhost:63951';	
+        // var message = 'Hello!  The time is: ' + (new Date().getTime());
+        // console.log('blog.local:  sending message:  ' + message);
+        // parent.postMessage(message, domain); //send the message and target URI
+        // setInterval(function () {
+        // var message = 'Hello!  The time is: ' + (new Date().getTime());
+        // console.log('blog.local:  sending message:  ' + message);
+        // parent.postMessage(message, domain); //send the message and target URI
+        // }, 6000);
+
+
+        //window.parent.GetQuesDetailPopup(quesID);
+        //window.parent.$('#abc').append('abccdscd');
+        //window.parent.$('#excelQnAModal').modal('show');
+    })
+
+    // close form
+    $('body').on('click', '_2t-5', function (e) {
+        var message = 'close';
+        var domain = 'http://localhost:63951';
+        parent.postMessage(message, domain);
+    })
+
+    //setting accent vn
+    chatbotSetting();
 })
+
+// setting accent vn
+var chatbot_chk_accent = JSON.parse(localStorage.getItem("cbot_chk_accent"));
+var chatbot_chk_popup = JSON.parse(localStorage.getItem("cbot_chk_popup"));
+function chatbotSetting() {
+    $('#chk-stt-accent').prop('checked', chatbot_chk_accent);
+    $("#chk-stt-popup").prop('checked', chatbot_chk_popup);
+}
+
+$("#chk-stt-accent").click(function () {
+    localStorage.setItem("cbot_chk_accent", $(this).prop('checked'));
+});
+$("#chk-stt-popup").click(function () {
+    localStorage.setItem("cbot_chk_popup", $(this).prop('checked'));
+});
+
+
 
 // send message
 function submitMessage(text, textPostback) {
     //return message user
     var messageUser = getMessageUser(text);
-    setDateCurrent();
     $(".conversationContainer").append(messageUser);
 
     //return buble writing
@@ -188,15 +230,51 @@ function submitMessage(text, textPostback) {
             getMessageBot(textPostback);
         }
         else {
-            getMessageBot(text);
+            if ($("#chk-stt-accent").prop('checked') == true) {
+                get_message_bot_accent(text);
+            } else {
+                getMessageBot(text);
+            }
+
         }
     }, 1000)
+    //scrollbar to bottom
+    scrollBar();
+}
+
+// icon setting non accent chatbo   
+function get_message_bot_accent(text) {
+    $.ajax({
+        url: _Host + '/api/convertVN?text=' + text,
+        contentType: 'application/json; charset=utf-8',
+        type: 'GET'
+    }).done(function (response) {
+        console.log(response)
+        if (response == "ERROR_400") {
+            console.log("Load data accent vietnamese not success")
+            return false;
+        }
+        getMessageBot(response);
+    })
+}
+
+function submitMessageBot(text, delay) {
+    //return buble writing
+    $("#_12cd_event_button").empty();
+    var writing = getMessageWriting();
+    $(".conversationContainer").append(writing);
+
+    // return message bot
+    setTimeout(function () {
+        $("._4xkn_writing").remove();
+        $(".conversationContainer").append(text);
+    }, delay)
 
     //scrollbar to bottom
     scrollBar();
 }
 
-function getMessageBot(text) {    
+function getMessageBot(text) {
     var param = {
         text: text,
         group: 'leg'
@@ -210,16 +288,24 @@ function getMessageBot(text) {
         success: function (result) {
             var message = result.message[0];
             var postback = result.postback[0];
-            var resultAPI = result.messageai[0];
+            var resultAPI = result.messageai;
             var isMatch = result.isCheck;
             var html = '';
-            $("._4xkn_writing").remove();
-            if (isMatch)
-            {
+            if (!isMatch) {
                 if (resultAPI.includes("[{")) {
                     resultAPI = JSON.parse(resultAPI);
+                    var data = tempModuleSearchAPI(resultAPI);
 
-
+                    new Promise((resolve, reject) => {
+                        submitMessageBot(tempTextBot('Tôi tìm thấy ' + data.count + ' câu hỏi liên quan đến câu hỏi của bạn.'), 0)
+                        resolve();
+                    })
+                    .then(() => {
+                        submitMessageBot(tempTextBot('Có đúng câu hỏi bạn quan tâm ?'), 1000)
+                    })
+                    .then(() => {
+                        submitMessageBot(data.dataHtml, 1500);
+                    });
                 } else {
                     switch (resultAPI) {
                         case "NOT_MATCH_01":
@@ -240,15 +326,13 @@ function getMessageBot(text) {
                         case "NOT_MATCH_06":
                             html = MESSAGE.ERROR_06;
                             break;
-                        default:
-                            html = MESSAGE.ERROR_02;
-                            break;
                     }
+                    html = tempTextBot(html);
+                    $("._4xkn_writing").remove();
+                    $(".conversationContainer").append(html);
                 }
-
-                $(".conversationContainer").append(html);
-
             } else {
+                $("._4xkn_writing").remove();
                 $(".conversationContainer").append(message);
             }
 
@@ -268,7 +352,7 @@ function getMessageUser(text) {
                     '            <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: ' + _color + '">' +
                     '                 <span>' +
                     '                      <span>' +
-                    '                          '+text+'' +
+                    '                          ' + text + '' +
                     '                      </span>' +
                     '                 </span>' +
                     '             </div>' +
@@ -278,15 +362,14 @@ function getMessageUser(text) {
                     '             </a>' +
                     '        </div>' +
                              '<span class="viewed hide" style="animation: fadeIn 0.1s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 normal both running; clear: both; color: rgba(0, 0, 0, 0.4); float: right; font-size: 12px; font-weight: 500; padding-left: 0px; padding-right: 7px;">Đã xem</span>';
-
-                    '     </div>' +
-                    '</div>' +
-                '</div>';
+    '     </div>' +
+    '</div>' +
+'</div>';
     return html;
 }
 
-function getMessageBot(text) {
-    var html = '<div class="_4xkn _4xkn_writing clearfix">' +
+function tempTextBot(text) {
+    var htmlText = '<div class="_4xkn clearfix">' +
 '               <div class="profilePictureColumn" style="bottom:0px;">' +
 '                    <div class="_4cqr">' +
 '                         <img class="profilePicture img" src="' + _srcLogo + '" alt="">' +
@@ -294,140 +377,106 @@ function getMessageBot(text) {
 '                     </div>' +
 '                </div>' +
 '                <div class="messages">' +
-                                         '<div class="_21c3">' +
-'                                                                                    <div class="clearfix _2a0-">' +
-'                                                                                        <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240);">' +
-'                                                                                            <span>' +
-'                                                                                                <span>' + text + '</span>' +
-'                                                                                            </span>' +
-'                                                                                        </div>' +
-'                                                                                    </div>' +
-'                                                                                </div>'+
+                      '<div class="_21c3">' +
+'                          <div class="clearfix _2a0-">' +
+'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240);">' +
+'                                   <span>' +
+'                                       <span>' + text + '</span>' +
+'                                   </span>' +
+'                               </div>' +
+'                          </div>' +
+'                     </div>' +
 '                </div>' +
 '          </div>';
-
-    return html;
+    return htmlText;
 }
 
 function tempModuleSearchAPI(lstData) {
-
-    var innerHtml = '';
+    var tempModuleHtml = '';
+    var itemHtml = '';
     var storageData = lstData.filter(function (x) { return x.answer != null; });
     if (storageData.length > 0) {
         lstData = storageData;
     }
-
     $.each(lstData, function (index, value) {
-        olHtml += '<li data-target="#quote-carousel' + idxMsg + '" data-slide-to="' + index + '" class="' + (index == 0 ? "active" : "") + '"></li>';
-
-        innerHtml += '<div class="item ' + (index == 0 ? "active" : "") + '">';
-        innerHtml += '<blockquote>';
-        innerHtml += ' <div class="row">';
-        innerHtml += ' <div class="col-sm-12  text-center">';
-        innerHtml += '<p>' + (value.question != null ? add3Dots(value.question, 120) : "") + '</p>';
-        //innerHtml += '<small><a href="http://qa.surelrn.vn/cau-hoi-phap-luat-' + value.id + '.html" target="_blank">-xem chi tiết-</a></small>';
-        innerHtml += '<small><a href="javascript:void(0);" onclick="ShowQuesPopup(\'' + value.question + '\',\'' + value.answer + '\')">-xem chi tiết-</a></small>';
-        innerHtml += '</div>';
-        innerHtml += '  </div>';
-        innerHtml += '</blockquote>';
-        innerHtml += '</div>';
-
+        itemHtml += '<div class="_2zgz">';
+        itemHtml += '<div class="_6j2h">';
+        itemHtml += '<div class="_6j2i">';
+        itemHtml += '<div class="_6j2g">';
+        itemHtml += '<div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">' + (value.question != null ? add3Dots(value.question, 120) : "") + '</div>';
+        itemHtml += '<div class="_6j0v">';
+        itemHtml += '<div class="_6j0u _6j0w">' + (value.field != null ? value.field : "Sở hữu trí tuệ") + '</div>';
+        itemHtml += '<div class="_6j0u _6j0x _4ik4 _4ik5" style="-webkit-line-clamp: 2;">';
+        itemHtml += '<div>' + (value.field != null ? value.field : "Sở hữu trí tuệ") + '</div>';
+        itemHtml += '</div>';
+        itemHtml += '</div>';
+        itemHtml += '</div>';
+        itemHtml += '<div class="_6ir5">';
+        itemHtml += '<div class="_4bqf _6ir3">';
+        itemHtml += '<a class="_6ir4 _6ir4_popup" data-id="' + value.id + '" href="#" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">Xem chi tiết</a>';
+        itemHtml += '</div>';
+        itemHtml += '</div>';
+        itemHtml += '</div>';
+        itemHtml += '</div>';
+        itemHtml += '</div>';
     })
+    tempModuleHtml += ' <div class="_4xkn clearfix">';
+    tempModuleHtml += '<div class="profilePictureColumn" style="bottom: 0px;">';
+    tempModuleHtml += '<div class="_4cqr">';
+    tempModuleHtml += '<img class="profilePicture img" src="' + _srcLogo + '" alt="">';
+    tempModuleHtml += '<div class="clearfix"></div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '<div class="messages">';
+    tempModuleHtml += '<div class="_21c3">';
+    tempModuleHtml += '<div class="clearfix _2a0-">';
+    tempModuleHtml += '<div class="_4xko _2k7w _4xkr bot_reply">';
+    tempModuleHtml += '<div class="">';
+    tempModuleHtml += '<div currentselectedindex="0" maxchangeamount="1" class="_23n- form_carousel">';
+    tempModuleHtml += '<div class="_4u-c">';
+    tempModuleHtml += '<div index="0" class="_a28">';
+    tempModuleHtml += '<div class="_a2e">';
 
-    var html = '<div class="_4xkn clearfix">' +
-    '                                                                            <div class="profilePictureColumn" style="bottom: 0px;">' +
-    '                                                                                <div class="_4cqr">' +
-    '                                                                                    <img class="profilePicture img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&_nc_ht=scontent.fsgn5-5.fna&oh=640bca2a8956c9770fc0b391498e79e9&oe=5CDC1307" alt="">' +
-    '                                                                                    <div class="clearfix"></div>' +
-    '                                                                                </div>' +
-    '                                                                            </div>' +
-    '                                                                            <div class="messages">' +
-    '                                                                                <div class="_21c3">' +
-    '                                                                                    <div class="clearfix _2a0-">' +
-    '                                                                                        <div class="_4xko _2k7w _4xkr bot_reply">' +
-    '                                                                                            <div class="">' +
-    '                                                                                                <div currentselectedindex="0" maxchangeamount="1" class="_23n- form_carousel">' +
-    '                                                                                                    <div class="_4u-c">' +
-    '                                                                                                        <div index="0" class="_a28">' +
+    tempModuleHtml += itemHtml;
 
-
-
-    //'                                                                                                            <div class="_a2e">' +
-    //'                                                                                                                <div class="_2zgz">' +
-    //'                                                                                                                    <div class="_6j2h">' +
-    //'                                                                                                                        <div class="_6j2i">' +
-    //'                                                                                                                            <div class="_6j0s" style="background-image: url("https://external.xx.fbcdn.net/safe_image.php?d=AQCSBbhBgqlNZyhj&url=http%3A%2F%2Fgames.hekate.ai%2Fcolorvalley%2Fcolor.png&_nc_hash=AQCUwB4E9I_H34we"); background-position: center center; height: 150px; width: 100%;">' +
-    //'                                                                                                                            </div>' +
-    //'                                                                                                                            <div class="_6j2g">' +
-    //'                                                                                                                                <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">Color valley</div>' +
-    //'                                                                                                                                <div class="_6j0v">' +
-    //'                                                                                                                                    <div class="_6j0u _6j0w">Thể hiện cho mọi người thấy IQ của bạn đi nào</div>' +
-    //'                                                                                                                                    <div class="_6j0u _6j0x _4ik4 _4ik5" style="-webkit-line-clamp: 2;">' +
-    //'                                                                                                                                        <div>Thử tài khéo léo của bạn đi</div>' +
-    //'                                                                                                                                    </div>' +
-    //'                                                                                                                                </div>' +
-    //'                                                                                                                            </div>' +
-    //'                                                                                                                            <div class="_6ir5">' +
-    //'                                                                                                                                <div class="_4bqf _6ir3">' +
-    //'                                                                                                                                    <div class="_6ir4 _6ir6">' +
-    //'                                                                                                                                        <span data-hover="tooltip" id="js_3yi" data-tooltip-content="Để sử dụng tính năng này, hãy dùng ứng dụng Messenger.">Chia sẻ</span>' +
-    //'                                                                                                                                    </div>' +
-    //'                                                                                                                                </div>' +
-    //'                                                                                                                            </div>' +
-    //'                                                                                                                            <div class="_6ir5">' +
-    //'                                                                                                                                <div class="_4bqf _6ir3">' +
-    //'                                                                                                                                    <a class="_6ir4" target="_blank" href="https://l.facebook.com/l.php?u=http%3A%2F%2Fgames.hekate.ai%2Fcolorvalley%3Fid%3DU2FsdGVkX1%25209YZDNYz%2520uv5G1C73Nf1Ioircg5kpDrbWNCJg%25202pmGS8k3pioJ6Vs2%26fbclid%3DIwAR0WPCRVNUIbx2Jvh0jPukiQiArUxSkGfPB5HP_R5E5LlpHlZTywB5lhZdw&h=AT1cl6uhE8iLAiq2MHon0PdXFmgoqbdOhj-an_9k2UZLZQG-xf-7OI70zznq83fD0fGoOif88rsER62xZnVpTa2lHTkxOMKTG1ivTvwl-nQ7HGOIw08QdILs3mlSW3I8tpRPiExstb-AM3b-" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">Bắt đầu</a>' +
-    //'                                                                                                                                </div>' +
-    //'                                                                                                                            </div>' +
-    //'                                                                                                                            <div class="_6ir5">' +
-    //'                                                                                                                                <div class="_4bqf _6ir3">' +
-    //'                                                                                                                                    <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Xếp hạng</a>' +
-    //'                                                                                                                                </div>' +
-    //'                                                                                                                            </div>' +
-    //'                                                                                                                        </div>' +
-    //'                                                                                                                    </div>' +
-    '                                                                                                                </div>' +
-    '                                                                                                            </div>' +
-    '                                                                                                        </div>' +
-    '                                                                                                        <div class="_4u-f">' +
-    '                                                                                                            <iframe aria-hidden="true" class="_1_xb" tabindex="-1"></iframe>' +
-    '                                                                                                        </div>' +
-    '                                                                                                    </div>' +
-    '' +
-    '                                                                                                    <a class="_32rk _32rg _1cy6 gl_back_carousel" href="#" style="display:none;">' +
-    '                                                                                                        <div direction="backward" class="_10sf _5x5- _5x60">' +
-    '                                                                                                            <div class="_5x6d">' +
-    '                                                                                                                <div class="_3bwv _3bww">' +
-    '                                                                                                                    <div class="_3bwy">' +
-    '                                                                                                                        <div class="_3bwx"><i class="_3-8w img sp_bfeq6p sx_c4c7bc" alt=""></i></div>' +
-    '                                                                                                                    </div>' +
-    '                                                                                                                </div>' +
-    '                                                                                                            </div>' +
-    '                                                                                                        </div>' +
-    '                                                                                                    </a>' +
-    '' +
-    '                                                                                                    <a class="_32rk _32rh _1cy6 gl_next_carousel" href="#">' +
-    '                                                                                                        <div direction="forward" class="_10sf _5x5_">' +
-    '                                                                                                            <div class="_5x6d">' +
-    '                                                                                                                <div class="_3bwv _3bww">' +
-    '                                                                                                                    <div class="_3bwy">' +
-    '                                                                                                                        <div class="_3bwx">' +
-    '                                                                                                                            <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>' +
-    '                                                                                                                        </div>' +
-    '                                                                                                                    </div>' +
-    '                                                                                                                </div>' +
-    '                                                                                                            </div>' +
-    '                                                                                                        </div>' +
-    '                                                                                                    </a>' +
-    '                                                                                                </div>' +
-    '                                                                                            </div>' +
-    '                                                                                        </div>' +
-    '                                                                                    </div>' +
-    '                                                                                </div>' +
-    '                                                                            </div>' +
-    '                                                                        </div>';
-
-
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '<div class="_4u-f">';
+    tempModuleHtml += '<iframe aria-hidden="true" class="_1_xb" tabindex="-1"></iframe>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '<a class="_32rk _32rg _1cy6 gl_back_carousel" href="#" style="display:none;">';
+    tempModuleHtml += '<div direction="backward" class="_10sf _5x5- _5x60">';
+    tempModuleHtml += '<div class="_5x6d">';
+    tempModuleHtml += '<div class="_3bwv _3bww">';
+    tempModuleHtml += '<div class="_3bwy">';
+    tempModuleHtml += '<div class="_3bwx"><i class="_3-8w img sp_bfeq6p sx_c4c7bc" alt=""></i></div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</a>';
+    tempModuleHtml += '<a class="_32rk _32rh _1cy6 gl_next_carousel" href="#">';
+    tempModuleHtml += '<div direction="forward" class="_10sf _5x5_">';
+    tempModuleHtml += '<div class="_5x6d">';
+    tempModuleHtml += '<div class="_3bwv _3bww">';
+    tempModuleHtml += '<div class="_3bwy">';
+    tempModuleHtml += '<div class="_3bwx">';
+    tempModuleHtml += '<i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</a>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    tempModuleHtml += '</div>';
+    return data = { dataHtml: tempModuleHtml, count: storageData.length };
 }
 
 function getMessageWriting() {
@@ -501,11 +550,20 @@ function setDateCurrent() {
     date = new Date()
 
     if (minutes != date.getMinutes()) {
-        html +='<h4 class="datebreak _497p _2lpt">';
+        html += '<h4 class="datebreak _497p _2lpt">';
         html += '    <time class="_3oh-">' + formatAMPM(date) + '</time>';
         html += '</h4>';
     }
     return html;
+}
+
+function add3Dots(string, limit) {
+    var dots = "...";
+    if (string.length > limit) {
+        string = string.substring(0, limit) + dots;
+    }
+
+    return string;
 }
 
 // mai lam` click text message show thoi` gian va` da~ xem.

@@ -718,8 +718,10 @@
 
     ._4xkn .profilePicture {
         border-radius: 50%;
-        height: 22.5pt;
-        width: 22.5pt;
+        /*height: 22.5pt;
+        width: 22.5pt;*/
+        height: 26.5pt;
+        width: 26.5pt;
     }
 
     ._4xkn .messages {

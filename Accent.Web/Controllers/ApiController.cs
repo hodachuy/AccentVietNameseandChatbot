@@ -157,7 +157,7 @@ namespace Accent.Web.Controllers
                     result = res.OutputSentences[0].ToString();
                 }
             }
-            return Json(new { message = res.OutputHtmlMessage, postback = res.OutputHtmlPostback , messageai = result, isCheck = isMatch }, JsonRequestBehavior.AllowGet);
+            return Json(new { message = res.OutputHtmlMessage, postback = res.OutputHtmlPostback , messageai = result, isCheck = isMatch}, JsonRequestBehavior.AllowGet);
         }
 
         public string LoadAIML()

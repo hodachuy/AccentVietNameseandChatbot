@@ -31,6 +31,7 @@
     <link href="~/assets/libs/css/lvbot-chat-dialog/c17_Y8U2p4FZgyH.css" rel="stylesheet" />
     <link href="~/assets/libs/css/lvbot-chat-dialog/c18_Iq_mLA6uRtL.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script>
         var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
     </script>  
@@ -103,12 +104,13 @@
                                     <div class="_424s">
                                         <div class="_4fsi" style="display:none;">
                                             <div class="_2jjx">
-                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(240, 61, 37);">Tắt tin nhắn</div>
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(240, 61, 37);"><input type="checkbox" id="chk-stt-accent"/> Hổ trợ hiểu không dấu Tiếng Việt</div>
                                             </div>
                                             <div class="_2jjx">
-                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(234, 82, 105);">Tắt thông báo về cuộc trò chuyện</div>
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(234, 82, 105);"><input type="checkbox" id="chk-stt-popup"/> Hiển trị xem chi tiết cùng trang</div>
                                             </div>
-                                            <div class="_2jjx">
+
+                                            @*<div class="_2jjx">
                                                 <a class="_4bqf _4fsj" target="_blank" href="https://l.facebook.com/l.php?u=https%3A%2F%2Fm.me%2F217837024911046%3Ffbclid%3DIwAR3rXn1fg8akuU1P_BIFLogPNqX0pctMeXn6lPvS7YUKV3Vk207DCpN4H9o&amp;h=AT29j_-wZqb8suSNdRV7-bNFSzscbk0cKjw7z6fnYt93o_C9nfN-GlzQ-Bsr9lDkAjvGwFDEdn0UVLw2sRrTmJHsNO8ZNJYmVMnjzy8uIW2iSEXa-sxDIZ_kgZOwIpMUVV9mVA" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">
                                                     Xem trên Messenger
                                                 </a>
@@ -122,10 +124,10 @@
                                                 <a class="_4bqf _4fsj" target="_blank" href="https://www.facebook.com/business/m/add-messenger-to-your-website" style="color: rgb(234, 82, 105);">
                                                     Thêm Messenger vào trang web của bạn
                                                 </a>
-                                            </div>
+                                            </div>*@
                                         </div>
                                         @*contentAfter uiScrollableAreaTrackOver uiScrollableAreaDragging contentBefore*@
-                                        <div class="_5f0v uiScrollableArea fade ">
+                                        <div class="_5f0v uiScrollableArea ">
                                             @*<div class="uiScrollableAreaTrack hidden_elem" tabindex="0" style="opacity: 0;">
                                                 <div class="uiScrollableAreaGripper" style="top: 0px; height: 71.4043px;"></div>
                                             </div>*@
@@ -135,12 +137,12 @@
                                                         <div>
                                                             <div class="preventScrollOverflow">
                                                                 <div class="conversationContainer" id="js_scroll">
-                                                                    <h4 class="datebreak _497p _2lpt">
+                                                                    @*<h4 class="datebreak _497p _2lpt">
                                                                             <time class="_3oh-">T2 16:26</time>
-                                                                        </h4>
+                                                                        </h4>*@
 
                                                                         <!--MESSAGE CARD CAROUSEL-->
-                                                                        <div class="_4xkn clearfix">
+                                                                        @*<div class="_4xkn clearfix">
                                                                             <div class="profilePictureColumn" style="bottom: 0px;">
                                                                                 <div class="_4cqr">
                                                                                     <img class="profilePicture img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307" alt="">
@@ -159,8 +161,7 @@
                                                                                                                 <div class="_2zgz">
                                                                                                                     <div class="_6j2h">
                                                                                                                         <div class="_6j2i">
-                                                                                                                            <div class="_6j0s" style="background-image: url(&quot;https://external.xx.fbcdn.net/safe_image.php?d=AQCSBbhBgqlNZyhj&amp;url=http%3A%2F%2Fgames.hekate.ai%2Fcolorvalley%2Fcolor.png&amp;_nc_hash=AQCUwB4E9I_H34we&quot;); background-position: center center; height: 150px; width: 100%;">
-                                                                                                                            </div>
+                                                                                                                            
                                                                                                                             <div class="_6j2g">
                                                                                                                                 <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">Color valley</div>
                                                                                                                                 <div class="_6j0v">
@@ -458,7 +459,7 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
+                                                                        </div>*@
                                                                 </div>
                                                             </div>
 
@@ -575,7 +576,7 @@
                     <div>
                         <div class="_6d42">
                             <div class="_6d44 _6d45">Menu</div>
-                            <div class="_6d46">
+                            @*<div class="_6d46">
                                 <div class="_6d45 _4bqf">
                                     <div class="_6d49" tabindex="0" role="button">
                                         <a href="#" style="color: rgb(234, 82, 105);">🤖 Tạo Chatbot</a>
@@ -595,11 +596,11 @@
                                 <div class="_6d45 _4bqf">
                                     <a class="_6d48" href="#" style="color: rgb(234, 82, 105);">⚙️ Chọn Ngôn Ngữ</a>
                                 </div>
-                            </div>
+                            </div>*@
                             <div class="_6d46">
                                 <div class="_6d45 _4bqf">
                                     <div class="_6d49" tabindex="0" role="button">
-                                        <a href="#" style="color: rgb(234, 82, 105);">👉 Xem Thêm </a>
+                                        <a href="#" style="color: rgb(234, 82, 105);">👉 Quay lại </a>
                                         <div class="_6d4a">
                                             <svg width="24px" height="24px" viewBox="0 0 24 24">
                                                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
@@ -616,7 +617,6 @@
                     </div>
                 </div>
                 <i class="_53io" style="left: 0%; margin-left: 12px;"></i>
-                <a class="accessible_elem layer_close_elem" href="#" role="button">Đóng cửa sổ bật mở và quay trở lại</a>
             </div>
         </div>
     </div>  
