@@ -107,8 +107,17 @@ $(document).ready(function () {
         $('.uiContextualLayerPositioner').toggle();
     })
 
-    $('body').on('click', '._1qd3', function () {
+    $('body').on('click', '._1qd3_btn_setting', function () {
         $('._4fsi').toggle();
+    })
+
+    // close form
+    $('body').on('click', '._1qd1_close_form', function (e) {
+        console.log($(this))
+        parent.$('.fb_dialog').click();
+        //var message = 'close';
+        //var domain = 'http://localhost:63951';
+        //parent.postMessage(message, domain);
     })
 
     // INPUT TEXT
@@ -129,6 +138,7 @@ $(document).ready(function () {
         if (text !== "") {
             submitMessage(text, '');
         }
+        $('#58al-input-text').val('');
     })
 
 
@@ -163,6 +173,7 @@ $(document).ready(function () {
     })
     //popup
     $('body').on('click', '._6ir4_popup', function (e) {
+        e.preventDefault();
         //show 1 popup ngoài iframe
         var quesID = $(this).attr('data-id');
         var domain = 'http://localhost:63951';
@@ -183,13 +194,6 @@ $(document).ready(function () {
         //window.parent.GetQuesDetailPopup(quesID);
         //window.parent.$('#abc').append('abccdscd');
         //window.parent.$('#excelQnAModal').modal('show');
-    })
-
-    // close form
-    $('body').on('click', '_2t-5', function (e) {
-        var message = 'close';
-        var domain = 'http://localhost:63951';
-        parent.postMessage(message, domain);
     })
 
     //setting accent vn
@@ -268,10 +272,9 @@ function submitMessageBot(text, delay) {
     setTimeout(function () {
         $("._4xkn_writing").remove();
         $(".conversationContainer").append(text);
+        //scrollbar to bottom
+        scrollBar();
     }, delay)
-
-    //scrollbar to bottom
-    scrollBar();
 }
 
 function getMessageBot(text) {
@@ -413,7 +416,7 @@ function tempModuleSearchAPI(lstData) {
         itemHtml += '</div>';
         itemHtml += '<div class="_6ir5">';
         itemHtml += '<div class="_4bqf _6ir3">';
-        itemHtml += '<a class="_6ir4 _6ir4_popup" data-id="' + value.id + '" href="#" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">Xem chi tiết</a>';
+        itemHtml += '<a class="_6ir4 _6ir4_popup" data-id="' + value.id + '" href="javascript:void(0)" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">Xem chi tiết</a>';
         itemHtml += '</div>';
         itemHtml += '</div>';
         itemHtml += '</div>';
@@ -445,30 +448,35 @@ function tempModuleSearchAPI(lstData) {
     tempModuleHtml += '<iframe aria-hidden="true" class="_1_xb" tabindex="-1"></iframe>';
     tempModuleHtml += '</div>';
     tempModuleHtml += '</div>';
-    tempModuleHtml += '<a class="_32rk _32rg _1cy6 gl_back_carousel" href="#" style="display:none;">';
-    tempModuleHtml += '<div direction="backward" class="_10sf _5x5- _5x60">';
-    tempModuleHtml += '<div class="_5x6d">';
-    tempModuleHtml += '<div class="_3bwv _3bww">';
-    tempModuleHtml += '<div class="_3bwy">';
-    tempModuleHtml += '<div class="_3bwx"><i class="_3-8w img sp_bfeq6p sx_c4c7bc" alt=""></i></div>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</a>';
-    tempModuleHtml += '<a class="_32rk _32rh _1cy6 gl_next_carousel" href="#">';
-    tempModuleHtml += '<div direction="forward" class="_10sf _5x5_">';
-    tempModuleHtml += '<div class="_5x6d">';
-    tempModuleHtml += '<div class="_3bwv _3bww">';
-    tempModuleHtml += '<div class="_3bwy">';
-    tempModuleHtml += '<div class="_3bwx">';
-    tempModuleHtml += '<i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</div>';
-    tempModuleHtml += '</a>';
+    if (storageData.length > 1) {
+        tempModuleHtml += '<a class="_32rk _32rg _1cy6 gl_back_carousel" href="#" style="display:none;">';
+        tempModuleHtml += '<div direction="backward" class="_10sf _5x5- _5x60">';
+        tempModuleHtml += '<div class="_5x6d">';
+        tempModuleHtml += '<div class="_3bwv _3bww">';
+        tempModuleHtml += '<div class="_3bwy">';
+        tempModuleHtml += '<div class="_3bwx"><i class="_3-8w img sp_bfeq6p sx_c4c7bc" alt=""></i></div>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</a>';
+
+        tempModuleHtml += '<a class="_32rk _32rh _1cy6 gl_next_carousel" href="#">';
+        tempModuleHtml += '<div direction="forward" class="_10sf _5x5_">';
+        tempModuleHtml += '<div class="_5x6d">';
+        tempModuleHtml += '<div class="_3bwv _3bww">';
+        tempModuleHtml += '<div class="_3bwy">';
+        tempModuleHtml += '<div class="_3bwx">';
+        tempModuleHtml += '<i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</div>';
+        tempModuleHtml += '</a>';
+    }
+
+
     tempModuleHtml += '</div>';
     tempModuleHtml += '</div>';
     tempModuleHtml += '</div>';
