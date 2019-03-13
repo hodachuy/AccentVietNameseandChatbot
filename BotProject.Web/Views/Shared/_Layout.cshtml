@@ -1,41 +1,277 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Lacvietbots - Dashboard</title>
+    <!--CSS -->
+    <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/assets/client/vendor/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+    <link href="~/assets/client/vendor/fonts/circular-std/style.css" rel="stylesheet" />
+    <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet" />
+    <link href="~/assets/client/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css" rel="stylesheet" />
+    <link href="~/assets/client/css/style.css" rel="stylesheet" />
+    <link href="~/assets/client/css/chatbot-dialog.css" rel="stylesheet" />
+    @*<script src="~/Scripts/jquery-2.1.4.min.js"></script>*@
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <style>
+        .editor-file-aiml {
+            height: 550px;
+        }
+    </style>
+    <script>
+        var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
+    </script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
+    <!-- ============================================================== -->
+    <!-- main wrapper -->
+    <!-- ============================================================== -->
+    <div class="dashboard-main-wrapper">
+        <!-- ============================================================== -->
+        <!-- navbar -->
+        <!-- ============================================================== -->
+        <div class="dashboard-header">
+            <nav class="navbar navbar-expand-lg bg-white fixed-top">
+                <a class="navbar-brand" href="@Url.Content("~")">Lacviet-bots</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <div class="collapse navbar-collapse " id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto navbar-right-top">
+                        <li class="nav-item dropdown nav-user">
+                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-user-circle"></i></a>
+                            <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
+                                <div class="nav-user-info">
+                                    <h5 class="mb-0 text-white nav-user-name">
+                                        Huy Ho
+                                    </h5>
+                                    <span class="status"></span><span class="ml-2">Available</span>
+                                </div>
+                                <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-power-off mr-2"></i>Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end navbar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- left sidebar -->
+        <!-- ============================================================== -->
+        <div class="nav-left-sidebar sidebar-dark">
+            <div class="menu-list">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <a class="d-xl-none d-lg-none" href="#">Dashboard</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav flex-column">
+                            <li class="nav-divider">
+                                <a class="pb-fixed-side__link" style="float: left;padding: 10px 0 15px 0px;color:white">
+                                    <i class="fa fa-comments fa-icons-right"></i>
+                                    <span class="pb-upper">my bots</span>
+                                </a>
+                                <a id="create-new-bot" class="pb-fixed-side__create-button pb-fixed-side__action-icon" title="" data-toggle="tooltip" data-original-title="Create New Bot" style="padding: 10px;float: right;color: lightgray;cursor: pointer;">
+                                    <i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>
+                                </a>
+                            </li>
+                            <div>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1">
+                                        Pháp luật - bot <span class="badge badge-success">6</span>
+                                    </a>
+                                    <div id="submenu-1" class="collapse submenu" style="">
+                                        <ul class="nav flex-column">
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện bot</a>
+                                            </li>
+
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </div>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#featuremenu-1" aria-controls="featuremenu-1">
+                                    <i class="fas fa-cog"></i>
+                                    <span class="pb-upper">Tính năng khác</span>
+                                </a>
+                                <div id="featuremenu-1" class="collapse submenu" style="">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#">Chuyển không dấu tới có dấu</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#docmenu-1" aria-controls="docmenu-1">
+                                    <i class="fa fa-question-circle"></i>
+                                    <span class="pb-upper">Hướng dẫn</span>
+                                </a>
+                                <div id="docmenu-1" class="collapse submenu" style="">
+                                    <ul class="nav flex-column">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#">Tài liệu</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </nav>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
-                    <li>@Html.ActionLink("API", "Index", "Help", new { area = "" }, null)</li>
-                </ul>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end left sidebar -->
+        <!-- ============================================================== -->
+        <!-- ============================================================== -->
+        <!-- wrapper  -->
+        <!-- ============================================================== -->
+        <div class="dashboard-wrapper">
+            <div class="container-fluid">
+                @RenderBody()
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- footer -->
+        <!-- ============================================================== -->
+        <div class="footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                    </div>
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12">
+                        Copyright © 2018 all rights reserved by Lac Viet Corp
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ============================================================== -->
+        <!-- end footer -->
+        <!-- ============================================================== -->
+    </div>
+
+    @*<span style="vertical-align:bottom;width:0px;height:0px">
+        <iframe name="f12691cd05677d"
+                width="288pt"
+                height="378pt"
+                frameborder="0"
+                allowtransparency="true"
+                allowfullscreen="true"
+                scrolling="no"
+                allow="encrypted-media"
+                title=""
+                src="http://localhost:47887/Home/FormChatBot"
+                style="border: none;
+                     visibility: visible;
+                      width: 288pt;
+                       height: 378pt;
+                        border-radius: 9pt;
+                         bottom: 63pt;
+                          padding: 0px;
+                           position: fixed;
+                            right: 9pt;
+                             top: auto;
+                              z-index: 2147483647;
+                               max-height:0px;"
+                class="fb_customer_chat_bounce_out_v2"
+                id="dialog_iframe"></iframe>
+
+    </span>*@
+
+    <div class="fb_dialog  fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: none; border-radius: 50%; bottom: 18pt; display: inline; height: 45pt; padding: 0px; position: fixed; right: 18pt; top: auto; width: 45pt; z-index: 2147483646;">
+        <div class="fb_dialog_content" style="background: none;">
+            <div tabindex="0" role="button" style="cursor: pointer; outline: none;">
+                <svg width="60px" height="60px" viewBox="0 0 60 60">
+                    <svg x="0" y="0" width="60px" height="60px">
+                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                            <g>
+                                <circle fill="#5969ff" cx="30" cy="30" r="30"></circle>
+                                <svg x="10" y="10">
+                                    <g transform="translate(0.000000, -10.000000)" fill="#FFFFFF">
+                                        <g id="logo" transform="translate(0.000000, 10.000000)">
+                                            <path d="M20,0 C31.2666,0 40,8.2528 40,19.4 C40,30.5472 31.2666,38.8 20,38.8 C17.9763,38.8 16.0348,38.5327 14.2106,38.0311 C13.856,37.9335 13.4789,37.9612 13.1424,38.1098 L9.1727,39.8621 C8.1343,40.3205 6.9621,39.5819 6.9273,38.4474 L6.8184,34.8894 C6.805,34.4513 6.6078,34.0414 6.2811,33.7492 C2.3896,30.2691 0,25.2307 0,19.4 C0,8.2528 8.7334,0 20,0 Z M7.99009,25.07344 C7.42629,25.96794 8.52579,26.97594 9.36809,26.33674 L15.67879,21.54734 C16.10569,21.22334 16.69559,21.22164 17.12429,21.54314 L21.79709,25.04774 C23.19919,26.09944 25.20039,25.73014 26.13499,24.24744 L32.00999,14.92654 C32.57369,14.03204 31.47419,13.02404 30.63189,13.66324 L24.32119,18.45264 C23.89429,18.77664 23.30439,18.77834 22.87569,18.45674 L18.20299,14.95224 C16.80079,13.90064 14.79959,14.26984 13.86509,15.75264 L7.99009,25.07344 Z"></path>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </g>
+                        </g>
+                    </svg>
+                </svg>
             </div>
         </div>
     </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
+    <!-- ============================================================== -->
+    <!-- end main wrapper -->
+    <!-- ============================================================== -->
+    <!-- Optional JavaScript -->
+    <script src="~/assets/client/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="~/assets/client/libs/js/main-js.js"></script>
+    <script src="~/assets/client/vendor/slimscroll/jquery.slimscroll.js"></script>
+    <script src="~/assets/client/libs/bootbox/bootbox.min.js"></script>
+    <script src="~/assets/client/libs/ace/ace.js"></script>
+    <script src="~/assets/client/libs/easing/easing.js"></script>
+    <script src="~/assets/client/vendor/bootstrap-select/js/bootstrap-select.js"></script>
+    <script src="~/assets/client/libs/blockUI/jquery.blockUI.min.js"></script>
+    <script src="~/assets/client/libs/core/core.min.js"></script>
+    <script src="~/assets/client/libs/autosize/autosize.min.js"></script>
+    <script src="~/assets/client/libs/sortable/autogrow.js"></script>
+    <script src="~/assets/client/libs/sortable/jquery.sortable.js"></script>
+    <script src="~/assets/client/libs/boostrap-sweetalert/sweetalert.js"></script>
+    <script src="~/assets/client/libs/boostrap-sweetalert/sweetalert.min.js"></script>
+    <script src="~/assets/client/libs/selectboxit/3.8.0/jquery.selectBoxIt.min.js"></script>
+    <script src="~/assets/client/libs/select2/4.0.5/select2.min.js"></script>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+
+    @*<script src="~/Scripts/common.js"></script>*@
+
+    <script>
+        $(document).ready(function () {
+            $('.fb_dialog').click(function (e) {
+                if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_out_v2")) {
+                    $("#dialog_iframe").removeClass('fb_customer_chat_bounce_out_v2').addClass('fb_customer_chat_bounce_in_v2');
+                    setTimeout(function () {
+                        $('#dialog_iframe').css('max-height', '100%');
+                    },200)
+                }
+                else if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_in_v2")) {
+                    $("#dialog_iframe").removeClass('fb_customer_chat_bounce_in_v2').addClass('fb_customer_chat_bounce_out_v2');
+                    setTimeout(function () {
+                        $('#dialog_iframe').css('max-height', '0px');
+                    }, 200)
+                }
+            })
+            $('._2t-5').click(function () {
+                $('.fb_dialog').click();
+            })
+        });
+
+    </script>
+    @section footerJS{
+        <!--Slide-->
+       
+    }
+    @RenderSection("footerJS", required: false)
 </body>
 </html>

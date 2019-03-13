@@ -19,8 +19,6 @@ namespace BotProject.Model.Models
         [MaxLength(256)]
         public string Name { set; get; }
 
-        //public Guid PatternText { set; get; }
-
         public string TemplateAIML { set; get; }
 
         public string TemplateHTML { set; get; }
@@ -32,6 +30,8 @@ namespace BotProject.Model.Models
         [ForeignKey("BotID")]
         public virtual Bot Bot { set; get; }
 
-        public virtual IEnumerable<ButtonPostback> ButtonPostbacks { set; get; }
+        public virtual IEnumerable<TemplateGeneric> TemplateGenerics { set; get; }
+
+        public virtual IEnumerable<TemplateText> TemplateTexts { set; get; }
     }
 }
