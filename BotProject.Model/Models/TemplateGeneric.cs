@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-    [Table("TemplateGenerics")]
+    [Table("TemplateGenericItems")]
     public class TemplateGeneric
     {
         [Key]
@@ -17,12 +17,18 @@ namespace BotProject.Model.Models
 
         public string Type { set; get; }
 
-        public int CardID {set;get;}
+        public string SubTitle { set; get; }
 
-        [ForeignKey("CardID")]
-        public virtual Card Card { set; get; }
+        public string Url { set; get; }
 
-        public virtual IEnumerable<TemplateGenericItem> TemplateGenericItems { set; get; }
+        public string Image { set; get; }
 
+        public int? TempGnrGroupID { set; get; }
+
+        [ForeignKey("TempGnrGroupID")]
+        public virtual TemplateGenericGroup TemplateGenericGroups { set; get; }
+
+        public virtual IEnumerable<ButtonPostback> ButtonPostbacks { set; get; }
+        public virtual IEnumerable<ButtonLink> ButtonLinks { set; get; }
     }
 }

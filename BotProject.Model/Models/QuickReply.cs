@@ -19,9 +19,9 @@ namespace BotProject.Model.Models
 
         public string Payload { set; get; }
 
-        public int CardPayloadID { set; get; }
+        public int? CardPayloadID { set; get; }
 
-        public int CardID { set; get; }
+        public int? CardID { set; get; }
 
         [ForeignKey("CardID")]
         public virtual Card Card { set; get; }

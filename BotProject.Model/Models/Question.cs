@@ -17,8 +17,16 @@ namespace BotProject.Model.Models
 
         public string Content { set; get; }
 
-        public bool IsKeyword { set; get; }
+        public int Index { set; get; }
 
-        public virtual IEnumerable<Answer> Answers { set; get; }
+        public bool? IsThatStar { set; get; }
+
+        //name: srai + postback + QuestionGroupID
+        public string TempSrai { set; get; }
+
+        public int QuestionGroupID { set; get; }
+
+        [ForeignKey("QuestionGroupID")]
+        public virtual QuestionGroup QuestionGroup { set; get; }
     }
 }
