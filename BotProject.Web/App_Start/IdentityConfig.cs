@@ -12,6 +12,8 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using BotProject.Data;
 using BotProject.Model.Models;
+using BotProject.Web.Models;
+using BotProject.Common;
 
 namespace BotProject.Web
 {

@@ -10,6 +10,10 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using BotProject.Model.Models;
 using BotProject.Web.Models;
+using AutoMapper;
+using BotProject.Web.Infrastructure.Core;
+using BotProject.Service;
+using BotProject.Common;
 
 namespace BotProject.Web.Controllers
 {
@@ -17,7 +21,6 @@ namespace BotProject.Web.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
@@ -49,12 +52,18 @@ namespace BotProject.Web.Controllers
         }
         public AccountController()
         {
-
         }
+
+        
+
         // GET: Account
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            if (Session[CommonConstants.SessionUser] != null)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
             return View();
         }
 
@@ -66,6 +75,8 @@ namespace BotProject.Web.Controllers
                 ApplicationUser user = _userManager.Find(model.UserName, model.Password);
                 if (user != null)
                 {
+                    var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
+                    Session[CommonConstants.SessionUser] = applicationUserViewModel;
                     IAuthenticationManager authenticationManager = HttpContext.GetOwinContext().Authentication;
                     authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
                     ClaimsIdentity identity = _userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
@@ -78,7 +89,7 @@ namespace BotProject.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Dashboard");
                     }
                 }
                 else
@@ -222,15 +233,17 @@ namespace BotProject.Web.Controllers
         //}
 
         [HttpPost]
-
         [ValidateAntiForgeryToken]
         public ActionResult LogOut()
         {
             IAuthenticationManager authenticationManager = HttpContext.GetOwinContext().Authentication;
             authenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
+            Session.Clear();
+            Session.Abandon();
+            Session.RemoveAll();
+            return RedirectToAction("Login", "Account");
         }
-
+    
         #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";

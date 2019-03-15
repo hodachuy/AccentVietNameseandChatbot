@@ -10,6 +10,7 @@
     <link href="~/assets/client/vendor/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
     <link href="~/assets/client/vendor/fonts/circular-std/style.css" rel="stylesheet" />
     <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="~/assets/client/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css" rel="stylesheet" />
     <link href="~/assets/client/css/style.css" rel="stylesheet" />
     <link href="~/assets/client/css/chatbot-dialog.css" rel="stylesheet" />
@@ -33,30 +34,7 @@
         <!-- navbar -->
         <!-- ============================================================== -->
         <div class="dashboard-header">
-            <nav class="navbar navbar-expand-lg bg-white fixed-top">
-                <a class="navbar-brand" href="@Url.Content("~")">Lacviet-bots</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse " id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto navbar-right-top">
-                        <li class="nav-item dropdown nav-user">
-                            <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-fw fa-user-circle"></i></a>
-                            <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
-                                <div class="nav-user-info">
-                                    <h5 class="mb-0 text-white nav-user-name">
-                                        Huy Ho
-                                    </h5>
-                                    <span class="status"></span><span class="ml-2">Available</span>
-                                </div>
-                                <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
-                                <a class="dropdown-item" href="#"><i class="fas fa-power-off mr-2"></i>Logout</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+            @{Html.RenderAction("Header", "Dashboard"); }           
         </div>
         <!-- ============================================================== -->
         <!-- end navbar -->
@@ -82,29 +60,9 @@
                                     <i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>
                                 </a>
                             </li>
-                            <div>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-1" aria-controls="submenu-1">
-                                        Pháp luật - bot <span class="badge badge-success">6</span>
-                                    </a>
-                                    <div id="submenu-1" class="collapse submenu" style="">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện bot</a>
-                                            </li>
-
-                                            <li class="nav-item">
-                                                <a class="nav-link" href="#"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
+                            <div id="bot-category">
+                                @{Html.RenderAction("BotCategory", "Dashboard"); }
+                                
                             </div>
 
                             <li class="nav-item">
@@ -243,7 +201,7 @@
     <script src="~/assets/client/libs/selectboxit/3.8.0/jquery.selectBoxIt.min.js"></script>
     <script src="~/assets/client/libs/select2/4.0.5/select2.min.js"></script>
 
-
+    <script src="~/assets/client/js/common.js"></script>
     @*<script src="~/Scripts/common.js"></script>*@
 
     <script>
