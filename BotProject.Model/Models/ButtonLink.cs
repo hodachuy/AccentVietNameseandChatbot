@@ -14,23 +14,21 @@ namespace BotProject.Model.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { set; get; }
-
+       
         public string Type { set; get; }
 
+        [MaxLength(50)]
         public string Title { set; get; }
 
+        [MaxLength(256)]
         public string Url { set; get; }
 
         public string SizeHeight { set; get; }
 
-        public int TempGnrItemID { set; get; }
+        public int? TempGnrID { set; get; }
 
-        public int TempTxtID { set; get; }
+        public int? TempTxtID { set; get; }
 
-        [ForeignKey("TempGnrItemID")]
-        public virtual TemplateGeneric TemplateGeneric { set; get; }
-
-        [ForeignKey("TempTxtID")]
-        public virtual TemplateText TemplateText { set; get; }
+        public int? CardID { set; get; }
     }
 }

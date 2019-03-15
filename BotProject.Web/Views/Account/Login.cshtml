@@ -1,63 +1,258 @@
 ﻿@using BotProject.Web.Models
 @model LoginViewModel
 @{
-    ViewBag.Title = "Log in";
+    ViewBag.Title = "Home Page";
+    Layout = null;
 }
+<!doctype html>
+<html lang="en">
+<head>
+    <meta Http-Equiv="Cache-Control" Content="no-cache">
+    <meta Http-Equiv="Pragma" Content="no-cache">
+    <meta Http-Equiv="Expires" Content="0"> 
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    <style>
+        body {
+            width: 100%;
+            height: auto;
+            background-image: url('../../assets/img/banner.jpg');
+            background-position: center;
+            font-family: "Robato",sans-serif;
+            font-size: 17px;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 1150px;
+            position: relative;
+            margin-top: -35px;
+            z-index: 1;
+        }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-    <div class="col-md-8">
-        <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <h4>Use a local account to log in.</h4>
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <div class="checkbox">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            @Html.LabelFor(m => m.RememberMe)
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Log in" class="btn btn-default" />
-                    </div>
-                </div>
-                <p>
-                    @Html.ActionLink("Register as a new user", "Register")
-                </p>
-                @* Enable this once you have account confirmation enabled for password reset functionality
-                    <p>
-                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                    </p>*@
+        #logreg-forms {
+            width: 412px;
+            margin: 10vh auto;
+            /*background-color: #ffff4d;*/
+            box-shadow: 0 7px 7px rgba(0, 0, 0, 0.12), 0 12px 40px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
+
+            #logreg-forms form {
+                width: 100%;
+                max-width: 410px;
+                padding: 15px;
+                margin: auto;
+                background-color: white;
             }
-        </section>
-    </div>
-    <div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>
-</div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+            #logreg-forms .form-control {
+                position: relative;
+                box-sizing: border-box;
+                height: auto;
+                padding: 10px;
+                font-size: 16px;
+            }
+
+                #logreg-forms .form-control:focus {
+                    z-index: 2;
+                }
+
+            #logreg-forms .form-signin input[type="email"] {
+                margin-bottom: -1px;
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            #logreg-forms .form-signin input[type="password"] {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+
+            #logreg-forms .social-login {
+                width: 390px;
+                margin: 0 auto;
+                margin-bottom: 14px;
+            }
+
+            #logreg-forms .social-btn {
+                font-weight: 100;
+                color: white;
+                width: 190px;
+                font-size: 0.9rem;
+            }
+
+            #logreg-forms a {
+                display: block;
+                padding-top: 10px;
+                color: #000;
+            }
+
+        #logreg-form .lines {
+            width: 200px;
+            border: 1px solid red;
+        }
+
+
+        #logreg-forms button[type="submit"] {
+            margin-top: 10px;
+        }
+
+        #logreg-forms .facebook-btn {
+            background-color: #3C589C;
+        }
+
+        #logreg-forms .google-btn {
+            background-color: #DF4B3B;
+        }
+
+        #logreg-forms .form-reset, #logreg-forms .form-signup {
+            display: none;
+        }
+
+            #logreg-forms .form-signup .social-btn {
+                width: 210px;
+            }
+
+            #logreg-forms .form-signup input {
+                margin-bottom: 2px;
+            }
+
+        .form-signup .social-login {
+            width: 210px !important;
+            margin: 0 auto;
+        }
+
+        .submit {
+            background: -webkit-linear-gradient(0deg, #2dfbff 0%, #3c96ff 100%);
+            border-radius: 25px;
+            color: #fff;
+        }
+
+        /* Mobile */
+
+        @@media screen and (max-width:500px) {
+            #logreg-forms {
+                width: 300px;
+            }
+
+                #logreg-forms .social-login {
+                    width: 200px;
+                    margin: 0 auto;
+                    margin-bottom: 10px;
+                }
+
+                #logreg-forms .social-btn {
+                    font-size: 1.3rem;
+                    font-weight: 100;
+                    color: white;
+                    width: 200px;
+                    height: 56px;
+                }
+
+                    #logreg-forms .social-btn:nth-child(1) {
+                        margin-bottom: 5px;
+                    }
+
+                    #logreg-forms .social-btn span {
+                        display: none;
+                    }
+
+                #logreg-forms .facebook-btn:after {
+                    content: 'Facebook';
+                }
+
+                #logreg-forms .google-btn:after {
+                    content: 'Google+';
+                }
+        }
+
+        #ckbRememberMe {
+            margin: 5px 3px 3px 4px !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="logreg-forms">
+
+            @using (Html.BeginForm("Login", "Account", new { returnUrl = @ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signin", role = "form" }))
+            {
+                @Html.ValidationSummary(false, "", new { @class = "error" })
+                <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
+                            <div class="social-login">
+                                <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
+                                <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-plus-g"></i> Sign in with Google+</span> </button>
+                            </div>
+                            <p style="text-align:center"> OR  </p>
+                            <div class="input-group">
+                                @Html.TextBoxFor(model => model.UserName, new {@class= "form-control",@placeholder = "Name" })
+                                @*<input type="text" id="inputName" class="form-control" placeholder="Name" required="" autofocus="">*@
+                            </div>
+                            <div class="input-group">
+                                @Html.PasswordFor(model => model.Password, new { @class = "form-control", @placeholder = "Password" })
+                                @*<input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">*@
+                            </div>
+                            <div class="input-group">
+                                @*<input type="checkbox" id="ckbRememberMe" class="form-group">*@
+                                @Html.CheckBoxFor(model => model.RememberMe, new {@id= "ckbRememberMe" })
+                                <label>Remember me?</label>
+                            </div>
+                            <div class="input-group">
+                                <input class="btn btn-md btn-rounded btn-block form-control submit" type="submit" value="Login">
+                            </div>
+                            <a href="#" id="forgot_pswd">Forgot password?</a>
+                            <hr>
+                            <!-- <p>Don't have an account!</p>  -->
+                            <button class="btn btn-primary btn-block" type="button" id="btn-signup"><i class="fas fa-user-plus"></i> Sign up New Account</button>
+            }
+            @*@Html.Partial("_ExternalLoginsListPartial", new BotProject.Web.Models.ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })*@
+
+        <form action="#" class="form-reset">
+            <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
+            <button class="btn btn-primary btn-block" type="submit">Reset Password</button>
+            <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Back</a>
+        </form>
+        <form action="#" class="form-signup">
+            <div class="social-login">
+                <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign up with Facebook</span> </button>
+            </div>
+            <div class="social-login">
+                <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-plus-g"></i> Sign up with Google+</span> </button>
+            </div>
+            <p style="text-align:center">OR</p>
+            <input type="text" id="user-name" class="form-control" placeholder="Full name" required="" autofocus="">
+            <input type="email" id="user-email" class="form-control" placeholder="Email address" required autofocus="">
+            <input type="password" id="user-pass" class="form-control" placeholder="Password" required autofocus="">
+            <input type="password" id="user-repeatpass" class="form-control" placeholder="Confirm Password" required autofocus="">
+            <div class="input-group">
+                <button class="btn btn-md btn-block submit" type="submit"><i class="fas fa-user-plus"></i> Sign Up</button>
+            </div>
+            <a href="#" id="cancel_signup"><i class="fa fa-angle-left"></i> Back</a>
+        </form>
+        <br>
+    </div>
+    <script>
+        function toggleResetPswd(e) {
+        e.preventDefault();
+            $('#logreg-forms .form-signin').toggle() // display:block or none
+            $('#logreg-forms .form-reset').toggle() // display:block or none
+        }
+
+    function toggleSignUp(e) {
+        e.preventDefault();
+            $('#logreg-forms .form-signin').toggle(); // display:block or none
+            $('#logreg-forms .form-signup').toggle(); // display:block or none
+    }
+
+        $(() => {
+            // Login Register Form
+            $('#logreg-forms #forgot_pswd').click(toggleResetPswd);
+            $('#logreg-forms #cancel_reset').click(toggleResetPswd);
+            $('#logreg-forms #btn-signup').click(toggleSignUp);
+            $('#logreg-forms #cancel_signup').click(toggleSignUp);
+})
+    </script>
+</body>
+</html>
+
+

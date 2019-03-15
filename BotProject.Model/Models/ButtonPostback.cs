@@ -21,22 +21,13 @@ namespace BotProject.Model.Models
 
         public string Title { set; get; }
 
-        public int TempGnrItemID { set; get; }
+        public int? TempGnrID { set; get; }
 
-        public int TempTxtID { set; get; }
+        public int? TempTxtID { set; get; }
 
-        public int CardPayloadID { set; get; }
+        public int? CardPayloadID { set; get; }
 
-        public int CardID { set; get; }
-
-        [ForeignKey("CardID")]
-        public virtual Card Card { set; get; }
-
-        [ForeignKey("TempGnrItemID")]
-        public virtual TemplateGeneric TemplateGeneric { set; get; }
-
-        [ForeignKey("TempTxtID")]
-        public virtual TemplateText TemplateText { set; get; }
+        public int? CardID { set; get; }
 
     }
 }
