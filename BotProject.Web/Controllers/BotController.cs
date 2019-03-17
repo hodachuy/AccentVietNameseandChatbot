@@ -19,5 +19,19 @@ namespace BotProject.Web.Controllers
         {
             return View();
         }     
+
+		public ActionResult TrainData()
+		{
+			return View();
+		}
+
+		public ActionResult TemplateTag() {
+			return View();
+		}
+
+		public ActionResult AIML()
+		{
+			return View();
+		}
     }
 }

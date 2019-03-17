@@ -60,11 +60,23 @@ namespace BotProject.Web.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
-            if (Session[CommonConstants.SessionUser] != null)
-            {
-                return RedirectToAction("Index", "Dashboard");
-            }
-            return View();
+
+			// check login with remember me
+			if (Request.IsAuthenticated)
+			{
+				if(Session[CommonConstants.SessionUser] == null)
+				{
+					ApplicationUser user = _userManager.FindById(User.Identity.GetUserId());
+					var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
+					Session[CommonConstants.SessionUser] = applicationUserViewModel;
+					if (!String.IsNullOrEmpty(returnUrl))
+						return Redirect(returnUrl);
+				}
+
+				return RedirectToAction("Index", "Dashboard");
+			}
+
+			return View();
         }
 
         [HttpPost]

@@ -11,6 +11,8 @@ namespace BotProject.Web.Models
 
         public string Name { set; get; }
 
+		public string Alias { set; get; }
+
         public string UserID { set; get; }
 
         public virtual ApplicationUserViewModel User { set; get; }

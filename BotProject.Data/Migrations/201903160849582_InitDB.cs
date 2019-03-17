@@ -3,7 +3,7 @@ namespace BotProject.Data.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class Init : DbMigration
+    public partial class InitDB : DbMigration
     {
         public override void Up()
         {
@@ -28,8 +28,14 @@ namespace BotProject.Data.Migrations
                     {
                         ID = c.Int(nullable: false, identity: true),
                         Name = c.String(nullable: false, maxLength: 256),
-                        CreatedDate = c.DateTime(nullable: false),
                         UserID = c.String(nullable: false, maxLength: 128),
+                        CreatedDate = c.DateTime(),
+                        CreatedBy = c.String(maxLength: 256),
+                        UpdatedDate = c.DateTime(),
+                        UpdatedBy = c.String(maxLength: 256),
+                        MetaKeyword = c.String(maxLength: 256),
+                        MetaDescription = c.String(maxLength: 256),
+                        Status = c.Boolean(nullable: false),
                     })
                 .PrimaryKey(t => t.ID)
                 .ForeignKey("dbo.ApplicationUsers", t => t.UserID, cascadeDelete: true)
@@ -105,13 +111,13 @@ namespace BotProject.Data.Migrations
                     {
                         ID = c.Int(nullable: false, identity: true),
                         ContentText = c.String(),
-                        ContentCardID = c.Int(nullable: false),
+                        ContentCardID = c.Int(),
                         QuestionGroupID = c.Int(nullable: false),
                         TempSrai = c.String(),
-                        Index = c.Int(nullable: false),
+                        Index = c.Int(),
                     })
                 .PrimaryKey(t => t.ID)
-                .ForeignKey("dbo.Cards", t => t.ContentCardID, cascadeDelete: true)
+                .ForeignKey("dbo.Cards", t => t.ContentCardID)
                 .ForeignKey("dbo.QuestionGroups", t => t.QuestionGroupID, cascadeDelete: true)
                 .Index(t => t.ContentCardID)
                 .Index(t => t.QuestionGroupID);
@@ -136,7 +142,7 @@ namespace BotProject.Data.Migrations
                     {
                         ID = c.Int(nullable: false, identity: true),
                         Index = c.Int(nullable: false),
-                        IsKeyword = c.Boolean(nullable: false),
+                        IsKeyword = c.Boolean(),
                         BotID = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.ID);
@@ -197,9 +203,9 @@ namespace BotProject.Data.Migrations
                         Title = c.String(maxLength: 50),
                         Url = c.String(maxLength: 256),
                         SizeHeight = c.String(),
-                        TempGnrID = c.Int(nullable: false),
-                        TempTxtID = c.Int(nullable: false),
-                        CardID = c.Int(nullable: false),
+                        TempGnrID = c.Int(),
+                        TempTxtID = c.Int(),
+                        CardID = c.Int(),
                     })
                 .PrimaryKey(t => t.ID);
             
@@ -211,10 +217,10 @@ namespace BotProject.Data.Migrations
                         Type = c.String(),
                         Payload = c.String(),
                         Title = c.String(),
-                        TempGnrID = c.Int(nullable: false),
-                        TempTxtID = c.Int(nullable: false),
-                        CardPayloadID = c.Int(nullable: false),
-                        CardID = c.Int(nullable: false),
+                        TempGnrID = c.Int(),
+                        TempTxtID = c.Int(),
+                        CardPayloadID = c.Int(),
+                        CardID = c.Int(),
                     })
                 .PrimaryKey(t => t.ID);
             
@@ -264,7 +270,7 @@ namespace BotProject.Data.Migrations
                         ID = c.Int(nullable: false, identity: true),
                         Content = c.String(),
                         Index = c.Int(nullable: false),
-                        IsThatStar = c.Boolean(nullable: false),
+                        IsThatStar = c.Boolean(),
                         TempSrai = c.String(),
                         QuestionGroupID = c.Int(nullable: false),
                     })
@@ -279,11 +285,11 @@ namespace BotProject.Data.Migrations
                         ID = c.Int(nullable: false, identity: true),
                         ContentType = c.String(),
                         Payload = c.String(),
-                        CardPayloadID = c.Int(nullable: false),
-                        CardID = c.Int(nullable: false),
+                        CardPayloadID = c.Int(),
+                        CardID = c.Int(),
                     })
                 .PrimaryKey(t => t.ID)
-                .ForeignKey("dbo.Cards", t => t.CardID, cascadeDelete: true)
+                .ForeignKey("dbo.Cards", t => t.CardID)
                 .Index(t => t.CardID);
             
             CreateTable(
@@ -316,10 +322,10 @@ namespace BotProject.Data.Migrations
                         SubTitle = c.String(),
                         Url = c.String(),
                         Image = c.String(),
-                        TempGnrGroupID = c.Int(nullable: false),
+                        TempGnrGroupID = c.Int(),
                     })
                 .PrimaryKey(t => t.ID)
-                .ForeignKey("dbo.TemplateGenericGroups", t => t.TempGnrGroupID, cascadeDelete: true)
+                .ForeignKey("dbo.TemplateGenericGroups", t => t.TempGnrGroupID)
                 .Index(t => t.TempGnrGroupID);
             
             CreateTable(
@@ -329,7 +335,7 @@ namespace BotProject.Data.Migrations
                         ID = c.Int(nullable: false, identity: true),
                         Type = c.String(),
                         Text = c.String(),
-                        CardID = c.Int(nullable: false),
+                        CardID = c.Int(),
                     })
                 .PrimaryKey(t => t.ID);
             

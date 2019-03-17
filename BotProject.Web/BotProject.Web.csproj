@@ -235,6 +235,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\BotController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -273,10 +274,11 @@
     <Content Include="assets\client\css\style.css" />
     <Content Include="assets\client\js\accentVN.js" />
     <Content Include="assets\client\js\aiml.js" />
-    <Content Include="assets\client\js\bot\form-learning.js" />
-    <Content Include="assets\client\js\bot\form-card.js" />
-    <Content Include="assets\client\js\bot\chat-dialog.js" />
+    <Content Include="assets\client\js\eventBot\form-learning.js" />
+    <Content Include="assets\client\js\eventBot\form-card.js" />
+    <Content Include="assets\client\js\eventBot\chat-dialog.js" />
     <Content Include="assets\client\js\common.js" />
+    <Content Include="assets\client\js\helper\callServiceHelper.js" />
     <Content Include="assets\client\js\searchEngineQnA.js" />
     <Content Include="assets\client\libs\ace\ace.js" />
     <Content Include="assets\client\libs\autosize\autosize.min.js" />
@@ -571,12 +573,9 @@
     <Content Include="assets\client\vendor\fonts\weather-icons\css\weather-icons.min.css" />
     <Content Include="assets\client\vendor\slimscroll\jquery.slimscroll.js" />
     <Content Include="assets\img\banner.jpg" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
     <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -667,7 +666,6 @@
     <Folder Include="File\Image\" />
     <Folder Include="Infrastructure\Extensions\" />
     <Folder Include="Views\AccentVN\" />
-    <Folder Include="Views\Base\" />
     <Folder Include="Views\SearchEngine\" />
   </ItemGroup>
   <ItemGroup>
