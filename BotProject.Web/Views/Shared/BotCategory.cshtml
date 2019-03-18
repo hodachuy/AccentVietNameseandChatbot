@@ -1,24 +1,25 @@
 ﻿@model IEnumerable<BotProject.Web.Models.BotViewModel>
 @if (Model.Count() != 0)
 {
-    int index = 0;
     foreach (var item in Model)
     {
-        index++;
+        var urlQnA = "/bot/" + item.Alias + "/" + item.ID + "/qna";
+        var urlCard = "/bot/" + item.Alias + "/" + item.ID + "/cardcategory";
+        var urlAIML = "/bot/" + item.Alias + "/" + item.ID + "/aiml";
         <li class="nav-item">
-            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@index" aria-controls="submenu-1">
+            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-1">
                 <i class="fa fa fa-robot" aria-hidden="true"></i> @item.Name
             </a>
-            <div id="submenu-@index" class="collapse submenu" style="">
+            <div id="submenu-@item.ID" class="collapse submenu" style="">
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
+                        <a class="nav-link" href="@urlAIML"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>
+                        <a class="nav-link" href="@urlCard"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện bot</a>
+                        <a class="nav-link" href="@urlQnA"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện bot</a>
                     </li>
 
                     <li class="nav-item">

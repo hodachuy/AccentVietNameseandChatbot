@@ -1,0 +1,228 @@
+﻿@{
+    ViewBag.Title = "CardCategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.selectboxit/3.8.0/jquery.selectBoxIt.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css.map" rel="stylesheet" type="application/json">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
+<link href="~/assets/client/css/card.css" rel="stylesheet" />
+<link href="~/assets/client/css/components.css" rel="stylesheet" />
+<style>
+    .card-head {
+        background-color: #fff;
+    }
+
+    .card-head-title {
+        padding: 25px 25px;
+        border-bottom: 1px solid #e6e6f2;
+    }
+
+        .card-head-title .title {
+            display: block;
+            font-size: 1.569rem;
+            font-weight: 300;
+            color: #3d405c;
+        }
+
+        .card-head-title .icons {
+            font-size: 14px;
+            float: right;
+        }
+
+            .card-head-title .icons .icon {
+                color: #71738d;
+                margin-left: 12px;
+                vertical-align: middle;
+            }
+
+        .card-head-title .title > a .icon {
+            color: silver;
+            font-size: 14px;
+            margin-right: 6px;
+            vertical-align: middle;
+            line-height: 31px;
+            position: relative;
+            top: -1px;
+        }
+
+        .card-head-title .title > a.active .icon {
+            color: currentColor;
+        }
+
+    .card-head-template {
+        padding: 13px 25px;
+        line-height: normal;
+    }
+
+        .card-head-template .addCard {
+            margin-top: unset;
+            margin-left: unset;
+        }
+
+    .card-body {
+        background-color: #fff;
+        border-top: 1px solid #e6e6f2;
+        padding: 30px 28px;
+    }
+
+    .card-quickreply {
+        background-color: #fff;
+        padding: 25px 28px;
+        border-top: 1px solid #e6e6f2;
+    }
+
+    #card-name {
+        resize: none;
+        background: #fbfbfb;
+        border: none;
+        border: 1px solid #fbfbfb;
+    }
+    /*select dropdownlist*/
+    .select2-dropdown {
+        z-index: 999999;
+    }
+
+    .select2-dropdown {
+        background-color: white;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        box-sizing: border-box;
+        display: block;
+        position: absolute;
+        left: -100000px;
+        width: 100%;
+        z-index: 999999;
+    }
+
+    .select2 {
+        width: 100%;
+    }
+
+    select + .select2-container {
+        width: 100% !important;
+    }
+
+    .product-colors input[type=checkbox], input[type=radio] {
+        box-sizing: border-box;
+        padding: 0;
+        display: inline-block;
+    }
+
+    .ml10 {
+        margin-left: 10px;
+    }
+
+    .icon-spinner4.spinner {
+        color: #fff;
+    }
+
+    .icon-spinner4.spinner {
+        font-size: 30px;
+    }
+
+    .has-error .form-control {
+        border-color: #ed4956;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+        box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    }
+
+    .container-fluid {
+        padding-left: 0px !important;
+    }
+</style>
+<input type="hidden" id="botId" value="@ViewBag.BotID"/>
+<aside class="page-aside">
+    <div class="aside-content">
+        <div class="aside-header">
+            <button class="navbar-toggle" data-target=".aside-nav" data-toggle="collapse" type="button">
+                <span class="icon"><i class="fas fa-caret-down"></i></span>
+            </button>
+            <span class="title">Thẻ <i class="fa fa-plus-circle"></i></span>
+            <p class="description">Tạo thẻ trả lời cho bot</p>
+        </div>
+        <div class="aside-nav collapse">
+            <ul class="nav">
+                <li>
+                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-2" aria-controls="setsmenu-2">
+                        <span class="icon">
+                            <i class="fas fa-fw fa-copy"></i>
+                        </span>GIOI THIEU
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-2" aria-controls="setsmenu-2">
+                        <span class="icon">
+                            <i class="fas fa-fw fa-copy"></i>
+                        </span>THONG TIN LUAT
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</aside>
+<div class="main-content container-fluid p-0">
+    <div class="card-head">
+        <div class="card-head-title">
+            <div class="title">
+                <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
+                <span><input type="text" maxlength="25" id="card-name" value="Tên Thẻ"></span>
+                <div class="icons">
+                    <a href="#" class="icon" id="save_card">
+                        <i class="fas fa-save"></i>
+                    </a>
+                    <a href="#" class="icon">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="card-head-template">
+            <div class="addCard">
+                <ul class="list-inline">
+                    <li class="card_galery"><i class="fa fa-copy"></i><span>Thẻ hình và chữ</span></li>
+                    <li class="card_text"><i class="fa fa-file"></i><span>Thẻ văn bản</span></li>
+                    <li class="card_list"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
+                    <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
+                    <li class="card_file"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
+                    <li class="card_quickReply"><i class="fa fa-flickr"></i><span>Trả lời nhanh</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <div id="wr_multi" class="scroll">
+            <div id="multi">
+            </div>
+        </div>
+    </div>
+    <div class="card-quickreply">
+        <div id="wr_reply" style="display: none;">
+            <h3><i class="icon-primitive-dot position-left"></i>Trả lời nhanh <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
+            <ul id="blReply" class="list-inline">
+                <li class="add_reply">
+                    <div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="modal_button" class="modal fade in" style="display: none;">
+
+    </div>
+</div>
+@section footerJS{
+  <script>
+    function card() {
+        var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="BATDAU">BẮT ĐẦU</option><option  value="CAUMACDINH">CÂU MẶC ĐỊNH</option><option  value="LIENHE">LIÊN HỆ</option><option  value="5c00dc63c941482ab456a0a2">CÁC CHUYÊN MỤC</option><option  value="5c00dc63c941482ab456a0a3">TRANG CHỦ</option></optgroup>';
+        return htmlListCard;
+    }
+    function module() {
+        var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>'; return htmlListModule;
+    }
+</script>
+<script src="~/assets/client/js/eventBot/form-card.js"></script>
+
+}
+
+

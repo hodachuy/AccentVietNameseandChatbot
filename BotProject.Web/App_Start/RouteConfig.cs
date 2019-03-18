@@ -14,6 +14,27 @@ namespace BotProject.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "QnA",
+                url: "bot/{alias}/{id}/qna",
+                defaults: new { controller = "Bot", action = "QnA", id = UrlParameter.Optional },
+                  namespaces: new string[] { "BotProject.Web.Controllers" }
+            );
+
+            routes.MapRoute(
+             name: "TagCategory",
+             url: "bot/{alias}/{id}/cardcategory",
+             defaults: new { controller = "Bot", action = "CardCategory", id = UrlParameter.Optional },
+               namespaces: new string[] { "BotProject.Web.Controllers" }
+             );
+
+            routes.MapRoute(
+             name: "AIML",
+             url: "bot/{alias}/{id}/aiml",
+             defaults: new { controller = "Bot", action = "AIML", id = UrlParameter.Optional },
+               namespaces: new string[] { "BotProject.Web.Controllers" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Account", action = "Login", id = UrlParameter.Optional }

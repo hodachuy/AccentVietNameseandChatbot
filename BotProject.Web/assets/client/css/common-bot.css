@@ -1,0 +1,427 @@
+﻿select.form-control {
+    color: #71748d;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-position: 99% 52%;
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-image: url(../../images/down-arrow.png);
+    padding-right: 15px;
+    border: 1px solid #d2d2e4;
+    border-radius: 2px;
+    /*width: 96%;*/
+} 
+
+.btn-rounded {
+        border-radius: unset;
+    }
+
+    .wrap-content {
+        background-color: #eee;
+    }
+
+    .w100 {
+        width: 100%;
+    }
+
+    .mt6 {
+        margin-top: 6px;
+    }
+
+    .mt20 {
+        margin-top: 20px;
+    }
+
+    label {
+        margin-bottom: 6px;
+        font-weight: 400;
+        display: inline-block;
+        max-width: 100%;
+        font-size: unset;
+    }
+
+    .panel {
+        margin-bottom: 20px;
+        border-color: #ddd;
+        color: #333;
+        background-color: white;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+    }
+
+    .panel-body {
+        position: relative;
+        padding: 20px;
+    }
+
+    .row {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    /*Page Bot Learning*/
+    .input-group {
+        position: relative;
+        display: table;
+        border-collapse: separate;
+    }
+
+    .learn_switchbot {
+        position: relative;
+        display: inline-block;
+        width: 45px;
+        height: 14px;
+        margin-bottom: 6px;
+        vertical-align: top;
+        margin-top: 3px;
+    }
+
+        .learn_switchbot input {
+            display: none;
+        }
+
+    .learn_sliderbot {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #73c990;
+        -webkit-transition: .3s;
+        transition: .3s;
+        text-transform: initial;
+    }
+
+        .learn_sliderbot:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 2px;
+            bottom: 1px;
+            background-color: white;
+            -webkit-transition: .3s;
+            transition: .3s;
+        }
+
+    input.learn_switchinput + .learn_sliderbot:after {
+        content: "Card";
+        position: absolute;
+        font-size: 11px;
+        right: 4px;
+        top: 1px;
+        color: #fff;
+        line-height: 13px;
+    }
+
+    input.learn_switchinput:checked + .learn_sliderbot:after {
+        content: "Text";
+        left: 5px;
+    }
+
+    input.learn_switchinput:checked + .learn_sliderbot {
+        background-color: #4492d8;
+    }
+
+    input.learn_switchinput:focus + .learn_sliderbot {
+        box-shadow: 0 0 1px #4492d8;
+    }
+
+    input.learn_switchinput:checked + .learn_sliderbot:before {
+        -webkit-transform: translateX(29px);
+        -ms-transform: translateX(29px);
+        transform: translateX(29px);
+    }
+
+    .learn_sliderbot.learn_roundbot {
+        border-radius: 3px;
+    }
+
+        .learn_sliderbot.learn_roundbot:before {
+            border-radius: 3px;
+        }
+
+    .bt .learn_switchbot {
+        margin-top: 8px;
+        margin-left: 4px;
+    }
+
+    #pageLearning .switchery-xs.checkbox-switchery.pd0 {
+        padding-top: 0;
+        min-height: 20px;
+    }
+
+    #pageLearning .bt {
+        position: relative;
+    }
+
+        #pageLearning .bt i.rmText {
+            position: absolute;
+            right: -5px;
+            top: auto;
+            cursor: pointer;
+            bottom: -4px;
+            border-radius: 50%;
+            padding: 2px;
+            -webkit-transition: opacity 0.5s, -webkit-transform 0.5s;
+            transition: opacity 0.5s, transform 0.5s;
+            opacity: 0;
+            z-index: 300;
+        }
+
+        #pageLearning .bt:hover i.rmText {
+            background: #fff;
+            border: 1px solid #333;
+            opacity: 1;
+        }
+
+    #pageLearning .rmText {
+        display: none;
+    }
+
+    #pageLearning .panel.panel-flat .rmCt {
+        position: absolute;
+        right: -5px;
+        top: -10px;
+        cursor: pointer;
+        /*display: none;*/
+        border-radius: 50%;
+        padding: 2px;
+        -webkit-transition: opacity 0.5s, -webkit-transform 0.5s;
+        transition: opacity 0.5s, transform 0.5s;
+        opacity: 0;
+    }
+
+    #pageLearning .panel.panel-flat .wrMove {
+        position: absolute;
+        left: 0;
+        top: -10px;
+        /*display: none;*/
+    }
+
+    #pageLearning .panel.panel-flat .moveTop,
+    #pageLearning .panel.panel-flat .moveBot {
+        cursor: pointer;
+        background: #fff;
+        border: 1px solid #333;
+        border-radius: 50%;
+        padding: 2px 5px;
+        -webkit-transition: opacity 0.5s, -webkit-transform 0.5s;
+        transition: opacity 0.5s, transform 0.5s;
+        opacity: 0;
+        margin-right: 5px;
+    }
+
+    #pageLearning .panel.panel-flat:hover i.rmCt {
+        background: #fff;
+        border: 1px solid #333;
+        opacity: 1;
+    }
+
+    #pageLearning .panel.panel-flat:hover i.moveTop,
+    #pageLearning .panel.panel-flat:hover i.moveBot,
+    #pageLearning .panel.panel-flat .wrMove:hover i {
+        opacity: 1;
+    }
+
+    #pageLearning .panel.panel-flat:first-child i.moveTop,
+    #pageLearning .panel.panel-flat:last-child i.moveBot {
+        display: none !important;
+    }
+
+    #pageLearning .focus .token-input {
+        background-color: #222;
+        color: #fff;
+        margin-left: 3px;
+        border-radius: 2px;
+    }
+
+    #pageLearning .wrap-content .icon-bin:before {
+        visibility: hidden;
+    }
+
+    #pageLearning .wrap-content .panel-flat:hover .icon-bin:before {
+        visibility: inherit;
+    }
+
+    #pageLearning .wrap-content .panel-flat:hover .bt .icon-bin:before {
+        visibility: hidden;
+    }
+
+    #pageLearning .wrap-content .panel-flat:hover .bt:hover .icon-bin:before {
+        visibility: inherit;
+    }
+
+    #pageLearning .select2-container-multi .select2-choices .select2-search-choice {
+        margin: 1px 0 0 1px;
+    }
+
+        #pageLearning .select2-container-multi .select2-choices .select2-search-choice > div,
+        #pageLearning .select2-container-multi .select2-choices .select2-search-field input {
+            padding: 6px 12px;
+        }
+
+        #pageLearning .select2-container-multi .select2-choices .select2-search-choice > div {
+            padding-right: 30px;
+        }
+
+    #pageLearning .select2-container-multi .select2-choices {
+        padding: 0;
+    }
+
+        #pageLearning .select2-container-multi .select2-choices .select2-search-field input {
+            color: #999;
+        }
+
+    #pageLearning .border-warning {
+        border-color: #ed4956;
+    }
+
+    #pageLearning .has-error .tag-editor {
+        border-color: #ed4956;
+    }
+
+    #pageLearning .titleLearning {
+        width: 100%;
+        max-width: 315px;
+        display: inline-block;
+        border-width: 0;
+        padding-left: 0;
+        font-size: 20px;
+    }
+
+        #pageLearning .titleLearning:hover,
+        #pageLearning .titleLearning:focus {
+            padding-left: 7px;
+            border-width: 1px;
+        }
+
+    #pageLearning .has-error .titleLearning {
+        border-width: 1px;
+        padding-left: 7px;
+    }
+
+    #pageLearning div.bt.has-error div.selectKeyword button.btn-default {
+        border: 1px solid #ed4956;
+    }
+
+    #pageLearning .tags {
+        background: none repeat scroll 0 0 #fff;
+        border: 1px solid #ddd;
+        display: table;
+        padding: 3px 0 0 0;
+        width: 100%;
+        list-style: none;
+        margin-bottom: 0;
+        min-height: 35px;
+        border-radius: 3px 0 0 3px;
+    }
+
+    #pageLearning .input-group.has-error .tags {
+        border-color: #ed4956;
+    }
+
+    #pageLearning .tags li.tagAdd,
+    #pageLearning .tags li.addedTag {
+        float: left;
+        margin-left: 1.5px;
+        margin-right: 1.5px;
+        margin-bottom: 3px;
+    }
+
+    #pageLearning .tags li.addedTag {
+        border-radius: 2px;
+        color: #333;
+        padding: 0.25em;
+        text-transform: lowercase;
+        border: 1px solid cornflowerblue;
+    }
+
+        #pageLearning .tags li.addedTag.error-tag {
+            background-color: #ffb9b4;
+            color: #242729;
+        }
+
+    #pageLearning .tags input,
+    #pageLearning li.addedTag {
+        border: 1px solid transparent;
+        border-radius: 2px;
+        box-shadow: none;
+        display: block;
+        padding: 0.5em;
+        cursor: pointer;
+    }
+
+    #pageLearning .tags input {
+        text-transform: lowercase;
+    }
+
+        #pageLearning .tags input:hover {
+            border: 1px solid #000;
+        }
+
+    #pageLearning span.tagRemove {
+        cursor: pointer;
+        display: inline-block;
+        padding-left: 0.5em;
+    }
+
+        #pageLearning span.tagRemove:hover {
+            color: cornflowerblue;
+        }
+
+    #pageLearning .tags input.search-field {
+        outline: none;
+        border: none;
+        text-transform: lowercase;
+    }
+
+    #pageLearning .tags input.search-field {
+        display: none;
+        padding: 0.25em 0.5em;
+    }
+
+    #pageLearning .input-group-addon {
+        border-radius: 0 3px 3px 0;
+    }
+
+    .input-group-addon:last-child {
+        border-left: 0;
+    }
+
+    .input-group-addon {
+        padding: 7px 12px;
+        font-size: 13px;
+        font-weight: normal;
+        line-height: 1;
+        color: #333;
+        text-align: center;
+        background-color: #fcfcfc;
+        border: 1px solid #ddd;
+        /*border-radius: 3px;*/
+    }
+
+    .input-group-addon, .input-group-btn {
+        width: 1%;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .input-group-addon, .input-group-btn, .input-group .form-control {
+        display: table-cell;
+    }
+
+    .hidden {
+    display: none !important;
+}
+
+
+.bootstrap-select.btn-group:not(.input-group-btn), .bootstrap-select.btn-group[class*="col-"] {
+    /*float: none;
+    display: inline-block;
+    margin-left: 0;*/
+    display:none;
+}
+
+

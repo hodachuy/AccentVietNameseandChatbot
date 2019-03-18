@@ -102,6 +102,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Cors, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Cors.4.0.1\lib\net45\Microsoft.Owin.Cors.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -113,6 +121,10 @@
     <Reference Include="System.Security" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Cors, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Cors.5.0.0\lib\net45\System.Web.Cors.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
@@ -206,9 +218,6 @@
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin">
-      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Owin.Host.SystemWeb">
       <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.3.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
     </Reference>
@@ -236,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\BotController.cs" />
+    <Compile Include="API\ImageController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -256,6 +266,7 @@
     <Compile Include="Infrastructure\Core\BaseController.cs" />
     <Compile Include="Infrastructure\Core\PaginationSet.cs" />
     <Compile Include="Infrastructure\Core\ServiceFactory.cs" />
+    <Compile Include="Infrastructure\Extensions\EntityExtensions.cs" />
     <Compile Include="Mappings\AutoMapperConfiguration.cs" />
     <Compile Include="Models\AIMLViewModel.cs" />
     <Compile Include="Models\ApplicationGroupViewModel.cs" />
@@ -264,13 +275,35 @@
     <Compile Include="Models\BotViewModel.cs" />
     <Compile Include="Models\CardViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
+    <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\QuestionGroupViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="assets\client\css\card.css" />
     <Content Include="assets\client\css\chatbot-dialog.css" />
+    <Content Include="assets\client\css\common-bot.css" />
+    <Content Include="assets\client\css\components.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c10_Ft5ovaKZZ_s.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c11_hZOCwdDXbub.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c12_lg5y1PL83FJ.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c13_29AQiV_7KWW.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c14_dfqeVEN1uIb.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c15_ThXTQTvkXzY.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c16_NBmlZsJMwcg.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c17_Y8U2p4FZgyH.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c18_Iq_mLA6uRtL.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c1_YoRGRY8zOwk.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c2_7E4oLQ9UO5V.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c3_PqmL6kgI3br.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c4_H5jZEVJpC2C.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c5_rouofWlolT7.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c6_t7hqTmVKZ.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c7_BQWrbCxwKTG.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c8_D4caviXZRzb.css" />
+    <Content Include="assets\client\css\lvbot-chat-dialog\c9_qa0aCGHSAgX.css" />
     <Content Include="assets\client\css\style.css" />
     <Content Include="assets\client\js\accentVN.js" />
     <Content Include="assets\client\js\aiml.js" />
@@ -572,7 +605,40 @@
     <Content Include="assets\client\vendor\fonts\themify-icons\themify-icons.css" />
     <Content Include="assets\client\vendor\fonts\weather-icons\css\weather-icons.min.css" />
     <Content Include="assets\client\vendor\slimscroll\jquery.slimscroll.js" />
-    <Content Include="assets\img\banner.jpg" />
+    <Content Include="assets\images\avatar-1.jpg" />
+    <Content Include="assets\images\avatar-2.jpg" />
+    <Content Include="assets\images\avatar-3.jpg" />
+    <Content Include="assets\images\avatar-4.jpg" />
+    <Content Include="assets\images\avatar-5.jpg" />
+    <Content Include="assets\images\bitbucket.png" />
+    <Content Include="assets\images\card-img-1.jpg" />
+    <Content Include="assets\images\card-img-2.jpg" />
+    <Content Include="assets\images\card-img-3.jpg" />
+    <Content Include="assets\images\card-img.jpg" />
+    <Content Include="assets\images\cd-icons.svg" />
+    <Content Include="assets\images\down-arrow.png" />
+    <Content Include="assets\images\drag-indicator.png" />
+    <Content Include="assets\images\dribbble.png" />
+    <Content Include="assets\images\dropbox.png" />
+    <Content Include="assets\images\eco-product-img-1.png" />
+    <Content Include="assets\images\eco-product-img-2.png" />
+    <Content Include="assets\images\eco-product-img-3.png" />
+    <Content Include="assets\images\eco-product-img-4.png" />
+    <Content Include="assets\images\eco-slider-img-1.png" />
+    <Content Include="assets\images\eco-slider-img-2.png" />
+    <Content Include="assets\images\eco-slider-img-3.png" />
+    <Content Include="assets\images\error-img.png" />
+    <Content Include="assets\images\github.png" />
+    <Content Include="assets\images\loader.svg" />
+    <Content Include="assets\images\logo.png" />
+    <Content Include="assets\images\mail_chimp.png" />
+    <Content Include="assets\images\product-pic-2.jpg" />
+    <Content Include="assets\images\product-pic-3.jpg" />
+    <Content Include="assets\images\product-pic-4.jpg" />
+    <Content Include="assets\images\product-pic.jpg" />
+    <Content Include="assets\images\slack.png" />
+    <Content Include="assets\images\switch.png" />
+    <Content Include="assets\images\banner.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -658,13 +724,15 @@
     <Content Include="Views\Bot\Index.cshtml" />
     <Content Include="Views\Shared\BotCategory.cshtml" />
     <Content Include="Views\Shared\Header.cshtml" />
+    <Content Include="Views\Bot\QnA.cshtml" />
+    <Content Include="Views\Bot\CardCategory.cshtml" />
+    <Content Include="Views\Bot\AIML.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="assets\client\img\" />
     <Folder Include="File\AIML\" />
-    <Folder Include="File\Image\" />
-    <Folder Include="Infrastructure\Extensions\" />
+    <Folder Include="File\Images\Card\" />
     <Folder Include="Views\AccentVN\" />
     <Folder Include="Views\SearchEngine\" />
   </ItemGroup>

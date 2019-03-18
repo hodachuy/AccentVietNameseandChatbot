@@ -11,7 +11,7 @@ namespace BotProject.Service
 {
     public interface IBotService
     {
-        Bot Create(Bot bot);
+        Bot Create(ref Bot bot);
         IEnumerable<Bot> GetListBotByUserID(string userId);
         Bot GetByID(int botId);
         void Save();
@@ -19,21 +19,29 @@ namespace BotProject.Service
     public class BotService : IBotService
     {
         IBotRepository _botRepository;
-        IUnitOfWork unitOfWork;
+        IUnitOfWork _unitOfWork;
         public BotService(IBotRepository botRepository, IUnitOfWork unitOfWork)
         {
             _botRepository = botRepository;
-            this.unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;
         }
-        public Bot Create(Bot bot)
+        public Bot Create(ref Bot bot)
         {
-            return _botRepository.Add(bot);
+            try
+            {
+                _botRepository.Add(bot);
+                _unitOfWork.Commit();
+                return bot;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }        
         }
-
 
         public void Save()
         {
-            unitOfWork.Commit();
+            _unitOfWork.Commit();
         }
 
         public IEnumerable<Bot> GetListBotByUserID(string userId)

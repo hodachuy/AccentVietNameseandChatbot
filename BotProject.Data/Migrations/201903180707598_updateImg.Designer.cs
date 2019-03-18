@@ -7,13 +7,13 @@ namespace BotProject.Data.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class InitDB : IMigrationMetadata
+    public sealed partial class updateImg : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitDB));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(updateImg));
         
         string IMigrationMetadata.Id
         {
-            get { return "201903160849582_InitDB"; }
+            get { return "201903180707598_updateImg"; }
         }
         
         string IMigrationMetadata.Source

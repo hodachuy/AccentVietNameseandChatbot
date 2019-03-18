@@ -66,9 +66,17 @@
     <Compile Include="Infrastructure\IUnitOfWork.cs" />
     <Compile Include="Infrastructure\RepositoryBase.cs" />
     <Compile Include="Infrastructure\UnitOfWork.cs" />
-    <Compile Include="Migrations\201903160849582_InitDB.cs" />
-    <Compile Include="Migrations\201903160849582_InitDB.Designer.cs">
-      <DependentUpon>201903160849582_InitDB.cs</DependentUpon>
+    <Compile Include="Migrations\201903180334265_Init.cs" />
+    <Compile Include="Migrations\201903180334265_Init.Designer.cs">
+      <DependentUpon>201903180334265_Init.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903180707598_updateImg.cs" />
+    <Compile Include="Migrations\201903180707598_updateImg.Designer.cs">
+      <DependentUpon>201903180707598_updateImg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903180723033_upImg.cs" />
+    <Compile Include="Migrations\201903180723033_upImg.Designer.cs">
+      <DependentUpon>201903180723033_upImg.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -105,8 +113,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201903160849582_InitDB.resx">
-      <DependentUpon>201903160849582_InitDB.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201903180334265_Init.resx">
+      <DependentUpon>201903180334265_Init.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903180707598_updateImg.resx">
+      <DependentUpon>201903180707598_updateImg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903180723033_upImg.resx">
+      <DependentUpon>201903180723033_upImg.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,8 +1,14 @@
-﻿var common = {
+﻿var urlCreateBot = "api/bot/create";
+var bot = {
+    Name: '',
+    Alias: '',
+    Status: false,
+    UserID: '',
+}
+var common = {
     init: function () {
         common.registerEvents();
         common.createBot();
-        common.getSeoTitle(input);
     },
     registerEvents: function () {
         $('#btnLogout').off('click').on('click', function (e) {
@@ -41,6 +47,31 @@
             return slug;
     },
     createBot: function () {
+        var temp = function (data) {
+            var html = '';
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-' + data.ID + '" aria-controls="submenu-1">';
+            html += '<i class="fa fa fa-robot" aria-hidden="true"></i> ' + data.Name + '';
+            html += '</a>';
+            html += '<div id="submenu-' + data.ID + '" class="collapse submenu" style="">';
+            html += '<ul class="nav flex-column">';
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link" href="/bot/' + data.Alias + '/' + data.ID + '/aiml"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>';
+            html += '</li>';
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link" href="/bot/' + data.Alias + '/' + data.ID + '/cardcategory"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
+            html += '</li>';
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link" href="/bot/' + data.Alias + '/' + data.ID + '/qna"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện bot</a>';
+            html += '</li>';
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link" href="#"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
+            html += '</li>';
+            html += '</ul>';
+            html += '</div>';
+            html += '</li>';
+            return html;
+        }
         $('body').on('click', '#btnCreateBot', function () {
             $('#txtBotName').val('');
             $('#modalCreateBot').modal('show');
@@ -50,10 +81,15 @@
             if (botName == '' || botName == undefined)
                 return false;
 
-            var url = "Ajax/CreateAgency";
-            var svr = new AjaxCall(url, JSON.stringify(botName), 'GET');
-            svr.callService(function (data) {
-                console.log(data);                
+            bot.Name = botName;
+            bot.Alias = common.getSeoTitle(botName);
+            bot.UserID = $('#userId').val();
+            var svr = new AjaxCall(urlCreateBot, JSON.stringify(bot));
+            svr.callServicePOST(function (data) {
+                console.log(data)
+                var tempHtml = temp(data);
+                $('#bot-category').append(tempHtml);
+                $('#modalCreateBot').modal('hide');    
             });
         })
     }

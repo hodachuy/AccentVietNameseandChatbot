@@ -60,7 +60,6 @@ namespace BotProject.Web.Controllers
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
-
 			// check login with remember me
 			if (Request.IsAuthenticated)
 			{

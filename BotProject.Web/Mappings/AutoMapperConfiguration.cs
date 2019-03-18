@@ -13,6 +13,7 @@ namespace BotProject.Web.Mappings
                 cfg.CreateMap<ApplicationGroup, ApplicationGroupViewModel>();
                 cfg.CreateMap<ApplicationRole, ApplicationRoleViewModel>();
                 cfg.CreateMap<ApplicationUser, ApplicationUserViewModel>();
+                cfg.CreateMap<Bot, BotViewModel>();
             });
         }
     }

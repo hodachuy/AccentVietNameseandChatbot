@@ -20,18 +20,21 @@ namespace BotProject.Web.Controllers
             return View();
         }     
 
-		public ActionResult TrainData()
+		public ActionResult QnA(int id)
 		{
+            ViewBag.BotID = id;
+            return View();
+		}
+
+		public ActionResult CardCategory(int id) {
+            ViewBag.BotID = id;
 			return View();
 		}
 
-		public ActionResult TemplateTag() {
-			return View();
-		}
-
-		public ActionResult AIML()
+		public ActionResult AIML(int id)
 		{
-			return View();
+            ViewBag.BotID = id;
+            return View();
 		}
     }
 }

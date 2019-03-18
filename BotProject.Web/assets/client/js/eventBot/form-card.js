@@ -1,6 +1,7 @@
-﻿var srcFolderImg = "https://platform.messnow.com/",
-        srcAddImg = "/bots/addImage/227697874709279",
-        srcRmImg = "/bots/rmImage/227697874709279",
+﻿var botId = $("#botId").val();
+var srcFolderImg = "https://platform.messnow.com/",
+        srcAddImg = "api/image/create",
+        srcRmImg = "api/image/delete",
         srcAddFile = "/bots/addFile/227697874709279",
         srcRmFile = "/bots/rmFile/227697874709279",
         ajaxSave = "/bots/saveCard",
@@ -11,7 +12,6 @@
         srcGetCities = "/bots/getCity",
         srcClipboard = "/api/shortener",
         httpLink = "https://platform.messnow.com/link/",
-        botId = "5c00dc63c941482ab456a090",
         txtCard1 = "Nội dung",
         txtCard2 = "Nhập nội dung",
         txtCard3 = "Số lượng",
@@ -131,7 +131,7 @@ $(document).ready(function () {
             })
             .done(function(val) {
                 val = JSON.parse(val);
-                el.css('background-image', 'url("'+val.url+'")');
+                el.css('background-image', 'url("'+val.Url+'")');
                 el.find('i.icon-camera').addClass('icon-cross3');
                 el.find('i.icon-camera').removeClass('icon-camera');
                 el.addClass('hasImg');
@@ -1303,8 +1303,8 @@ $(document).ready(function () {
                     '<input class="inputfile" type="file" accept="image/*"/>'+
                     '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>'+txtCard14+'</div>'+
                     '<span class="hide">'+
-                        '<a class="img-rp"><i class="icon-rotate-ccw3"></i><br>'+txtCard15+'</a>'+
-                        '<a class="img-rm"><i class="icon-cross2"></i><br>'+txtCard16+'</a>'+
+                        '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate"></i><br>'+txtCard15+'</a>'+
+                        '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>'+txtCard16+'</a>'+
                     '</span>'+
                 '</div>'+
                 '<div class="wr_title">'+
@@ -1826,7 +1826,7 @@ $(document).ready(function () {
             data.append('botId',botId);
             $('#modal_button .icon_button').html('<i class="icon-spinner3 spinner"></i>');
             $.ajax({
-                url: srcAddImg,
+                url: _Host + srcAddImg,
                 type: "POST",
                 data: data,
                 enctype: 'multipart/form-data',
@@ -2560,7 +2560,7 @@ $(document).ready(function () {
             attachment_id = elrm.parents('.wr_image').attr('attachment_id');
         }
 
-        var rs = removeImage(elrm.parents('.wr_image').css('background-image'),attachment_id);
+        var rs = removeImage(elrm.parents('.wr_image').css('background-image'), attachment_id);
         if(rs==1){
             elrm.parents('.wr_image').find('.clickinput').show();
             elrm.parents('span').addClass('hide');
@@ -2588,40 +2588,29 @@ $(document).ready(function () {
             data.append('file', file);
             data.append('botId', botId);
             console.log(file)
-
+            $.ajax({
+                url: _Host + srcAddImg,
+                type: "POST",
+                data: data,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false
+            })
+            .done(function(val) {
+                //val = JSON.parse(val);
+                console.log(val)
+                val.Url = _Host + val.Url;
                 if(el.parents('.wr_image').css('background-image')!='none'){
                     removeImage(el.parents('.wr_image').css('background-image'),attachment_id);
                 }
-                el.parents('.wr_image').attr('attachment_id', '123');
-                el.parents('.wr_image').css('background-image', 'url("http://abc.jpg")');
+                el.parents('.wr_image').attr('attachment_id', val.ID);
+                el.parents('.wr_image').css('background-image', 'url("'+val.Url+'")');
                 el.parents('.wr_image').find('.clickinput').hide();
                 el.parents('.wr_image').find('span').removeClass('hide');
                 setTimeout(function() {
                     el.parents('.wr_image').find('.img-loading').remove();
                 }, 500);
-
-
-            //$.ajax({
-            //    url: srcAddImg,
-            //    type: "POST",
-            //    data: data,
-            //    enctype: 'multipart/form-data',
-            //    processData: false,
-            //    contentType: false
-            //})
-            //.done(function(val) {
-            //    val = JSON.parse(val);
-            //    if(el.parents('.wr_image').css('background-image')!='none'){
-            //        removeImage(el.parents('.wr_image').css('background-image'),attachment_id);
-            //    }
-            //    el.parents('.wr_image').attr('attachment_id', val.attachment_id);
-            //    el.parents('.wr_image').css('background-image', 'url("'+val.url+'")');
-            //    el.parents('.wr_image').find('.clickinput').hide();
-            //    el.parents('.wr_image').find('span').removeClass('hide');
-            //    setTimeout(function() {
-            //        el.parents('.wr_image').find('.img-loading').remove();
-            //    }, 500);
-            //})
+            })
         }else{
             if(file){
                 el.parents('.wr_image').addClass('error');
@@ -3387,19 +3376,19 @@ function htmlPopup(el,el_share,action){
     /// End Check is region Phone
 
     /// Remove Image
-    function removeImage(url,id){
-        var rs = 0;
-        $.ajax({
-            url: srcRmImg,
-            method: "POST",
-            async: false,
-            data: {
-                url: url ,
-                attachment_id: id
-            }
-        }).done(function(val) {
-            rs = val;
-        })
+    function removeImage(url, id) {
+        url = url.replace("url(", "").replace(")", "").replace("\"", "").replace("\"", "");
+        var rs = 1;
+        var img = {         
+            ImageID: id,
+            ImagePath: url
+        }
+        
+        var svr = new AjaxCall(srcRmImg, JSON.stringify(img));
+        svr.callServicePOST(function (data) {
+            console.log(data)
+        });
+
         return rs;
     }
     /// End Remove Image

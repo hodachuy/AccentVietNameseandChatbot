@@ -17,6 +17,7 @@ using System.Web.Http;
 using Autofac.Integration.WebApi;
 using BotProject.Data;
 using Microsoft.AspNet.SignalR;
+using Microsoft.Owin.Cors;
 
 [assembly: OwinStartup(typeof(BotProject.Web.App_Start.Startup))]
 
@@ -34,26 +35,26 @@ namespace BotProject.Web.App_Start
         }
         private void ConfigSignalR(IAppBuilder app)
         {
-            //app.Map("/signalr", map =>
-            //{
-            //    // Setup the CORS middleware to run before SignalR.
-            //    // By default this will allow all origins. You can 
-            //    // configure the set of origins and/or http verbs by
-            //    // providing a cors options with a different policy.
+            app.Map("/signalr", map =>
+            {
+                // Setup the CORS middleware to run before SignalR.
+                // By default this will allow all origins. You can 
+                // configure the set of origins and/or http verbs by
+                // providing a cors options with a different policy.
 
-            //    //map.UseCors(CorsOptions.AllowAll);
-            //    var hubConfiguration = new HubConfiguration
-            //    {
-            //        // You can enable JSONP by uncommenting line below.
-            //        // JSONP requests are insecure but some older browsers (and some
-            //        // versions of IE) require JSONP to work cross domain
-            //        // EnableJSONP = true
-            //    };
-            //    // Run the SignalR pipeline. We're not using MapSignalR
-            //    // since this branch already runs under the "/signalr"
-            //    // path.
-            //    map.RunSignalR(hubConfiguration);
-            //});
+                map.UseCors(CorsOptions.AllowAll);
+                var hubConfiguration = new HubConfiguration
+                {
+                    // You can enable JSONP by uncommenting line below.
+                    // JSONP requests are insecure but some older browsers (and some
+                    // versions of IE) require JSONP to work cross domain
+                    // EnableJSONP = true
+                };
+                // Run the SignalR pipeline. We're not using MapSignalR
+                // since this branch already runs under the "/signalr"
+                // path.
+                map.RunSignalR(hubConfiguration);
+            });
             app.MapSignalR();
         }
         private void ConfigAutofac(IAppBuilder app)
