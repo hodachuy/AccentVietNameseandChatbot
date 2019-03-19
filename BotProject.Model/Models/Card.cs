@@ -19,6 +19,8 @@ namespace BotProject.Model.Models
         [MaxLength(256)]
         public string Name { set; get; }
 
+        public string Alias { set; get; }
+
         public string PatternText { set; get; }// postback_card_id
 
         public string TemplateAIML { set; get; }

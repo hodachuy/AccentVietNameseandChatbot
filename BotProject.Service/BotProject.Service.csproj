@@ -61,7 +61,9 @@
     <Compile Include="ApplicationGroupService.cs" />
     <Compile Include="ApplicationRoleService.cs" />
     <Compile Include="BotService.cs" />
+    <Compile Include="CardService.cs" />
     <Compile Include="ErrorService.cs" />
+    <Compile Include="FileCardService.cs" />
     <Compile Include="ImageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

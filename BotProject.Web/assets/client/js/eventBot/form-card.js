@@ -1,7 +1,7 @@
 ﻿var botId = $("#botId").val();
 var srcFolderImg = "https://platform.messnow.com/",
-        srcAddImg = "api/image/create",
-        srcRmImg = "api/image/delete",
+        srcAddImg = "api/file/create",
+        srcRmImg = "api/file/delete",
         srcAddFile = "/bots/addFile/227697874709279",
         srcRmFile = "/bots/rmFile/227697874709279",
         ajaxSave = "/bots/saveCard",
@@ -122,7 +122,7 @@ $(document).ready(function () {
             data.append('file', file);
             data.append('botId',botId);
             $.ajax({
-                url: srcAddImg,
+                url: _Host + srcAddImg,
                 type: "POST",
                 data: data,
                 enctype: 'multipart/form-data',
@@ -130,10 +130,10 @@ $(document).ready(function () {
                 contentType: false
             })
             .done(function(val) {
-                val = JSON.parse(val);
-                el.css('background-image', 'url("'+val.Url+'")');
-                el.find('i.icon-camera').addClass('icon-cross3');
-                el.find('i.icon-camera').removeClass('icon-camera');
+                //val = JSON.parse(val);
+                el.css('background-image', 'url("' + _Host+val.Url + '")');
+                el.find('i.icon-camera').addClass('icon-cross3 fa fa-remove');
+                el.find('i.icon-camera').removeClass('icon-camera fa fa-camera');
                 el.addClass('hasImg');
                 el.find('.img-loading').remove();
             })
@@ -439,19 +439,33 @@ $(document).ready(function () {
     };
     // End check has attribute
 
-    $('#save_card').click(function(event) {
+    $('#save_card').click(function (event) {
         var $str_er = '<div class="layer_error">'+txtCard9+'</div>',
             checkCard = true,
             card = [],
             listUpdate = [],
             arProduct = [];
         
+        var card_sql = [];
+
         arLink = [];
         $('#wr_multi').removeClass('error');
+
+        var cardName = $("#card-name").val();
+        $("#card-name").removeClass('error');
+        $("#card-name").keypress(function () {
+            $("#card-name").removeClass('error');
+        })
+        if (cardName == "" || cardName == undefined) {
+            $("#card-name").addClass('error')
+            return false;
+        }
+
         if($('#multi .content').length>0){
             $('#multi .content').each(function(index, el) {
                 if($(this).attr('card')=='galery'){
                     var ar_galery = [];
+                    var ar_galery_sql = [];
                     $(this).children('.layer').each(function(index, el) {
                         if($(this).find('.wr_title .head textarea').val().trim()==''){
                             $(this).find('.wr_title .head textarea').addClass('error');
@@ -510,8 +524,11 @@ $(document).ready(function () {
                             // End shortened link
 
                             var buttons = [];
+                            var button_links_sql = [];
+                            var button_postbacks_sql = [];
                             $(this).find('.wr_button .bt').each(function(index, el) {
                                 var button_object = {};
+                                var btn_object_sql = {};
                                 if($(this).attr('type-button')=='postback'){
                                     var postback_card = 'postback_card_';
                                     $(this).find('.bt_ct span').each(function(index, el) {
@@ -528,6 +545,15 @@ $(document).ready(function () {
                                         "payload":postback_card
                                     }
                                     buttons.push(button_object);
+
+                                    //database_sql
+                                    btn_object_sql = {
+                                        "Type": "postback",
+                                        "Title": $(this).find('.bt_title').text(),
+                                        "Payload": postback_card
+                                    }
+                                    button_postbacks_sql.push(btn_object_sql);
+
                                 }else if($(this).attr('type-button')=='module'){
                                     var postback_module = 'postback_module_'+ $(this).find('.bt_ct span').attr('module-id');
                                     button_object = {
@@ -536,7 +562,18 @@ $(document).ready(function () {
                                         "payload":postback_module
                                     }
                                     buttons.push(button_object);
-                                }else if($(this).attr('type-button')=='web_url'){
+
+                                    //database_sql
+                                    btn_object_sql = {
+                                        "Type": "postback",
+                                        "Title": $(this).find('.bt_title').text(),
+                                        "Payload": postback_module
+                                    }
+                                    button_postbacks_sql.push(btn_object_sql);
+
+                                } else if ($(this).attr('type-button') == 'web_url') {
+
+
                                     var wbLink = $(this).find('.bt_ct').text();
 
                                     // Shortened Link
@@ -566,6 +603,17 @@ $(document).ready(function () {
                                         "webview_height_ratio":attrwebview
                                     }
                                     buttons.push(button_object);
+
+                                    //database_sql
+                                    btn_object_sql = {
+                                        "Type": "web_url",
+                                        "Title": $(this).find('.bt_title').text(),
+                                        "Url": wbLink,
+                                        "SizeHeight": attrwebview
+                                    }
+                                    button_links_sql.push(btn_object_sql);
+
+
                                 }else if($(this).attr('type-button')=='phone_number'){
                                     button_object = {
                                         "type":"phone_number",
@@ -611,20 +659,46 @@ $(document).ready(function () {
                                 "buttons":buttons
                             };
                             ar_galery.push(galery_element);
+
+                            //database_sql
+                            var galery_element_sql = {
+                                    "Title": title,
+                                    "Url": item_url,
+                                    "Image": image_url,
+                                    "Subtitle": subtitle,
+                                    "ButtonPostbacks": button_postbacks_sql,
+                                    "ButtonLinks": button_links_sql
+                                
+                            };
+                            ar_galery_sql.push(galery_element_sql);
                         }
                     });
                     var generic = {"message":{
-                        "attachment":{
-                            "type":"template",
-                            "payload":{
-                                "template_type":"generic",
-                                "elements": ar_galery
-                            }
-                        }
-                    } };
+                                                "attachment":{
+                                                    "type":"template",
+                                                    "payload":{
+                                                        "template_type":"generic",
+                                                        "elements": ar_galery
+                                                    }
+                                                }
+                                            }
+                    };
                     card.push(generic);
+
+                    //database_sql
+                    var genenic_sql = {
+                        "Message": {
+                            "TemplateGenericGroup": {
+                                "TemplateGenericItems": ar_galery_sql
+                            },
+                            "Type":"template"
+                        }
+                    };
+                    card_sql.push(genenic_sql)
+
                 }else if($(this).attr('card')=='text'){
                     var template_text = {};
+                    var template_text_sql = {};
                     if($(this).find('.content-text').val().trim()==''){
                         $(this).find('.content-text').addClass('error');
                         checkCard = false;
@@ -639,10 +713,24 @@ $(document).ready(function () {
                                     "text": $(this).find('.wr_title .wr-content-text textarea').val()
                                 }
                             }
+
+                            template_text_sql = {
+                                "Message": {
+                                    "TemplateText":{
+                                        "Text": $(this).find('.wr_title .wr-content-text textarea').val(),
+                                        "Type": "template",
+                                        "ButtonPostbacks": [],
+                                        "ButtonLinks": []
+                                    }
+                                }
+                            }
                         }else{
                             var buttons = [];
+                            var button_links_sql = [];
+                            var button_postbacks_sql = [];
                             $(this).find('.wr_button .bt').each(function(index, el) {
                                 var button_object = {};
+                                var btn_object_sql = {};
                                 if($(this).attr('type-button')=='postback'){
                                     var postback_card = 'postback_card_';
                                     $(this).find('.bt_ct span').each(function(index, el) {
@@ -659,6 +747,14 @@ $(document).ready(function () {
                                         "payload":postback_card
                                     }
                                     buttons.push(button_object);
+
+                                    btn_object_sql = {
+                                        "Type": "postback",
+                                        "Title": $(this).find('.bt_title').text(),
+                                        "Payload": postback_card
+                                    }
+                                    button_postbacks_sql.push(btn_object_sql);
+
                                 }else if($(this).attr('type-button')=='module'){
                                     var postback_module = 'postback_module_'+ $(this).find('.bt_ct span').attr('module-id');
                                     button_object = {
@@ -667,6 +763,14 @@ $(document).ready(function () {
                                         "payload":postback_module
                                     }
                                     buttons.push(button_object);
+
+                                    btn_object_sql = {
+                                        "type": "postback",
+                                        "title": $(this).find('.bt_title').text(),
+                                        "payload": postback_module
+                                    }
+                                    button_postbacks_sql.push(btn_object_sql);
+
                                 }else if($(this).attr('type-button')=='web_url'){
                                     var wbLink = $(this).find('.bt_ct').text();
                                     // Shortened Link
@@ -697,6 +801,15 @@ $(document).ready(function () {
                                         "webview_height_ratio":attrwebview
                                     }
                                     buttons.push(button_object);
+
+                                    btn_object_sql = {
+                                        "Type": "web_url",
+                                        "Title": $(this).find('.bt_title').text(),
+                                        "Url": wbLink,
+                                        "SizeHeight": attrwebview
+                                    }
+                                    button_links_sql.push(btn_object_sql);
+
                                 }else if($(this).attr('type-button')=='phone_number'){
                                     button_object = {
                                         "type":"phone_number",
@@ -725,8 +838,20 @@ $(document).ready(function () {
                                     }
                                 }
                             }
+
+                            template_text_sql = {
+                                "Message": {
+                                    "TemplateText":{
+                                        "Text": $(this).find('.wr_title .wr-content-text textarea').val(),
+                                        "Type": "template",
+                                        "ButtonPostbacks": button_postbacks_sql,
+                                        "ButtonLinks": button_links_sql
+                                    }
+                                }
+                            };
                         }
                         card.push(template_text);
+                        card_sql.push(template_text_sql);
                     }
                 }else if($(this).attr('card')=='image'){
                     if($(this).find('.wr_image').css('background-image')=='none'){
@@ -751,6 +876,12 @@ $(document).ready(function () {
                         //     listUpdate.push(arAt);
                         // }
 
+                             var arAt = {
+                                 attachment_id  : $(this).find('.wr_image').attr('attachment_id'),
+                                 type           : 'edit'
+                             }
+                             listUpdate.push(arAt);
+
                         var template_image = {
                             "message":{
                                 "attachment":{
@@ -760,6 +891,16 @@ $(document).ready(function () {
                             }
                         };
                         card.push(template_image);
+
+                        var template_image_sql = {
+                            "Message": {
+                                "Image": {
+                                    "Url": srcImage
+                                }
+                            }
+                        };
+                        card_sql.push(template_image_sql);
+
                     }
                 }else if($(this).attr('card')=='audio'||$(this).attr('card')=='video'||$(this).attr('card')=='file'){
                     if($(this).find('.wr_file').find('.click_input_file1 span').text()==txtCard11
@@ -882,7 +1023,8 @@ $(document).ready(function () {
                         "module": $(this).find('.blSelectModule select').val()+moduleExt
                     };
                     card.push(template_file);
-                }else if($(this).attr('card')=='list'){
+                }
+                else if ($(this).attr('card') == 'list') {
                     
                     var elBanner = $(this).find('.wr_image');
                     elBanner.siblings('.layer_error').remove();
@@ -1103,6 +1245,9 @@ $(document).ready(function () {
         if($('#wr_reply #blReply li.reply').length>0){
             var ar_quickReply = [];
             var obj_quickReply = {};
+
+            var ar_quickReply_sql = [];
+            var obj_quickReply_sql = {};
             $('#wr_reply #blReply li.reply').each(function(index, el) {
                 if($(this).find('.wr_reply_btcontent').attr('attr-reply')=='location'){
                     obj_quickReply = {"content_type":"location"};
@@ -1145,6 +1290,14 @@ $(document).ready(function () {
                             "image_url":$(this).find('.wr_reply_btcontent i').css('background-image').replace('url(','').replace(')','').replace(/\"/gi, "")
                         };
                         ar_quickReply.push(obj_quickReply);
+
+                        obj_quickReply_sql = {
+                            "ContentType": "text",
+                            "Title": $(this).find('.wr_reply_btcontent .name-button').text(),
+                            "Payload": payload,
+                            "Icon": $(this).find('.wr_reply_btcontent i').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "")
+                        };
+                        ar_quickReply_sql.push(obj_quickReply_sql);
                     }else{
                         var payload = '';
                         if($(this).find('.reply_btcontent span').length>0){
@@ -1163,6 +1316,15 @@ $(document).ready(function () {
                             "payload":payload
                         };
                         ar_quickReply.push(obj_quickReply);
+
+
+                        obj_quickReply_sql = {
+                            "ContentType": "text",
+                            "Title": $(this).find('.wr_reply_btcontent .name-button').text(),
+                            "Payload": payload,
+                            "Icon":""
+                        };
+                        ar_quickReply_sql.push(obj_quickReply_sql);
                     }
                 }else if($(this).find('.wr_reply_btcontent').attr('attr-reply')=='module'){
                     if($(this).find('.wr_reply_btcontent').children('i').length>0){
@@ -1208,6 +1370,11 @@ $(document).ready(function () {
                     'quick_replies' : ar_quickReply
                 }
             }
+
+            //var objReply_sql = {
+            //    'QuickReplys': ar_quickReply_sql
+            //}
+
             if(!('module' in card[card.length-1])){
                 $.extend( true, card[card.length-1], objReply );
             }else if(card.length>1){
@@ -1220,9 +1387,21 @@ $(document).ready(function () {
             'pageId'        : $('#pageId').val(),
             'botId'         : $('#botId').val(),
             'blockId'       : $('#blockId').val(),
-            'nameCard'      : $('#name_card').val(),
+            'nameCard'      : $('#card-name').val(),
             'arProduct'     : arProduct,
             'cardContent'   : card
+        }
+
+        var cardVm = {
+            'ID': $('#idCard').val() == undefined ? null : $('#idCard').val(),
+            //'userId'        : $('#userId').val(),
+            //'pageId'        : $('#pageId').val(),
+            'BotId'         : $('#botId').val(),
+            //'blockId'       : $('#blockId').val(),
+            'Name'      : $('#card-name').val(),
+            'Alias'      : common.getSeoTitle($('#card-name').val()),
+            'CardContents': card_sql,
+            'QuickReplys': ar_quickReply_sql
         }
 
         if(checkCard){
@@ -1241,9 +1420,16 @@ $(document).ready(function () {
             //        backgroundColor: 'transparent'
             //    }
             //});
+
             console.log(objectCard)
-            var strObj = JSON.stringify(objectCard.cardContent[0])
-            console.log(strObj)
+            console.log(listUpdate)
+
+            console.log(cardVm)
+
+            // lấy chuỗi obj json tới fb
+            //var strObj = JSON.stringify(objectCard.cardContent[0])
+            //console.log(strObj)
+
             //console.log(arLink)
             //$.ajax({
             //    url: ajaxSave,
@@ -1262,6 +1448,11 @@ $(document).ready(function () {
             //}).fail(function() {
             //    $(block).unblock();
             //});
+            var urlTest = "api/file/test";
+            var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
+            svr.callServicePOST(function (data) {
+               
+            });
 
         } else {
             $("#model-tag-bot").modal('hide');
@@ -1303,7 +1494,7 @@ $(document).ready(function () {
                     '<input class="inputfile" type="file" accept="image/*"/>'+
                     '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>'+txtCard14+'</div>'+
                     '<span class="hide">'+
-                        '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate"></i><br>'+txtCard15+'</a>'+
+                        '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>'+txtCard15+'</a>'+
                         '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>'+txtCard16+'</a>'+
                     '</span>'+
                 '</div>'+
@@ -1383,8 +1574,8 @@ $(document).ready(function () {
                         '<input class="inputfile" type="file" accept="image/*"/>'+
                         '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>'+txtCard14+'</div>'+
                         '<span class="hide">'+
-                            '<a class="img-rp"><i class="icon-rotate-ccw3"></i><br>'+txtCard15+'</a>'+
-                            '<a class="img-rm"><i class="icon-cross2"></i><br>'+txtCard16+'</a>'+
+                            '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
+                            '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>'+txtCard16+'</a>'+
                         '</span>'+
                     '</div>'+
                 '</div>'+
@@ -1407,8 +1598,8 @@ $(document).ready(function () {
                             '<i class="icon-volume-medium"></i><br>'+
                             '<span>'+txtCard11+'</span></div>'+
                         '<span class="hide">'+
-                            '<a class="file-rp"><i class="icon-rotate-ccw3"></i><br>'+txtCard15+'</a>'+
-                            '<a class="file-rm"><i class="icon-cross2"></i><br>'+txtCard16+'</a>'+
+                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
+                            '<a class="file-rm"><i class="icon-cross2 fa fa-remove"></i><br>'+txtCard16+'</a>'+
                         '</span>'+
                     '</div>'+
                 '</div>'+
@@ -1431,8 +1622,8 @@ $(document).ready(function () {
                             '<i class="icon-film"></i><br>'+
                             '<span>'+txtCard12+'</span></div>'+
                         '<span class="hide">'+
-                            '<a class="file-rp"><i class="icon-rotate-ccw3"></i><br>'+txtCard15+'</a>'+
-                            '<a class="file-rm"><i class="icon-cross2"></i><br>'+txtCard16+'</a>'+
+                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
+                            '<a class="file-rm"><i class="icon-cross2 fa fa-remove"></i><br>'+txtCard16+'</a>'+
                         '</span>'+
                     '</div>'+
                 '</div>'+
@@ -1455,8 +1646,8 @@ $(document).ready(function () {
                             '<i class="icon-attachment fa fa-paperclip"></i><br>' +
                             '<span>'+txtCard13+'</span></div>'+
                         '<span class="hidden">'+
-                            '<a class="file-rp"><i class="icon-rotate-ccw3"></i><br>'+txtCard15+'</a>'+
-                            '<a class="file-rm"><i class="icon-cross2"></i><br>'+txtCard16+'</a>'+
+                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
+                            '<a class="file-rm"><i class="icon-cross2 fa fa-remove"></i><br>'+txtCard16+'</a>'+
                         '</span>'+
                     '</div>'+
                 '</div>'+
@@ -1538,7 +1729,7 @@ $(document).ready(function () {
                     '<div class="wr_image">'+
                         '<input class="inputfile" type="file" accept="image/*">'+
                         '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>'+txtCard14+'</div>'+
-                        '<span class="hide"><a class="img-rp"><i class="icon-rotate-ccw3"></i><br>'+txtCard15+'</a><a class="img-rm"><i class="icon-cross2"></i><br>'+txtCard16+'</a></span>'+
+                        '<span class="hide"><a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a><a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>' + txtCard16 + '</a></span>' +
                         '<div class="list-wrct list-wrct-top">'+
                             '<input type="text" class="list_title" placeholder="'+txtCard17+'" readonly value="">'+
                             '<input type="text" class="list_subtitle" placeholder="'+txtCard18+'" readonly value="">'+
@@ -1834,16 +2025,16 @@ $(document).ready(function () {
                 contentType: false
             })
             .done(function(val) {
-                val = JSON.parse(val);
+                //val = JSON.parse(val);
                 if(srcImg!='none'){
                     removeImage(srcImg,attachment_id);
                 }
                 Rs_attachment_id = 0;
-                if(val.attachment_id!=''){
-                    Rs_attachment_id = val.attachment_id;
+                if(val.ID!=''){
+                    Rs_attachment_id = val.ID;
                 }
                 el.parents('.reply_title_input').find('.icon_button').attr('attachment_id', Rs_attachment_id);
-                el.parents('.reply_title_input').find('.icon_button').css('background-image', 'url("'+val.url+'")');
+                el.parents('.reply_title_input').find('.icon_button').css('background-image', 'url("'+_Host+val.Url+'")');
                 el.parents('.reply_title_input').find('.icon_button').html('');
             })
         }
@@ -2075,8 +2266,8 @@ $(document).ready(function () {
                     '<input class="inputfile" type="file" accept="image/*"/>'+
                     '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>'+txtCard14+'</div>'+
                     '<span class="hide">'+
-                        '<a class="img-rp"><i class="icon-rotate-ccw3"></i><br>'+txtCard15+'</a>'+
-                        '<a class="img-rm"><i class="icon-cross2"></i><br>'+txtCard16+'</a>'+
+                        '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
+                        '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>'+txtCard16+'</a>'+
                     '</span>'+
                 '</div>'+
                 '<div class="wr_title">'+
@@ -2569,8 +2760,13 @@ $(document).ready(function () {
     });
 
     // Input Image
-    $('#multi').on('change', '.inputfile', function(event) {
+    //sự kiện click 2 lần 1 file, reset lại giá trị file.
+    $("#multi").on("click", '.inputfile', function (event) { event.target.value = null; });
+    $('#multi').on('change', '.inputfile', function (event) {
         var file = $(this)[0].files[0];
+        var size = parseInt(file.size / 1024);
+        var maxSize = parseInt(5 * 1024) // 5MB
+        console.log(size)
         var el = $(this);
         var attachment_id = '';
 
@@ -2580,8 +2776,10 @@ $(document).ready(function () {
                 ){
             attachment_id = el.parents('.wr_image').attr('attachment_id');
         }
-
-        if (file && file.type.match('image.*')) {
+        if (size >= maxSize) {
+            el.parents('.wr_image').addClass('error');
+        }
+        else if (file && file.type.match('image.*')) {
             el.parents('.wr_image').removeClass('error');
             el.parents('.wr_image').append('<div class="img-loading"><i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i></div>');
             data = new FormData();
@@ -3380,8 +3578,8 @@ function htmlPopup(el,el_share,action){
         url = url.replace("url(", "").replace(")", "").replace("\"", "").replace("\"", "");
         var rs = 1;
         var img = {         
-            ImageID: id,
-            ImagePath: url
+            FileImageID: id,
+            FileImagePath: url
         }
         
         var svr = new AjaxCall(srcRmImg, JSON.stringify(img));

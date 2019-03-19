@@ -126,7 +126,7 @@ div.sortable-placeholder {
     position: absolute;
     bottom: -54px;
     background: url(../img/bg_layer_error.png) no-repeat top center;
-    color: #ffffff;
+    color: red;
     padding: 12px 8px 2px;
     border-radius: 4px;
     z-index: 500;

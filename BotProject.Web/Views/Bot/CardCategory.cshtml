@@ -76,8 +76,12 @@
     #card-name {
         resize: none;
         background: #fbfbfb;
-        border: none;
         border: 1px solid #fbfbfb;
+    }
+    #card-name.error{
+        resize: none;
+        background: #fbfbfb;
+        border: 1px solid red;
     }
     /*select dropdownlist*/
     .select2-dropdown {
@@ -167,7 +171,7 @@
         <div class="card-head-title">
             <div class="title">
                 <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
-                <span><input type="text" maxlength="25" id="card-name" value="Tên Thẻ"></span>
+                <span><input type="text" maxlength="25" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>
                 <div class="icons">
                     <a href="#" class="icon" id="save_card">
                         <i class="fas fa-save"></i>

@@ -245,6 +245,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\BotController.cs" />
+    <Compile Include="API\CardController.cs" />
+    <Compile Include="API\FileCardController.cs" />
     <Compile Include="API\ImageController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />

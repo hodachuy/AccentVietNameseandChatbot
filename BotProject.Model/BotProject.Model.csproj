@@ -73,6 +73,7 @@
     <Compile Include="Models\ButtonLink.cs" />
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Error.cs" />
+    <Compile Include="Models\FileCard.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\Notify.cs" />
     <Compile Include="Models\Question.cs" />

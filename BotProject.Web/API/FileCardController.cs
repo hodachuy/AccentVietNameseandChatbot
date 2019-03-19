@@ -13,17 +13,31 @@ using BotProject.Model.Models;
 using BotProject.Common;
 using System.Configuration;
 using System.Text.RegularExpressions;
+using BotProject.Web.Models;
 
 namespace BotProject.Web.API
 {
-    [RoutePrefix("api/image")]
-    public class ImageController : ApiControllerBase
+    [RoutePrefix("api/file")]
+    public class FileCardController : ApiControllerBase
     {
-        private IImageService _imageService;
-        public ImageController(IErrorService errorService, IImageService imageService) : base(errorService)
+        private IFileCardService _FileCardService;
+        public FileCardController(IErrorService errorService, IFileCardService FileCardService) : base(errorService)
         {
-            _imageService = imageService;
+            _FileCardService = FileCardService;
         }
+
+        [Route("test")]
+        [HttpPost]
+        public HttpResponseMessage Test(HttpRequestMessage request, CardViewModel cardVm)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                return response;
+            });
+        }
+
+
 
         [Route("create")]
         [HttpPost]
@@ -44,13 +58,15 @@ namespace BotProject.Web.API
                     file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
                     + CommonConstants.PathImage + "/" + fileName));
 
-                    var image = new Image()
+                    var FileCard = new FileCard()
                     {
+                        Name = fileName,
+                        Type = "image",
                         Url = "File/Images/" + CommonConstants.PathImage + "/" + fileName,
                         BotID = botId,
                     };
-                    var imageReturn = _imageService.Add(ref image);
-                    response = request.CreateResponse(HttpStatusCode.OK, imageReturn);
+                    var FileCardReturn = _FileCardService.Add(ref FileCard);
+                    response = request.CreateResponse(HttpStatusCode.OK, FileCardReturn);
                 }
                 else
                 {
@@ -64,15 +80,15 @@ namespace BotProject.Web.API
 
         [Route("delete")]
         [HttpPost]
-        public HttpResponseMessage Delete(HttpRequestMessage request, ImageDelete img)
+        public HttpResponseMessage Delete(HttpRequestMessage request, FileCardImage img)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                var fileImage = _imageService.Delete(img.ImageID);
-                _imageService.Save();
+                var fileFileCard = _FileCardService.Delete(img.FileImageID);
+                _FileCardService.Save();
                 string domain = ConfigurationManager.AppSettings["Domain"];
-                string fileName = Regex.Replace(img.ImagePath, domain + "File/Images/Card/", "");
+                string fileName = Regex.Replace(img.FileImagePath, domain + "File/Images/Card/", "");
                 string pathImgServer = ConfigurationManager.AppSettings["ImagePath"];
                 string[] Files = Directory.GetFiles(pathImgServer);
                 foreach (string file in Files)
@@ -88,9 +104,10 @@ namespace BotProject.Web.API
             });
         }
 
-        public class ImageDelete {
-            public int ImageID { set; get; }
-            public string ImagePath { set; get; }
+        public class FileCardImage
+        {
+            public int FileImageID { set; get; }
+            public string FileImagePath { set; get; }
         }
     }
 }
