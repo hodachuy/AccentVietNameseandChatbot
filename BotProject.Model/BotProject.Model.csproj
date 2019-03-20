@@ -80,7 +80,7 @@
     <Compile Include="Models\QuestionGroup.cs" />
     <Compile Include="Models\QuickReply.cs" />
     <Compile Include="Models\SystemConfig.cs" />
-    <Compile Include="Models\TemplateGeneric.cs" />
+    <Compile Include="Models\TemplateGenericItem.cs" />
     <Compile Include="Models\TemplateGenericGroup.cs" />
     <Compile Include="Models\TemplateText.cs" />
     <Compile Include="Models\VisitorStatistic.cs" />

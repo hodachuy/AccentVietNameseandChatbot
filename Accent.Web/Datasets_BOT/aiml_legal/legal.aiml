@@ -343,7 +343,7 @@
         <li>
           Chào bạn! Tôi là chatbot Pháp luật. Ban vui lòng chọn lĩnh vực để được tư vấn?
           <button>
-          <text>Sở hửu trí tuệ</text>
+          <text>Sở hữu trí tuệ</text>
           <menu>SHTT</menu>
         </button>
 
@@ -363,7 +363,7 @@
         <li>
           Mình có thể trả lời các câu hỏi thường gặp về luật. Bạn quan tâm lĩnh vực nào dưới đây?
                 <button>
-          <text>Sở hửu trí tuệ</text>
+          <text>Sở hữu trí tuệ</text>
                   <menu>SHTT</menu>
         </button>
 
@@ -382,7 +382,7 @@
         <li>
           Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
           <button>
-          <text>Sở hửu trí tuệ</text>
+          <text>Sở hữu trí tuệ</text>
             <menu>SHTT</menu>
         </button>
 

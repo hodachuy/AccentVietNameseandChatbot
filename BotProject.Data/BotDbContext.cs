@@ -19,7 +19,7 @@ namespace BotProject.Data
         public DbSet<Image> Images { set; get; }
         public DbSet<FileCard> FileCards { set; get; }
         public DbSet<Card> Cards { set; get; }
-        public DbSet<TemplateGeneric> TemplateGenerics { set; get; }
+        public DbSet<TemplateGenericItem> TemplateGenericItems { set; get; }
         public DbSet<TemplateGenericGroup> TemplateGenericGroups { set; get; }
         public DbSet<TemplateText> TemplateTexts { set; get; }
         public DbSet<ButtonLink> ButtonLinks { set; get; }

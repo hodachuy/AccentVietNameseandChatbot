@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -13,6 +14,7 @@ namespace BotProject.Web.Models
 
         public string Alias { set; get; }
 
+        [Required]
         public int BotID { set; get; }
 
         public virtual IEnumerable<CardContent> CardContents { set; get; }

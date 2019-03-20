@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace BotProject.Model.Models
 {
     [Table("TemplateGenericItems")]
-    public class TemplateGeneric
+    public class TemplateGenericItem
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -12,5 +12,7 @@ namespace BotProject.Common
         public const string Administrator = "Administrator";
         public const string Visitor = "Visitor";
         public const string PathImage = "Card";
+
+        public const string PostBackCard = "postback_card_";
     }
 }

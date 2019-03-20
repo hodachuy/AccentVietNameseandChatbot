@@ -86,7 +86,6 @@ var common = {
             bot.UserID = $('#userId').val();
             var svr = new AjaxCall(urlCreateBot, JSON.stringify(bot));
             svr.callServicePOST(function (data) {
-                console.log(data)
                 var tempHtml = temp(data);
                 $('#bot-category').append(tempHtml);
                 $('#modalCreateBot').modal('hide');    

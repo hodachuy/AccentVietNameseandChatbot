@@ -729,6 +729,7 @@
     <Content Include="Views\Bot\QnA.cshtml" />
     <Content Include="Views\Bot\CardCategory.cshtml" />
     <Content Include="Views\Bot\AIML.cshtml" />
+    <Content Include="Views\Shared\Footer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

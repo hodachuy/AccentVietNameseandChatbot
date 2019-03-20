@@ -61,11 +61,17 @@
     <Compile Include="ApplicationGroupService.cs" />
     <Compile Include="ApplicationRoleService.cs" />
     <Compile Include="BotService.cs" />
+    <Compile Include="ButtonLinkService.cs" />
+    <Compile Include="ButtonPostbackService.cs" />
     <Compile Include="CardService.cs" />
+    <Compile Include="CommonCardService.cs" />
     <Compile Include="ErrorService.cs" />
     <Compile Include="FileCardService.cs" />
     <Compile Include="ImageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TemplateGenericGroupService.cs" />
+    <Compile Include="TemplateGenericItemService.cs" />
+    <Compile Include="TemplateTextService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BotProject.Common\BotProject.Common.csproj">

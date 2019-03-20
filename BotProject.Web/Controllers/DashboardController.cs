@@ -38,5 +38,12 @@ namespace BotProject.Web.Controllers
             var lstBotViewModel = Mapper.Map<IEnumerable<Bot>, IEnumerable<BotViewModel>>(lstBot);
             return PartialView(lstBotViewModel);
         }
+
+
+        [ChildActionOnly]
+        public ActionResult Footer()
+        {
+            return PartialView();
+        }
     }
 }

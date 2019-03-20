@@ -11,47 +11,42 @@ namespace BotProject.Service
 {
     public interface ICardService
     {
-        Card Create(ref Card Card);
+        Card Create(Card Card);
+        void Update(Card card);
         IEnumerable<Card> GetListCardByBotID(int botId);
         Card GetByID(int CardId);
         void Save();
     }
     public class CardService : ICardService
     {
-        ICardRepository _CardRepository;
+        ICardRepository _CardRepository;      
         IUnitOfWork _unitOfWork;
         public CardService(ICardRepository CardRepository, IUnitOfWork unitOfWork)
         {
             _CardRepository = CardRepository;
             _unitOfWork = unitOfWork;
         }
-        public Card Create(ref Card Card)
+        public Card Create(Card Card)
         {
-            try
-            {
-                _CardRepository.Add(Card);
-                _unitOfWork.Commit();
-                return Card;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            return _CardRepository.Add(Card);
+        }
+        public IEnumerable<Card> GetListCardByBotID(int botId)
+        {
+            return _CardRepository.GetMulti(x => x.BotID == botId);
+        }
+        public Card GetByID(int CardId)
+        {
+            return _CardRepository.GetSingleById(CardId);
         }
 
+        public void Update(Card card)
+        {
+            _CardRepository.Update(card);
+        }
         public void Save()
         {
             _unitOfWork.Commit();
         }
 
-        public IEnumerable<Card> GetListCardByBotID(int botId)
-        {
-            return _CardRepository.GetMulti(x => x.BotID == botId);
-        }
-
-        public Card GetByID(int CardId)
-        {
-            return _CardRepository.GetSingleById(CardId);
-        }
     }
 }

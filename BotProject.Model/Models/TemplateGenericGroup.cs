@@ -19,7 +19,7 @@ namespace BotProject.Model.Models
 
         public int CardID {set;get;}
 
-        public virtual IEnumerable<TemplateGeneric> TemplateGenerics { set; get; }
+        public virtual IEnumerable<TemplateGenericItem> TemplateGenericItems { set; get; }
 
     }
 }

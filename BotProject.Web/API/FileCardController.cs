@@ -24,20 +24,7 @@ namespace BotProject.Web.API
         public FileCardController(IErrorService errorService, IFileCardService FileCardService) : base(errorService)
         {
             _FileCardService = FileCardService;
-        }
-
-        [Route("test")]
-        [HttpPost]
-        public HttpResponseMessage Test(HttpRequestMessage request, CardViewModel cardVm)
-        {
-            return CreateHttpResponse(request, () =>
-            {
-                HttpResponseMessage response = null;
-                return response;
-            });
-        }
-
-
+        }   
 
         [Route("create")]
         [HttpPost]

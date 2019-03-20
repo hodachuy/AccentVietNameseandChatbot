@@ -20,7 +20,7 @@ AjaxCall.prototype = {
             success: serviceCallSuccess,
             error: function (error) {
                 $(block).unblock();
-                console.log(error.data)
+                console.log(error)
             },
             beforeSend: function () {
                 $(block).block({

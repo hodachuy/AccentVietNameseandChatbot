@@ -82,6 +82,10 @@
     <Compile Include="Migrations\201903190616343_U3.Designer.cs">
       <DependentUpon>201903190616343_U3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903200711287_Up5.cs" />
+    <Compile Include="Migrations\201903200711287_Up5.Designer.cs">
+      <DependentUpon>201903200711287_Up5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -103,7 +107,7 @@
     <Compile Include="Repositories\QuickReplyRepository.cs" />
     <Compile Include="Repositories\SystemConfigRepository.cs" />
     <Compile Include="Repositories\TemplateGenericGroupRepository.cs" />
-    <Compile Include="Repositories\TemplateGenericRepository.cs" />
+    <Compile Include="Repositories\TemplateGenericItemRepository.cs" />
     <Compile Include="Repositories\TemplateTextRepository.cs" />
     <Compile Include="Repositories\VisitorStatisticRepository.cs" />
   </ItemGroup>
@@ -129,6 +133,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903190616343_U3.resx">
       <DependentUpon>201903190616343_U3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903200711287_Up5.resx">
+      <DependentUpon>201903200711287_Up5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

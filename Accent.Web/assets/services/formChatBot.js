@@ -201,6 +201,7 @@ $(document).ready(function () {
 })
 
 // setting accent vn
+localStorage.setItem("cbot_chk_accent", true);
 var chatbot_chk_accent = JSON.parse(localStorage.getItem("cbot_chk_accent"));
 var chatbot_chk_popup = JSON.parse(localStorage.getItem("cbot_chk_popup"));
 function chatbotSetting() {
