@@ -15,13 +15,15 @@ namespace BotProject.Model.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { set; get; }
 
-        public string Type { set; get; }
+        public string Title { set; get; }
 
         public string SubTitle { set; get; }
 
         public string Url { set; get; }
 
         public string Image { set; get; }
+
+        public int? CardID { set; get; }
 
         public int? TempGnrGroupID { set; get; }
 

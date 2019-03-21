@@ -18,13 +18,15 @@ namespace BotProject.Web.Models
         public int BotID { set; get; }
 
         public virtual IEnumerable<CardContent> CardContents { set; get; }
-        public virtual IEnumerable<QuickReply> QuickReplys { set; get; }
+        public virtual IEnumerable<QuickReplyViewModel> QuickReplyViewModels { set; get; }
     }
-    public class QuickReply
+    public class QuickReplyViewModel
     {
+        public int ID { set; get; }
         public string ContentType { set; get; }
         public string Icon { set; get; }
         public string Payload { set; get; }
+        public int? CardPayloadID { set; get; }
         public string Title { set; get; }
     }
 
@@ -34,46 +36,49 @@ namespace BotProject.Web.Models
     }
     public class Message
     {
-        public virtual TemplateGenericGroup TemplateGenericGroup { set; get; }
-        public virtual TemplateText TemplateText { set; get; }
-        public virtual Image Image { set; get; }
+        public virtual TemplateGenericGroupViewModel TemplateGenericGroupViewModel { set; get; }
+        public virtual TemplateTextViewModel TemplateTextViewModel { set; get; }
+        public virtual ImageViewModel ImageViewModel { set; get; }
     }
-    public class TemplateGenericGroup
+    public class TemplateGenericGroupViewModel
     {
+        public int ID { set; get; }
         public string Type { set; get; }
-        public virtual IEnumerable<TemplateGenericItem> TemplateGenericItems { set; get; }
+        public virtual IEnumerable<TemplateGenericItemViewModel> TemplateGenericItemViewModels { set; get; }
     }
-    public class TemplateGenericItem
+    public class TemplateGenericItemViewModel
     {
+        public int ID { set; get; }
         public string Title { set; get; }
         public string Subtitle { set; get; }
         public string Url { set; get; }
         public string Image { set; get;}
-        public virtual IEnumerable<ButtonLink> ButtonLinks { set; get; }
-        public virtual IEnumerable<ButtonPostback> ButtonPostbacks { set; get; }
+        public virtual IEnumerable<ButtonLinkViewModel> ButtonLinkViewModels { set; get; }
+        public virtual IEnumerable<ButtonPostbackViewModel> ButtonPostbackViewModels { set; get; }
 
     }
-    public class TemplateText
+    public class TemplateTextViewModel
     {
+        public int ID { set; get; }
+        public string Type { set; get; }
         public string Text { set; get; }
-        public virtual IEnumerable<ButtonLink> ButtonLinks { set; get; }
-        public virtual IEnumerable<ButtonPostback> ButtonPostbacks { set; get; }
+        public virtual IEnumerable<ButtonLinkViewModel> ButtonLinkViewModels { set; get; }
+        public virtual IEnumerable<ButtonPostbackViewModel> ButtonPostbackViewModels { set; get; }
     }
-    public class Image
+    public class ButtonLinkViewModel
     {
-        public string Url { set; get; }
-    }
-    public class ButtonLink
-    {
+        public int ID { set; get; }
         public string Url { set; get; }
         public string SizeHeight { set; get; }
         public string Title { set; get; }
         public string Type { set; get; }
     }
-    public class ButtonPostback
+    public class ButtonPostbackViewModel
     {
+        public int ID { set; get; }
         public string Payload { set; get; }
         public string Title { set; get; }
         public string Type { set; get; }
+        public int? CardPayloadID { set; get; }
     }
 }

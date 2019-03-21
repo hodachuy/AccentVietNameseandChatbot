@@ -82,7 +82,14 @@ namespace AIMLbot.Utils
             XmlDocument doc = new XmlDocument();
             using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                doc.Load(fs);
+                try
+                {
+                    doc.Load(fs);
+                }catch(Exception ex)
+                {
+
+                }
+
             }
             this.loadAIMLFromXML(doc, filename);
         }

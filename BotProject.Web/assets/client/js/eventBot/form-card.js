@@ -79,6 +79,12 @@ $(document).ready(function () {
     //bootbox.addLocale('vi', bootbox_txt);
     //bootbox.setDefaults("locale", "vi");
 
+    $('body').on('click', '#btn-create-card', function () {
+        $('#form-card').show("slow");
+    })
+
+
+
     // ====================================================================
     // ========================== Card List ===============================
     // ====================================================================
@@ -531,13 +537,14 @@ $(document).ready(function () {
                                 var btn_object_sql = {};
                                 if ($(this).attr('type-button') == 'postback') {
                                     var postback_card = 'postback_card_';
+                                    var payload_id = '';
                                     $(this).find('.bt_ct span').each(function (index, el) {
                                         if (index != 0) {
                                             postback_card += '&' + $(this).attr('postback-id');
                                         } else {
                                             postback_card += $(this).attr('postback-id');
                                         }
-
+                                        payload_id = $(this).attr('postback-id');
                                     });
                                     button_object = {
                                         "type": "postback",
@@ -550,7 +557,8 @@ $(document).ready(function () {
                                     btn_object_sql = {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
-                                        "Payload": postback_card
+                                        "Payload": postback_card,
+                                        "CardPayloadID": payload_id
                                     }
                                     button_postbacks_sql.push(btn_object_sql);
 
@@ -567,7 +575,8 @@ $(document).ready(function () {
                                     btn_object_sql = {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
-                                        "Payload": postback_module
+                                        "Payload": postback_module,
+                                        "CardPayloadID": $(this).attr('postback-id')
                                     }
                                     button_postbacks_sql.push(btn_object_sql);
 
@@ -666,8 +675,8 @@ $(document).ready(function () {
                                 "Url": item_url,
                                 "Image": image_url,
                                 "Subtitle": subtitle,
-                                "ButtonPostbacks": button_postbacks_sql,
-                                "ButtonLinks": button_links_sql
+                                "ButtonPostbackViewModels": button_postbacks_sql,
+                                "ButtonLinkViewModels": button_links_sql
 
                             };
                             ar_galery_sql.push(galery_element_sql);
@@ -689,10 +698,10 @@ $(document).ready(function () {
                     //database_sql
                     var genenic_sql = {
                         "Message": {
-                            "TemplateGenericGroup": {
-                                "TemplateGenericItems": ar_galery_sql
-                            },
-                            "Type": "template"
+                            "TemplateGenericGroupViewModel": {
+                                "TemplateGenericItemViewModels": ar_galery_sql,
+                                "Type": "template"
+                            }
                         }
                     };
                     card_sql.push(genenic_sql)
@@ -717,11 +726,11 @@ $(document).ready(function () {
 
                             template_text_sql = {
                                 "Message": {
-                                    "TemplateText": {
+                                    "TemplateTextViewModel": {
                                         "Text": $(this).find('.wr_title .wr-content-text textarea').val(),
                                         "Type": "template",
-                                        "ButtonPostbacks": [],
-                                        "ButtonLinks": []
+                                        "ButtonPostbackViewModels": [],
+                                        "ButtonLinkViewModels": []
                                     }
                                 }
                             }
@@ -734,13 +743,14 @@ $(document).ready(function () {
                                 var btn_object_sql = {};
                                 if ($(this).attr('type-button') == 'postback') {
                                     var postback_card = 'postback_card_';
+                                    var payload_id = '';
                                     $(this).find('.bt_ct span').each(function (index, el) {
                                         if (index != 0) {
                                             postback_card += '&' + $(this).attr('postback-id');
                                         } else {
                                             postback_card += $(this).attr('postback-id');
                                         }
-
+                                        payload_id = $(this).attr('postback-id');
                                     });
                                     button_object = {
                                         "type": "postback",
@@ -752,7 +762,8 @@ $(document).ready(function () {
                                     btn_object_sql = {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
-                                        "Payload": postback_card
+                                        "Payload": postback_card,
+                                        "CardPayloadID": payload_id
                                     }
                                     button_postbacks_sql.push(btn_object_sql);
 
@@ -842,11 +853,11 @@ $(document).ready(function () {
 
                             template_text_sql = {
                                 "Message": {
-                                    "TemplateText": {
+                                    "TemplateTextViewModel": {
                                         "Text": $(this).find('.wr_title .wr-content-text textarea').val(),
                                         "Type": "template",
-                                        "ButtonPostbacks": button_postbacks_sql,
-                                        "ButtonLinks": button_links_sql
+                                        "ButtonPostbackViewModels": button_postbacks_sql,
+                                        "ButtonLinkViewModels": button_links_sql
                                     }
                                 }
                             };
@@ -895,7 +906,7 @@ $(document).ready(function () {
 
                         var template_image_sql = {
                             "Message": {
-                                "Image": {
+                                "ImageViewModel": {
                                     "Url": srcImage
                                 }
                             }
@@ -1274,6 +1285,7 @@ $(document).ready(function () {
                         }
 
                         var payload = '';
+                        var payload_id = '';
                         if ($(this).find('.reply_btcontent span').length > 0) {
                             payload += 'postback_card_';
                             $(this).find('.reply_btcontent span').each(function (index, el) {
@@ -1282,6 +1294,7 @@ $(document).ready(function () {
                                 } else {
                                     payload += '&' + $(this).attr('postback-id');
                                 }
+                                payload_id = $(this).attr('postback-id');
                             });
                         }
                         obj_quickReply = {
@@ -1296,11 +1309,13 @@ $(document).ready(function () {
                             "ContentType": "text",
                             "Title": $(this).find('.wr_reply_btcontent .name-button').text(),
                             "Payload": payload,
+                            "CardPayloadID": payload_id,
                             "Icon": $(this).find('.wr_reply_btcontent i').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "")
                         };
                         ar_quickReply_sql.push(obj_quickReply_sql);
                     } else {
                         var payload = '';
+                        var payload_id = '';
                         if ($(this).find('.reply_btcontent span').length > 0) {
                             payload += 'postback_card_';
                             $(this).find('.reply_btcontent span').each(function (index, el) {
@@ -1309,6 +1324,7 @@ $(document).ready(function () {
                                 } else {
                                     payload += '&' + $(this).attr('postback-id');
                                 }
+                                payload_id = $(this).attr('postback-id');
                             });
                         }
                         obj_quickReply = {
@@ -1323,6 +1339,7 @@ $(document).ready(function () {
                             "ContentType": "text",
                             "Title": $(this).find('.wr_reply_btcontent .name-button').text(),
                             "Payload": payload,
+                            "CardPayloadID": payload_id,
                             "Icon": ""
                         };
                         ar_quickReply_sql.push(obj_quickReply_sql);
@@ -1402,7 +1419,7 @@ $(document).ready(function () {
             'Name'              : $('#card-name').val(),
             'Alias'             : common.getSeoTitle($('#card-name').val()),
             'CardContents'      : card_sql,
-            'QuickReplys'       : ar_quickReply_sql,
+            'QuickReplyViewModels': ar_quickReply_sql,
         }
 
         if (checkCard) {
@@ -1449,10 +1466,23 @@ $(document).ready(function () {
             //}).fail(function() {
             //    $(block).unblock();
             //});
-            var urlTest = "api/card/create";
+            var urlTest = "api/card/addupdate";
             var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
             svr.callServicePOST(function (data) {
-
+                var isAction = data.IsActionDb;
+                var card = data.Card;
+                if (isAction) {
+                    var html = '';
+                    html += '<li>';
+                    html += '<a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + card.ID + '" aria-controls="setsmenu-' + card.ID + '">';
+                    html +=         '<span class="icon">';
+                    html +=             '<i class="fas fa-fw fa-copy"></i>';
+                    html += '</span>' + card.Name + '';
+                    html +=     '</a>';
+                    html += '</li>';
+                    $('#lst-card-temp').append(html);
+                }
+                console.log(data)
             });
 
         } else {

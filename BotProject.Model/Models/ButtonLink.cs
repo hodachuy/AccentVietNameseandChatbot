@@ -25,7 +25,7 @@ namespace BotProject.Model.Models
 
         public string SizeHeight { set; get; }
 
-        public int? TempGnrID { set; get; }
+        public int? TempGnrItemID { set; get; }
 
         public int? TempTxtID { set; get; }
 

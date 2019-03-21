@@ -3,14 +3,6 @@
   <!-- <có thể call tới database sẽ custome trên aiml cho dễ sài/>-->
   <!-- <sẽ làm hỗ trợ viết javascript trên này để gọi api, hiện tại đang xử lý call api từ bước return trả về dữ liệu ở code behide />-->
 
-  
-    <category>
-      <pattern>TOI MUON, BIET NHU</pattern>
-      <template>
-          ABC
-      </template>  
- </category>
-  
 <category>
       <pattern>GiỚI THIỆU BOT</pattern>
       <template>
@@ -116,28 +108,12 @@
     </template>
   </category>
 
-<category>
-   <pattern>testcardtext</pattern>
-   <template>
-      <image></image>
-           <title>Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!</title>
-           <subtitle>Emai: support@messnow.com</subtitle>
-            <link>
-               <text>facebook.com</text>
-               <url>https://www.facebook.com/</url>
-            </link>
-           <button>
-               <text>Xem chi tiết</text>
-               <menu>CHATADMIN</menu>
-           </button>
-   </template>
-</category>    
     
 <category>
    <pattern>testcard</pattern>
    <template>
         <card>
-           <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+           <image></image>
            <title>Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!</title>
            <subtitle>Emai: support@messnow.com</subtitle>
             <link>
@@ -181,7 +157,7 @@
    <template>
          <carousel>
              <card>
-               <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+               <image></image>
                <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
                  <subtitle>Câu hỏi liên quan</subtitle>
                <link></link>
@@ -195,7 +171,7 @@
                </button>
              </card>
             <card>
-              <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+              <image></image>
               <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
               <subtitle>Câu hỏi liên quan</subtitle>
               <link></link>
@@ -209,7 +185,7 @@
               </button>
             </card>
             <card>
-              <image>https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQBn0I0XeZZQxLnH&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F03%2F01%2F0001DZ0GA-1551425649-7715-1551427090_180x108.jpg&amp;_nc_hash=AQAYQ0aXr7vfRgh2</image>
+              <image></image>
               <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
               <subtitle>Câu hỏi liên quan</subtitle>
               <link></link>

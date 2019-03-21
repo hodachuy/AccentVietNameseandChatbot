@@ -10,8 +10,10 @@ namespace BotProject.Web.Controllers
 {
     public class BotController : BaseController
     {
-        public BotController(IErrorService errorService) : base(errorService)
+        ICardService _cardService;
+        public BotController(IErrorService errorService, ICardService cardService) : base(errorService)
         {
+            _cardService = cardService;
         }
 
         // GET: Bot
@@ -28,7 +30,8 @@ namespace BotProject.Web.Controllers
 
 		public ActionResult CardCategory(int id) {
             ViewBag.BotID = id;
-			return View();
+            var lstCard = _cardService.GetListCardByBotID(id);
+            return View(lstCard);
 		}
 
 		public ActionResult AIML(int id)

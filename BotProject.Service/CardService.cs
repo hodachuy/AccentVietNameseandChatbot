@@ -15,6 +15,7 @@ namespace BotProject.Service
         void Update(Card card);
         IEnumerable<Card> GetListCardByBotID(int botId);
         Card GetByID(int CardId);
+
         void Save();
     }
     public class CardService : ICardService
@@ -36,7 +37,8 @@ namespace BotProject.Service
         }
         public Card GetByID(int CardId)
         {
-            return _CardRepository.GetSingleById(CardId);
+            var card = _CardRepository.GetSingleById(CardId);
+            return card; 
         }
 
         public void Update(Card card)

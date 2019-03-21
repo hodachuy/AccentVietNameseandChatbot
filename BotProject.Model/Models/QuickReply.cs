@@ -17,6 +17,8 @@ namespace BotProject.Model.Models
 
         public string ContentType { set; get; }
 
+        public string Title { set; get; }
+
         public string Icon { set; get; }
 
         public string Payload { set; get; }

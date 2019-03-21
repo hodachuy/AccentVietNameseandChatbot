@@ -195,6 +195,8 @@ namespace Accent.Web.Controllers
             }
 
             Thread.Sleep(1000);
+            _bot = null;
+            _bot = BotService.BotInstance;
             _bot.loadAIMLFromFiles(pathAIML);
 
             return message;

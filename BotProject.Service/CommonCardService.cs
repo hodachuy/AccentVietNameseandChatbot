@@ -11,12 +11,29 @@ namespace BotProject.Service
 {
     public interface ICommonCardService
     {
+        //add
         ButtonLink AddButtonLink(ButtonLink btnLink);
         ButtonPostback AddButtonPostback(ButtonPostback btnPostback);
         TemplateGenericGroup AddTempGnrGroup(TemplateGenericGroup tempGnrGroup);
         TemplateGenericItem AddTempGnrItem(TemplateGenericItem tempGnrItem);
+        TemplateText AddTempText(TemplateText tempText);
         Image AddImage(Image image);
         QuickReply AddQuickReply(QuickReply qReply);
+
+
+        //ButtonLink DeleteButtonLink(int id);
+        //ButtonPostback DeleteButtonPostback(int id);
+        //TemplateGenericItem DeleteTempGnrItem(int id);
+        //TemplateGenericGroup DeleteTempGnrGroup(int id);
+        //QuickReply DeleteQuickReply(int id);
+        //Image DeleteImage(int id);
+
+
+        Card GetFullDetailCard(int cardId);
+
+        Card DeleteCard(int cardId);
+        void DeleteFullContentCard(int cardId);
+
         void Save();
     }
 
@@ -29,8 +46,10 @@ namespace BotProject.Service
         ITemplateGenericItemRepository _templateGenericItemRepository;
         ITemplateTextRepository _templateTextRepository;
         IQuickReplyRepository _quickReplyRepository;
+        ICardRepository _cardRepository;
         IUnitOfWork _unitOfWork;
         public CommonCardService(IUnitOfWork unitOfWork,
+                                ICardRepository cardRepository,
                                 IButtonLinkRepository buttonLinkRepository,
                                 IButtonPostbackRepository buttonPostbackRepository,
                                 IImageRepository imageRepository,
@@ -40,6 +59,7 @@ namespace BotProject.Service
                                 IQuickReplyRepository quickReplyRepository)
         {
             _unitOfWork = unitOfWork;
+            _cardRepository = cardRepository;
             _buttonLinkRepository = buttonLinkRepository;
             _buttonPostbackRepository = buttonPostbackRepository;
             _imageRepository = imageRepository;
@@ -81,6 +101,33 @@ namespace BotProject.Service
         public void Save()
         {
             _unitOfWork.Commit();
+        }
+
+        public TemplateText AddTempText(TemplateText tempText)
+        {
+            return _templateTextRepository.Add(tempText);
+        }
+
+        public Card GetFullDetailCard(int CardId)
+        {
+            throw new NotImplementedException();
+        }
+
+        // xóa lun card
+        public Card DeleteCard(int cardId)
+        {
+            throw new NotImplementedException();
+        }
+
+        // xóa nội dung trong card
+        public void DeleteFullContentCard(int cardId)
+        {
+            _buttonLinkRepository.DeleteMulti(x => x.CardID == cardId);
+            _buttonPostbackRepository.DeleteMulti(x => x.CardID == cardId);
+            _templateTextRepository.DeleteMulti(x => x.CardID == cardId);
+            _templateGenericItemRepository.DeleteMulti(x => x.CardID == cardId);
+            _templateGenericGroupRepository.DeleteMulti(x => x.CardID == cardId);
+            _quickReplyRepository.DeleteMulti(x => x.CardID == cardId);
         }
     }
 }
