@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<BotProject.Model.Models.Card>
+@{
     ViewBag.Title = "QnA";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -161,74 +162,33 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="model-tag-bot" tabindex="-1" role="dialog" aria-labelledby="ModalTagBot" aria-hidden="true" style="display:none;">
-            <div class="modal-dialog modal-card modal-sm modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Trả lời với thẻ</h5>
-                        <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </a>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="addCard fom-group">
-                                <a href="#" id="save_card">Luu</a>
-                                <ul class="list-inline">
-                                    <li class="card_galery"><i class="fa fa-copy"></i><span>Thẻ hình và chữ</span></li>
-                                    <li class="card_text"><i class="fa fa-file"></i><span>Thẻ văn bản</span></li>
-                                    <li class="card_list"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
-                                    <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
-                                    <li class="card_file"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
-                                    <li class="card_quickReply"><i class="fa fa-flickr"></i><span>Trả lời nhanh</span></li>
-                                </ul>
-                            </div>
-                            <div class="form-group content-wrapper">
-                                <label for="exampleFormControlTextarea1">
-                                    <input type="text" maxlength="25" id="name_card" value="Tên Thẻ">
-                                </label>
-
-                                <div id="wr_multi" class="scroll">
-                                    <div id="multi" style="width: 1320px;">
-                                    </div>
-                                </div>
-
-                                <div id="wr_reply" style="display: none;">
-                                    <h3><i class="icon-primitive-dot position-left"></i>Trả lời nhanh <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
-                                    <ul id="blReply" class="list-inline">
-                                        <li class="add_reply">
-                                            <div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <a href="#" class="btn btn-primary">Save changes</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="modal_button" class="modal fade in" style="display: none;">
-
-        </div>
     </div>
 </div>
 
 @section footerJS{
     <script>
+
+        var lstCard = @Html.Raw(Json.Encode(Model));
         function card() {
-            var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="BATDAU">BẮT ĐẦU</option><option  value="CAUMACDINH">CÂU MẶC ĐỊNH</option><option  value="LIENHE">LIÊN HỆ</option><option  value="5c00dc63c941482ab456a0a2">CÁC CHUYÊN MỤC</option><option  value="5c00dc63c941482ab456a0a3">TRANG CHỦ</option></optgroup>';
-            return htmlListCard;
+            var html = '<optgroup label="DANH SÁCH THẺ">';
+            if (lstCard.length != 0) {
+                $.each(lstCard, function (index, value) {
+                    html += '<option value="'+value.ID+'">'+value.Name+'</option>';
+                })
+            }
+            html += '</optgroup>';
+            return html;
+
         }
+        //function card() {
+        //    var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="BATDAU">BẮT ĐẦU</option><option  value="CAUMACDINH">CÂU MẶC ĐỊNH</option><option  value="LIENHE">LIÊN HỆ</option><option  value="5c00dc63c941482ab456a0a2">CÁC CHUYÊN MỤC</option><option  value="5c00dc63c941482ab456a0a3">TRANG CHỦ</option></optgroup>';
+        //    return htmlListCard;
+        //}
         function module() {
             var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>'; return htmlListModule;
         }
     </script>
 
     <script src="~/assets/client/js/eventBot/form-learning.js"></script>
-    <script src="~/assets/client/js/eventBot/form-card.js"></script>
 }
 

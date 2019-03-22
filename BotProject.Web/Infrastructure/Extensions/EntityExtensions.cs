@@ -23,9 +23,10 @@ namespace BotProject.Web.Infrastructure.Extensions
 
         public static void UpdateCard(this Card card, CardViewModel cardVm)
         {
-            card.Name = cardVm.Name;
+            card.Name = cardVm.Name.ToUpper();
             card.BotID = cardVm.BotID;
             card.Alias = cardVm.Alias;
+            card.TemplateJSON = cardVm.TemplateJSON;
         }
 
         public static void UpdateTemplateGenericGroup(this TemplateGenericGroup temGnrGroup, TemplateGenericGroupViewModel temGnrGroupVm)
@@ -41,6 +42,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             temGnrItem.Title = temGnrItemVm.Title;
             temGnrItem.Url = temGnrItemVm.Url;
             temGnrItem.SubTitle = temGnrItemVm.Subtitle;
+            temGnrItem.AttachmentID = temGnrItemVm.AttachmentID;
         }
 
         public static void UpdateButtonLink(this ButtonLink btnLink, ButtonLinkViewModel btnLinkVm)

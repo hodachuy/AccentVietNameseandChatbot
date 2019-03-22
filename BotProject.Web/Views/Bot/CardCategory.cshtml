@@ -154,7 +154,7 @@
                     foreach (var item in Model)
                     {
                         <li>
-                            <a class="nav-link card-item" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-@item.ID" aria-controls="setsmenu-@item.ID">
+                            <a class="nav-link card-item" data-cardId="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-@item.ID" aria-controls="setsmenu-@item.ID">
                                 <span class="icon">
                                     <i class="fas fa-fw fa-copy"></i>
                                 </span>@item.Name.ToUpper()
@@ -167,6 +167,7 @@
     </div>
 </aside>
 <div class="main-content container-fluid p-0" id="form-card" style="display:none;">
+    <input type="hidden" id="idCard" value=""/>
     <div class="card-head">
         <div class="card-head-title">
             <div class="title">

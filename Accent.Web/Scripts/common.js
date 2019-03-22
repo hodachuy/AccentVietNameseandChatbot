@@ -332,22 +332,32 @@ function loadAIML() {
 }
 
 function saveAIML() {
-    var dataForm = new FormData();
-    console.log(e.getValue())
-    dataForm.append("formAIML", JSON.stringify(e.getValue()));
-    $.ajax({
-        type: "POST",
-        url: _Host + 'api/SaveAIML',
-        data: dataForm,
-        contentType: false,
-        processData: false,
-        success: function (result) {
-            alert('Lưu thành công!')
-            console.log(result);
+    var annot = e.getSession().getAnnotations();
+    var html = '';
+    if (annot.length != 0) {
+        $.each(annot, function (index, value) {
+            html += '---[row]: ' + value.row + ' [column] : ' + value.column + ' [error]:' + value.text + '---';
+        })
+        alert(html)
+    } else {
+        var dataForm = new FormData();
+        dataForm.append("formAIML", JSON.stringify(e.getValue()));
+        $.ajax({
+            type: "POST",
+            url: _Host + 'api/SaveAIML',
+            data: dataForm,
+            contentType: false,
+            processData: false,
+            success: function (result) {
+                alert('Lưu thành công!')
+                console.log(result);
 
-        },
-    });
+            },
+        });
+    }
+    console.log(annot)
 }
+
 
 
 

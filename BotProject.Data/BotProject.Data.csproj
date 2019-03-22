@@ -98,6 +98,18 @@
     <Compile Include="Migrations\201903210937302_U0.Designer.cs">
       <DependentUpon>201903210937302_U0.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903220326438_U10.cs" />
+    <Compile Include="Migrations\201903220326438_U10.Designer.cs">
+      <DependentUpon>201903220326438_U10.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903220333235_U11.cs" />
+    <Compile Include="Migrations\201903220333235_U11.Designer.cs">
+      <DependentUpon>201903220333235_U11.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903220747591_U12.cs" />
+    <Compile Include="Migrations\201903220747591_U12.Designer.cs">
+      <DependentUpon>201903220747591_U12.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -157,6 +169,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903210937302_U0.resx">
       <DependentUpon>201903210937302_U0.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903220326438_U10.resx">
+      <DependentUpon>201903220326438_U10.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903220333235_U11.resx">
+      <DependentUpon>201903220333235_U11.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903220747591_U12.resx">
+      <DependentUpon>201903220747591_U12.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

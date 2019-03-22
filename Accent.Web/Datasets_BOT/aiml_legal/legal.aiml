@@ -3,104 +3,106 @@
   <!-- <có thể call tới database sẽ custome trên aiml cho dễ sài/>-->
   <!-- <sẽ làm hỗ trợ viết javascript trên này để gọi api, hiện tại đang xử lý call api từ bước return trả về dữ liệu ở code behide />-->
 
-<category>
-      <pattern>GiỚI THIỆU BOT</pattern>
-      <template>
-          tên tôi là <bot name ="name"/><br />
-          gia đình của tôi <bot name="family" /><br />
-          giới tính <bot name = "gender"/><br />
-          ngày sinh <bot name = "birthday"/><br />
-      </template>  
- </category>
-  
- <category>
-      <pattern>TÔI GIỚI TÍNH *</pattern>
-      <template>
-         giới tính <set name = "gender"><star/></set> à
-      </template>  
- </category> 
- 
-<category>
-<pattern>BẠN THẤY TÔI HẤP DẪN *</pattern>
-<template>
-  <condition name="gender">
-    <li value="nam">I find you very handsome.</li>
-    <li value="nỮ">I find you very pretty.</li>
-    <li>I find you very attractive.</li>
-  </condition>
-</template>
-</category>  
-
-
-
-<category>
-   <pattern>testbutton</pattern>
-   <template>
-        <button>
-           <text>bcbc</text>
-           <url>http://localhost:47887/</url>
-        </button>
-   </template>
-</category>
+  <category>
+    <pattern>GiỚI THIỆU BOT</pattern>
+    <template>
+      tên tôi là <bot name ="name"/><br />
+      gia đình của tôi <bot name="family" /><br />
+      giới tính <bot name = "gender"/><br />
+      ngày sinh <bot name = "birthday"/><br />
+    </template>
+  </category>
 
   <category>
-   <pattern>testcarouseltext</pattern>
-   <template>
-            <carousel>
-             <card>
-               <image></image>
-               <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
-                 <subtitle>Câu hỏi liên quan</subtitle>
-               <link></link>
-               <button>
-                 <text>📞 Đường dây nóng</text>
-                 <menu>HOTLINE</menu>
-               </button>
-               <button>
-                 <text>📞 Đường dây nóng</text>
-                 <menu>HOTLINE</menu>
-               </button>
-             </card>
-            <card>
-              <image></image>
-              <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
-              <subtitle>Câu hỏi liên quan</subtitle>
-              <link></link>
-              <button>
-                <text>📞 Đường dây nóng</text>
-                <menu>HOTLINE</menu>
-              </button>
-              <button>
-                <text>📞 Đường dây nóng</text>
-                <menu>HOTLINE</menu>
-              </button>
-            </card>
-            <card>
-              <image></image>
-              <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
-              <subtitle>Câu hỏi liên quan</subtitle>
-              <link></link>
-              <button>
-                <text>📞 Đường dây nóng</text>
-                <menu>HOTLINE</menu>
-              </button>
-              <button>
-                <text>📞 Đường dây nóng</text>
-                <menu>HOTLINE</menu>
-              </button>
-            </card>
-         </carousel>
-         <button>
-           <text> Giải trí</text>
-           <postback>BACK</postback>
-         </button>
-         <button>
-           <text> Tin tức</text>
-           <postback>BACK</postback>
-         </button>
-	</template>
-</category>
-  
+    <pattern>TÔI GIỚI TÍNH *</pattern>
+    <template>
+      giới tính <set name = "gender">
+        <star/>
+      </set> à
+    </template>
+  </category>
+
+  <category>
+    <pattern>BẠN THẤY TÔI HẤP DẪN *</pattern>
+    <template>
+      <condition name="gender">
+        <li value="nam">I find you very handsome.</li>
+        <li value="nỮ">I find you very pretty.</li>
+        <li>I find you very attractive.</li>
+      </condition>
+    </template>
+  </category>
+
+
+
+  <category>
+    <pattern>testbutton</pattern>
+    <template>
+      <button>
+        <text>bcbc</text>
+        <url>http://localhost:47887/</url>
+      </button>
+    </template>
+  </category>
+
+  <category>
+    <pattern>testcarouseltext</pattern>
+    <template>
+      <carousel>
+        <card>
+          <image></image>
+          <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+          <subtitle>Câu hỏi liên quan</subtitle>
+          <link></link>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+        </card>
+        <card>
+          <image></image>
+          <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+          <subtitle>Câu hỏi liên quan</subtitle>
+          <link></link>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+        </card>
+        <card>
+          <image></image>
+          <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+          <subtitle>Câu hỏi liên quan</subtitle>
+          <link></link>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+        </card>
+      </carousel>
+      <button>
+        <text> Giải trí</text>
+        <postback>BACK</postback>
+      </button>
+      <button>
+        <text> Tin tức</text>
+        <postback>BACK</postback>
+      </button>
+    </template>
+  </category>
+
   <category>
     <pattern>HOTLINE</pattern>
     <template>
@@ -108,153 +110,143 @@
     </template>
   </category>
 
-    
-<category>
-   <pattern>testcard</pattern>
-   <template>
-        <card>
-           <image></image>
-           <title>Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!</title>
-           <subtitle>Emai: support@messnow.com</subtitle>
-            <link>
-               <text>facebook.com</text>
-               <url>https://www.facebook.com/</url>
-            </link>
-           <button>
-               <text>🙎 Chat với admin</text>
-               <menu>CHATADMIN</menu>
-           </button>
-           <button>
-               <text>📞 Đường dây nóng</text>
-               <menu>HOTLINE</menu>
-           </button>
-           <button>
-               <text> Hủy</text>
-               <postback>CANCEL</postback>
-           </button>
-           <button>
-               <text> Quay về</text>
-               <postback>BACK</postback>
-           </button>
-            <button>
-               <text> Liên hệ </text>
-               <postback>BACK</postback>
-           </button>
-            <button>
-               <text> Giải trí</text>
-               <postback>BACK</postback>
-           </button>
-            <button>
-               <text> Tin tức</text>
-               <postback>BACK</postback>
-           </button>
-        </card>
-   </template>
-</category>
 
-<category>
-   <pattern>testcarousel</pattern>
-   <template>
-         <carousel>
-             <card>
-               <image></image>
-               <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
-                 <subtitle>Câu hỏi liên quan</subtitle>
-               <link></link>
-               <button>
-                 <text>📞 ABC</text>
-                 <menu>HOTLINE</menu>
-               </button>
-               <button>
-                 <text>📞 Đường dây nóng</text>
-                 <menu>HOTLINE</menu>
-               </button>
-             </card>
-            <card>
-              <image></image>
-              <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
-              <subtitle>Câu hỏi liên quan</subtitle>
-              <link></link>
-              <button>
-                <text>📞 XYZ</text>
-                <menu>HOTLINE</menu>
-              </button>
-              <button>
-                <text>📞 Đường dây nóng</text>
-                <menu>HOTLINE</menu>
-              </button>
-            </card>
-            <card>
-              <image></image>
-              <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
-              <subtitle>Câu hỏi liên quan</subtitle>
-              <link></link>
-              <button>
-                <text>📞 Đường dây nóng</text>
-                <menu>HOTLINE</menu>
-              </button>
-              <button>
-                <text>📞 Đường dây nóng</text>
-                <menu>HOTLINE</menu>
-              </button>
-            </card>
-         </carousel>    
-         <button>
-           <text> Giải trí</text>
-           <postback>BACK</postback>
-         </button>
-         <button>
-           <text> Tin tức</text>
-           <postback>BACK</postback>
-         </button>
-	</template>
-</category>
   <category>
-   <pattern>BACK</pattern>
-   <template>
-    Bam back
-	</template>
-</category> 
-  
-  
-<category>
-   <pattern>test123</pattern>
-   <template>
-    <link>
-       <text>123</text>
-       <url>http://localhost:47887/</url>
-    </link>
-	</template>
-</category>
-  
-
- <category>
-    <pattern>TEST SCRIPT</pattern>
+    <pattern>testcard</pattern>
     <template>
-    <random>
-        <li>
-                  <script>
-                            var param = {
-                                text: 'xâm phạm sở hữu công nghiệp',
-                                group:'leg'
-                            }
-                            param = JSON.stringify(param)
-                            $.ajax({
-                                url: _Host + 'api/chatbot',
-                                contentType: 'application/json; charset=utf-8',
-                                data:param,
-                                type: 'POST',
-                                success: function (result) {
-                                    generate_message(result, 'bot');
-                                },
-                            });
-                        
-                 </script>
-        </li>
-    </random>
+      <card>
+        <image></image>
+        <title>Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!</title>
+        <subtitle>Emai: support@messnow.com</subtitle>
+        <link>
+          <text>facebook.com</text>
+          <url>https://www.facebook.com/</url>
+        </link>
+        <button>
+          <text>🙎 Chat với admin</text>
+          <menu>CHATADMIN</menu>
+        </button>
+        <button>
+          <text>📞 Đường dây nóng</text>
+          <menu>HOTLINE</menu>
+        </button>
+        <button>
+          <text> Hủy</text>
+          <postback>CANCEL</postback>
+        </button>
+        <button>
+          <text> Quay về</text>
+          <postback>BACK</postback>
+        </button>
+        <button>
+          <text> Liên hệ </text>
+          <postback>BACK</postback>
+        </button>
+        <button>
+          <text> Giải trí</text>
+          <postback>BACK</postback>
+        </button>
+        <button>
+          <text> Tin tức</text>
+          <postback>BACK</postback>
+        </button>
+      </card>
     </template>
   </category>
-  
+
+  <category>
+    <pattern>testcarousel</pattern>
+    <template>
+      <carousel>
+        <card>
+          <image></image>
+          <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+          <subtitle>Câu hỏi liên quan</subtitle>
+          <link></link>
+          <button>
+            <text>📞 ABC</text>
+            <menu>HOTLINE</menu>
+          </button>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+        </card>
+        <card>
+          <image></image>
+          <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+          <subtitle>Câu hỏi liên quan</subtitle>
+          <link></link>
+          <button>
+            <text>📞 XYZ</text>
+            <menu>HOTLINE</menu>
+          </button>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+        </card>
+        <card>
+          <image></image>
+          <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
+          <subtitle>Câu hỏi liên quan</subtitle>
+          <link></link>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+          <button>
+            <text>📞 Đường dây nóng</text>
+            <menu>HOTLINE</menu>
+          </button>
+        </card>
+      </carousel>
+      <button>
+        <text> Giải trí</text>
+        <postback>BACK</postback>
+      </button>
+      <button>
+        <text> Tin tức</text>
+        <postback>BACK</postback>
+      </button>
+    </template>
+  </category>
+  <category>
+    <pattern>BACK</pattern>
+    <template>
+      Bam back
+    </template>
+  </category>
+
+
+
+  <category>
+    <pattern>TEST SCRIPT123</pattern>
+    <template>
+      <random>
+        <li>
+          <script>
+            var param = {
+            text: 'xâm phạm sở hữu công nghiệp',
+            group:'leg'
+            }
+            param = JSON.stringify(param)
+            $.ajax({
+            url: _Host + 'api/chatbot',
+            contentType: 'application/json; charset=utf-8',
+            data:param,
+            type: 'POST',
+            success: function (result) {
+            generate_message(result, 'bot');
+            },
+            });
+
+          </script>
+        </li>
+      </random>
+    </template>
+  </category>
+
   <category>
     <pattern>CHÀO *</pattern>
     <template>
@@ -319,123 +311,126 @@
         <li>
           Chào bạn! Tôi là chatbot Pháp luật. Ban vui lòng chọn lĩnh vực để được tư vấn?
           <button>
-          <text>Sở hữu trí tuệ</text>
-          <menu>SHTT</menu>
-        </button>
+            <text>Sở hữu trí tuệ</text>
+            <menu>SHTT</menu>
+          </button>
 
-        <button>
-          <text>Thuế-Phí-Lệ Phí</text>
-          <menu>THUE</menu>
-        </button>
+          <button>
+            <text>Thuế-Phí-Lệ Phí</text>
+            <menu>THUE</menu>
+          </button>
 
-        <button>
-          <text>Du lịch</text>
-          <menu>DULICH</menu>
-        </button>
+          <button>
+            <text>Du lịch</text>
+            <menu>DULICH</menu>
+          </button>
 
 
 
         </li>
         <li>
           Mình có thể trả lời các câu hỏi thường gặp về luật. Bạn quan tâm lĩnh vực nào dưới đây?
-                <button>
-          <text>Sở hữu trí tuệ</text>
-                  <menu>SHTT</menu>
-        </button>
+          <button>
+            <text>Sở hữu trí tuệ</text>
+            <menu>SHTT</menu>
+          </button>
 
-        <button>
-          <text>Thuế-Phí-Lệ Phí</text>
-          <menu>THUE</menu>
-        </button>
+          <button>
+            <text>Thuế-Phí-Lệ Phí</text>
+            <menu>THUE</menu>
+          </button>
 
-        <button>
-          <text>Du lịch</text>
-          <menu>DULICH</menu>
-        </button>
+          <button>
+            <text>Du lịch</text>
+            <menu>DULICH</menu>
+          </button>
 
 
         </li>
         <li>
           Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
           <button>
-          <text>Sở hữu trí tuệ</text>
+            <text>Sở hữu trí tuệ</text>
             <menu>SHTT</menu>
-        </button>
+          </button>
 
-        <button>
-          <text>Thuế-Phí-Lệ Phí</text>
-          <menu>THUE</menu>
-        </button>
+          <button>
+            <text>Thuế-Phí-Lệ Phí</text>
+            <menu>THUE</menu>
+          </button>
 
-        <button>
-          <text>Du lịch</text>
-          <menu>DULICH</menu>
-        </button>
+          <button>
+            <text>Du lịch</text>
+            <menu>DULICH</menu>
+          </button>
 
 
         </li>
       </random>
     </template>
   </category>
-  
-  
+
+
   <category>
     <pattern>CHÀO123</pattern>
     <template>
-        <random>
-        <li>Chào bạn! Tôi là chatbot Pháp luật. Ban vui lòng chọn lĩnh vực để được tư vấn?
-            <button>
-                <text>Sở hửu trí tuệ</text>
-                <postback>SHTT</postback>
-            </button>
+      <random>
+        <li>
+          Chào bạn! Tôi là chatbot Pháp luật. Ban vui lòng chọn lĩnh vực để được tư vấn?
+          <button>
+            <text>Sở hửu trí tuệ</text>
+            <postback>SHTT</postback>
+          </button>
 
-            <button>
-                <text>Thuế-Phí-Lệ Phí</text>
-                <postback>THUE</postback>
-           </button>
+          <button>
+            <text>Thuế-Phí-Lệ Phí</text>
+            <postback>THUE</postback>
+          </button>
 
-            <button>
-                <text>Du lịch</text>
-                <postback>DULICH</postback>
-            </button>
+          <button>
+            <text>Du lịch</text>
+            <postback>DULICH</postback>
+          </button>
         </li>
-        <li>Mình có thể trả lời các câu hỏi thường gặp về luật. Bạn quan tâm lĩnh vực nào dưới đây?
-            <button>
-                <text>Sở hửu trí tuệ</text>
-                <postback>SHTT</postback>
-            </button>
+        <li>
+          Mình có thể trả lời các câu hỏi thường gặp về luật. Bạn quan tâm lĩnh vực nào dưới đây?
+          <button>
+            <text>Sở hửu trí tuệ</text>
+            <postback>SHTT</postback>
+          </button>
 
-            <button>
-                <text>Thuế-Phí-Lệ Phí</text>
-                <postback>THUE</postback>
-           </button>
+          <button>
+            <text>Thuế-Phí-Lệ Phí</text>
+            <postback>THUE</postback>
+          </button>
 
-            <button>
-                <text>Du lịch</text>
-                <postback>DULICH</postback>
-            </button>
+          <button>
+            <text>Du lịch</text>
+            <postback>DULICH</postback>
+          </button>
         </li>
-        <li>Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
-            <button>
-                <text>Sở hửu trí tuệ</text>
-                <postback>SHTT</postback>
-            </button>
+        <li>
+          Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
+          <button>
+            <text>Sở hửu trí tuệ</text>
+            <postback>SHTT</postback>
+          </button>
 
-            <button>
-                <text>Thuế-Phí-Lệ Phí</text>
-                <postback>THUE</postback>
-           </button>
+          <button>
+            <text>Thuế-Phí-Lệ Phí</text>
+            <postback>THUE</postback>
+          </button>
 
-            <button>
-                <text>Du lịch</text>
-                <postback>DULICH</postback>
-            </button>
+          <button>
+            <text>Du lịch</text>
+            <postback>DULICH</postback>
+          </button>
         </li>
-        </random>
+      </random>
     </template>
-</category>
-    
-    
+  </category>
+
+
 
   <!-- __________tag script sẽ làm hỗ trợ sau __________-->
   <category>
@@ -625,7 +620,7 @@
       </condition>
     </template>
   </category>
-  
+
   <category>
     <pattern>TÔI MUỐN HỎI</pattern>
     <template>
@@ -654,11 +649,13 @@
     <pattern>THÔNG TIN VỀ LUẬT *</pattern>
     <template>
       <image>https://static.xx.fbcdn.net/images/emoji.php/v9/t9f/1/16/26c5.png</image>
-      Thông tin chi tiết <set name = "about"><star/></set> 
+      Thông tin chi tiết <set name = "about">
+        <star/>
+      </set>
       <button>
         <text>Xem chi tiết</text>
         <url>http://qa.surelrn.vn/van-ban-phap-luat.html</url>
-      </button>       
+      </button>
       <button>
         <text>CO</text>
         <postback>YES</postback>
@@ -678,4 +675,118 @@
       </button>
     </template>
   </category>
-</aiml>
+  <!--==========================================================================-->
+  <!--============================================================================-->
+
+  <category>
+    <pattern>BACK</pattern>
+    <template>ĐÃ BACK</template>
+  </category>
+  <category>
+    <pattern>CHAT ADMIN</pattern>
+    <template></template>
+  </category>
+  <category>
+    <pattern>Gioi thieu</pattern>
+    <template>
+      <card>
+        <image>https://widget.pandorabots.com/prod/assets/pb-robot.svg</image>
+        <title>ChatBot LACVIET</title>
+        <subtitle>Đây là chatbot thuộc công ty Lạc Việt cung cấp nền tảng để xây dựng Bot  </subtitle>
+        <link>
+          <text>TrangWeb</text>
+          <url>http://qa.surelrn.vn</url>
+        </link>
+        <button>
+          <text>Chat voi admin</text>
+          <menu>BACK</menu>
+        </button>
+        <button>
+          <text>Xem hướng dẫn</text>
+          <menu>BACK</menu>
+        </button>
+        <button>
+          <text>Gửi phản hồi</text>
+          <menu>BACK</menu>
+        </button>
+        <button>
+          <text>Quay lại</text>
+          <postback>BACK</postback>
+        </button>
+        <button>
+          <text>Tham khảo</text>
+          <postback>BACK</postback>
+        </button>
+      </card>
+    </template>
+  </category>
+  <category>
+    <pattern>Gioi thieu</pattern>
+    <template>
+      <card>
+        <image></image>
+        <title>BOT QA</title>
+        <subtitle> Bot hệ thống trả lời câu hỏi tự động trong lĩnh vự pháp luật</subtitle>
+        <link>
+          <text>Trang Hỏi đáp pháp luật</text>
+          <url>http://qa.surelrn.vn/cau-hoi-phap-luat.html</url>
+        </link>
+        <button>
+          <text>Quay lại</text>
+          <postback>BACK</postback>
+        </button>
+        <button>
+          <text>Chat với admin</text>
+          <postback>BACK</postback>
+        </button>
+      </card>
+    </template>
+    </category>
+
+
+    <category>
+      <pattern></pattern>
+      <template>
+        <carousel>
+          <card>
+            <image></image>
+            <title>Sở hữu trí tuệ</title>
+            <subtitle>Có hơn 150 câu liên quan đến sở hữu trí tuệ</subtitle>
+            <link>
+              <text>Trang Hỏi đáp Sở hữu trí tuệ</text>
+              <url>http://qa.surelrn.vn/cau-hoi-phap-luat.html?lv=12</url>
+            </link>
+            <button>
+              <text>Quay lại</text>
+              <postback>BACK</postback>
+            </button>
+            <button>
+              <text>Chat với admin</text>
+              <postback>BACK</postback>
+            </button>
+          </card>
+          <card>
+            <image></image>
+            <title>Thuế-Phí-Lệ phí</title>
+            <subtitle>Có hơn 300 câu liên quan đến Thuế-Phí-Lệ phí</subtitle>
+            <link>
+              <text>Trang Hỏi đáp Thuế-Phí-Lệ phí</text>
+              <url>http://qa.surelrn.vn/cau-hoi-phap-luat.html?lv=19</url>
+            </link>
+            <button>
+              <text>Quay lại</text>
+              <postback>BACK</postback>
+            </button>
+            <button>
+              <text>Chat với admin</text>
+              <postback>BACK</postback>
+            </button>
+          </card>
+        </carousel>
+      </template>
+    </category>
+
+
+
+
+  </aiml>

@@ -187,18 +187,17 @@ namespace Accent.Web.Controllers
                 string pathAIML = HostingEnvironment.MapPath("~/Datasets_BOT/aiml_legal");
                 System.IO.File.WriteAllText(Path.Combine(pathAIML, "legal.aiml"), textAIML);
                 message = "success";
-            }
-            catch (Exception ex)
+
+                Thread.Sleep(1000);
+                _bot = null;
+                _bot = BotService.BotInstance;
+
+                _bot.loadAIMLFromFiles(pathAIML);
+            }           
+            catch(Exception ex)
             {
                 message = ex.Message;
-                return message;
             }
-
-            Thread.Sleep(1000);
-            _bot = null;
-            _bot = BotService.BotInstance;
-            _bot.loadAIMLFromFiles(pathAIML);
-
             return message;
         }
         #endregion

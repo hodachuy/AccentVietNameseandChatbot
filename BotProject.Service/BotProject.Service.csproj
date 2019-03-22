@@ -69,6 +69,7 @@
     <Compile Include="FileCardService.cs" />
     <Compile Include="ImageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QnAService.cs" />
     <Compile Include="TemplateGenericGroupService.cs" />
     <Compile Include="TemplateGenericItemService.cs" />
     <Compile Include="TemplateTextService.cs" />

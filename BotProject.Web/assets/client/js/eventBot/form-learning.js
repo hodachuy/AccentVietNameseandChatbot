@@ -393,7 +393,6 @@ $(document).ready(function () {
         if ($(this).is(':checked')) {
             vt = $(this).parents('.panel-flat').attr('indexpanel');
             elParent.find('.selectKeyword').remove();
-            elParent.find('.plus-tag').remove();
             strHtml = '<input type="text" autocomplete="off" name="data[question][' + (vt - 1) + '][]" class="form-control checkvalid" maxlength="640" placeholder="' + txtplholder + '">';
             elParent.find('.rmText').before(strHtml);
            // $($(this).parent().next().eq(0)).addClass('hidden');
@@ -403,9 +402,7 @@ $(document).ready(function () {
             strHtml = '<select data-live-search="true" name="data[question][' + (vt - 1) + '][]" class="form-control selectKeyword checkvalid">' +
 					card() +
 					'</select>';
-            plusTagHtml = '<i class="fa fa-plus-circle plus-tag"></i>';
             elParent.find('.rmText').before(strHtml);
-            elParent.find('.rmText').after(plusTagHtml);
 
             var $elSelectCard = elParent.find('.rmText').parent().find('.selectKeyword').eq(0);
             $elSelectCard.selectpicker();
@@ -429,10 +426,6 @@ $(document).ready(function () {
             });
         }
     });
-
-    $('body').on('click', '.plus-tag', function () {
-        $('#model-tag-bot').modal('show');
-    })
 
     $('body').on('click', '.rmCt', function (event) {
         var element = $(this);
@@ -621,6 +614,7 @@ $(document).ready(function () {
             //});
 
             var arData = [];
+            var arrQnA = [];
             $('.wrap-content .panel-flat').each(function (index, el) {
                 var userSays = [];
                 $(this).find('.tags .addedTag').each(function (index1, el1) {
@@ -642,10 +636,27 @@ $(document).ready(function () {
                     'exactly': userExactly,
                     'botReplys': botReplys
                 }
+
+                var ojData_sql = {
+                    'Question': userSays.join(),
+                    'IsKeyWord': userExactly,
+                    'Answer': botReplys
+                }
+
                 arData.push(ojData);
+
+                arrQnA.push(ojData_sql);
             });
 
             console.log(arData)
+            console.log(ojData_sql)
+
+            var urlTest = "api/card/addupdate";
+            var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
+            svr.callServicePOST(function (data) {
+                console.log(data)
+            })
+
 
             //$.ajax({
             //    url: urlKeywordsAdd,

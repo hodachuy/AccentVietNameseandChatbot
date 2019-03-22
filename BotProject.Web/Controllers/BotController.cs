@@ -25,7 +25,8 @@ namespace BotProject.Web.Controllers
 		public ActionResult QnA(int id)
 		{
             ViewBag.BotID = id;
-            return View();
+            var lstCard = _cardService.GetListCardByBotID(id);
+            return View(lstCard);
 		}
 
 		public ActionResult CardCategory(int id) {

@@ -108,9 +108,38 @@ namespace BotProject.Service
             return _templateTextRepository.Add(tempText);
         }
 
-        public Card GetFullDetailCard(int CardId)
+        public Card GetFullDetailCard(int cardId)
         {
-            throw new NotImplementedException();
+            Card card = new Card();
+            card = _cardRepository.GetSingleById(cardId);
+            card.Images = _imageRepository.GetMulti(x => x.CardID == cardId).ToList();
+            card.TemplateTexts = _templateTextRepository.GetMulti(x => x.CardID == cardId).ToList();
+            card.TemplateGenericGroups = _templateGenericGroupRepository.GetMulti(x => x.CardID == cardId).ToList();
+            if(card.TemplateTexts != null && card.TemplateTexts.Count() != 0)
+            {
+                foreach(var item in card.TemplateTexts)
+                {
+                    item.ButtonLinks = _buttonLinkRepository.GetMulti(x => x.TempTxtID == item.ID).ToList();
+                    item.ButtonPostbacks = _buttonPostbackRepository.GetMulti(x => x.TempTxtID == item.ID).ToList();
+                }
+            }
+            if(card.TemplateGenericGroups != null && card.TemplateGenericGroups.Count() != 0)
+            {
+                foreach(var tempGroup in card.TemplateGenericGroups)
+                {
+                    tempGroup.TemplateGenericItems = _templateGenericItemRepository.GetMulti(x => x.TempGnrGroupID == tempGroup.ID).ToList();
+                    if(tempGroup.TemplateGenericItems != null && tempGroup.TemplateGenericItems.Count() != 0)
+                    {
+                        foreach(var tempItem in tempGroup.TemplateGenericItems)
+                        {
+                            tempItem.ButtonLinks = _buttonLinkRepository.GetMulti(x => x.TempGnrItemID == tempItem.ID).ToList();
+                            tempItem.ButtonPostbacks = _buttonPostbackRepository.GetMulti(x => x.TempGnrItemID == tempItem.ID).ToList();
+                        }
+                    }
+                }
+            }
+            
+            return card;
         }
 
         // xóa lun card

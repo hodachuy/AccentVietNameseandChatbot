@@ -11,6 +11,9 @@ using BotProject.Model.Models;
 using BotProject.Common;
 using BotProject.Web.Infrastructure.Extensions;
 using AutoMapper;
+using System.Configuration;
+using System.Text.RegularExpressions;
+using System.IO;
 
 namespace BotProject.Web.API
 {
@@ -21,6 +24,7 @@ namespace BotProject.Web.API
         private ICardService _cardService;
         private IImageService _imageService;
         private ICommonCardService _commonCardService;
+        private IFileCardService _fileCardService;
         public CardController(IErrorService errorService,
                             ICardService cardService,
                             IImageService imageService,
@@ -32,7 +36,7 @@ namespace BotProject.Web.API
             _errorService = errorService;
         }
 
-        [Route("getbyid/{cardId:int}")]
+        [Route("getbyid")]
         [HttpGet]
         public HttpResponseMessage GetById(HttpRequestMessage request, int cardId)
         {
@@ -40,9 +44,8 @@ namespace BotProject.Web.API
             {
                 HttpResponseMessage response = null;
 
-
-
-
+                var card = _commonCardService.GetFullDetailCard(cardId);
+                response = request.CreateResponse(HttpStatusCode.OK, card);
                 return response;
             });
         }
@@ -68,6 +71,8 @@ namespace BotProject.Web.API
                         _cardService.Create(cardDb);
                         _cardService.Save();
                         cardDb.PatternText = CommonConstants.PostBackCard + cardDb.ID.ToString();//use to card #
+                        _cardService.Update(cardDb);
+                        _cardService.Save();
                         rs.IsActionDb = true;
                     }
                     else
@@ -80,17 +85,27 @@ namespace BotProject.Web.API
                         // delete all
                         _commonCardService.DeleteFullContentCard(cardDb.ID);
                         _imageService.DeleteMutiImage(cardDb.ID);
-                        //var lstImg = _imageService.GetByCardID(cardDb.ID);
-                        //if(lstImg.Count() != 0)
+                        //if (cardVm.FileAttachs != null && cardVm.FileAttachs.Count != 0)
                         //{
-
+                        //    string pathImgServer = ConfigurationManager.AppSettings["ImagePath"];
+                        //    string[] Files = Directory.GetFiles(pathImgServer);
+                        //    foreach (var item in cardVm.FileAttachs)
+                        //    {
+                        //        var fileFileCard = _fileCardService.Delete(item.attachment_id);
+                        //        string fileName = Regex.Replace(item.attachment_url, "File/Images/Card/", "");
+                        //        foreach (string file in Files)
+                        //        {
+                        //            if (file.ToUpper().Contains(fileName.ToUpper()))
+                        //            {
+                        //                File.Delete(file);
+                        //            }
+                        //        }
+                        //    }
+                        //    _fileCardService.Save();
                         //}
                     }
 
                     //xác định index của template => đánh số index trên div class="content" card="text" 
-
-
-
                     if (cardVm.CardContents != null && cardVm.CardContents.Count() != 0)
                     {
                         foreach (var item in cardVm.CardContents)
@@ -206,6 +221,8 @@ namespace BotProject.Web.API
                             }
                         }
                     }
+
+                    rs.Card = cardDb;
                     response = request.CreateResponse(HttpStatusCode.OK, rs);
                 }
                 catch (Exception ex)

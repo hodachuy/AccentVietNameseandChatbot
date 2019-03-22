@@ -13,12 +13,14 @@ namespace BotProject.Web.Models
         public string Name { set; get; }
 
         public string Alias { set; get; }
+        public string TemplateJSON { set; get; }
 
         [Required]
         public int BotID { set; get; }
 
         public virtual IEnumerable<CardContent> CardContents { set; get; }
         public virtual IEnumerable<QuickReplyViewModel> QuickReplyViewModels { set; get; }
+        public virtual IEnumerable<FileAttach> FileAttachs { set; get; }
     }
     public class QuickReplyViewModel
     {
@@ -53,6 +55,7 @@ namespace BotProject.Web.Models
         public string Subtitle { set; get; }
         public string Url { set; get; }
         public string Image { set; get;}
+        public int? AttachmentID { set; get; }
         public virtual IEnumerable<ButtonLinkViewModel> ButtonLinkViewModels { set; get; }
         public virtual IEnumerable<ButtonPostbackViewModel> ButtonPostbackViewModels { set; get; }
 
@@ -80,5 +83,11 @@ namespace BotProject.Web.Models
         public string Title { set; get; }
         public string Type { set; get; }
         public int? CardPayloadID { set; get; }
+    }
+    public class FileAttach
+    {
+        public string attachment_url { set; get; }
+        public int attachment_id { set; get; }
+        public string type { set; get; }
     }
 }

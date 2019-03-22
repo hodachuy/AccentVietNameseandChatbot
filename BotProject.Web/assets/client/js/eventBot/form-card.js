@@ -72,7 +72,7 @@ var srcFolderImg = "https://platform.messnow.com/",
         txtCard58 = "Một trong các thẻ của bạn đang bị lỗi.",
         txtCard59 = "Đồng ý",
         txtCard60 = "Hủy",
-        arLink = [];
+        arLink = [];var isSave = false;
 $(document).ready(function () {
 
     //var bootbox_txt = {OK : 'Đồng ý',CANCEL : 'Hủy',CONFIRM : 'Xác nhận'};
@@ -80,10 +80,180 @@ $(document).ready(function () {
     //bootbox.setDefaults("locale", "vi");
 
     $('body').on('click', '#btn-create-card', function () {
+        $('#form-card').hide();
         $('#form-card').show("slow");
+        //if (isSave == true) {
+        $('#idCard').val('');
+        $('#card-name').val('');
+            resetFormCard();
+        //}
+    })
+    // ====================================================================
+    // ========================== GET CARD BY ID ==========================
+    // ====================================================================
+    $('body').on('click', '.card-item', function (e) {
+        e.preventDefault();
+        $('#form-card').show("slow");
+        $('#wr_multi').removeClass('error');
+        if ($(this).attr('data-cardId') == $('#idCard').val() && isSave == true) {
+            return;
+        }
+        var card_id = $(this).attr('data-cardId');
+        $('#idCard').val(card_id);
+        resetFormCard();
+
+        var param = {
+            cardId : card_id
+        };
+        var urlTest = "api/card/getbyid";
+        var svr = new AjaxCall(urlTest, param);
+        svr.callServiceGET(function (data) {
+            console.log(data)
+            renderCard(data)
+        });
+
     })
 
+    function resetFormCard() {
+        $('#multi').empty();
+        $('#blReply .reply').remove();
+        $('#wr_reply').hide();
+    }
 
+    function renderCard(data) {
+        $('#card-name').val(data.Name);
+        // tempGeneric
+        if (data.TemplateGenericGroups.length != 0) {
+            var lstTempGnrGroup = data.TemplateGenericGroups;
+            $.each(lstTempGnrGroup, function (index, value) {
+                var lstTempGnrItem = value.TemplateGenericItems;
+                var tempGnrItem = '';
+                    tempGnrItem += '<div class="content" card="galery">';
+                    tempGnrItem +=                '<div class="bt_move_vertical" draggable="true">';
+                    tempGnrItem +=                    '<i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up"></i>';
+                    tempGnrItem +=                    '<i class="icon-arrow-down132 fa fa-arrow-down"></i>';
+                    tempGnrItem +=                '</div>';
+                    if (lstTempGnrItem.length != 0) {
+                        $.each(lstTempGnrItem, function (index, value) {
+                            var tempItem = value;
+                            tempGnrItem += '<div class="layer tile" draggable="true">';
+                            tempGnrItem +=                    '<div class="bt_move_horizontal">';
+                            tempGnrItem +=                        '<div class="layer_move">';
+                            tempGnrItem +=                            '<i class="icon-arrow-left13 pull-left fa fa-arrow-left"></i>';
+                            tempGnrItem +=                            '<i class="icon-move"></i>';
+                            tempGnrItem +=                            '<i class="icon-arrow-right14 pull-right fa fa-arrow-right"></i>';
+                            tempGnrItem +=                        '</div>';
+                            tempGnrItem +=                        '<div class="layer_rm">';
+                            tempGnrItem +=                            '<i class="icon-bin fa fa-trash"></i>';
+                            tempGnrItem +=                        '</div>';
+                            tempGnrItem +=                    '</div>';
+                            tempGnrItem +=                    '<div class="wr_image" attachment_id="'+tempItem.AttachmentID+'" style="background-image: url(&quot;'+tempItem.Image+'&quot;);">';
+                            tempGnrItem +=                        '<input class="inputfile" type="file" accept="image/*">';
+                            tempGnrItem +=                        '<div class="clickinput" style="display: none;">';
+                            tempGnrItem +=                            '<i class="icon-camera fa fa-camera"></i>';
+                            tempGnrItem +=                            '<br>Tải ảnh lên';
+                            tempGnrItem +=                        '</div><span class="">';
+                            tempGnrItem +=                            '<a class="img-rp">';
+                            tempGnrItem +=                                '<i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>Thay thế';
+                            tempGnrItem +=                            '</a>';
+                            tempGnrItem +=                            '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>Xóa</a>';
+                            tempGnrItem +=                        '</span>';
+                            tempGnrItem +=                    '</div>';
+                            tempGnrItem +=                    '<div class="wr_title">';
+                            tempGnrItem +=                        '<div class="head">';
+                            tempGnrItem +=                            '<textarea placeholder="Tiêu đề (bắt buộc)" maxlength="80" class="">' + (tempItem.Title != "" ? tempItem.Title : "") + '</textarea>';
+                            tempGnrItem +=                            '<span>77</span>';
+                            tempGnrItem +=                        '</div>';
+                            tempGnrItem +=                        '<div class="sub">';
+                            tempGnrItem +=                           '<textarea placeholder="Phụ đề hoặc mô tả" maxlength="80">' + (tempItem.SubTitle != "" ? tempItem.SubTitle : "") + '</textarea>';
+                            tempGnrItem +=                            '<span>77</span>';
+                            tempGnrItem +=                        '</div>';
+                            tempGnrItem +=                        '<div class="url">';
+                            tempGnrItem +=                            '<input type="text" placeholder="URL" value="'+(tempItem.Url != "" ? tempItem.Url : "")+'">';
+                            tempGnrItem +=                        '</div>';
+                            tempGnrItem +=                    '</div>';
+                            tempGnrItem +=                   '<div class="wr_button">';
+                            if (tempItem.ButtonPostbacks.length != 0) {
+                                $.each(tempItem.ButtonPostbacks, function (index, value) {
+                                    var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CarPayloadID; });
+                                    console.log(obj_card_payload)
+                                    var name_card = '';
+                                    if (obj_card_payload.length != 0) {
+                                        name_card = obj_card_payload[0].Name;
+                                    }
+                                    tempGnrItem += '<div class="bt" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CarPayloadID + '">' + name_card + '</span></p></div>';
+                                })
+                            }
+                            if (tempItem.ButtonLinks.length != 0) {
+                                $.each(tempItem.ButtonLinks, function (index, value) {
+                                    tempGnrItem += '<div class="bt" type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
+                                })
+                            }
+                            if ((tempItem.ButtonPostbacks.length + tempItem.ButtonLinks.length) <= 2) {
+                                tempGnrItem +=' <div class="bt" type-button="element_add"><div class="bt_add"><i class="icon-plus2 fa fa-plus"></i> Thêm nút</div></div>'
+                            }
+                            tempGnrItem +=                    '</div>';
+                            tempGnrItem += '</div>';
+                        })
+                    }
+                    tempGnrItem +=' <div class="layer_add" draggable="false"><i class="icon-plus3 fa fa-plus"></i></div>';
+                    tempGnrItem += '</div>';
+                    $('#multi').append(tempGnrItem);
+            })
+        }
+        //image
+        if (data.Images.length != 0) {
+            var tempImage = '';
+            $.each(data.Images, function (index, value) {
+                tempImage += '<div class="content" card="image">';
+                tempImage += '<div class="bt_move_vertical">';
+                tempImage +=     '<i class="icon-x fa fa-remove"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i>';
+                tempImage +=     '</div>';
+                tempImage +=     '<div class="layer tile">';
+                tempImage +=     '<div class="bt_move_horizontal">';
+                tempImage +=     '<div class="layer_rm">';
+                tempImage +=     '<i class="icon-bin fa fa-trash"></i>';
+                tempImage +=     '</div>';
+                tempImage +=     '</div>';
+                tempImage += '<div class="wr_image bl_image" attachment_id="' + value.ID + '" style="background-image: url(&quot;' + value.Url + '&quot;);">';
+                tempImage +=     '<input class="inputfile" type="file" accept="image/*">';
+                tempImage +=     '<div class="clickinput" style="display: none;"><i class="icon-camera fa fa-camera"></i>';
+                tempImage +=     '<br>Tải ảnh lên</div>';
+                tempImage +=     '<span class=""><a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>Thay thế</a><a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>Xóa</a></span>';
+                tempImage += '</div></div></div>';
+            })
+            $("#multi").append(tempImage);
+        }
+        // temptext
+        if (data.TemplateTexts.length != 0) {
+            var tempText = '';
+            $.each(data.TemplateTexts, function (index, value) {
+                tempText += '<div class="content" card="text"><div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="640" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">'+value.Text+'</textarea><span>633</span></div></div>';
+                tempText += '<div class="wr_button">';
+                if (value.ButtonPostbacks.length != 0) {
+                    $.each(value.ButtonPostbacks, function (index, value) {
+                        var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CarPayloadID; });
+                        console.log(obj_card_payload)
+                        var name_card = '';
+                        if (obj_card_payload.length != 0) {
+                            name_card = obj_card_payload[0].Name;
+                        }
+                        tempText += '<div class="bt" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CarPayloadID + '">' + name_card + '</span></p></div>';
+                    })
+                }
+                if (value.ButtonLinks.length != 0) {
+                    $.each(value.ButtonLinks, function (index, value) {
+                        tempText += '<div class="bt" type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
+                    })
+                }
+                if ((value.ButtonPostbacks.length + value.ButtonLinks.length) <= 2) {
+                    tempText += '<div class="bt" type-button="element_add"><div class="bt_add"><i class="icon-plus2 fa fa-plus"></i> Thêm nút</div></div></div></div></div>';
+                }
+            })
+            $("#multi").append(tempText);
+        }
+        
+    }
 
     // ====================================================================
     // ========================== Card List ===============================
@@ -499,8 +669,10 @@ $(document).ready(function () {
                             var item_url = $(this).find('.wr_title .url input').val();
                             var subtitle = $(this).find('.wr_title .sub textarea').val();
                             var image_url = '';
+                            var attachment_image = '';
                             if ($(this).find('.wr_image').css('background-image') != 'none') {
                                 image_url = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                                attachment_image = $(this).find('.wr_image').attr('attachment_id');
                             }
 
                             if (typeof $(this).find('.wr_image').attr('attachment_id') !== typeof undefined
@@ -508,6 +680,7 @@ $(document).ready(function () {
                                 && $(this).find('.wr_image').attr('attachment_id') != ''
                                 ) {
                                 var arAt = {
+                                    attachment_url:$(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(''+_Host+'',''),
                                     attachment_id: $(this).find('.wr_image').attr('attachment_id'),
                                     type: 'rm'
                                 }
@@ -674,10 +847,10 @@ $(document).ready(function () {
                                 "Title": title,
                                 "Url": item_url,
                                 "Image": image_url,
+                                "AttachmentID": attachment_image,
                                 "Subtitle": subtitle,
                                 "ButtonPostbackViewModels": button_postbacks_sql,
                                 "ButtonLinkViewModels": button_links_sql
-
                             };
                             ar_galery_sql.push(galery_element_sql);
                         }
@@ -889,6 +1062,7 @@ $(document).ready(function () {
                         // }
 
                         var arAt = {
+                            attachment_url: $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace('' + _Host + '', ''),
                             attachment_id: $(this).find('.wr_image').attr('attachment_id'),
                             type: 'edit'
                         }
@@ -1420,6 +1594,8 @@ $(document).ready(function () {
             'Alias'             : common.getSeoTitle($('#card-name').val()),
             'CardContents'      : card_sql,
             'QuickReplyViewModels': ar_quickReply_sql,
+            'TemplateJSON': JSON.stringify(objectCard.cardContent[0]),
+            'FileAttachs': listUpdate
         }
 
         if (checkCard) {
@@ -1466,6 +1642,7 @@ $(document).ready(function () {
             //}).fail(function() {
             //    $(block).unblock();
             //});
+
             var urlTest = "api/card/addupdate";
             var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
             svr.callServicePOST(function (data) {
@@ -1481,6 +1658,7 @@ $(document).ready(function () {
                     html +=     '</a>';
                     html += '</li>';
                     $('#lst-card-temp').append(html);
+                    $('#idCard').val(card.ID)
                 }
                 console.log(data)
             });

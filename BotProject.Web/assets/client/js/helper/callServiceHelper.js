@@ -50,12 +50,12 @@ AjaxCall.prototype = {
             url: root + this._servicePathName,
             data: this._serviceParams,
             contentType: "application/json; charset=utf-8",
-            //dataType: "json",
+            dataType: "json",
             //async: this._serviceAsync,
             success: serviceCallSuccess,
             error: function (error) {
                 $(block).unblock();
-                alert(error.data)
+                console.log(error)
             },
             beforeSend: function () {
                 $(block).block({
@@ -83,14 +83,15 @@ AjaxCall.prototype = {
         $.ajax({
             type: 'GET',
             url: root + this._servicePathName,
+            cache:false,
             data: this._serviceParams,
             contentType: "application/json; charset=utf-8",
-            //dataType: "json",
+            dataType: "json",
             //async: this._serviceAsync,
             success: serviceCallSuccess,
             error: function (error) {
                 $(block).unblock();
-                alert(error.data)
+                console.log(error)
             },
             beforeSend: function () {
                 $(block).block({
@@ -125,7 +126,7 @@ AjaxCall.prototype = {
             success: serviceCallSuccess,
             error: function (error) {
                 $(block).unblock();
-                alert(error.data)
+                console.log(error)
             },
             beforeSend: function () {
                 $(block).block({

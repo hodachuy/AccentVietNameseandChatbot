@@ -248,6 +248,7 @@
     <Compile Include="API\CardController.cs" />
     <Compile Include="API\FileCardController.cs" />
     <Compile Include="API\ImageController.cs" />
+    <Compile Include="API\QnAController.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -279,6 +280,7 @@
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
     <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\QnAViewModel.cs" />
     <Compile Include="Models\QuestionGroupViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

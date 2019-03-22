@@ -23,12 +23,11 @@ namespace BotProject.Model.Models
 
         public string Image { set; get; }
 
+        public int? AttachmentID { set; get; }
+
         public int? CardID { set; get; }
 
         public int? TempGnrGroupID { set; get; }
-
-        [ForeignKey("TempGnrGroupID")]
-        public virtual TemplateGenericGroup TemplateGenericGroups { set; get; }
 
         public virtual IEnumerable<ButtonPostback> ButtonPostbacks { set; get; }
         public virtual IEnumerable<ButtonLink> ButtonLinks { set; get; }
