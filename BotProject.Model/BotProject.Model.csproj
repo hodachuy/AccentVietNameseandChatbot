@@ -69,6 +69,7 @@
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ApplicationUserGroup.cs" />
     <Compile Include="Models\Bot.cs" />
+    <Compile Include="Models\BotQnAnswer.cs" />
     <Compile Include="Models\ButtonPostback.cs" />
     <Compile Include="Models\ButtonLink.cs" />
     <Compile Include="Models\Card.cs" />

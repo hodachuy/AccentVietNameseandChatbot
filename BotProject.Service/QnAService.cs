@@ -11,21 +11,27 @@ namespace BotProject.Service
 {
     public interface IQnAService
     {
+		BotQnAnswer AddBotQnAnswer(ref BotQnAnswer botQnAnswer);
         QuestionGroup AddQuesGroup(QuestionGroup quesGroup);
         Question AddQuestion(Question question);
         Answer AddAnswer(Answer answer);
 
-        IEnumerable<QuestionGroup> GetAllQnAByBotID(int botID);
+        IEnumerable<QuestionGroup> GetListQuestionGroupByBotQnAnswerID(int botQnAnswerID);
+		IEnumerable<BotQnAnswer> GetListBotQnAnswerByBotID(int botID);
 
-    }
+		BotQnAnswer GetBotQnAnswerById(int id);
+
+	}
     public class QnAService : IQnAService
     {
         IUnitOfWork _unitOfWork;
         IQuestionRepository _questionRepository;
         IAnswerRepository _answerRepository;
         IQuestionGroupRepository _quesGroupRepository;
+		IBotQnAnswerRepository _botQnAnswerRepository;
         public QnAService(IUnitOfWork unitOfWork,
-                          IQuestionRepository questionRepository,
+						  IBotQnAnswerRepository botQnAnswerRepository,
+						  IQuestionRepository questionRepository,
                           IAnswerRepository answerRepository,
                           IQuestionGroupRepository quesGroupRepository)
         {
@@ -33,7 +39,9 @@ namespace BotProject.Service
             _questionRepository = questionRepository;
             _answerRepository = answerRepository;
             _quesGroupRepository = quesGroupRepository;
-        }
+			_botQnAnswerRepository = botQnAnswerRepository;
+
+		}
 
         public QuestionGroup AddQuesGroup(QuestionGroup quesGroup)
         {
@@ -50,9 +58,33 @@ namespace BotProject.Service
             return _answerRepository.Add(answer);
         }
 
-        public IEnumerable<QuestionGroup> GetAllQnAByBotID(int botID)
+        public IEnumerable<QuestionGroup> GetListQuestionGroupByBotQnAnswerID(int botQnAnswerID)
         {
-            throw new NotImplementedException();
-        }
-    }
+			return _quesGroupRepository.GetMulti(x => x.BotQnAnswerID == botQnAnswerID);
+		}
+
+		public BotQnAnswer AddBotQnAnswer(ref BotQnAnswer botQnAnswer)
+		{
+			try
+			{
+				_botQnAnswerRepository.Add(botQnAnswer);
+				_unitOfWork.Commit();
+				return botQnAnswer;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+
+		public IEnumerable<BotQnAnswer> GetListBotQnAnswerByBotID(int botID)
+		{
+			return _botQnAnswerRepository.GetMulti(x => x.BotID == botID);
+		}
+
+		public BotQnAnswer GetBotQnAnswerById(int id)
+		{
+			return _botQnAnswerRepository.GetSingleById(id);
+		}
+	}
 }

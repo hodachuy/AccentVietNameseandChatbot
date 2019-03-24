@@ -3,12 +3,12 @@
 {
     foreach (var item in Model)
     {
-        var urlQnA = "/bot/" + item.Alias + "/" + item.ID + "/qna";
+        //var urlQnA = "/bot/" + item.Alias + "/" + item.ID + "/qna";
         var urlCard = "/bot/" + item.Alias + "/" + item.ID + "/cardcategory";
         var urlAIML = "/bot/" + item.Alias + "/" + item.ID + "/aiml";
         <li class="nav-item">
-            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-1">
-                <i class="fa fa fa-robot" aria-hidden="true"></i> @item.Name
+            <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-@item.ID">
+                <i class="fa fa fa-robot" aria-hidden="true"></i> @item.Name.ToUpper()
             </a>
             <div id="submenu-@item.ID" class="collapse submenu" style="">
                 <ul class="nav flex-column">
@@ -19,7 +19,25 @@
                         <a class="nav-link" href="@urlCard"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="@urlQnA"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện bot</a>
+                        <a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="@item.ID"><i class="fa fa-recycle"></i>Huấn luyện bot
+                            <span style="float: right;color: lightgray;cursor: pointer;">
+                                <i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>
+                            </span>
+                        </a>
+                        <div class="submenu" style="">
+                            <ul class="nav flex-column" id="form-bot-qna-@item.ID">
+                                @if (item.BotQnAnswers != null && item.BotQnAnswers.Count() != 0)
+                                {
+                                    foreach (var itemBotQnA in item.BotQnAnswers)
+                                    {
+                                        var urlQna = "/bot/qna/"+ itemBotQnA.Alias + "/"+itemBotQnA.ID;
+                                        <li class="nav-item">
+                                            <a class="nav-link bot-qna-link" href="@urlQna"><i class="fa fa-file" aria-hidden="true"></i>@itemBotQnA.Name</a>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </div>
                     </li>
 
                     <li class="nav-item">
@@ -30,4 +48,9 @@
         </li>
     }
 }
+<style>
+    .bot-qna-link{
+        padding-left: 25px !important;
+    }
+</style>
 

@@ -268,10 +268,10 @@ $(document).ready(function () {
 			'</div>';
 
         $('.wrap-content').prepend(stri);
-        // $('[indexpanel="'+(sizeCT+1)+'"] .tokenfield').tagEditor({
-        //   	placeholder: 'Enter tags ...',
-        //   	autocomplete: { delay: 250, html: true, position: { collision: 'flip' }}
-        // });
+         //$('[indexpanel="'+(sizeCT+1)+'"] .tokenfield').tagEditor({
+         //  	placeholder: 'Enter tags ...',
+         //  	autocomplete: { delay: 250, html: true, position: { collision: 'flip' }}
+         //});
 
         //if (Array.prototype.forEach) {
         //    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
@@ -444,7 +444,6 @@ $(document).ready(function () {
             callback: function (result) {
                 if (result) {
                     var siict = $('.wrap-content .panel-flat').length;
-
                     element.parents('.panel-flat').find('.userSay ul.tags li.addedTag').each(function (index, el) {
                         if ($(el).hasClass('error-tag')) {
                             var val = $(el).children('input').val();
@@ -472,10 +471,20 @@ $(document).ready(function () {
                         $('#paging').empty();
                         appendPaging(countDataPage, lmtPage);
                     }
+                    //recount panel
+                    $('.wrap-content').attr('data-countpanel', $('.wrap-content .panel-flat').length);
+                    ReOder();
                 }
             }
         })
     })
+
+    // ReOder
+    ReOder = function () {
+        $('.wrap-content .panel.panel-flat').each(function (index) {
+            $(this).attr('indexpanel', index + 1);
+        });
+    }
 
     // Paging
     $('body').on('change', '.limitPage', function () {
@@ -614,45 +623,80 @@ $(document).ready(function () {
             //});
 
             var arData = [];
-            var arrQnA = [];
+            var arrGrpQna = [];
             $('.wrap-content .panel-flat').each(function (index, el) {
                 var userSays = [];
-                $(this).find('.tags .addedTag').each(function (index1, el1) {
-                    userSays.push(decodeEntities($(el1).children('input').val()).trim());
-                })
 
                 var userExactly = $(this).find('.userSay .styled').is(':checked');
-                userExactly = userExactly ? 1 : 0;
+                //userExactly = userExactly ? 1 : 0;
+                //userExactly = userExactly;
+
+                $(this).find('.tags .addedTag').each(function (index1, el1) {
+                    var question = {
+                        'ContentText': decodeEntities($(el1).children('input').val()).trim(),
+                        'IsThatStar': userExactly,
+                        'Index': index1
+                    }
+                    //userSays.push(decodeEntities($(el1).children('input').val()).trim());
+                    userSays.push(question);
+                })
+
                 var botReplys = [];
                 $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
-                    if ($(this).find('select.selectKeyword').length > 0) {
-                        botReplys.push([$(this).find('select.selectKeyword').val()]);
+                    var reply = '',
+                        cardID = '',
+                        cardPayload ='';
+                    if ($(this).find('select.selectKeyword').length > 0) {                      
+                        //botReplys.push([$(this).find('select.selectKeyword').val()]);
+                        cardID = $(this).find('select.selectKeyword').val();
+                        cardPayload = "postback_card_" + $(this).find('select.selectKeyword').val();
                     } else {
-                        botReplys.push($(this).find('input[type=text]').val());
+                        //botReplys.push($(this).find('input[type=text]').val());
+                        reply = $(this).find('input[type=text]').val();
                     }
+                    var answer = {
+                        'ContentText': reply,
+                        'CardID':cardID,
+                        'CardPayload': cardPayload,
+                        'Index': index1
+                    }
+                    botReplys.push(answer);
                 });
-                var ojData = {
-                    'userSays': userSays.join(),
-                    'exactly': userExactly,
-                    'botReplys': botReplys
-                }
 
-                var ojData_sql = {
-                    'Question': userSays.join(),
+                //var ojData = {
+                //    'userSays': userSays.join(),
+                //    'exactly': userExactly,
+                //    'botReplys': botReplys
+                //}
+                //arData.push(ojData);
+
+
+                // ngay` mai lam` them 1 bang nua chua id cho form QNA , roi` xet' co id hay khong de? xet add update, truong hop update chi luu cai' nao co' thay doi?
+
+
+                var groupQnA = {
+                    'ID': "",
+                    'Index': index + 1,
+                    'BotQnAnswerID': $("#botQnAnswerID").val(),
                     'IsKeyWord': userExactly,
-                    'Answer': botReplys
+                    'QnAViewModel': {
+                        'QuestionViewModels': userSays,// k join toi chuoi~
+                        'AnswerViewModels': botReplys
+                    }
+
                 }
-
-                arData.push(ojData);
-
-                arrQnA.push(ojData_sql);
+                arrGrpQna.push(groupQnA);
             });
+            var qGroupVm = {
+                'BotID': $("#botId").val(),
+                'QuestionGroupViewModels': arrGrpQna//ienumerable 
+                
+            }
+            //console.log(arData)
+            console.log(qGroupVm)
 
-            console.log(arData)
-            console.log(ojData_sql)
-
-            var urlTest = "api/card/addupdate";
-            var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
+            var urlTest = "api/qna/create";
+            var svr = new AjaxCall(urlTest, JSON.stringify(qGroupVm));
             svr.callServicePOST(function (data) {
                 console.log(data)
             })

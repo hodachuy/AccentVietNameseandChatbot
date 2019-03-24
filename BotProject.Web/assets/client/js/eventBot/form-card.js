@@ -1648,16 +1648,17 @@ $(document).ready(function () {
             svr.callServicePOST(function (data) {
                 var isAction = data.IsActionDb;
                 var card = data.Card;
+                console.log(data)
                 if (isAction) {
                     var html = '';
                     html += '<li>';
-                    html += '<a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + card.ID + '" aria-controls="setsmenu-' + card.ID + '">';
+                    html += '<a class="nav-link card-item" data-cardid="'+card.ID+'" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + card.ID + '" aria-controls="setsmenu-' + card.ID + '">';
                     html +=         '<span class="icon">';
                     html +=             '<i class="fas fa-fw fa-copy"></i>';
                     html += '</span>' + card.Name + '';
                     html +=     '</a>';
                     html += '</li>';
-                    $('#lst-card-temp').append(html);
+                    $('#lst-card').append(html);
                     $('#idCard').val(card.ID)
                 }
                 console.log(data)
@@ -3007,6 +3008,7 @@ $(document).ready(function () {
                 //val = JSON.parse(val);
                 console.log(val)
                 val.Url = _Host + val.Url;
+                // xoa image cu khi thay the image moi
                 if (el.parents('.wr_image').css('background-image') != 'none') {
                     removeImage(el.parents('.wr_image').css('background-image'), attachment_id);
                 }

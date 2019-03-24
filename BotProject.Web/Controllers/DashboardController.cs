@@ -12,11 +12,16 @@ namespace BotProject.Web.Controllers
 {
     public class DashboardController : BaseController
     {
-        IBotService _botService;
-        public DashboardController(IErrorService errorService, IBotService botService) : base(errorService)
+        private IBotService _botService;
+		private IQnAService _qnaService;
+        public DashboardController(IErrorService errorService,
+									IBotService botService,
+									IQnAService qnaService) : base(errorService)
         {
             _botService = botService;
-        }
+			_qnaService = qnaService;
+
+		}
         public ActionResult Index()
         {
             return View();
@@ -34,7 +39,14 @@ namespace BotProject.Web.Controllers
         //[OutputCache(Duration = 3600, Location = System.Web.UI.OutputCacheLocation.Client)]
         public ActionResult BotCategory()
         {
-            var lstBot = _botService.GetListBotByUserID(UserInfo.Id);
+            var lstBot = _botService.GetListBotByUserID(UserInfo.Id);			
+			if(lstBot != null && lstBot.Count() != 0)
+			{
+				foreach(var item in lstBot)
+				{
+					item.BotQnAnswers = _qnaService.GetListBotQnAnswerByBotID(item.ID);
+				}
+			}
             var lstBotViewModel = Mapper.Map<IEnumerable<Bot>, IEnumerable<BotViewModel>>(lstBot);
             return PartialView(lstBotViewModel);
         }

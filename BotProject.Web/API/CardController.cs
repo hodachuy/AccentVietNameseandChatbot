@@ -28,13 +28,16 @@ namespace BotProject.Web.API
         public CardController(IErrorService errorService,
                             ICardService cardService,
                             IImageService imageService,
-                            ICommonCardService commonCardService) : base(errorService)
+                            ICommonCardService commonCardService,
+							IFileCardService fileCardService) : base(errorService)
         {
             _cardService = cardService;
             _imageService = imageService;
             _commonCardService = commonCardService;
             _errorService = errorService;
-        }
+			_fileCardService = fileCardService;
+
+		}
 
         [Route("getbyid")]
         [HttpGet]

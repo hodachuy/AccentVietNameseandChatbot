@@ -245,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\BotController.cs" />
+    <Compile Include="API\BotQnAController.cs" />
     <Compile Include="API\CardController.cs" />
     <Compile Include="API\FileCardController.cs" />
     <Compile Include="API\ImageController.cs" />
@@ -275,13 +276,13 @@
     <Compile Include="Models\ApplicationGroupViewModel.cs" />
     <Compile Include="Models\ApplicationRoleViewModel.cs" />
     <Compile Include="Models\ApplicationUserViewModel.cs" />
+    <Compile Include="Models\BotQnAnswerViewModel.cs" />
     <Compile Include="Models\BotViewModel.cs" />
     <Compile Include="Models\CardViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
     <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
-    <Compile Include="Models\QnAViewModel.cs" />
-    <Compile Include="Models\QuestionGroupViewModel.cs" />
+    <Compile Include="Models\QnAnswerGroupViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -644,6 +645,13 @@
     <Content Include="assets\images\switch.png" />
     <Content Include="assets\images\banner.jpg" />
     <Content Include="favicon.ico" />
+    <Content Include="File\AIML\config\DefaultPredicates.xml" />
+    <Content Include="File\AIML\config\GenderSubstitutions.xml" />
+    <Content Include="File\AIML\config\Person2Substitutions.xml" />
+    <Content Include="File\AIML\config\PersonSubstitutions.xml" />
+    <Content Include="File\AIML\config\Settings.xml" />
+    <Content Include="File\AIML\config\Splitters.xml" />
+    <Content Include="File\AIML\config\Substitutions.xml" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
@@ -736,7 +744,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="assets\client\img\" />
-    <Folder Include="File\AIML\" />
     <Folder Include="File\Images\Card\" />
     <Folder Include="Views\AccentVN\" />
     <Folder Include="Views\SearchEngine\" />

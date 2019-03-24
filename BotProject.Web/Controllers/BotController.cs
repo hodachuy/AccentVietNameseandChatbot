@@ -10,11 +10,13 @@ namespace BotProject.Web.Controllers
 {
     public class BotController : BaseController
     {
-        ICardService _cardService;
-        public BotController(IErrorService errorService, ICardService cardService) : base(errorService)
+        private ICardService _cardService;
+		private IQnAService _qnaService;
+        public BotController(IErrorService errorService, ICardService cardService, IQnAService qnaService) : base(errorService)
         {
             _cardService = cardService;
-        }
+			_qnaService = qnaService;
+		}
 
         // GET: Bot
         public ActionResult Index()
@@ -24,9 +26,11 @@ namespace BotProject.Web.Controllers
 
 		public ActionResult QnA(int id)
 		{
-            ViewBag.BotID = id;
-            var lstCard = _cardService.GetListCardByBotID(id);
-            return View(lstCard);
+            ViewBag.BotQnAnswerID = id;
+			var botQnA = _qnaService.GetBotQnAnswerById(id);
+			var lstCard = _cardService.GetListCardByBotID(botQnA.ID);
+			ViewBag.Cards = lstCard;
+			return View(botQnA);
 		}
 
 		public ActionResult CardCategory(int id) {

@@ -10,6 +10,7 @@ using AutoMapper;
 using BotProject.Model.Models;
 using BotProject.Web.Models;
 using BotProject.Web.Infrastructure.Extensions;
+using System.Configuration;
 
 namespace BotProject.Web.API
 {
@@ -57,16 +58,23 @@ namespace BotProject.Web.API
                     response = request.CreateErrorResponse(HttpStatusCode.RequestTimeout, "SessionTimeout");
                     return response;
                 }
-
                 Bot botDb = new Bot();
                 botDb.UpdateBot(botVm);
-
                 var botReturn = _botService.Create(ref botDb);
+				try
+				{
+					// create file bot aiml
+					string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"];
+					string nameFolderAIML = "User_" +botVm.UserID + "_BotID_" + botReturn.ID;
+					string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
+					System.IO.Directory.CreateDirectory(pathString);
+				}
+				catch (Exception ex)
+				{
 
-                var reponseData = Mapper.Map<Bot, BotViewModel>(botReturn);
-
+				}
+				var reponseData = Mapper.Map<Bot, BotViewModel>(botReturn);
                 response = request.CreateResponse(HttpStatusCode.OK, reponseData);
-
                 return response;
             });
         }

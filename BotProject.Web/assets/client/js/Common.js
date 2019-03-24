@@ -1,14 +1,23 @@
-﻿var urlCreateBot = "api/bot/create";
+﻿var urlCreateBot = "api/bot/create",
+    urlCreateBotQnA = "api/botqna/create";
 var bot = {
     Name: '',
     Alias: '',
     Status: false,
     UserID: '',
 }
+var botQnA = {
+    Name: '',
+    Alias: '',
+    Status: false,
+    BotID: '',
+    UserID:''
+}
 var common = {
     init: function () {
         common.registerEvents();
         common.createBot();
+        common.createFormBotQnA();
     },
     registerEvents: function () {
         $('#btnLogout').off('click').on('click', function (e) {
@@ -50,8 +59,8 @@ var common = {
         var temp = function (data) {
             var html = '';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-' + data.ID + '" aria-controls="submenu-1">';
-            html += '<i class="fa fa fa-robot" aria-hidden="true"></i> ' + data.Name + '';
+            html += '<a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-' + data.ID + '" aria-controls="submenu-' + data.ID + '">';
+            html += '<i class="fa fa fa-robot" aria-hidden="true"></i> ' + data.Name.toUpperCase() + '';
             html += '</a>';
             html += '<div id="submenu-' + data.ID + '" class="collapse submenu" style="">';
             html += '<ul class="nav flex-column">';
@@ -61,8 +70,17 @@ var common = {
             html += '<li class="nav-item">';
             html += '<a class="nav-link" href="/bot/' + data.Alias + '/' + data.ID + '/cardcategory"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
             html += '</li>';
+
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="/bot/' + data.Alias + '/' + data.ID + '/qna"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện bot</a>';
+            html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '"><i class="fa fa-recycle"></i>Huấn luyện bot';
+            html +=                '<span style="float: right;color: lightgray;cursor: pointer;">';
+            html +=                    '<i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>';
+            html +=                '</span>';
+            html +=            '</a>';
+            html +=            '<div class="submenu" style="">';
+            html +=                '<ul class="nav flex-column" id="form-bot-qna-' + data.ID + '">';
+            html +=                '</ul>';
+            html += '</div>';
             html += '</li>';
             html += '<li class="nav-item">';
             html += '<a class="nav-link" href="#"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
@@ -89,6 +107,38 @@ var common = {
                 var tempHtml = temp(data);
                 $('#bot-category').append(tempHtml);
                 $('#modalCreateBot').modal('hide');    
+            });
+        })
+    },
+    createFormBotQnA: function () {
+        var temp = function (data) {
+            var html = '';
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link bot-qna-link" href="/bot/qna/' + data.Alias + '/' + data.ID + '"><i class="fa fa-file" aria-hidden="true"></i>' + data.Name + '</a>';
+            html += '</li>';
+            return html;
+        }
+        $('body').on('click', '#btnCreateBotQnAnswer', function () {
+            var botID = $(this).attr('data-botId');
+            $('#txtBotQnAnswerName').val('');
+            $('#modalCreateBotQnAnswer').modal('show');
+            $("#bot-botQnA-id").val(botID);
+        })
+        $('body').on('click', '#btnSaveBotQnA', function () {
+            var botQnAName = $('#txtBotQnAnswerName').val();
+            if (botQnAName == '' || botQnAName == undefined)
+                return false;
+
+            botQnA.Name = botQnAName;
+            botQnA.Alias = common.getSeoTitle(botQnAName);
+            botQnA.BotID = $("#bot-botQnA-id").val();
+            botQnA.UserID = $("#userId").val();
+            console.log(botQnA)
+            var svr = new AjaxCall(urlCreateBotQnA, JSON.stringify(botQnA));
+            svr.callServicePOST(function (data) {
+                var tempHtml = temp(data);
+                $('#form-bot-qna-'+botQnA.BotID).append(tempHtml);
+                $('#modalCreateBotQnAnswer').modal('hide');
             });
         })
     }

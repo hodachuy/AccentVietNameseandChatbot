@@ -110,6 +110,26 @@
     <Compile Include="Migrations\201903220747591_U12.Designer.cs">
       <DependentUpon>201903220747591_U12.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903231102313_U121.cs" />
+    <Compile Include="Migrations\201903231102313_U121.Designer.cs">
+      <DependentUpon>201903231102313_U121.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903231105047_U15.cs" />
+    <Compile Include="Migrations\201903231105047_U15.Designer.cs">
+      <DependentUpon>201903231105047_U15.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903241126095_U16.cs" />
+    <Compile Include="Migrations\201903241126095_U16.Designer.cs">
+      <DependentUpon>201903241126095_U16.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903241220000_U18.cs" />
+    <Compile Include="Migrations\201903241220000_U18.Designer.cs">
+      <DependentUpon>201903241220000_U18.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903241443203_U181.cs" />
+    <Compile Include="Migrations\201903241443203_U181.Designer.cs">
+      <DependentUpon>201903241443203_U181.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -118,6 +138,7 @@
     <Compile Include="Repositories\ApplicationRoleGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationRoleRepository.cs" />
     <Compile Include="Repositories\ApplicationUserGroupRepository.cs" />
+    <Compile Include="Repositories\BotQnAnswerRepository.cs" />
     <Compile Include="Repositories\BotRepository.cs" />
     <Compile Include="Repositories\ButtonLinkRepository.cs" />
     <Compile Include="Repositories\ButtonPostbackRepository.cs" />
@@ -178,6 +199,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903220747591_U12.resx">
       <DependentUpon>201903220747591_U12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903231102313_U121.resx">
+      <DependentUpon>201903231102313_U121.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903231105047_U15.resx">
+      <DependentUpon>201903231105047_U15.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903241126095_U16.resx">
+      <DependentUpon>201903241126095_U16.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903241220000_U18.resx">
+      <DependentUpon>201903241220000_U18.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903241443203_U181.resx">
+      <DependentUpon>201903241443203_U181.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

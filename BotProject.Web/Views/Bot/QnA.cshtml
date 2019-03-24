@@ -1,7 +1,8 @@
-﻿@model IEnumerable<BotProject.Model.Models.Card>
+﻿@model BotProject.Model.Models.BotQnAnswer
 @{
     ViewBag.Title = "QnA";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var cards = (IEnumerable<BotProject.Model.Models.Card>)ViewBag.Cards;
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.selectboxit/3.8.0/jquery.selectBoxIt.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
@@ -73,10 +74,12 @@
         margin-left: 10px;
     }
 </style>
+<input type="hidden" id="botId" value="@Model.BotID" />
+<input type="hidden" id="botQnAnswerID" value="@Model.ID" />
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
         <div class="d-flex">
-            <h5 class="pageheader-title">myapplication phapluat-bot </h5>
+            <h5 class="pageheader-title">@Model.Name.ToUpper() </h5>
 
             <div class="toolbar ml-auto p-r-10">
                 <a href="#" class="btn btn-success btn-sm saveKeyword"><i class="fas fa-sync-alt"></i> Save and retrain</a>
@@ -168,7 +171,7 @@
 @section footerJS{
     <script>
 
-        var lstCard = @Html.Raw(Json.Encode(Model));
+        var lstCard = @Html.Raw(Json.Encode(cards));
         function card() {
             var html = '<optgroup label="DANH SÁCH THẺ">';
             if (lstCard.length != 0) {

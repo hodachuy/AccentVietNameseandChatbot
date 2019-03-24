@@ -28,18 +28,16 @@ namespace BotProject.Model.Models
 
         public string ContentText { set; get; }
 
-        public int? ContentCardID { set; get; }
+        public int? CardID { set; get; }
 
         public int QuestionGroupID { set; get; }
 
-        //name: srai + postback + QuestionGroupID
-        public string TempSrai { set; get; }
+		//name: srai + postback + ContentCardID
+		public string CardPayload { set; get; }
 
         public int? Index { set; get; }
 
         // random li nếu nội dung card select lấy patternText của Card thành nội dung srai
-        [ForeignKey("ContentCardID")]
-        public virtual Card Card { set; get; }
 
         [ForeignKey("QuestionGroupID")]
         public virtual QuestionGroup QuestionGroup { set; get; }

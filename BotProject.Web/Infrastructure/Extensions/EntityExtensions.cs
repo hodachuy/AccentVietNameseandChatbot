@@ -20,8 +20,16 @@ namespace BotProject.Web.Infrastructure.Extensions
             bot.UserID = botVm.UserID;
             bot.Status = botVm.Status;
         }
+		public static void UpdateBotQnA(this BotQnAnswer botQnA, BotQnAnswerViewModel botQnAVm)
+		{
+			botQnA.ID = botQnAVm.ID;
+			botQnA.Name = botQnAVm.Name;
+			botQnA.Alias = botQnAVm.Alias;
+			botQnA.BotID = botQnAVm.BotID;
+			botQnA.Status = botQnAVm.Status;
+		}
 
-        public static void UpdateCard(this Card card, CardViewModel cardVm)
+		public static void UpdateCard(this Card card, CardViewModel cardVm)
         {
             card.Name = cardVm.Name.ToUpper();
             card.BotID = cardVm.BotID;
