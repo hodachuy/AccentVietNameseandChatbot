@@ -107,7 +107,7 @@ namespace BotProject.Web.API
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                var lstBotQna = _qnaService.GetListQuestionGroupByBotQnAnswerID(botQnaID).ToList();
+                var lstBotQna = _qnaService.GetListQuestionGroupByBotQnAnswerID(botQnaID).OrderByDescending(x=>x.CreatedDate).ToList();
                 response = request.CreateResponse(HttpStatusCode.OK, lstBotQna);
                 return response;
             });
@@ -171,9 +171,25 @@ namespace BotProject.Web.API
                 {
                     try
                     {
-                        var questionDb = new Question();
+						var _lstQuesUpdate = _qnaService.GetListQuesCodeSymbol(quesVm.CodeSymbol).ToList();
+						if(_lstQuesUpdate.Count != 0)
+						{
+							foreach(var item in _lstQuesUpdate)
+							{
+								if (item.IsThatStar == false)
+								{
+									item.ContentText = quesVm.ContentText.Trim();
+								}
+								else
+								{
+									item.ContentText = quesVm.ContentText.Trim() + " *";
+								}
+								_qnaService.UpdateQuestion(item);
+							}
+							_qnaService.Save();
+						}
 
-                        //response = request.CreateResponse(HttpStatusCode.OK, responseData);
+                        response = request.CreateResponse(HttpStatusCode.OK, "Success");
                     }
                     catch (Exception ex)
                     {
@@ -184,5 +200,48 @@ namespace BotProject.Web.API
             });
         }
 
-    }
+		[Route("updateanswer")]
+		[HttpPost]
+		public HttpResponseMessage UpdateAnswer(HttpRequestMessage request, AnswerViewModel answerVm)
+		{
+			return CreateHttpResponse(request, () =>
+			{
+				HttpResponseMessage response = null;
+				Answer answerDb = new Answer();
+				answerDb.UpdateAnswer(answerVm);
+				_qnaService.Save();
+				response = request.CreateResponse(HttpStatusCode.Created, answerDb);
+				return response;
+			});
+		}
+
+		[Route("addquestion")]
+		[HttpPost]
+		public HttpResponseMessage AddQuestion(HttpRequestMessage request, QuestionViewModel quesVm)
+		{
+			return CreateHttpResponse(request, () =>
+			{
+				HttpResponseMessage response = null;
+
+				string code = quesVm.QuestionGroupID + Guid.NewGuid().ToString();
+				Question quesDb = new Question();
+				quesDb.UpdateQuestion(quesVm);
+				quesDb.CodeSymbol = code;
+				quesDb.QuestionGroupID = quesVm.QuestionGroupID;
+				_qnaService.AddQuestion(quesDb);
+
+				// is that star
+				Question quesDbStar = new Question();
+				quesDbStar.UpdateQuestionIsStar(quesVm);
+				quesDbStar.CodeSymbol = code;
+				quesDbStar.QuestionGroupID = quesVm.QuestionGroupID;
+				_qnaService.AddQuestion(quesDbStar);
+
+				_qnaService.Save();
+				response = request.CreateResponse(HttpStatusCode.Created, quesDbStar);
+				return response;
+			});
+		}
+
+	}
 }

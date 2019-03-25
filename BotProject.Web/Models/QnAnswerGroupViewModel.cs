@@ -35,6 +35,7 @@ namespace BotProject.Web.Models
 		public int? CardID { set; get; }
 		public string CardPayload { set; get; }
 		public int? Index { set; get; }
+		public int QuestionGroupID { set; get; }
 	}
 	public class QuestionViewModel
 	{
@@ -43,5 +44,6 @@ namespace BotProject.Web.Models
         public string CodeSymbol { set; get; }
 		public string ContentText { set; get; }
 		public bool IsThatStar { set; get; }
+		public int QuestionGroupID { set; get; }
 	}
 }

@@ -1,8 +1,13 @@
 ﻿// click vao tag neu co id hay symbol thi` this se lay' roi` set vao` lai
-
-
 var urlQnACreate = "api/qna/create",
-    urlQnAGet = "api/qna/getbybotqnanswerid";
+    urlQnAGet = "api/qna/getbybotqnanswerid",
+    urlQnADeleteQues = "api/qna/deleteques",
+    urlQnADeleteAnswer = "api/qna/deleteanswer",
+    urlQnADeleteQuesGroup = "api/qna/deletequesgroup",
+    urlQnAUpdateQues = "api/qna/updatequestion",
+    urlQnAUpdateAnswer = "api/qna/updateanswer",
+    urlQnAAddQues = "api/qna/addquestion",
+    urlQnAAddAnswer = "api/qna/addanswer";
 
 var countData = $('.wrap-content .panel.panel-flat').length,
 		limitpage = 5,
@@ -41,7 +46,7 @@ $(document).ready(function () {
         $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
     });
 
-
+    //init event form Qna
     var checkAlert = false;
     $('body').on('click', '.moveTop', function (event) {
         var el_index = $(this).closest('.panel-flat').index();
@@ -108,66 +113,64 @@ $(document).ready(function () {
         }
     })
 
-
-    initEventTag();
-
+    initEventQnA();
 
     $('body').on('click', '.addCt', function (event) {
         var sizeCT = $('.wrap-content').attr('data-countpanel');
         sizeCT = parseInt(sizeCT);
         var stri = '<div class="panel panel-flat" indexpanel="' + (sizeCT + 1) + '" data-quesgroup-id="">' +
-				'<div class="panel-body">' +
-					'<i class="fa fa-trash icon-bin rmCt"></i>' +
-					'<div class="wrMove">' +
-                        '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>'+
-                        '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>'+
-					'</div>' +
-					'<div class="row">' +
-						'<div class="col-lg-6 userSay">' +
-							'<label>Người dùng nói</label>' +
-							'<div class="input-group">' +
-								'<ul class="tags checkvalid">' +
-						            '<li class="tagAdd taglist">' +
-						                '<input type="text" autocomplete="off" class="search-field">' +
-						            '</li>' +
-						        '</ul>' +
-								'<span class="input-group-addon">' +
-									'<input type="checkbox" class="styled" ' +
-									'checked="checked">' +
-								'</span>' +
-							'</div>' +
-						'</div>' +
-						'<div class="col-lg-6 botReply">' +
-							'<label>Bot trả lời với&nbsp;</label>' +
-							'<label class="learn_switchbot">' +
-								'<input type="checkbox" class="learn_switchinput" checked="">' +
-								'<span class="learn_sliderbot learn_roundbot"></span>' +
-							'</label>' +
-                            '<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>'+
-							'<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">' +
-								'<label>' +
-									'<input type="checkbox" class="switchery randomText" style="display:none">' +
-                                    '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>'+
-									'Ngẫu nhiên' +
-								'</label>' +
-							'</div>' +
-							'<div class="wrbutton" indexbt="1">' +
-								'<div class="bt" data-answer-id="">' +
-									'<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
-									'<i class="fa fa-remove icon-bin rmText"></i>' +
-								'</div>' +
-							'</div>' +
-							'<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden"><i class="icon-plus22"></i> ' + txtbt + '</button>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>';
+                '<div class="panel-body">' +
+                    '<i class="fa fa-trash icon-bin rmCt"></i>' +
+                    '<div class="wrMove">' +
+                        '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>' +
+                        '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>' +
+                    '</div>' +
+                    '<div class="row">' +
+                        '<div class="col-lg-6 userSay">' +
+                            '<label>Người dùng nói</label>' +
+                            '<div class="input-group">' +
+                                '<ul class="tags checkvalid">' +
+                                    '<li class="tagAdd taglist">' +
+                                        '<input type="text" autocomplete="off" class="search-field">' +
+                                    '</li>' +
+                                '</ul>' +
+                                '<span class="input-group-addon">' +
+                                    '<input type="checkbox" class="styled" ' +
+                                    'checked="checked">' +
+                                '</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="col-lg-6 botReply">' +
+                            '<label>Bot trả lời với&nbsp;</label>' +
+                            '<label class="learn_switchbot">' +
+                                '<input type="checkbox" class="learn_switchinput" checked="">' +
+                                '<span class="learn_sliderbot learn_roundbot"></span>' +
+                            '</label>' +
+                            '<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>' +
+                            '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">' +
+                                '<label>' +
+                                    '<input type="checkbox" class="switchery randomText" style="display:none">' +
+                                    '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>' +
+                                    'Ngẫu nhiên' +
+                                '</label>' +
+                            '</div>' +
+                            '<div class="wrbutton" indexbt="1">' +
+                                '<div class="bt" data-answer-id="">' +
+                                    '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
+                                    '<i class="fa fa-remove icon-bin rmText"></i>' +
+                                '</div>' +
+                            '</div>' +
+                            '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden"><i class="icon-plus22"></i> ' + txtbt + '</button>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
 
         $('.wrap-content').prepend(stri);
-         //$('[indexpanel="'+(sizeCT+1)+'"] .tokenfield').tagEditor({
-         //  	placeholder: 'Enter tags ...',
-         //  	autocomplete: { delay: 250, html: true, position: { collision: 'flip' }}
-         //});
+        //$('[indexpanel="'+(sizeCT+1)+'"] .tokenfield').tagEditor({
+        //  	placeholder: 'Enter tags ...',
+        //  	autocomplete: { delay: 250, html: true, position: { collision: 'flip' }}
+        //});
 
         //if (Array.prototype.forEach) {
         //    var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
@@ -221,7 +224,7 @@ $(document).ready(function () {
             }
             if (size == 1) {
                 $(this).parents('.col-lg-6').find('.rmText').hide();
-            }          
+            }
             else {
                 $(this).parents('.col-lg-6').find('.rmText').show();
             }
@@ -242,14 +245,14 @@ $(document).ready(function () {
         $(this).parents('.col-lg-6').find('.rmText').show();
         if (bt <= 4) {
             var str = '<div class="bt" data-answer-id="">' +
-					'<label class="mt6">Hoặc </label>' +
-					'<label class="learn_switchbot">' +
-						'<input type="checkbox" class="learn_switchinput" checked="">' +
-						'<div class="learn_sliderbot learn_roundbot"></div>' +
-					'</label>' +
-					'<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
-					'<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>' +
-				'</div>';
+                    '<label class="mt6">Hoặc </label>' +
+                    '<label class="learn_switchbot">' +
+                        '<input type="checkbox" class="learn_switchinput" checked="">' +
+                        '<div class="learn_sliderbot learn_roundbot"></div>' +
+                    '</label>' +
+                    '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
+                    '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>' +
+                '</div>';
             $(this).siblings('.wrbutton').attr('indexbt', (parseInt(bt) + 1));
             $(this).siblings('.wrbutton').append(str);
             if (bt == 4) {
@@ -291,13 +294,13 @@ $(document).ready(function () {
             elParent.find('.selectKeyword').remove();
             strHtml = '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="640" placeholder="' + txtplholder + '">';
             elParent.find('.rmText').before(strHtml);
-           // $($(this).parent().next().eq(0)).addClass('hidden');
-        } else {          
+            // $($(this).parent().next().eq(0)).addClass('hidden');
+        } else {
             vt = $(this).parents('.panel-flat').attr('indexpanel');
             elParent.find('input[type=text]').remove();
             strHtml = '<select data-live-search="true" class="form-control selectKeyword checkvalid">' +
-					card() +
-					'</select>';
+                    card() +
+                    '</select>';
             elParent.find('.rmText').before(strHtml);
 
             var $elSelectCard = elParent.find('.rmText').parent().find('.selectKeyword').eq(0);
@@ -494,13 +497,13 @@ $(document).ready(function () {
                         } else {
                             $(this).parents('.has-error').removeClass('has-error');
                         }
-                    } 
+                    }
                 });
-                
+
                 if ($(this).find('.tags .addedTag').length == 0) {
                     checkvalid = false;
                 }
-     
+
 
             }
         });
@@ -530,8 +533,9 @@ $(document).ready(function () {
                     var question = {
                         'ContentText': decodeEntities($(el1).children('input').val()).trim(),//decode bỏ các ký tự đặc biệt
                         'IsThatStar': userExactly,
+                        'QuestionGroupID': quesGroupId,
                         'CodeSymbol': $(el1).children('input').attr('data-ques-symbol'),
-                        'ID'        : $(el1).children('input').attr('data-ques-id'),
+                        'ID': $(el1).children('input').attr('data-ques-id'),
                         'Index': index1
                     }
                     userSays.push(question);
@@ -541,8 +545,8 @@ $(document).ready(function () {
                 $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
                     var reply = '',
                         cardID = '',
-                        cardPayload ='';
-                    if ($(this).find('select.selectKeyword').length > 0) {                      
+                        cardPayload = '';
+                    if ($(this).find('select.selectKeyword').length > 0) {
                         cardID = $(this).find('select.selectKeyword').val();
                         cardPayload = "postback_card_" + $(this).find('select.selectKeyword').val();
                     } else {
@@ -550,10 +554,11 @@ $(document).ready(function () {
                     }
                     var answer = {
                         'ContentText': reply,
-                        'CardID':cardID,
+                        'CardID': cardID,
+                        'QuestionGroupID': quesGroupId,
                         'CardPayload': cardPayload,
                         'Index': index1,
-                        'ID' : $(el1).attr('data-answer-id')
+                        'ID': $(el1).attr('data-answer-id')
                     }
                     botReplys.push(answer);
                 });
@@ -572,9 +577,9 @@ $(document).ready(function () {
             });
             var qGroupVm = {
                 'BotID': $("#botId").val(),
-                'TypeAction':TypeAction,
+                'TypeAction': TypeAction,
                 'QuestionGroupViewModels': arrGrpQna
-                
+
             }
 
             // Type Action : Add Update
@@ -597,8 +602,8 @@ $(document).ready(function () {
             });
         }
     })
-
 })
+
 
 // CRUD - GET
 ActionFormQnA = function () {
@@ -608,6 +613,7 @@ ActionFormQnA = function () {
         };
         var svr = new AjaxCall(urlQnAGet, param);
         svr.callServiceGET(function (data) {
+            console.log(data)
             if (data.length != 0) {
                 TypeAction = "Update";
                 var templateData = templateFormQnA(data);
@@ -617,7 +623,7 @@ ActionFormQnA = function () {
                     activeDropdown(value.cardID,value.answerID)
                 })
                 // reactive event tag
-                initEventTag();
+                initEventQnA();
             }
 
         });
@@ -630,7 +636,7 @@ ActionFormQnA = function () {
         for(var i = 0; i < data.length; i++){
             var itemGroupQnA = data[i];
             var grQnAnswerID = itemGroupQnA.ID;
-            var index = itemGroupQnA.Index;
+            var index = i + 1;
 
             html += '<div class="panel panel-flat" indexpanel="' + index + '"  data-quesgroup-id="' + grQnAnswerID + '">';
             html +=     '<div class="panel-body">';
@@ -743,27 +749,51 @@ ActionFormQnA = function () {
                 html += '</label>';
                 html += '</div>';
                 html += '<div class="wrbutton" indexbt="' + totalAnswer + '">';
-                $.each(lstAnswer, function (index, value) {
-                    var itemAnswer = value;
-                    if (itemAnswer.ContentText != '') {
-                        html += '<div class="bt" id="answer-' + itemAnswer.ID + '" data-answer-id="'+itemAnswer.ID+'">';
-                        html += '<input type="text" data-answer-id="' + itemAnswer.ID + '" autocomplete="off" class="form-control checkvalid" maxlength="320" value="' + itemAnswer.ContentText + '">';
-                        html += '<i class="fa fa-remove icon-bin rmText"></i>';
+                if (lstAnswer[0].ContentText != '') {
+                    html += '<div class="bt" data-answer-id="' + lstAnswer[0].ID + '">';
+                    html += '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320" value="' + lstAnswer[0].ContentText + '">';
+                    html += '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>';
+                    html += '</div>';
+                } else {
+                    html += '<div class="bt" id="answer-' + lstAnswer[0].ID + '" data-answer-id="' + lstAnswer[0].ID + '">';
+                    html += '<select id="select-card-' + lstAnswer[0].ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
+                    html += card();
+                    html += '</select>';
+                    html += '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>';
+                    html += '</div>';
+
+                    var itemCard = {
+                        answerID: lstAnswer[0].ID,
+                        cardID: lstAnswer[0].CardID
+                    }
+                    lstCardSelected.push(itemCard)
+                }
+
+                for (var index = 1 ; index < totalAnswer; index++) {
+                    var iAnswer = lstAnswer[index];
+                    if (iAnswer.ContentText != '') {
+                        html += '<div class="bt" id="answer-' + iAnswer.ID + '" data-answer-id="' + iAnswer.ID + '">';
+                        html += '<label class="mt6">Hoặc </label>';
+                        html += '<label class="learn_switchbot"><input type="checkbox" class="learn_switchinput" checked=""><div class="learn_sliderbot learn_roundbot"></div></label>';
+                        html += '<input type="text" data-answer-id="' + iAnswer.ID + '" autocomplete="off" class="form-control checkvalid" maxlength="320" value="' + iAnswer.ContentText + '">';
+                        html += '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>';
                         html += '</div>';
                     } else {
-                        html += '<div class="bt" id="answer-' + itemAnswer.ID + '" data-answer-id="'+itemAnswer.ID+'">';
-                        html += '<select id="select-card-' + itemAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
+                        html += '<div class="bt" id="answer-' + iAnswer.ID + '" data-answer-id="' + iAnswer.ID + '">';
+                        html += '<label class="mt6">Hoặc </label>';
+                        html += '<label class="learn_switchbot"><input type="checkbox" class="learn_switchinput"><div class="learn_sliderbot learn_roundbot"></div></label>';
+                        html += '<select id="select-card-' + iAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
                         html += card();
                         html += '</select>';
-                        html += '<i class="fa fa-remove icon-bin rmText"></i>';
+                        html += '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>';
                         html += '</div>';
                         var itemCard = {
-                            answerID: itemAnswer.ID,
-                            cardID: itemAnswer.CardID
+                            answerID: iAnswer.ID,
+                            cardID: iAnswer.CardID
                         }
                         lstCardSelected.push(itemCard)
                     }
-                })
+                }
                 html += '</div>';
                 if (totalAnswer >= 5) {
                     html += '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
@@ -807,7 +837,6 @@ ActionFormQnA = function () {
         });
     }
 }
-
 function appendPaging(countData, limitpage) {
     var htmlPaging = '';
     if (Math.ceil(countData / limitpage) > 1) {
@@ -841,8 +870,7 @@ function fn_htmlPaging(countData, limitpage) {
     htmlPag += '<li class="next"><a href="#">&rsaquo;</a></li></ul>';
     return htmlPag;
 }
-
-function initEventTag() {
+function initEventQnA() {
 
     $('.wrap-content .addedTag').each(function (index, el) {
         if (!$(this).hasClass('error-tag')) {

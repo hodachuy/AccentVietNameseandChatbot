@@ -27,6 +27,8 @@ namespace BotProject.Service
         IEnumerable<QuestionGroup> GetListQuestionGroupByBotQnAnswerID(int botQnAnswerID);
 		IEnumerable<BotQnAnswer> GetListBotQnAnswerByBotID(int botID);
 
+		IEnumerable<Question> GetListQuesCodeSymbol(string symbol);
+
 		BotQnAnswer GetBotQnAnswerById(int id);
 
         void Save();
@@ -70,7 +72,7 @@ namespace BotProject.Service
 
         public IEnumerable<QuestionGroup> GetListQuestionGroupByBotQnAnswerID(int botQnAnswerID)
         {
-            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.BotQnAnswerID == botQnAnswerID).ToList();
+            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.BotQnAnswerID == botQnAnswerID).OrderBy(x=>x.CreatedDate).ToList();
             if(lstQuesGroup.Count != 0)
             {
                 foreach(var item in lstQuesGroup)
@@ -137,5 +139,10 @@ namespace BotProject.Service
             _answerRepository.DeleteMulti(x => x.QuestionGroupID == id);
             return _quesGroupRepository.Delete(id);
         }
-    }
+
+		public IEnumerable<Question> GetListQuesCodeSymbol(string symbol)
+		{
+			return _questionRepository.GetMulti(x => x.CodeSymbol.Contains(symbol));
+		}
+	}
 }

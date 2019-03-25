@@ -72,7 +72,8 @@ var srcFolderImg = "https://platform.messnow.com/",
         txtCard58 = "Một trong các thẻ của bạn đang bị lỗi.",
         txtCard59 = "Đồng ý",
         txtCard60 = "Hủy",
-        arLink = [];var isSave = false;
+        arLink = [];
+var isSave = false;
 $(document).ready(function () {
 
     //var bootbox_txt = {OK : 'Đồng ý',CANCEL : 'Hủy',CONFIRM : 'Xác nhận'};
@@ -1660,6 +1661,9 @@ $(document).ready(function () {
                     $('#lst-card').append(html);
                     $('#idCard').val(card.ID)
                 }
+                setTimeout(function () {
+                    getAimlCard(card.ID);
+                },500)
                 console.log(data)
             });
 
@@ -1673,6 +1677,19 @@ $(document).ready(function () {
             }, function () { $("#model-tag-bot").modal('show'); });
         }
     });
+
+    function getAimlCard(cardID) {
+        var param = {
+            cardId: cardID,
+            userId: $("#userId").val()
+        };
+        var urlTest = "api/card/getaimlcard";
+        var svr = new AjaxCall(urlTest, param);
+        svr.callServiceGET(function (data) {
+            console.log(data)          
+        });
+    }
+
     // ====================================================================
     // ============================End Save Card===========================
     // ====================================================================

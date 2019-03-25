@@ -19,6 +19,8 @@ namespace BotProject.Model.Models
 
 		public bool? IsKeyword { set; get; }
 
+		public DateTime? CreatedDate { set; get; }
+
 		[Required]
 		public int BotQnAnswerID { set; get; }
 

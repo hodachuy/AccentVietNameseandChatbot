@@ -36,12 +36,14 @@ namespace BotProject.Web.Infrastructure.Extensions
             qGroup.Index = qGroupVm.Index;
             qGroup.IsKeyword = qGroupVm.IsKeyWord;
             qGroup.BotQnAnswerID = qGroupVm.BotQnAnswerID;
+			qGroup.CreatedDate = DateTime.Now;
         }
 
         public static void UpdateQuestion(this Question ques, QuestionViewModel quesVm)
         {
             ques.ID = quesVm.ID;
             ques.Index = quesVm.Index;
+			ques.QuestionGroupID = quesVm.QuestionGroupID;
             ques.IsThatStar = false;
             ques.ContentText = quesVm.ContentText.Trim();
         }
@@ -50,7 +52,8 @@ namespace BotProject.Web.Infrastructure.Extensions
         {
             ques.ID = quesVm.ID;
             ques.Index = quesVm.Index;
-            ques.IsThatStar = quesVm.IsThatStar;
+			ques.QuestionGroupID = quesVm.QuestionGroupID;
+			ques.IsThatStar = quesVm.IsThatStar;
             ques.ContentText = quesVm.ContentText.Trim() + " *";
         }
 
@@ -59,7 +62,8 @@ namespace BotProject.Web.Infrastructure.Extensions
             answer.ID = answerVm.ID;
             answer.Index = answerVm.Index;
             answer.CardPayload = answerVm.CardPayload;
-            answer.CardID = answerVm.CardID;
+			answer.QuestionGroupID = answerVm.QuestionGroupID;
+			answer.CardID = answerVm.CardID;
             answer.ContentText = String.IsNullOrEmpty(answerVm.ContentText) == true ? "" : answerVm.ContentText.Trim();
         }
         #endregion
