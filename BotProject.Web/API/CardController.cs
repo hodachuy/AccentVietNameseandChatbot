@@ -77,6 +77,25 @@ namespace BotProject.Web.API
                         _cardService.Update(cardDb);
                         _cardService.Save();
                         rs.IsActionDb = true;
+                        try
+                        {
+                            // create file card aiml
+                            string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + cardVm.UserID + "_BotID_" + cardVm.BotID;
+                            string nameFolderAIML = "Card_ID_" + cardDb.ID + "_" + cardDb.Alias + ".aiml";
+                            string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
+                            if (!System.IO.File.Exists(pathString))
+                            {
+                                using (System.IO.FileStream fs = System.IO.File.Create(pathString))
+                                {
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            string message = "Không tìm thấy đường dẫn " + ConfigurationManager.AppSettings["AIMLPath"];
+                            response = request.CreateErrorResponse(HttpStatusCode.BadRequest, message);
+                            return response;
+                        }
                     }
                     else
                     {

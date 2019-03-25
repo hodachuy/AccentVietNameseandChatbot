@@ -8,12 +8,14 @@ namespace BotProject.Web.Models
 	public class QnAnswerGroupViewModel
 	{
 		public int BotID { set; get; }
+        //Add - Update
+        public string TypeAction { set; get; }
 		public virtual IEnumerable<QuestionGroupViewModel> QuestionGroupViewModels { set; get; }
 	}
 
 	public class QuestionGroupViewModel
 	{
-		public int? ID { set; get; }
+		public int ID { set; get; }
 		public int BotQnAnswerID { set; get; }
 		public int Index { set; get; }
 		public bool IsKeyWord { set; get; }
@@ -28,14 +30,17 @@ namespace BotProject.Web.Models
 
 	public class AnswerViewModel
 	{
-		public string ContentText { set; get; }
+        public int ID { set; get; }
+        public string ContentText { set; get; }
 		public int? CardID { set; get; }
 		public string CardPayload { set; get; }
 		public int? Index { set; get; }
 	}
 	public class QuestionViewModel
 	{
+        public int ID { set; get; }
 		public int? Index { set; get; }
+        public string CodeSymbol { set; get; }
 		public string ContentText { set; get; }
 		public bool IsThatStar { set; get; }
 	}

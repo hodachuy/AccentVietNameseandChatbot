@@ -28,7 +28,7 @@ namespace BotProject.Web.Controllers
 		{
             ViewBag.BotQnAnswerID = id;
 			var botQnA = _qnaService.GetBotQnAnswerById(id);
-			var lstCard = _cardService.GetListCardByBotID(botQnA.ID);
+			var lstCard = _cardService.GetListCardByBotID(botQnA.BotID).ToList();
 			ViewBag.Cards = lstCard;
 			return View(botQnA);
 		}

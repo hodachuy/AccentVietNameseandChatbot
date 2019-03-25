@@ -1586,7 +1586,7 @@ $(document).ready(function () {
 
         var cardVm = {
             'ID'                : $('#idCard').val(),
-            //'userId'        : $('#userId').val(),
+            'UserID'            : $('#userId').val(),
             //'pageId'        : $('#pageId').val(),
             'BotId'             : $('#botId').val(),
             //'blockId'       : $('#blockId').val(),
@@ -1648,7 +1648,6 @@ $(document).ready(function () {
             svr.callServicePOST(function (data) {
                 var isAction = data.IsActionDb;
                 var card = data.Card;
-                console.log(data)
                 if (isAction) {
                     var html = '';
                     html += '<li>';

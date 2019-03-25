@@ -34,6 +34,22 @@
   </category>
 
 
+  <category>
+    <pattern>CHAO HUY *</pattern>
+    <template>
+        <srai>postback_huy <set name="a"><star/></set></srai>
+    </template>
+  </category>
+
+ <category>
+    <pattern>postback_huy *</pattern>
+    <template>
+        <random>
+            <li>abc <get name="a"/></li>
+            <li>xyz <get name="a"/></li>
+        </random>
+    </template>
+  </category>
 
   <category>
     <pattern>testbutton</pattern>

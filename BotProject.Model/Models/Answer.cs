@@ -39,7 +39,7 @@ namespace BotProject.Model.Models
 
         // random li nếu nội dung card select lấy patternText của Card thành nội dung srai
 
-        [ForeignKey("QuestionGroupID")]
-        public virtual QuestionGroup QuestionGroup { set; get; }
+        //[ForeignKey("QuestionGroupID")]
+        //public virtual QuestionGroup QuestionGroup { set; get; }
     }
 }

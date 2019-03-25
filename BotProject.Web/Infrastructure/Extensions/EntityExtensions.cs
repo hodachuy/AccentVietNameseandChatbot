@@ -29,7 +29,43 @@ namespace BotProject.Web.Infrastructure.Extensions
 			botQnA.Status = botQnAVm.Status;
 		}
 
-		public static void UpdateCard(this Card card, CardViewModel cardVm)
+        #region Question-Answer-Group
+        public static void UpdateQuestionGroup(this QuestionGroup qGroup, QuestionGroupViewModel qGroupVm)
+        {
+            qGroup.ID = qGroupVm.ID;
+            qGroup.Index = qGroupVm.Index;
+            qGroup.IsKeyword = qGroupVm.IsKeyWord;
+            qGroup.BotQnAnswerID = qGroupVm.BotQnAnswerID;
+        }
+
+        public static void UpdateQuestion(this Question ques, QuestionViewModel quesVm)
+        {
+            ques.ID = quesVm.ID;
+            ques.Index = quesVm.Index;
+            ques.IsThatStar = false;
+            ques.ContentText = quesVm.ContentText.Trim();
+        }
+
+        public static void UpdateQuestionIsStar(this Question ques, QuestionViewModel quesVm)
+        {
+            ques.ID = quesVm.ID;
+            ques.Index = quesVm.Index;
+            ques.IsThatStar = quesVm.IsThatStar;
+            ques.ContentText = quesVm.ContentText.Trim() + " *";
+        }
+
+        public static void UpdateAnswer(this Answer answer, AnswerViewModel answerVm)
+        {
+            answer.ID = answerVm.ID;
+            answer.Index = answerVm.Index;
+            answer.CardPayload = answerVm.CardPayload;
+            answer.CardID = answerVm.CardID;
+            answer.ContentText = String.IsNullOrEmpty(answerVm.ContentText) == true ? "" : answerVm.ContentText.Trim();
+        }
+        #endregion
+
+        #region CARD
+        public static void UpdateCard(this Card card, CardViewModel cardVm)
         {
             card.Name = cardVm.Name.ToUpper();
             card.BotID = cardVm.BotID;
@@ -85,5 +121,6 @@ namespace BotProject.Web.Infrastructure.Extensions
             quickReply.Icon = quickReplyVm.Icon;
             quickReply.Title = quickReplyVm.Title;
         }
+        #endregion
     }
 }

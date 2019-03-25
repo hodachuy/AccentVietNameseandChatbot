@@ -15,9 +15,11 @@ namespace BotProject.Model.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { set; get; }
 
-        public string Content { set; get; }
+        public string ContentText { set; get; }
 
-        public int Index { set; get; }
+        public string CodeSymbol { set; get; }
+
+        public int? Index { set; get; }
 
         public bool? IsThatStar { set; get; }
 
@@ -26,7 +28,7 @@ namespace BotProject.Model.Models
 
         public int QuestionGroupID { set; get; }
 
-        [ForeignKey("QuestionGroupID")]
-        public virtual QuestionGroup QuestionGroup { set; get; }
+        //[ForeignKey("QuestionGroupID")]
+        //public virtual QuestionGroup QuestionGroup { set; get; }
     }
 }

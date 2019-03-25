@@ -112,9 +112,9 @@
             <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
         </nav>*@
 
-    <div class="card">
+    <div class="card form-qna" id="form-qna">
         <div class="wrap-content" data-countpanel="1">
-            <div class="panel panel-flat" indexpanel="1">
+            <div class="panel panel-flat" indexpanel="1" data-quesgroup-id="">
                 <div class="panel-body">
                     <i class="fa fa-trash icon-bin rmCt"></i>
                     <div class="wrMove">
@@ -141,7 +141,6 @@
                                 <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="">
                                 <span class="learn_sliderbot learn_roundbot"></span>
                             </label>
-                            @*<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>*@
                             <div class="checkbox checkbox-switchery switchery-xs pull-right pd0">
                                 <label>
                                     <input type="checkbox" class="switchery randomText" style="display:none">
@@ -178,6 +177,8 @@
                 $.each(lstCard, function (index, value) {
                     html += '<option value="'+value.ID+'">'+value.Name+'</option>';
                 })
+            }else{
+                html += '<option value=""></option>';
             }
             html += '</optgroup>';
             return html;

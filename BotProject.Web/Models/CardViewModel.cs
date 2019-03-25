@@ -14,6 +14,7 @@ namespace BotProject.Web.Models
 
         public string Alias { set; get; }
         public string TemplateJSON { set; get; }
+        public string UserID { set; get; }
 
         [Required]
         public int BotID { set; get; }

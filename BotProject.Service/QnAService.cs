@@ -16,10 +16,20 @@ namespace BotProject.Service
         Question AddQuestion(Question question);
         Answer AddAnswer(Answer answer);
 
+        void UpdateQuestion(Question question);
+        void UpdateAnswer(Answer answer);
+
+        Question DeleteQuestion(int id);
+        Answer DeleteAnswer(int id);
+
+        QuestionGroup DeleteQuestionGroup(int id);
+
         IEnumerable<QuestionGroup> GetListQuestionGroupByBotQnAnswerID(int botQnAnswerID);
 		IEnumerable<BotQnAnswer> GetListBotQnAnswerByBotID(int botID);
 
 		BotQnAnswer GetBotQnAnswerById(int id);
+
+        void Save();
 
 	}
     public class QnAService : IQnAService
@@ -60,8 +70,17 @@ namespace BotProject.Service
 
         public IEnumerable<QuestionGroup> GetListQuestionGroupByBotQnAnswerID(int botQnAnswerID)
         {
-			return _quesGroupRepository.GetMulti(x => x.BotQnAnswerID == botQnAnswerID);
-		}
+            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.BotQnAnswerID == botQnAnswerID).ToList();
+            if(lstQuesGroup.Count != 0)
+            {
+                foreach(var item in lstQuesGroup)
+                {
+                    item.Questions = _questionRepository.GetMulti(x => x.QuestionGroupID == item.ID && x.IsThatStar == false).ToList();//hiển thị lên giao diện k lấy dấu *
+                    item.Answers = _answerRepository.GetMulti(x => x.QuestionGroupID == item.ID).ToList();
+                }
+            }
+            return lstQuesGroup;
+        }
 
 		public BotQnAnswer AddBotQnAnswer(ref BotQnAnswer botQnAnswer)
 		{
@@ -86,5 +105,37 @@ namespace BotProject.Service
 		{
 			return _botQnAnswerRepository.GetSingleById(id);
 		}
-	}
+
+        public void Save()
+        {
+            _unitOfWork.Commit();
+        }
+
+        public void UpdateQuestion(Question question)
+        {
+            _questionRepository.Update(question);
+        }
+
+        public void UpdateAnswer(Answer answer)
+        {
+            _answerRepository.Update(answer);
+        }
+
+        public Question DeleteQuestion(int id)
+        {
+            return _questionRepository.Delete(id);
+        }
+
+        public Answer DeleteAnswer(int id)
+        {
+            return _answerRepository.Delete(id);
+        }
+
+        public QuestionGroup DeleteQuestionGroup(int id)
+        {
+            _questionRepository.DeleteMulti(x => x.QuestionGroupID == id);
+            _answerRepository.DeleteMulti(x => x.QuestionGroupID == id);
+            return _quesGroupRepository.Delete(id);
+        }
+    }
 }

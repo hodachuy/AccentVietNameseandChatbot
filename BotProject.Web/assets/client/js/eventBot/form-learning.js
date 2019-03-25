@@ -1,4 +1,10 @@
-﻿var countData = $('.wrap-content .panel.panel-flat').length,
+﻿// click vao tag neu co id hay symbol thi` this se lay' roi` set vao` lai
+
+
+var urlQnACreate = "api/qna/create",
+    urlQnAGet = "api/qna/getbybotqnanswerid";
+
+var countData = $('.wrap-content .panel.panel-flat').length,
 		limitpage = 5,
 		txtError = 'Lỗi',
 		txtAlert = 'Bạn có những từ khóa giống nhau!',
@@ -7,8 +13,12 @@
 		txtplholder = 'Nhập câu trả lời của bạn',
 		txtbt = 'Thêm câu trả lời';
         txtbt1 = 'Đồng ý';
-        txtbt2 = 'Hủy';
+        txtbt2 = 'Hủy';var lstCardSelected;
+var TypeAction = "Create";
 $(document).ready(function () {
+    // init load form if have data from db
+    new ActionFormQnA().GetQnAnswerById();
+
     // loading
     appendPaging(countData, limitpage);
 
@@ -98,128 +108,14 @@ $(document).ready(function () {
         }
     })
 
-    $('.wrap-content .addedTag').each(function (index, el) {
-        if (!$(this).hasClass('error-tag')) {
-            if ($('.wrap-content input[type="hidden"][value="' + $(this).children('input').val() + '"]').length > 1) {
-                $(this).addClass('error-tag');
-            }
-        }
-    });
 
-    $('.wrap-content').on('click', '.tagRemove', function (event) {
-        event.preventDefault();
-        if ($(this).parent().hasClass('error-tag')) {
-            var val = $(this).siblings('input').val();
-            if ($('.wrap-content input[type="hidden"][value="' + val + '"]').length <= 2) {
-                $('.wrap-content input[type="hidden"][value="' + val + '"]').parent('.addedTag').removeClass('error-tag');
-            }
-        }
-
-        $(this).parent().remove();
-    });
-
-    $('.wrap-content').on('click', 'ul.tags', function (event) {
-        $(this).find('.search-field').show();
-        $(this).find('.search-field').focus();
-    });
-
-    $('.wrap-content').on('keypress', '.search-field', function (event) {
-        var elParent = $(this).parents('.tags');
-        if (event.which == '13') {
-            if (($(this).val().trim() != '') && ($(".tags .addedTag input[value=\"" + $(this).val().trim() + "\"]").length == 0)) {
-                $("<li class=\"addedTag\">" + $(this).val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).val().toLowerCase().trim() + "\" name=\"data[answer][" + elParent.parents('.panel.panel-flat').attr('indexpanel') + "][]\"></li>").insertBefore($(this).parents('.tagAdd'));
-
-                var attr = $(this).attr('attr-data');
-                if (typeof attr !== typeof undefined && attr !== false) {
-                    if ($('.wrap-content input[value="' + attr + '"]').length <= 1) {
-                        $('.wrap-content input[value="' + attr + '"]').parent('.addedTag').removeClass('error-tag');
-                    }
-                    $(this).removeAttr('attr-data');
-                }
-
-                $(this).val('');
-                $(this).parents('.tags').append($(this).parent().clone());
-                $(this).parent().remove();
-                elParent.find('.search-field').focus();
-            } else if ($(".tags .addedTag input[value=\"" + $(this).val().trim() + "\"]").length > 0) {
-                if (!checkAlert) {
-                    checkAlert = true;
-                    bootbox.alert({
-                        message: txtAlert,
-                        callback: function () {
-                            checkAlert = false;
-                        }
-                    });
-                }
-            } else {
-                $(this).val('');
-            }
-        }
-    });
-
-    $('.wrap-content').on('click', '.addedTag', function (event) {
-        event.preventDefault();
-        var elParent = $(this).parents('.tags');
-        var elSearch = $(this).parents('.tags').find('.tagAdd.taglist .search-field').val();
-
-        if (typeof elSearch != 'undefined') {
-            if ($(this).parents('.tags').find('.tagAdd.taglist .search-field').val().trim() == '') {
-                $(this).parents('.tags').find('.tagAdd.taglist').remove();
-            } else {
-                var html1 = "<li class=\"addedTag\">" + $(this).parents('.tags').find('.tagAdd.taglist .search-field').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).parents('.tags').find('.tagAdd.taglist .search-field').val().toLowerCase().trim() + "\" name=\"data[answer][" + elParent.parents('.panel.panel-flat').attr('indexpanel') + "][]\"></li>";
-                $(this).parents('.tags').find('.tagAdd.taglist').replaceWith(html1);
-            }
-
-            var val = $(this).children('input').val().trim();
-            var html = '<li class="tagAdd taglist"><input type="text" autocomplete="off" attr-data="' + val + '" class="search-field" value="" style="display: inline-block;"></li>';
-            $(this).replaceWith(html);
-            elParent.find('.search-field').focus().val(val);
-        }
-
-    });
-
-    $('.wrap-content').on('focusout', '.tagAdd.taglist', function (event) {
-        var elParent = $(this).parents('.tags');
-        if ($(this).children('input').val().trim() != '') {
-            var classTag = '';
-            if ($(".tags .addedTag input[value=\"" + $(this).children('input').val().trim() + "\"]").length > 0) {
-                if (!checkAlert) {
-                    checkAlert = true;
-                    bootbox.alert({
-                        message: txtAlert,
-                        callback: function () {
-                            checkAlert = false;
-                        }
-                    });
-                }
-
-                classTag = 'error-tag';
-            }
-
-            $("<li class=\"addedTag " + classTag + "\">" + $(this).children('input').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).children('input').val().toLowerCase().trim() + "\" name=\"data[answer][" + elParent.parents('.panel.panel-flat').attr('indexpanel') + "][]\"></li>").insertBefore($(this));
-
-            // var attr = $(this).children('input').attr('attr-data');
-            // if (typeof attr !== typeof undefined && attr !== false) {
-            // 	if($('input[value=\""+attr+"\"]').size() <= 1){
-            // 		$('input[value=\""+attr+"\"]').parent('.addedTag').removeClass('error-tag');
-            // 	}
-            $(this).children('input').removeAttr('attr-data');
-            // }
-            //
-            $(this).children('input').val('');
-            $(this).parents('.tags').append($(this).clone());
-            $(this).remove();
-            elParent.find('.search-field').focus();
-        } else {
-            $(this).children('input').val('');
-        }
-    })
+    initEventTag();
 
 
     $('body').on('click', '.addCt', function (event) {
         var sizeCT = $('.wrap-content').attr('data-countpanel');
         sizeCT = parseInt(sizeCT);
-        var stri = '<div class="panel panel-flat" indexpanel="' + (sizeCT + 1) + '">' +
+        var stri = '<div class="panel panel-flat" indexpanel="' + (sizeCT + 1) + '" data-quesgroup-id="">' +
 				'<div class="panel-body">' +
 					'<i class="fa fa-trash icon-bin rmCt"></i>' +
 					'<div class="wrMove">' +
@@ -237,14 +133,14 @@ $(document).ready(function () {
 						        '</ul>' +
 								'<span class="input-group-addon">' +
 									'<input type="checkbox" class="styled" ' +
-									'name="data[exactly][' + sizeCT + ']" checked="checked">' +
+									'checked="checked">' +
 								'</span>' +
 							'</div>' +
 						'</div>' +
 						'<div class="col-lg-6 botReply">' +
 							'<label>Bot trả lời với&nbsp;</label>' +
 							'<label class="learn_switchbot">' +
-								'<input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="">' +
+								'<input type="checkbox" class="learn_switchinput" checked="">' +
 								'<span class="learn_sliderbot learn_roundbot"></span>' +
 							'</label>' +
                             '<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>'+
@@ -256,8 +152,8 @@ $(document).ready(function () {
 								'</label>' +
 							'</div>' +
 							'<div class="wrbutton" indexbt="1">' +
-								'<div class="bt">' +
-									'<input type="text" autocomplete="off" name="data[question][' + sizeCT + '][]" class="form-control checkvalid" maxlength="320">' +
+								'<div class="bt" data-answer-id="">' +
+									'<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
 									'<i class="fa fa-remove icon-bin rmText"></i>' +
 								'</div>' +
 							'</div>' +
@@ -345,13 +241,13 @@ $(document).ready(function () {
         var bt = $(this).siblings('.wrbutton').attr('indexbt');
         $(this).parents('.col-lg-6').find('.rmText').show();
         if (bt <= 4) {
-            var str = '<div class="bt">' +
+            var str = '<div class="bt" data-answer-id="">' +
 					'<label class="mt6">Hoặc </label>' +
 					'<label class="learn_switchbot">' +
-						'<input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="">' +
+						'<input type="checkbox" class="learn_switchinput" checked="">' +
 						'<div class="learn_sliderbot learn_roundbot"></div>' +
 					'</label>' +
-					'<input type="text" autocomplete="off" name="data[question][' + (panel - 1) + '][]" class="form-control checkvalid" maxlength="320">' +
+					'<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
 					'<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>' +
 				'</div>';
             $(this).siblings('.wrbutton').attr('indexbt', (parseInt(bt) + 1));
@@ -393,13 +289,13 @@ $(document).ready(function () {
         if ($(this).is(':checked')) {
             vt = $(this).parents('.panel-flat').attr('indexpanel');
             elParent.find('.selectKeyword').remove();
-            strHtml = '<input type="text" autocomplete="off" name="data[question][' + (vt - 1) + '][]" class="form-control checkvalid" maxlength="640" placeholder="' + txtplholder + '">';
+            strHtml = '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="640" placeholder="' + txtplholder + '">';
             elParent.find('.rmText').before(strHtml);
            // $($(this).parent().next().eq(0)).addClass('hidden');
         } else {          
             vt = $(this).parents('.panel-flat').attr('indexpanel');
             elParent.find('input[type=text]').remove();
-            strHtml = '<select data-live-search="true" name="data[question][' + (vt - 1) + '][]" class="form-control selectKeyword checkvalid">' +
+            strHtml = '<select data-live-search="true" class="form-control selectKeyword checkvalid">' +
 					card() +
 					'</select>';
             elParent.find('.rmText').before(strHtml);
@@ -452,7 +348,6 @@ $(document).ready(function () {
                             }
                         }
                     });
-
                     element.parents('.panel-flat').remove();
                     if (siict < 2) {
                         $('.addCt').trigger('click');
@@ -478,14 +373,12 @@ $(document).ready(function () {
             }
         })
     })
-
     // ReOder
     ReOder = function () {
         $('.wrap-content .panel.panel-flat').each(function (index) {
             $(this).attr('indexpanel', index + 1);
         });
     }
-
     // Paging
     $('body').on('change', '.limitPage', function () {
         var limitPageVal = $(this).find(":selected").val();
@@ -590,6 +483,25 @@ $(document).ready(function () {
                     }
 
                 });
+
+                $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
+                    if ($(this).find('select.selectKeyword').length > 0) {
+                        cardID = $(this).find('select.selectKeyword').val();
+                        console.log(cardID)
+                        if (cardID == '' || cardID == undefined) {
+                            $(this).addClass('has-error');
+                            checkvalid = false;
+                        } else {
+                            $(this).parents('.has-error').removeClass('has-error');
+                        }
+                    } 
+                });
+                
+                if ($(this).find('.tags .addedTag').length == 0) {
+                    checkvalid = false;
+                }
+     
+
             }
         });
 
@@ -607,37 +519,21 @@ $(document).ready(function () {
         });
         // End Validate Form
         if (checkvalid) {
-            //$.blockUI({
-            //    message: '<i class="icon-spinner4 spinner"></i>',
-            //    overlayCSS: {
-            //        backgroundColor: '#000',
-            //        opacity: 0.85,
-            //        cursor: 'wait'
-            //    },
-            //    css: {
-            //        border: 0,
-            //        padding: 0,
-            //        backgroundColor: 'transparent',
-            //        color: '#fff',
-            //    }
-            //});
-
             var arData = [];
             var arrGrpQna = [];
             $('.wrap-content .panel-flat').each(function (index, el) {
+                var quesGroupId = $(this).attr('data-quesgroup-id');
                 var userSays = [];
-
                 var userExactly = $(this).find('.userSay .styled').is(':checked');
                 //userExactly = userExactly ? 1 : 0;
-                //userExactly = userExactly;
-
                 $(this).find('.tags .addedTag').each(function (index1, el1) {
                     var question = {
-                        'ContentText': decodeEntities($(el1).children('input').val()).trim(),
+                        'ContentText': decodeEntities($(el1).children('input').val()).trim(),//decode bỏ các ký tự đặc biệt
                         'IsThatStar': userExactly,
+                        'CodeSymbol': $(el1).children('input').attr('data-ques-symbol'),
+                        'ID'        : $(el1).children('input').attr('data-ques-id'),
                         'Index': index1
                     }
-                    //userSays.push(decodeEntities($(el1).children('input').val()).trim());
                     userSays.push(question);
                 })
 
@@ -647,35 +543,23 @@ $(document).ready(function () {
                         cardID = '',
                         cardPayload ='';
                     if ($(this).find('select.selectKeyword').length > 0) {                      
-                        //botReplys.push([$(this).find('select.selectKeyword').val()]);
                         cardID = $(this).find('select.selectKeyword').val();
                         cardPayload = "postback_card_" + $(this).find('select.selectKeyword').val();
                     } else {
-                        //botReplys.push($(this).find('input[type=text]').val());
                         reply = $(this).find('input[type=text]').val();
                     }
                     var answer = {
                         'ContentText': reply,
                         'CardID':cardID,
                         'CardPayload': cardPayload,
-                        'Index': index1
+                        'Index': index1,
+                        'ID' : $(el1).attr('data-answer-id')
                     }
                     botReplys.push(answer);
                 });
 
-                //var ojData = {
-                //    'userSays': userSays.join(),
-                //    'exactly': userExactly,
-                //    'botReplys': botReplys
-                //}
-                //arData.push(ojData);
-
-
-                // ngay` mai lam` them 1 bang nua chua id cho form QNA , roi` xet' co id hay khong de? xet add update, truong hop update chi luu cai' nao co' thay doi?
-
-
                 var groupQnA = {
-                    'ID': "",
+                    'ID': quesGroupId,
                     'Index': index + 1,
                     'BotQnAnswerID': $("#botQnAnswerID").val(),
                     'IsKeyWord': userExactly,
@@ -683,48 +567,27 @@ $(document).ready(function () {
                         'QuestionViewModels': userSays,// k join toi chuoi~
                         'AnswerViewModels': botReplys
                     }
-
                 }
                 arrGrpQna.push(groupQnA);
             });
             var qGroupVm = {
                 'BotID': $("#botId").val(),
-                'QuestionGroupViewModels': arrGrpQna//ienumerable 
+                'TypeAction':TypeAction,
+                'QuestionGroupViewModels': arrGrpQna
                 
             }
-            //console.log(arData)
+
+            // Type Action : Add Update
             console.log(qGroupVm)
 
-            var urlTest = "api/qna/create";
-            var svr = new AjaxCall(urlTest, JSON.stringify(qGroupVm));
+            var svr = new AjaxCall(urlQnACreate, JSON.stringify(qGroupVm));
             svr.callServicePOST(function (data) {
                 console.log(data)
+                if (data == true) {
+                    new ActionFormQnA().GetQnAnswerById();
+                }
             })
 
-
-            //$.ajax({
-            //    url: urlKeywordsAdd,
-            //    type: 'POST',
-            //    data: {
-            //        _id: $('[name="_id"]').val(),
-            //        idBot: $('[name="idBot"]').val(),
-            //        idPage: $('[name="idPage"]').val(),
-            //        Status: $('[name="Status"]').val(),
-            //        timezone: $('[name="timezone"]').val(),
-            //        lang: $('[name="lang"]').val(),
-            //        idGroup: $('[name="id"]').val(),
-            //        group: $('[name="group"]').val(),
-            //        learning: arData
-            //    },
-            //}).done(function (val) {
-            //    if (val == 1) {
-            //        window.location.href = urlKeywordIndex;
-            //    } else {
-            //        $.unblockUI();
-            //    }
-            //}).fail(function () {
-            //    $.unblockUI();
-            //})
         } else {
             swal({
                 title: "Error",
@@ -737,6 +600,213 @@ $(document).ready(function () {
 
 })
 
+// CRUD - GET
+ActionFormQnA = function () {
+    this.GetQnAnswerById = function () {
+        var param = {
+            botQnaID: $("#botQnAnswerID").val()
+        };
+        var svr = new AjaxCall(urlQnAGet, param);
+        svr.callServiceGET(function (data) {
+            if (data.length != 0) {
+                TypeAction = "Update";
+                var templateData = templateFormQnA(data);
+                $("#form-qna").empty().append(templateData);
+                // reactive dropdown
+                $.each(lstCardSelected, function (index, value) {
+                    activeDropdown(value.cardID,value.answerID)
+                })
+                // reactive event tag
+                initEventTag();
+            }
+
+        });
+    }
+    //render template
+    function templateFormQnA(data) {
+        lstCardSelected = [];
+        var html = '';
+        html += ' <div class="wrap-content" data-countpanel="' + data.length + '">';
+        for(var i = 0; i < data.length; i++){
+            var itemGroupQnA = data[i];
+            var grQnAnswerID = itemGroupQnA.ID;
+            var index = itemGroupQnA.Index;
+
+            html += '<div class="panel panel-flat" indexpanel="' + index + '"  data-quesgroup-id="' + grQnAnswerID + '">';
+            html +=     '<div class="panel-body">';
+            html +=         '<i class="fa fa-trash icon-bin rmCt"></i>';
+            html +=         '<div class="wrMove">';
+            html +=             '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>';
+            html +=             '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>';
+            html +=         '</div>';
+            html +=         '<div class="row">';
+            html +=             '<div class="col-lg-6 userSay">';
+            html +=                 '<label>Người dùng nói</label>';
+            html +=                 '<div class="input-group">';
+            html +=                     '<ul class="tags checkvalid">';
+            if (itemGroupQnA.Questions.length != 0) {
+                var lstQuestion = itemGroupQnA.Questions;
+                $.each(lstQuestion, function (index, value) {
+                    html += '<li class="addedTag">' + value.ContentText + '<span class="tagRemove">x</span><input type="hidden" value="' + value.ContentText + '" data-ques-id="' + value.ID + '" data-ques-symbol="' + value.CodeSymbol + '"></li>';
+                })
+            }
+            html +=                         '<li class="tagAdd taglist">';
+            html +=                             '<input type="text" class="search-field">';
+            html +=                         '</li>';
+            html +=                     '</ul>';
+            html +=                     '<span class="input-group-addon">';
+            if (itemGroupQnA.IsKeyword == true) {
+                html +=                 '<input type="checkbox" class="styled" checked="checked">';
+            } else {
+                html +=                 '<input type="checkbox" class="styled">';
+            }
+            html +=                     '</span>';
+            html +=                 '</div>';
+            html +=             '</div>';
+            html +=             '<div class="col-lg-6 botReply">';
+            html +=                 '<label>Bot trả lời với&nbsp;</label>';
+            if (itemGroupQnA.Answers.length != 0 && itemGroupQnA.Answers.length == 1) {
+                var itemAnswer = itemGroupQnA.Answers[0];
+                if (itemAnswer.ContentText != '') {
+                    html +=                 '<label class="learn_switchbot">';
+                    html +=                     '<input type="checkbox" class="learn_switchinput" checked="">';
+                    html +=                     '<span class="learn_sliderbot learn_roundbot"></span>';
+                    html +=                 '</label>';
+                    html +=                 '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">';
+                    html +=                     '<label>';
+                    html +=                         '<input type="checkbox" class="switchery randomText" style="display:none">';
+                    html +=                         '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;">';
+                    html +=                             '<small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>';
+                    html +=                         '</span>';
+                    html +=                         'Ngẫu nhiên';
+                    html +=                     '</label>';
+                    html +=                 '</div>';
+                    html +=                 '<div class="wrbutton" indexbt="1">';
+                    html +=                     '<div class="bt" data-answer-id="'+itemAnswer.ID+'">';
+                    html +=                         '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320" value="'+itemAnswer.ContentText+'">';
+                    html +=                         '<i class="fa fa-remove icon-bin rmText"></i>';
+                    html +=                     '</div>';
+                    html +=                 '</div>';
+                    html +=                 '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
+                    html +=                     '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html +=                 '</button>';
+                } else { //card
+                    html +=                 '<label class="learn_switchbot">';
+                    html +=                     '<input type="checkbox" class="learn_switchinput">';
+                    html +=                     '<span class="learn_sliderbot learn_roundbot"></span>';
+                    html +=                 '</label>';
+                    html +=                 '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">';
+                    html +=                     '<label>';
+                    html +=                         '<input type="checkbox" class="switchery randomText" style="display:none">';
+                    html +=                         '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;">';
+                    html +=                             '<small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>';
+                    html +=                         '</span>';
+                    html +=                         'Ngẫu nhiên';
+                    html +=                     '</label>';
+                    html +=                 '</div>';
+                    html +=                 '<div class="wrbutton" indexbt="1">';
+                    html +=                     '<div class="bt" id="answer-'+itemAnswer.ID+'" data-answer-id="'+itemAnswer.ID+'">';
+                    html +=                         '<select id="select-card-'+itemAnswer.ID+'" data-live-search="true" class="form-control selectKeyword checkvalid">';
+                    html +=                             card();
+					html +=                         '</select>';
+                    html +=                         '<i class="fa fa-remove icon-bin rmText"></i>';
+                    html +=                     '</div>';
+                    html +=                 '</div>';
+                    html +=                 '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
+                    html +=                     '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html +=                 '</button>';                   
+                    var itemCard = {
+                        answerID: itemAnswer.ID,
+                        cardID: itemAnswer.CardID
+                    }
+                    lstCardSelected.push(itemCard)
+                }
+            }
+            else if (itemGroupQnA.Answers.length != 0 && itemGroupQnA.Answers.length > 1) {
+                var lstAnswer = itemGroupQnA.Answers;
+                var totalAnswer = itemGroupQnA.Answers.length;
+                html += '<label class="learn_switchbot">';
+                if (lstAnswer[0].ContentText != '') {
+                    html += '<input type="checkbox" class="learn_switchinput" checked="">';
+                } else {
+                    html += '<input type="checkbox" class="learn_switchinput">';
+                }
+                html += '<span class="learn_sliderbot learn_roundbot"></span>';
+                html += '</label>';
+                html += '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">';
+                html += '<label>';
+                html += '<input type="checkbox" class="switchery randomText" style="display:none">';
+                html += '<span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left: 14px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>';
+                html += '<small style="left: 14px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small>';
+                html += '</span>';
+                html += 'Ngẫu nhiên';
+                html += '</label>';
+                html += '</div>';
+                html += '<div class="wrbutton" indexbt="' + totalAnswer + '">';
+                $.each(lstAnswer, function (index, value) {
+                    var itemAnswer = value;
+                    if (itemAnswer.ContentText != '') {
+                        html += '<div class="bt" id="answer-' + itemAnswer.ID + '" data-answer-id="'+itemAnswer.ID+'">';
+                        html += '<input type="text" data-answer-id="' + itemAnswer.ID + '" autocomplete="off" class="form-control checkvalid" maxlength="320" value="' + itemAnswer.ContentText + '">';
+                        html += '<i class="fa fa-remove icon-bin rmText"></i>';
+                        html += '</div>';
+                    } else {
+                        html += '<div class="bt" id="answer-' + itemAnswer.ID + '" data-answer-id="'+itemAnswer.ID+'">';
+                        html += '<select id="select-card-' + itemAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
+                        html += card();
+                        html += '</select>';
+                        html += '<i class="fa fa-remove icon-bin rmText"></i>';
+                        html += '</div>';
+                        var itemCard = {
+                            answerID: itemAnswer.ID,
+                            cardID: itemAnswer.CardID
+                        }
+                        lstCardSelected.push(itemCard)
+                    }
+                })
+                html += '</div>';
+                if (totalAnswer >= 5) {
+                    html += '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
+                    html += '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html += '</button>';
+                } else {
+                    html += '<button type="button" class="btn btn-success btn-rounded mt20 w100">';
+                    html += '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html += '</button>';
+                }
+            }
+
+            html +=             '</div>';
+            html +=         '</div>';
+            html +=     '</div>';
+            html += '</div>';
+        }
+        html += '</div>';
+        return html;
+    }
+    function activeDropdown(cardId, answerID) {
+        var elParent = $('#answer-' + answerID + '');
+        var $elSelectCard = elParent.find('.rmText').parent().find('.selectKeyword').eq(0);
+        $elSelectCard.selectpicker('val', cardId);
+        $elSelectCard.on('show.bs.select', function (e) {
+            var val = $(this).selectpicker('val');
+            $(this).parents('.bt').find('.selectKeyword option').remove();
+            $(this).parents('.bt').find('select.selectKeyword').append(card());
+            $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+            $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
+        });
+        $elSelectCard.on('hidden.bs.select', function (e) {
+            var val = $(this).selectpicker('val');
+            $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
+                if ($(el).find('[value="' + val + '"]').length <= 0) {
+                    $(el).remove();
+                }
+            });
+            $(this).parents('.bt').find('.selectKeyword option:not([value="' + val + '"])').remove();
+            $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+        });
+    }
+}
 
 function appendPaging(countData, limitpage) {
     var htmlPaging = '';
@@ -770,6 +840,127 @@ function fn_htmlPaging(countData, limitpage) {
     }
     htmlPag += '<li class="next"><a href="#">&rsaquo;</a></li></ul>';
     return htmlPag;
+}
+
+function initEventTag() {
+
+    $('.wrap-content .addedTag').each(function (index, el) {
+        if (!$(this).hasClass('error-tag')) {
+            if ($('.wrap-content input[type="hidden"][value="' + $(this).children('input').val() + '"]').length > 1) {
+                $(this).addClass('error-tag');
+            }
+        }
+    });
+
+    $('.wrap-content').on('click', '.tagRemove', function (event) {
+        event.preventDefault();
+        if ($(this).parent().hasClass('error-tag')) {
+            var val = $(this).siblings('input').val();
+            if ($('.wrap-content input[type="hidden"][value="' + val + '"]').length <= 2) {
+                $('.wrap-content input[type="hidden"][value="' + val + '"]').parent('.addedTag').removeClass('error-tag');
+            }
+        }
+
+        $(this).parent().remove();
+    });
+
+    $('.wrap-content').on('click', 'ul.tags', function (event) {
+        $(this).find('.search-field').show();
+        $(this).find('.search-field').focus();
+    });
+
+    $('.wrap-content').on('keypress', '.search-field', function (event) {
+        var elParent = $(this).parents('.tags');
+        if (event.which == '13') {
+            if (($(this).val().trim() != '') && ($(".tags .addedTag input[value=\"" + $(this).val().trim() + "\"]").length == 0)) {
+                $("<li class=\"addedTag\">" + $(this).val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).val().toLowerCase().trim() + "\"></li>").insertBefore($(this).parents('.tagAdd'));
+
+                var attr = $(this).attr('attr-data');
+                if (typeof attr !== typeof undefined && attr !== false) {
+                    if ($('.wrap-content input[value="' + attr + '"]').length <= 1) {
+                        $('.wrap-content input[value="' + attr + '"]').parent('.addedTag').removeClass('error-tag');
+                    }
+                    $(this).removeAttr('attr-data');
+                }
+
+                $(this).val('');
+                $(this).parents('.tags').append($(this).parent().clone());
+                $(this).parent().remove();
+                elParent.find('.search-field').focus();
+            } else if ($(".tags .addedTag input[value=\"" + $(this).val().trim() + "\"]").length > 0) {
+                if (!checkAlert) {
+                    checkAlert = true;
+                    bootbox.alert({
+                        message: txtAlert,
+                        callback: function () {
+                            checkAlert = false;
+                        }
+                    });
+                }
+            } else {
+                $(this).val('');
+            }
+        }
+    });
+
+    $('.wrap-content').on('click', '.addedTag', function (event) {
+        event.preventDefault();
+        var elParent = $(this).parents('.tags');
+        var elSearch = $(this).parents('.tags').find('.tagAdd.taglist .search-field').val();
+
+        if (typeof elSearch != 'undefined') {
+            if ($(this).parents('.tags').find('.tagAdd.taglist .search-field').val().trim() == '') {
+                $(this).parents('.tags').find('.tagAdd.taglist').remove();
+            } else {
+                var html1 = "<li class=\"addedTag\">" + $(this).parents('.tags').find('.tagAdd.taglist .search-field').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).parents('.tags').find('.tagAdd.taglist .search-field').val().toLowerCase().trim() + "\" data-ques-id=\"\" data-ques-symbol=\"\"></li>";
+                $(this).parents('.tags').find('.tagAdd.taglist').replaceWith(html1);
+            }
+
+            var val = $(this).children('input').val().trim();
+            var html = '<li class="tagAdd taglist"><input type="text" autocomplete="off" attr-data="' + val + '" class="search-field" value="" style="display: inline-block;"></li>';
+            $(this).replaceWith(html);
+            elParent.find('.search-field').focus().val(val);
+        }
+
+    });
+
+    $('.wrap-content').on('focusout', '.tagAdd.taglist', function (event) {
+        var elParent = $(this).parents('.tags');
+        if ($(this).children('input').val().trim() != '') {
+            var classTag = '';
+            if ($(".tags .addedTag input[value=\"" + $(this).children('input').val().trim() + "\"]").length > 0) {
+                if (!checkAlert) {
+                    checkAlert = true;
+                    bootbox.alert({
+                        message: txtAlert,
+                        callback: function () {
+                            checkAlert = false;
+                        }
+                    });
+                }
+
+                classTag = 'error-tag';
+            }
+
+            $("<li class=\"addedTag " + classTag + "\">" + $(this).children('input').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).children('input').val().toLowerCase().trim() + "\"></li>").insertBefore($(this));
+
+            // var attr = $(this).children('input').attr('attr-data');
+            // if (typeof attr !== typeof undefined && attr !== false) {
+            // 	if($('input[value=\""+attr+"\"]').size() <= 1){
+            // 		$('input[value=\""+attr+"\"]').parent('.addedTag').removeClass('error-tag');
+            // 	}
+            $(this).children('input').removeAttr('attr-data');
+            // }
+            //
+            $(this).children('input').val('');
+            $(this).parents('.tags').append($(this).clone());
+            $(this).remove();
+            elParent.find('.search-field').focus();
+        } else {
+            $(this).children('input').val('');
+        }
+    })
+
 }
 
 var decodeEntities = (function () {

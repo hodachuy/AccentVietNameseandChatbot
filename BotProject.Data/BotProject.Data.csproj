@@ -130,6 +130,14 @@
     <Compile Include="Migrations\201903241443203_U181.Designer.cs">
       <DependentUpon>201903241443203_U181.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903250158267_U20.cs" />
+    <Compile Include="Migrations\201903250158267_U20.Designer.cs">
+      <DependentUpon>201903250158267_U20.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201903250720465_U21.cs" />
+    <Compile Include="Migrations\201903250720465_U21.Designer.cs">
+      <DependentUpon>201903250720465_U21.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -214,6 +222,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903241443203_U181.resx">
       <DependentUpon>201903241443203_U181.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903250158267_U20.resx">
+      <DependentUpon>201903250158267_U20.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903250720465_U21.resx">
+      <DependentUpon>201903250720465_U21.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

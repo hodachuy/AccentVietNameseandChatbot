@@ -14,5 +14,8 @@ namespace BotProject.Common
         public const string PathImage = "Card";
 
         public const string PostBackCard = "postback_card_";
+
+        public const string CreateQnA = "Create";
+        public const string UpdateQnA = "Update";
     }
 }
