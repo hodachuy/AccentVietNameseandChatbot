@@ -50,7 +50,7 @@ function getDataTable(page, pageSize) {
     }
     param = JSON.stringify(param)
     $.ajax({
-        url: _Host + 'api/GetAll',
+        url: _Host + 'apiv1/GetAll',
         contentType: 'application/json; charset=utf-8',
         data: param,
         type: 'POST',
@@ -72,7 +72,7 @@ function getSuggest(content) {
     }
     param = JSON.stringify(param)
     $.ajax({
-        url: _Host + 'api/Suggest',
+        url: _Host + 'apiv1/Suggest',
         contentType: 'application/json; charset=utf-8',
         data: param,
         type: 'POST',
@@ -93,7 +93,7 @@ function search(content) {
     }
     param = JSON.stringify(param)
     $.ajax({
-        url: _Host + 'api/Search',
+        url: _Host + 'apiv1/Search',
         contentType: 'application/json; charset=utf-8',
         data: param,
         type: 'POST',

@@ -15,8 +15,8 @@ namespace BotProject.Web
         private static readonly object lockObject = new object();
         private AccentService()
         {
-            string _path1Gram = HostingEnvironment.MapPath("~/Datasets_Training_Accent/news1gram");
-            string _path2Gram = HostingEnvironment.MapPath("~/Datasets_Training_Accent/news2grams");
+            string _path1Gram = HostingEnvironment.MapPath("~/File/Datasets_Training_Accent/news1gram");
+            string _path2Gram = HostingEnvironment.MapPath("~/File/Datasets_Training_Accent/news2grams");
             accent.InitNgram(_path1Gram, _path2Gram);
         }
         public static AccentService AccentInstance

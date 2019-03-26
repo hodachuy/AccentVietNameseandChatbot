@@ -53,7 +53,7 @@ $("#accent-vn").popover({
 function getAccentVN(element) {
     var text = $(element).text();
     $.ajax({
-        url: _Host + 'api/GetAccentVN?text=' + text,
+        url: _Host + 'apiv1/GetAccentVN?text=' + text,
         contentType: 'application/json; charset=utf-8',
         type: 'GET',
         success: function (result) {
@@ -89,7 +89,7 @@ function getAccentVN(element) {
 function getMultiPredictVN(element) {
     var text = $(element).text();
     $.ajax({
-        url: _Host + 'api/GetMultiMatchesAccentVN?text=' + text,
+        url: _Host + 'apiv1/GetMultiMatchesAccentVN?text=' + text,
         contentType: 'application/json; charset=utf-8',
         type: 'GET',
         success: function (results) {
