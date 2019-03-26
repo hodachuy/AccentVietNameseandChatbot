@@ -1,5 +1,5 @@
 ﻿var _color = "rgb(234, 82, 105);",
-    _srcLogo = _Host + "Content/img/user_bot.jpg";
+    _srcLogo = _Host + "assets/images/user_bot.jpg";
 
 var MESSAGE = {
     ERROR_01: "Xin lỗi, Tôi không hiểu",
@@ -249,7 +249,7 @@ function submitMessage(text, textPostback) {
 // icon setting non accent chatbo   
 function get_message_bot_accent(text) {
     $.ajax({
-        url: _Host + '/api/convertVN?text=' + text,
+        url: _Host + '/apiv1/convertVN?text=' + text,
         contentType: 'application/json; charset=utf-8',
         type: 'GET'
     }).done(function (response) {
@@ -284,7 +284,7 @@ function getMessageBot(text) {
     }
     param = JSON.stringify(param)
     $.ajax({
-        url: _Host + 'api/chatbot',
+        url: _Host + 'apiv1/chatbot',
         contentType: 'application/json; charset=utf-8',
         data: param,
         type: 'POST',

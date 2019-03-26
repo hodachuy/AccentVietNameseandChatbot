@@ -220,24 +220,27 @@
     <script>
 
         var lstCard = @Html.Raw(Json.Encode(Model));
-        function lstCardData() {
+        console.log(lstCard);
+        function card() {
             var html = '<optgroup label="DANH SÁCH THẺ">';
             if (lstCard.length != 0) {
                 $.each(lstCard, function (index, value) {
                     html += '<option value="'+value.ID+'">'+value.Name+'</option>';
                 })
+            }else{
+                html += '<option value=""></option>';
             }
             html += '</optgroup>';
-            console.log(html)
             return html;
 
         }
-        lstCardData();
+        card();
 
-        function card() {
-            var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="1">BẮT ĐẦU</option><option  value="2">CÂU MẶC ĐỊNH</option><option  value="3">LIÊN HỆ</option><option  value="4">CÁC CHUYÊN MỤC</option><option  value="5">TRANG CHỦ</option></optgroup>';
-            return htmlListCard;
-        }
+
+        //function card() {
+        //    var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="1">BẮT ĐẦU</option><option  value="2">CÂU MẶC ĐỊNH</option><option  value="3">LIÊN HỆ</option><option  value="4">CÁC CHUYÊN MỤC</option><option  value="5">TRANG CHỦ</option></optgroup>';
+        //    return htmlListCard;
+        //}
         function module() {
             var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
             return htmlListModule;

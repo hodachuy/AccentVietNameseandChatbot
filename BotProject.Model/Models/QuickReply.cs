@@ -27,7 +27,7 @@ namespace BotProject.Model.Models
 
         public int? CardID { set; get; }
 
-        [ForeignKey("CardID")]
-        public virtual Card Card { set; get; }
+        //[ForeignKey("CardID")]
+        //public virtual Card Card { set; get; }
     }
 }

@@ -589,8 +589,10 @@ $(document).ready(function () {
             svr.callServicePOST(function (data) {
                 console.log(data)
                 if (data == true) {
+                    // refresh load new data updated
                     new ActionFormQnA().GetQnAnswerById();
                 }
+                new ActionFormQnA().RenderToAiml();
             })
 
         } else {
@@ -834,6 +836,21 @@ ActionFormQnA = function () {
             });
             $(this).parents('.bt').find('.selectKeyword option:not([value="' + val + '"])').remove();
             $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+        });
+    }
+
+    //render aiml form QnA
+    this.RenderToAiml = function () {
+        var param = {
+            botId: $("#botId").val(),
+            botQnaID: $("#botQnAnswerID").val(),
+            botAlias:$("#botAlias").val(),
+            userID: $("#userId").val()
+        };
+        var urlTest = "api/qna/getaimlqna";
+        var svr = new AjaxCall(urlTest, param);
+        svr.callServiceGET(function (data) {
+            console.log(data)
         });
     }
 }

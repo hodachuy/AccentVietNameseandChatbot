@@ -244,6 +244,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\Apiv1Controller.cs" />
+    <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
     <Compile Include="API\BotQnAController.cs" />
     <Compile Include="API\CardController.cs" />
@@ -268,9 +270,11 @@
     </Compile>
     <Compile Include="Infrastructure\Core\ApiControllerBase.cs" />
     <Compile Include="Infrastructure\Core\BaseController.cs" />
+    <Compile Include="Infrastructure\Core\BotService.cs" />
     <Compile Include="Infrastructure\Core\PaginationSet.cs" />
     <Compile Include="Infrastructure\Core\ServiceFactory.cs" />
     <Compile Include="Infrastructure\Extensions\EntityExtensions.cs" />
+    <Compile Include="Infrastructure\Helper\Helper.cs" />
     <Compile Include="Mappings\AutoMapperConfiguration.cs" />
     <Compile Include="Models\AIMLViewModel.cs" />
     <Compile Include="Models\ApplicationGroupViewModel.cs" />
@@ -644,6 +648,7 @@
     <Content Include="assets\images\slack.png" />
     <Content Include="assets\images\switch.png" />
     <Content Include="assets\images\banner.jpg" />
+    <Content Include="assets\images\user_bot.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="File\AIML\config\DefaultPredicates.xml" />
     <Content Include="File\AIML\config\GenderSubstitutions.xml" />
@@ -652,6 +657,8 @@
     <Content Include="File\AIML\config\Settings.xml" />
     <Content Include="File\AIML\config\Splitters.xml" />
     <Content Include="File\AIML\config\Substitutions.xml" />
+    <Content Include="File\Datasets_Training_Accent\AccentInfo.txt" />
+    <Content Include="File\Datasets_Training_Accent\test.txt" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
@@ -694,6 +701,18 @@
     <Content Include="assets\client\vendor\fonts\themify-icons\fonts\themify9f24.eot" />
     <Content Include="assets\client\vendor\fonts\themify-icons\fonts\themifyd41d.eot" />
     <Content Include="assets\client\vendor\fonts\weather-icons\fonts\weathericons-regular-webfont.eot" />
+    <Content Include="File\Datasets_Training_Accent\news1gram" />
+    <Content Include="File\Datasets_Training_Accent\news2grams" />
+    <Content Include="AppSettings.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\botQnA_ID_2_form-training-v1.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2007_gioi-thieu.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2008_linh-vuc-yes.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2009_linh-vuc-no.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2010_tag-linh-vuc.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2011_linh-vuc-so-huu-tri-tue.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2012_linh-vuc-thue-phi-le-phi.aiml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
@@ -718,7 +737,6 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
     <Content Include="Views\Account\ConfirmEmail.cshtml" />
     <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
@@ -740,12 +758,15 @@
     <Content Include="Views\Bot\CardCategory.cshtml" />
     <Content Include="Views\Bot\AIML.cshtml" />
     <Content Include="Views\Shared\Footer.cshtml" />
+    <Content Include="Views\Apiv1\Index.cshtml" />
+    <Content Include="Views\Apiv1\FormChat.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="assets\client\img\" />
     <Folder Include="File\Images\Card\" />
     <Folder Include="Views\AccentVN\" />
+    <Folder Include="Views\Home\" />
     <Folder Include="Views\SearchEngine\" />
   </ItemGroup>
   <ItemGroup>

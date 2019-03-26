@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_2009</pattern>
+<template>
+Bạn có muốn chọn lại lĩnh vực không?
+<button>
+<text>Danh mục lĩnh vực</text>
+<menu>postback_card_2010</menu>
+</button>
+<button>
+<text>Có</text>
+<postback>postback_card_2010</postback>
+</button>
+<button>
+<text>Quay lại</text>
+<postback>postback_card_2007</postback>
+</button>
+</template>
+</category>
+</aiml>

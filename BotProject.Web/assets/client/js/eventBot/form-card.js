@@ -109,7 +109,6 @@ $(document).ready(function () {
         var urlTest = "api/card/getbyid";
         var svr = new AjaxCall(urlTest, param);
         svr.callServiceGET(function (data) {
-            console.log(data)
             renderCard(data)
         });
 
@@ -148,7 +147,7 @@ $(document).ready(function () {
                             tempGnrItem +=                            '<i class="icon-bin fa fa-trash"></i>';
                             tempGnrItem +=                        '</div>';
                             tempGnrItem +=                    '</div>';
-                            tempGnrItem +=                    '<div class="wr_image" attachment_id="'+tempItem.AttachmentID+'" style="background-image: url(&quot;'+tempItem.Image+'&quot;);">';
+                            tempGnrItem +=                    '<div class="wr_image" attachment_id="'+tempItem.AttachmentID+'" style="background-image: url(&quot;'+_Host+tempItem.Image+'&quot;);">';
                             tempGnrItem +=                        '<input class="inputfile" type="file" accept="image/*">';
                             tempGnrItem +=                        '<div class="clickinput" style="display: none;">';
                             tempGnrItem +=                            '<i class="icon-camera fa fa-camera"></i>';
@@ -176,13 +175,12 @@ $(document).ready(function () {
                             tempGnrItem +=                   '<div class="wr_button">';
                             if (tempItem.ButtonPostbacks.length != 0) {
                                 $.each(tempItem.ButtonPostbacks, function (index, value) {
-                                    var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CarPayloadID; });
-                                    console.log(obj_card_payload)
+                                    var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CardPayloadID; });
                                     var name_card = '';
                                     if (obj_card_payload.length != 0) {
                                         name_card = obj_card_payload[0].Name;
                                     }
-                                    tempGnrItem += '<div class="bt" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CarPayloadID + '">' + name_card + '</span></p></div>';
+                                    tempGnrItem += '<div class="bt" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
                                 })
                             }
                             if (tempItem.ButtonLinks.length != 0) {
@@ -216,7 +214,7 @@ $(document).ready(function () {
                 tempImage +=     '<i class="icon-bin fa fa-trash"></i>';
                 tempImage +=     '</div>';
                 tempImage +=     '</div>';
-                tempImage += '<div class="wr_image bl_image" attachment_id="' + value.ID + '" style="background-image: url(&quot;' + value.Url + '&quot;);">';
+                tempImage += '<div class="wr_image bl_image" attachment_id="' + value.ID + '" style="background-image: url(&quot;' + _Host + value.Url + '&quot;);">';
                 tempImage +=     '<input class="inputfile" type="file" accept="image/*">';
                 tempImage +=     '<div class="clickinput" style="display: none;"><i class="icon-camera fa fa-camera"></i>';
                 tempImage +=     '<br>Tải ảnh lên</div>';
@@ -233,13 +231,12 @@ $(document).ready(function () {
                 tempText += '<div class="wr_button">';
                 if (value.ButtonPostbacks.length != 0) {
                     $.each(value.ButtonPostbacks, function (index, value) {
-                        var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CarPayloadID; });
-                        console.log(obj_card_payload)
+                        var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CardPayloadID; });
                         var name_card = '';
                         if (obj_card_payload.length != 0) {
                             name_card = obj_card_payload[0].Name;
                         }
-                        tempText += '<div class="bt" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CarPayloadID + '">' + name_card + '</span></p></div>';
+                        tempText += '<div class="bt" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
                     })
                 }
                 if (value.ButtonLinks.length != 0) {
@@ -253,7 +250,23 @@ $(document).ready(function () {
             })
             $("#multi").append(tempText);
         }
-        
+        // quickreply
+        if (data.QuickReplys.length != 0) {
+            $("#wr_reply").show();
+            var tempQuickReply = '';
+            $.each(data.QuickReplys, function (index, value) {
+                var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CardPayloadID; });
+                var name_card = '';
+                if (obj_card_payload.length != 0) {
+                    name_card = obj_card_payload[0].Name;
+                }
+                tempQuickReply += '<li class="reply" draggable="true"><div class="reply_action"><div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div><div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div></div><div class="wr_reply_btcontent" attr-reply="postback"><div class="name-button no-img">' + value.Title + '</div><div class="reply_btcontent"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></div></div></li>'
+            })
+            tempQuickReply += '<li class="add_reply"><div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div></li>';
+            $("#blReply").empty().append(tempQuickReply);
+        }
+
+        $('.card_quickReply').removeClass('disable');
     }
 
     // ====================================================================
@@ -672,7 +685,7 @@ $(document).ready(function () {
                             var image_url = '';
                             var attachment_image = '';
                             if ($(this).find('.wr_image').css('background-image') != 'none') {
-                                image_url = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                                image_url = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(''+_Host+'','');
                                 attachment_image = $(this).find('.wr_image').attr('attachment_id');
                             }
 
@@ -1050,7 +1063,7 @@ $(document).ready(function () {
                     if (checkCard) {
                         var payload = '';
                         // if($(this).find('.wr_image').attr('attachment_id')==null){
-                        var srcImage = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "");
+                        var srcImage = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(''+_Host+'','');
                         payload = { "url": srcImage };
                         // }else{
                         //     payload = {"attachment_id": $(this).find('.wr_image').attr('attachment_id')};
@@ -1485,7 +1498,7 @@ $(document).ready(function () {
                             "Title": $(this).find('.wr_reply_btcontent .name-button').text(),
                             "Payload": payload,
                             "CardPayloadID": payload_id,
-                            "Icon": $(this).find('.wr_reply_btcontent i').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "")
+                            "Icon": $(this).find('.wr_reply_btcontent i').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(""+_Host+"","")
                         };
                         ar_quickReply_sql.push(obj_quickReply_sql);
                     } else {

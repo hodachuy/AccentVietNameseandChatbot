@@ -85,6 +85,7 @@
     <Compile Include="User.cs" />
     <Compile Include="Utils\AIMLLoader.cs" />
     <Compile Include="Utils\AIMLTagHandler.cs" />
+    <Compile Include="Utils\Common.cs" />
     <Compile Include="Utils\CustomTag.cs" />
     <Compile Include="Utils\Gender.cs" />
     <Compile Include="Utils\MatchState.cs" />
@@ -109,6 +110,9 @@
       <Project>{FA7E7A50-114F-4713-9107-A1E4C41DDC32}</Project>
       <Name>Accent.Utils</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AppSettings.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

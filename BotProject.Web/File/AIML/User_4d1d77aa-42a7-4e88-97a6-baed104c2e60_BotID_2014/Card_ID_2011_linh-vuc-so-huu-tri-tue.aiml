@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_2011</pattern>
+<template>
+Lĩnh vực Sở hữu trí tuệ, hiện tại có 23100 văn bản luật và 2600 câu hỏi liên quan đến lĩnh vực bạn quan tâm.
+Bạn có thể gửi câu hỏi cho tôi?
+<button>
+<text>Văn bản pháp quy</text>
+<url>http://qa.surelrn.vn/van-ban/So-huu-tri-tue.ar-12.html</url>
+</button>
+<button>
+<text>Câu hỏi pháp luật</text>
+<url>http://qa.surelrn.vn/cau-hoi-phap-luat.html?lv=12</url>
+</button>
+<button>
+<text>Gửi câu hỏi</text>
+<postback>postback_card_2008</postback>
+</button>
+<button>
+<text>Quay lại</text>
+<postback>postback_card_2009</postback>
+</button>
+</template>
+</category>
+</aiml>

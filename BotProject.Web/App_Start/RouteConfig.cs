@@ -33,7 +33,6 @@ namespace BotProject.Web
              defaults: new { controller = "Bot", action = "AIML", id = UrlParameter.Optional },
                namespaces: new string[] { "BotProject.Web.Controllers" }
             );
-
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

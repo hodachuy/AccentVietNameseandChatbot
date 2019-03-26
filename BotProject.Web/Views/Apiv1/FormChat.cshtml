@@ -1,0 +1,626 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="origin-when-crossorigin" id="meta_referrer">
+
+    <link rel="manifest" href="/data/manifest/" crossorigin="use-credentials">
+    <title>ChatBot</title>
+    <link href="~/assets/client/css/lvbot-chat-dialog/c1_YoRGRY8zOwk.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c2_7E4oLQ9UO5V.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c3_PqmL6kgI3br.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c4_H5jZEVJpC2C.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c5_rouofWlolT7.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c6_t7hqTmVKZ.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c7_BQWrbCxwKTG.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c8_D4caviXZRzb.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c9_qa0aCGHSAgX.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c10_Ft5ovaKZZ_s.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c11_hZOCwdDXbub.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c12_lg5y1PL83FJ.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c13_29AQiV_7KWW.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c14_dfqeVEN1uIb.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c15_ThXTQTvkXzY.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c16_NBmlZsJMwcg.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c17_Y8U2p4FZgyH.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c18_Iq_mLA6uRtL.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    @*<script src="~/Scripts/jquery-2.1.4.min.js"></script>*@
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
+    </script>
+    <style>
+        .hide {
+            display: none !important;
+        }
+    </style>
+</head>
+<body dir="ltr" class="plugin chrome webkit win x1 Locale_vi_VN">
+    <div class="_li">
+        <div class="pluginSkinLight pluginFontHelvetica">
+            <div>
+                <div id="u_0_0">
+                    <div class="_30ss _3-8j">
+                        <div class="_6atl _6atm">
+                            <span>
+                                <div class="_3gog _6ati" style="border-radius: 9pt;">
+                                    <div class="_f_0">
+                                        <div class="_1qd1 _1qd1_close_form">
+                                            <div class="_2t-5 _4bqf" tabindex="0" role="button">
+                                                <svg width="10px" height="10px" viewBox="0 0 14 14">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g transform="translate(-419.000000, -413.000000)">
+                                                            <g transform="translate(164.000000, 396.000000)">
+                                                                <g>
+                                                                    <g transform="translate(250.000000, 12.000000)">
+                                                                        <g>
+                                                                            <g>
+                                                                                <rect opacity="0.200000003" x="0" y="0" width="24" height="24"></rect>
+                                                                                <g transform="translate(4.000000, 4.000000)" fill="#000000">
+                                                                                    <rect transform="translate(8.000000, 8.000000) rotate(45.000000) translate(-8.000000, -8.000000) " x="7" y="-1" width="2" height="18" rx="1"></rect>
+                                                                                    <rect transform="translate(8.000000, 8.000000) rotate(135.000000) translate(-8.000000, -8.000000) " x="7" y="-1" width="2" height="18" rx="1"></rect>
+                                                                                </g>
+                                                                            </g>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="_hov">
+                                            <div class="_how _4ik4 _4ik5" style="-webkit-line-clamp: 1;">Hỏi đáp pháp luật</div>
+                                            <div class="_hox _4ik4 _4ik5" style="-webkit-line-clamp: 1;"></div>
+                                        </div>
+                                        <div class="_1qd3 _1qd3_btn_setting">
+                                            <div class="_4bqf _17l7" tabindex="0" role="button">
+                                                <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g transform="translate(-413.000000, -56.000000)">
+                                                            <g transform="translate(90.000000, 44.000000)">
+                                                                <g>
+                                                                    <g>
+                                                                        <g transform="translate(324.000000, 13.000000)">
+                                                                            <circle fill="#FFFFFF" stroke="#ea5269" cx="11" cy="11" r="11"></circle>
+                                                                            <path d="M11,9 L12,9 L12,17 L13,17 L13,17.5 L9,17.5 L9,17 L10,17 L10,9.5 L9,9.5 L9,9 L11,9 Z M11,4.5 C11.8284271,4.5 12.5,5.17157288 12.5,6 C12.5,6.82842712 11.8284271,7.5 11,7.5 C10.1715729,7.5 9.5,6.82842712 9.5,6 C9.5,5.17157288 10.1715729,4.5 11,4.5 Z" fill="#ea5269"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="_424s">
+                                        <div class="_4fsi" style="display:none;">
+                                            <div class="_2jjx">
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(240, 61, 37);"><input type="checkbox" id="chk-stt-accent" checked /> Hổ trợ hiểu không dấu Tiếng Việt</div>
+                                            </div>
+                                            <div class="_2jjx">
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(234, 82, 105);"><input type="checkbox" id="chk-stt-popup" /> Hiển thị xem chi tiết cùng trang</div>
+                                            </div>
+
+                                            @*<div class="_2jjx">
+                                                    <a class="_4bqf _4fsj" target="_blank" href="https://l.facebook.com/l.php?u=https%3A%2F%2Fm.me%2F217837024911046%3Ffbclid%3DIwAR3rXn1fg8akuU1P_BIFLogPNqX0pctMeXn6lPvS7YUKV3Vk207DCpN4H9o&amp;h=AT29j_-wZqb8suSNdRV7-bNFSzscbk0cKjw7z6fnYt93o_C9nfN-GlzQ-Bsr9lDkAjvGwFDEdn0UVLw2sRrTmJHsNO8ZNJYmVMnjzy8uIW2iSEXa-sxDIZ_kgZOwIpMUVV9mVA" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">
+                                                        Xem trên Messenger
+                                                    </a>
+                                                </div>
+                                                <div class="_2jjx">
+                                                    <a class="_4bqf _4fsj" target="_blank" href="https://facebook.com/217837024911046" style="color: rgb(234, 82, 105);">
+                                                        Truy cập Trang Facebook
+                                                    </a>
+                                                </div>
+                                                <div class="_2jjx">
+                                                    <a class="_4bqf _4fsj" target="_blank" href="https://www.facebook.com/business/m/add-messenger-to-your-website" style="color: rgb(234, 82, 105);">
+                                                        Thêm Messenger vào trang web của bạn
+                                                    </a>
+                                                </div>*@
+                                        </div>
+                                        @*contentAfter uiScrollableAreaTrackOver uiScrollableAreaDragging contentBefore*@
+                                        <div class="_5f0v uiScrollableArea ">
+                                            @*<div class="uiScrollableAreaTrack hidden_elem" tabindex="0" style="opacity: 0;">
+                                                    <div class="uiScrollableAreaGripper" style="top: 0px; height: 71.4043px;"></div>
+                                                </div>*@
+                                            <div class="uiScrollableAreaWrap scrollable" id="js_0" style="overscroll-behavior: contain contain;">
+                                                <div class="uiScrollableAreaBody" style="margin-right: -17px;">
+                                                    <div class="uiScrollableAreaContent">
+                                                        <div>
+                                                            <div class="preventScrollOverflow">
+                                                                <div class="conversationContainer" id="js_scroll">
+                                                                    @*<h4 class="datebreak _497p _2lpt">
+                                                                            <time class="_3oh-">T2 16:26</time>
+                                                                        </h4>*@
+
+                                                                    <!--MESSAGE CARD CAROUSEL-->
+                                                                    @*<div class="_4xkn clearfix">
+                                                                            <div class="profilePictureColumn" style="bottom: 0px;">
+                                                                                <div class="_4cqr">
+                                                                                    <img class="profilePicture img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307" alt="">
+                                                                                    <div class="clearfix"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _2k7w _4xkr bot_reply">
+                                                                                            <div class="">
+                                                                                                <div currentselectedindex="0" maxchangeamount="1" class="_23n- form_carousel">
+                                                                                                    <div class="_4u-c">
+                                                                                                        <div index="0" class="_a28">
+                                                                                                            <div class="_a2e">
+                                                                                                                <div class="_2zgz">
+                                                                                                                    <div class="_6j2h">
+                                                                                                                        <div class="_6j2i">
+
+                                                                                                                            <div class="_6j2g">
+                                                                                                                                <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">Color valley</div>
+                                                                                                                                <div class="_6j0v">
+                                                                                                                                    <div class="_6j0u _6j0w">Thể hiện cho mọi người thấy IQ của bạn đi nào</div>
+                                                                                                                                    <div class="_6j0u _6j0x _4ik4 _4ik5" style="-webkit-line-clamp: 2;">
+                                                                                                                                        <div>Thử tài khéo léo của bạn đi</div>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="_6ir5">
+                                                                                                                                <div class="_4bqf _6ir3">
+                                                                                                                                    <div class="_6ir4 _6ir6">
+                                                                                                                                        <span data-hover="tooltip" id="js_3yi" data-tooltip-content="Để sử dụng tính năng này, hãy dùng ứng dụng Messenger.">Chia sẻ</span>
+                                                                                                                                    </div>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="_6ir5">
+                                                                                                                                <div class="_4bqf _6ir3">
+                                                                                                                                    <a class="_6ir4" target="_blank" href="https://l.facebook.com/l.php?u=http%3A%2F%2Fgames.hekate.ai%2Fcolorvalley%3Fid%3DU2FsdGVkX1%25209YZDNYz%2520uv5G1C73Nf1Ioircg5kpDrbWNCJg%25202pmGS8k3pioJ6Vs2%26fbclid%3DIwAR0WPCRVNUIbx2Jvh0jPukiQiArUxSkGfPB5HP_R5E5LlpHlZTywB5lhZdw&amp;h=AT1cl6uhE8iLAiq2MHon0PdXFmgoqbdOhj-an_9k2UZLZQG-xf-7OI70zznq83fD0fGoOif88rsER62xZnVpTa2lHTkxOMKTG1ivTvwl-nQ7HGOIw08QdILs3mlSW3I8tpRPiExstb-AM3b-" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">Bắt đầu</a>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="_6ir5">
+                                                                                                                                <div class="_4bqf _6ir3">
+                                                                                                                                    <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Xếp hạng</a>
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="_4u-f">
+                                                                                                            <iframe aria-hidden="true" class="_1_xb" tabindex="-1"></iframe>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                    <a class="_32rk _32rg _1cy6 gl_back_carousel" href="#" style="display:none;">
+                                                                                                        <div direction="backward" class="_10sf _5x5- _5x60">
+                                                                                                            <div class="_5x6d">
+                                                                                                                <div class="_3bwv _3bww">
+                                                                                                                    <div class="_3bwy">
+                                                                                                                        <div class="_3bwx"><i class="_3-8w img sp_bfeq6p sx_c4c7bc" alt=""></i></div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </a>
+
+                                                                                                    <a class="_32rk _32rh _1cy6 gl_next_carousel" href="#">
+                                                                                                        <div direction="forward" class="_10sf _5x5_">
+                                                                                                            <div class="_5x6d">
+                                                                                                                <div class="_3bwv _3bww">
+                                                                                                                    <div class="_3bwy">
+                                                                                                                        <div class="_3bwx">
+                                                                                                                            <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                                                                                                                        </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </a>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <h4 class="datebreak _497p _2lpt">
+                                                                            <time class="_3oh-">08:28</time>
+                                                                        </h4>
+                                                                        <div class="logMessage">
+                                                                            <span>
+                                                                                <span>Bạn đã mở cuộc trò chuyện này từ platform.PhapLuat.com.</span>
+                                                                            </span>
+                                                                        </div>
+
+                                                                        <!--MESSAGE CARD-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="profilePictureColumn" style="bottom: 0px;">
+                                                                                <div class="_4cqr">
+                                                                                    <img class="profilePicture img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307" alt="">
+                                                                                    <div class="clearfix"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _2k7w _4xkr bot_reply" tabindex="0" role="button">
+                                                                                            <div class="_2k7x">
+                                                                                                <div class="_6j2i">
+                                                                                                    <div class="_6j0s" style="background-image: url(&quot;https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQA2721zEoCMT5YL&amp;url=https%3A%2F%2Fvcdn-vnexpress.vnecdn.net%2F2019%2F02%2F25%2Ftopca-1551083541-1711-1551083661_180x108.jpg&amp;_nc_hash=AQDkqSIvt_st9RNG&quot;); background-position: center center; height: 150px; width: 100%;"></div>
+                                                                                                    <div class="_6j2g">
+                                                                                                        <div class="_6j0t _4ik4 _4ik5 _6j0t_title" style="-webkit-line-clamp: 3;">
+                                                                                                            Vui lòng để lại lời nhắn và chờ trong giây lát. Xin cảm ơn!
+                                                                                                        </div>
+                                                                                                        <div class="_6j0v _6j0v_subtitle">
+                                                                                                            <div class="_6j0u _6j0w">
+                                                                                                                Cá voi trong trạng thái phân hủy nặng, dài khoảng 17 m, được ngư dân Cà Mau kéo...
+                                                                                                            </div>
+                                                                                                            <div class="_6j0u _6j0x _4ik4 _4ik5" style="-webkit-line-clamp: 2;">
+                                                                                                                <div>
+                                                                                                                    Cá voi trong trạng thái phân hủy nặng, dài khoảng 17 m, được ngư dân Cà Mau kéo...
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="_6j0u"></div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Hủy chat với admin</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Hủy chat với admin</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!--MESSAGE BOT GIỚI THIỆU-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="profilePictureColumn" style="bottom: 0px;">
+                                                                                <div class="_4cqr">
+                                                                                    <img class="profilePicture img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307" alt="">
+                                                                                    <div class="clearfix"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _2k7w _4xkr">
+                                                                                            <div class="_2k7x">
+                                                                                                <div class="_6j2i">
+                                                                                                    <a target="_blank" href="https://www.facebook.com/groups/PhapLuat/">
+                                                                                                        <div class="_6j0s" style="background-image: url(&quot;https://external.fsgn5-7.fna.fbcdn.net/safe_image.php?d=AQDIHJsduFMnCVKv&amp;url=https%3A%2F%2Fplatform.PhapLuat.com%2Ffiles%2Fuploads%2F217837024911046%2F761ff5c7b3089b079e3a0e53833f6e280.png&amp;_nc_hash=AQA-an1ORdTELiGv&quot;); background-position: center center; height: 150px; width: 100%;">
+                                                                                                        </div>
+                                                                                                    </a>
+                                                                                                    <div class="_6j2g">
+                                                                                                        <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                                                                                            💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                                                                                                        </div>
+                                                                                                        <div class="_6j0u">
+                                                                                                            <div>
+                                                                                                                📧 Emai: support@PhapLuat.com
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="_6j0y">
+                                                                                                            <a target="_blank" href="https://www.facebook.com/groups/PhapLuat/">
+                                                                                                                www.facebook.com
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">
+                                                                                                                🙎 Chat với admin
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" target="_blank" href="tel:+84905806885" style="color: rgb(234, 82, 105);">
+                                                                                                                📞 Đường dây nóng
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" target="_blank" href="https://l.facebook.com/l.php?u=https%3A%2F%2Fplatform.PhapLuat.com%2Flink%3FuserId%3D2488860871142811%26pageId%3D217837024911046%26c%3DUt7fEy2uN%26fbclid%3DIwAR0I2AkvB3bRnUp2EeZr1UJEh-vAvWsTd_xJoKlBPGz8bZomDGmmuFGsENk&amp;h=AT1d_7VEPVSJaTRogWMuWyV1DKSDeNlCRGJq8CHGp-HyoYf09tpkC-Ru1TXsYripDl0iCIT4pW5IG-PqvrqNTNBJIUmmH6u1-MuKDEslqGrTCXDVzIUy4MDdWTHcwvMGmjxlrA" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">
+                                                                                                                👫 Tham gia group
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!--MESSAGE USER TEXT-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: rgb(234, 82, 105);">
+                                                                                            <span>
+                                                                                                <span>
+                                                                                                    <img alt="🎮" class="_1ift _2560 img" src="https://static.xx.fbcdn.net/images/emoji.php/v9/t2f/1/16/1f3ae.png">
+                                                                                                    Chơi Game
+                                                                                                </span>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <a class="_6934 noDisplay" href="#">
+                                                                                            This message didn't send. Click to try again.
+                                                                                            <span class="_21c6 error" title="Đã chuyển"></span>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!--MESSAGE BUTTON FOR URL-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="profilePictureColumn" style="bottom: 0px;">
+                                                                                <div class="_4cqr">
+                                                                                    <img class="profilePicture img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307" alt="">
+                                                                                    <div class="clearfix"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240);">
+                                                                                            <span>
+                                                                                                <span>
+                                                                                                    <img alt="⛅️" class="_1ift _2560 img" src="https://static.xx.fbcdn.net/images/emoji.php/v9/t9f/1/16/26c5.png">
+                                                                                                    Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
+                                                                                                </span>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <div class="_4xko _2k7w _4xkr">
+                                                                                            <div class="_2k7x">
+                                                                                                <div class="_6b7s">
+                                                                                                    <div class="_6isd _6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Sở hữu trí tuệ</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Thuế - Phí - Lệ phí</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Du lịch</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--MESSAGE BOT TEXT-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="profilePictureColumn" style="bottom: 0px;">
+                                                                                <div class="_4cqr">
+                                                                                    <img class="profilePicture img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307" alt="">
+                                                                                    <div class="clearfix"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240);">
+                                                                                            <span>
+                                                                                                <span>Lĩnh vực Sở hữu trí tuệ, Hiện tại có 23100 văn bản luật và 2600 câu hỏi liên quan đến lĩnh vực bạn quan tâm. Bạn có thể gửi câu hỏi cho tôi?</span>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <span class="_21c4">
+                                                                                            <img alt="PhapLuat đã xem lúc 08:47" class="_21c5 img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307" title="PhapLuat đã xem lúc 08:47">
+                                                                                        </span>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <!--MESSAGE WAITTING 3BUBBLE-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="profilePictureColumn" style="bottom:0px;">
+                                                                                <div class="_4cqr">
+                                                                                    <img class="profilePicture img" src="https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-1/p200x200/24232656_1919691618058903_6510274581421009217_n.png?_nc_cat=100&amp;_nc_oc=AQmDZcqvDR6pErTFfpYzh6zOPijTq8pPEzhl1fiYF3LPRU4055YYVX2YzBiATxqqdfY&amp;_nc_ht=scontent.fsgn5-5.fna&amp;oh=640bca2a8956c9770fc0b391498e79e9&amp;oe=5CDC1307" alt="">
+                                                                                    <div class="clearfix"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="messages">
+                                                                                <div class="_4xko _13y8">
+                                                                                    <div class="_4a0v _1x3z">
+                                                                                        <div class="_4b0g">
+                                                                                            <div class="_5pd7"></div>
+                                                                                            <div class="_5pd7"></div>
+                                                                                            <div class="_5pd7"></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>*@
+                                                                </div>
+                                                            </div>
+
+                                                            <!--EVENT BUTTON FOR POSTBACK "SHOW/HIDE" WHEN CLICKED-->
+                                                            <div style="position: relative; top: 0px;" id="_12cd_event_button">
+                                                                <!--CHANGE IF HAVE POSTBACK-->
+                                                                @*<div class="_6biu">
+                                                                        <div currentselectedindex="0" maxchangeamount="1" class="_23n- form_carousel">
+                                                                            <div class="_4u-c">
+                                                                                <div index="0" class="_a28 lst_btn_carousel">
+                                                                                    <div class="_a2e">
+                                                                                        <div class="_2zgz">
+                                                                                            <div class="_4bqf _6biq _6bir" tabindex="0" role="button" style="border-color: rgb(234, 82, 105); color: rgb(234, 82, 105);">Hủy</div>
+                                                                                        </div>
+                                                                                        <div class="_2zgz">
+                                                                                            <div class="_4bqf _6biq _6bir" tabindex="0" role="button" style="border-color: rgb(234, 82, 105); color: rgb(234, 82, 105);">Có</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="_4u-f">
+                                                                                    <iframe aria-hidden="true" class="_1_xb" tabindex="-1"></iframe>
+                                                                                </div>
+                                                                            </div>
+                                                                            <!-- click lùi-->
+                                                                            <a class="_32rk _32rg _1cy6 btn_back_carousel" href="#" style="display:none;">
+                                                                                <div direction="backward" class="_10sf _5x5- _5x60">
+                                                                                    <div class="_5x6d">
+                                                                                        <div class="_3bwv _3bww">
+                                                                                            <div class="_3bwy">
+                                                                                                <div class="_3bwx"><i class="_3-8w img sp_bfeq6p sx_c4c7bc" alt=""></i></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </a>
+                                                                            <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
+                                                                            <a class="_32rk _32rh _1cy6 btn_next_carousel" href="#">
+                                                                                <div direction="forward" class="_10sf _5x5_">
+                                                                                    <div class="_5x6d">
+                                                                                        <div class="_3bwv _3bww">
+                                                                                            <div class="_3bwy">
+                                                                                                <div class="_3bwx">
+                                                                                                    <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--FORM INPUT CHAT-->
+                                    <div class="_336a">
+                                        <div class="_4zbw">
+                                            <!--BUTTON MENU-->
+                                            <div class="_661n _661n_btn_menu_chat" tabindex="0" role="button">
+                                                <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g fill="#ea5269">
+                                                            <rect x="2" y="3" width="20" height="1"></rect>
+                                                            <rect x="2" y="11" width="20" height="1"></rect>
+                                                            <rect x="2" y="19" width="20" height="1"></rect>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                            <!--INPUT TEXT-->
+                                            <div class="_4fwe">
+                                                <label class="_58ak _3ct8">
+                                                    <input class="_58al _58al_input_txt" id="58al-input-text" type="text" autocomplete="off" placeholder="Nhập tin nhắn..." value="">
+                                                </label>
+                                            </div>
+                                            <div class="_kmd">
+                                                <div class="_64mk _2ez5 _6a">
+                                                    <input accept="application/msword, application/pdf, text/csv, text/plain, image/*, video/*" class="_2ez6" multiple="" name="attachment[]" title="Add Files" type="file">
+                                                </div>
+                                                <div class="_4bqf _64mk _64ml _4bqf_btn_submit" tabindex="0" role="button" style="display:none">
+                                                    <svg width="22px" height="22px" viewBox="0 0 22 22">
+                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                            <g transform="translate(-5.000000, -5.000000)" fill="#ea5269">
+                                                                <g>
+                                                                    <g transform="translate(5.000000, 5.000000)">
+                                                                        <path d="M2.0300068,0.145970044 L20.9662955,9.37015518 C22.3445682,10.0420071 22.3445682,11.9582654 20.9662955,12.6296618 L2.0300068,21.853847 C1.09728834,22.3084288 0,21.6475087 0,20.6317597 L0.806953417,13.8945654 C0.882225434,13.2659853 1.39089595,12.7699536 2.03608467,12.6957083 L12.0229514,11.6795038 C12.8612292,11.5943266 12.8612292,10.4054904 12.0229514,10.3203132 L2.03608467,9.30410872 C1.39089595,9.23031889 0.882225434,8.7342872 0.806953417,8.10525162 L0,1.36805729 C0,0.352308292 1.09728834,-0.3081563 2.0300068,0.145970044"></path>
+                                                                    </g>
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--LAYER FOR MENU-->
+    <div class="uiContextualLayerPositioner _1r_9 uiLayer" data-testid="undefined" style="width: 360px; left: 16px; top: 440px; opacity: 1; display:none;" data-ownerid="js_2c">
+        <div class="uiContextualLayer uiContextualLayerAboveLeft" aria-labelledby="" style="bottom: 0px;">
+            <div class="_5v-0 _53ik" style="width: 300px;">
+                <div class="_53ij">
+                    <div>
+                        <div class="_6d42">
+                            <div class="_6d44 _6d45">Menu</div>
+                            @*<div class="_6d46">
+                                    <div class="_6d45 _4bqf">
+                                        <div class="_6d49" tabindex="0" role="button">
+                                            <a href="#" style="color: rgb(234, 82, 105);">🤖 Tạo Chatbot</a>
+                                            <div class="_6d4a">
+                                                <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g fill="#ea5269">
+                                                            <polygon points="8 7 9.5 5.5 16 12 9.5 18.5 8 17 13 12"></polygon>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="_6d46">
+                                    <div class="_6d45 _4bqf">
+                                        <a class="_6d48" href="#" style="color: rgb(234, 82, 105);">⚙️ Chọn Ngôn Ngữ</a>
+                                    </div>
+                                </div>*@
+                            <div class="_6d46">
+                                <div class="_6d45 _4bqf">
+                                    <div class="_6d49" tabindex="0" role="button">
+                                        <a href="#" style="color: rgb(234, 82, 105);">👉 Quay lại </a>
+                                        <div class="_6d4a">
+                                            <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <g fill="#ea5269">
+                                                        <polygon points="8 7 9.5 5.5 16 12 9.5 18.5 8 17 13 12"></polygon>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <i class="_53io" style="left: 0%; margin-left: 12px;"></i>
+            </div>
+        </div>
+    </div>
+    <script src="~/assets/client/js/eventBot/chat-dialog.js"></script>
+</body>
+</html>

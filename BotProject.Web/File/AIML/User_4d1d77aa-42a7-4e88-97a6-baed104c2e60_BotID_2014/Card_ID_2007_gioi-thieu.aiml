@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>postback_card_2007</pattern>
+    <template>
+      <card>
+        <image>File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg</image>
+        <title>Hệ thống hỏi đáp pháp luật thông minh</title>
+        <subtitle>Hỏi đáp pháp luật</subtitle>
+        <link>
+          <text>http://qa.surelrn.vn</text>
+          <url>http://qa.surelrn.vn</url>
+        </link>
+        <button>
+          <text>Lĩnh vực</text>
+          <menu>postback_card_2010</menu>
+        </button>
+        <button>
+          <text>Website</text>
+          <url>http://qa.surelrn.vn</url>
+        </button>
+        <button>
+          <text>Liên hệ</text>
+          <url>http://qa.surelrn.vn</url>
+        </button>
+      </card>
+
+    </template>
+  </category>
+</aiml>

@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>HELLO</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HELLO *</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HI</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HI *</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>CHÀO</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>CHÀO *</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>XIN CHÀO</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>XIN CHÀO *</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HEY</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HEY *</pattern>
+    <template>
+      <srai>postback_card_2007</srai>
+    </template>
+  </category>
+  
+  <!--______ Not match - truong hop không tìm thấy_________-->
+  <category>
+    <pattern>*</pattern>
+    <template>
+      <random>
+        <li>NOT_MATCH_01</li>
+        <li>NOT_MATCH_02</li>
+        <li>NOT_MATCH_03</li>
+        <li>NOT_MATCH_04</li>
+        <li>NOT_MATCH_05</li>
+        <li>NOT_MATCH_06</li>
+      </random>
+    </template>
+  </category>
+
+  <!-- _________________________________________________  -->
+</aiml>

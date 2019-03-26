@@ -178,7 +178,10 @@
           <image></image>
           <title>Những hành vi nào bị coi là hành vi xâm phạm quyền đối với nhãn hiệu, chỉ dẫn địa lý và tên thương...</title>
           <subtitle>Câu hỏi liên quan</subtitle>
-          <link></link>
+          <link>
+            <text></text>
+            <url></url>
+          </link>
           <button>
             <text>📞 ABC</text>
             <menu>HOTLINE</menu>

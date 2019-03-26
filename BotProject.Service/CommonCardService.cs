@@ -115,6 +115,7 @@ namespace BotProject.Service
             card.Images = _imageRepository.GetMulti(x => x.CardID == cardId).ToList();
             card.TemplateTexts = _templateTextRepository.GetMulti(x => x.CardID == cardId).ToList();
             card.TemplateGenericGroups = _templateGenericGroupRepository.GetMulti(x => x.CardID == cardId).ToList();
+            card.QuickReplys = _quickReplyRepository.GetMulti(x => x.CardID == cardId).ToList();
             if(card.TemplateTexts != null && card.TemplateTexts.Count() != 0)
             {
                 foreach(var item in card.TemplateTexts)

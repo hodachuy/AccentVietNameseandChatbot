@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>postback_card_2008</pattern>
+    <template>
+      Bạn có thể gửi câu hỏi cho tôi để giải đáp?
+    </template>
+  </category>
+</aiml>

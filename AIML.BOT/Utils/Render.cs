@@ -83,8 +83,9 @@ namespace AIML.BOT.Utils
                     _tagHtml.Body = sb.ToString();
                     break;
                 case "image":
+                    //Common.ReadString("Domain") host domain lay tu`appconfig cua domain cha truyen` vao`
                     string dataImage = new Regex("<image>(.*)</image>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                    sb.AppendLine("<div class=\"_6j0s\" style=\"background-image:url(&quot;"+ dataImage + "&quot;); background-position: center center; height: 150px; width: 100%;\"></div>");
+                    sb.AppendLine("<div class=\"_6j0s\" style=\"background-image:url(&quot;"+ Common.ReadString("Domain")+dataImage + "&quot;); background-position: center center; height: 150px; width: 100%;\"></div>");
                     _tagHtml.Body = sb.ToString();
                     break;
                 case "title":
@@ -165,5 +166,8 @@ namespace AIML.BOT.Utils
             }
             return _tagHtml;
         }
+
+
+       
     }
 }

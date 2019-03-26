@@ -42,5 +42,7 @@ namespace BotProject.Model.Models
         public virtual IEnumerable<ButtonLink> ButtonLinks { set; get; }
 
         public virtual IEnumerable <ButtonPostback> ButtonPostbacks { set; get; }
+
+        public virtual IEnumerable<QuickReply> QuickReplys { set; get; }
     }
 }

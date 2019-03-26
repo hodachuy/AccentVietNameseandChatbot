@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.AspNet.Identity;
+using BotProject.Common;
 
 namespace BotProject.Web.Infrastructure.Extensions
 {
@@ -121,6 +122,13 @@ namespace BotProject.Web.Infrastructure.Extensions
         {
             quickReply.ID = quickReplyVm.ID;
             quickReply.CardPayloadID = quickReplyVm.CardPayloadID;
+            if (quickReply.CardPayloadID != null)
+            {
+                quickReply.Payload = CommonConstants.PostBackCard + quickReply.CardPayloadID;
+            }else
+            {
+                quickReply.Payload = "";
+            }
             quickReply.ContentType = quickReplyVm.ContentType;
             quickReply.Icon = quickReplyVm.Icon;
             quickReply.Title = quickReplyVm.Title;

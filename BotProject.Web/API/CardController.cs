@@ -113,7 +113,7 @@ namespace BotProject.Web.API
 					else
 					{
 						cardDb.UpdateCard(cardVm);
-						cardDb.PatternText = CommonConstants.PostBackCard + cardDb.ID.ToString();//use to card #
+						cardDb.PatternText = CommonConstants.PostBackCard + cardVm.ID.ToString();//use to card #
 						cardDb.ID = cardVm.ID.GetValueOrDefault();
 						_cardService.Update(cardDb);
 						_cardService.Save();
@@ -283,7 +283,7 @@ namespace BotProject.Web.API
 				HttpResponseMessage response = null;
 
 				var card = _commonCardService.GetFullDetailCard(cardId);
-				// create file card aiml
+				// open file card aiml
 				string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userId + "_BotID_" + card.BotID;
 				string nameFolderAIML = "Card_ID_" + card.ID + "_" + card.Alias + ".aiml";
 				string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
@@ -331,12 +331,84 @@ namespace BotProject.Web.API
 						}
 						if(card.TemplateGenericGroups != null && card.TemplateGenericGroups.Count() != 0)
 						{
-							
-						}
+                            var lstTempGnrGroup = card.TemplateGenericGroups;
+                            foreach(var item in lstTempGnrGroup)
+                            {
+                                if(item.TemplateGenericItems != null && item.TemplateGenericItems.Count() != 0)
+                                {
+                                    var lstTemGnrItem = item.TemplateGenericItems;
+                                    StringBuilder sb = new StringBuilder();
+                                    foreach(var itemGnr in lstTemGnrItem)
+                                    {
+                                        sb.AppendLine("<card>");
+                                        if (!String.IsNullOrEmpty(itemGnr.Image))
+                                        {
+                                            sb.AppendLine("<image>" + itemGnr.Image + "</image>");
+                                        }
+                                        sb.AppendLine("<title>"+itemGnr.Title+"</title>");
+                                        sb.AppendLine("<subtitle>"+itemGnr.SubTitle+"</subtitle>");
+                                        sb.AppendLine("<link>");
+                                        sb.AppendLine("<text>"+ itemGnr.Url+"</text>");
+                                        sb.AppendLine("<url>" + itemGnr.Url + "</url>");
+                                        sb.AppendLine("</link>");
+                                        if(itemGnr.ButtonPostbacks != null && itemGnr.ButtonPostbacks.Count() != 0)
+                                        {
+                                            var lstButtonPostbacks = itemGnr.ButtonPostbacks;
+                                            foreach (var itemBtnPostback in lstButtonPostbacks)
+                                            {
+                                                sb.AppendLine("<button>");
+                                                sb.AppendLine("<text>" + itemBtnPostback.Title + "</text>");
+                                                sb.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
+                                                sb.AppendLine("</button>");
+                                            }
+                                        }
+                                        if (itemGnr.ButtonLinks != null && itemGnr.ButtonLinks.Count() != 0)
+                                        {
+                                            var lstButtonLinks = itemGnr.ButtonLinks;
+                                            foreach (var itemBtnLink in lstButtonLinks)
+                                            {
+                                                sb.AppendLine("<button>");
+                                                sb.AppendLine("<text>" + itemBtnLink.Title + "</text>");
+                                                sb.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                                sb.AppendLine("</button>");
+                                            }
+                                        }
+                                        sb.AppendLine("</card>");
+                                    }
 
-
+                                    if (lstTemGnrItem.Count() > 1)
+                                    {
+                                        //carousel
+                                        sw.WriteLine("<carousel>");
+                                        sw.WriteLine(sb.ToString());
+                                        sw.WriteLine("</carousel");
+                                    }else
+                                    {
+                                        //card
+                                        sw.WriteLine(sb.ToString());
+                                    }
+                                }
+                            }
+                        }
+                        if(card.Images != null && card.Images.Count() != 0)
+                        {
+                            foreach(var itemImg in card.Images)
+                            {
+                                sw.WriteLine("<image>"+itemImg.Url+"</image>");
+                            }
+                        }
+                        if(card.QuickReplys != null && card.QuickReplys.Count() != 0)
+                        {
+                            var lstQuickReply = card.QuickReplys;
+                            foreach(var itemQ in lstQuickReply)
+                            {
+                                sw.WriteLine("<button>");
+                                sw.WriteLine("<text>" + itemQ.Title + "</text>");
+                                sw.WriteLine("<postback>" + itemQ.Payload + "</postback>");
+                                sw.WriteLine("</button>");
+                            }
+                        }
 						sw.WriteLine("</template>");
-						sw.WriteLine("<category>");
 						sw.WriteLine("</category>");
 						sw.WriteLine("</aiml>");
 						sw.Close();
