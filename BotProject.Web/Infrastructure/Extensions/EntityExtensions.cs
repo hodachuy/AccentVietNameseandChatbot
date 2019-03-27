@@ -65,7 +65,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             answer.CardPayload = answerVm.CardPayload;
 			answer.QuestionGroupID = answerVm.QuestionGroupID;
 			answer.CardID = answerVm.CardID;
-            answer.ContentText = String.IsNullOrEmpty(answerVm.ContentText) == true ? "" : answerVm.ContentText.Trim();
+            answer.ContentText = String.IsNullOrEmpty(answerVm.ContentText) == true ? "" : HttpUtility.HtmlDecode(answerVm.ContentText.Trim());
         }
         #endregion
 

@@ -714,6 +714,8 @@
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2010_tag-linh-vuc.aiml" />
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2011_linh-vuc-so-huu-tri-tue.aiml" />
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2012_linh-vuc-thue-phi-le-phi.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\botQnA_ID_4_train-dulich-v1.aiml" />
+    <None Include="Properties\PublishProfiles\BotProject_Publish.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

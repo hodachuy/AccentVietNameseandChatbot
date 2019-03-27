@@ -121,15 +121,17 @@
         <!-- end footer -->
         <!-- ============================================================== -->
     </div>
+    <div id="dialog-form-bot">
 
+    </div>
     @*<span style="vertical-align:bottom;width:0px;height:0px">
         <iframe name="f12691cd05677d"width="288"height="378"frameborder="0"allowtransparency="true"allowfullscreen="true"scrolling="no"
-                allow="encrypted-media"title=""src="http://localhost:54160/Apiv1/FormChat"
+                allow="encrypted-media"title=""src="http://localhost:54160/Apiv1/FormChat?token=4d1d77aa-42a7-4e88-97a6-baed104c2e60&botId=2014"
                 style="border: none;visibility: visible;width: 288pt;height: 378pt;border-radius: 9pt;bottom: 63pt;padding: 0px;
                            position: fixed;right: 9pt;top: auto;z-index: 2147483647;max-height:0px;"
                 class="fb_customer_chat_bounce_out_v2"
                 id="dialog_iframe"></iframe>
-    </span>*@
+    </span>
     <div class="fb_dialog  fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: none; border-radius: 50%; bottom: 18pt; display: inline; height: 45pt; padding: 0px; position: fixed; right: 18pt; top: auto; width: 45pt; z-index: 2147483646;">
         <div class="fb_dialog_content" style="background: none;">
             <div tabindex="0" role="button" style="cursor: pointer; outline: none;">
@@ -138,7 +140,7 @@
                 </svg>
             </div>
         </div>
-    </div>
+    </div>*@
     <!-- ============================================================== -->
     <!-- end main wrapper -->
     <!-- ============================================================== -->
@@ -163,10 +165,10 @@
     <script src="~/assets/client/js/helper/callServiceHelper.js"></script>
 
     <script src="~/assets/client/js/common.js"></script>
-
+    @RenderSection("dialogBotJS", required: false)
     <script>
         $(document).ready(function () {
-            $('.fb_dialog').click(function (e) {
+            $('body').on('click', '.fb_dialog',function (e) {
                 if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_out_v2")) {
                     $("#dialog_iframe").removeClass('fb_customer_chat_bounce_out_v2').addClass('fb_customer_chat_bounce_in_v2');
                     setTimeout(function () {
@@ -180,7 +182,7 @@
                     }, 200)
                 }
             })
-            $('._2t-5').click(function () {
+            $('body').on('click','._2t-5',function () {
                 $('.fb_dialog').click();
             })
         });

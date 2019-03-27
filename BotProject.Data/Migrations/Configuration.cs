@@ -53,5 +53,7 @@
 
             manager.AddToRoles(adminUser.Id, new string[] { "Admin", "User" });
         }
+
+       
     }
 }

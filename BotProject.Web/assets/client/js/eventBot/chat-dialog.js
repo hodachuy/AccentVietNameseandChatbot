@@ -120,6 +120,23 @@ $(document).ready(function () {
         //parent.postMessage(message, domain);
     })
 
+
+    // open form
+    //parent.$('.fb_dialog').click(function (e) {
+    //    if (parent.$("#dialog_iframe").hasClass("fb_customer_chat_bounce_out_v2")) {
+    //        parent.$("#dialog_iframe").removeClass('fb_customer_chat_bounce_out_v2').addClass('fb_customer_chat_bounce_in_v2');
+    //        setTimeout(function () {
+    //            parent.$('#dialog_iframe').css('max-height', '100%');
+    //        }, 200)
+    //    }
+    //    else if (parent.$("#dialog_iframe").hasClass("fb_customer_chat_bounce_in_v2")) {
+    //        parent.$("#dialog_iframe").removeClass('fb_customer_chat_bounce_in_v2').addClass('fb_customer_chat_bounce_out_v2');
+    //        setTimeout(function () {
+    //            parent.$('#dialog_iframe').css('max-height', '0px');
+    //        }, 200)
+    //    }
+    //});
+
     // INPUT TEXT
     $('#58al-input-text').keydown(function (e) {
         var text = $(this).val();

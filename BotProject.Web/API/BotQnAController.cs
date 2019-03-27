@@ -7,9 +7,11 @@ using BotProject.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Web.Http;
 
 namespace BotProject.Web.API
@@ -42,9 +44,32 @@ namespace BotProject.Web.API
 					string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
 					if (!System.IO.File.Exists(pathString))
 					{
-						using (System.IO.FileStream fs = System.IO.File.Create(pathString))
-						{
-						}
+                        try
+                        {
+                            StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
+                            sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                            sw.WriteLine("<aiml>");
+                            sw.WriteLine("<category>");
+                            sw.WriteLine("<pattern>*</pattern>");
+                            sw.WriteLine("<template>");
+                            sw.WriteLine("<random>");
+                            sw.WriteLine("<li> NOT_MATCH_01 </li>");
+                            sw.WriteLine("<li> NOT_MATCH_02 </li>");
+                            sw.WriteLine("<li> NOT_MATCH_03 </li>");
+                            sw.WriteLine("<li> NOT_MATCH_04 </li>");
+                            sw.WriteLine("<li> NOT_MATCH_05 </li>");
+                            sw.WriteLine("<li> NOT_MATCH_06 </li>");
+                            sw.WriteLine("</random>");
+                            sw.WriteLine("</template>");
+                            sw.WriteLine("</category>");
+                            sw.WriteLine("</aiml>");
+                            sw.Close();
+                        }
+                        catch { }
+						//using (System.IO.FileStream fs = System.IO.File.Create(pathString))
+						//{
+                            
+						//}
 					}
 				}
 				catch (Exception ex)

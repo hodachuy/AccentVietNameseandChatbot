@@ -691,7 +691,7 @@ ActionFormQnA = function () {
                     html +=                 '</div>';
                     html +=                 '<div class="wrbutton" indexbt="1">';
                     html +=                     '<div class="bt" data-answer-id="'+itemAnswer.ID+'">';
-                    html +=                         '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320" value="'+itemAnswer.ContentText+'">';
+                    html +=                         '<input type="text" autocomplete="off" value="' + htmlentities.encode(itemAnswer.ContentText) + '" class="form-control checkvalid" maxlength="320">';
                     html +=                         '<i class="fa fa-remove icon-bin rmText"></i>';
                     html +=                     '</div>';
                     html +=                 '</div>';
@@ -1031,3 +1031,33 @@ var decodeEntities = (function () {
 
     return decodeHTMLEntities;
 })();
+
+
+(function (window) {
+    window.htmlentities = {
+        /**
+		 * Converts a string to its html characters completely.
+		 *
+		 * @param {String} str String with unescaped HTML characters
+		 **/
+        encode: function (str) {
+            var buf = [];
+
+            for (var i = str.length - 1; i >= 0; i--) {
+                buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''));
+            }
+
+            return buf.join('');
+        },
+        /**
+		 * Converts an html characterSet into its original character.
+		 *
+		 * @param {String} str htmlSet entities
+		 **/
+        decode: function (str) {
+            return str.replace(/&#(\d+);/g, function (match, dec) {
+                return String.fromCharCode(dec);
+            });
+        }
+    };
+})(window);

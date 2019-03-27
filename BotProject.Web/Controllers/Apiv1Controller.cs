@@ -1,4 +1,5 @@
-﻿using BotProject.Web.Infrastructure.Core;
+﻿using BotProject.Service;
+using BotProject.Web.Infrastructure.Core;
 using Newtonsoft.Json;
 using SearchEngine.Data;
 using SearchEngine.Service;
@@ -24,11 +25,13 @@ namespace BotProject.Web.Controllers
         private AccentService _accentService;
         private BotService _botService;
 		private ElasticSearch _elastic;
+        private IBotService _botDbService;
 
-		public Apiv1Controller()
+		public Apiv1Controller(IBotService botDbService)
         {
 			_elastic = new ElasticSearch();
 			_accentService = AccentService.AccentInstance;
+            _botDbService = botDbService;
             _botService = BotService.BotInstance;
         }
         // GET: Apiv1
@@ -39,15 +42,15 @@ namespace BotProject.Web.Controllers
 
 
         #region CHATBOT
-        public ActionResult FormChat()
+        public ActionResult FormChat(string token, string botId)
         {
-            string token = "4d1d77aa-42a7-4e88-97a6-baed104c2e60";
-            string botId = "2014";
-            //string token, string botId
+
+            int id = Int32.Parse(botId);
+            var botDb = _botDbService.GetByID(id);
             string nameBotAIML = "User_" + token + "_BotID_" + botId;
             string fullPathAIML = pathAIML + nameBotAIML;
             _botService.loadAIMLFromFiles(fullPathAIML);
-            return View();
+            return View(botDb);
         }
 
         public JsonResult chatbot(string text, string group, string color, string logo)
@@ -55,7 +58,6 @@ namespace BotProject.Web.Controllers
             string result = "";
             AIMLbot.Result res = _botService.Chat(text, color, logo);
             bool isMatch = true;
-
             result = res.OutputSentences[0].ToString();
             if (result.Contains("NOT_MATCH"))
             {
@@ -73,8 +75,7 @@ namespace BotProject.Web.Controllers
                 postback = res.OutputHtmlPostback,
                 messageai = result,
                 isCheck = isMatch
-            },
-                            JsonRequestBehavior.AllowGet);
+            },JsonRequestBehavior.AllowGet);
         }
         #endregion
 

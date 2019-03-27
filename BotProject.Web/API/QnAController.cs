@@ -124,7 +124,19 @@ namespace BotProject.Web.API
                         StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
                         sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                         sw.WriteLine("<aiml>");
-
+                        sw.WriteLine("<category>");
+                        sw.WriteLine("<pattern>*</pattern>");
+                        sw.WriteLine("<template>");
+                        sw.WriteLine("<random>");
+                        sw.WriteLine("<li> NOT_MATCH_01 </li>");
+                        sw.WriteLine("<li> NOT_MATCH_02 </li>");
+                        sw.WriteLine("<li> NOT_MATCH_03 </li>");
+                        sw.WriteLine("<li> NOT_MATCH_04 </li>");
+                        sw.WriteLine("<li> NOT_MATCH_05 </li>");
+                        sw.WriteLine("<li> NOT_MATCH_06 </li>");
+                        sw.WriteLine("</random>");
+                        sw.WriteLine("</template>");
+                        sw.WriteLine("</category>");
                         if (lstQna != null && lstQna.Count() != 0)
                         {
                             int total = lstQna.Count();

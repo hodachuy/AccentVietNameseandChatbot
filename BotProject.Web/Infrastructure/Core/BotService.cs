@@ -61,6 +61,7 @@ namespace BotProject.Web
         }
         public void loadAIMLFromFiles(string path)
         {
+            _bot.loadSettings(pathSetting);
             _bot.loadAIMLFromFiles(path);
         }
     }
