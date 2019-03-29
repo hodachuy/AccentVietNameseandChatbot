@@ -80,8 +80,9 @@ namespace BotProject.Web.API
 						rs.IsActionDb = true;
 
 						// create file card aiml
-						string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + cardVm.UserID + "_BotID_" + cardVm.BotID;
-						string nameFolderAIML = "Card_ID_" + cardDb.ID + "_" + cardDb.Alias + ".aiml";
+						//string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + cardVm.UserID + "_BotID_" + cardVm.BotID;
+                        string pathFolderAIML = PathServer.PathAIML + "User_" + cardVm.UserID + "_BotID_" + cardVm.BotID;
+                        string nameFolderAIML = "Card_ID_" + cardDb.ID + "_" + cardDb.Alias + ".aiml";
 						string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
 						if (!System.IO.File.Exists(pathString))
 						{
@@ -283,9 +284,10 @@ namespace BotProject.Web.API
 				HttpResponseMessage response = null;
 
 				var card = _commonCardService.GetFullDetailCard(cardId);
-				// open file card aiml
-				string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userId + "_BotID_" + card.BotID;
-				string nameFolderAIML = "Card_ID_" + card.ID + "_" + card.Alias + ".aiml";
+                // open file card aiml
+                //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userId + "_BotID_" + card.BotID;
+                string pathFolderAIML = PathServer.PathAIML + "User_" + userId + "_BotID_" + card.BotID;
+                string nameFolderAIML = "Card_ID_" + card.ID + "_" + card.Alias + ".aiml";
 				string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
 				if (System.IO.File.Exists(pathString))
 				{

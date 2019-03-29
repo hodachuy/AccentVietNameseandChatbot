@@ -73,7 +73,8 @@ namespace BotProject.Web.API
                 _imageService.Save();
                 string domain = ConfigurationManager.AppSettings["Domain"];
                 string fileName = Regex.Replace(img.ImagePath, domain + "File/Images/Card/", "");
-                string pathImgServer = ConfigurationManager.AppSettings["ImagePath"];
+                //string pathImgServer = ConfigurationManager.AppSettings["ImagePath"];
+                string pathImgServer = Path.Combine(PathServer.PathImage + CommonConstants.PathImage);
                 string[] Files = Directory.GetFiles(pathImgServer);
                 foreach (string file in Files)
                 {

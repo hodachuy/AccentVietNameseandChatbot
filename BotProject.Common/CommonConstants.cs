@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace BotProject.Common
 {
@@ -17,5 +18,22 @@ namespace BotProject.Common
 
         public const string CreateQnA = "Create";
         public const string UpdateQnA = "Update";
+    }
+
+    public class PathServer
+    {
+        /// <summary>
+        /// HttpContext.Current.Server.MapPath("~/File/Images/");
+        /// </summary>
+        public static string PathImage = HttpContext.Current.Server.MapPath("~/File/Images/");
+        /// <summary>
+        /// HttpContext.Current.Server.MapPath("~/File/AIML/");
+        /// </summary>
+        public static string PathAIML = HttpContext.Current.Server.MapPath("~/File/AIML/");
+
+        /// <summary>
+        /// HttpContext.Current.Server.MapPath("~/File/Datasets_Training_Accent/")
+        /// </summary>
+        public static string PathAccent = HttpContext.Current.Server.MapPath("~/File/Datasets_Training_Accent/");
     }
 }

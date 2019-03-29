@@ -12,6 +12,7 @@ using BotProject.Web.Infrastructure.Extensions;
 using System.Configuration;
 using System.IO;
 using System.Text;
+using BotProject.Common;
 
 namespace BotProject.Web.API
 {
@@ -113,7 +114,8 @@ namespace BotProject.Web.API
                 var lstQna = _qnaService.GetListQuesGroupToAimlByQnaID(botQnaID).ToList();
                 bool IsAiml = false;
                 // open file bot aiml
-                string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userID + "_BotID_" + botID;
+                //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userID + "_BotID_" + botID;
+                string pathFolderAIML = PathServer.PathAIML + "User_" + userID + "_BotID_" + botID;
                 string nameFolderAIML = "botQnA_ID_" + botQnaID + "_" + botAlias + ".aiml";
                 string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
                 if (System.IO.File.Exists(pathString))

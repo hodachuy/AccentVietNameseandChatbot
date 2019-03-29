@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BotProject.Common;
 using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
@@ -38,9 +39,10 @@ namespace BotProject.Web.API
 				var botQnAReturn = _qnaService.AddBotQnAnswer(ref botQnADb);
 				try
 				{
-					// create file bot aiml
-					string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + botQnAVm.UserID + "_BotID_" + botQnAVm.BotID;
-					string nameFolderAIML = "botQnA_ID_"+ botQnADb.ID + "_" + botQnADb.Alias + ".aiml";
+					// create file form botQna in bot aiml
+					//string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + botQnAVm.UserID + "_BotID_" + botQnAVm.BotID;
+                    string pathFolderAIML = PathServer.PathAIML + "User_" + botQnAVm.UserID + "_BotID_" + botQnAVm.BotID;
+                    string nameFolderAIML = "botQnA_ID_"+ botQnADb.ID + "_" + botQnADb.Alias + ".aiml";
 					string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
 					if (!System.IO.File.Exists(pathString))
 					{

@@ -11,6 +11,7 @@ using BotProject.Model.Models;
 using BotProject.Web.Models;
 using BotProject.Web.Infrastructure.Extensions;
 using System.Configuration;
+using BotProject.Common;
 
 namespace BotProject.Web.API
 {
@@ -64,8 +65,9 @@ namespace BotProject.Web.API
 				try
 				{
 					// create file bot aiml
-					string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"];
-					string nameFolderAIML = "User_" +botVm.UserID + "_BotID_" + botReturn.ID;
+					//string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"];
+                    string pathFolderAIML = PathServer.PathAIML;
+                    string nameFolderAIML = "User_" +botVm.UserID + "_BotID_" + botReturn.ID;
 					string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
 					System.IO.Directory.CreateDirectory(pathString);
 				}
