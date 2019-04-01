@@ -29,6 +29,7 @@ namespace BotProject.Data
         public DbSet<SystemConfig> SystemConfigs { set; get; }
         public DbSet<VisitorStatistic> VisitorStatistics { set; get; }
         public DbSet<Error> Errors { set; get; }
+        public DbSet<Setting> Settings { set; get; }
         public DbSet<Notify> Notifies { set; get; }
         public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
         public DbSet<ApplicationRole> ApplicationRoles { set; get; }
