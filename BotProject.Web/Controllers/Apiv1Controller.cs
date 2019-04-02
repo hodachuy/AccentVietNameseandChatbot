@@ -1,5 +1,8 @@
-﻿using BotProject.Service;
+﻿using AIMLbot;
+using BotProject.Common;
+using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
+using BotProject.Web.Models;
 using Newtonsoft.Json;
 using SearchEngine.Data;
 using SearchEngine.Service;
@@ -21,19 +24,31 @@ namespace BotProject.Web.Controllers
     {
         private readonly string UrlAPI = Helper.ReadString("UrlAPI");
         private readonly string KeyAPI = Helper.ReadString("KeyAPI");
-        private string pathAIML = HostingEnvironment.MapPath("~/File/AIML/");
+        private string pathAIML = PathServer.PathAIML;
+        private string pathSetting = PathServer.PathAIML + "config";
         private AccentService _accentService;
-        private BotService _botService;
+        //private BotService _botService;
 		private ElasticSearch _elastic;
         private IBotService _botDbService;
+        private ISettingService _settingService;
 
-		public Apiv1Controller(IBotService botDbService)
+        private Bot _bot;
+        private User _user;
+
+        public Apiv1Controller(IBotService botDbService, ISettingService settingService)
         {
 			_elastic = new ElasticSearch();
 			_accentService = AccentService.AccentInstance;
             _botDbService = botDbService;
-            _botService = BotService.BotInstance;
+            _settingService = settingService;
+            //_botService = BotService.BotInstance;
+
+            _bot = new Bot();
+            _bot.loadSettings(pathSetting);
+            _bot.isAcceptingUserInput = true;
+
         }
+
         // GET: Apiv1
         public ActionResult Index()
         {
@@ -45,20 +60,28 @@ namespace BotProject.Web.Controllers
         public ActionResult FormChat(string token, string botId)
         {
 
-            int id = Int32.Parse(botId);
-            var botDb = _botDbService.GetByID(id);
-            string nameBotAIML = "User_" + token + "_BotID_" + botId;
-            string fullPathAIML = pathAIML + nameBotAIML;
-            _botService.loadAIMLFromFiles(fullPathAIML);
-            return View(botDb);
+            int botID = Int32.Parse(botId);
+            var botDb = _botDbService.GetByID(botID);
+            var settingDb = _settingService.GetSettingByBotID(botID);
+            BotSettingViewModel botSettingVm = new BotSettingViewModel();
+            botSettingVm.BotID = botID;
+            botSettingVm.UserID = token;
+            botSettingVm.Color = settingDb.Color;
+            botSettingVm.Logo = settingDb.Logo;
+            botSettingVm.BotName = botDb.Name;
+            return View(botSettingVm);
         }
 
-        public JsonResult chatbot(string text, string group, string color, string logo)
+        public JsonResult chatbot(string text, string group, string token, string botId)
         {
-            string result = "";
-            AIMLbot.Result res = _botService.Chat(text, color, logo);
+            string nameBotAIML = "User_" + token + "_BotID_" + botId;
+            string fullPathAIML = pathAIML + nameBotAIML;
+            _bot.loadAIMLFromFiles(fullPathAIML);
+            _user = new User(token, _bot);
+            AIMLbot.Request r = new Request(text, _user, _bot);
+            AIMLbot.Result res = _bot.Chat(r);
             bool isMatch = true;
-            result = res.OutputSentences[0].ToString();
+            string result = res.OutputSentences[0].ToString();
             if (result.Contains("NOT_MATCH"))
             {
                 isMatch = false;
@@ -77,6 +100,7 @@ namespace BotProject.Web.Controllers
                 isCheck = isMatch
             },JsonRequestBehavior.AllowGet);
         }
+       
         #endregion
 
         #region ACCENT VN

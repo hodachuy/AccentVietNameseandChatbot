@@ -21,6 +21,14 @@ namespace BotProject.Model.Models
         [MaxLength(250)]
         public string Logo { set; get; }
 
-        public long? CardID { set; get; }
+        public int? CardID { set; get; }
+
+        public string TextIntroductory { set; get; }
+
+        public bool? IsActiveIntroductory { set; get; }
+
+        public int BotID { set; get; }
+
+        public string UserID { set; get; }
     }
 }

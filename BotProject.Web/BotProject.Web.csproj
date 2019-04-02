@@ -281,6 +281,7 @@
     <Compile Include="Models\ApplicationRoleViewModel.cs" />
     <Compile Include="Models\ApplicationUserViewModel.cs" />
     <Compile Include="Models\BotQnAnswerViewModel.cs" />
+    <Compile Include="Models\BotSettingViewModel.cs" />
     <Compile Include="Models\BotViewModel.cs" />
     <Compile Include="Models\CardViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
@@ -342,6 +343,12 @@
     <Content Include="assets\client\libs\selectboxit\3.8.0\jquery.selectBoxIt.min.js" />
     <Content Include="assets\client\libs\sortable\autogrow.js" />
     <Content Include="assets\client\libs\sortable\jquery.sortable.js" />
+    <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.css" />
+    <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.min.js" />
+    <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.png" />
+    <Content Include="assets\client\vendor\bootstrap-colorpicker\jquery-asColorPicker\dist\jquery-asColorPicker.min.js" />
+    <Content Include="assets\client\vendor\bootstrap-colorpicker\jquery-asColor\dist\jquery-asColor.min.js" />
+    <Content Include="assets\client\vendor\bootstrap-colorpicker\jquery-asGradient\dist\jquery-asGradient.js" />
     <Content Include="assets\client\vendor\bootstrap-select\css\bootstrap-select.css" />
     <Content Include="assets\client\vendor\bootstrap-select\js\bootstrap-select.js" />
     <Content Include="assets\client\vendor\bootstrap\css\bootstrap.min.css" />
@@ -765,6 +772,7 @@
     <Content Include="Views\Apiv1\FormChat.cshtml" />
     <Content Include="Views\SearchEngine\Index.cshtml" />
     <Content Include="Views\AccentVN\Index.cshtml" />
+    <Content Include="Views\Bot\Setting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

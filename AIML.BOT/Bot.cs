@@ -698,10 +698,10 @@ namespace AIMLbot
         /// <param name="rawInput">the raw input</param>
         /// <param name="UserGUID">an ID for the new user (referenced in the result object)</param>
         /// <returns>the result to be output to the user</returns>
-        public Result Chat(string rawInput, string UserGUID, string color, string imgBot)
+        public Result Chat(string rawInput, string UserGUID)
         {
             Request request = new Request(rawInput, new User(UserGUID, this), this);
-            return this.Chat(request,color, imgBot);
+            return this.Chat(request);
         }
 
         /// <summary>
@@ -709,7 +709,7 @@ namespace AIMLbot
         /// </summary>
         /// <param name="request">the request from the user</param>
         /// <returns>the result to be output to the user</returns>
-        public Result Chat(Request request, string color, string imgBot)
+        public Result Chat(Request request)
         {
             Result result = new Result(request.user, this, request);
 
@@ -745,7 +745,7 @@ namespace AIMLbot
                             string outputSentence = this.processNode(templateNode, query, request, result, request.user);
 
                             XmlNode resultNodeToHtml = AIMLTagHandler.getNode("<html>" + outputSentence + "</html>");
-                            ResultHtml outputHtml = this.ProcessTagToHtml(resultNodeToHtml, color,imgBot);
+                            ResultHtml outputHtml = this.ProcessTagToHtml(resultNodeToHtml);
                             result.OutputHtmlMessage.Add(outputHtml.Message);
                             result.OutputHtmlPostback.Add(outputHtml.Postback);
                             if (outputSentence.Length > 0)
@@ -987,11 +987,11 @@ namespace AIMLbot
             }
         }
 
-        private ResultHtml ProcessTagToHtml(XmlNode node, string colorBot , string imgBot)
+        private ResultHtml ProcessTagToHtml(XmlNode node)
         {
             ResultHtml result = new ResultHtml();
-            string color = colorBot;//"rgb(234, 82, 105);";
-            string srcImageBot = imgBot;
+            string color = "{{color}}";//"rgb(234, 82, 105);";
+            string srcImageBot = "{{image_logo}}";
             // process the node
             string tagName = node.Name.ToLower();
             //string html = string.Empty;

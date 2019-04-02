@@ -154,6 +154,10 @@
     <Compile Include="Migrations\201904010845555_Init20.Designer.cs">
       <DependentUpon>201904010845555_Init20.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904020320267_Init30.cs" />
+    <Compile Include="Migrations\201904020320267_Init30.Designer.cs">
+      <DependentUpon>201904020320267_Init30.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -174,6 +178,7 @@
     <Compile Include="Repositories\QuestionGroupRepository.cs" />
     <Compile Include="Repositories\QuestionRepository.cs" />
     <Compile Include="Repositories\QuickReplyRepository.cs" />
+    <Compile Include="Repositories\SettingRepository.cs" />
     <Compile Include="Repositories\SystemConfigRepository.cs" />
     <Compile Include="Repositories\TemplateGenericGroupRepository.cs" />
     <Compile Include="Repositories\TemplateGenericItemRepository.cs" />
@@ -256,6 +261,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904010845555_Init20.resx">
       <DependentUpon>201904010845555_Init20.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904020320267_Init30.resx">
+      <DependentUpon>201904020320267_Init30.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

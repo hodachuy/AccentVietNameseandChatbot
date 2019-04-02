@@ -1,0 +1,107 @@
+﻿@model BotProject.Model.Models.Setting
+@{
+    ViewBag.Title = "Setting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var cards = (IEnumerable<BotProject.Model.Models.Card>)ViewBag.Cards;
+}
+<style>
+    .file-preview {
+    border-radius: 2px;
+    border: 1px solid #ddd;
+    width: 100%;
+    margin-bottom: 20px;
+    position: relative;
+}
+</style>
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="card">
+        <h5 class="card-header">Thiết lập bot</h5>
+        <div class="card-body">
+            <form id="validationform" data-parsley-validate="" novalidate="">
+                <div class="form-group row">
+                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Tên bot</label>
+                    <div class="col-12 col-sm-8 col-lg-6">
+                        <input type="text" required="" placeholder="Tên chat bot" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Hình ảnh bot</label>
+                    <div class="col-12 col-sm-8 col-lg-6">
+                        <div class="input-group input-file" name="Fichier1">
+                            <input type="file" accept="image/png, image/jpeg" class="form-control" placeholder='Choose a file...' />
+                            @*<span class="input-group-btn">
+                                <button class="btn btn-default btn-choose" type="button">Choose</button>
+                            </span>*@
+                        </div>
+                        <div class="file-preview ">
+                            <div class="close fileinput-remove text-right">×</div>
+                            <div class="file-preview-thumbnails">
+                                <div class="file-preview-frame" id="preview-1554196906202-0">
+                                    <img src="~/assets/images/user_bot.jpg" class="file-preview-image" alt=""/>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>   <div class="file-preview-status text-center text-success"></div>
+                            <div class="kv-fileinput-error file-error-message" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Màu nền bot</label>
+                    <div class="col-12 col-sm-8 col-lg-6">
+                        <input type="text" id="rgb" class="form-control demo" data-format="rgb" value="rgb(234,82,105)">
+                    </div>
+                    
+                </div>
+                <div class="form-group row">
+                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Lời chào</label>
+                    <div class="col-12 col-sm-8 col-lg-6">
+                        <input type="text" required="" data-parsley-length="[5,10]" placeholder="Text between 5 - 10 chars length" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Câu mặc định</label>
+                    <div class="col-12 col-sm-8 col-lg-6">
+                        <input type="text" required="" data-parsley-min="6" placeholder="Min value is 6" class="form-control">
+                    </div>
+                </div>
+               
+            </form>
+        </div>
+    </div>
+</div>
+
+@section footerJS{
+<script>
+    $('.demo').each(function() {
+        //
+        // Dear reader, it's actually very easy to initialize MiniColors. For example:
+        //
+        //  $(selector).minicolors();
+        //
+        // The way I've done it below is just for the demo, so don't get confused
+        // by it. Also, data- attributes aren't supported at this time...they're
+        // only used for this demo.
+        //
+        $(this).minicolors({
+            control: $(this).attr('data-control') || 'hue',
+            defaultValue: $(this).attr('data-defaultValue') || '',
+            format: $(this).attr('data-format') || 'hex',
+            keywords: $(this).attr('data-keywords') || '',
+            inline: $(this).attr('data-inline') === 'true',
+            letterCase: $(this).attr('data-letterCase') || 'lowercase',
+            opacity: $(this).attr('data-opacity'),
+            position: $(this).attr('data-position') || 'bottom left',
+            swatches: $(this).attr('data-swatches') ? $(this).attr('data-swatches').split('|') : [],
+            change: function(value, opacity) {
+                if (!value) return;
+                if (opacity) value += ', ' + opacity;
+                if (typeof console === 'object') {
+                    console.log(value);
+                }
+            },
+            theme: 'bootstrap'
+        });
+
+    });
+</script>
+}

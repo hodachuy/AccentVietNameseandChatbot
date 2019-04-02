@@ -1,4 +1,4 @@
-﻿@model BotProject.Model.Models.Bot
+﻿@model BotProject.Web.Models.BotSettingViewModel
 @{
     Layout = null;
 }
@@ -43,6 +43,10 @@
     </style>
 </head>
 <body dir="ltr" class="plugin chrome webkit win x1 Locale_vi_VN">
+    <input type="hidden" id="botColor" value="@Model.Color"/>
+    <input type="hidden" id="botLogo" value="@Model.Logo" />
+    <input type="hidden" id="userID" value="@Model.UserID" />
+    <input type="hidden" id="botID" value="@Model.BotID" />
     <div class="_li">
         <div class="pluginSkinLight pluginFontHelvetica">
             <div>
@@ -78,7 +82,7 @@
                                             </div>
                                         </div>
                                         <div class="_hov">
-                                            <div class="_how _4ik4 _4ik5" style="-webkit-line-clamp: 1;">@Model.Name</div>
+                                            <div class="_how _4ik4 _4ik5" style="-webkit-line-clamp: 1;">@Model.BotName</div>
                                             <div class="_hox _4ik4 _4ik5" style="-webkit-line-clamp: 1;"></div>
                                         </div>
                                         <div class="_1qd3 _1qd3_btn_setting">

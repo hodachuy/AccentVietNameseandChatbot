@@ -48,9 +48,9 @@ namespace Accent.Web
         {
             AIMLbot.Request r = new Request(text, user, _bot);
             var imgBot = System.Configuration.ConfigurationManager.AppSettings["Domain"] + "Content/img/user_bot.jpg";
-            AIMLbot.Result res = _bot.Chat(r, "rgb(234, 82, 105); ", imgBot);
+            //AIMLbot.Result res = _bot.Chat(r, "rgb(234, 82, 105); ", imgBot);
 
-            //AIMLbot.Result rs = _bot.Chat(text, user.UserID);
+            AIMLbot.Result res = _bot.Chat(text, user.UserID);
             return res;
         }
         public void loadAIMLFromFiles(string path)

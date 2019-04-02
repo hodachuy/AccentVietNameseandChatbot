@@ -12,11 +12,18 @@ namespace BotProject.Web.Controllers
     {
         private ICardService _cardService;
 		private IQnAService _qnaService;
-        public BotController(IErrorService errorService, ICardService cardService, IQnAService qnaService) : base(errorService)
+        private ISettingService _settingService;
+        public BotController(IErrorService errorService,
+            ICardService cardService,
+            IQnAService qnaService,
+            ISettingService settingService
+           ) : base(errorService)
         {
             _cardService = cardService;
 			_qnaService = qnaService;
-		}
+            _settingService = settingService;
+
+        }
 
         // GET: Bot
         public ActionResult Index()
@@ -44,5 +51,14 @@ namespace BotProject.Web.Controllers
             ViewBag.BotID = id;
             return View();
 		}
+
+        public ActionResult Setting(int id)
+        {
+            ViewBag.BotID = id;
+            var settingDb = _settingService.GetSettingByBotID(id);
+            var lstCard = _cardService.GetListCardByBotID(id);
+            ViewBag.Cards = lstCard;
+            return View(settingDb);
+        }
     }
 }

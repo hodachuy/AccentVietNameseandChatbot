@@ -42,7 +42,7 @@ namespace AIMLbot.AIMLTagHandlers
                 {
                     Request subRequest = new Request(this.templateNode.InnerText, this.user, this.bot);
                     subRequest.StartedOn = this.request.StartedOn; // make sure we don't keep adding time to the request
-                    Result subQuery = this.bot.Chat(subRequest,null ,null);
+                    Result subQuery = this.bot.Chat(subRequest);
                     this.request.hasTimedOut = subRequest.hasTimedOut;
                     return subQuery.Output;
                 }

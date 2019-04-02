@@ -297,7 +297,9 @@ function submitMessageBot(text, delay) {
 function getMessageBot(text) {
     var param = {
         text: text,
-        group: 'leg'
+        group: 'leg',
+        token: $('#userID').val(),
+        botId:$('#botID').val()
     }
     param = JSON.stringify(param)
     $.ajax({
@@ -308,7 +310,7 @@ function getMessageBot(text) {
         success: function (result) {
             var message = result.message[0];
             var postback = result.postback[0];
-            var resultAPI = result.messageai;
+            var resultAPI = result.messageai.trim();
             var isMatch = result.isCheck;
             var html = '';
             if (!isMatch) {
@@ -353,6 +355,8 @@ function getMessageBot(text) {
                 }
             } else {
                 $("._4xkn_writing").remove();
+                message = message.replace(/{{color}}/g, _color);
+                message = message.replace(/{{image_logo}}/g, _srcLogo);
                 $(".conversationContainer").append(message);
             }
 
