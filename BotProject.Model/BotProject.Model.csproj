@@ -76,9 +76,13 @@
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\FileCard.cs" />
     <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\MdAnswer.cs" />
+    <Compile Include="Models\MdArea.cs" />
+    <Compile Include="Models\MdQuestion.cs" />
     <Compile Include="Models\Notify.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\QuestionGroup.cs" />
+    <Compile Include="Models\Module.cs" />
     <Compile Include="Models\QuickReply.cs" />
     <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\SystemConfig.cs" />

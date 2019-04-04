@@ -158,6 +158,18 @@
     <Compile Include="Migrations\201904020320267_Init30.Designer.cs">
       <DependentUpon>201904020320267_Init30.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904030143191_Init301.cs" />
+    <Compile Include="Migrations\201904030143191_Init301.Designer.cs">
+      <DependentUpon>201904030143191_Init301.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904030242109_Init120.cs" />
+    <Compile Include="Migrations\201904030242109_Init120.Designer.cs">
+      <DependentUpon>201904030242109_Init120.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904030726230_UpdateDB.cs" />
+    <Compile Include="Migrations\201904030726230_UpdateDB.Designer.cs">
+      <DependentUpon>201904030726230_UpdateDB.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -174,6 +186,10 @@
     <Compile Include="Repositories\ErrorRepository.cs" />
     <Compile Include="Repositories\FileCardRepository.cs" />
     <Compile Include="Repositories\ImageRepository.cs" />
+    <Compile Include="Repositories\MdAnswerRepository.cs" />
+    <Compile Include="Repositories\MdAreaRepository.cs" />
+    <Compile Include="Repositories\ModuleRepository.cs" />
+    <Compile Include="Repositories\MdQuestionRepository.cs" />
     <Compile Include="Repositories\NotifyRepository.cs" />
     <Compile Include="Repositories\QuestionGroupRepository.cs" />
     <Compile Include="Repositories\QuestionRepository.cs" />
@@ -190,6 +206,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BotProject.Common\BotProject.Common.csproj">
+      <Project>{D6FA7CAE-4D01-41C2-8F55-D2D9DF5101F0}</Project>
+      <Name>BotProject.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BotProject.Model\BotProject.Model.csproj">
       <Project>{f722067a-cc39-4f25-b4ce-4b7a2f1004b5}</Project>
       <Name>BotProject.Model</Name>
@@ -264,6 +284,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904020320267_Init30.resx">
       <DependentUpon>201904020320267_Init30.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904030143191_Init301.resx">
+      <DependentUpon>201904030143191_Init301.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904030242109_Init120.resx">
+      <DependentUpon>201904030242109_Init120.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904030726230_UpdateDB.resx">
+      <DependentUpon>201904030726230_UpdateDB.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

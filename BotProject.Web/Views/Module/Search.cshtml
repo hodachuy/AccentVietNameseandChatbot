@@ -1,0 +1,165 @@
+﻿@{
+    ViewBag.Title = "Search Engineer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    @@media (min-width: 576px) {
+        .modal-dialog {
+            max-width: 650px;
+            margin: 1.75rem auto;
+        }
+    }
+</style>
+<!-- ============================================================== -->
+<!-- pageheader -->
+<!-- ============================================================== -->
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
+        <div class="d-flex">
+            <h5 class="pageheader-title">Search QnA</h5>
+
+            <div class="toolbar ml-auto p-r-10">
+                <a href="#" class="btn btn-success btn-sm "><i class="fas fa-sync-alt"></i> Save and retrain</a>
+                <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>
+            </div>
+        </div>
+        <div class="d-flex">
+            <p style="font-size:13pt;padding-left:20px;color:darkblue;text-decoration:underline" id="search-label" for="search-terms"><i class="fas fa-search"></i> Test search</p>
+            <div class="ml-auto" style="font-size:13px;padding-right:100px">Retrained 2 phút trước</div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================== -->
+<!-- form search -->
+<!-- ============================================================== -->
+<div id="searchcontainer">
+    <div id="search">
+        <input type="text" name="search-terms" id="search-terms" placeholder="Tìm kiếm..." autocomplete="off">
+
+        <button type="button" class="btn btn-all" id="btnSearch">
+            <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+
+        <a class="close-form-search"></a>
+        <div id="div-suggest" jscontroller="tg8oTe" class="UUbT9" style="display:none;padding-left:13%;padding-right:13%" jsname="UUbT9" jsaction="h5M12e;mouseover:IgJl9c;mouseout:ItzDCd;mouseleave:MWfikb;YMFC3:VKssTb">
+            <div class="RjPuVb" jsname="RjPuVb" style="display: none; width: 0px;"></div>
+            <div class="aajZCb" jsname="aajZCb">
+                <ul class="erkvQe" jsname="erkvQe" role="listbox" id="ul-suggest"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8 col-sm-12 col-12" style="height:700px;overflow-y:auto;overflow-x:hidden">
+            <div class="card">
+                <h5 class="card-header" id="header-search" style="display:none;">Danh sách tìm kiếm</h5>
+
+                <ul class="list-group list-group-flush" id="ul-list-search"></ul>
+
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+    <div class="card">
+        <div class="card-header" style="background-color:lightgray">
+            <div class="row">
+                <div class="col-lg-6">
+                    <p>KNOWLEDGE BASE | 2 QnA pairs</p>
+                </div>
+                <div class="col-lg-6">
+                    <a href="#" style="float:right;" data-toggle="modal" data-target="#excelQnAModal"><i class="fa fa-upload"></i>Import Excel</a>
+                    <a href="#" style="float:right;margin-right:10px" data-toggle="modal" data-target="#addQnAModal"><i class="fa fa-plus-circle"></i>Add new QnA pair</a>
+                </div>
+                <div class="modal fade" id="addQnAModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add QnA Marker</h5>
+                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </a>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">Question</label>
+                                        <textarea class="form-control" id="txtQuestion" rows="3"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleFormControlTextarea1">Answer</label>
+                                        <textarea class="form-control" id="txtAnswer" rows="3"></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-primary">Save changes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="excelQnAModal" tabindex="-2" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Import Excel QnA Marker</h5>
+                                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </a>
+                            </div>
+                            <div class="modal-body">
+                                <form>
+                                    <div class="input-group input-file">
+                                        <input class="form-control" placeholder='Choose a file...' type="file" name="file" id="file" />
+                                        @*<span class="input-group-btn">
+                                                <button class="btn btn-default btn-choose" type="button">Choose</button>
+                                            </span>*@
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="javascript:void(0);" class="btn btn-primary" onclick="importExcelQnA()">Upload</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive" id="table-qna">
+                <table class="table table-striped table-bordered table-sm" id="table-data">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width:1%"></th>
+                            <th scope="col" style="width:41%">Câu hỏi</th>
+                            <th scope="col" style="width:43%">Trả lời</th>
+                            <th scope="col" style="width:15%">Lĩnh vực</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-data-training"></tbody>
+                </table>
+            </div>
+            <nav class="pagination pagination_type1">
+                <ol class="pagination__list" id="pagination-list"></ol>
+                <div class="pagination__list m-l-20">
+                    <select id="results-pp">
+                        <option value="5">5</option>
+                        <option value="10" selected>10</option>
+                        <option value="20">20</option>
+                        <option value="100">100</option>
+                        <option value="All">Tất cả</option>
+                    </select>
+                    <span class="m-l-10">Số lượng hiển thị</span>
+                </div>
+                <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section footerJS{
+<script src="~/assets/client/js/module/search.js"></script>
+}
