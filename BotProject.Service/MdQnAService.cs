@@ -14,7 +14,7 @@ namespace BotProject.Service
     {
         IEnumerable<MdQnAViewModel> GetListMdQnA(string filter, string sort, int pageNumber, int pageSize, long? selectedID = null);
         IEnumerable<MdArea> GetListMdArea(int? id);
-        MdQuestion CreateQuestion(ref MdQuestion ques);
+        MdQuestion CreateQuestion(MdQuestion ques);
         MdAnswer CreateAnswer(MdAnswer ans);
         void UpdateQuestion(MdQuestion ques);
         void UpdateAnswer(MdAnswer ans);
@@ -56,7 +56,7 @@ namespace BotProject.Service
             return _mdAreaRepository.GetMulti(x => x.ID == id);
         }
 
-        public MdQuestion CreateQuestion(ref MdQuestion ques)
+        public MdQuestion CreateQuestion(MdQuestion ques)
         {
             return _mdQuesRepository.Add(ques);
         }

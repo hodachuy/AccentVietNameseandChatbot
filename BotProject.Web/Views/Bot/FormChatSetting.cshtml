@@ -1,0 +1,419 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="referrer" content="origin-when-crossorigin" id="meta_referrer">
+
+    <link rel="manifest" href="/data/manifest/" crossorigin="use-credentials">
+    <title>ChatBot</title>
+    <link href="~/assets/client/css/lvbot-chat-dialog/c1_YoRGRY8zOwk.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c2_7E4oLQ9UO5V.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c3_PqmL6kgI3br.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c4_H5jZEVJpC2C.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c5_rouofWlolT7.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c6_t7hqTmVKZ.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c7_BQWrbCxwKTG.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c8_D4caviXZRzb.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c9_qa0aCGHSAgX.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c10_Ft5ovaKZZ_s.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c11_hZOCwdDXbub.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c12_lg5y1PL83FJ.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c13_29AQiV_7KWW.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c14_dfqeVEN1uIb.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c15_ThXTQTvkXzY.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c16_NBmlZsJMwcg.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c17_Y8U2p4FZgyH.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c18_Iq_mLA6uRtL.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    @*<script src="~/Scripts/jquery-2.1.4.min.js"></script>*@
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
+    </script>
+    <style>
+        .hide {
+            display: none !important;
+        }
+    </style>
+</head>
+<body dir="ltr" class="plugin chrome webkit win x1 Locale_vi_VN">
+    <div class="_li">
+        <div class="pluginSkinLight pluginFontHelvetica">
+            <div>
+                <div id="u_0_0">
+                    <div class="_30ss _3-8j">
+                        <div class="_6atl _6atm">
+                            <span>
+                                <div class="_3gog _6ati" style="border-radius: 9pt;">
+                                    <div class="_f_0">
+                                        <div class="_1qd1 _1qd1_close_form">
+                                            <div class="_2t-5 _4bqf" tabindex="0" role="button">
+                                                <svg width="10px" height="10px" viewBox="0 0 14 14">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g transform="translate(-419.000000, -413.000000)">
+                                                            <g transform="translate(164.000000, 396.000000)">
+                                                                <g>
+                                                                    <g transform="translate(250.000000, 12.000000)">
+                                                                        <g>
+                                                                            <g>
+                                                                                <rect opacity="0.200000003" x="0" y="0" width="24" height="24"></rect>
+                                                                                <g transform="translate(4.000000, 4.000000)" fill="#000000">
+                                                                                    <rect transform="translate(8.000000, 8.000000) rotate(45.000000) translate(-8.000000, -8.000000) " x="7" y="-1" width="2" height="18" rx="1"></rect>
+                                                                                    <rect transform="translate(8.000000, 8.000000) rotate(135.000000) translate(-8.000000, -8.000000) " x="7" y="-1" width="2" height="18" rx="1"></rect>
+                                                                                </g>
+                                                                            </g>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="_hov">
+                                            <div class="_how _4ik4 _4ik5" style="-webkit-line-clamp: 1;">@ViewBag.BotName</div>
+                                            <div class="_hox _4ik4 _4ik5" style="-webkit-line-clamp: 1;"></div>
+                                        </div>
+                                        <div class="_1qd3 _1qd3_btn_setting">
+                                            <div class="_4bqf _17l7" tabindex="0" role="button">
+                                                <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g transform="translate(-413.000000, -56.000000)">
+                                                            <g transform="translate(90.000000, 44.000000)">
+                                                                <g>
+                                                                    <g>
+                                                                        <g transform="translate(324.000000, 13.000000)">
+                                                                            <circle fill="#FFFFFF" stroke="#ea5269" cx="11" cy="11" r="11"></circle>
+                                                                            <path d="M11,9 L12,9 L12,17 L13,17 L13,17.5 L9,17.5 L9,17 L10,17 L10,9.5 L9,9.5 L9,9 L11,9 Z M11,4.5 C11.8284271,4.5 12.5,5.17157288 12.5,6 C12.5,6.82842712 11.8284271,7.5 11,7.5 C10.1715729,7.5 9.5,6.82842712 9.5,6 C9.5,5.17157288 10.1715729,4.5 11,4.5 Z" fill="#ea5269"></path>
+                                                                        </g>
+                                                                    </g>
+                                                                </g>
+                                                            </g>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="_424s">
+                                        <div class="_4fsi" style="display:none;">
+                                            <div class="_2jjx">
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(240, 61, 37);"><input type="checkbox" id="chk-stt-accent" checked /> Hổ trợ hiểu không dấu Tiếng Việt</div>
+                                            </div>
+                                            <div class="_2jjx">
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(234, 82, 105);"><input type="checkbox" id="chk-stt-popup" /> Hiển thị xem chi tiết cùng trang</div>
+                                            </div>
+
+                                            @*<div class="_2jjx">
+                                                    <a class="_4bqf _4fsj" target="_blank" href="https://l.facebook.com/l.php?u=https%3A%2F%2Fm.me%2F217837024911046%3Ffbclid%3DIwAR3rXn1fg8akuU1P_BIFLogPNqX0pctMeXn6lPvS7YUKV3Vk207DCpN4H9o&amp;h=AT29j_-wZqb8suSNdRV7-bNFSzscbk0cKjw7z6fnYt93o_C9nfN-GlzQ-Bsr9lDkAjvGwFDEdn0UVLw2sRrTmJHsNO8ZNJYmVMnjzy8uIW2iSEXa-sxDIZ_kgZOwIpMUVV9mVA" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">
+                                                        Xem trên Messenger
+                                                    </a>
+                                                </div>
+                                                <div class="_2jjx">
+                                                    <a class="_4bqf _4fsj" target="_blank" href="https://facebook.com/217837024911046" style="color: rgb(234, 82, 105);">
+                                                        Truy cập Trang Facebook
+                                                    </a>
+                                                </div>
+                                                <div class="_2jjx">
+                                                    <a class="_4bqf _4fsj" target="_blank" href="https://www.facebook.com/business/m/add-messenger-to-your-website" style="color: rgb(234, 82, 105);">
+                                                        Thêm Messenger vào trang web của bạn
+                                                    </a>
+                                                </div>*@
+                                        </div>
+                                        @*contentAfter uiScrollableAreaTrackOver uiScrollableAreaDragging contentBefore*@
+                                        <div class="_5f0v uiScrollableArea ">
+                                            @*<div class="uiScrollableAreaTrack hidden_elem" tabindex="0" style="opacity: 0;">
+                                                    <div class="uiScrollableAreaGripper" style="top: 0px; height: 71.4043px;"></div>
+                                                </div>*@
+                                            <div class="uiScrollableAreaWrap scrollable" id="js_0" style="overscroll-behavior: contain contain;">
+                                                <div class="uiScrollableAreaBody" style="margin-right: -17px;">
+                                                    <div class="uiScrollableAreaContent">
+                                                        <div>
+                                                            <div class="preventScrollOverflow">
+                                                                <div class="conversationContainer" id="js_scroll">
+                                                                    @*<h4 class="datebreak _497p _2lpt">
+                                                                            <time class="_3oh-">T2 16:26</time>
+                                                                        </h4>*@
+
+  
+
+                                                                        <!--MESSAGE BOT GIỚI THIỆU-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="profilePictureColumn" style="bottom: 0px;">
+                                                                                <div class="_4cqr">
+                                                                                    <img class="profilePicture img" src="~/assets/images/user_bot.jpg" />
+                                                                                    <div class="clearfix"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _2k7w _4xkr">
+                                                                                            <div class="_2k7x">
+                                                                                                <div class="_6j2i">
+                                                                                                    <a target="_blank" href="#">
+                                                                                                        <div class="_6j0s" style="background-image: url('../../File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
+                                                                                                        </div>
+                                                                                                    </a>
+                                                                                                    <div class="_6j2g">
+                                                                                                        <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                                                                                            💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                                                                                                        </div>
+                                                                                                        <div class="_6j0u">
+                                                                                                            <div>
+                                                                                                                📧 Emai: support@PhapLuat.com
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                        <div class="_6j0y">
+                                                                                                            <a target="_blank" href="#">
+                                                                                                                www.facebook.com
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">
+                                                                                                                🙎 Lĩnh vực
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">
+                                                                                                                📞 Đường dây nóng
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" target="_blank" href="#" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">
+                                                                                                                👫 Tham gia group
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!--MESSAGE USER TEXT-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: rgb(234, 82, 105);">
+                                                                                            <span>
+                                                                                                <span>
+                                                                                                    🙎 Lĩnh vực
+                                                                                                </span>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <a class="_6934 noDisplay" href="#">
+                                                                                            This message didn't send. Click to try again.
+                                                                                            <span class="_21c6 error" title="Đã chuyển"></span>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!--MESSAGE BUTTON FOR URL-->
+                                                                        <div class="_4xkn clearfix">
+                                                                            <div class="profilePictureColumn" style="bottom: 0px;">
+                                                                                <div class="_4cqr">
+                                                                                    <img class="profilePicture img" src="~/assets/images/user_bot.jpg" />
+                                                                                    <div class="clearfix"></div>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="messages">
+                                                                                <div class="_21c3">
+                                                                                    <div class="clearfix _2a0-">
+                                                                                        <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240);">
+                                                                                            <span>
+                                                                                                <span>
+                                                                                                    <img alt="⛅️" class="_1ift _2560 img" src="https://static.xx.fbcdn.net/images/emoji.php/v9/t9f/1/16/26c5.png">
+                                                                                                    Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
+                                                                                                </span>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <div class="_4xko _2k7w _4xkr">
+                                                                                            <div class="_2k7x">
+                                                                                                <div class="_6b7s">
+                                                                                                    <div class="_6isd _6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Sở hữu trí tuệ</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Thuế - Phí - Lệ phí</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                    <div class="_6ir5">
+                                                                                                        <div class="_4bqf _6ir3">
+                                                                                                            <a class="_6ir4" href="#" style="color: rgb(234, 82, 105);">Du lịch</a>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                            <!--EVENT BUTTON FOR POSTBACK "SHOW/HIDE" WHEN CLICKED-->
+                                                            <div style="position: relative; top: 0px;" id="_12cd_event_button">
+                                                                <!--CHANGE IF HAVE POSTBACK-->
+                                                                <div class="_6biu">
+                                                                        <div currentselectedindex="0" maxchangeamount="1" class="_23n- form_carousel">
+                                                                            <div class="_4u-c">
+                                                                                <div index="0" class="_a28 lst_btn_carousel">
+                                                                                    <div class="_a2e">
+                                                                                        <div class="_2zgz">
+                                                                                            <div class="_4bqf _6biq _6bir" tabindex="0" role="button" style="border-color: rgb(234, 82, 105); color: rgb(234, 82, 105);">Hủy</div>
+                                                                                        </div>
+                                                                                        <div class="_2zgz">
+                                                                                            <div class="_4bqf _6biq _6bir" tabindex="0" role="button" style="border-color: rgb(234, 82, 105); color: rgb(234, 82, 105);">Có</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="_4u-f">
+                                                                                    <iframe aria-hidden="true" class="_1_xb" tabindex="-1"></iframe>
+                                                                                </div>
+                                                                            </div>
+                                                                            <!-- click lùi-->
+                                                                            <a class="_32rk _32rg _1cy6 btn_back_carousel" href="#" style="display:none;">
+                                                                                <div direction="backward" class="_10sf _5x5- _5x60">
+                                                                                    <div class="_5x6d">
+                                                                                        <div class="_3bwv _3bww">
+                                                                                            <div class="_3bwy">
+                                                                                                <div class="_3bwx"><i class="_3-8w img sp_bfeq6p sx_c4c7bc" alt=""></i></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </a>
+                                                                            <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
+                                                                            <a class="_32rk _32rh _1cy6 btn_next_carousel" href="#">
+                                                                                <div direction="forward" class="_10sf _5x5_">
+                                                                                    <div class="_5x6d">
+                                                                                        <div class="_3bwv _3bww">
+                                                                                            <div class="_3bwy">
+                                                                                                <div class="_3bwx">
+                                                                                                    <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </a>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--FORM INPUT CHAT-->
+                                    <div class="_336a">
+                                        <div class="_4zbw">
+                                            <!--BUTTON MENU-->
+                                            <div class="_661n _661n_btn_menu_chat" tabindex="0" role="button">
+                                                <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g fill="#ea5269">
+                                                            <rect x="2" y="3" width="20" height="1"></rect>
+                                                            <rect x="2" y="11" width="20" height="1"></rect>
+                                                            <rect x="2" y="19" width="20" height="1"></rect>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                            <!--INPUT TEXT-->
+                                            <div class="_4fwe">
+                                                <label class="_58ak _3ct8">
+                                                    <input disabled class="_58al _58al_input_txt" id="58al-input-text" type="text" autocomplete="off" placeholder="Nhập tin nhắn..." value="">
+                                                </label>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--LAYER FOR MENU-->
+    <div class="uiContextualLayerPositioner _1r_9 uiLayer" data-testid="undefined" style="width: 360px; left: 16px; top: 440px; opacity: 1; display:none;" data-ownerid="js_2c">
+        <div class="uiContextualLayer uiContextualLayerAboveLeft" aria-labelledby="" style="bottom: 0px;">
+            <div class="_5v-0 _53ik" style="width: 300px;">
+                <div class="_53ij">
+                    <div>
+                        <div class="_6d42">
+                            <div class="_6d44 _6d45">Menu</div>
+                            @*<div class="_6d46">
+                                    <div class="_6d45 _4bqf">
+                                        <div class="_6d49" tabindex="0" role="button">
+                                            <a href="#" style="color: rgb(234, 82, 105);">🤖 Tạo Chatbot</a>
+                                            <div class="_6d4a">
+                                                <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g fill="#ea5269">
+                                                            <polygon points="8 7 9.5 5.5 16 12 9.5 18.5 8 17 13 12"></polygon>
+                                                        </g>
+                                                    </g>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="_6d46">
+                                    <div class="_6d45 _4bqf">
+                                        <a class="_6d48" href="#" style="color: rgb(234, 82, 105);">⚙️ Chọn Ngôn Ngữ</a>
+                                    </div>
+                                </div>*@
+                            <div class="_6d46">
+                                <div class="_6d45 _4bqf">
+                                    <div class="_6d49" tabindex="0" role="button">
+                                        <a href="#" style="color: rgb(234, 82, 105);">👉 Quay lại </a>
+                                        <div class="_6d4a">
+                                            <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <g fill="#ea5269">
+                                                        <polygon points="8 7 9.5 5.5 16 12 9.5 18.5 8 17 13 12"></polygon>
+                                                    </g>
+                                                </g>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <i class="_53io" style="left: 0%; margin-left: 12px;"></i>
+            </div>
+        </div>
+    </div>
+    <script src="~/assets/client/js/eventBot/chat-dialog.js"></script>
+</body>
+</html>

@@ -2,6 +2,15 @@
 var pageSize = 10;
 //var allowed = true;
 var debounceTimeout = null;
+
+var qnaVm = {
+    QuesID: "",
+    AnsID: "",
+    QuesContent: "",
+    AnsContent: "",
+    AreaName: "",
+    AreaID:""
+}
 $(document).ready(function () {
     // init data
     getDataTable(1, pageSize);
@@ -11,7 +20,19 @@ $(document).ready(function () {
         search(content);
         return false;
     })
-
+    $("#btnAdd").off().on('click', function () {
+        addQnA();
+    })
+    $("#openQnaModel").off().on('click', function () {
+        $("#txtQuestion").val('');
+        $("#txtAnswer").val('');
+        $("#AreaID").val('');
+        $("#addQnAModal").modal({
+            backdrop: 'static',
+            keyboard: true,
+            show: true
+        });
+    })
     // writing show suggest
     $("#search-terms").keyup(function (e) {
         // e.preventDefault();
@@ -105,17 +126,20 @@ function search(content) {
 }
 
 function addQnA() {
-    var questionContent = $("#txtQuestion").text();
-    var answerContent = $("#txtAnswer").text();
+    var questionContent = $("#txtQuestion").val();
+    var answerContent = $("#txtAnswer").val();
+    var areaName = $("#AreaID option:selected").text().replace("----- Tất cả -----", "");
+    var areaID = $("#AreaID").val();
     if (questionContent == "") return;
     if (questionContent == "" && answerContent == "") return;
-    var param = {
-        question: questionContent,
-        answer: answerContent
-    }
-    //$.ajax({
-
-    //})
+    qnaVm.QuesContent = questionContent,
+    qnaVm.AnsContent = answerContent,
+    qnaVm.AreaID = areaID,
+    qnaVm.AreaName = areaName
+    var svr = new AjaxCall("api/module/createupdateqna", JSON.stringify(qnaVm));
+    svr.callServicePOST(function (data) {
+        Console.log(data)
+    });
 }
 
 renderTemplate = function (data) {

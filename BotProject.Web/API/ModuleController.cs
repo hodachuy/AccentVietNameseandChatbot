@@ -10,6 +10,7 @@ using BotProject.Common.ViewModels;
 using BotProject.Web.Models;
 using BotProject.Model.Models;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace BotProject.Web.API
 {
@@ -62,10 +63,28 @@ namespace BotProject.Web.API
                 if(mdQnA.QuesID == null)
                 {
                     MdQuestion mdQuesDb = new MdQuestion();
-                    mdQuesDb.ContentHTML = mdQnA.QuesContent;
-                    mdQuesDb.ContentText = Regex.Replace(mdQnA.QuesContent, @"<(.|\n)*?>", "");
-                }
+                    mdQuesDb.ContentHTML = HttpUtility.HtmlDecode(mdQnA.QuesContent);
+                    mdQuesDb.ContentText = Regex.Replace(HttpUtility.HtmlDecode(mdQnA.QuesContent), @"<(.|\n)*?>", "");
+                    mdQuesDb.AreaID = mdQnA.AreaID;
+                    mdQuesDb.CreatedDate = DateTime.Now;
+                    _searchService.CreateQuestion(mdQuesDb);
+                    _searchService.Save();
 
+                    MdAnswer mdAnsDb = new MdAnswer();
+                    mdAnsDb.ContentHTML = HttpUtility.HtmlDecode(mdQnA.AnsContent);
+                    mdAnsDb.ContentText = Regex.Replace(HttpUtility.HtmlDecode(mdQnA.AnsContent), @"<(.|\n)*?>", "");
+                    mdAnsDb.MQuestionID = mdQuesDb.ID;
+                    _searchService.CreateAnswer(mdAnsDb);
+                    _searchService.Save();
+
+                    ApiQnaNLRService apiNLR = new ApiQnaNLRService();
+                    string nlrQuesID = mdQuesDb.ID.ToString();
+                    string nlrQuesContentText = mdQuesDb.ContentText;
+                    string nlrAnsContentText = mdAnsDb.ContentText;
+                    string nlrAnsContentHTML = mdAnsDb.ContentHTML;
+                    string nlrAreaName = mdQnA.AreaName;
+                    //apiNLR.AddQues(nlrQuesID, nlrQuesContentText, nlrAnsContentText, nlrAreaName, nlrAnsContentHTML);
+                }
                 return response;
             });
         }

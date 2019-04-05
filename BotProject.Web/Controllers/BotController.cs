@@ -52,13 +52,19 @@ namespace BotProject.Web.Controllers
             return View();
 		}
 
-        public ActionResult Setting(int id)
+        public ActionResult Setting(int id, string name)
         {
-            ViewBag.BotID = id;
             var settingDb = _settingService.GetSettingByBotID(id);
             var lstCard = _cardService.GetListCardByBotID(id);
             ViewBag.Cards = lstCard;
+            ViewBag.BotName = name;
             return View(settingDb);
+        }
+
+        public ActionResult FormChatSetting(string botName)
+        {
+            ViewBag.BotName = botName;
+            return View();
         }
     }
 }

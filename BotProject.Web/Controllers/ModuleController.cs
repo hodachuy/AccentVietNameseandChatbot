@@ -10,13 +10,17 @@ namespace BotProject.Web.Controllers
 {
     public class ModuleController : BaseController
     {
-        public ModuleController(IErrorService errorService) : base(errorService)
+        private IMdQnAService _mdQnAService;
+        public ModuleController(IErrorService errorService, IMdQnAService mdQnAService) : base(errorService)
         {
+            _mdQnAService = mdQnAService;
         }
 
         // GET: Module
         public ActionResult Search()
         {
+            var lstMdArea = _mdQnAService.GetListMdArea(null).ToList();
+            ViewBag.MdArea = lstMdArea;
             return View();
         }
     }

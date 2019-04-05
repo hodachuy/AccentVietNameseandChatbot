@@ -118,7 +118,7 @@ var common = {
             html += '<a class="nav-link" id="btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="#"><i class="fa fa-cog" aria-hidden="true"></i>Thiết lập</a>';
+            html += '<a class="nav-link" href="/bot/setting/' + data.Alias + '/' + data.ID + '?name='+data.Name+'"><i class="fa fa-cog" aria-hidden="true"></i>Thiết lập</a>';
             html += '</li>';
             html += '</ul>';
             html += '</div>';
