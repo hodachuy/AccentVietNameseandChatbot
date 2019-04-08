@@ -18,6 +18,8 @@ namespace BotProject.Model.Models
         [MaxLength(50)]
         public string Color { set; get; }
 
+        public string FormName { set; get; }
+
         [MaxLength(250)]
         public string Logo { set; get; }
 
@@ -26,6 +28,8 @@ namespace BotProject.Model.Models
         public string TextIntroductory { set; get; }
 
         public bool? IsActiveIntroductory { set; get; }
+
+        public bool? IsMDSearch { set; get; }
 
         public int BotID { set; get; }
 

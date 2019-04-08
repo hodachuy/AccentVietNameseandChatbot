@@ -170,6 +170,14 @@
     <Compile Include="Migrations\201904030726230_UpdateDB.Designer.cs">
       <DependentUpon>201904030726230_UpdateDB.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904080745269_UpdateDbSettings.cs" />
+    <Compile Include="Migrations\201904080745269_UpdateDbSettings.Designer.cs">
+      <DependentUpon>201904080745269_UpdateDbSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904080823041_UpdateInit80.cs" />
+    <Compile Include="Migrations\201904080823041_UpdateInit80.Designer.cs">
+      <DependentUpon>201904080823041_UpdateInit80.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -293,6 +301,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904030726230_UpdateDB.resx">
       <DependentUpon>201904030726230_UpdateDB.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904080745269_UpdateDbSettings.resx">
+      <DependentUpon>201904080745269_UpdateDbSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904080823041_UpdateInit80.resx">
+      <DependentUpon>201904080823041_UpdateInit80.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

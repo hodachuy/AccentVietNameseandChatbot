@@ -59,7 +59,6 @@ namespace BotProject.Web.Controllers
         #region CHATBOT
         public ActionResult FormChat(string token, string botId)
         {
-
             int botID = Int32.Parse(botId);
             var botDb = _botDbService.GetByID(botID);
             var settingDb = _settingService.GetSettingByBotID(botID);
@@ -68,7 +67,7 @@ namespace BotProject.Web.Controllers
             botSettingVm.UserID = token;
             botSettingVm.Color = settingDb.Color;
             botSettingVm.Logo = settingDb.Logo;
-            botSettingVm.BotName = botDb.Name;
+            botSettingVm.FormName = settingDb.FormName;
             return View(botSettingVm);
         }
 

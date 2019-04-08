@@ -12,7 +12,6 @@
 <link href="~/assets/client/css/card.css" rel="stylesheet" />
 <link href="~/assets/client/css/common-bot.css" rel="stylesheet" />
 <link href="~/assets/client/css/components.css" rel="stylesheet" />
-
 <style>
     @@media (min-width: 576px) {
         .modal-card {
@@ -76,7 +75,7 @@
 </style>
 <input type="hidden" id="botId" value="@Model.BotID" />
 <input type="hidden" id="botQnAnswerID" value="@Model.ID" />
-<input type="hidden" id="botAlias" value="@Model.Alias"/>
+<input type="hidden" id="botAlias" value="@Model.Alias" />
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 p-b-10">
         <p>
@@ -179,7 +178,7 @@
 </div>
 
 @section dialogBotJS{
-    <script>        
+    <script>
         function loadDialogBot(){
             var html = '';
             var url = _Host + "apiv1/FormChat?token=" + $("#userId").val() + "&botID=" + $("#botId").val();
@@ -204,11 +203,9 @@
         }
         loadDialogBot();
     </script>
-    }
-
+}
 @section footerJS{
     <script>
-
         var lstCard = @Html.Raw(Json.Encode(cards));
         function card() {
             var html = '<optgroup label="DANH SÁCH THẺ">';

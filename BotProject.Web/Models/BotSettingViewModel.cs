@@ -8,10 +8,21 @@ namespace BotProject.Web.Models
     public class BotSettingViewModel
     {
         public string UserID { set; get; }
+
         public int BotID { set; get; }
-        public string BotName { set; get; }
+
+        public string FormName { set; get; }
+
         public string Color { set; get; }
+
         public string Logo { set; get; }
 
+        public int? CardID { set; get; }
+
+        public int TextIntroductory { set; get; }
+
+        public bool? IsActiveIntroductory { set; get; }
+
+        public bool? IsMDSearch { set; get; }
     }
 }
