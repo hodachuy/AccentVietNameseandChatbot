@@ -35,5 +35,7 @@ namespace BotProject.Common
         /// HttpContext.Current.Server.MapPath("~/File/Datasets_Training_Accent/")
         /// </summary>
         public static string PathAccent = HttpContext.Current.Server.MapPath("~/File/Datasets_Training_Accent/");
+
+        public static string PathLogoSetting = HttpContext.Current.Server.MapPath("~/assets/images/logo/");
     }
 }

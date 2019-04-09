@@ -245,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\ModuleController.cs" />
+    <Compile Include="API\SettingController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
@@ -328,6 +329,7 @@
     <Content Include="assets\client\js\helper\callServiceHelper.js" />
     <Content Include="assets\client\js\module\search.js" />
     <Content Include="assets\client\js\searchEngineQnA.js" />
+    <Content Include="assets\client\js\setting.js" />
     <Content Include="assets\client\libs\ace\ace.js" />
     <Content Include="assets\client\libs\autosize\autosize.min.js" />
     <Content Include="assets\client\libs\blockUI\jquery.blockUI.min.js" />
@@ -785,6 +787,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="assets\client\img\" />
+    <Folder Include="assets\images\logo\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>

@@ -7,6 +7,7 @@ namespace BotProject.Web.Models
 {
     public class BotSettingViewModel
     {
+        public int ID { set; get; }
         public string UserID { set; get; }
 
         public int BotID { set; get; }

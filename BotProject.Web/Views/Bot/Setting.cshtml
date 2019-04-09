@@ -41,6 +41,7 @@
         color: #c3c3c3;
     }
 </style>
+<input type="hidden" id="botID" value="@Model.BotID"/>
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
     <div class="card">
         <div class="d-flex">
@@ -54,7 +55,7 @@
                 <div class="form-group row">
                     <label class="col-12 col-sm-3 col-form-label text-sm-right">Tên bot</label>
                     <div class="col-12 col-sm-8">
-                        <input type="text" placeholder="Tên bot..." class="form-control" id="formName" value="@Model.FormName">
+                        <input type="text" placeholder="Tên bot..." class="form-control" id="formName" value="@Model.FormName" onchange="getFormName(this)">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -66,8 +67,15 @@
                         <div class="file-preview ">
                             <div class="close fileinput-remove text-right">×</div>
                             <div class="file-preview-thumbnails">
-                                <div class="file-preview-frame" id="preview-1554196906202-0">
-                                    <img src="~/assets/images/user_bot.jpg" class="file-preview-image" alt="" />
+                                <div class="file-preview-frame" id="preview-logo">
+                                    @if (!String.IsNullOrEmpty(Model.Logo))
+                                    {
+                                        <img src="@Url.Content("~/"+Model.Logo)" class="file-preview-image" alt="" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/assets/images/user_bot.jpg" class="file-preview-image" alt="" />
+                                    }
                                 </div>
                             </div>
                             <div class="clearfix"></div>   <div class="file-preview-status text-center text-success"></div>
@@ -78,12 +86,11 @@
                 <div class="form-group row">
                     <label class="col-12 col-sm-3 col-form-label text-sm-right">Màu nền bot</label>
                     <div class="col-12 col-sm-8">
-                        <input type="text" id="rgb" class="form-control demo" data-format="rgb" value="@Model.Color">
+                        <input type="text" id="formColor" class="form-control demo" data-format="rgb" value="@Model.Color">
                     </div>
 
                 </div>
                 <div class="form-group row">
-                    @*<label class="col-12 col-sm-3 col-form-label text-sm-right">Tin nhắn bắt đầu</label>*@
                     <div class="col-lg-3 col-sm-3 text-right">
                         <label class="learn_switchbot text-left mb0">
                             <input type="checkbox" class="learn_switchinput" id="startedButton">
@@ -104,11 +111,9 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="form-group row">
-                    @*<label class="col-12 col-sm-3 col-form-label text-sm-right">Tin nhắn bắt đầu</label>*@
                     <div class="col-lg-3 col-sm-3 text-right">
-                        <label class="text-bold mb0">Tùy chỉnh module</label>
+                        <label class="text-bold mb0">Tùy chọn module</label>
                     </div>
                     <div class="col-lg-9 col-sm-9">
                         <label>
@@ -118,7 +123,10 @@
                                     {
                                         <input type="checkbox" id="statusSearch" checked>
                                     }
-                                    <input type="checkbox" id="statusSearch">
+                                    else
+                                    {
+                                        <input type="checkbox" id="statusSearch">
+                                    }
                                 </span>
                             </div>
                         </label>
@@ -135,60 +143,22 @@
             </div>
         </div>
     </div>
-
 </div>
 
 @section footerJS{
+    <script src="~/assets/client/js/setting.js"></script>
     <script>
-        $('.demo').each(function() {
-            $(this).minicolors({
-                control: $(this).attr('data-control') || 'hue',
-                defaultValue: $(this).attr('data-defaultValue') || '',
-                format: $(this).attr('data-format') || 'hex',
-                keywords: $(this).attr('data-keywords') || '',
-                inline: $(this).attr('data-inline') === 'true',
-                letterCase: $(this).attr('data-letterCase') || 'lowercase',
-                opacity: $(this).attr('data-opacity'),
-                position: $(this).attr('data-position') || 'bottom left',
-                swatches: $(this).attr('data-swatches') ? $(this).attr('data-swatches').split('|') : [],
-                change: function(value, opacity) {
-                    if (!value) return;
-                    if (opacity) value;
-                    if (typeof console === 'object') {
-                        parent.$("#frame_chat_setting").contents().find("._6ir4").css('color', value);
-                        parent.$("#frame_chat_setting").contents().find("._6bir").css({ 'color': value, 'border-color': value });
-                        parent.$("#frame_chat_setting").contents().find("._4xks").css('background-color', value);
-                        parent.$("#frame_chat_setting").contents().find("circle").css('stroke', value);
-                        parent.$("#frame_chat_setting").contents().find("path").css('fill', value);
-                        parent.$("#frame_chat_setting").contents().find("g").css('fill', value);
-                        console.log(value);
-                    }
-                },
-                theme: 'bootstrap'
-            });
-        });
-
-        $("#startedButton").change(function () {
-            if (this.checked) {
-                $('#card-introduction').empty().append('<div class="txtStartButton form-control" maxlength="640" contenteditable="true" data-ph="Nhập văn bản (Ví dụ: Chào bạn, tôi là chat bot. Tôi có thể giúp bạn khám phá thời tiết hiện tại nơi bạn đang sống. Hãy chia sẻ vị trí của bạn cho tôi nhé!)">@Model.TextIntroductory</div>');
-            } else {
-                $('#card-introduction').empty().append(card());
-            }
-        });
-
         var lstCard = @Html.Raw(Json.Encode(cards));
+
         function card() {
             var html = '<select class="form-control"><option value="" disabled selected>Chọn thẻ</option>';
             if (lstCard.length != 0) {
                 $.each(lstCard, function (index, value) {
                     html += '<option value="'+value.ID+'">'+value.Name+'</option>';
                 })
-            }else{
-                html += '<option value=""></option>';
             }
             html += '</select>';
             return html;
         }
-
     </script>
 }
