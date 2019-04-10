@@ -85,6 +85,7 @@ namespace BotProject.Web.API
                     string nlrAreaName = mdQnA.AreaName;
                     //apiNLR.AddQues(nlrQuesID, nlrQuesContentText, nlrAnsContentText, nlrAreaName, nlrAnsContentHTML);
                 }
+                response = request.CreateErrorResponse(HttpStatusCode.OK, "ok");
                 return response;
             });
         }

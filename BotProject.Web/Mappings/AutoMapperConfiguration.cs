@@ -15,6 +15,7 @@ namespace BotProject.Web.Mappings
                 cfg.CreateMap<ApplicationUser, ApplicationUserViewModel>();
                 cfg.CreateMap<Bot, BotViewModel>();
 				cfg.CreateMap<BotQnAnswer, BotQnAnswerViewModel>();
+                cfg.CreateMap<Setting, BotSettingViewModel>();
 			});
         }
     }

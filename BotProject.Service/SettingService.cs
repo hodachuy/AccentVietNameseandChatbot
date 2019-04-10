@@ -12,6 +12,7 @@ namespace BotProject.Service
     public interface ISettingService
     {
         Setting Create(Setting Setting);
+        void Update(Setting Setting);
         Setting GetSettingByBotID(int botId);
 
         void Save();
@@ -38,6 +39,11 @@ namespace BotProject.Service
         public void Save()
         {
             unitOfWork.Commit();
+        }
+
+        public void Update(Setting Setting)
+        {
+            _settingRepository.Update(Setting);
         }
     }
 }

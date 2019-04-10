@@ -14,10 +14,12 @@ using BotProject.Common;
 using System.Configuration;
 using System.Text.RegularExpressions;
 using BotProject.Web.Models;
+using System.Web.Http.Cors;
 
 namespace BotProject.Web.API
 {
     [RoutePrefix("api/file")]
+    //[EnableCors(origins: "*", headers: "*", methods: "*")]
     public class FileCardController : ApiControllerBase
     {
         private IFileCardService _FileCardService;
@@ -93,6 +95,22 @@ namespace BotProject.Web.API
                 return response;
             });
         }
+
+        //[Route("test")]
+        //[HttpPost]
+        //public HttpResponseMessage Test(HttpRequestMessage request, FileCardImage file)
+        //{
+        //    return CreateHttpResponse(request, () =>
+        //    {
+        //        HttpResponseMessage response = null;
+        //        var form = HttpContext.Current.Request.Form["botId"];
+        //        var botId = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<int>(form);
+
+        //        response = request.CreateResponse(HttpStatusCode.Created, "OK");
+        //        return response;
+        //    });
+        //}
+
 
         public class FileCardImage
         {

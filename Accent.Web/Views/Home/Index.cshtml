@@ -15,6 +15,7 @@
             </button>
             <span class="title">File</span>
             <p class="description">Service description</p>
+            <a href="#" id="ClickTest">Test</a>
         </div>
         <div class="aside-nav collapse">
             <ul class="nav">
@@ -197,3 +198,36 @@
         </div>
     </div>
 </div>
+
+@*<script>
+    $('body').on('click', '#ClickTest', function () {
+        var params = {
+            FileImageID:"1",
+            FileImagePath:"abc"
+        }
+
+        params = JSON.stringify(params);
+
+
+        $.ajax({
+            url: "http://localhost:54160/api/file/test",
+            type: 'POST',
+            data: params,
+            cache: false,
+            processData: false,
+            contentType: "application/json",
+            //headers: {
+            //    accept: 'application/json',
+            //    contentType: 'application/json; charset=utf-8'
+            //},
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (error) {
+                console.log(error);
+            },
+            
+        })
+    })
+</script>*@

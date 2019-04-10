@@ -27,9 +27,9 @@ namespace BotProject.Model.Models
 
         public string TextIntroductory { set; get; }
 
-        public bool? IsActiveIntroductory { set; get; }
+        public bool IsActiveIntroductory { set; get; }
 
-        public bool? IsMDSearch { set; get; }
+        public bool IsMDSearch { set; get; }
 
         public int BotID { set; get; }
 

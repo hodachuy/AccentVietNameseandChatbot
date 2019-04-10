@@ -20,10 +20,10 @@ namespace BotProject.Web.Models
 
         public int? CardID { set; get; }
 
-        public int TextIntroductory { set; get; }
+        public string TextIntroductory { set; get; }
 
-        public bool? IsActiveIntroductory { set; get; }
+        public bool IsActiveIntroductory { set; get; }
 
-        public bool? IsMDSearch { set; get; }
+        public bool IsMDSearch { set; get; }
     }
 }

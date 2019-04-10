@@ -1,6 +1,9 @@
 ﻿using BotProject.Common;
+using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
+using BotProject.Web.Infrastructure.Extensions;
+using BotProject.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +26,21 @@ namespace BotProject.Web.API
             _settingService = settingService;
         }
 
+        [Route("createupdate")]
+        [HttpPost]
+        public HttpResponseMessage CreateUpdate(HttpRequestMessage request, BotSettingViewModel settingVm)
+        {
+            return CreateHttpResponse(request, () => {
+                HttpResponseMessage response = null;
+                Setting settingDb = new Setting();
+                settingDb.UpdateSetting(settingVm);
+                _settingService.Update(settingDb);
+                _settingService.Save();
+                response = request.CreateResponse(HttpStatusCode.OK, settingDb);
+                return response;
+            });
+        }
+
         [Route("importlogo")]
         [HttpPost]
         public HttpResponseMessage ImportLogo(HttpRequestMessage request)
@@ -39,7 +57,7 @@ namespace BotProject.Web.API
                     string fileName = "logo-bot-"+ botId+ "-"+id + "-" + new FileInfo(file.FileName).Name;
 
                     file.SaveAs(Path.Combine(PathServer.PathLogoSetting + fileName));
-                    string url = PathServer.PathLogoSetting + fileName;
+                    string url = "assets/images/logo/" + fileName;
                     response = request.CreateResponse(HttpStatusCode.OK, url);
                 }
                 else

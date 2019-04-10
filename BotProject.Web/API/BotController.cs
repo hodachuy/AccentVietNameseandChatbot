@@ -19,10 +19,15 @@ namespace BotProject.Web.API
 	public class BotController : ApiControllerBase
 	{
 		private IBotService _botService;
-		public BotController(IErrorService errorService, IBotService botService) : base(errorService)
+        private ISettingService _settingService;
+		public BotController(IErrorService errorService,
+            IBotService botService,
+            ISettingService settingService) : base(errorService)
 		{
 			_botService = botService;
-		}	
+            _settingService = settingService;
+
+        }	
 
 		[Route("getall")]
 		[HttpGet]
@@ -75,7 +80,14 @@ namespace BotProject.Web.API
 				{
 
 				}
-				var reponseData = Mapper.Map<Bot, BotViewModel>(botReturn);
+                Setting settingDb = new Setting();
+                settingDb.BotID = botDb.ID;
+                settingDb.Color = "rgb(234, 82, 105);";
+                settingDb.UserID = botVm.UserID;
+                settingDb.Logo = "assets/images/user_bot.jpg";
+                _settingService.Create(settingDb);
+                _settingService.Save();
+                var reponseData = Mapper.Map<Bot, BotViewModel>(botReturn);
                 response = request.CreateResponse(HttpStatusCode.OK, reponseData);
                 return response;
             });

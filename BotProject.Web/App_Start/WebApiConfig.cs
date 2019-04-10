@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.WebHost;
 using System.Web.Routing;
 using System.Web.SessionState;
@@ -15,12 +16,14 @@ namespace BotProject.Web
     {		
 		public static void Register(HttpConfiguration config)
         {
-			// Web API configuration and services
+            // Web API configuration and services
+            //var cors = new EnableCorsAttribute("www.example.com", "*", "*");
+            config.EnableCors();
 
-			// Web API routes
-			config.MapHttpAttributeRoutes();
+            // Web API routes
+            config.MapHttpAttributeRoutes();
 
-            // config show value defaul with productViewModel.
+            // config show value defaul.
             config.Formatters.JsonFormatter.SerializerSettings.ContractResolver =
             new DefaultContractResolver { IgnoreSerializableAttribute = true };
 

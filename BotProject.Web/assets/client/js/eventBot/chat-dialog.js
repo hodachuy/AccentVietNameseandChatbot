@@ -1,5 +1,5 @@
-﻿var _color = "rgb(234, 82, 105);",
-    _srcLogo = _Host + "assets/images/user_bot.jpg";
+﻿var _color = $("#botColor").val(),
+    _srcLogo = _Host + $("#botLogo").val();
 
 var MESSAGE = {
     ERROR_01: "Xin lỗi, Tôi không hiểu",

@@ -1,13 +1,14 @@
 ﻿var BotSetting = {
-    ID:"",
+    ID: $("#settingID").val(),
     FormName: $("#formName").val(),
     BotID: $("#botID").val(),
     Color: $("#formColor").val(),
     Logo: $(".file-preview-image").attr('src'),
-    CardID: "",
-    TextIntroductory: "",
+    CardID: $("#cardID").val(),
+    TextIntroductory: $("#txtIntroduct").val(),
     IsActiveIntroductory: "",
-    IsMDSearch: $('#statusSearch').val(),
+    IsMDSearch: $('#IsMdSearch').val(),
+    UserID: $('#userID').val(),
 }
 
 $('.demo').each(function () {
@@ -32,6 +33,7 @@ $('.demo').each(function () {
                 parent.$("#frame_chat_setting").contents().find("path").css('fill', value);
                 parent.$("#frame_chat_setting").contents().find("g").css('fill', value);
                 console.log(value);
+                BotSetting.Color = value + ";";
             }
         },
         theme: 'bootstrap'
@@ -57,20 +59,71 @@ $('body').on('change', '#formLogo', function (event) {
         })
         .done(function (val) {
             var url = _Host + val;
-            $("#preview-logo").empty().append('<img src="'+url+'" class="file-preview-image" alt="" />');
+            console.log(url)
+            $("#preview-logo").empty().append('<img src="' + url + '" class="file-preview-image" alt="" width="150" height="150"/>');
+            parent.$("#frame_chat_setting").contents().find(".profilePicture").attr("src", url);
         })
     }
 })
 
 function getFormName(e){
     var name = $(e).val();
-    parent.$("#frame_chat_setting").contents().find("#formSettingName").html(name);          
+    parent.$("#frame_chat_setting").contents().find("#formSettingName").html(name);
+    BotSetting.FormName = name;
 }
+$(document).ready(function () {
+    // init load
+    if (BotSetting.TextIntroductory != "") {
+        $('#card-introduction').empty().append('<div id="txtIntro" class="txtStartButton form-control" maxlength="640" contenteditable="true" data-ph="Nhập văn bản (Ví dụ: Chào bạn, tôi là chat bot. Tôi có thể giúp bạn khám phá thời tiết hiện tại nơi bạn đang sống. Hãy chia sẻ vị trí của bạn cho tôi nhé!)">'+BotSetting.TextIntroductory+'</div>');
+    } else if (BotSetting.CardID != null || BotSetting.CardID != "") {
+        $('#card-introduction').empty().append(card());
+        $("#sltCard").val(BotSetting.CardID)
+    }
 
+    parent.$("#frame_chat_setting").contents().find("#formSettingName").html(BotSetting.FormName);
+
+    if (BotSetting.IsMDSearch == true) {
+        $('#statusSearch').prop('checked', true);
+    }
+
+    $('body').on('click', '.fileinput-remove', function () {
+        $("#preview-logo").empty().append('<img src="/assets/images/user_bot.jpg" class="file-preview-image" alt="" />');
+        parent.$("#frame_chat_setting").contents().find(".profilePicture").src = "/assets/images/user_bot.jpg";
+
+    })
+})
+
+$("#btnSaveSettings").on('click', function () {
+    BotSetting.TextIntroductory = $("#txtIntro").html();
+    BotSetting.IsMDSearch = $("#statusSearch").val();
+    BotSetting.Logo = $(".file-preview-image").attr('src').replace("" + _Host + "", "");
+    BotSetting.CardID = $("#sltCard").val();
+    console.log(BotSetting)
+    var urlSetting = "api/setting/createupdate";
+    var svr = new AjaxCall(urlSetting, JSON.stringify(BotSetting));
+    svr.callServicePOST(function (data) {
+        console.log(data)
+        $("#model-tag-bot").modal('hide');
+        swal({
+            title: "Thông báo",
+            text: "Đã lưu",
+            confirmButtonColor: "#EF5350",
+            type: "success"
+        }, function () { $("#model-tag-bot").modal('show'); });
+    });
+})
+
+$('#statusSearch').change(function () {
+    if ($(this).is(":checked")) {
+        $(this).val('true');
+    } else {
+        $(this).val('false');
+    }
+});
 
 $("#startedButton").change(function () {
     if (this.checked) {
-        $('#card-introduction').empty().append('<div class="txtStartButton form-control" maxlength="640" contenteditable="true" data-ph="Nhập văn bản (Ví dụ: Chào bạn, tôi là chat bot. Tôi có thể giúp bạn khám phá thời tiết hiện tại nơi bạn đang sống. Hãy chia sẻ vị trí của bạn cho tôi nhé!)">@Model.TextIntroductory</div>');
+        $('#card-introduction').empty().append('<div id="txtIntro" class="txtStartButton form-control" maxlength="640" contenteditable="true" data-ph="Nhập văn bản (Ví dụ: Chào bạn, tôi là chat bot. Tôi có thể giúp bạn khám phá thời tiết hiện tại nơi bạn đang sống. Hãy chia sẻ vị trí của bạn cho tôi nhé!)"></div>');
     } else {
         $('#card-introduction').empty().append(card());
     }

@@ -5,6 +5,9 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BotProject.Service;
+using AutoMapper;
+using BotProject.Model.Models;
+using BotProject.Web.Models;
 
 namespace BotProject.Web.Controllers
 {
@@ -56,9 +59,11 @@ namespace BotProject.Web.Controllers
         {
             var settingDb = _settingService.GetSettingByBotID(id);
             var lstCard = _cardService.GetListCardByBotID(id);
+            var settingVm = Mapper.Map<Setting, BotSettingViewModel>(settingDb);
             ViewBag.Cards = lstCard;
             ViewBag.BotName = name;
-            return View(settingDb);
+            ViewBag.UserID = UserInfo.Id;
+            return View(settingVm);
         }
 
         public ActionResult FormChatSetting(string botName)

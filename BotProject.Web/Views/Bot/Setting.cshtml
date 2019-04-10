@@ -1,4 +1,4 @@
-﻿@model BotProject.Model.Models.Setting
+﻿@model BotProject.Web.Models.BotSettingViewModel
 @{
     ViewBag.Title = "Setting";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -41,7 +41,13 @@
         color: #c3c3c3;
     }
 </style>
+<input type="hidden" id="userID" value="@ViewBag.UserID"/>
+<input type="hidden" id="settingID" value="@Model.ID"/>
 <input type="hidden" id="botID" value="@Model.BotID"/>
+<input type="hidden" id="txtIntroduct" value="@Model.TextIntroductory"/>
+<input type="hidden" id="cardID" value="@Model.CardID"/>
+<input type="hidden" id="IsMdSearch" value="@Model.IsMDSearch"/>
+
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
     <div class="card">
         <div class="d-flex">
@@ -119,7 +125,7 @@
                         <label>
                             <div class="checker border-primary-600 text-primary-800" id="uniform-statusTran">
                                 <span>
-                                    @if (Model.IsMDSearch != null && Model.IsMDSearch == true)
+                                    @if (Model.IsMDSearch == true)
                                     {
                                         <input type="checkbox" id="statusSearch" checked>
                                     }
@@ -151,7 +157,7 @@
         var lstCard = @Html.Raw(Json.Encode(cards));
 
         function card() {
-            var html = '<select class="form-control"><option value="" disabled selected>Chọn thẻ</option>';
+            var html = '<select id="sltCard" class="form-control"><option value="" disabled selected>Chọn thẻ</option>';
             if (lstCard.length != 0) {
                 $.each(lstCard, function (index, value) {
                     html += '<option value="'+value.ID+'">'+value.Name+'</option>';

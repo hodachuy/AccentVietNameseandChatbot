@@ -134,5 +134,24 @@ namespace BotProject.Web.Infrastructure.Extensions
             quickReply.Title = quickReplyVm.Title;
         }
         #endregion
+
+        #region Setting
+        public static void UpdateSetting(this Setting settingDb, BotSettingViewModel settingVm)
+        {
+            settingDb.ID = settingVm.ID;
+            settingDb.BotID = settingVm.BotID;
+            settingDb.CardID = settingVm.CardID;
+            settingDb.Color = settingVm.Color;
+            settingDb.FormName = settingVm.FormName;
+            settingDb.IsMDSearch = settingVm.IsMDSearch;
+            settingDb.Logo = settingVm.Logo;
+            settingDb.TextIntroductory = settingVm.TextIntroductory;
+            settingDb.UserID = settingVm.UserID;
+            if(settingDb.CardID == null || String.IsNullOrEmpty(settingDb.TextIntroductory))
+                settingDb.IsActiveIntroductory = false;
+            else
+                settingDb.IsActiveIntroductory = true;
+        }
+        #endregion
     }
 }
