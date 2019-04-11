@@ -1,5 +1,6 @@
 ﻿var _color = $("#botColor").val(),
-    _srcLogo = _Host + $("#botLogo").val();
+    _srcLogo = _Host + $("#botLogo").val(),
+    _isActiveIntroduct = false;
 
 var MESSAGE = {
     ERROR_01: "Xin lỗi, Tôi không hiểu",
@@ -16,9 +17,6 @@ $(document).ready(function () {
     // console.log('message received:  ' + event.data, event);
     // event.source.postMessage('holla back youngin!', event.origin);
     // }, false);
-
-
-
 
 
     //$('._5f0v').mouseenter(function () {
@@ -196,7 +194,6 @@ $(document).ready(function () {
         var domain = 'http://localhost:63951';
         parent.postMessage(quesID, domain);
 
-
         // var domain = 'http://localhost:63951';	
         // var message = 'Hello!  The time is: ' + (new Date().getTime());
         // console.log('blog.local:  sending message:  ' + message);
@@ -206,7 +203,6 @@ $(document).ready(function () {
         // console.log('blog.local:  sending message:  ' + message);
         // parent.postMessage(message, domain); //send the message and target URI
         // }, 6000);
-
 
         //window.parent.GetQuesDetailPopup(quesID);
         //window.parent.$('#abc').append('abccdscd');
@@ -232,7 +228,40 @@ $("#chk-stt-popup").click(function () {
     localStorage.setItem("cbot_chk_popup", $(this).prop('checked'));
 });
 
+window.addEventListener('message', function (event) {
+    //console.log('message received:  ' + event.data, event);
+    startMessageBotIntroduct();
+    //if (event.origin === 'http://localhost:47887') {
+    //    console.log(event.origin)
+    //    console.log('message received:  ' + event.data, event);
+    //};
+}, false);
 
+
+// init message introductory
+function startMessageBotIntroduct() {
+    if ($("#haveIntroduct").val() == "True") {
+        if (_isActiveIntroduct == false) {
+            // buble writing
+            $("#_12cd_event_button").empty();
+            var writing = getMessageWriting();
+            $(".conversationContainer").append(writing);
+
+            //start
+            var content = '';
+            if ($("#botTextIntro").val() != '') {
+                content = $("#botTextIntro").val();
+            }
+            if ($("#cardID").val() != null || $("#cardID").val() != '') {
+                content = "postback_card_" + $("#cardID").val();
+            }
+            setTimeout(function () {
+                getMessageBot(content);
+            },1500)
+            _isActiveIntroduct = true;
+        }
+    }
+}
 
 // send message
 function submitMessage(text, textPostback) {
@@ -299,7 +328,8 @@ function getMessageBot(text) {
         text: text,
         group: 'leg',
         token: $('#userID').val(),
-        botId:$('#botID').val()
+        botId: $('#botID').val(),
+        isMdSearch: $('#isMDSearch').val()
     }
     param = JSON.stringify(param)
     $.ajax({
@@ -358,6 +388,10 @@ function getMessageBot(text) {
                 message = message.replace(/{{color}}/g, _color);
                 message = message.replace(/{{image_logo}}/g, _srcLogo);
                 $(".conversationContainer").append(message);
+            }
+
+            if (postback !== null) {
+                postback = postback.replace(/{{color}}/g, _color);
             }
 
             $("#_12cd_event_button").empty().append(postback);
@@ -437,7 +471,7 @@ function tempModuleSearchAPI(lstData) {
         itemHtml += '</div>';
         itemHtml += '<div class="_6ir5">';
         itemHtml += '<div class="_4bqf _6ir3">';
-        itemHtml += '<a class="_6ir4 _6ir4_popup" data-id="' + value.id + '" href="javascript:void(0)" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">Xem chi tiết</a>';
+        itemHtml += '<a class="_6ir4 _6ir4_popup qa_law" data-id="' + value.id + '" href="javascript:void(0)" rel="nofollow noopener" data-lynx-mode="hover" style="color: rgb(234, 82, 105);">Xem chi tiết</a>';
         itemHtml += '</div>';
         itemHtml += '</div>';
         itemHtml += '</div>';

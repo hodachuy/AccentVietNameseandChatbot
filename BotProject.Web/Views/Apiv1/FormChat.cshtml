@@ -48,9 +48,9 @@
     <input type="hidden" id="userID" value="@Model.UserID" />
     <input type="hidden" id="botID" value="@Model.BotID" />
     <input type="hidden" id="botTextIntro" value="@Model.TextIntroductory"/>
-    <input type="hidden" id="haveIntroduct" value="@Model.IsActiveIntroductory"/>
+    <input type="hidden" id="haveIntroduct" value="@Model.IsActiveIntroductory.ToString()"/>
     <input type="hidden" id="cardID" value="@Model.CardID"/>
-    <input type="hidden" id="isMDSearch" value="@Model.IsMDSearch"/>
+    <input type="hidden" id="isMDSearch" value="@Model.IsMDSearch.ToString()"/>
     <div class="_li">
         <div class="pluginSkinLight pluginFontHelvetica">
             <div>
@@ -98,8 +98,8 @@
                                                                 <g>
                                                                     <g>
                                                                         <g transform="translate(324.000000, 13.000000)">
-                                                                            <circle fill="#FFFFFF" stroke="#ea5269" cx="11" cy="11" r="11"></circle>
-                                                                            <path d="M11,9 L12,9 L12,17 L13,17 L13,17.5 L9,17.5 L9,17 L10,17 L10,9.5 L9,9.5 L9,9 L11,9 Z M11,4.5 C11.8284271,4.5 12.5,5.17157288 12.5,6 C12.5,6.82842712 11.8284271,7.5 11,7.5 C10.1715729,7.5 9.5,6.82842712 9.5,6 C9.5,5.17157288 10.1715729,4.5 11,4.5 Z" fill="#ea5269"></path>
+                                                                            <circle fill="#FFFFFF" stroke="#ea5269" cx="11" cy="11" r="11" style="stroke:@Model.Color"></circle>
+                                                                            <path d="M11,9 L12,9 L12,17 L13,17 L13,17.5 L9,17.5 L9,17 L10,17 L10,9.5 L9,9.5 L9,9 L11,9 Z M11,4.5 C11.8284271,4.5 12.5,5.17157288 12.5,6 C12.5,6.82842712 11.8284271,7.5 11,7.5 C10.1715729,7.5 9.5,6.82842712 9.5,6 C9.5,5.17157288 10.1715729,4.5 11,4.5 Z" fill="#ea5269" style="fill:@Model.Color"></path>
                                                                         </g>
                                                                     </g>
                                                                 </g>
@@ -113,10 +113,10 @@
                                     <div class="_424s">
                                         <div class="_4fsi" style="display:none;">
                                             <div class="_2jjx">
-                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(240, 61, 37);"><input type="checkbox" id="chk-stt-accent" checked /> Hổ trợ hiểu không dấu Tiếng Việt</div>
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color:@Model.Color"><input type="checkbox" id="chk-stt-accent" checked /> Hổ trợ hiểu không dấu Tiếng Việt</div>
                                             </div>
                                             <div class="_2jjx">
-                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: rgb(234, 82, 105);"><input type="checkbox" id="chk-stt-popup" /> Hiển thị xem chi tiết cùng trang</div>
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: @Model.Color"><input type="checkbox" id="chk-stt-popup" /> Hiển thị xem chi tiết cùng trang</div>
                                             </div>
 
                                             @*<div class="_2jjx">
@@ -533,8 +533,8 @@
                                             <!--BUTTON MENU-->
                                             <div class="_661n _661n_btn_menu_chat" tabindex="0" role="button">
                                                 <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                        <g fill="#ea5269">
+                                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" style="fill:@Model.Color">
+                                                        <g fill="#ea5269" style="fill:@Model.Color">
                                                             <rect x="2" y="3" width="20" height="1"></rect>
                                                             <rect x="2" y="11" width="20" height="1"></rect>
                                                             <rect x="2" y="19" width="20" height="1"></rect>
@@ -549,13 +549,13 @@
                                                 </label>
                                             </div>
                                             <div class="_kmd">
-                                                <div class="_64mk _2ez5 _6a">
+                                                @*<div class="_64mk _2ez5 _6a">
                                                     <input accept="application/msword, application/pdf, text/csv, text/plain, image/*, video/*" class="_2ez6" multiple="" name="attachment[]" title="Add Files" type="file">
-                                                </div>
+                                                </div>*@
                                                 <div class="_4bqf _64mk _64ml _4bqf_btn_submit" tabindex="0" role="button" style="display:none">
                                                     <svg width="22px" height="22px" viewBox="0 0 22 22">
                                                         <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                            <g transform="translate(-5.000000, -5.000000)" fill="#ea5269">
+                                                            <g transform="translate(-5.000000, -5.000000)" fill="#ea5269" style="fill:@Model.Color">
                                                                 <g>
                                                                     <g transform="translate(5.000000, 5.000000)">
                                                                         <path d="M2.0300068,0.145970044 L20.9662955,9.37015518 C22.3445682,10.0420071 22.3445682,11.9582654 20.9662955,12.6296618 L2.0300068,21.853847 C1.09728834,22.3084288 0,21.6475087 0,20.6317597 L0.806953417,13.8945654 C0.882225434,13.2659853 1.39089595,12.7699536 2.03608467,12.6957083 L12.0229514,11.6795038 C12.8612292,11.5943266 12.8612292,10.4054904 12.0229514,10.3203132 L2.03608467,9.30410872 C1.39089595,9.23031889 0.882225434,8.7342872 0.806953417,8.10525162 L0,1.36805729 C0,0.352308292 1.09728834,-0.3081563 2.0300068,0.145970044"></path>
@@ -609,11 +609,11 @@
                             <div class="_6d46">
                                 <div class="_6d45 _4bqf">
                                     <div class="_6d49" tabindex="0" role="button">
-                                        <a href="#" style="color: rgb(234, 82, 105);">👉 Quay lại </a>
+                                        <a href="#" class="_4fsj" style="color: @Model.Color">👉 Quay lại </a>
                                         <div class="_6d4a">
                                             <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                                    <g fill="#ea5269">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" style="fill: @Model.Color">
+                                                    <g fill="#ea5269" style="fill:@Model.Color">
                                                         <polygon points="8 7 9.5 5.5 16 12 9.5 18.5 8 17 13 12"></polygon>
                                                     </g>
                                                 </g>

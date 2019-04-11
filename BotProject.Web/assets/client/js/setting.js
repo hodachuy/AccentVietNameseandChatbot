@@ -10,7 +10,6 @@
     IsMDSearch: $('#IsMdSearch').val(),
     UserID: $('#userID').val(),
 }
-
 $('.demo').each(function () {
     $(this).minicolors({
         control: $(this).attr('data-control') || 'hue',
@@ -32,7 +31,7 @@ $('.demo').each(function () {
                 parent.$("#frame_chat_setting").contents().find("circle").css('stroke', value);
                 parent.$("#frame_chat_setting").contents().find("path").css('fill', value);
                 parent.$("#frame_chat_setting").contents().find("g").css('fill', value);
-                console.log(value);
+                parent.$("#frame_chat_setting").contents().find("._4fsj").css('color', value);
                 BotSetting.Color = value + ";";
             }
         },
@@ -89,8 +88,16 @@ $(document).ready(function () {
     $('body').on('click', '.fileinput-remove', function () {
         $("#preview-logo").empty().append('<img src="/assets/images/user_bot.jpg" class="file-preview-image" alt="" />');
         parent.$("#frame_chat_setting").contents().find(".profilePicture").src = "/assets/images/user_bot.jpg";
-
     })
+    setTimeout(function () {
+        parent.$("#frame_chat_setting").contents().find("._6ir4").css('color', $("#formColor").val());
+        parent.$("#frame_chat_setting").contents().find("._6bir").css({ 'color': $("#formColor").val(), 'border-color': $("#formColor").val() });
+        parent.$("#frame_chat_setting").contents().find("._4xks").css('background-color', $("#formColor").val());
+        parent.$("#frame_chat_setting").contents().find("circle").css('stroke', $("#formColor").val());
+        parent.$("#frame_chat_setting").contents().find("path").css('fill', $("#formColor").val());
+        parent.$("#frame_chat_setting").contents().find("g").css('fill', $("#formColor").val());
+        parent.$("#frame_chat_setting").contents().find("._4fsj").css('color', $("#formColor").val());
+    },1500)
 })
 
 $("#btnSaveSettings").on('click', function () {

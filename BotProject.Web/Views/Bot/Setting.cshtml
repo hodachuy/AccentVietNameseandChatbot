@@ -46,7 +46,8 @@
 <input type="hidden" id="botID" value="@Model.BotID"/>
 <input type="hidden" id="txtIntroduct" value="@Model.TextIntroductory"/>
 <input type="hidden" id="cardID" value="@Model.CardID"/>
-<input type="hidden" id="IsMdSearch" value="@Model.IsMDSearch"/>
+<input type="hidden" id="isMdSearch" value="@Model.IsMDSearch"/>
+<input type="hidden" id="isActiveIntroduct" value="@Model.IsActiveIntroductory"/>
 
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
     <div class="card">
@@ -144,7 +145,7 @@
             </form>
             <div class="col-md-5" style="float:right">
                 <iframe name="f12691cd05677d1" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no"
-                        allow="encrypted-media" title="" src="http://localhost:54160/Bot/FormChatSetting?botName=@botName"
+                        allow="encrypted-media" title="" src="@System.Configuration.ConfigurationManager.AppSettings["Domain"]Bot/FormChatSetting?botName=@botName"
                         id="frame_chat_setting"></iframe>
             </div>
         </div>

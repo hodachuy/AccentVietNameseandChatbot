@@ -13,6 +13,8 @@ namespace AIML.BOT.Utils
         {
             try
             {
+                //string path = "http://172.16.13.105/";
+                //return path;
                 string path = System.AppDomain.CurrentDomain.BaseDirectory + "AppSettings.config";
                 XmlDocument doc = new XmlDocument();
                 doc.Load(path);

@@ -1,4 +1,5 @@
 ﻿using AIMLbot;
+using AutoMapper;
 using BotProject.Common;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
@@ -62,16 +63,11 @@ namespace BotProject.Web.Controllers
             int botID = Int32.Parse(botId);
             var botDb = _botDbService.GetByID(botID);
             var settingDb = _settingService.GetSettingByBotID(botID);
-            BotSettingViewModel botSettingVm = new BotSettingViewModel();
-            botSettingVm.BotID = botID;
-            botSettingVm.UserID = token;
-            botSettingVm.Color = settingDb.Color;
-            botSettingVm.Logo = settingDb.Logo;
-            botSettingVm.FormName = settingDb.FormName;
-            return View(botSettingVm);
+            var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
+            return View(settingVm);
         }
 
-        public JsonResult chatbot(string text, string group, string token, string botId)
+        public JsonResult chatbot(string text, string group, string token, string botId, bool isMdSearch)
         {
             string nameBotAIML = "User_" + token + "_BotID_" + botId;
             string fullPathAIML = pathAIML + nameBotAIML;
@@ -84,12 +80,16 @@ namespace BotProject.Web.Controllers
             if (result.Contains("NOT_MATCH"))
             {
                 isMatch = false;
-                result = GetRelatedQuestion(text, group);
-                if (String.IsNullOrEmpty(result))
+                if (isMdSearch)
                 {
-                    //result = NOT_MATCH[res.OutputSentences[0]];
-                    result = res.OutputSentences[0].ToString();
+                    result = GetRelatedQuestion(text, group);
+                    if (String.IsNullOrEmpty(result))
+                    {
+                        //result = NOT_MATCH[res.OutputSentences[0]];
+                        result = res.OutputSentences[0].ToString();
+                    }
                 }
+
             }
             return Json(new
             {
