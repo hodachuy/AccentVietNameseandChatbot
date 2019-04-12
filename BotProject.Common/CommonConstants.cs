@@ -41,7 +41,14 @@ namespace BotProject.Common
 
     public class PathConfig
     {
+        /// <summary>
+        /// HttpContext.Current.Server.MapPath("~/Web.config")
+        /// </summary>
         public static string PathWebConfig = HttpContext.Current.Server.MapPath("~/Web.config");
+
+        /// <summary>
+        /// HttpContext.Current.Server.MapPath("~/AppSettings.config")
+        /// </summary>
         public static string PathAppConfig = HttpContext.Current.Server.MapPath("~/AppSettings.config");
     }
 }
