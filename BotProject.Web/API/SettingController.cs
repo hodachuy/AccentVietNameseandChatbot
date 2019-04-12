@@ -26,6 +26,18 @@ namespace BotProject.Web.API
             _settingService = settingService;
         }
 
+        [Route("getbybotid")]
+        [HttpGet]
+        public HttpResponseMessage GetByBotId(HttpRequestMessage request, int botId)
+        {
+            return CreateHttpResponse(request, () => {
+                HttpResponseMessage response = null;
+                var setting = _settingService.GetSettingByBotID(botId);
+                response = request.CreateResponse(HttpStatusCode.OK, setting);
+                return response;
+            });
+        }
+
         [Route("createupdate")]
         [HttpPost]
         public HttpResponseMessage CreateUpdate(HttpRequestMessage request, BotSettingViewModel settingVm)

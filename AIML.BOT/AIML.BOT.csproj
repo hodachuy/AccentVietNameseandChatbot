@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AIML.BOT</RootNamespace>
     <AssemblyName>AIML.BOT</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -109,6 +111,10 @@
     <ProjectReference Include="..\Accent.Utils\Accent.Utils.csproj">
       <Project>{FA7E7A50-114F-4713-9107-A1E4C41DDC32}</Project>
       <Name>Accent.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BotProject.Common\BotProject.Common.csproj">
+      <Project>{d6fa7cae-4d01-41c2-8f55-d2d9df5101f0}</Project>
+      <Name>BotProject.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

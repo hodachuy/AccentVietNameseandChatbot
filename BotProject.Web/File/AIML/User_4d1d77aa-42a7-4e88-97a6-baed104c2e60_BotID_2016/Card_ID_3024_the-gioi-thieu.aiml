@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_3024</pattern>
+<template>
+<card>
+<image>File/Images/Card/6b1a19c6-530c-43f8-b683-57135a90e246-vietnam.jpg</image>
+<title>Chào mừng bạn đến với site thông tin du lịch SureGo</title>
+<subtitle>Du lịch - lịch trình khám phá</subtitle>
+<link>
+<text>http://surego.vn/</text>
+<url>http://surego.vn/</url>
+</link>
+<button>
+<text>🚴 Khám phá surego</text>
+<menu>postback_card_3014</menu>
+</button>
+<button>
+<text>🌐 Website</text>
+<url>http://surego.vn</url>
+</button>
+</card>
+
+</template>
+</category>
+</aiml>

@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>postback_card_3018</pattern>
+    <template>
+      <carousel>
+        <card>
+          <image>File/Images/Card/5c5e3310-6176-4cd7-816f-3be43985cc72-tourdisan1.jpg</image>
+          <title>Vitours giảm 5% Hành trình Di sản 5N4Đ</title>
+          <subtitle>Khởi hành thứ 4 thứ 6 hàng tuần</subtitle>
+          <link>
+            <text></text>
+            <url></url>
+          </link>
+          <button>
+            <text>Xem chi tiết</text>
+            <url>http://surego.vn/chuyen-du-lich/mini-tour-s-ozon-hotel-3.html</url>
+          </button>
+        </card>
+        <card>
+          <image>File/Images/Card/1c4d55de-c454-409b-af06-c1091ccd2b51-tourdisan2.jpg</image>
+          <title>Vitours giảm 5% Hành trình Di sản 3N5Đ</title>
+          <subtitle>Khởi hành thứ 2 thứ 4 hàng tuần</subtitle>
+          <link>
+            <text></text>
+            <url></url>
+          </link>
+          <button>
+            <text>Xem chi tiết</text>
+            <url>http://surego.vn/chuyen-du-lich/mini-tour-s-ozon-hotel-3.html</url>
+          </button>
+        </card>
+        <card>
+          <image>File/Images/Card/5f3a61cd-6a78-48ca-ab2a-14b3bc0aa0f6-tourdisan3.jpg</image>
+          <title>Vitours giảm 5% Hành trình Di sản 4N3Đ</title>
+          <subtitle>Khởi hành thứ 3 thứ 7 hàng tuần</subtitle>
+          <link>
+            <text></text>
+            <url></url>
+          </link>
+          <button>
+            <text>Xem chi tiết</text>
+            <url>http://surego.vn/chuyen-du-lich/mini-tour-s-ozon-hotel-3.html</url>
+          </button>
+        </card>
+      </carousel>
+    </template>
+  </category>
+</aiml>

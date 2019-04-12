@@ -147,10 +147,14 @@ namespace BotProject.Web.Infrastructure.Extensions
             settingDb.Logo = settingVm.Logo;
             settingDb.TextIntroductory = settingVm.TextIntroductory;
             settingDb.UserID = settingVm.UserID;
-            if(settingDb.CardID == null || String.IsNullOrEmpty(settingDb.TextIntroductory))
+            if (settingDb.CardID == null && String.IsNullOrEmpty(settingDb.TextIntroductory))
+            {
                 settingDb.IsActiveIntroductory = false;
-            else
+            }
+            else if (settingDb.CardID != null || !String.IsNullOrEmpty(settingDb.TextIntroductory))
+            {
                 settingDb.IsActiveIntroductory = true;
+            }
         }
         #endregion
     }

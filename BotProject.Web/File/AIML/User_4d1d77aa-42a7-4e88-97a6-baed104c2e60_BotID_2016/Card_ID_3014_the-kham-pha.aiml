@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_3014</pattern>
+<template>
+Tôi sẽ giúp bạn tìm hiểu nhiều hơn về Surego 😄
+Gõ tin nhắn hoặc nhấn vào những nút dưới ⬇️ để bắt đầu!
+<button>
+<text>👩 Chat với Admin</text>
+<menu>postback_card_3015</menu>
+</button>
+<button>
+<text>✈️ Tour du lịch</text>
+<menu>postback_card_3016</menu>
+</button>
+<button>
+<text>📆 Sự kiện</text>
+<postback>postback_card_3019</postback>
+</button>
+<button>
+<text>📋 Điểm tham quan</text>
+<postback>postback_card_3020</postback>
+</button>
+<button>
+<text>🍜 Ẩm thực</text>
+<postback>postback_card_3021</postback>
+</button>
+<button>
+<text>🏠 Nơi lưu trú</text>
+<postback>postback_card_3022</postback>
+</button>
+<button>
+<text>🌈 Trải nghiệm</text>
+<postback>postback_card_3023</postback>
+</button>
+</template>
+</category>
+</aiml>

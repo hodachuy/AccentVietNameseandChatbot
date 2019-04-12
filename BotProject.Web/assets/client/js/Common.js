@@ -1,5 +1,6 @@
 ﻿var urlCreateBot = "api/bot/create",
-    urlCreateBotQnA = "api/botqna/create";
+    urlCreateBotQnA = "api/botqna/create",
+    urlSettingBot = "api/setting/getbybotid";
 var bot = {
     Name: '',
     Alias: '',
@@ -26,16 +27,37 @@ var common = {
             $('#frmLogout').submit();
         });
         $('body').on('click', '#btn-form-deploy', function () {
-            //var url = _Host + "apiv1/FormChat?token=" + $("#userId").val() + "&botID=" + $(this).attr('data-botID');
+            var urlApp = _Host + "static/js/app.js";
             var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
             var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
             var encryptedBotID = CryptoJS.AES.encrypt($(this).attr('data-botID'), "Secret Passphrase").toString();
+            // pass variable outside ajax call
+            var setting = function (botId) {              
+                var tmp = null;
+                var param = {
+                    botId: botId
+                };
+                $.ajax({
+                    type: 'GET',
+                    async: false,
+                    global: false,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    url: _Host + urlSettingBot,
+                    data: param,
+                    success: function (data) {
+                        tmp = data;
+                    }
+                });
+                return tmp;
+            }($(this).attr('data-botID'));
+            var encryptedColor = CryptoJS.AES.encrypt(setting.Color, "Secret Passphrase").toString();
             var html = '';
             html += "<!--Lacviet--><script>(function (l, a, c, v, i, e, t){a[v] = a[v] || function (){";
             html += "a[v].t =+ new Date();(a[v].q = a[v].q || []).push(arguments);};i = l.createElement('script');";
             html += "var ii = l.getElementsByTagName('script')[0];i.async = 1;i.src = c;i.id = 'lacviet-script';ii.parentNode.insertBefore(i, ii);";
-            html += "})(document, window, '"+_Host+"static/js/app.js', 'lacviet');";
-            html += "setTimeout(function(){lacviet.load('" + encryptedUrl + "','" + encryptedUserID + "','" + encryptedBotID + "');},1500)</script>";
+            html += "})(document, window, '" + urlApp + "', 'lacviet');";
+            html += "setTimeout(function(){lacviet.load('" + encryptedUrl + "','" + encryptedUserID + "','" + encryptedBotID + "','" + encryptedColor + "');},1500)</script>";
             html += "<!-- End Lacviet -->"
             $('#editorTest').text('');
             $('#editorTest').text(html);
@@ -82,9 +104,6 @@ var common = {
             html += '<div id="submenu-' + data.ID + '" class="collapse submenu" style="">';
             html += '<ul class="nav flex-column">';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="/bot/' + data.Alias + '/' + data.ID + '/aiml"><i class="fa fa-pen-square" aria-hidden="true"></i>Chỉnh sửa</a>';
-            html += '</li>';
-            html += '<li class="nav-item">';
             html += '<a class="nav-link" href="/bot/' + data.Alias + '/' + data.ID + '/cardcategory"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
             html += '</li>';
 
@@ -100,10 +119,10 @@ var common = {
             html += '</div>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" id="btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
+            html += '<a class="nav-link" href="/bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="/bot/setting/' + data.Alias + '/' + data.ID + '?name='+data.Name+'"><i class="fa fa-cog" aria-hidden="true"></i>Thiết lập</a>';
+            html += '<a class="nav-link" id="btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
             html += '</li>';
             html += '</ul>';
             html += '</div>';

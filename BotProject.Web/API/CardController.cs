@@ -383,7 +383,7 @@ namespace BotProject.Web.API
                                         //carousel
                                         sw.WriteLine("<carousel>");
                                         sw.WriteLine(sb.ToString());
-                                        sw.WriteLine("</carousel");
+                                        sw.WriteLine("</carousel>");
                                     }else
                                     {
                                         //card

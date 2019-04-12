@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BotProject.Common;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +15,7 @@ namespace AIML.BOT.Utils
         {
             try
             {
-                //string path = "http://172.16.13.105/";
-                //return path;
-                string path = System.AppDomain.CurrentDomain.BaseDirectory + "AppSettings.config";
+                string path = PathConfig.PathAppConfig;
                 XmlDocument doc = new XmlDocument();
                 doc.Load(path);
                 XmlNode node = doc.SelectSingleNode("AppSettings");
@@ -32,7 +32,7 @@ namespace AIML.BOT.Utils
                 }
                 return "";
             }
-            catch
+            catch(Exception ex)
             {
                 return "";
             }

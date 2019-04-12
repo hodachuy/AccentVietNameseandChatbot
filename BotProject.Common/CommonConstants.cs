@@ -38,4 +38,10 @@ namespace BotProject.Common
 
         public static string PathLogoSetting = HttpContext.Current.Server.MapPath("~/assets/images/logo/");
     }
+
+    public class PathConfig
+    {
+        public static string PathWebConfig = HttpContext.Current.Server.MapPath("~/Web.config");
+        public static string PathAppConfig = HttpContext.Current.Server.MapPath("~/AppSettings.config");
+    }
 }

@@ -75,10 +75,13 @@ var srcFolderImg = "https://platform.messnow.com/",
         arLink = [];
 var isSave = false;
 $(document).ready(function () {
-
     //var bootbox_txt = {OK : 'Đồng ý',CANCEL : 'Hủy',CONFIRM : 'Xác nhận'};
     //bootbox.addLocale('vi', bootbox_txt);
     //bootbox.setDefaults("locale", "vi");
+
+    // init data card
+    card();
+    module();
 
     $('body').on('click', '#btn-create-card', function () {
         $('#form-card').hide();
@@ -288,6 +291,8 @@ $(document).ready(function () {
         $('.blSelect .select').select2();
         $(this).before('<div id="thisElement"></div>');
         $("#modal_button").modal("show");
+
+        loadEmojiPicker();
     });
 
 
@@ -473,6 +478,9 @@ $(document).ready(function () {
             $('#modal_button .bl_bt_input .wr-discount').prepend(htmlDiscount);
         }
         $("#modal_button").modal("show");
+
+        loadEmojiPicker();
+       
     });
 
     // ====================================================================
@@ -2120,6 +2128,8 @@ $(document).ready(function () {
             // minimumResultsForSearch: "-1"
         });
         $("#modal_button").modal("show");
+
+        loadEmojiPicker();
     });
 
     // Edit Button
@@ -2186,6 +2196,9 @@ $(document).ready(function () {
             }
 
         }
+
+        loadEmojiPicker();
+       
     });
     // Remove Button
     $('#wr_reply').on('click', '.reply_rm', function (event) {
@@ -2605,6 +2618,7 @@ $(document).ready(function () {
         if (!$(this).hasClass('active')) {
             actionTabPopup(el);
         }
+        
     });
     // End Menu Button
 
@@ -3153,6 +3167,8 @@ $(document).ready(function () {
         });
         $(this).parents('.bt').before('<div id="thisElement"></div>');
         $("#modal_button").modal("show");
+
+        loadEmojiPicker();
     });
     // End Add Button
 
@@ -3301,6 +3317,9 @@ $(document).ready(function () {
         }
 
         $("#modal_button").modal("show");
+
+        loadEmojiPicker();
+       
         // el.find('.bl_bt .bt_name').focus();
         // el.find('.bl_bt').fadeIn(10);
     });
@@ -3311,6 +3330,44 @@ $(document).ready(function () {
 });
 
 
+// ====================================================================
+// ============================INIT EMOJI PICKER ===============================
+// ====================================================================
+function loadEmojiPicker() {
+    $(function () {
+        // Initializes and creates emoji set from sprite sheet
+        window.emojiPicker = new EmojiPicker({
+            emojiable_selector: '[data-emojiable=true]',
+            //assetsPath: '../asset/emoji-picker/img',
+            assetsPath: _Host + 'assets/client/libs/emoji-picker/img',
+            popupButtonClasses: 'fa fa-cogs'
+        });
+        window.emojiPicker.discover();
+    });
+}
+
+
+
+// ====================================================================
+// ============================LOAD DATA CARD, MODULE ===============================
+// ====================================================================
+function card() {
+    var html = '<optgroup label="DANH SÁCH THẺ">';
+    if (lstCard.length != 0) {
+        $.each(lstCard, function (index, value) {
+            html += '<option value="' + value.ID + '">' + value.Name + '</option>';
+        })
+    } else {
+        html += '<option value=""></option>';
+    }
+    html += '</optgroup>';
+    return html;
+
+};
+function module() {
+    var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
+    return htmlListModule;
+}
 // ====================================================================
 // ============================Function ===============================
 // ====================================================================
@@ -3430,8 +3487,8 @@ function htmlPopup(el, el_share, action) {
                     '</div>';
     }
     str_popup += '<div class="pr_bt_name">' +
-        '<input type="text" class="form-control bt_name" placeholder="' + txtCard33 + '" maxlength="20">' +
-        '<span>20</span>' +
+        '<input type="text" class="form-control bt_name" placeholder="' + txtCard33 + '" maxlength="30" data-emojiable="true" data-emoji-input="unicode">' +
+        '<span>30</span>' +
     '</div>' +
 '</div>' +
 
@@ -3498,7 +3555,8 @@ function countChar(val) {
 function actionTabPopup(el) {
     el.siblings('li').removeClass('active');
     el.addClass('active');
-    el.parents('.modal-content').find('.pr_bt_name .bt_name').show();
+    // xử lý phát sinh thêm ô input với emoji khi chuyển tab => off khi sài emoji
+    //el.parents('.modal-content').find('.pr_bt_name .bt_name').show();
     el.parents('.modal-content').find('.pr_bt_name p').remove();
 
     $('.select2-hidden-accessible,.select2-drop-mask,.select2-drop').remove();
@@ -3615,6 +3673,7 @@ function actionTabPopup(el) {
 '</div>' +
 '</div>';
         el.parents('.bl_bt_content').find('.bl_bt_input').html(str_share);
+
         // el.parents('.modal-content').find('.pr_bt_name .bt_name').hide();
         // el.parents('.modal-content').find('.pr_bt_name').append('<p><i class="icon-cart5"></i> Mua</p>');
         // el.parents('.modal-content').find('.modal-header .reply_title_input').hide();

@@ -7,133 +7,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
 <link href="~/assets/client/css/card.css" rel="stylesheet" />
 <link href="~/assets/client/css/components.css" rel="stylesheet" />
-<style>
-    .card-head {
-        background-color: #fff;
-    }
+<link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
 
-    .card-head-title {
-        padding: 25px 25px;
-        border-bottom: 1px solid #e6e6f2;
-    }
-
-        .card-head-title .title {
-            display: block;
-            font-size: 1.569rem;
-            font-weight: 300;
-            color: #3d405c;
-        }
-
-        .card-head-title .icons {
-            font-size: 14px;
-            float: right;
-        }
-
-            .card-head-title .icons .icon {
-                color: #71738d;
-                margin-left: 12px;
-                vertical-align: middle;
-            }
-
-        .card-head-title .title > a .icon {
-            color: silver;
-            font-size: 14px;
-            margin-right: 6px;
-            vertical-align: middle;
-            line-height: 31px;
-            position: relative;
-            top: -1px;
-        }
-
-        .card-head-title .title > a.active .icon {
-            color: currentColor;
-        }
-
-    .card-head-template {
-        padding: 13px 25px;
-        line-height: normal;
-    }
-
-        .card-head-template .addCard {
-            margin-top: unset;
-            margin-left: unset;
-        }
-
-    .card-body {
-        background-color: #fff;
-        border-top: 1px solid #e6e6f2;
-        padding: 30px 28px;
-    }
-
-    .card-quickreply {
-        background-color: #fff;
-        padding: 25px 28px;
-        border-top: 1px solid #e6e6f2;
-    }
-
-    #card-name {
-        resize: none;
-        background: #fbfbfb;
-        border: 1px solid #fbfbfb;
-    }
-    #card-name.error{
-        resize: none;
-        background: #fbfbfb;
-        border: 1px solid red;
-    }
-    /*select dropdownlist*/
-    .select2-dropdown {
-        z-index: 999999;
-    }
-
-    .select2-dropdown {
-        background-color: white;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        box-sizing: border-box;
-        display: block;
-        position: absolute;
-        left: -100000px;
-        width: 100%;
-        z-index: 999999;
-    }
-
-    .select2 {
-        width: 100%;
-    }
-
-    select + .select2-container {
-        width: 100% !important;
-    }
-
-    .product-colors input[type=checkbox], input[type=radio] {
-        box-sizing: border-box;
-        padding: 0;
-        display: inline-block;
-    }
-
-    .ml10 {
-        margin-left: 10px;
-    }
-
-    .icon-spinner4.spinner {
-        color: #fff;
-    }
-
-    .icon-spinner4.spinner {
-        font-size: 30px;
-    }
-
-    .has-error .form-control {
-        border-color: #ed4956;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    }
-
-    .container-fluid {
-        padding-left: 0px !important;
-    }
-</style>
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
 <aside class="page-aside">
     <div class="aside-content">
@@ -164,12 +39,13 @@
     </div>
 </aside>
 <div class="main-content container-fluid p-0" id="form-card" style="display:none;">
-    <input type="hidden" id="idCard" value=""/>
+    <input type="hidden" id="idCard" value="" />
     <div class="card-head">
         <div class="card-head-title">
             <div class="title">
                 <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
                 <span><input type="text" maxlength="25" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>
+                <div></div>
                 <div class="icons">
                     <a href="#" class="icon" id="save_card">
                         <i class="fas fa-save"></i>
@@ -215,36 +91,85 @@
 </div>
 @section footerJS{
     <script>
-
         var lstCard = @Html.Raw(Json.Encode(Model));
-        console.log(lstCard);
-        function card() {
-            var html = '<optgroup label="DANH SÁCH THẺ">';
-            if (lstCard.length != 0) {
-                $.each(lstCard, function (index, value) {
-                    html += '<option value="'+value.ID+'">'+value.Name+'</option>';
-                })
-            }else{
-                html += '<option value=""></option>';
-            }
-            html += '</optgroup>';
-            return html;
-
-        }
-        card();
-
-
-        //function card() {
-        //    var htmlListCard = '<optgroup label="DANH SÁCH THẺ"><option  value="1">BẮT ĐẦU</option><option  value="2">CÂU MẶC ĐỊNH</option><option  value="3">LIÊN HỆ</option><option  value="4">CÁC CHUYÊN MỤC</option><option  value="5">TRANG CHỦ</option></optgroup>';
-        //    return htmlListCard;
-        //}
-        function module() {
-            var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
-            return htmlListModule;
-        }
     </script>
     <script src="~/assets/client/js/eventBot/form-card.js"></script>
+    <!--Icon Chat-->
+    <script src="~/assets/client/libs/emoji-picker/js/config.js"></script>
+    <script src="~/assets/client/libs/emoji-picker/js/util.js"></script>
+    <script src="~/assets/client/libs/emoji-picker/js/jquery.emojiarea.js"></script>
+    <script src="~/assets/client/libs/emoji-picker/js/emoji-picker.js"></script>
+    <script>
+        $(function () {
+            window.emojiPicker = new EmojiPicker({
+                emojiable_selector: '[data-emojiable=true]',
+                //assetsPath: '../asset/emoji-picker/img',
+                assetsPath: _Host + 'assets/client/libs/emoji-picker/img',
+                popupButtonClasses: 'fa fa-cogs'
+            });
+            window.emojiPicker.discover();
 
+            // auto show thread form in
+            $('.auto-form .inp-title').bind('focus', function (event) {
+                var element = $(event.currentTarget);
+                var container = element.closest('.auto-form');
+                var select = container.find('.cat-dropdown');
+                var bottom = container.find('.form-detail');
+                var cancel = container.find('.cancel');
+
+                if (!container.hasClass('opened')) {
+                    container.addClass('opened');
+                    select.fadeIn().removeClass('hide');
+                    bottom.slideDown();
+                    cancel.unbind('click').bind('click', function (event) {
+                        event.preventDefault();
+                        container.removeClass('opened');
+                        select.fadeOut();
+                        bottom.slideUp();
+                        //hide preview when cancel button clicked
+                        $('.skin-checkbox').removeClass('checked');
+                        $("div#thread_preview").fadeOut();
+                        $("ul#main_list_post").fadeIn();
+                        $("#main_pagination").fadeIn();
+                        $('.show-preview a').text('Show Preview');
+                    });
+                }
+            });
+            // auto render categories dropdown
+            $('.thread-form .cat-dropdown').each(function () {
+                var element = $(this);
+                var selector = element.find('select');
+                var listDropdown = $('<ul>').addClass('dropdown-menu category-select');
+                var label = element.find('.text-select');
+                var i = 0;
+
+                // set default text
+                label.html(selector.find('option:selected').text());
+
+                // build list
+                selector.find('option').each(function () {
+                    var option = $(this);
+                    var listItem = $('<li>').text(option.text()).attr('data-value', option.attr('value'));
+                    // add event for listItem
+                    listItem.bind('click', function () {
+
+                        selector.val($(this).attr('data-value'));
+                        label.text($(this).text());
+                        $("#thread_preview span.type-category").html('<span class="flags color-2"></span>' + option.text());
+                    });
+                    if (i > 0) {
+                        listDropdown.append(listItem);
+                    }
+                    i++;
+                });
+
+                // add list to
+                if (!selector.next().is('ul')) {
+                    selector.after(listDropdown);
+                }
+            });
+        });
+    </script>
 }
 
 

@@ -202,7 +202,7 @@
         var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
         var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
         var encryptedBotID = CryptoJS.AES.encrypt($("#botId").val(), "Secret Passphrase").toString();
-        lacviet.load(''+encryptedUrl+'',''+encryptedUserID+'',''+encryptedBotID+'')
+        lacviet.load(''+encryptedUrl+'',''+encryptedUserID+'',''+encryptedBotID+'','U2FsdGVkX19D5jsWIYosQVQ4bBWt2cjbzgkJbDAOSB+Igj5G2vGw1bAq+sh1P/Yc')
     </script>
 }
 @section footerJS{
