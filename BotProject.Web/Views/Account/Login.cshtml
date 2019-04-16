@@ -9,7 +9,7 @@
 <head>
     <meta Http-Equiv="Cache-Control" Content="no-cache">
     <meta Http-Equiv="Pragma" Content="no-cache">
-    <meta Http-Equiv="Expires" Content="0"> 
+    <meta Http-Equiv="Expires" Content="0">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
@@ -175,17 +175,19 @@
 <body>
     <div id="logreg-forms">
 
-            @using (Html.BeginForm("Login", "Account", new { returnUrl = @ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signin", role = "form" }))
+        @using (Html.BeginForm("Login", "Account", new { returnUrl = @ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signin", role = "form" }))
             {
-                @Html.ValidationSummary(false, "", new { @class = "error" })
-                <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
-                            <div class="social-login">
-                                <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
-                                <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-plus-g"></i> Sign in with Google+</span> </button>
-                            </div>
+            @Html.ValidationSummary(false, "", new { @class = "error" })
+            <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
+                <div class="social-login">
+                    @*<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                    </fb:login-button>*@
+                    <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
+                    <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-plus-g"></i> Sign in with Google+</span> </button>
+                </div>
                             <p style="text-align:center"> OR  </p>
                             <div class="input-group">
-                                @Html.TextBoxFor(model => model.UserName, new {@class= "form-control",@placeholder = "Name" })
+                                @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @placeholder = "Name" })
                                 @*<input type="text" id="inputName" class="form-control" placeholder="Name" required="" autofocus="">*@
                             </div>
                             <div class="input-group">
@@ -194,7 +196,7 @@
                             </div>
                             <div class="input-group">
                                 @*<input type="checkbox" id="ckbRememberMe" class="form-group">*@
-                                @Html.CheckBoxFor(model => model.RememberMe, new {@id= "ckbRememberMe" })
+                                @Html.CheckBoxFor(model => model.RememberMe, new { @id = "ckbRememberMe" })
                                 <label>Remember me?</label>
                             </div>
                             <div class="input-group">
@@ -204,8 +206,8 @@
                             <hr>
                             <!-- <p>Don't have an account!</p>  -->
                             <button class="btn btn-primary btn-block" type="button" id="btn-signup"><i class="fas fa-user-plus"></i> Sign up New Account</button>
-            }
-            @*@Html.Partial("_ExternalLoginsListPartial", new BotProject.Web.Models.ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })*@
+        }
+        @*@Html.Partial("_ExternalLoginsListPartial", new BotProject.Web.Models.ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })*@
 
         <form action="#" class="form-reset">
             <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
@@ -214,7 +216,9 @@
         </form>
         <form action="#" class="form-signup">
             <div class="social-login">
-                <button class="btn facebook-btn social-btn" type="button"><span><i class="fab fa-facebook-f"></i> Sign up with Facebook</span> </button>
+                @*<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                </fb:login-button>*@
+                <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fab fa-facebook-f"></i> Sign up with Facebook</span> </button>
             </div>
             <div class="social-login">
                 <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-plus-g"></i> Sign up with Google+</span> </button>
@@ -233,16 +237,16 @@
     </div>
     <script>
         function toggleResetPswd(e) {
-        e.preventDefault();
+            e.preventDefault();
             $('#logreg-forms .form-signin').toggle() // display:block or none
             $('#logreg-forms .form-reset').toggle() // display:block or none
         }
 
-    function toggleSignUp(e) {
-        e.preventDefault();
+        function toggleSignUp(e) {
+            e.preventDefault();
             $('#logreg-forms .form-signin').toggle(); // display:block or none
             $('#logreg-forms .form-signup').toggle(); // display:block or none
-    }
+        }
 
         $(() => {
             // Login Register Form
@@ -250,9 +254,99 @@
             $('#logreg-forms #cancel_reset').click(toggleResetPswd);
             $('#logreg-forms #btn-signup').click(toggleSignUp);
             $('#logreg-forms #cancel_signup').click(toggleSignUp);
-})
+        })
     </script>
+
+
+
+
+    <!--FACEBOOK-->
+    <script>
+        //set khi custome rieng
+        function checkLoginFbDialog() {
+            FB.login(function (response) {
+                statusChangeCallback(response);
+            }, {
+                //scope: 'pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions',//pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions
+                scope : 'email',
+                return_scopes: true
+            });
+        }
+
+
+        // This is called with the results from from FB.getLoginStatus().
+        function statusChangeCallback(response) {
+            console.log('statusChangeCallback');
+            console.log(response);
+            // The response object is returned with a status field that lets the
+            // app know the current login status of the person.
+            // Full docs on the response object can be found in the documentation
+            // for FB.getLoginStatus().
+            if (response.status === 'connected') {
+                // Logged into your app and Facebook.
+                testAPI();
+            } else {
+                // The person is not logged into your app or we are unable to tell.
+                console.log('Please login')
+               
+            }
+        }
+
+        // This function is called when someone finishes with the Login
+        // Button.  See the onlogin handler attached to it in the sample
+        // code below.
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        // init auto login
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '410230363104302', //FB App ID
+                cookie: true,  //enable cookies to allow the server to access the session
+                xfbml: true,  //parse social plugins on this page
+                version: 'v3.2' //use this graph api version 3.2
+            });
+
+            // Now that we've initialized the JavaScript SDK, we call
+            // FB.getLoginStatus().  This function gets the state of the
+            // person visiting this page and can return one of three states to
+            // the callback you provide.  They can be:
+            //
+            // 1. Logged into your app ('connected')
+            // 2. Logged into Facebook, but not your app ('not_authorized')
+            // 3. Not logged into Facebook and can't tell if they are logged into
+            //    your app or not.
+            //
+            // These three cases are handled in the callback function.
+
+            //FB.getLoginStatus(function (response) {
+            //    statusChangeCallback(response);
+            //});
+
+        };
+
+        // Load the SDK asynchronously
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        // Here we run a very simple test of the Graph API after login is
+        // successful.  See statusChangeCallback() for when this call is made.
+        function testAPI() {
+            console.log('Welcome!  Fetching your information.... ');
+            FB.api('/me', { fields: 'name,id,email,picture' }, function (response) {
+                console.log(response)
+                console.log('Successful login for: ' + response.name);
+            });
+        }
+    </script>
+
 </body>
 </html>
-
-

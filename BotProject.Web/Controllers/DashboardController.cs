@@ -22,6 +22,7 @@ namespace BotProject.Web.Controllers
 			_qnaService = qnaService;
 
 		}
+        [OutputCacheAttribute(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult Index()
         {
             return View();

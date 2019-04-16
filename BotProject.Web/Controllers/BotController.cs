@@ -11,6 +11,7 @@ using BotProject.Web.Models;
 
 namespace BotProject.Web.Controllers
 {
+    [OutputCacheAttribute(VaryByParam = "*", Duration = 0, NoStore = true)]
     public class BotController : BaseController
     {
         private ICardService _cardService;

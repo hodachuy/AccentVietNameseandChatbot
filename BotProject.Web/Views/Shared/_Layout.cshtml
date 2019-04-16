@@ -171,5 +171,12 @@
     <script src="~/assets/client/js/common.js"></script>
     @RenderSection("dialogBotJS", required: false)
     @RenderSection("footerJS", required: false)
+
+    <!-- event click back url-->
+    @*<script type="text/javascript">
+       function preventBack(){window.history.forward();}
+        setTimeout("preventBack()", 0);
+        window.onunload=function(){null};
+    </script>*@
 </body>
 </html>
