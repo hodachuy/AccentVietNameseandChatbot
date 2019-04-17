@@ -118,7 +118,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             tempText.Text = tempTextVm.Text;
         }
 
-        public static void UpdateQuickReply(this QuickReply quickReply, QuickReplyViewModel quickReplyVm)
+        public static void UpdateQuickReply(this BotProject.Model.Models.QuickReply quickReply, QuickReplyViewModel quickReplyVm)
         {
             quickReply.ID = quickReplyVm.ID;
             quickReply.CardPayloadID = quickReplyVm.CardPayloadID;

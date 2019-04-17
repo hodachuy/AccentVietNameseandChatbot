@@ -249,7 +249,7 @@ namespace BotProject.Web.API
 								var lstQuickReplyVm = cardVm.QuickReplyViewModels;
 								foreach (var itemQuickReplyVm in lstQuickReplyVm)
 								{
-									QuickReply quickReplyDb = new QuickReply();
+                                    BotProject.Model.Models.QuickReply quickReplyDb = new BotProject.Model.Models.QuickReply();
 									quickReplyDb.UpdateQuickReply(itemQuickReplyVm);
 									quickReplyDb.CardID = cardDb.ID;
 									_commonCardService.AddQuickReply(quickReplyDb);

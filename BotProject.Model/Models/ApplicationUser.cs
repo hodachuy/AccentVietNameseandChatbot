@@ -16,6 +16,8 @@ namespace BotProject.Model.Models
         [MaxLength(256)]
         public string Address { set; get; }
 
+        public string Avatar { set; get; }
+
         public DateTime? BirthDay { set; get; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)

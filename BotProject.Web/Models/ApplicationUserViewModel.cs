@@ -17,6 +17,8 @@ namespace BotProject.Web.Models
 
         public string UserName { set; get; }
 
+        public string Avatar { set; get; }
+
         public string Password { set; get; }
 
         public string PhoneNumber { set; get; }

@@ -11,8 +11,10 @@
     <meta Http-Equiv="Pragma" Content="no-cache">
     <meta Http-Equiv="Expires" Content="0">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/assets/client/libs/blockUI/jquery.blockUI.min.js"></script>
     <!------ Include the above in your HEAD tag ---------->
     <style>
         body {
@@ -171,10 +173,12 @@
             margin: 5px 3px 3px 4px !important;
         }
     </style>
+    <script>
+        var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
+    </script>
 </head>
 <body>
     <div id="logreg-forms">
-
         @using (Html.BeginForm("Login", "Account", new { returnUrl = @ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signin", role = "form" }))
             {
             @Html.ValidationSummary(false, "", new { @class = "error" })
@@ -182,8 +186,8 @@
                 <div class="social-login">
                     @*<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
                     </fb:login-button>*@
-                    <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fab fa-facebook-f"></i> Sign in with Facebook</span> </button>
-                    <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-plus-g"></i> Sign in with Google+</span> </button>
+                    <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fa fa-facebook-f"></i> Sign in with Facebook</span> </button>
+                    <button class="btn google-btn social-btn" type="button"><span><i class="fa fa-google-plus-g"></i> Sign in with Google+</span> </button>
                 </div>
                             <p style="text-align:center"> OR  </p>
                             <div class="input-group">
@@ -205,14 +209,14 @@
                             <a href="#" id="forgot_pswd">Forgot password?</a>
                             <hr>
                             <!-- <p>Don't have an account!</p>  -->
-                            <button class="btn btn-primary btn-block" type="button" id="btn-signup"><i class="fas fa-user-plus"></i> Sign up New Account</button>
+                            <button class="btn btn-primary btn-block" type="button" id="btn-signup"><i class="fa fa-user-plus"></i> Đăng ký</button>
         }
         @*@Html.Partial("_ExternalLoginsListPartial", new BotProject.Web.Models.ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })*@
 
         <form action="#" class="form-reset">
             <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
             <button class="btn btn-primary btn-block" type="submit">Reset Password</button>
-            <a href="#" id="cancel_reset"><i class="fas fa-angle-left"></i> Back</a>
+            <a href="#" id="cancel_reset"><i class="fa fa-angle-left"></i> Back</a>
         </form>
         <form action="#" class="form-signup">
             <div class="social-login">
@@ -221,7 +225,7 @@
                 <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fab fa-facebook-f"></i> Sign up with Facebook</span> </button>
             </div>
             <div class="social-login">
-                <button class="btn google-btn social-btn" type="button"><span><i class="fab fa-google-plus-g"></i> Sign up with Google+</span> </button>
+                <button class="btn google-btn social-btn" type="button"><span><i class="fa fa-google-plus-g"></i> Sign up with Google+</span> </button>
             </div>
             <p style="text-align:center">OR</p>
             <input type="text" id="user-name" class="form-control" placeholder="Full name" required="" autofocus="">
@@ -229,7 +233,7 @@
             <input type="password" id="user-pass" class="form-control" placeholder="Password" required autofocus="">
             <input type="password" id="user-repeatpass" class="form-control" placeholder="Confirm Password" required autofocus="">
             <div class="input-group">
-                <button class="btn btn-md btn-block submit" type="submit"><i class="fas fa-user-plus"></i> Sign Up</button>
+                <button class="btn btn-md btn-block submit" type="submit"><i class="fa fa-user-plus"></i> Sign Up</button>
             </div>
             <a href="#" id="cancel_signup"><i class="fa fa-angle-left"></i> Back</a>
         </form>
@@ -267,8 +271,8 @@
             FB.login(function (response) {
                 statusChangeCallback(response);
             }, {
-                //scope: 'pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions',//pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions
-                scope : 'email',
+                scope: 'pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions',//pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions
+                //scope : 'email',
                 return_scopes: true
             });
         }
@@ -284,11 +288,10 @@
             // for FB.getLoginStatus().
             if (response.status === 'connected') {
                 // Logged into your app and Facebook.
-                testAPI();
+                getUserInfo();
             } else {
                 // The person is not logged into your app or we are unable to tell.
-                console.log('Please login')
-               
+                console.log('Please login')             
             }
         }
 
@@ -339,14 +342,58 @@
 
         // Here we run a very simple test of the Graph API after login is
         // successful.  See statusChangeCallback() for when this call is made.
-        function testAPI() {
-            console.log('Welcome!  Fetching your information.... ');
+        function getUserInfo() {
             FB.api('/me', { fields: 'name,id,email,picture' }, function (response) {
                 console.log(response)
                 console.log('Successful login for: ' + response.name);
+                var user = {
+                    UserName: response.name,
+                    Email: response.email,
+                    Avatar:response.picture.data.url
+                }
+                login(user)
+            });
+        }
+
+        function login(user) {
+            var block = $('body');
+            user = JSON.stringify(user);
+            $.ajax({
+                type: 'POST',
+                url: _Host + "account/LoginSocial",
+                data: user,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //async: this._serviceAsync,
+                success: function (response) {
+                    if (response.status) {
+                        window.location.href = _Host + 'Dashboard/Index';
+                    }
+                },
+                error: function (error) {                  
+                    console.log(error)
+                },
+                beforeSend: function () {
+                    $(block).block({
+                        message: '<i class="fa fa-spinner fa-pulse spinner"></i>',
+                        overlayCSS: {
+                            backgroundColor: '#efeff6',
+                            opacity: 0.8,
+                            cursor: 'wait',
+                            zIndex: 99999999999999
+                        },
+                        css: {
+                            border: 0,
+                            padding: 0,
+                            backgroundColor: 'transparent',
+                        }
+                    });
+                },
+                complete: function (e) {
+                    $(block).unblock();
+                }
             });
         }
     </script>
-
 </body>
 </html>

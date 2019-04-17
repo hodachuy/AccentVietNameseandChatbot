@@ -31,9 +31,7 @@ namespace BotProject.Web.Controllers
         [ChildActionOnly]
         public ActionResult Header()
         {
-            ViewBag.UserName = UserInfo.UserName;
-			ViewBag.UserID = UserInfo.Id;
-			return PartialView();
+			return PartialView(UserInfo);
         }
 
         [ChildActionOnly]

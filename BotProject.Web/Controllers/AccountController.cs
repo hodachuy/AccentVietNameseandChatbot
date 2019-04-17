@@ -111,6 +111,65 @@ namespace BotProject.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> LoginSocial(LoginSocialViewModel model, string returnUrl)
+        {
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = _userManager.FindByEmail(model.Email);
+                if (user == null)
+                {
+                    var userInfo = new ApplicationUser()
+                    {
+                        UserName = model.Email,
+                        Email = model.Email,
+                        EmailConfirmed = true,
+                        FullName = model.UserName,
+                        Avatar = model.Avatar
+                    };
+                    var result = await _userManager.CreateAsync(userInfo);
+                    if (result.Succeeded)
+                    {
+                        user = await _userManager.FindByEmailAsync(model.Email);
+                        if (user != null)
+                            await _userManager.AddToRolesAsync(user.Id, new string[] { "User" });
+                    }
+                    else
+                    {
+                        var errors = result.Errors;
+                        var message = string.Join(", ", errors);
+                        ModelState.AddModelError("", message);
+                    }
+                }
+
+                var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
+                Session[CommonConstants.SessionUser] = applicationUserViewModel;
+                IAuthenticationManager authenticationManager = HttpContext.GetOwinContext().Authentication;
+                authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+                ClaimsIdentity identity = _userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
+                AuthenticationProperties props = new AuthenticationProperties();
+                props.IsPersistent = false;
+                authenticationManager.SignIn(props, identity);
+                if (Url.IsLocalUrl(returnUrl))
+                {
+                }
+                else
+                {
+                    returnUrl = "Dashboard/Index";
+                }
+
+                return Json(new
+                {
+                    returnUrl = returnUrl,
+                    status = true
+                });
+            }
+            return Json(new
+            {
+                status = false
+            });
+        }
+
         //
         // POST: /Account/ExternalLogin
         [HttpPost]
@@ -148,6 +207,7 @@ namespace BotProject.Web.Controllers
                     return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = loginInfo.Email });
             }
         }
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -195,6 +255,8 @@ namespace BotProject.Web.Controllers
         //        if (userByEmail != null)
         //        {
         //            ModelState.AddModelError("Email", "Email đã tồn tại");
+        //         hoặc là nếu email này đã đăng nhập với mạng xã hội trước đó
+        //          ModelState.AddModelError("Email", "Email này đã đăng nhập từ mạng xã hội ");
         //            return View(model);
         //        }
         //        var userByUserName = await _userManager.FindByNameAsync(model.UserName);

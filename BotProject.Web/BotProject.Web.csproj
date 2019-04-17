@@ -250,7 +250,9 @@
   <ItemGroup>
     <Compile Include="API\ModuleController.cs" />
     <Compile Include="API\SettingController.cs" />
+    <Compile Include="API\WebhookController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
+    <Compile Include="Controllers\FacebookBotController.cs" />
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
@@ -281,6 +283,7 @@
     <Compile Include="Infrastructure\Core\BotService.cs" />
     <Compile Include="Infrastructure\Core\PaginationSet.cs" />
     <Compile Include="Infrastructure\Core\ServiceFactory.cs" />
+    <Compile Include="Infrastructure\Extensions\BotRequest.cs" />
     <Compile Include="Infrastructure\Extensions\EntityExtensions.cs" />
     <Compile Include="Infrastructure\Helper\Helper.cs" />
     <Compile Include="Mappings\AutoMapperConfiguration.cs" />
@@ -695,6 +698,15 @@
     <Content Include="File\Datasets_Training_Accent\AccentInfo.txt" />
     <Content Include="File\Datasets_Training_Accent\test.txt" />
     <Content Include="File\Images\Card\07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg" />
+    <Content Include="File\Images\Card\1c4d55de-c454-409b-af06-c1091ccd2b51-tourdisan2.jpg" />
+    <Content Include="File\Images\Card\5c5e3310-6176-4cd7-816f-3be43985cc72-tourdisan1.jpg" />
+    <Content Include="File\Images\Card\5f3a61cd-6a78-48ca-ab2a-14b3bc0aa0f6-tourdisan3.jpg" />
+    <Content Include="File\Images\Card\66fd0ed0-ee2c-497b-8a32-bd1a133eef19-iphone.jpg" />
+    <Content Include="File\Images\Card\6b1a19c6-530c-43f8-b683-57135a90e246-vietnam.jpg" />
+    <Content Include="File\Images\Card\94eae119-a413-47f7-aa6a-8ad4fad4217e-vietnamtravelmark.jpg" />
+    <Content Include="File\Images\Card\c5164834-6d3a-4c3b-972f-c4f48e323134-vietnam.jpg" />
+    <Content Include="File\Images\Card\c7a14e03-b930-4e94-a45a-a6246979a732-vietnamtour.png" />
+    <Content Include="File\Images\Card\d45ccbcc-130b-42ae-a2a7-c190908ca1db-vietnam.jpg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
@@ -823,6 +835,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="assets\client\img\" />
     <Folder Include="assets\images\logo\" />
+    <Folder Include="Views\FacebookBot\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>

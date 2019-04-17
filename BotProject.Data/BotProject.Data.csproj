@@ -182,6 +182,10 @@
     <Compile Include="Migrations\201904100149093_InitDb70.Designer.cs">
       <DependentUpon>201904100149093_InitDb70.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904170307235_Init90.cs" />
+    <Compile Include="Migrations\201904170307235_Init90.Designer.cs">
+      <DependentUpon>201904170307235_Init90.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -314,6 +318,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904100149093_InitDb70.resx">
       <DependentUpon>201904100149093_InitDb70.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904170307235_Init90.resx">
+      <DependentUpon>201904170307235_Init90.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
