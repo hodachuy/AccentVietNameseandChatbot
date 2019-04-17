@@ -271,7 +271,7 @@
             FB.login(function (response) {
                 statusChangeCallback(response);
             }, {
-                scope: 'pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions',//pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions
+                scope: 'manage_pages, pages_show_list, pages_messaging, pages_messaging_subscriptions,email',//pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions
                 //scope : 'email',
                 return_scopes: true
             });
