@@ -14,6 +14,10 @@ using System.Web.Http;
 
 namespace BotProject.Web.API
 {
+    /// <summary>
+    /// Webhook
+    /// Receive request from Facebook when user trigger to message
+    /// </summary>
     public class WebhookController : ApiController
     {
         string pageToken = Helper.ReadString("AccessToken");
@@ -77,10 +81,11 @@ namespace BotProject.Web.API
         /// <returns>json</returns>
         private JObject GetMessageTemplate(string text, string sender)
         {
+
             return JObject.FromObject(new
             {
                 recipient = new { id = sender },
-                message = new { text = text }
+                message = new { text = "Welcome to Chatbot2!" }
             });
         }
 

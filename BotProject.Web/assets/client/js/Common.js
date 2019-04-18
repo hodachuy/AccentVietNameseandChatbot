@@ -104,7 +104,7 @@ var common = {
             html += '<div id="submenu-' + data.ID + '" class="collapse submenu" style="">';
             html += '<ul class="nav flex-column">';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="/bot/' + data.Alias + '/' + data.ID + '/cardcategory"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
+            html += '<a class="nav-link" href="'+_Host+'bot/' + data.Alias + '/' + data.ID + '/cardcategory"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
             html += '</li>';
 
             html += '<li class="nav-item">';
@@ -116,10 +116,10 @@ var common = {
             html +=            '<div class="submenu" style="">';
             html +=                '<ul class="nav flex-column" id="form-bot-qna-' + data.ID + '">';
             html +=                '</ul>';
-            html += '</div>';
+            html +=             '</div>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="/bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
+            html += '<a class="nav-link" href="' + _Host + 'bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
             html += '</li>';
             html += '<li class="nav-item">';
             html += '<a class="nav-link" id="btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
@@ -153,7 +153,7 @@ var common = {
         var temp = function (data) {
             var html = '';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link bot-qna-link" href="/bot/qna/' + data.Alias + '/' + data.ID + '"><i class="fa fa-file" aria-hidden="true"></i>' + data.Name + '</a>';
+            html += '<a class="nav-link bot-qna-link" href="' + _Host + 'bot/qna/' + data.Alias + '/' + data.ID + '"><i class="fa fa-file" aria-hidden="true"></i>' + data.Name + '</a>';
             html += '</li>';
             return html;
         }

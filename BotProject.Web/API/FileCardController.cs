@@ -67,6 +67,12 @@ namespace BotProject.Web.API
         }
 
 
+        /// <summary>
+        /// Delete Image Card
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="img"></param>
+        /// <returns></returns>
         [Route("delete")]
         [HttpPost]
         public HttpResponseMessage Delete(HttpRequestMessage request, FileCardImage img)

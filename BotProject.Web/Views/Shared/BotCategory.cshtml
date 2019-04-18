@@ -4,9 +4,9 @@
     foreach (var item in Model)
     {
         //var urlQnA = "/bot/" + item.Alias + "/" + item.ID + "/qna";
-        var urlCard = "/bot/" + item.Alias + "/" + item.ID + "/cardcategory";
-        var urlAIML = "/bot/" + item.Alias + "/" + item.ID + "/aiml";
-        var urlSetting = "/bot/setting/" + item.Alias + "/" + item.ID +"?name="+item.Name;
+        var urlCard = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/cardcategory";
+        var urlAIML = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/aiml";
+        var urlSetting = Url.Content("~") + "bot/setting/" + item.Alias + "/" + item.ID +"?name="+item.Name;
         <li class="nav-item">
             <a class="nav-link" id="dialog-bot" data-id="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-@item.ID">
                 <i class="fa fa fa-robot" aria-hidden="true"></i> @item.Name.ToUpper()
@@ -28,7 +28,7 @@
                                 {
                                     foreach (var itemBotQnA in item.BotQnAnswers)
                                     {
-                                        var urlQna = "/bot/qna/"+ itemBotQnA.Alias + "/"+itemBotQnA.ID;
+                                        var urlQna = Url.Content("~") +  "bot/qna/" + itemBotQnA.Alias + "/"+itemBotQnA.ID;
                                         <li class="nav-item">
                                             <a class="nav-link bot-qna-link" href="@urlQna"><i class="fa fa-file" aria-hidden="true"></i>@itemBotQnA.Name</a>
                                         </li>

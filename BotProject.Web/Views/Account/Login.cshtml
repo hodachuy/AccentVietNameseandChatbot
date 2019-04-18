@@ -343,9 +343,10 @@
         // Here we run a very simple test of the Graph API after login is
         // successful.  See statusChangeCallback() for when this call is made.
         function getUserInfo() {
-            FB.api('/me', { fields: 'name,id,email,picture' }, function (response) {
+            FB.api('/me', { fields: 'name,id,email,picture,accounts' }, function (response) {
                 console.log(response)
                 console.log('Successful login for: ' + response.name);
+                // response account bao gồm các thông tin về trang page_id,accesstoken page
                 var user = {
                     UserName: response.name,
                     Email: response.email,

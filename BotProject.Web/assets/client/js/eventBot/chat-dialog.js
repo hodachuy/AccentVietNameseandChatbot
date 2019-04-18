@@ -11,23 +11,6 @@ var MESSAGE = {
     ERROR_06: "Tôi chưa hiểu?"
 }
 $(document).ready(function () {
-
-    // window.addEventListener('message', function (event) {
-    // if (event.origin !== 'http://localhost:63951') return;
-    // console.log('message received:  ' + event.data, event);
-    // event.source.postMessage('holla back youngin!', event.origin);
-    // }, false);
-
-
-    //$('._5f0v').mouseenter(function () {
-    //    $('.uiScrollableAreaTrack').removeClass('hidden_elem');
-    //    $('.uiScrollableAreaTrack').css('opacity', '1');
-    //})
-    //    .mouseleave(function () {
-    //        $('.uiScrollableAreaTrack').addClass('hidden_elem');
-    //        $('.uiScrollableAreaTrack').css('opacity', '0');
-    //    });
-
     $("body").on('click', '.gl_next_carousel', function () {
         var $form = $(this).closest('.form_carousel');
         var currentIndex = $form.find($('div._a28')).attr('index');
@@ -159,33 +142,21 @@ $(document).ready(function () {
     })
     //menu
     $('body').on('click', '._6ir4_menu', function (e) {
+        e.preventDefault();
         var dataText = $(this).text();
         var dataPostback = $(this).attr('data-postback');
         submitMessage(dataText, dataPostback);
         // chặn ảnh hưởng tới thẻ a href next
         e.stopPropagation();
     })
+
     //popup
     $('body').on('click', '._6ir4_popup', function (e) {
         e.preventDefault();
         //show 1 popup ngoài iframe
         var quesID = $(this).attr('data-id');
-        var domain = 'http://localhost:63951';
+        var domain = 'http://qa.surelrn.vn';//http://localhost:54160;
         parent.postMessage(quesID, domain);
-
-        // var domain = 'http://localhost:63951';	
-        // var message = 'Hello!  The time is: ' + (new Date().getTime());
-        // console.log('blog.local:  sending message:  ' + message);
-        // parent.postMessage(message, domain); //send the message and target URI
-        // setInterval(function () {
-        // var message = 'Hello!  The time is: ' + (new Date().getTime());
-        // console.log('blog.local:  sending message:  ' + message);
-        // parent.postMessage(message, domain); //send the message and target URI
-        // }, 6000);
-
-        //window.parent.GetQuesDetailPopup(quesID);
-        //window.parent.$('#abc').append('abccdscd');
-        //window.parent.$('#excelQnAModal').modal('show');
     })
 
     //setting accent vn
@@ -196,6 +167,7 @@ $(document).ready(function () {
 var chatbot_chk_accent = JSON.parse(localStorage.getItem("cbot_chk_accent"));
 var chatbot_chk_popup = JSON.parse(localStorage.getItem("cbot_chk_popup"));
 function chatbotSetting() {
+    chatbot_chk_accent = true;
     $('#chk-stt-accent').prop('checked', chatbot_chk_accent);
     $("#chk-stt-popup").prop('checked', chatbot_chk_popup);
 }
@@ -356,6 +328,9 @@ function getMessageBot(text) {
                             break;
                         case "NOT_MATCH_06":
                             html = MESSAGE.ERROR_06;
+                            break;
+                        default:
+                            html = "SessionTimeout";
                             break;
                     }
                     html = tempTextBot(html);
@@ -618,3 +593,5 @@ function add3Dots(string, limit) {
 //   </div>
 //   <span style="animation: fadeIn 0.1s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 normal both running; clear: both; color: rgba(0, 0, 0, 0.4); float: right; font-size: 12px; font-weight: 500; padding-left: 0px; padding-right: 7px;">Đã xem</span>
 //</div>
+
+

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Accent.Utils;
-
+using Newtonsoft.Json.Linq;
 
 namespace Accent.ConsoleApplication
 {
@@ -12,17 +12,21 @@ namespace Accent.ConsoleApplication
     {
         static void Main(string[] args)
         {
-            int[] x = { 6, 2, 3, 4, 5, 9, 1 };
-            printArray(x);
+            //int[] x = { 6, 2, 3, 4, 5, 9, 1 };
+            //printArray(x);
 
-            int left = 0;
-            int right = x.Length - 1;
+            //int left = 0;
+            //int right = x.Length - 1;
 
-            var a = x[right];
+            //var a = x[right];
 
-            quickSort(x, left, right);
+            //quickSort(x, left, right);
 
-            printArray(x);
+            //printArray(x);
+            Console.OutputEncoding = Encoding.UTF8;
+            string x = GetMessageTemplate("abc", "1").ToString();
+            Console.WriteLine(x);
+
             //AccentPredictor accent = new AccentPredictor();
 
             //string path1Gram = System.IO.Path.GetFullPath("news1gram");
@@ -50,6 +54,21 @@ namespace Accent.ConsoleApplication
             //}
 
         }
+        private static JObject GetMessageTemplate(string text, string sender)
+        {
+            return JObject.FromObject(new
+            {
+                recipient = new { id = sender },
+                message = new {
+                    text = "Welcome to Chatbot2!",
+                    template = new
+                    {
+                        text = "abc"
+                    }
+                }
+            });
+        }
+
         public static void quickSort(int[] arr, int left, int right)
         {
             if (arr == null || arr.Length == 0)

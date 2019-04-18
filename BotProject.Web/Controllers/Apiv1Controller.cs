@@ -9,6 +9,7 @@ using SearchEngine.Data;
 using SearchEngine.Service;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,11 +17,13 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
+using System.Web.Http.Cors;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 
 namespace BotProject.Web.Controllers
 {
+    [AllowCrossSite]
     public class Apiv1Controller : Controller
     {
         private readonly string UrlAPI = Helper.ReadString("UrlAPI");
@@ -71,6 +74,16 @@ namespace BotProject.Web.Controllers
         {
             string nameBotAIML = "User_" + token + "_BotID_" + botId;
             string fullPathAIML = pathAIML + nameBotAIML;
+            //if (!Directory.Exists(fullPathAIML))
+            //{
+            //    return Json(new
+            //    {
+            //        message = "",
+            //        postback = "",
+            //        messageai = "",
+            //        isCheck = false
+            //    }, JsonRequestBehavior.AllowGet);
+            //}
             _bot.loadAIMLFromFiles(fullPathAIML);
             _user = new User(token, _bot);
             AIMLbot.Request r = new Request(text, _user, _bot);
@@ -99,7 +112,7 @@ namespace BotProject.Web.Controllers
                 isCheck = isMatch
             },JsonRequestBehavior.AllowGet);
         }
-       
+
         #endregion
 
         #region ACCENT VN
@@ -141,6 +154,7 @@ namespace BotProject.Web.Controllers
             }
             return Json(rs, JsonRequestBehavior.AllowGet);
         }
+
         public JsonResult GetMultiMatchesAccentVN(string text)
         {
             string[] ArrItems;
