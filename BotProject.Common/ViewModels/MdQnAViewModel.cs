@@ -22,7 +22,7 @@ namespace BotProject.Common.ViewModels
 
         public string AreaName { set; get; }
 
-        public int AreaID { set; get; }
+        public int? AreaID { set; get; }
 
         public bool IsDelete { set; get; }
 

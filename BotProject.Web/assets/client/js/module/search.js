@@ -14,7 +14,7 @@ var qnaVm = {
 $(document).ready(function () {
     // init data
     getDataTable(1, pageSize);
-
+    loadToolEditor();
     $("#btnSearch").off().on('click', function () {
         var content = $("#search-terms").val();
         search(content);
@@ -24,8 +24,8 @@ $(document).ready(function () {
         addQnA();
     })
     $("#openQnaModel").off().on('click', function () {
-        $("#txtQuestion").val('');
-        $("#txtAnswer").val('');
+        $("#txtQuestion").data("kendoEditor").value('');
+        $("#txtAnswer").data("kendoEditor").value('');
         $("#AreaID").val('');
         $("#addQnAModal").modal({
             backdrop: 'static',
@@ -35,10 +35,6 @@ $(document).ready(function () {
     })
     // writing show suggest
     $("#search-terms").keyup(function (e) {
-        // e.preventDefault();
-        //if (e.keyCode == 13) {
-        //    return false;
-        //}
         if (e.keyCode == 40 || e.keyCode == 38) {
             $(this).focusToEnd();
             return false;
@@ -63,6 +59,11 @@ $(document).ready(function () {
         console.log("Sorry, your browser does not support Web Storage...");
     }
 })
+
+loadToolEditor = function () {
+    loadEditor("#txtQuestion", " ");
+    loadEditor("#txtAnswer", " ");
+}
 
 function getDataTable(page, pageSize) {
     var param = {
@@ -126,8 +127,9 @@ function search(content) {
 }
 
 function addQnA() {
-    var questionContent = $("#txtQuestion").val();
-    var answerContent = $("#txtAnswer").val();
+    var questionContent = $("#txtQuestion").data("kendoEditor").value();//$("#txtQuestion").val();
+    var answerContent = $("#txtAnswer").data("kendoEditor").value();//$("#txtAnswer").val(); 
+
     var areaName = $("#AreaID option:selected").text().replace("----- Tất cả -----", "");
     var areaID = $("#AreaID").val();
     if (questionContent == "") return;
@@ -138,7 +140,35 @@ function addQnA() {
     qnaVm.AreaName = areaName
     var svr = new AjaxCall("api/module/createupdateqna", JSON.stringify(qnaVm));
     svr.callServicePOST(function (data) {
-        Console.log(data)
+        if (data) {
+            $("#addQnAModal").modal('hide');
+            $("#model-notify").modal('hide');
+            swal({
+                title: "Thông báo",
+                text: "Thành công",
+                confirmButtonColor: "#EF5350",
+                type: "success"
+            }, function () { $("#model-notify").modal('show'); });
+            getDataTable(1, pageSize);
+        }
+
+    });
+}
+function viewQnA(id) {
+    var params = {
+        quesId: id
+    }
+    var svr = new AjaxCall("api/module/getqnabyquesid", params);
+    svr.callServiceGET(function (data) {
+        console.log(data)
+        $("#txtQuestion").data("kendoEditor").value(data.QuesContentHTML);
+        $("#txtAnswer").data("kendoEditor").value(data.AnsContentHTML);
+        $("#AreaID").val(data.AreaID);
+        $("#addQnAModal").modal({
+            backdrop: 'static',
+            keyboard: true,
+            show: true
+        });
     });
 }
 
@@ -169,9 +199,9 @@ renderTemplate = function (data) {
                 //index = index + 1;
                 html += '<tr>';
                 html += '<td>' + (iCount++) + '</td>';
-                html += '<td>' + item.QuesContentText + '</td>';
-                html += '<td>' + item.AnsContentText + '</td>';
-                html += '<td>' + item.AreaName + '</td>';
+                html += '<td onclick="viewQnA(' + item.QuesID + ')" style="cursor:pointer;">' + item.QuesContentText + '</td>';
+                html += '<td>' + (item.AnsContentText.length > 300 ? item.AnsContentText.substring(0,300) + '...': item.AnsContentText)+'</td>';
+                html += '<td>' + (item.AreaName == null ? '' : item.AreaName) + '</td>';
                 html += '</tr>';
             })
 

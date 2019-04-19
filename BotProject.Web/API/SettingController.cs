@@ -44,11 +44,12 @@ namespace BotProject.Web.API
         {
             return CreateHttpResponse(request, () => {
                 HttpResponseMessage response = null;
+                bool result = true;
                 Setting settingDb = new Setting();
                 settingDb.UpdateSetting(settingVm);
                 _settingService.Update(settingDb);
                 _settingService.Save();
-                response = request.CreateResponse(HttpStatusCode.OK, settingDb);
+                response = request.CreateResponse(HttpStatusCode.OK, result);
                 return response;
             });
         }

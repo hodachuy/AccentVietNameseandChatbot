@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using Microsoft.AspNet.Identity;
 using BotProject.Common;
+using System.Text.RegularExpressions;
 
 namespace BotProject.Web.Infrastructure.Extensions
 {
@@ -155,6 +156,24 @@ namespace BotProject.Web.Infrastructure.Extensions
             {
                 settingDb.IsActiveIntroductory = true;
             }
+        }
+        #endregion
+
+        #region Module QnA
+        public static void UpdateModuleQuestion(this MdQuestion mdQuesDb, ModuleQnAViewModel mdQnA)
+        {
+            mdQuesDb.ID = mdQnA.QuesID.GetValueOrDefault();
+            mdQuesDb.ContentHTML = HttpUtility.HtmlDecode(mdQnA.QuesContent);
+            mdQuesDb.ContentText = Regex.Replace(HttpUtility.HtmlDecode(mdQnA.QuesContent), @"<(.|\n)*?>", "");
+            mdQuesDb.AreaID = mdQnA.AreaID;
+            mdQuesDb.CreatedDate = DateTime.Now;
+        }
+        public static void UpdateModuleAnswer(this MdAnswer mdAnsDb, ModuleQnAViewModel mdQnA)
+        {
+            mdAnsDb.ID = mdQnA.AnsID.GetValueOrDefault();
+            mdAnsDb.ContentHTML = HttpUtility.HtmlDecode(mdQnA.AnsContent);
+            mdAnsDb.ContentText = Regex.Replace(HttpUtility.HtmlDecode(mdQnA.AnsContent), @"<(.|\n)*?>", "");
+            mdAnsDb.MQuestionID = mdQnA.QuesID;
         }
         #endregion
     }

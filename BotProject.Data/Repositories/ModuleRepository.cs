@@ -23,18 +23,17 @@ namespace BotProject.Data.Repositories
 
         public IEnumerable<MdQnAViewModel> GetListMdQnA(string Filter, string Sort, int PageNumber,int PageSize, long? SelectedID = null)
         {
-
             var parameters = new SqlParameter[]{
                 new SqlParameter("@Filter",(String.IsNullOrEmpty(Filter) == true ? "": Filter)),
                 new SqlParameter("@Sort",(String.IsNullOrEmpty(Sort) == true ? "": Sort)),
                 new SqlParameter("@PageNumber",PageNumber),
                 new SqlParameter("@PageSize",PageSize),
-                new SqlParameter("@SelectedID",SelectedID ?? (object)DBNull.Value),
+                new SqlParameter("@SelectedID",(object)SelectedID??DBNull.Value),
             };
-            return DbContext.Database.SqlQuery<MdQnAViewModel>(
+            var query = DbContext.Database.SqlQuery<MdQnAViewModel>(
                 "sp_MD_GetListMdQnA @Filter,@Sort,@PageNumber,@PageSize,@SelectedID",
                 parameters);
-
+            return query;
         }
     }
 }

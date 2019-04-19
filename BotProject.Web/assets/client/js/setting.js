@@ -110,13 +110,15 @@ $("#btnSaveSettings").on('click', function () {
     var svr = new AjaxCall(urlSetting, JSON.stringify(BotSetting));
     svr.callServicePOST(function (data) {
         console.log(data)
-        $("#model-tag-bot").modal('hide');
-        swal({
-            title: "Thông báo",
-            text: "Đã lưu",
-            confirmButtonColor: "#EF5350",
-            type: "success"
-        }, function () { $("#model-tag-bot").modal('show'); });
+        if (data) {
+            $("#model-notify").modal('hide');
+            swal({
+                title: "Thông báo",
+                text: "Đã lưu",
+                confirmButtonColor: "#EF5350",
+                type: "success"
+            }, function () { $("#model-notify").modal('show'); });
+        }
     });
 })
 

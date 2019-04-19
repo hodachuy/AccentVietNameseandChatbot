@@ -12,7 +12,6 @@ namespace BotProject.Web.Models
 
         public int? AnsID { set; get; }
 
-        [Required]
         public string QuesContent { set; get; }
 
         public string AnsContent { set; get; }

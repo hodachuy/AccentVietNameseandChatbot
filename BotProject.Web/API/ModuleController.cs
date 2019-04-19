@@ -11,6 +11,7 @@ using BotProject.Web.Models;
 using BotProject.Model.Models;
 using System.Text.RegularExpressions;
 using System.Web;
+using BotProject.Web.Infrastructure.Extensions;
 
 namespace BotProject.Web.API
 {
@@ -49,43 +50,66 @@ namespace BotProject.Web.API
             });
         }
 
+        [Route("getqnabyquesid")]
+        [HttpGet]
+        public HttpResponseMessage GetQnAByQuesId(HttpRequestMessage request, int quesId)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                string filter = "q.ID = " + quesId;
+                var qnaDb = _searchService.GetListMdQnA(filter, "", 1, 1, null).ToList().FirstOrDefault();               
+                response = request.CreateResponse(HttpStatusCode.OK, qnaDb);
+                return response;
+            });
+        }
+
         [Route("createupdateqna")]
         [HttpPost]
         public HttpResponseMessage CreateUpdateQnA(HttpRequestMessage request,ModuleQnAViewModel mdQnA )
         {
             return CreateHttpResponse(request,() => {
                 HttpResponseMessage response = null;
+                bool result = true;
                 if (!ModelState.IsValid)
                 {
                     response = request.CreateErrorResponse(HttpStatusCode.BadGateway, ModelState);
                     return response;
                 }
-                if(mdQnA.QuesID == null)
+                MdQuestion mdQuesDb = new MdQuestion();
+                MdAnswer mdAnsDb = new MdAnswer();
+                ApiQnaNLRService apiNLR = new ApiQnaNLRService();
+                if (mdQnA.QuesID == null)
                 {
-                    MdQuestion mdQuesDb = new MdQuestion();
-                    mdQuesDb.ContentHTML = HttpUtility.HtmlDecode(mdQnA.QuesContent);
-                    mdQuesDb.ContentText = Regex.Replace(HttpUtility.HtmlDecode(mdQnA.QuesContent), @"<(.|\n)*?>", "");
-                    mdQuesDb.AreaID = mdQnA.AreaID;
-                    mdQuesDb.CreatedDate = DateTime.Now;
+                    // add Ques
+                    mdQuesDb.UpdateModuleQuestion(mdQnA);
                     _searchService.CreateQuestion(mdQuesDb);
                     _searchService.Save();
-
-                    MdAnswer mdAnsDb = new MdAnswer();
-                    mdAnsDb.ContentHTML = HttpUtility.HtmlDecode(mdQnA.AnsContent);
-                    mdAnsDb.ContentText = Regex.Replace(HttpUtility.HtmlDecode(mdQnA.AnsContent), @"<(.|\n)*?>", "");
+                    // add Ans
+                    mdAnsDb.UpdateModuleAnswer(mdQnA);
                     mdAnsDb.MQuestionID = mdQuesDb.ID;
                     _searchService.CreateAnswer(mdAnsDb);
-                    _searchService.Save();
 
-                    ApiQnaNLRService apiNLR = new ApiQnaNLRService();
-                    string nlrQuesID = mdQuesDb.ID.ToString();
-                    string nlrQuesContentText = mdQuesDb.ContentText;
-                    string nlrAnsContentText = mdAnsDb.ContentText;
-                    string nlrAnsContentHTML = mdAnsDb.ContentHTML;
-                    string nlrAreaName = mdQnA.AreaName;
-                    //apiNLR.AddQues(nlrQuesID, nlrQuesContentText, nlrAnsContentText, nlrAreaName, nlrAnsContentHTML);
+                }else
+                {
+                    // update Ques
+                    mdQuesDb.UpdateModuleQuestion(mdQnA);
+                    _searchService.UpdateQuestion(mdQuesDb);
+                    // update Ans
+                    mdAnsDb.UpdateModuleAnswer(mdQnA);
+                    _searchService.UpdateAnswer(mdAnsDb);
                 }
-                response = request.CreateErrorResponse(HttpStatusCode.OK, "ok");
+                _searchService.Save();
+
+                // api training
+                string nlrQuesID = mdQuesDb.ID.ToString();
+                string nlrQuesContentText = mdQuesDb.ContentText;
+                string nlrAnsContentText = mdAnsDb.ContentText;
+                string nlrAnsContentHTML = mdAnsDb.ContentHTML;
+                string nlrAreaName = mdQnA.AreaName;
+                //apiNLR.AddQues(nlrQuesID, nlrQuesContentText, nlrAnsContentText, nlrAreaName, nlrAnsContentHTML);
+
+                response = request.CreateResponse(HttpStatusCode.OK, result);
                 return response;
             });
         }

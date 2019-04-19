@@ -12,7 +12,7 @@ namespace BotProject.Service
 {
     public interface IMdQnAService
     {
-        IEnumerable<MdQnAViewModel> GetListMdQnA(string filter, string sort, int pageNumber, int pageSize, long? selectedID = null);
+        IEnumerable<MdQnAViewModel> GetListMdQnA(string filter, string sort, int pageNumber, int pageSize, long? selectedID);
         IEnumerable<MdArea> GetListMdArea(int? id);
         MdQuestion CreateQuestion(MdQuestion ques);
         MdAnswer CreateAnswer(MdAnswer ans);
@@ -39,7 +39,7 @@ namespace BotProject.Service
             _mdQuesRepository = mdQuesRepository;
             _mdAnswerRepository = mdAnswerRepository;
         }
-        public IEnumerable<MdQnAViewModel> GetListMdQnA(string filter, string sort, int pageNumber, int pageSize, long? selectedID = default(long?))
+        public IEnumerable<MdQnAViewModel> GetListMdQnA(string filter, string sort, int pageNumber, int pageSize, long? selectedID)
         {
             return _moduleRepository.GetListMdQnA(filter,sort,pageNumber,pageSize,selectedID);
         }
@@ -75,5 +75,6 @@ namespace BotProject.Service
         {
             _mdAnswerRepository.Update(ans);
         }
+
     }
 }

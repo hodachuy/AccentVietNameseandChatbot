@@ -771,6 +771,9 @@ html body .font-light {
 html body .font-medium {
     font-weight: 600;
 }
+html body .font-medium-v2 {
+    font-weight: 700;
+}
 
 html body .font-16 {
     font-size: 16px;

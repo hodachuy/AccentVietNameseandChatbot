@@ -3,10 +3,13 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     var area = (IEnumerable<BotProject.Model.Models.MdArea>) ViewBag.MdArea;
 }
+<link href="~/assets/client/libs/KendoUI/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="~/assets/client/libs/KendoUI/styles/kendo.metro.min.css" rel="stylesheet" />
+<link href="~/assets/client/libs/KendoUI/kendo.custom.css" rel="stylesheet" />
 <style>
     @@media (min-width: 576px) {
         .modal-dialog {
-            max-width: 650px;
+            max-width: 780px;
             margin: 1.75rem auto;
         }
     }
@@ -87,16 +90,21 @@
                             <div class="modal-body">
                                 <form>
                                     <div class="form-group">
-                                        <label for="exampleFormControlTextarea1">Lĩnh vực</label>
+                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Lĩnh vực</label>
                                         @Html.DropDownList("AreaID", new SelectList(area, "ID", "Name"), "----- Tất cả -----")
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleFormControlTextarea1">Câu hỏi</label>
-                                        <textarea class="form-control" id="txtQuestion" rows="3"></textarea>
+                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Câu hỏi</label>
+                                        <span class="placeholderkd opacity05" style="z-index:1000;position: absolute"></span>
+                                        <div id="txtQuestion" style="height:200px" class="EditorArticles"></div>
+                                        @*<textarea class="form-control" id="txtQuestion" rows="3"></textarea>*@
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleFormControlTextarea1">Trả lời</label>
-                                        <textarea class="form-control" id="txtAnswer" rows="3"></textarea>
+                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Trả lời</label>
+                                        <span class="placeholderkd opacity05" style="z-index:1000;position: absolute"></span>
+                                        <div id="txtAnswer" style="height:250px" class=""></div>
+                                        #Ký tự: <span id="count"></span>
+                                        @*<textarea class="form-control" id="txtAnswer" rows="3"></textarea>*@
                                     </div>
                                 </form>
                             </div>
@@ -166,5 +174,8 @@
 </div>
 
 @section footerJS{
+<script src="~/assets/client/libs/KendoUI/js/kendo.all.min.js"></script>
+<script src="~/assets/client/libs/KendoUI/js/cultures/kendo.culture.vi-VN.min.js"></script>
+<script src="~/assets/client/libs/KendoUI/custom-kendo.js"></script>
 <script src="~/assets/client/js/module/search.js"></script>
 }
