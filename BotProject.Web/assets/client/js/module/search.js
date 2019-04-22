@@ -27,6 +27,8 @@ $(document).ready(function () {
         $("#txtQuestion").data("kendoEditor").value('');
         $("#txtAnswer").data("kendoEditor").value('');
         $("#AreaID").val('');
+        $("#quesID").val('');
+        $("#ansID").val('');
         $("#addQnAModal").modal({
             backdrop: 'static',
             keyboard: true,
@@ -129,15 +131,17 @@ function search(content) {
 function addQnA() {
     var questionContent = $("#txtQuestion").data("kendoEditor").value();//$("#txtQuestion").val();
     var answerContent = $("#txtAnswer").data("kendoEditor").value();//$("#txtAnswer").val(); 
-
     var areaName = $("#AreaID option:selected").text().replace("----- Tất cả -----", "");
     var areaID = $("#AreaID").val();
+    
     if (questionContent == "") return;
     if (questionContent == "" && answerContent == "") return;
-    qnaVm.QuesContent = questionContent,
-    qnaVm.AnsContent = answerContent,
-    qnaVm.AreaID = areaID,
-    qnaVm.AreaName = areaName
+    qnaVm.QuesContent = questionContent;
+    qnaVm.AnsContent = answerContent;
+    qnaVm.AreaID = areaID;
+    qnaVm.AreaName = areaName;
+    qnaVm.QuesID = $("#quesID").val();
+    qnaVm.AnsID = $("#ansID").val();
     var svr = new AjaxCall("api/module/createupdateqna", JSON.stringify(qnaVm));
     svr.callServicePOST(function (data) {
         if (data) {
@@ -154,13 +158,22 @@ function addQnA() {
 
     });
 }
-function viewQnA(id) {
+function viewQnA(quesId, ansId) {
+    if (quesId == null) {
+        swal({
+            title: "Thông báo",
+            text: "Lỗi không tìm thấy dữ liệu",
+            confirmButtonColor: "#EF5350",
+            type: "error"
+        }, function () { $("#model-notify").modal('show'); });
+    }
     var params = {
-        quesId: id
+        quesId: quesId
     }
     var svr = new AjaxCall("api/module/getqnabyquesid", params);
     svr.callServiceGET(function (data) {
-        console.log(data)
+        $("#quesID").val(data.QuesID);
+        $("#ansID").val(data.AnsID);
         $("#txtQuestion").data("kendoEditor").value(data.QuesContentHTML);
         $("#txtAnswer").data("kendoEditor").value(data.AnsContentHTML);
         $("#AreaID").val(data.AreaID);
@@ -199,7 +212,7 @@ renderTemplate = function (data) {
                 //index = index + 1;
                 html += '<tr>';
                 html += '<td>' + (iCount++) + '</td>';
-                html += '<td onclick="viewQnA(' + item.QuesID + ')" style="cursor:pointer;">' + item.QuesContentText + '</td>';
+                html += '<td onclick="viewQnA(' + item.QuesID + ','+item.AnsID+')" style="cursor:pointer;">' + item.QuesContentText + '</td>';
                 html += '<td>' + (item.AnsContentText.length > 300 ? item.AnsContentText.substring(0,300) + '...': item.AnsContentText)+'</td>';
                 html += '<td>' + (item.AreaName == null ? '' : item.AreaName) + '</td>';
                 html += '</tr>';

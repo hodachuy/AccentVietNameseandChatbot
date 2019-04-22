@@ -13,6 +13,16 @@
             margin: 1.75rem auto;
         }
     }
+        .k-table {
+    width: 100%;
+    border-spacing: 0;
+    margin: 0 0 0em;
+}
+            .k-table, .k-table td, .k-table th {
+    outline: 0;
+    border: 1px solid #555;
+}
+
 </style>
 <!-- ============================================================== -->
 <!-- pageheader -->
@@ -93,6 +103,8 @@
                                         <label for="exampleFormControlTextarea1" class="font-medium-v2">Lĩnh vực</label>
                                         @Html.DropDownList("AreaID", new SelectList(area, "ID", "Name"), "----- Tất cả -----")
                                     </div>
+                                    <input type="hidden" id="quesID" value=""/>
+                                    <input type="hidden" id="ansID" value="" />
                                     <div class="form-group">
                                         <label for="exampleFormControlTextarea1" class="font-medium-v2">Câu hỏi</label>
                                         <span class="placeholderkd opacity05" style="z-index:1000;position: absolute"></span>
