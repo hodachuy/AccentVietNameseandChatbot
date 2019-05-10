@@ -55,13 +55,29 @@ namespace AIMLbot.Normalize
             foreach (string pattern in dictionary.SettingNames)
             {
                 string p2 = ApplySubstitutions.makeRegexSafe(pattern);
+                string valueP2 = dictionary.grabSetting(pattern).Trim();
+
+                Regex regPattern = new Regex(p2, RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                Match match = regPattern.Match(result);
+                if (match.Success)
+                {
+                    string match1 = p2.TrimEnd().TrimStart();
+                    if (!String.IsNullOrEmpty(match1))
+                    {
+                        string replacement = marker + dictionary.grabSetting(pattern) + marker;
+                        result = Regex.Replace(result, match1, replacement, RegexOptions.IgnoreCase);
+                    }
+
+                }
+                //result = Regex.Replace(result, p2, valueP2, RegexOptions.IgnoreCase);
                 //string match = "\\b"+@p2.Trim().Replace(" ","\\s*")+"\\b";
-                string match = "\\b" + p2.TrimEnd().TrimStart() + "\\b";
-                string replacement = marker+dictionary.grabSetting(pattern).Trim()+marker;
-                result = Regex.Replace(result, match, replacement, RegexOptions.IgnoreCase);
+                //string match = p2.TrimEnd().TrimStart();
+                //string replacement = marker+dictionary.grabSetting(pattern).Trim()+marker;
+                //result = Regex.Replace(result, match, replacement, RegexOptions.IgnoreCase);
             }
 
             return result.Replace(marker, "");
+            //return result;
         }
 
 

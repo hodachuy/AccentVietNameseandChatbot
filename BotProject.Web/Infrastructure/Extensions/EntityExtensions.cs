@@ -22,13 +22,13 @@ namespace BotProject.Web.Infrastructure.Extensions
             bot.UserID = botVm.UserID;
             bot.Status = botVm.Status;
         }
-		public static void UpdateBotQnA(this BotQnAnswer botQnA, BotQnAnswerViewModel botQnAVm)
+		public static void UpdateFormQnA(this FormQuestionAnswer formQnA, FormQuestionAnswerViewModel formQnAVm)
 		{
-			botQnA.ID = botQnAVm.ID;
-			botQnA.Name = botQnAVm.Name;
-			botQnA.Alias = botQnAVm.Alias;
-			botQnA.BotID = botQnAVm.BotID;
-			botQnA.Status = botQnAVm.Status;
+            formQnA.ID = formQnAVm.ID;
+            formQnA.Name = formQnAVm.Name;
+            formQnA.Alias = formQnAVm.Alias;
+            formQnA.BotID = formQnAVm.BotID;
+            formQnA.Status = formQnAVm.Status;
 		}
 
         #region Question-Answer-Group
@@ -37,7 +37,8 @@ namespace BotProject.Web.Infrastructure.Extensions
             qGroup.ID = qGroupVm.ID;
             qGroup.Index = qGroupVm.Index;
             qGroup.IsKeyword = qGroupVm.IsKeyWord;
-            qGroup.BotQnAnswerID = qGroupVm.BotQnAnswerID;
+            qGroup.FormQuestionAnswerID = qGroupVm.FormQuestionAnswerID;
+            qGroup.BotID = qGroupVm.BotID;
 			qGroup.CreatedDate = DateTime.Now;
         }
 

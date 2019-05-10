@@ -43,7 +43,7 @@ namespace BotProject.Web.Controllers
 			{
 				foreach(var item in lstBot)
 				{
-					item.BotQnAnswers = _qnaService.GetListBotQnAnswerByBotID(item.ID);
+					item.FormQuestionAnswers = _qnaService.GetListFormByBotID(item.ID);
 				}
 			}
             var lstBotViewModel = Mapper.Map<IEnumerable<Bot>, IEnumerable<BotViewModel>>(lstBot);

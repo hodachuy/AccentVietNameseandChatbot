@@ -1,13 +1,14 @@
 ﻿var urlCreateBot = "api/bot/create",
-    urlCreateBotQnA = "api/botqna/create",
-    urlSettingBot = "api/setting/getbybotid";
+    urlCreateFormQnA = "api/formqna/create",
+    urlSettingBot = "api/setting/getbybotid",
+    urlDeleteBot = "api/bot/delete";
 var bot = {
     Name: '',
     Alias: '',
     Status: false,
     UserID: '',
 }
-var botQnA = {
+var formQnA = {
     Name: '',
     Alias: '',
     Status: false,
@@ -32,7 +33,7 @@ var common = {
             var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
             var encryptedBotID = CryptoJS.AES.encrypt($(this).attr('data-botID'), "Secret Passphrase").toString();
             // pass variable outside ajax call
-            var setting = function (botId) {              
+            var setting = function (botId) {
                 var tmp = null;
                 var param = {
                     botId: botId
@@ -50,7 +51,8 @@ var common = {
                     }
                 });
                 return tmp;
-            }($(this).attr('data-botID'));
+            }
+            ($(this).attr('data-botID'));
             var encryptedColor = CryptoJS.AES.encrypt(setting.Color, "Secret Passphrase").toString();
             var html = '';
             html += "<!--Lacviet--><script>(function (l, a, c, v, i, e, t){a[v] = a[v] || function (){";
@@ -62,7 +64,37 @@ var common = {
             $('#editorTest').text('');
             $('#editorTest').text(html);
             $("#modalDeployBot").modal('show');
-        })      
+        });
+
+        $('body').on('click', '#btn-form-delete', function () {
+            var botId = $(this).attr('data-botID'),
+                botName = $(this).attr('data-botName');
+            bootbox.confirm({
+                message: "Ban có chắc muốn xóa Bot "+botName+"",
+                buttons: {
+                    confirm: {
+                        label: "Đồng ý",
+                        className: 'btn-primary'
+                    },
+                    cancel: {
+                        label: "Hủy",
+                        className: 'btn-default'
+                    }
+                },
+                callback: function (result) {
+                    if (result) {
+                        var params = {
+                            botId : botId
+                        }
+                        params = JSON.stringify(params);
+                        var svr = new AjaxCall(urlDeleteBot, params);
+                        svr.callServicePOST(function (data) {
+                            console.log(data)
+                        });
+                    }
+                }
+            })
+        })
     },
     getSeoTitle :function(input) {
             if (input == undefined || input == '')
@@ -124,6 +156,9 @@ var common = {
             html += '<li class="nav-item">';
             html += '<a class="nav-link" id="btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
             html += '</li>';
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link" id="btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>';
+            html += '</li>';
             html += '</ul>';
             html += '</div>';
             html += '</li>';
@@ -164,19 +199,19 @@ var common = {
             $("#bot-botQnA-id").val(botID);
         })
         $('body').on('click', '#btnSaveBotQnA', function () {
-            var botQnAName = $('#txtBotQnAnswerName').val();
-            if (botQnAName == '' || botQnAName == undefined)
+            var formName = $('#txtBotQnAnswerName').val();
+            if (formName == '' || formName == undefined)
                 return false;
 
-            botQnA.Name = botQnAName;
-            botQnA.Alias = common.getSeoTitle(botQnAName);
-            botQnA.BotID = $("#bot-botQnA-id").val();
-            botQnA.UserID = $("#userId").val();
-            console.log(botQnA)
-            var svr = new AjaxCall(urlCreateBotQnA, JSON.stringify(botQnA));
+            formQnA.Name = formName;
+            formQnA.Alias = common.getSeoTitle(formName);
+            formQnA.BotID = $("#bot-botQnA-id").val();
+            formQnA.UserID = $("#userId").val();
+            console.log(formQnA)
+            var svr = new AjaxCall(urlCreateFormQnA, JSON.stringify(formQnA));
             svr.callServicePOST(function (data) {
                 var tempHtml = temp(data);
-                $('#form-bot-qna-'+botQnA.BotID).append(tempHtml);
+                $('#form-bot-qna-'+formQnA.BotID).append(tempHtml);
                 $('#modalCreateBotQnAnswer').modal('hide');
             });
         })

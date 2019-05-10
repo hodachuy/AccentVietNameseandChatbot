@@ -121,7 +121,7 @@ namespace BotProject.Web.API
 						rs.IsActionDb = false;
 						// delete all
 						_commonCardService.DeleteFullContentCard(cardDb.ID);
-						_imageService.DeleteMutiImage(cardDb.ID);
+						//_imageService.DeleteMutiImage(cardDb.ID);
 						//if (cardVm.FileAttachs != null && cardVm.FileAttachs.Count != 0)
 						//{
 						//    string pathImgServer = ConfigurationManager.AppSettings["ImagePath"];

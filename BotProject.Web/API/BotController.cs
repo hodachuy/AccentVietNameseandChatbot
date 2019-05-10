@@ -19,13 +19,23 @@ namespace BotProject.Web.API
 	public class BotController : ApiControllerBase
 	{
 		private IBotService _botService;
+        private ICardService _cardService;
         private ISettingService _settingService;
-		public BotController(IErrorService errorService,
+        private ICommonCardService _commonCardService;
+        private IQnAService _qnaService;
+
+        public BotController(IErrorService errorService,
             IBotService botService,
-            ISettingService settingService) : base(errorService)
+            ICardService cardService,
+            ISettingService settingService,
+            ICommonCardService commonCardService,
+            IQnAService qnaService) : base(errorService)
 		{
 			_botService = botService;
             _settingService = settingService;
+            _cardService = cardService;
+            _commonCardService = commonCardService;
+            _qnaService = qnaService;
 
         }	
 
@@ -89,6 +99,50 @@ namespace BotProject.Web.API
                 _settingService.Save();
                 var reponseData = Mapper.Map<Bot, BotViewModel>(botReturn);
                 response = request.CreateResponse(HttpStatusCode.OK, reponseData);
+                return response;
+            });
+        }
+
+        [Route("deletebot")]
+        [HttpPost]
+        public HttpResponseMessage DeleteBot(HttpRequestMessage request, int botID)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var botDb = _botService.GetByID(botID);
+                botDb.Status = true;
+                _botService.Update(botDb);
+                _botService.Save();
+
+                //delete database
+                var lstCard = _cardService.GetListCardByBotID(botID).ToList();
+                if (lstCard.Count() != 0)
+                {
+                    foreach (var item in lstCard)
+                    {
+                        _commonCardService.DeleteCard(item.ID);
+                    }
+                }
+
+                //var lstBotQnAnswer = _qnaService.GetListBotQnAnswerByBotID(botID);
+                //if (lstBotQnAnswer != null && lstBotQnAnswer.Count() != 0)
+                //{
+                //    foreach (var botQnAnswer in lstBotQnAnswer)
+                //    {
+                //        var lstQuesGroup = _qnaService.GetListQuestionGroupByBotQnAnswerID(botQnAnswer.ID);
+                //        if (lstQuesGroup != null && lstQuesGroup.Count() != 0)
+                //        {
+                //            foreach (var quesGroup in lstQuesGroup)
+                //            {
+                //                _qnaService.DeleteQuesByQuestionGroup(quesGroup.ID);
+                //                _qnaService.DeleteAnswerByQuestionGroup(quesGroup.ID);
+
+                //            }
+                //        }
+                //    }
+                //}
+
                 return response;
             });
         }

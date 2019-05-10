@@ -5,7 +5,7 @@ using System.Web;
 
 namespace BotProject.Web.Models
 {
-	public class BotQnAnswerViewModel
+	public class FormQuestionAnswerViewModel
 	{
 		public int ID { set; get; }
 

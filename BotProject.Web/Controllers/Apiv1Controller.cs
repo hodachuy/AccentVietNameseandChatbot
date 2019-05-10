@@ -74,18 +74,12 @@ namespace BotProject.Web.Controllers
         {
             string nameBotAIML = "User_" + token + "_BotID_" + botId;
             string fullPathAIML = pathAIML + nameBotAIML;
-            //if (!Directory.Exists(fullPathAIML))
-            //{
-            //    return Json(new
-            //    {
-            //        message = "",
-            //        postback = "",
-            //        messageai = "",
-            //        isCheck = false
-            //    }, JsonRequestBehavior.AllowGet);
-            //}
             _bot.loadAIMLFromFiles(fullPathAIML);
             _user = new User(token, _bot);
+            if (!String.IsNullOrEmpty(text))
+            {
+                text = Regex.Replace(text, @"<(.|\n)*?>", "");
+            }
             AIMLbot.Request r = new Request(text, _user, _bot);
             AIMLbot.Result res = _bot.Chat(r);
             bool isMatch = true;

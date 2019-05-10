@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+
+  <category>
+    <pattern>TAO SMILE *</pattern>
+    <template>
+      <bot name="name"/>
+    </template>
+  </category>
+
+  <category>
+    <pattern>HUY DOT COM ABC</pattern>
+    <template>
+      HAHA
+    </template>
+  </category>
+
+  <category>
+    <pattern>*</pattern>
+    <template>
+      <random>
+        <li> NOT_MATCH_01 </li>
+        <li> NOT_MATCH_02 </li>
+        <li> NOT_MATCH_03 </li>
+        <li> NOT_MATCH_04 </li>
+        <li> NOT_MATCH_05 </li>
+        <li> NOT_MATCH_06 </li>
+      </random>
+    </template>
+  </category>
+  <category>
+    <pattern>HELLO</pattern>
+    <template>
+      <srai>postback_card_3026</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HELLO *</pattern>
+    <template>
+      <srai>postback_card_3026</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HI</pattern>
+    <template>
+      <srai>postback_card_3026</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HI *</pattern>
+    <template>
+      <srai>postback_card_3026</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>* TÔI TÊN * CÒN BẠN *</pattern>
+    <template>
+      Xin chào <set name = "test">
+        <star index="2"/>
+      </set>
+    </template>
+  </category>
+  <category>
+    <pattern>* MY NAME *</pattern>
+    <template>
+      Xin chào <set name = "test">
+        <star index="1"/>
+      </set>
+    </template>
+  </category>
+  <category>
+    <pattern>TÔI TÊN *</pattern>
+    <template>
+      Xin chào <set name = "test">
+        <star/>
+      </set>
+    </template>
+  </category>
+</aiml>

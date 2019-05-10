@@ -28,20 +28,31 @@ namespace BotProject.Web.API
 
         [Route("create")]
         [HttpPost]
-        public HttpResponseMessage Create(HttpRequestMessage request, QnAnswerGroupViewModel qGroupVm)
+        public HttpResponseMessage Create(HttpRequestMessage request, FormQnACommonViewModel formQnAVm)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
                 bool IsCreated = false;
-                if (qGroupVm != null && qGroupVm.QuestionGroupViewModels != null
-                                    && qGroupVm.QuestionGroupViewModels.Count() != 0)
+                if (formQnAVm != null && formQnAVm.QuestionGroupViewModels != null
+                                    && formQnAVm.QuestionGroupViewModels.Count() != 0)
                 {
-                    var lstQuesGroupVm = qGroupVm.QuestionGroupViewModels;
+                    var lstQuesGroupVm = formQnAVm.QuestionGroupViewModels;
                     // nếu trường hợp cập nhật chỉ thêm các question group với id rỗng
-                    if (qGroupVm.TypeAction == Common.CommonConstants.UpdateQnA)
+                    if (formQnAVm.TypeAction == Common.CommonConstants.UpdateQnA)
                     {
-                        lstQuesGroupVm = qGroupVm.QuestionGroupViewModels.Where(x => x.ID == 0);
+                        //lstQuesGroupVm = formQnAVm.QuestionGroupViewModels.Where(x => x.ID == 0);
+                        var lstQuesGroupDb = _qnaService.GetListQuestionGroupByFormQnAnswerID(formQnAVm.FormQuestionAnswerID).ToList();
+                        if(lstQuesGroupDb != null && lstQuesGroupDb.Count() != 0)
+                        {
+                            foreach(var quesGroup in lstQuesGroupDb)
+                            {
+                                _qnaService.DeleteQuesByQuestionGroup(quesGroup.ID);
+                                _qnaService.DeleteAnswerByQuestionGroup(quesGroup.ID);                              
+                            }
+                            _qnaService.DeleteMultiQuestionGroupByFormID(formQnAVm.FormQuestionAnswerID);
+                            _qnaService.Save();
+                        }
                     }
                     if (lstQuesGroupVm != null && lstQuesGroupVm.Count() != 0)
                     {
@@ -106,17 +117,17 @@ namespace BotProject.Web.API
 
         [Route("getaimlqna")]
         [HttpGet]
-        public HttpResponseMessage GetAimlQnA(HttpRequestMessage request, int botQnaID, string botAlias, string userID, int botID)
+        public HttpResponseMessage GetAimlQnA(HttpRequestMessage request, int formQnaID, string botAlias, string userID, int botID)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                var lstQna = _qnaService.GetListQuesGroupToAimlByQnaID(botQnaID).ToList();
+                var lstQnaGroup = _qnaService.GetListQuesGroupToAimlByFormQnAnswerID(formQnaID).ToList();
                 bool IsAiml = false;
                 // open file bot aiml
                 //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userID + "_BotID_" + botID;
                 string pathFolderAIML = PathServer.PathAIML + "User_" + userID + "_BotID_" + botID;
-                string nameFolderAIML = "botQnA_ID_" + botQnaID + "_" + botAlias + ".aiml";
+                string nameFolderAIML = "formQnA_ID_" + formQnaID + "_" + botAlias + ".aiml";
                 string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
                 if (System.IO.File.Exists(pathString))
                 {
@@ -139,12 +150,12 @@ namespace BotProject.Web.API
                         sw.WriteLine("</random>");
                         sw.WriteLine("</template>");
                         sw.WriteLine("</category>");
-                        if (lstQna != null && lstQna.Count() != 0)
+                        if (lstQnaGroup != null && lstQnaGroup.Count() != 0)
                         {
-                            int total = lstQna.Count();
+                            int total = lstQnaGroup.Count();
                             for (int indexQGroup = 0; indexQGroup < total; indexQGroup++)
                             {
-                                var itemQGroup = lstQna[indexQGroup];
+                                var itemQGroup = lstQnaGroup[indexQGroup];
                                 var lstAnswer = itemQGroup.Answers.ToList();
                                 var lstQuestion = itemQGroup.Questions.ToList();
                                 string postbackAnswer = String.Empty;
@@ -227,14 +238,14 @@ namespace BotProject.Web.API
         }
 
 
-        [Route("getbybotqnanswerid")]
+        [Route("getqnabyformid")]
         [HttpGet]
-        public HttpResponseMessage GetByBotQnAnswerId(HttpRequestMessage request, int botQnaID)
+        public HttpResponseMessage GetQnAnswerByFormId(HttpRequestMessage request, int formQnaID)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                var lstBotQna = _qnaService.GetListQuestionGroupByBotQnAnswerID(botQnaID).OrderByDescending(x => x.CreatedDate).ToList();
+                var lstBotQna = _qnaService.GetListQuestionGroupByFormQnAnswerID(formQnaID).OrderBy(x => x.Index).ToList();
                 response = request.CreateResponse(HttpStatusCode.OK, lstBotQna);
                 return response;
             });

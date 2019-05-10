@@ -21,11 +21,13 @@ namespace BotProject.Model.Models
 
 		public DateTime? CreatedDate { set; get; }
 
-		[Required]
-		public int BotQnAnswerID { set; get; }
+        public int BotID { set; get; }
 
-		[ForeignKey("BotQnAnswerID")]
-		public virtual BotQnAnswer BotQnAnswer { set; get; }
+		[Required]
+		public int FormQuestionAnswerID { set; get; }
+
+		[ForeignKey("FormQuestionAnswerID")]
+		public virtual FormQuestionAnswer FormQuestionAnswer { set; get; }
 
         public virtual IEnumerable<Question> Questions { set; get; }
 

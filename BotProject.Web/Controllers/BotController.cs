@@ -38,10 +38,10 @@ namespace BotProject.Web.Controllers
 		public ActionResult QnA(int id)
 		{
             ViewBag.BotQnAnswerID = id;
-			var botQnA = _qnaService.GetBotQnAnswerById(id);
-			var lstCard = _cardService.GetListCardByBotID(botQnA.BotID).ToList();
+			var formQnA = _qnaService.GetFormQnAnswerById(id);
+			var lstCard = _cardService.GetListCardByBotID(formQnA.BotID).ToList();
 			ViewBag.Cards = lstCard;
-			return View(botQnA);
+			return View(formQnA);
 		}
 
 		public ActionResult CardCategory(int id) {

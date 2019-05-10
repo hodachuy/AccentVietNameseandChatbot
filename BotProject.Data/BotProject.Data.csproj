@@ -186,6 +186,14 @@
     <Compile Include="Migrations\201904170307235_Init90.Designer.cs">
       <DependentUpon>201904170307235_Init90.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905100233080_UpdateGroupQues1000.cs" />
+    <Compile Include="Migrations\201905100233080_UpdateGroupQues1000.Designer.cs">
+      <DependentUpon>201905100233080_UpdateGroupQues1000.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905100400190_UpdateAll100.cs" />
+    <Compile Include="Migrations\201905100400190_UpdateAll100.Designer.cs">
+      <DependentUpon>201905100400190_UpdateAll100.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -194,7 +202,7 @@
     <Compile Include="Repositories\ApplicationRoleGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationRoleRepository.cs" />
     <Compile Include="Repositories\ApplicationUserGroupRepository.cs" />
-    <Compile Include="Repositories\BotQnAnswerRepository.cs" />
+    <Compile Include="Repositories\FormQuestionAnswerRepository.cs" />
     <Compile Include="Repositories\BotRepository.cs" />
     <Compile Include="Repositories\ButtonLinkRepository.cs" />
     <Compile Include="Repositories\ButtonPostbackRepository.cs" />
@@ -321,6 +329,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904170307235_Init90.resx">
       <DependentUpon>201904170307235_Init90.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905100233080_UpdateGroupQues1000.resx">
+      <DependentUpon>201905100233080_UpdateGroupQues1000.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905100400190_UpdateAll100.resx">
+      <DependentUpon>201905100400190_UpdateAll100.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

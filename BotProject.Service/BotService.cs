@@ -14,6 +14,7 @@ namespace BotProject.Service
         Bot Create(ref Bot bot);
         IEnumerable<Bot> GetListBotByUserID(string userId);
         Bot GetByID(int botId);
+        void Update(Bot bot);
         void Save();
     }
     public class BotService : IBotService
@@ -46,12 +47,17 @@ namespace BotProject.Service
 
         public IEnumerable<Bot> GetListBotByUserID(string userId)
         {
-            return _botRepository.GetMulti(x => x.UserID == userId).OrderBy(x => x.CreatedDate);
+            return _botRepository.GetMulti(x => x.UserID == userId && x.Status == false).OrderBy(x => x.CreatedDate);
         }
 
         public Bot GetByID(int botId)
         {
             return _botRepository.GetSingleById(botId);
+        }
+
+        public void Update(Bot bot)
+        {
+            _botRepository.Update(bot);
         }
     }
 }

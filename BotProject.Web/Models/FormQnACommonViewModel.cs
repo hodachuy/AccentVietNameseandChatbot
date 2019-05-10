@@ -5,9 +5,10 @@ using System.Web;
 
 namespace BotProject.Web.Models
 {
-	public class QnAnswerGroupViewModel
+	public class FormQnACommonViewModel
 	{
 		public int BotID { set; get; }
+        public int FormQuestionAnswerID { set; get; }
         //Add - Update
         public string TypeAction { set; get; }
 		public virtual IEnumerable<QuestionGroupViewModel> QuestionGroupViewModels { set; get; }
@@ -16,9 +17,10 @@ namespace BotProject.Web.Models
 	public class QuestionGroupViewModel
 	{
 		public int ID { set; get; }
-		public int BotQnAnswerID { set; get; }
+		public int FormQuestionAnswerID { set; get; }
 		public int Index { set; get; }
 		public bool IsKeyWord { set; get; }
+        public int BotID { set; get; }
 		public virtual QnAViewModel QnAViewModel { set; get; }
 	}
 

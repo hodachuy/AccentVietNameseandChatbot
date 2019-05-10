@@ -217,7 +217,7 @@ $(document).ready(function () {
                 tempImage +=     '<i class="icon-bin fa fa-trash"></i>';
                 tempImage +=     '</div>';
                 tempImage +=     '</div>';
-                tempImage += '<div class="wr_image bl_image" attachment_id="' + value.ID + '" style="background-image: url(&quot;' + _Host + value.Url + '&quot;);">';
+                tempImage += '<div class="wr_image bl_image" attachment_id="0" style="background-image: url(&quot;' + _Host + value.Url + '&quot;);">';
                 tempImage +=     '<input class="inputfile" type="file" accept="image/*">';
                 tempImage +=     '<div class="clickinput" style="display: none;"><i class="icon-camera fa fa-camera"></i>';
                 tempImage +=     '<br>Tải ảnh lên</div>';
@@ -1091,7 +1091,7 @@ $(document).ready(function () {
                         listUpdate.push(arAt);
 
                         var template_image = {
-                            "message": {
+                            "message": { 
                                 "attachment": {
                                     "type": "image",
                                     "payload": payload
@@ -3875,19 +3875,41 @@ function regionPhone() {
 /// Remove Image
 function removeImage(url, id) {
     url = url.replace("url(", "").replace(")", "").replace("\"", "").replace("\"", "");
-    var rs = 1;
+    var rs = 1;// rs tra ve = 1 la hide
+    if (id == 0) {
+        return false;
+    }
     var img = {
         FileImageID: id,
         FileImagePath: url
     }
-
+    console.log(img)
     var svr = new AjaxCall(srcRmImg, JSON.stringify(img));
     svr.callServicePOST(function (data) {
-        console.log(data)
+        console.log(data); //rs=data; sua lai check if neu image khac duong dan moi remove, con 
     });
 
     return rs;
 }
+
+
+/// Remove Image
+//function removeImage(url, id) {
+//    var rs = 0;
+//    $.ajax({
+//        url: srcRmImg,
+//        method: "POST",
+//        async: false,
+//        data: {
+//            url: url,
+//            attachment_id: id
+//        }
+//    }).done(function (val) {
+//        rs = val; // rs = 1 moi
+//    })
+//    return rs;
+//}
+
 /// End Remove Image
 
 /// Encode/Decode Base64

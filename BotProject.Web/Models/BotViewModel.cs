@@ -39,6 +39,6 @@ namespace BotProject.Web.Models
 
         public virtual IEnumerable<AIMLViewModel> AIMLs { set; get; }
 
-		public virtual IEnumerable<BotQnAnswerViewModel> BotQnAnswers { set; get; }
+		public virtual IEnumerable<FormQuestionAnswerViewModel> FormQuestionAnswers { set; get; }
     }
 }

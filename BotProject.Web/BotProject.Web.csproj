@@ -260,7 +260,7 @@
     <Compile Include="Controllers\ModuleController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
-    <Compile Include="API\BotQnAController.cs" />
+    <Compile Include="API\FormQnAController.cs" />
     <Compile Include="API\CardController.cs" />
     <Compile Include="API\FileCardController.cs" />
     <Compile Include="API\ImageController.cs" />
@@ -298,7 +298,7 @@
     <Compile Include="Models\ApplicationGroupViewModel.cs" />
     <Compile Include="Models\ApplicationRoleViewModel.cs" />
     <Compile Include="Models\ApplicationUserViewModel.cs" />
-    <Compile Include="Models\BotQnAnswerViewModel.cs" />
+    <Compile Include="Models\FormQuestionAnswerViewModel.cs" />
     <Compile Include="Models\BotSettingViewModel.cs" />
     <Compile Include="Models\BotViewModel.cs" />
     <Compile Include="Models\CardViewModel.cs" />
@@ -306,7 +306,7 @@
     <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\ModuleQnAViewModel.cs" />
-    <Compile Include="Models\QnAnswerGroupViewModel.cs" />
+    <Compile Include="Models\FormQnACommonViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -744,16 +744,6 @@
     <Content Include="File\AIML\config\Substitutions.xml" />
     <Content Include="File\Datasets_Training_Accent\AccentInfo.txt" />
     <Content Include="File\Datasets_Training_Accent\test.txt" />
-    <Content Include="File\Images\Card\07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg" />
-    <Content Include="File\Images\Card\1c4d55de-c454-409b-af06-c1091ccd2b51-tourdisan2.jpg" />
-    <Content Include="File\Images\Card\5c5e3310-6176-4cd7-816f-3be43985cc72-tourdisan1.jpg" />
-    <Content Include="File\Images\Card\5f3a61cd-6a78-48ca-ab2a-14b3bc0aa0f6-tourdisan3.jpg" />
-    <Content Include="File\Images\Card\66fd0ed0-ee2c-497b-8a32-bd1a133eef19-iphone.jpg" />
-    <Content Include="File\Images\Card\6b1a19c6-530c-43f8-b683-57135a90e246-vietnam.jpg" />
-    <Content Include="File\Images\Card\94eae119-a413-47f7-aa6a-8ad4fad4217e-vietnamtravelmark.jpg" />
-    <Content Include="File\Images\Card\c5164834-6d3a-4c3b-972f-c4f48e323134-vietnam.jpg" />
-    <Content Include="File\Images\Card\c7a14e03-b930-4e94-a45a-a6246979a732-vietnamtour.png" />
-    <Content Include="File\Images\Card\d45ccbcc-130b-42ae-a2a7-c190908ca1db-vietnam.jpg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
@@ -801,28 +791,9 @@
     <Content Include="AppSettings.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\botQnA_ID_2_form-training-v1.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2007_gioi-thieu.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2008_linh-vuc-yes.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2009_linh-vuc-no.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2010_tag-linh-vuc.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2011_linh-vuc-so-huu-tri-tue.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2014\Card_ID_2012_linh-vuc-thue-phi-le-phi.aiml" />
     <Content Include="assets\client\libs\emoji-picker\css\emoji.css.map" />
     <Content Include="assets\client\libs\emoji-picker\js\emoji-picker.coffee" />
     <Content Include="assets\client\libs\emoji-picker\js\emoji-picker.js.map" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\botQnA_ID_4_train-dulich-v1.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3014_the-kham-pha.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3015_the-chat-admin.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3016_the-tour.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3017_tour-hang-ngay.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3018_tour-di-san.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3019_the-su-kien.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3020_the-tham-quan.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3021_the-am-thuc.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3022_the-noi-luu-tru.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3023_the-trai-nghiem.aiml" />
-    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_2016\Card_ID_3024_the-gioi-thieu.aiml" />
     <Content Include="assets\client\libs\KendoUI\js\cultures\kendo.culture.en-US.min.js.map" />
     <Content Include="assets\client\libs\KendoUI\js\cultures\kendo.culture.vi-VN.min.js.map" />
     <Content Include="assets\client\libs\KendoUI\js\cultures\kendo.culture.vi.min.js.map" />
@@ -910,6 +881,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="assets\client\img\" />
     <Folder Include="assets\images\logo\" />
+    <Folder Include="File\Images\Card\" />
     <Folder Include="Views\FacebookBot\" />
     <Folder Include="Views\Home\" />
   </ItemGroup>

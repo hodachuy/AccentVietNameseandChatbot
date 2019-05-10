@@ -24,13 +24,13 @@
                         </a>
                         <div class="submenu" style="">
                             <ul class="nav flex-column" id="form-bot-qna-@item.ID">
-                                @if (item.BotQnAnswers != null && item.BotQnAnswers.Count() != 0)
+                                @if (item.FormQuestionAnswers != null && item.FormQuestionAnswers.Count() != 0)
                                 {
-                                    foreach (var itemBotQnA in item.BotQnAnswers)
+                                    foreach (var form in item.FormQuestionAnswers)
                                     {
-                                        var urlQna = Url.Content("~") +  "bot/qna/" + itemBotQnA.Alias + "/"+itemBotQnA.ID;
+                                        var urlQna = Url.Content("~") +  "bot/qna/" + form.Alias + "/"+ form.ID;
                                         <li class="nav-item">
-                                            <a class="nav-link bot-qna-link" href="@urlQna"><i class="fa fa-file" aria-hidden="true"></i>@itemBotQnA.Name</a>
+                                            <a class="nav-link bot-qna-link" href="@urlQna"><i class="fa fa-file" aria-hidden="true"></i>@form.Name</a>
                                         </li>
                                     }
                                 }
@@ -42,6 +42,11 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="btn-form-deploy" href="javascript:void(0);" data-botID="@item.ID"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy Bot</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="btn-form-delete" href="javascript:void(0);" data-botID="@item.ID" data-botName="@item.Name">
+                            <i class="fa fa-trash" aria-hidden="true"></i>Delete
+                        </a>
                     </li>
                 </ul>
             </div>

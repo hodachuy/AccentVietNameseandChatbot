@@ -57,6 +57,7 @@ namespace AIMLbot.AIMLTagHandlers
                         {
                             try
                             {
+                                this.query.InputStar.Reverse();
                                 int index = Convert.ToInt32(this.templateNode.Attributes[0].Value);
                                 index--;
                                 if ((index >= 0) & (index < this.query.InputStar.Count))

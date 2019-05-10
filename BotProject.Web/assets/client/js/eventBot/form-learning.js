@@ -1,6 +1,6 @@
 ﻿// click vao tag neu co id hay symbol thi` this se lay' roi` set vao` lai
 var urlQnACreate = "api/qna/create",
-    urlQnAGet = "api/qna/getbybotqnanswerid",
+    urlQnAGet = "api/qna/getqnabyformid",
     urlQnADeleteQues = "api/qna/deleteques",
     urlQnADeleteAnswer = "api/qna/deleteanswer",
     urlQnADeleteQuesGroup = "api/qna/deletequesgroup",
@@ -69,8 +69,12 @@ $(document).ready(function () {
                 });
                 $('#paging').empty();
                 appendPaging(countDataPage, lmtPage);
+                setTimeout(function () {
+                    ReOder();
+                },1000)
             }
         });
+
     })
 
     $('body').on('click', '.moveBot', function (event) {
@@ -94,8 +98,12 @@ $(document).ready(function () {
                 });
                 $('#paging').empty();
                 appendPaging(countDataPage, lmtPage);
+                setTimeout(function () {
+                    ReOder();
+                }, 1000)
             }
         });
+
     })
 
     $('body').on('click', '.switchery', function () {
@@ -213,6 +221,7 @@ $(document).ready(function () {
         //});
         //$('#paging').empty();
         //appendPaging(countDataPage, lmtPage);
+        ReOder();
 
     })
 
@@ -566,7 +575,8 @@ $(document).ready(function () {
                 var groupQnA = {
                     'ID': quesGroupId,
                     'Index': index + 1,
-                    'BotQnAnswerID': $("#botQnAnswerID").val(),
+                    'FormQuestionAnswerID': $("#formQnaID").val(),
+                    'BotID': $("#botId").val(),
                     'IsKeyWord': userExactly,
                     'QnAViewModel': {
                         'QuestionViewModels': userSays,// k join toi chuoi~
@@ -575,24 +585,39 @@ $(document).ready(function () {
                 }
                 arrGrpQna.push(groupQnA);
             });
-            var qGroupVm = {
+            var formQnAVm = {
                 'BotID': $("#botId").val(),
                 'TypeAction': TypeAction,
+                'FormQuestionAnswerID': $("#formQnaID").val(),
                 'QuestionGroupViewModels': arrGrpQna
 
             }
 
             // Type Action : Add Update
-            console.log(qGroupVm)
+            console.log(formQnAVm)
 
-            var svr = new AjaxCall(urlQnACreate, JSON.stringify(qGroupVm));
+            var svr = new AjaxCall(urlQnACreate, JSON.stringify(formQnAVm));
             svr.callServicePOST(function (data) {
                 console.log(data)
                 if (data == true) {
                     // refresh load new data updated
                     new ActionFormQnA().GetQnAnswerById();
+                    new ActionFormQnA().RenderToAiml();
+                    $("#model-notify").modal('hide');
+                    swal({
+                        title: "Thông báo",
+                        text: "Đã lưu",
+                        confirmButtonColor: "#EF5350",
+                        type: "success"
+                    }, function () { $("#model-notify").modal('show'); });             
+                } else {
+                    swal({
+                        title: "Error",
+                        text: "Lỗi lưu dữ liệu!",
+                        confirmButtonColor: "#ed4956",
+                        type: "error"
+                    });
                 }
-                new ActionFormQnA().RenderToAiml();
             })
 
         } else {
@@ -611,7 +636,7 @@ $(document).ready(function () {
 ActionFormQnA = function () {
     this.GetQnAnswerById = function () {
         var param = {
-            botQnaID: $("#botQnAnswerID").val()
+            formQnaID: $("#formQnaID").val()
         };
         var svr = new AjaxCall(urlQnAGet, param);
         svr.callServiceGET(function (data) {
@@ -843,7 +868,7 @@ ActionFormQnA = function () {
     this.RenderToAiml = function () {
         var param = {
             botId: $("#botId").val(),
-            botQnaID: $("#botQnAnswerID").val(),
+            formQnaID: $("#formQnaID").val(),
             botAlias:$("#botAlias").val(),
             userID: $("#userId").val()
         };

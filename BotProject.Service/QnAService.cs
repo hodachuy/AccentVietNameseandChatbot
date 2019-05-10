@@ -12,7 +12,7 @@ namespace BotProject.Service
 {
     public interface IQnAService
     {
-		BotQnAnswer AddBotQnAnswer(ref BotQnAnswer botQnAnswer);
+		FormQuestionAnswer AddFormQnAnswer(ref FormQuestionAnswer formQnAnswer);
         QuestionGroup AddQuesGroup(QuestionGroup quesGroup);
         Question AddQuestion(Question question);
         Answer AddAnswer(Answer answer);
@@ -21,17 +21,21 @@ namespace BotProject.Service
         void UpdateAnswer(Answer answer);
 
         Question DeleteQuestion(int id);
+        void DeleteQuesByQuestionGroup(int qGroupID);
         Answer DeleteAnswer(int id);
+        void DeleteAnswerByQuestionGroup(int qGroupID);
 
         QuestionGroup DeleteQuestionGroup(int id);
+        void DeleteMultiQuestionGroupByFormID(int formId);
 
-        IEnumerable<QuestionGroup> GetListQuestionGroupByBotQnAnswerID(int botQnAnswerID);
-        IEnumerable<QuestionGroup> GetListQuesGroupToAimlByQnaID(int botQnAnswerID);
-		IEnumerable<BotQnAnswer> GetListBotQnAnswerByBotID(int botID);
+        IEnumerable<QuestionGroup> GetListQuestionGroupByBotID(int botID);
+        IEnumerable<QuestionGroup> GetListQuestionGroupByFormQnAnswerID(int formQnAnswerID);
+        IEnumerable<QuestionGroup> GetListQuesGroupToAimlByFormQnAnswerID(int formQnAnwerID);
+		IEnumerable<FormQuestionAnswer> GetListFormByBotID(int botID);
 
 		IEnumerable<Question> GetListQuesCodeSymbol(string symbol);
 
-		BotQnAnswer GetBotQnAnswerById(int id);
+		FormQuestionAnswer GetFormQnAnswerById(int id);
 
         void Save();
 
@@ -42,9 +46,9 @@ namespace BotProject.Service
         IQuestionRepository _questionRepository;
         IAnswerRepository _answerRepository;
         IQuestionGroupRepository _quesGroupRepository;
-		IBotQnAnswerRepository _botQnAnswerRepository;
+        IFormQuestionAnswerRepository _formQuestionAnswerRepository;
         public QnAService(IUnitOfWork unitOfWork,
-						  IBotQnAnswerRepository botQnAnswerRepository,
+                          IFormQuestionAnswerRepository formQuestionAnswerRepository,
 						  IQuestionRepository questionRepository,
                           IAnswerRepository answerRepository,
                           IQuestionGroupRepository quesGroupRepository)
@@ -53,7 +57,7 @@ namespace BotProject.Service
             _questionRepository = questionRepository;
             _answerRepository = answerRepository;
             _quesGroupRepository = quesGroupRepository;
-			_botQnAnswerRepository = botQnAnswerRepository;
+            _formQuestionAnswerRepository = formQuestionAnswerRepository;
 
 		}
 
@@ -72,9 +76,9 @@ namespace BotProject.Service
             return _answerRepository.Add(answer);
         }
 
-        public IEnumerable<QuestionGroup> GetListQuestionGroupByBotQnAnswerID(int botQnAnswerID)
+        public IEnumerable<QuestionGroup> GetListQuestionGroupByFormQnAnswerID(int formQnAnswerID)
         {
-            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.BotQnAnswerID == botQnAnswerID).ToList();
+            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.FormQuestionAnswerID == formQnAnswerID).ToList();
             if(lstQuesGroup.Count != 0)
             {
                 foreach(var item in lstQuesGroup)
@@ -86,13 +90,13 @@ namespace BotProject.Service
             return lstQuesGroup;
         }
 
-		public BotQnAnswer AddBotQnAnswer(ref BotQnAnswer botQnAnswer)
+		public FormQuestionAnswer AddFormQnAnswer(ref FormQuestionAnswer formQnAnswer)
 		{
 			try
 			{
-				_botQnAnswerRepository.Add(botQnAnswer);
+                _formQuestionAnswerRepository.Add(formQnAnswer);
 				_unitOfWork.Commit();
-				return botQnAnswer;
+				return formQnAnswer;
 			}
 			catch (Exception ex)
 			{
@@ -100,14 +104,14 @@ namespace BotProject.Service
 			}
 		}
 
-		public IEnumerable<BotQnAnswer> GetListBotQnAnswerByBotID(int botID)
+		public IEnumerable<FormQuestionAnswer> GetListFormByBotID(int botID)
 		{
-			return _botQnAnswerRepository.GetMulti(x => x.BotID == botID);
+			return _formQuestionAnswerRepository.GetMulti(x => x.BotID == botID);
 		}
 
-		public BotQnAnswer GetBotQnAnswerById(int id)
+		public FormQuestionAnswer GetFormQnAnswerById(int id)
 		{
-			return _botQnAnswerRepository.GetSingleById(id);
+			return _formQuestionAnswerRepository.GetSingleById(id);
 		}
 
         public void Save()
@@ -147,9 +151,9 @@ namespace BotProject.Service
 			return _questionRepository.GetMulti(x => x.CodeSymbol.Contains(symbol));
 		}
 
-        public IEnumerable<QuestionGroup> GetListQuesGroupToAimlByQnaID(int botQnAnswerID)
+        public IEnumerable<QuestionGroup> GetListQuesGroupToAimlByFormQnAnswerID(int formQnAnwerID)
         {
-            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.BotQnAnswerID == botQnAnswerID).ToList();
+            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.FormQuestionAnswerID == formQnAnwerID).ToList();
             if (lstQuesGroup.Count != 0)
             {
                 foreach (var item in lstQuesGroup)
@@ -159,6 +163,26 @@ namespace BotProject.Service
                 }
             }
             return lstQuesGroup;
+        }
+
+        public void DeleteQuesByQuestionGroup(int qGroupID)
+        {
+            _questionRepository.DeleteMulti(x => x.QuestionGroupID == qGroupID);
+        }
+
+        public void DeleteAnswerByQuestionGroup(int qGroupID)
+        {
+            _answerRepository.DeleteMulti(x => x.QuestionGroupID == qGroupID);
+        }
+
+        public IEnumerable<QuestionGroup> GetListQuestionGroupByBotID(int botID)
+        {
+            return _quesGroupRepository.GetMulti(x => x.BotID == botID);
+        }
+
+        public void DeleteMultiQuestionGroupByFormID(int formId)
+        {
+            _quesGroupRepository.DeleteMulti(x => x.FormQuestionAnswerID == formId);
         }
     }
 }

@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<aiml>
-<category>
-<pattern>postback_card_3015</pattern>
-<template>
-Xin lỗi ! bạn vui lòng quay lại sau, hiện tai tôi không trực máy.
-</template>
-</category>
-</aiml>

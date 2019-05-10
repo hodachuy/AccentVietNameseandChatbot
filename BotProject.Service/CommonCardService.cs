@@ -146,7 +146,8 @@ namespace BotProject.Service
         // xóa lun card
         public Card DeleteCard(int cardId)
         {
-            throw new NotImplementedException();
+            DeleteFullContentCard(cardId);
+            return _cardRepository.Delete(cardId);
         }
 
         // xóa nội dung trong card
@@ -158,6 +159,14 @@ namespace BotProject.Service
             _templateGenericItemRepository.DeleteMulti(x => x.CardID == cardId);
             _templateGenericGroupRepository.DeleteMulti(x => x.CardID == cardId);
             _quickReplyRepository.DeleteMulti(x => x.CardID == cardId);
+            _imageRepository.DeleteMulti(x => x.CardID == cardId);
+            //var lstImage = _imageRepository.GetMulti(x => x.CardID == cardId).ToList();
+            //if(lstImage.Count() != 0)
+            //{
+
+            //}
+
+
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <aiml>
 <category>
-<pattern>postback_card_3022</pattern>
+<pattern>postback_card_3026</pattern>
 <template>
-đang test
+Test
 </template>
 </category>
 </aiml>

@@ -16,7 +16,9 @@ namespace BotProject.Model.Models
         public int ID { set; get; }
 
         [Required]
-        public int BotQnAnswerID { set; get; }
+        public int FormQnAnswerID { set; get; }
+
+        public int BotID { set; get; }
 
         [MaxLength(50)]
         public string Name { set; get; }
@@ -27,8 +29,5 @@ namespace BotProject.Model.Models
         public string Extension { set; get; }
 
         public string Content { set; get; }
-
-        [ForeignKey("BotQnAnswerID")]
-        public virtual BotQnAnswer BotQnAnswer { set; get; }
     }
 }

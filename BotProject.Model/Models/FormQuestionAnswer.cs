@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-	[Table("BotQnAnswers")]
-	public class BotQnAnswer
+	[Table("FormQuestionAnswers")]
+	public class FormQuestionAnswer
 	{
 		[Key]
 		[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -28,6 +28,5 @@ namespace BotProject.Model.Models
 
 		public virtual IEnumerable<QuestionGroup> QuestionGroups { set; get; }
 
-		public virtual IEnumerable<AIML> AIMLs { set; get; }
 	}
 }

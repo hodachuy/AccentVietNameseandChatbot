@@ -17,11 +17,11 @@ using System.Web.Http;
 
 namespace BotProject.Web.API
 {
-	[RoutePrefix("api/botqna")]
-    public class BotQnAController : ApiControllerBase
+	[RoutePrefix("api/formqna")]
+    public class FormQnAController : ApiControllerBase
     {
 		private IQnAService _qnaService;
-		public BotQnAController(IErrorService errorService, IQnAService qnaService) : base(errorService)
+		public FormQnAController(IErrorService errorService, IQnAService qnaService) : base(errorService)
         {
 			_qnaService = qnaService;
 
@@ -29,20 +29,20 @@ namespace BotProject.Web.API
 
 		[Route("create")]
 		[HttpPost]
-		public HttpResponseMessage Create(HttpRequestMessage request, BotQnAnswerViewModel botQnAVm)
+		public HttpResponseMessage Create(HttpRequestMessage request, FormQuestionAnswerViewModel formQnAVm)
 		{
 			return CreateHttpResponse(request, () =>
 			{
 				HttpResponseMessage response = null;
-				BotQnAnswer botQnADb = new BotQnAnswer();
-				botQnADb.UpdateBotQnA(botQnAVm);
-				var botQnAReturn = _qnaService.AddBotQnAnswer(ref botQnADb);
+				FormQuestionAnswer formQnADb = new FormQuestionAnswer();
+				formQnADb.UpdateFormQnA(formQnAVm);
+				var formQnAReturn = _qnaService.AddFormQnAnswer(ref formQnADb);
 				try
 				{
 					// create file form botQna in bot aiml
-					//string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + botQnAVm.UserID + "_BotID_" + botQnAVm.BotID;
-                    string pathFolderAIML = PathServer.PathAIML + "User_" + botQnAVm.UserID + "_BotID_" + botQnAVm.BotID;
-                    string nameFolderAIML = "botQnA_ID_"+ botQnADb.ID + "_" + botQnADb.Alias + ".aiml";
+					//string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + formQnAVm.UserID + "_BotID_" + formQnAVm.BotID;
+                    string pathFolderAIML = PathServer.PathAIML + "User_" + formQnAVm.UserID + "_BotID_" + formQnAVm.BotID;
+                    string nameFolderAIML = "formQnA_ID_" + formQnADb.ID + "_" + formQnADb.Alias + ".aiml";
 					string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
 					if (!System.IO.File.Exists(pathString))
 					{
@@ -78,7 +78,7 @@ namespace BotProject.Web.API
 				{
 
 				}
-				var reponseData = Mapper.Map<BotQnAnswer, BotQnAnswerViewModel>(botQnAReturn);
+				var reponseData = Mapper.Map<FormQuestionAnswer, FormQuestionAnswerViewModel>(formQnAReturn);
 
 				response = request.CreateResponse(HttpStatusCode.OK, reponseData);
 
