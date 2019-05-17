@@ -6046,10 +6046,10 @@ Vertical Timeline - by CodyHouse.co
     width: 280px;
     height: 100%;
     position: fixed;
-    top: 0;
+    /*top: 0;*/
     left: 265px;
     border-right: 1px solid #e6e6f2;
-    margin-top: 61px;
+    /*margin-top: 61px;*/
     padding-bottom: 61px;
     color: #404040;
 }

@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "QnA";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var cards = (IEnumerable<BotProject.Model.Models.Card>)ViewBag.Cards;
+    var cards = (IEnumerable<BotProject.Web.Models.GroupCardViewModel>)ViewBag.Cards;
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.selectboxit/3.8.0/jquery.selectBoxIt.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.css" rel="stylesheet">
@@ -209,18 +209,23 @@
     <script>
         var lstCard = @Html.Raw(Json.Encode(cards));
         function card() {
-            var html = '<optgroup label="DANH SÁCH THẺ">';
+            var temp = '';
             if (lstCard.length != 0) {
                 $.each(lstCard, function (index, value) {
-                    html += '<option value="'+value.ID+'">'+value.Name+'</option>';
+                    temp += '<optgroup label="' + value.Name.toUpperCase() + '">';
+                    if (value.Cards.length != 0) {
+                        $.each(value.Cards, function (index, value) {
+                            temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
+                        })
+                    } else {
+                        temp += '<option value=""></option>';
+                    }
+                    temp += '</optgroup>';
                 })
-            }else{
-                html += '<option value=""></option>';
             }
-            html += '</optgroup>';
-            return html;
-
+            return temp;
         }
+       
         function module() {
             var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>'; return htmlListModule;
         }

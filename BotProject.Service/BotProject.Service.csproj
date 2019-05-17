@@ -68,6 +68,7 @@
     <Compile Include="CommonCardService.cs" />
     <Compile Include="ErrorService.cs" />
     <Compile Include="FileCardService.cs" />
+    <Compile Include="GroupCardService.cs" />
     <Compile Include="ImageService.cs" />
     <Compile Include="MdQnAService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

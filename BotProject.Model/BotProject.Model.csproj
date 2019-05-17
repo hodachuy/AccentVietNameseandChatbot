@@ -75,6 +75,7 @@
     <Compile Include="Models\Card.cs" />
     <Compile Include="Models\Error.cs" />
     <Compile Include="Models\FileCard.cs" />
+    <Compile Include="Models\GroupCard.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\MdAnswer.cs" />
     <Compile Include="Models\MdArea.cs" />

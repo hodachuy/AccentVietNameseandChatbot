@@ -17,8 +17,8 @@ var countData = $('.wrap-content .panel.panel-flat').length,
 		txtAlert2 = 'Bạn có chắc chắn muốn xóa?',
 		txtplholder = 'Nhập câu trả lời của bạn',
 		txtbt = 'Thêm câu trả lời';
-        txtbt1 = 'Đồng ý';
-        txtbt2 = 'Hủy';var lstCardSelected;
+txtbt1 = 'Đồng ý';
+txtbt2 = 'Hủy';var lstCardSelected;
 var TypeAction = "Create";
 $(document).ready(function () {
     // init load form if have data from db
@@ -29,11 +29,11 @@ $(document).ready(function () {
 
     $('.selectKeyword').selectpicker();
     $('.selectKeyword').on('show.bs.select', function (e) {
-        var val = $(this).selectpicker('val');
+        var val = $(this).selectpicker('val');    
         $(this).parents('.bt').find('.selectKeyword option').remove();
         $(this).parents('.bt').find('select.selectKeyword').append(card());
-        $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
         $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
+        $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
     });
     $('.selectKeyword').on('hidden.bs.select', function (e) {
         var val = $(this).selectpicker('val');
@@ -69,11 +69,11 @@ $(document).ready(function () {
                 });
                 $('#paging').empty();
                 appendPaging(countDataPage, lmtPage);
-                setTimeout(function () {
-                    ReOder();
-                },1000)
             }
         });
+        setTimeout(function () {
+            ReOder();
+        }, 1000)
 
     })
 
@@ -98,11 +98,12 @@ $(document).ready(function () {
                 });
                 $('#paging').empty();
                 appendPaging(countDataPage, lmtPage);
-                setTimeout(function () {
-                    ReOder();
-                }, 1000)
             }
         });
+
+        setTimeout(function () {
+            ReOder();
+        }, 1000)
 
     })
 
@@ -318,12 +319,13 @@ $(document).ready(function () {
                 var val = $(this).selectpicker('val');
                 $(this).parents('.bt').find('.selectKeyword option').remove();
                 $(this).parents('.bt').find('select.selectKeyword').append(card());
-                $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
                 $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
+                $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
             });
 
             $elSelectCard.on('hidden.bs.select', function (e) {
                 var val = $(this).selectpicker('val');
+                console.log(val)
                 $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
                     if ($(el).find('[value="' + val + '"]').length <= 0) {
                         $(el).remove();
@@ -609,7 +611,7 @@ $(document).ready(function () {
                         text: "Đã lưu",
                         confirmButtonColor: "#EF5350",
                         type: "success"
-                    }, function () { $("#model-notify").modal('show'); });             
+                    }, function () { $("#model-notify").modal('show'); });
                 } else {
                     swal({
                         title: "Error",
@@ -647,7 +649,7 @@ ActionFormQnA = function () {
                 $("#form-qna").empty().append(templateData);
                 // reactive dropdown
                 $.each(lstCardSelected, function (index, value) {
-                    activeDropdown(value.cardID,value.answerID)
+                    activeDropdown(value.cardID, value.answerID)
                 })
                 // reactive event tag
                 initEventQnA();
@@ -660,94 +662,94 @@ ActionFormQnA = function () {
         lstCardSelected = [];
         var html = '';
         html += ' <div class="wrap-content" data-countpanel="' + data.length + '">';
-        for(var i = 0; i < data.length; i++){
+        for (var i = 0; i < data.length; i++) {
             var itemGroupQnA = data[i];
             var grQnAnswerID = itemGroupQnA.ID;
             var index = i + 1;
 
             html += '<div class="panel panel-flat" indexpanel="' + index + '"  data-quesgroup-id="' + grQnAnswerID + '">';
-            html +=     '<div class="panel-body">';
-            html +=         '<i class="fa fa-trash icon-bin rmCt"></i>';
-            html +=         '<div class="wrMove">';
-            html +=             '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>';
-            html +=             '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>';
-            html +=         '</div>';
-            html +=         '<div class="row">';
-            html +=             '<div class="col-lg-6 userSay">';
-            html +=                 '<label>Người dùng nói</label>';
-            html +=                 '<div class="input-group">';
-            html +=                     '<ul class="tags checkvalid">';
+            html += '<div class="panel-body">';
+            html += '<i class="fa fa-trash icon-bin rmCt"></i>';
+            html += '<div class="wrMove">';
+            html += '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>';
+            html += '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>';
+            html += '</div>';
+            html += '<div class="row">';
+            html += '<div class="col-lg-6 userSay">';
+            html += '<label>Người dùng nói</label>';
+            html += '<div class="input-group">';
+            html += '<ul class="tags checkvalid">';
             if (itemGroupQnA.Questions.length != 0) {
                 var lstQuestion = itemGroupQnA.Questions;
                 $.each(lstQuestion, function (index, value) {
                     html += '<li class="addedTag">' + value.ContentText + '<span class="tagRemove">x</span><input type="hidden" value="' + value.ContentText + '" data-ques-id="' + value.ID + '" data-ques-symbol="' + value.CodeSymbol + '"></li>';
                 })
             }
-            html +=                         '<li class="tagAdd taglist">';
-            html +=                             '<input type="text" class="search-field">';
-            html +=                         '</li>';
-            html +=                     '</ul>';
-            html +=                     '<span class="input-group-addon">';
+            html += '<li class="tagAdd taglist">';
+            html += '<input type="text" class="search-field">';
+            html += '</li>';
+            html += '</ul>';
+            html += '<span class="input-group-addon">';
             if (itemGroupQnA.IsKeyword == true) {
-                html +=                 '<input type="checkbox" class="styled" checked="checked">';
+                html += '<input type="checkbox" class="styled" checked="checked">';
             } else {
-                html +=                 '<input type="checkbox" class="styled">';
+                html += '<input type="checkbox" class="styled">';
             }
-            html +=                     '</span>';
-            html +=                 '</div>';
-            html +=             '</div>';
-            html +=             '<div class="col-lg-6 botReply">';
-            html +=                 '<label>Bot trả lời với&nbsp;</label>';
+            html += '</span>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="col-lg-6 botReply">';
+            html += '<label>Bot trả lời với&nbsp;</label>';
             if (itemGroupQnA.Answers.length != 0 && itemGroupQnA.Answers.length == 1) {
                 var itemAnswer = itemGroupQnA.Answers[0];
                 if (itemAnswer.ContentText != '') {
-                    html +=                 '<label class="learn_switchbot">';
-                    html +=                     '<input type="checkbox" class="learn_switchinput" checked="">';
-                    html +=                     '<span class="learn_sliderbot learn_roundbot"></span>';
-                    html +=                 '</label>';
-                    html +=                 '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">';
-                    html +=                     '<label>';
-                    html +=                         '<input type="checkbox" class="switchery randomText" style="display:none">';
-                    html +=                         '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;">';
-                    html +=                             '<small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>';
-                    html +=                         '</span>';
-                    html +=                         'Ngẫu nhiên';
-                    html +=                     '</label>';
-                    html +=                 '</div>';
-                    html +=                 '<div class="wrbutton" indexbt="1">';
-                    html +=                     '<div class="bt" data-answer-id="'+itemAnswer.ID+'">';
-                    html +=                         '<input type="text" autocomplete="off" value="' + htmlentities.encode(itemAnswer.ContentText) + '" class="form-control checkvalid" maxlength="320">';
-                    html +=                         '<i class="fa fa-remove icon-bin rmText"></i>';
-                    html +=                     '</div>';
-                    html +=                 '</div>';
-                    html +=                 '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
-                    html +=                     '<i class="icon-plus22"></i> Thêm câu trả lời';
-                    html +=                 '</button>';
+                    html += '<label class="learn_switchbot">';
+                    html += '<input type="checkbox" class="learn_switchinput" checked="">';
+                    html += '<span class="learn_sliderbot learn_roundbot"></span>';
+                    html += '</label>';
+                    html += '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">';
+                    html += '<label>';
+                    html += '<input type="checkbox" class="switchery randomText" style="display:none">';
+                    html += '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;">';
+                    html += '<small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>';
+                    html += '</span>';
+                    html += 'Ngẫu nhiên';
+                    html += '</label>';
+                    html += '</div>';
+                    html += '<div class="wrbutton" indexbt="1">';
+                    html += '<div class="bt" data-answer-id="' + itemAnswer.ID + '">';
+                    html += '<input type="text" autocomplete="off" value="' + htmlentities.encode(itemAnswer.ContentText) + '" class="form-control checkvalid" maxlength="320">';
+                    html += '<i class="fa fa-remove icon-bin rmText"></i>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
+                    html += '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html += '</button>';
                 } else { //card
-                    html +=                 '<label class="learn_switchbot">';
-                    html +=                     '<input type="checkbox" class="learn_switchinput">';
-                    html +=                     '<span class="learn_sliderbot learn_roundbot"></span>';
-                    html +=                 '</label>';
-                    html +=                 '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">';
-                    html +=                     '<label>';
-                    html +=                         '<input type="checkbox" class="switchery randomText" style="display:none">';
-                    html +=                         '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;">';
-                    html +=                             '<small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>';
-                    html +=                         '</span>';
-                    html +=                         'Ngẫu nhiên';
-                    html +=                     '</label>';
-                    html +=                 '</div>';
-                    html +=                 '<div class="wrbutton" indexbt="1">';
-                    html +=                     '<div class="bt" id="answer-'+itemAnswer.ID+'" data-answer-id="'+itemAnswer.ID+'">';
-                    html +=                         '<select id="select-card-'+itemAnswer.ID+'" data-live-search="true" class="form-control selectKeyword checkvalid">';
-                    html +=                             card();
-					html +=                         '</select>';
-                    html +=                         '<i class="fa fa-remove icon-bin rmText"></i>';
-                    html +=                     '</div>';
-                    html +=                 '</div>';
-                    html +=                 '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
-                    html +=                     '<i class="icon-plus22"></i> Thêm câu trả lời';
-                    html +=                 '</button>';                   
+                    html += '<label class="learn_switchbot">';
+                    html += '<input type="checkbox" class="learn_switchinput">';
+                    html += '<span class="learn_sliderbot learn_roundbot"></span>';
+                    html += '</label>';
+                    html += '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">';
+                    html += '<label>';
+                    html += '<input type="checkbox" class="switchery randomText" style="display:none">';
+                    html += '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;">';
+                    html += '<small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>';
+                    html += '</span>';
+                    html += 'Ngẫu nhiên';
+                    html += '</label>';
+                    html += '</div>';
+                    html += '<div class="wrbutton" indexbt="1">';
+                    html += '<div class="bt" id="answer-' + itemAnswer.ID + '" data-answer-id="' + itemAnswer.ID + '">';
+                    html += '<select id="select-card-' + itemAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
+                    html += card();
+                    html += '</select>';
+                    html += '<i class="fa fa-remove icon-bin rmText"></i>';
+                    html += '</div>';
+                    html += '</div>';
+                    html += '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
+                    html += '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html += '</button>';
                     var itemCard = {
                         answerID: itemAnswer.ID,
                         cardID: itemAnswer.CardID
@@ -833,9 +835,9 @@ ActionFormQnA = function () {
                 }
             }
 
-            html +=             '</div>';
-            html +=         '</div>';
-            html +=     '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
             html += '</div>';
         }
         html += '</div>';
@@ -847,13 +849,15 @@ ActionFormQnA = function () {
         $elSelectCard.selectpicker('val', cardId);
         $elSelectCard.on('show.bs.select', function (e) {
             var val = $(this).selectpicker('val');
+            console.log(val)
             $(this).parents('.bt').find('.selectKeyword option').remove();
             $(this).parents('.bt').find('select.selectKeyword').append(card());
-            $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
             $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
+            $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
         });
         $elSelectCard.on('hidden.bs.select', function (e) {
             var val = $(this).selectpicker('val');
+            console.log(val)
             $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
                 if ($(el).find('[value="' + val + '"]').length <= 0) {
                     $(el).remove();
@@ -869,7 +873,7 @@ ActionFormQnA = function () {
         var param = {
             botId: $("#botId").val(),
             formQnaID: $("#formQnaID").val(),
-            botAlias:$("#botAlias").val(),
+            botAlias: $("#botAlias").val(),
             userID: $("#userId").val()
         };
         var urlTest = "api/qna/getaimlqna";

@@ -194,6 +194,30 @@
     <Compile Include="Migrations\201905100400190_UpdateAll100.Designer.cs">
       <DependentUpon>201905100400190_UpdateAll100.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905130622211_AddGroupCard.cs" />
+    <Compile Include="Migrations\201905130622211_AddGroupCard.Designer.cs">
+      <DependentUpon>201905130622211_AddGroupCard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905140317579_UpdateIndex.cs" />
+    <Compile Include="Migrations\201905140317579_UpdateIndex.Designer.cs">
+      <DependentUpon>201905140317579_UpdateIndex.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905160242026_UpdateGroupCard.cs" />
+    <Compile Include="Migrations\201905160242026_UpdateGroupCard.Designer.cs">
+      <DependentUpon>201905160242026_UpdateGroupCard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905160249437_updateGC.cs" />
+    <Compile Include="Migrations\201905160249437_updateGC.Designer.cs">
+      <DependentUpon>201905160249437_updateGC.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905160254006_I.cs" />
+    <Compile Include="Migrations\201905160254006_I.Designer.cs">
+      <DependentUpon>201905160254006_I.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905160310350_I12.cs" />
+    <Compile Include="Migrations\201905160310350_I12.Designer.cs">
+      <DependentUpon>201905160310350_I12.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -209,6 +233,7 @@
     <Compile Include="Repositories\CardRepository.cs" />
     <Compile Include="Repositories\ErrorRepository.cs" />
     <Compile Include="Repositories\FileCardRepository.cs" />
+    <Compile Include="Repositories\GroupCardRepository.cs" />
     <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\MdAnswerRepository.cs" />
     <Compile Include="Repositories\MdAreaRepository.cs" />
@@ -226,8 +251,12 @@
     <Compile Include="Repositories\VisitorStatisticRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BotProject.Common\BotProject.Common.csproj">
@@ -335,6 +364,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201905100400190_UpdateAll100.resx">
       <DependentUpon>201905100400190_UpdateAll100.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905130622211_AddGroupCard.resx">
+      <DependentUpon>201905130622211_AddGroupCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905140317579_UpdateIndex.resx">
+      <DependentUpon>201905140317579_UpdateIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905160242026_UpdateGroupCard.resx">
+      <DependentUpon>201905160242026_UpdateGroupCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905160249437_updateGC.resx">
+      <DependentUpon>201905160249437_updateGC.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905160254006_I.resx">
+      <DependentUpon>201905160254006_I.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905160310350_I12.resx">
+      <DependentUpon>201905160310350_I12.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

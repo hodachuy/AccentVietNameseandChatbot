@@ -12,6 +12,7 @@ using BotProject.Web.Models;
 using BotProject.Web.Infrastructure.Extensions;
 using System.Configuration;
 using BotProject.Common;
+using Newtonsoft.Json.Linq;
 
 namespace BotProject.Web.API
 {
@@ -105,11 +106,14 @@ namespace BotProject.Web.API
 
         [Route("deletebot")]
         [HttpPost]
-        public HttpResponseMessage DeleteBot(HttpRequestMessage request, int botID)
+        public HttpResponseMessage DeleteBot(HttpRequestMessage request, JObject jsonData)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
+                dynamic json = jsonData;
+                int botID = json.botId;
+
                 var botDb = _botService.GetByID(botID);
                 botDb.Status = true;
                 _botService.Update(botDb);

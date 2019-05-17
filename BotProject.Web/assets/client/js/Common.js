@@ -27,7 +27,7 @@ var common = {
             e.preventDefault();
             $('#frmLogout').submit();
         });
-        $('body').on('click', '#btn-form-deploy', function () {
+        $('body').on('click', '.btn-form-deploy', function () {
             var urlApp = _Host + "static/js/app.js";
             var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
             var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
@@ -40,7 +40,7 @@ var common = {
                 };
                 $.ajax({
                     type: 'GET',
-                    async: false,
+                    async: false,//muốn pass data ra ngoài biến nên có asynce
                     global: false,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
@@ -51,8 +51,7 @@ var common = {
                     }
                 });
                 return tmp;
-            }
-            ($(this).attr('data-botID'));
+            }($(this).attr('data-botID'));
             var encryptedColor = CryptoJS.AES.encrypt(setting.Color, "Secret Passphrase").toString();
             var html = '';
             html += "<!--Lacviet--><script>(function (l, a, c, v, i, e, t){a[v] = a[v] || function (){";
@@ -66,7 +65,7 @@ var common = {
             $("#modalDeployBot").modal('show');
         });
 
-        $('body').on('click', '#btn-form-delete', function () {
+        $('body').on('click', '.btn-form-delete', function () {
             var botId = $(this).attr('data-botID'),
                 botName = $(this).attr('data-botName');
             bootbox.confirm({
@@ -154,10 +153,10 @@ var common = {
             html += '<a class="nav-link" href="' + _Host + 'bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" id="btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
+            html += '<a class="nav-link btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" id="btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>';
+            html += '<a class="nav-link btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>';
             html += '</li>';
             html += '</ul>';
             html += '</div>';

@@ -17,15 +17,18 @@ namespace BotProject.Web.Controllers
         private ICardService _cardService;
 		private IQnAService _qnaService;
         private ISettingService _settingService;
+        private IGroupCardService _groupCardService;
         public BotController(IErrorService errorService,
             ICardService cardService,
             IQnAService qnaService,
-            ISettingService settingService
+            ISettingService settingService,
+            IGroupCardService groupCardService
            ) : base(errorService)
         {
             _cardService = cardService;
 			_qnaService = qnaService;
             _settingService = settingService;
+            _groupCardService = groupCardService;
 
         }
 
@@ -35,19 +38,28 @@ namespace BotProject.Web.Controllers
             return View();
         }     
 
-		public ActionResult QnA(int id)
+		public ActionResult QnA(int formQnAId, int botId)
 		{
-            ViewBag.BotQnAnswerID = id;
-			var formQnA = _qnaService.GetFormQnAnswerById(id);
-			var lstCard = _cardService.GetListCardByBotID(formQnA.BotID).ToList();
-			ViewBag.Cards = lstCard;
+            ViewBag.BotQnAnswerID = formQnAId;
+			var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
+			//var lstCard = _cardService.GetListCardByBotID(formQnA.BotID).ToList();
+            var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botId);
+            var lstGroupCardVm = Mapper.Map<IEnumerable<GroupCard>, IEnumerable<GroupCardViewModel>>(lstGroupCard);
+            if (lstGroupCardVm != null && lstGroupCardVm.Count() != 0)
+            {
+                foreach (var item in lstGroupCardVm)
+                {
+                    var lstCard = _cardService.GetListCardByGroupCardID(item.ID).ToList();
+                    item.Cards = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);
+                }
+            }
+            ViewBag.Cards = lstGroupCardVm;
 			return View(formQnA);
 		}
 
 		public ActionResult CardCategory(int id) {
             ViewBag.BotID = id;
-            var lstCard = _cardService.GetListCardByBotID(id);
-            return View(lstCard);
+            return View();
 		}
 
 		public ActionResult AIML(int id)

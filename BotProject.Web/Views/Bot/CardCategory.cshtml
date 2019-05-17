@@ -1,5 +1,4 @@
-﻿@model IEnumerable<BotProject.Model.Models.Card>
-@{
+﻿@{
     ViewBag.Title = "CardCategory";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -9,90 +8,123 @@
 <link href="~/assets/client/css/components.css" rel="stylesheet" />
 <link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
 
+<style>
+    .aside-nav .nav li a.active {
+    background-color: cornsilk;
+    color: black;
+}
+</style>
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
-<aside class="page-aside">
-    <div class="aside-content">
-        <div class="aside-header">
-            <button class="navbar-toggle" data-target=".aside-nav" data-toggle="collapse" type="button">
-                <span class="icon"><i class="fas fa-caret-down"></i></span>
-            </button>
-            <span class="title">Thẻ <span style="float:right;cursor:pointer;" id="btn-create-card"><i class="fa fa-plus-circle"></i></span></span>
-            <p class="description">Tạo thẻ trả lời cho bot</p>
-        </div>
-        <div class="aside-nav collapse">
-            <ul class="nav" id="lst-card">
-                @if (Model != null && Model.Count() != 0)
-                {
-                    foreach (var item in Model)
-                    {
-                        <li>
-                            <a class="nav-link card-item" data-cardId="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-@item.ID" aria-controls="setsmenu-@item.ID">
-                                <span class="icon">
-                                    <i class="fas fa-fw fa-copy"></i>
-                                </span>@item.Name.ToUpper()
-                            </a>
-                        </li>
-                    }
-                }
-            </ul>
-        </div>
-    </div>
-</aside>
-<div class="main-content container-fluid p-0" id="form-card" style="display:none;">
-    <input type="hidden" id="idCard" value="" />
-    <div class="card-head">
-        <div class="card-head-title">
-            <div class="title">
-                <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
-                <span><input type="text" maxlength="25" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>
-                <div></div>
-                <div class="icons">
-                    <a href="#" class="icon" id="save_card">
-                        <i class="fas fa-save"></i>
-                    </a>
-                    <a href="#" class="icon">
-                        <i class="fas fa-trash"></i>
-                    </a>
+
+<div id="block-card">
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="card">
+                <div class="d-flex">
+                    <h5 class="pageheader-title p-l-10 p-t-10">Thiết lập thẻ</h5>
+                </div>
+                <div>
+                    <div class="card-body">
+                        <div class="content-wrapper">
+                            <!-- Form horizontal -->
+                            <div class="panel panel-flat">
+                                <div class="panel-body">
+                                    <div id="build">
+                                    </div>
+                                    <hr>
+                                    <button type="button" class="btn btn-default addBlock" onclick="addBlock()"><i class="icon-plus22 fa fa-plus"></i> Thêm Nhóm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card-head-template">
-            <div class="addCard">
-                <ul class="list-inline">
-                    <li class="card_galery"><i class="fa fa-copy"></i><span>Thẻ hình và chữ</span></li>
-                    <li class="card_text"><i class="fa fa-file"></i><span>Thẻ văn bản</span></li>
-                    <li class="card_list disable"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
-                    <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
-                    <li class="card_file disable"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
-                    <li class="card_quickReply"><i class="fa fa-flickr"></i><span>Trả lời nhanh</span></li>
+    </div>
+</div>
+<div id="layout-card" style="display:none">
+    <aside class="page-aside">
+        <div class="aside-content">
+            <div class="aside-header">
+                <button class="navbar-toggle" data-target=".aside-nav" data-toggle="collapse" type="button">
+                    <span class="icon"><i class="fas fa-caret-down"></i></span>
+                </button>
+                <span class="title"><i class="fa fa-arrow-left" style="font-size:11px"></i> <span id="groupCardName" style="text-decoration:underline;cursor:pointer;"></span><span style="float:right;cursor:pointer;" id="btn-create-card"><i class="fa fa-plus-circle"></i></span></span>
+                <p class="description">Tạo thẻ trả lời cho bot</p>
+            </div>
+            <div class="aside-nav collapse">
+                <ul class="nav" id="lst-card">
+                    @if (Model != null && Model.Count() != 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <li>
+                                <a class="nav-link card-item" data-cardId="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-@item.ID" aria-controls="setsmenu-@item.ID">
+                                    <span class="icon">
+                                        <i class="fas fa-fw fa-copy"></i>
+                                    </span>@item.Name.ToUpper()
+                                </a>
+                            </li>
+                        }
+                    }
                 </ul>
             </div>
         </div>
-    </div>
-    <div class="card-body">
-        <div id="wr_multi" class="scroll">
-            <div id="multi">
+    </aside>
+    <div class="main-content container-fluid p-0" id="form-card" style="display:none;">
+        <input type="hidden" id="idCard" value="" />
+        <div class="card-head">
+            <div class="card-head-title">
+                <div class="title">
+                    <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
+                    <span><input type="text" maxlength="25" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>
+                    <div></div>
+                    <div class="icons">
+                        <a href="#" class="icon" id="save_card">
+                            <i class="fas fa-save"></i>
+                        </a>
+                        <a href="#" class="icon">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-head-template">
+                <div class="addCard">
+                    <ul class="list-inline">
+                        <li class="card_galery"><i class="fa fa-copy"></i><span>Thẻ hình và chữ</span></li>
+                        <li class="card_text"><i class="fa fa-file"></i><span>Thẻ văn bản</span></li>
+                        <li class="card_list disable"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
+                        <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
+                        <li class="card_file disable"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
+                        <li class="card_quickReply"><i class="fa fa-flickr"></i><span>Trả lời nhanh</span></li>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="card-quickreply">
-        <div id="wr_reply" style="display: none;">
-            <h3><i class="icon-primitive-dot position-left"></i>Trả lời nhanh <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
-            <ul id="blReply" class="list-inline">
-                <li class="add_reply">
-                    <div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div>
-                </li>
-            </ul>
+        <div class="card-body">
+            <div id="wr_multi" class="scroll">
+                <div id="multi">
+                </div>
+            </div>
+        </div>
+        <div class="card-quickreply">
+            <div id="wr_reply" style="display: none;">
+                <h3><i class="icon-primitive-dot position-left"></i>Trả lời nhanh <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
+                <ul id="blReply" class="list-inline">
+                    <li class="add_reply">
+                        <div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="modal_button" class="modal fade in" style="display: none;">
+
         </div>
     </div>
-    <div id="modal_button" class="modal fade in" style="display: none;">
-
-    </div>
 </div>
+
 @section footerJS{
-    <script>
-        var lstCard = @Html.Raw(Json.Encode(Model));
-    </script>
     <script src="~/assets/client/js/eventBot/form-card.js"></script>
     <!--Icon Chat-->
     <script src="~/assets/client/libs/emoji-picker/js/config.js"></script>

@@ -17,6 +17,8 @@ namespace BotProject.Model.Models
 
         public string Url { set; get; }
 
+        public int Index { set; get; }
+
         public int? CardID { set; get; }
 
         public int? BotID { set; get; }

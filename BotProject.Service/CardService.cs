@@ -14,8 +14,8 @@ namespace BotProject.Service
         Card Create(Card Card);
         void Update(Card card);
         IEnumerable<Card> GetListCardByBotID(int botId);
+        IEnumerable<Card> GetListCardByGroupCardID(int grCardId);
         Card GetByID(int CardId);
-
         void Save();
     }
     public class CardService : ICardService
@@ -49,6 +49,9 @@ namespace BotProject.Service
         {
             _unitOfWork.Commit();
         }
-
+        public IEnumerable<Card> GetListCardByGroupCardID(int grCardId)
+        {
+            return _CardRepository.GetMulti(x => x.GroupCardID == grCardId);
+        }
     }
 }

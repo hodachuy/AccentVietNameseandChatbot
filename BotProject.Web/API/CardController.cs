@@ -54,7 +54,38 @@ namespace BotProject.Web.API
 			});
 		}
 
-		[Route("addupdate")]
+        [Route("getbygroupcard")]
+        [HttpGet]
+        public HttpResponseMessage GetAllByGroupCard(HttpRequestMessage request, int groupCardId)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var lstCard = _cardService.GetListCardByGroupCardID(groupCardId);
+                var lstCardVm = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);            
+                response = request.CreateResponse(HttpStatusCode.OK, lstCardVm);
+                return response;
+            });
+        }
+
+        [Route("getbybot")]
+        [HttpGet]
+        public HttpResponseMessage GetAllByBot(HttpRequestMessage request, int botId)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var lstCard = _cardService.GetListCardByBotID(botId);
+                var lstCardVm = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);
+                response = request.CreateResponse(HttpStatusCode.OK, lstCardVm);
+                return response;
+            });
+        }
+
+
+
+
+        [Route("addupdate")]
 		[HttpPost]
 		public HttpResponseMessage AddUpdate(HttpRequestMessage request, CardViewModel cardVm)
 		{
@@ -241,6 +272,7 @@ namespace BotProject.Web.API
 								imgDb.CardID = cardDb.ID;
 								imgDb.BotID = cardVm.BotID;
 								imgDb.Url = imgVm.Url;
+                                imgDb.Index = imgVm.Index;
 								_commonCardService.AddImage(imgDb);
 								_commonCardService.Save();
 							}

@@ -18,6 +18,8 @@ namespace BotProject.Common
 
         public const string CreateQnA = "Create";
         public const string UpdateQnA = "Update";
+
+        public const string SessionUserBot = "UserBot";
     }
 
     public class PathServer

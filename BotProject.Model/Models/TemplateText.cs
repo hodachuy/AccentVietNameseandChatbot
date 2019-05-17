@@ -19,6 +19,8 @@ namespace BotProject.Model.Models
 
         public string Text { set; get; }
 
+        public int Index { set; get; }
+
         public int? CardID { set; get; }
 
         public virtual IEnumerable<ButtonPostback> ButtonPostbacks { set; get; }

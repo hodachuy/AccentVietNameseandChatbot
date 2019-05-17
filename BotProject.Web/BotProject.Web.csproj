@@ -252,6 +252,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\GroupCardController.cs" />
     <Compile Include="API\ModuleController.cs" />
     <Compile Include="API\SettingController.cs" />
     <Compile Include="API\WebhookController.cs" />
@@ -303,11 +304,13 @@
     <Compile Include="Models\BotViewModel.cs" />
     <Compile Include="Models\CardViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
+    <Compile Include="Models\GroupCardViewModel.cs" />
     <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\ModuleQnAViewModel.cs" />
     <Compile Include="Models\FormQnACommonViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
+    <Compile Include="Models\UserBotViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -838,7 +841,9 @@
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="static\js\app.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

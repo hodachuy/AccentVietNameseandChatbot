@@ -452,7 +452,7 @@ div.sortable-placeholder {
 
     #multi .layer .wr_button .bt:nth-child(n+3) ~ div.bt,
     #multi .content .layer:nth-child(n+11) ~ div {
-        display: none !important;
+        /*display: none !important;*/
     }
 
     #multi .layer .wr_button .bt .action_bt {

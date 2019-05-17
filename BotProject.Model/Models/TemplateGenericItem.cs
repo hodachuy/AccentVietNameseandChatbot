@@ -23,6 +23,8 @@ namespace BotProject.Model.Models
 
         public string Image { set; get; }
 
+        public int Index { set; get; }
+
         public int? AttachmentID { set; get; }
 
         public int? CardID { set; get; }

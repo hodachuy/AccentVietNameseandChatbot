@@ -74,13 +74,18 @@ var srcFolderImg = "https://platform.messnow.com/",
         txtCard60 = "Hủy",
         arLink = [];
 var isSave = false;
+var grCardId = 0;
 $(document).ready(function () {
     //var bootbox_txt = {OK : 'Đồng ý',CANCEL : 'Hủy',CONFIRM : 'Xác nhận'};
     //bootbox.addLocale('vi', bootbox_txt);
     //bootbox.setDefaults("locale", "vi");
 
+    // load GroupCard
+    loadGroupCard();
+
     // init data card
-    card();
+    //card();
+
     module();
 
     $('body').on('click', '#btn-create-card', function () {
@@ -89,32 +94,64 @@ $(document).ready(function () {
         //if (isSave == true) {
         $('#idCard').val('');
         $('#card-name').val('');
-            resetFormCard();
+        resetFormCard();
         //}
     })
+
+    // ======================SORT OBJECT BY INDEX =================//
+    function compareValues(key, order) {
+        return function (a, b) {
+            if (!a.hasOwnProperty(key) ||
+               !b.hasOwnProperty(key)) {
+                return 0;
+            }
+
+            const varA = (typeof a[key] === 'string') ?
+              a[key].toUpperCase() : a[key];
+            const varB = (typeof b[key] === 'string') ?
+              b[key].toUpperCase() : b[key];
+
+            let comparison = 0;
+            if (varA > varB) {
+                comparison = 1;
+            } else if (varA < varB) {
+                comparison = -1;
+            }
+            return (
+              (order == 'desc') ?
+              (comparison * -1) : comparison
+            );
+        };
+    }
+
+
     // ====================================================================
     // ========================== GET CARD BY ID ==========================
     // ====================================================================
     $('body').on('click', '.card-item', function (e) {
         e.preventDefault();
-        $('#form-card').show("slow");
+        $('#form-card').hide();
         $('#wr_multi').removeClass('error');
         if ($(this).attr('data-cardId') == $('#idCard').val() && isSave == true) {
             return;
         }
+        $("#lst-card li").find("a").each(function (index) {
+            $(this).removeClass('active');
+        })
+        $(this).addClass('active');
+
         var card_id = $(this).attr('data-cardId');
         $('#idCard').val(card_id);
         resetFormCard();
-
         var param = {
-            cardId : card_id
+            cardId: card_id
         };
         var urlTest = "api/card/getbyid";
         var svr = new AjaxCall(urlTest, param);
         svr.callServiceGET(function (data) {
             renderCard(data)
         });
-
+        $('#form-card').show("slow");
     })
 
     function resetFormCard() {
@@ -125,113 +162,172 @@ $(document).ready(function () {
 
     function renderCard(data) {
         $('#card-name').val(data.Name);
+        var lstCard = function () {
+            var temp = [];
+            var param = {
+                botId: botId
+            };
+            var urlCard = "api/card/getbybot";
+            $.ajax({
+                type: 'GET',
+                async: false,
+                global: false,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                url: _Host + urlCard,
+                data: param,
+                success: function (data) {
+                    temp = data;
+                }
+            });
+            return temp;
+        }();
+        var arrCardContent = [];
         // tempGeneric
         if (data.TemplateGenericGroups.length != 0) {
             var lstTempGnrGroup = data.TemplateGenericGroups;
             $.each(lstTempGnrGroup, function (index, value) {
                 var lstTempGnrItem = value.TemplateGenericItems;
                 var tempGnrItem = '';
-                    tempGnrItem += '<div class="content" card="galery">';
-                    tempGnrItem +=                '<div class="bt_move_vertical" draggable="true">';
-                    tempGnrItem +=                    '<i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up"></i>';
-                    tempGnrItem +=                    '<i class="icon-arrow-down132 fa fa-arrow-down"></i>';
-                    tempGnrItem +=                '</div>';
-                    if (lstTempGnrItem.length != 0) {
-                        $.each(lstTempGnrItem, function (index, value) {
-                            var tempItem = value;
-                            tempGnrItem += '<div class="layer tile" draggable="true">';
-                            tempGnrItem +=                    '<div class="bt_move_horizontal">';
-                            tempGnrItem +=                        '<div class="layer_move">';
-                            tempGnrItem +=                            '<i class="icon-arrow-left13 pull-left fa fa-arrow-left"></i>';
-                            tempGnrItem +=                            '<i class="icon-move"></i>';
-                            tempGnrItem +=                            '<i class="icon-arrow-right14 pull-right fa fa-arrow-right"></i>';
-                            tempGnrItem +=                        '</div>';
-                            tempGnrItem +=                        '<div class="layer_rm">';
-                            tempGnrItem +=                            '<i class="icon-bin fa fa-trash"></i>';
-                            tempGnrItem +=                        '</div>';
-                            tempGnrItem +=                    '</div>';
-                            tempGnrItem +=                    '<div class="wr_image" attachment_id="'+tempItem.AttachmentID+'" style="background-image: url(&quot;'+_Host+tempItem.Image+'&quot;);">';
-                            tempGnrItem +=                        '<input class="inputfile" type="file" accept="image/*">';
-                            tempGnrItem +=                        '<div class="clickinput" style="display: none;">';
-                            tempGnrItem +=                            '<i class="icon-camera fa fa-camera"></i>';
-                            tempGnrItem +=                            '<br>Tải ảnh lên';
-                            tempGnrItem +=                        '</div><span class="">';
-                            tempGnrItem +=                            '<a class="img-rp">';
-                            tempGnrItem +=                                '<i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>Thay thế';
-                            tempGnrItem +=                            '</a>';
-                            tempGnrItem +=                            '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>Xóa</a>';
-                            tempGnrItem +=                        '</span>';
-                            tempGnrItem +=                    '</div>';
-                            tempGnrItem +=                    '<div class="wr_title">';
-                            tempGnrItem +=                        '<div class="head">';
-                            tempGnrItem +=                            '<textarea placeholder="Tiêu đề (bắt buộc)" maxlength="80" class="">' + (tempItem.Title != "" ? tempItem.Title : "") + '</textarea>';
-                            tempGnrItem +=                            '<span>77</span>';
-                            tempGnrItem +=                        '</div>';
-                            tempGnrItem +=                        '<div class="sub">';
-                            tempGnrItem +=                           '<textarea placeholder="Phụ đề hoặc mô tả" maxlength="80">' + (tempItem.SubTitle != "" ? tempItem.SubTitle : "") + '</textarea>';
-                            tempGnrItem +=                            '<span>77</span>';
-                            tempGnrItem +=                        '</div>';
-                            tempGnrItem +=                        '<div class="url">';
-                            tempGnrItem +=                            '<input type="text" placeholder="URL" value="'+(tempItem.Url != "" ? tempItem.Url : "")+'">';
-                            tempGnrItem +=                        '</div>';
-                            tempGnrItem +=                    '</div>';
-                            tempGnrItem +=                   '<div class="wr_button">';
-                            if (tempItem.ButtonPostbacks.length != 0) {
-                                $.each(tempItem.ButtonPostbacks, function (index, value) {
-                                    var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CardPayloadID; });
-                                    var name_card = '';
-                                    if (obj_card_payload.length != 0) {
-                                        name_card = obj_card_payload[0].Name;
-                                    }
-                                    tempGnrItem += '<div class="bt" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
-                                })
-                            }
-                            if (tempItem.ButtonLinks.length != 0) {
-                                $.each(tempItem.ButtonLinks, function (index, value) {
-                                    tempGnrItem += '<div class="bt" type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
-                                })
-                            }
-                            if ((tempItem.ButtonPostbacks.length + tempItem.ButtonLinks.length) <= 2) {
-                                tempGnrItem +=' <div class="bt" type-button="element_add"><div class="bt_add"><i class="icon-plus2 fa fa-plus"></i> Thêm nút</div></div>'
-                            }
-                            tempGnrItem +=                    '</div>';
-                            tempGnrItem += '</div>';
-                        })
-                    }
-                    tempGnrItem +=' <div class="layer_add" draggable="false"><i class="icon-plus3 fa fa-plus"></i></div>';
-                    tempGnrItem += '</div>';
-                    $('#multi').append(tempGnrItem);
+                tempGnrItem += '<div class="content" card="galery" data-index="' + value.Index + '">';
+                tempGnrItem += '<div class="bt_move_vertical" draggable="true">';
+                tempGnrItem += '<i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up"></i>';
+                tempGnrItem += '<i class="icon-arrow-down132 fa fa-arrow-down"></i>';
+                tempGnrItem += '</div>';
+                if (lstTempGnrItem.length != 0) {
+                    $.each(lstTempGnrItem, function (index, value) {
+                        var tempItem = value;
+                        tempGnrItem += '<div class="layer tile" draggable="true" data-index="' + tempItem.Index + '">';
+                        tempGnrItem += '<div class="bt_move_horizontal">';
+                        tempGnrItem += '<div class="layer_move">';
+                        tempGnrItem += '<i class="icon-arrow-left13 pull-left fa fa-arrow-left"></i>';
+                        tempGnrItem += '<i class="icon-move"></i>';
+                        tempGnrItem += '<i class="icon-arrow-right14 pull-right fa fa-arrow-right"></i>';
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '<div class="layer_rm">';
+                        tempGnrItem += '<i class="icon-bin fa fa-trash"></i>';
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '<div class="wr_image" attachment_id="' + tempItem.AttachmentID + '" style="background-image: url(&quot;' + _Host + tempItem.Image + '&quot;);">';
+                        tempGnrItem += '<input class="inputfile" type="file" accept="image/*">';
+                        tempGnrItem += '<div class="clickinput" style="display: none;">';
+                        tempGnrItem += '<i class="icon-camera fa fa-camera"></i>';
+                        tempGnrItem += '<br>Tải ảnh lên';
+                        tempGnrItem += '</div><span class="">';
+                        tempGnrItem += '<a class="img-rp">';
+                        tempGnrItem += '<i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>Thay thế';
+                        tempGnrItem += '</a>';
+                        tempGnrItem += '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>Xóa</a>';
+                        tempGnrItem += '</span>';
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '<div class="wr_title">';
+                        tempGnrItem += '<div class="head">';
+                        tempGnrItem += '<textarea placeholder="Tiêu đề (bắt buộc)" maxlength="80" class="">' + (tempItem.Title != "" ? tempItem.Title : "") + '</textarea>';
+                        tempGnrItem += '<span>77</span>';
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '<div class="sub">';
+                        tempGnrItem += '<textarea placeholder="Phụ đề hoặc mô tả" maxlength="80">' + (tempItem.SubTitle != "" ? tempItem.SubTitle : "") + '</textarea>';
+                        tempGnrItem += '<span>77</span>';
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '<div class="url">';
+                        tempGnrItem += '<input type="text" placeholder="URL" value="' + (tempItem.Url != "" ? tempItem.Url : "") + '">';
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '<div class="wr_button">';
+
+                        var arrBtn = [];
+                        if (tempItem.ButtonPostbacks.length != 0) {
+                            $.each(tempItem.ButtonPostbacks, function (index, value) {
+                                var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CardPayloadID; });
+                                var name_card = '';
+                                if (obj_card_payload.length != 0) {
+                                    name_card = obj_card_payload[0].Name;
+                                }
+                                var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="postback" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
+                                var objBtn = {
+                                    "idx": value.Index,
+                                    "contentHTML": contentBtn
+                                }
+                                // mảng reup lại index
+                                arrBtn.push(objBtn)
+                                //tempGnrItem += '<div class="bt" data-index="'+ value.Index +'" type-button="postback" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
+                            })
+                        }
+                        if (tempItem.ButtonLinks.length != 0) {
+                            $.each(tempItem.ButtonLinks, function (index, value) {
+                                var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
+                                var objBtn = {
+                                    "idx": value.Index,
+                                    "contentHTML": contentBtn
+                                }
+                                arrBtn.push(objBtn)
+
+                                //tempGnrItem += '<div class="bt" data-index="' + value.Index + '" type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
+                            })
+                        }
+                        if (arrBtn.length != 0) {
+                            arrBtn.sort(compareValues('idx', 'asc'))
+                            $.each(arrBtn, function (index, value) {
+                                tempGnrItem += value.contentHTML;
+                            })
+                        }
+
+                        if ((tempItem.ButtonPostbacks.length + tempItem.ButtonLinks.length) <= 1000) {
+                            tempGnrItem += ' <div class="bt" type-button="element_add"><div class="bt_add"><i class="icon-plus2 fa fa-plus"></i> Thêm nút</div></div>'
+                        }
+                        tempGnrItem += '</div>';
+                        tempGnrItem += '</div>';
+                    })
+                }
+                tempGnrItem += ' <div class="layer_add" draggable="false"><i class="icon-plus3 fa fa-plus"></i></div>';
+                tempGnrItem += '</div>';
+
+                var objCard = {
+                    "idx": value.Index,
+                    "contentHTML": tempGnrItem
+                }
+                arrCardContent.push(objCard);
+                //$('#multi').append(tempGnrItem);
+
             })
         }
         //image
         if (data.Images.length != 0) {
             var tempImage = '';
             $.each(data.Images, function (index, value) {
-                tempImage += '<div class="content" card="image">';
+                tempImage += '<div class="content" card="image" data-index="' + value.Index + '">';
                 tempImage += '<div class="bt_move_vertical">';
-                tempImage +=     '<i class="icon-x fa fa-remove"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i>';
-                tempImage +=     '</div>';
-                tempImage +=     '<div class="layer tile">';
-                tempImage +=     '<div class="bt_move_horizontal">';
-                tempImage +=     '<div class="layer_rm">';
-                tempImage +=     '<i class="icon-bin fa fa-trash"></i>';
-                tempImage +=     '</div>';
-                tempImage +=     '</div>';
+                tempImage += '<i class="icon-x fa fa-remove"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i>';
+                tempImage += '</div>';
+                tempImage += '<div class="layer tile">';
+                tempImage += '<div class="bt_move_horizontal">';
+                tempImage += '<div class="layer_rm">';
+                tempImage += '<i class="icon-bin fa fa-trash"></i>';
+                tempImage += '</div>';
+                tempImage += '</div>';
                 tempImage += '<div class="wr_image bl_image" attachment_id="0" style="background-image: url(&quot;' + _Host + value.Url + '&quot;);">';
-                tempImage +=     '<input class="inputfile" type="file" accept="image/*">';
-                tempImage +=     '<div class="clickinput" style="display: none;"><i class="icon-camera fa fa-camera"></i>';
-                tempImage +=     '<br>Tải ảnh lên</div>';
-                tempImage +=     '<span class=""><a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>Thay thế</a><a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>Xóa</a></span>';
+                tempImage += '<input class="inputfile" type="file" accept="image/*">';
+                tempImage += '<div class="clickinput" style="display: none;"><i class="icon-camera fa fa-camera"></i>';
+                tempImage += '<br>Tải ảnh lên</div>';
+                tempImage += '<span class=""><a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>Thay thế</a><a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>Xóa</a></span>';
                 tempImage += '</div></div></div>';
+
+                var objCard = {
+                    "idx": value.Index,
+                    "contentHTML": tempImage
+                }
+                arrCardContent.push(objCard);
             })
-            $("#multi").append(tempImage);
+
+            //$("#multi").append(tempImage);
         }
         // temptext
         if (data.TemplateTexts.length != 0) {
             var tempText = '';
             $.each(data.TemplateTexts, function (index, value) {
-                tempText += '<div class="content" card="text"><div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="640" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">'+value.Text+'</textarea><span>633</span></div></div>';
+                tempText += '<div class="content" card="text" data-index="' + value.Index + '"><div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="640" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">' + value.Text + '</textarea><span>633</span></div></div>';
                 tempText += '<div class="wr_button">';
+                var arrBtn = [];
                 if (value.ButtonPostbacks.length != 0) {
                     $.each(value.ButtonPostbacks, function (index, value) {
                         var obj_card_payload = lstCard.filter(function (x) { return x.ID == value.CardPayloadID; });
@@ -239,19 +335,54 @@ $(document).ready(function () {
                         if (obj_card_payload.length != 0) {
                             name_card = obj_card_payload[0].Name;
                         }
-                        tempText += '<div class="bt" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
+                        var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
+                        var objBtn = {
+                            "idx": value.Index,
+                            "contentHTML": contentBtn
+                        }
+                        arrBtn.push(objBtn)
+                        //tempText += '<div class="bt" data-index="' + value.Index + '" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
                     })
                 }
                 if (value.ButtonLinks.length != 0) {
                     $.each(value.ButtonLinks, function (index, value) {
-                        tempText += '<div class="bt" type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
+                        var contentBtn = '<div class="bt"  data-index="' + value.Index + '"  type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
+                        var objBtn = {
+                            "idx": value.Index,
+                            "contentHTML": contentBtn
+                        }
+                        arrBtn.push(objBtn)
+                        //tempText += '<div class="bt"  data-index="' + value.Index + '"  type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
                     })
                 }
-                if ((value.ButtonPostbacks.length + value.ButtonLinks.length) <= 2) {
+
+                if (arrBtn.length != 0) {
+                    arrBtn.sort(compareValues('idx', 'asc'))
+                    console.log(arrBtn)
+                    $.each(arrBtn, function (index, value) {
+                        tempText += value.contentHTML;
+                    })
+                }
+
+                if ((value.ButtonPostbacks.length + value.ButtonLinks.length) <= 1000) {
                     tempText += '<div class="bt" type-button="element_add"><div class="bt_add"><i class="icon-plus2 fa fa-plus"></i> Thêm nút</div></div></div></div></div>';
                 }
+
+                var objCard = {
+                    "idx": value.Index,
+                    "contentHTML": tempText
+                }
+                arrCardContent.push(objCard);
             })
-            $("#multi").append(tempText);
+            //$("#multi").append(tempText);
+        }
+
+        // orderby append by index
+        if (arrCardContent.length != 0) {
+            arrCardContent.sort(compareValues('idx', 'asc'))
+            $.each(arrCardContent, function (index, value) {
+                $("#multi").append(value.contentHTML);
+            })
         }
         // quickreply
         if (data.QuickReplys.length != 0) {
@@ -263,7 +394,7 @@ $(document).ready(function () {
                 if (obj_card_payload.length != 0) {
                     name_card = obj_card_payload[0].Name;
                 }
-                tempQuickReply += '<li class="reply" draggable="true"><div class="reply_action"><div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div><div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div></div><div class="wr_reply_btcontent" attr-reply="postback"><div class="name-button no-img">' + value.Title + '</div><div class="reply_btcontent"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></div></div></li>'
+                tempQuickReply += '<li class="reply" draggable="true"  data-index="' + value.Index + '" ><div class="reply_action"><div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div><div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div></div><div class="wr_reply_btcontent" attr-reply="postback"><div class="name-button no-img">' + value.Title + '</div><div class="reply_btcontent"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></div></div></li>'
             })
             tempQuickReply += '<li class="add_reply"><div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div></li>';
             $("#blReply").empty().append(tempQuickReply);
@@ -480,7 +611,7 @@ $(document).ready(function () {
         $("#modal_button").modal("show");
 
         loadEmojiPicker();
-       
+
     });
 
     // ====================================================================
@@ -659,6 +790,11 @@ $(document).ready(function () {
             return false;
         }
 
+        ReOderItemContentCard();
+        ReOderItemLayer();
+        ReOderItemButton();
+        ReOderItemQuickReply;
+
         if ($('#multi .content').length > 0) {
             $('#multi .content').each(function (index, el) {
                 if ($(this).attr('card') == 'galery') {
@@ -693,7 +829,7 @@ $(document).ready(function () {
                             var image_url = '';
                             var attachment_image = '';
                             if ($(this).find('.wr_image').css('background-image') != 'none') {
-                                image_url = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(''+_Host+'','');
+                                image_url = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace('' + _Host + '', '');
                                 attachment_image = $(this).find('.wr_image').attr('attachment_id');
                             }
 
@@ -702,7 +838,7 @@ $(document).ready(function () {
                                 && $(this).find('.wr_image').attr('attachment_id') != ''
                                 ) {
                                 var arAt = {
-                                    attachment_url:$(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(''+_Host+'',''),
+                                    attachment_url: $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace('' + _Host + '', ''),
                                     attachment_id: $(this).find('.wr_image').attr('attachment_id'),
                                     type: 'rm'
                                 }
@@ -753,7 +889,8 @@ $(document).ready(function () {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
                                         "Payload": postback_card,
-                                        "CardPayloadID": payload_id
+                                        "CardPayloadID": payload_id,
+                                        "Index": $(this).attr('data-index')
                                     }
                                     button_postbacks_sql.push(btn_object_sql);
 
@@ -771,7 +908,8 @@ $(document).ready(function () {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
                                         "Payload": postback_module,
-                                        "CardPayloadID": $(this).attr('postback-id')
+                                        "CardPayloadID": $(this).attr('postback-id'),
+                                        "Index": $(this).attr('data-index')
                                     }
                                     button_postbacks_sql.push(btn_object_sql);
 
@@ -813,7 +951,8 @@ $(document).ready(function () {
                                         "Type": "web_url",
                                         "Title": $(this).find('.bt_title').text(),
                                         "Url": wbLink,
-                                        "SizeHeight": attrwebview
+                                        "SizeHeight": attrwebview,
+                                        "Index": $(this).attr('data-index')
                                     }
                                     button_links_sql.push(btn_object_sql);
 
@@ -872,7 +1011,8 @@ $(document).ready(function () {
                                 "AttachmentID": attachment_image,
                                 "Subtitle": subtitle,
                                 "ButtonPostbackViewModels": button_postbacks_sql,
-                                "ButtonLinkViewModels": button_links_sql
+                                "ButtonLinkViewModels": button_links_sql,
+                                "Index": $(this).attr('data-index')
                             };
                             ar_galery_sql.push(galery_element_sql);
                         }
@@ -895,7 +1035,8 @@ $(document).ready(function () {
                         "Message": {
                             "TemplateGenericGroupViewModel": {
                                 "TemplateGenericItemViewModels": ar_galery_sql,
-                                "Type": "template"
+                                "Type": "template",
+                                "Index": $(this).attr('data-index')
                             }
                         }
                     };
@@ -924,6 +1065,7 @@ $(document).ready(function () {
                                     "TemplateTextViewModel": {
                                         "Text": $(this).find('.wr_title .wr-content-text textarea').val(),
                                         "Type": "template",
+                                        "Index": $(this).attr('data-index'),
                                         "ButtonPostbackViewModels": [],
                                         "ButtonLinkViewModels": []
                                     }
@@ -958,7 +1100,8 @@ $(document).ready(function () {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
                                         "Payload": postback_card,
-                                        "CardPayloadID": payload_id
+                                        "CardPayloadID": payload_id,
+                                        "Index": $(this).attr('data-index')
                                     }
                                     button_postbacks_sql.push(btn_object_sql);
 
@@ -1013,7 +1156,8 @@ $(document).ready(function () {
                                         "Type": "web_url",
                                         "Title": $(this).find('.bt_title').text(),
                                         "Url": wbLink,
-                                        "SizeHeight": attrwebview
+                                        "SizeHeight": attrwebview,
+                                        "Index": $(this).attr('data-index')
                                     }
                                     button_links_sql.push(btn_object_sql);
 
@@ -1051,6 +1195,7 @@ $(document).ready(function () {
                                     "TemplateTextViewModel": {
                                         "Text": $(this).find('.wr_title .wr-content-text textarea').val(),
                                         "Type": "template",
+                                        "Index": $(this).attr('data-index'),
                                         "ButtonPostbackViewModels": button_postbacks_sql,
                                         "ButtonLinkViewModels": button_links_sql
                                     }
@@ -1071,7 +1216,7 @@ $(document).ready(function () {
                     if (checkCard) {
                         var payload = '';
                         // if($(this).find('.wr_image').attr('attachment_id')==null){
-                        var srcImage = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(''+_Host+'','');
+                        var srcImage = $(this).find('.wr_image').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace('' + _Host + '', '');
                         payload = { "url": srcImage };
                         // }else{
                         //     payload = {"attachment_id": $(this).find('.wr_image').attr('attachment_id')};
@@ -1091,7 +1236,7 @@ $(document).ready(function () {
                         listUpdate.push(arAt);
 
                         var template_image = {
-                            "message": { 
+                            "message": {
                                 "attachment": {
                                     "type": "image",
                                     "payload": payload
@@ -1103,7 +1248,8 @@ $(document).ready(function () {
                         var template_image_sql = {
                             "Message": {
                                 "ImageViewModel": {
-                                    "Url": srcImage
+                                    "Url": srcImage,
+                                    "Index": $(this).attr('data-index')
                                 }
                             }
                         };
@@ -1506,7 +1652,8 @@ $(document).ready(function () {
                             "Title": $(this).find('.wr_reply_btcontent .name-button').text(),
                             "Payload": payload,
                             "CardPayloadID": payload_id,
-                            "Icon": $(this).find('.wr_reply_btcontent i').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace(""+_Host+"","")
+                            "Index": $(this).attr('data-index'),
+                            "Icon": $(this).find('.wr_reply_btcontent i').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace("" + _Host + "", "")
                         };
                         ar_quickReply_sql.push(obj_quickReply_sql);
                     } else {
@@ -1607,14 +1754,15 @@ $(document).ready(function () {
         }
 
         var cardVm = {
-            'ID'                : $('#idCard').val(),
-            'UserID'            : $('#userId').val(),
+            'ID': $('#idCard').val(),
+            'GroupCardID': grCardId,
+            'UserID': $('#userId').val(),
             //'pageId'        : $('#pageId').val(),
-            'BotId'             : $('#botId').val(),
+            'BotID': $('#botId').val(),
             //'blockId'       : $('#blockId').val(),
-            'Name'              : $('#card-name').val(),
-            'Alias'             : common.getSeoTitle($('#card-name').val()),
-            'CardContents'      : card_sql,
+            'Name': $('#card-name').val(),
+            'Alias': common.getSeoTitle($('#card-name').val()),
+            'CardContents': card_sql,
             'QuickReplyViewModels': ar_quickReply_sql,
             'TemplateJSON': JSON.stringify(objectCard.cardContent[0]),
             'FileAttachs': listUpdate
@@ -1673,18 +1821,25 @@ $(document).ready(function () {
                 if (isAction) {
                     var html = '';
                     html += '<li>';
-                    html += '<a class="nav-link card-item" data-cardid="'+card.ID+'" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + card.ID + '" aria-controls="setsmenu-' + card.ID + '">';
-                    html +=         '<span class="icon">';
-                    html +=             '<i class="fas fa-fw fa-copy"></i>';
+                    html += '<a class="nav-link card-item" data-cardid="' + card.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + card.ID + '" aria-controls="setsmenu-' + card.ID + '">';
+                    html += '<span class="icon">';
+                    html += '<i class="fas fa-fw fa-copy"></i>';
                     html += '</span>' + card.Name + '';
-                    html +=     '</a>';
+                    html += '</a>';
                     html += '</li>';
                     $('#lst-card').append(html);
-                    $('#idCard').val(card.ID)
+                    $('#idCard').val(card.ID);
+                    $("#model-notify").modal('hide');
+                    swal({
+                        title: "Thông báo",
+                        text: "Đã lưu",
+                        confirmButtonColor: "#EF5350",
+                        type: "success"
+                    }, function () { $("#model-notify").modal('show'); });
                 }
                 setTimeout(function () {
                     getAimlCard(card.ID);
-                },500)
+                }, 500)
                 console.log(data)
             });
 
@@ -1707,7 +1862,7 @@ $(document).ready(function () {
         var urlTest = "api/card/getaimlcard";
         var svr = new AjaxCall(urlTest, param);
         svr.callServiceGET(function (data) {
-            console.log(data)          
+            console.log(data)
         });
     }
 
@@ -1720,7 +1875,7 @@ $(document).ready(function () {
     // ====================================================================
     autosize($('.content-text'));
     $('.card_galery').click(function (event) {
-        var str_galery = '<div class="content" card="galery">' +
+        var str_galery = '<div class="content" card="galery" data-index="">' +
             '<div class="bt_move_vertical">' +
                 '<i class="icon-x fa fa-remove"></i>' +
                 '<i class=" icon-arrow-up13 fa fa-arrow-up"></i>' +
@@ -1771,9 +1926,10 @@ $(document).ready(function () {
         if ($('#multi .content[card="module"]').length <= 0) {
             $('.card_quickReply').removeClass('disable');
         }
+        ReOderItemContentCard();
     });
     $('.card_text').click(function (event) {
-        var str_card_text = '<div class="content" card="text">' +
+        var str_card_text = '<div class="content" card="text" data-index="">' +
             '<div class="bt_move_vertical">' +
                 '<i class="icon-x fa fa-remove"></i>' +
                 '<i class="icon-arrow-up13 fa fa-arrow-up "></i>' +
@@ -1803,9 +1959,10 @@ $(document).ready(function () {
         if ($('#multi .content[card="module"]').length <= 0) {
             $('.card_quickReply').removeClass('disable');
         }
+        ReOderItemContentCard();
     });
     $('.card_image').click(function (event) {
-        var str_image = '<div class="content" card="image">' +
+        var str_image = '<div class="content" card="image" data-index="">' +
                 '<div class="bt_move_vertical">' +
                     '<i class="icon-x fa fa-remove"></i>' +
                     '<i class=" icon-arrow-up13 fa fa-arrow-up "></i>' +
@@ -1831,9 +1988,10 @@ $(document).ready(function () {
         if ($('#multi .content[card="module"]').length <= 0) {
             $('.card_quickReply').removeClass('disable');
         }
+        ReOderItemContentCard();
     });
     $('.card_audio').click(function (event) {
-        var str_audio = '<div class="content" card="audio">' +
+        var str_audio = '<div class="content" card="audio" data-index="">' +
                 '<div class="bt_move_vertical"><i class="icon-x"></i><i class=" icon-arrow-up13"></i><i class="icon-arrow-down132"></i></div>' +
                 '<div class="layer tile">' +
                     '<div class="bt_move_horizontal">' +
@@ -1855,9 +2013,10 @@ $(document).ready(function () {
         if ($('#multi .content[card="module"]').length <= 0) {
             $('.card_quickReply').removeClass('disable');
         }
+        ReOderItemContentCard();
     });
     $('.card_video').click(function (event) {
-        var str_audio = '<div class="content" card="video">' +
+        var str_audio = '<div class="content" card="video" data-index="">' +
                 '<div class="bt_move_vertical"><i class="icon-x"></i><i class=" icon-arrow-up13"></i><i class="icon-arrow-down132"></i></div>' +
                 '<div class="layer tile">' +
                     '<div class="bt_move_horizontal">' +
@@ -1879,9 +2038,10 @@ $(document).ready(function () {
         if ($('#multi .content[card="module"]').length <= 0) {
             $('.card_quickReply').removeClass('disable');
         }
+        ReOderItemContentCard();
     });
     $('.card_file').click(function (event) {
-        var str_audio = '<div class="content" card="file">' +
+        var str_audio = '<div class="content" card="file" data-index="">' +
                 '<div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div>' +
                 '<div class="layer tile">' +
                     '<div class="bt_move_horizontal">' +
@@ -1903,9 +2063,10 @@ $(document).ready(function () {
         if ($('#multi .content[card="module"]').length <= 0) {
             $('.card_quickReply').removeClass('disable');
         }
+        ReOderItemContentCard();
     });
     $('.card_module').click(function (event) {
-        var str_module = '<div class="content" card="module">' +
+        var str_module = '<div class="content" card="module" data-index="">' +
                 '<div class="bt_move_vertical" draggable="true">' +
                     '<i class="icon-x"></i>' +
                     '<i class="icon-arrow-up13"></i>' +
@@ -1964,10 +2125,11 @@ $(document).ready(function () {
             }
         });
 
+        ReOderItemContentCard();
     });
 
     $('.card_list').click(function (event) {
-        var str_list = '<div class="content" card="list">' +
+        var str_list = '<div class="content" card="list" data-index="">' +
                 '<div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down"></i></div>' +
                 '<div class="layer tile">' +
                     '<div class="bt_move_horizontal">' +
@@ -2041,10 +2203,14 @@ $(document).ready(function () {
                     '</div>' +
                 '</div>' +
             '</div>';
+
         $('#multi').append(str_list);
         if ($('#multi .content[card="module"]').length <= 0) {
             $('.card_quickReply').removeClass('disable');
         }
+
+        ReOderItemContentCard();
+
     });
 
     $('.card_quickReply').click(function (event) {
@@ -2057,6 +2223,7 @@ $(document).ready(function () {
     // ====================================================================
     // =============================End Add Card===========================
     // ====================================================================
+
 
     // ====================================================================
     // =============================Remove Card============================
@@ -2130,6 +2297,10 @@ $(document).ready(function () {
         $("#modal_button").modal("show");
 
         loadEmojiPicker();
+        //setTimeout(function () {
+        //    ReOderItemQuickReply();
+        //},1000)
+
     });
 
     // Edit Button
@@ -2198,7 +2369,7 @@ $(document).ready(function () {
         }
 
         loadEmojiPicker();
-       
+
     });
     // Remove Button
     $('#wr_reply').on('click', '.reply_rm', function (event) {
@@ -2218,6 +2389,9 @@ $(document).ready(function () {
             callback: function (result) {
                 if (result) {
                     el.parents('.reply').remove();
+                    setTimeout(function () {
+                        ReOderItemQuickReply();
+                    }, 500)
                 }
             }
         });
@@ -2356,6 +2530,9 @@ $(document).ready(function () {
                             $('.card_quickReply').removeClass('disable');
                         }
                     }
+
+                    ReOderItemContentCard();
+                    ReOderItemLayer();
                 }
             }
         });
@@ -2411,6 +2588,10 @@ $(document).ready(function () {
             el.parents('#multi').find('.content').eq(index_move + 2).slideDown('slow');
             $(this).remove();
         });
+
+        setTimeout(function () {
+            ReOderItemContentCard();
+        }, 1000)
     });
     $('#multi').on('click', '.icon-arrow-up13', function (event) {
         el = $(this);
@@ -2430,6 +2611,10 @@ $(document).ready(function () {
             el.parents('#multi').find('.content').eq(index_move - 1).slideDown('slow');
             $(this).remove();
         });
+        setTimeout(function () {
+            ReOderItemContentCard();
+        }, 1000)
+
     });
     $('#multi').on('click', '.icon-x', function (event) {
         var el = $(this);
@@ -2480,6 +2665,11 @@ $(document).ready(function () {
                     } else {
                         $('#multi').width(widthMulti);
                     }
+
+                    ReOderItemContentCard();
+                    setTimeout(function () {
+                        ReOderItemLayer();
+                    }, 500)
                 }
             }
         });
@@ -2547,6 +2737,10 @@ $(document).ready(function () {
             items: ':not(.layer_add)',
             handle: '.layer_move .icon-move,.bt_move_vertical'
         });
+
+        setTimeout(function () {
+            ReOderItemLayer();
+        }, 700)
     });
 
     // ====================================================================
@@ -2618,7 +2812,7 @@ $(document).ready(function () {
         if (!$(this).hasClass('active')) {
             actionTabPopup(el);
         }
-        
+
     });
     // End Menu Button
 
@@ -2879,7 +3073,7 @@ $(document).ready(function () {
                                     '<p class="bt_ct" ' + popupUrl + ' ' + regionPhoneNumber + '>' + str_btct + '</p>' +
                                 '</div>';
                 } else {
-                    var str_bt = '<div class="bt" type-button="' + type_button + '">' +
+                    var str_bt = '<div class="bt" data-index="" type-button="' + type_button + '">' +
                         '<p class="bt_title">' + str_bt_title + '</p>' +
                         '<p class="bt_ct" ' + popupUrl + ' ' + regionPhoneNumber + '>' + str_btct + '</p>' +
                     '</div>';
@@ -2893,6 +3087,11 @@ $(document).ready(function () {
                 $('.select2-hidden-accessible').remove();
                 $("#modal_button").modal("hide");
 
+                setTimeout(function () {
+                    ReOderItemButton();
+                }, 1000)
+
+
             } else {
 
                 var imgIcon = el.parents('#modal_button').find('.modal-content .modal-header .icon_button').css('background-image');
@@ -2903,7 +3102,7 @@ $(document).ready(function () {
                     iconTitle = "<i attachment_id=" + attachment_id + " style='background-image:" + imgIcon + "'></i>";
                 }
 
-                var str_bt = '<li class="reply">' +
+                var str_bt = '<li class="reply" data-index="">' +
                     '<div class="reply_action">' +
                         '<div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div>' +
                         '<div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div>' +
@@ -2922,6 +3121,9 @@ $(document).ready(function () {
                     items: ':not(.add_reply)',
                     handle: '.reply_move'
                 });
+                setTimeout(function () {
+                    ReOderItemQuickReply();
+                }, 1000)
             }
         }
     });
@@ -3193,6 +3395,9 @@ $(document).ready(function () {
     // Action Remove
     $('#multi').on('click', '.bt_rm', function (event) {
         $(this).parents('.bt').remove();
+        setTimeout(function () {
+            ReOderItemButton();
+        }, 500)
     });
     // End Action Remove
     // Action Edit
@@ -3319,7 +3524,7 @@ $(document).ready(function () {
         $("#modal_button").modal("show");
 
         loadEmojiPicker();
-       
+
         // el.find('.bl_bt .bt_name').focus();
         // el.find('.bl_bt').fadeIn(10);
     });
@@ -3349,21 +3554,245 @@ function loadEmojiPicker() {
 
 
 // ====================================================================
-// ============================LOAD DATA CARD, MODULE ===============================
+// ============================LOAD ADD DATA CARD, MODULE ===============================
 // ====================================================================
-function card() {
-    var html = '<optgroup label="DANH SÁCH THẺ">';
-    if (lstCard.length != 0) {
-        $.each(lstCard, function (index, value) {
-            html += '<option value="' + value.ID + '">' + value.Name + '</option>';
-        })
-    } else {
-        html += '<option value=""></option>';
-    }
-    html += '</optgroup>';
-    return html;
 
+function loadGroupCard() {
+    var param = {
+        botId: botId
+    };
+    var urlTest = "api/groupcard/getbybot";
+    var svr = new AjaxCall(urlTest, param);
+    svr.callServiceGET(function (data) {
+        console.log(data)
+        templateGroupCard(data)
+    });
+}
+
+function templateGroupCard(data) {
+    var html = '';
+    if (data.length != 0) {
+        $.each(data, function (index, value) {
+            html += '<div class="wrBlock" data-gr-id="' + value.ID + '">';
+            html += '<i class="icon-cube2 fa fa-cube"></i>';
+            html += '<input type="text" maxlength="20" class="text-semibold text-uppercase titleBlock" value="' + value.Name + '" data="' + value.Name + '">';
+            html += '<span class="pull-right rmBlock">';
+            html += '<i class="icon-bin fa fa-trash"></i>';
+            html += '</span>';
+            html += '<ul class="sortable grid list-inline">';
+            html += '<li class="addItemCard">';
+            html += '<div>';
+            html += '<a href="#"><i class="icon-plus22 fa fa-plus"></i></a>';
+            html += '</div>';
+            html += '</li>';
+            if (value.Cards.length != 0) {
+                $.each(value.Cards, function (index, value) {
+                    html += '<li data-card-id="' + value.ID + '">';
+                    html += '<div>';
+                    html += '<a href="#" class="select-item-card">' + value.Name + '</a>';
+                    html += '</div>';
+                    html += '</li>';
+                })
+            }
+            html += '</ul>';
+            html += '</div>';
+        })
+    }
+    $("#build").show();
+    $("#build").empty().append(html);
+}
+$('body').on('click', '.rmBlock', function () {
+    var $el = $(this).parent();
+    var groupId = $(this).parent().attr('data-gr-id');
+    console.log($(this).parent().attr('data-gr-id'))
+    bootbox.confirm({
+        message: "Bạn có chắc muốn xóa nhóm thẻ này",
+        buttons: {
+            confirm: {
+                label: txtCard59,
+                className: 'btn-primary'
+            },
+            cancel: {
+                label: txtCard60,
+                className: 'btn-default'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                var params = {
+                    groupCardId: groupId
+                };
+                params = JSON.stringify(params);
+                var urlTest = "api/groupcard/delete";
+                var svr = new AjaxCall(urlTest, params);
+                svr.callServicePOST(function (data) {
+                    console.log(data)
+                    if (data) {
+                        $el.remove();
+                    }
+                });
+            }
+        }
+    })
+})
+
+function addBlock() {
+    var index = $(".wrBlock").size() + 1;
+    console.log(index);
+    var groupCardName = "Nhóm " + index;
+    var params = {
+        Name: groupCardName,
+        BotID: botId
+    };
+    params = JSON.stringify(params);
+    var urlTest = "api/groupcard/create";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        if (data != null) {
+            var html = '';
+            html += '<div class="wrBlock" data-gr-id="' + data.ID + '">';
+            html += '<i class="icon-cube2 fa fa-cube"></i>';
+            html += '<input type="text" maxlength="20" class="text-semibold text-uppercase titleBlock" value="' + groupCardName + '" data="">';
+            html += '<span class="pull-right rmBlock">';
+            html += '<i class="icon-bin fa fa-trash"></i>';
+            html += '</span>';
+            html += '<ul class="sortable grid list-inline">';
+            html += '<li class="addItemCard">';
+            html += '<div>';
+            html += '<a href="#"><i class="icon-plus22 fa fa-plus"></i></a>';
+            html += '</div>';
+            html += '</li>';
+            html += '</ul>';
+            html += '</div>';
+            $("#build").append(html);
+        }
+    });
+}
+
+
+$('body').on('click', '.addItemCard', function () {
+    $("#block-card").hide();
+    $("#layout-card").show();
+    $("#lst-card").empty();
+
+    $("#btn-create-card").trigger('click');
+
+    var groupCardId = $(this).closest('.wrBlock').eq(0).attr('data-gr-id');
+    var groupCardName = $(this).closest('.wrBlock').find('.titleBlock').val();
+    console.log(groupCardId);
+    grCardId = groupCardId;
+    var params = {
+        groupCardId: groupCardId,
+    };
+    var urlTest = "api/card/getbygroupcard";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServiceGET(function (data) {
+
+        if (data.length != 0) {
+            var html = '';
+            $.each(data, function (index, value) {
+                html += '<li>';
+                html += '<a class="nav-link card-item" data-cardid="' + value.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + value.ID + '" aria-controls="setsmenu-' + value.ID + '">';
+                html += '<span class="icon">';
+                html += '<i class="fas fa-fw fa-copy"></i>';
+                html += '</span>' + value.Name + '';
+                html += '</a>';
+                html += '</li>';
+            })
+            $("#lst-card").empty().append(html)
+        } 
+        $("#groupCardName").html(groupCardName)
+    });
+})
+
+$('body').on('click', '.select-item-card', function () {
+    $("#block-card").hide();
+    $("#layout-card").show();
+    $("#lst-card").empty();
+    var groupCardId = $(this).closest('.wrBlock').eq(0).attr('data-gr-id');
+    var groupCardName = $(this).closest('.wrBlock').find('.titleBlock').val();
+    var cardId = $(this).parent().parent().attr('data-card-id');
+    grCardId = groupCardId;
+    var params = {
+        groupCardId: groupCardId,
+    };
+    var urlTest = "api/card/getbygroupcard";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServiceGET(function (data) {
+        if (data.length != 0) {
+            var html = '';
+            $.each(data, function (index, value) {
+                html += '<li>';
+                html += '<a class="nav-link card-item" data-cardid="' + value.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + value.ID + '" aria-controls="setsmenu-' + value.ID + '">';
+                html += '<span class="icon">';
+                html += '<i class="fas fa-fw fa-copy"></i>';
+                html += '</span>' + value.Name + '';
+                html += '</a>';
+                html += '</li>';
+            })
+            $("#lst-card").empty().append(html)
+            setTimeout(function () {
+                $(".card-item[data-cardid='" + cardId + "']").trigger('click');
+            },300)
+        }
+        $("#groupCardName").html(groupCardName)
+    });
+})
+
+$('body').on('click', '#groupCardName', function () {
+    $("#block-card").show();
+    $("#layout-card").hide();
+    loadGroupCard();
+})
+
+var card = function(){
+    var html = null;
+    var param = {
+        botId: botId
+    };
+    var urlGroupCard = "api/groupcard/getbybot";
+    $.ajax({
+        type: 'GET',
+        async: false,
+        global: false,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        url: _Host + urlGroupCard,
+        data: param,
+        success: function (data) {
+            var temp = '';
+            if (data.length != 0) {
+                $.each(data, function (index, value) {
+                    temp += '<optgroup label="' + value.Name.toUpperCase() + '">';
+                    if (value.Cards.length != 0) {
+                        $.each(value.Cards, function (index, value) {
+                            temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
+                        })
+                    } else {
+                        temp += '<option value=""></option>';
+                    }
+                    temp += '</optgroup>';
+                })
+            }
+            html = temp;
+        }
+    });
+    return html;
 };
+
+
+//function card() {
+//    var html = '<optgroup label="DANH SÁCH THẺ">';
+//    if (lstCard.length != 0) {
+//        $.each(lstCard, function (index, value) {
+//            html += '<option value="' + value.ID + '">' + value.Name + '</option>';
+//        })
+//    } else {
+//        html += '<option value=""></option>';
+//    }
+//    html += '</optgroup>';
+//    return html;
+//};
 function module() {
     var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
     return htmlListModule;
@@ -4026,3 +4455,40 @@ function txtConfirmErrorList(a, b) {
 // ====================================================================
 // ========================= End Function =============================
 // ====================================================================
+
+
+
+
+// ------ REODER INDEX ITEM IN CARD ------//
+ReOderItemContentCard = function () {
+    $('#multi .content').each(function (index) {
+        $(this).attr('data-index', index + 1);
+    });
+}
+
+ReOderItemQuickReply = function () {
+    $('#blReply .reply').each(function (index) {
+        $(this).attr('data-index', index + 1);
+    });
+}
+
+ReOderItemLayer = function () {
+    $('#multi .content').each(function (index) {
+        $(this).find(".layer").each(function (idxBtn) {
+            $(this).attr('data-index', idxBtn + 1);
+        })
+    });
+}
+
+
+ReOderItemButton = function () {
+    $('#multi .content').each(function (index) {
+        $(this).find(".layer").each(function (idxBtn) {
+            $(this).find(".bt").each(function (idxBtn) {
+                $(this).attr('data-index', idxBtn + 1);
+            })
+        })
+    });
+}
+
+

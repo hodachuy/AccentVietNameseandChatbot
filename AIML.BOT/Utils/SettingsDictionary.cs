@@ -17,13 +17,13 @@ namespace AIMLbot.Utils
         /// <summary>
         /// Holds a dictionary of settings
         /// </summary>
-        private Dictionary<string, string> settingsHash = new Dictionary<string, string>();
+        public Dictionary<string, string> settingsHash = new Dictionary<string, string>();
 
         /// <summary>
         /// Contains an ordered collection of all the keys (unfortunately Dictionary<,>s are
         /// not ordered)
         /// </summary>
-        private List<string> orderedKeys = new List<string>();
+        public List<string> orderedKeys = new List<string>();
 
         /// <summary>
         /// The bot this dictionary is associated with
@@ -38,6 +38,10 @@ namespace AIMLbot.Utils
             get
             {
                 return this.orderedKeys.Count;
+            }
+            set
+            {
+
             }
         }
 
@@ -263,6 +267,10 @@ namespace AIMLbot.Utils
                 string[] result = new string[this.orderedKeys.Count];
                 this.orderedKeys.CopyTo(result, 0);
                 return result;
+            }
+            set
+            {
+
             }
         }
 

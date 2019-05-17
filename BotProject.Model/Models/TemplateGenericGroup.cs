@@ -17,6 +17,8 @@ namespace BotProject.Model.Models
 
         public string Type { set; get; }
 
+        public int Index { set; get; }
+
         public int CardID {set;get;}
 
         public virtual IEnumerable<TemplateGenericItem> TemplateGenericItems { set; get; }

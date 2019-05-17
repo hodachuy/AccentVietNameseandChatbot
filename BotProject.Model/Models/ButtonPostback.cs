@@ -21,6 +21,8 @@ namespace BotProject.Model.Models
 
         public string Title { set; get; }
 
+        public int Index { set; get; }
+
         public int? TempGnrItemID { set; get; }
 
         public int? TempTxtID { set; get; }

@@ -6,22 +6,23 @@ using AIMLbot;
 using System.Web.Hosting;
 using System.Threading.Tasks;
 using BotProject.Common;
+using BotProject.Web.Models;
 
 namespace BotProject.Web
 {
     sealed class BotService
     {
         Bot _bot;
-        private User _user;
+        User _user;
         private static BotService botInstance = null;
         private static readonly object lockObject = new object();
         private string pathSetting = PathServer.PathAIML + "config";
         private BotService()
         {
              _bot = new Bot();
-            _user = new User(Guid.NewGuid().ToString(), _bot);
-            _bot.loadSettings(pathSetting);           
             _bot.isAcceptingUserInput = true;
+            _bot.loadSettings(pathSetting);
+            
         }
         public static BotService BotInstance
         {
@@ -41,26 +42,44 @@ namespace BotProject.Web
                 return botInstance;
             }
         }
-        public AIMLbot.Result Chat(string text)
-        {
-            //if (String.IsNullOrEmpty(logoBot))
-            //{
-            //    logoBot = System.Configuration.ConfigurationManager.AppSettings["Domain"] + "assets/images/user_bot.jpg";
-            //}
-            //if (String.IsNullOrEmpty(colorFormBot))
-            //{
-            //    colorFormBot = "rgb(234, 82, 105);";
-            //}
-            //AIMLbot.Request r = new Request(text, _user, _bot);
 
-            //AIMLbot.Result result = _bot.Chat(r, colorFormBot, logoBot);
-
-            AIMLbot.Result result = _bot.Chat(text, _user.UserID);
+      
+        public AIMLbot.Result Chat(string text, User userBot)//, AIMLbot.Utils.SettingsDictionary Predicates
+        {           
+            AIMLbot.Request r = new Request(text, userBot, _bot);
+            AIMLbot.Result result = _bot.Chat(r);
             return result;
         }
+
+        public AIMLbot.User loadUserBot(string userId)
+        {
+            _user = new User(userId, _bot);
+            return _user;
+        }
+
+        public AIMLbot.Utils.SettingsDictionary loadPredicates()
+        {          
+            return _user.Predicates;
+        }
+
+        public void loadSetting()
+        {
+            _bot.loadSettings(pathSetting);
+        }
+
         public void loadAIMLFromFiles(string path)
         {
             _bot.loadAIMLFromFiles(path);
+        }
+        public string getEmailCurrent(string userId)
+        {
+            string key = "email_"+ userId;
+            return _user.Predicates.grabSetting(key);
+        }
+        public void addEmailCurrent(string userId)
+        {
+            string key = "email_"+ userId;
+            _user.Predicates.addSetting(key, "true");
         }
     }
 }

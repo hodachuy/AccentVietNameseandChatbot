@@ -23,6 +23,8 @@ namespace BotProject.Model.Models
 
         public string Payload { set; get; }
 
+        public int Index { set; get; }
+
         public int? CardPayloadID { set; get; }
 
         public int? CardID { set; get; }

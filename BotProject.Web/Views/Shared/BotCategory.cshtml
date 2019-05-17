@@ -30,7 +30,7 @@
                                     {
                                         var urlQna = Url.Content("~") +  "bot/qna/" + form.Alias + "/"+ form.ID;
                                         <li class="nav-item">
-                                            <a class="nav-link bot-qna-link" href="@urlQna"><i class="fa fa-file" aria-hidden="true"></i>@form.Name</a>
+                                            <a class="nav-link bot-qna-link" href="@Url.Action("QnA","Bot", new {formQnAId = form.ID, botId = item.ID })"><i class="fa fa-file" aria-hidden="true"></i>@form.Name</a>
                                         </li>
                                     }
                                 }
@@ -41,10 +41,10 @@
                         <a class="nav-link" href="@urlSetting"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="btn-form-deploy" href="javascript:void(0);" data-botID="@item.ID"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy Bot</a>
+                        <a class="nav-link btn-form-deploy"  href="javascript:void(0);" data-botID="@item.ID"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy Bot</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="btn-form-delete" href="javascript:void(0);" data-botID="@item.ID" data-botName="@item.Name">
+                        <a class="nav-link btn-form-delete" href="javascript:void(0);" data-botID="@item.ID" data-botName="@item.Name">
                             <i class="fa fa-trash" aria-hidden="true"></i>Delete
                         </a>
                     </li>

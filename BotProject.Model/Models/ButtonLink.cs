@@ -20,6 +20,8 @@ namespace BotProject.Model.Models
         [MaxLength(50)]
         public string Title { set; get; }
 
+        public int Index { set; get; }
+
         [MaxLength(256)]
         public string Url { set; get; }
 

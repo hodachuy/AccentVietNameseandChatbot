@@ -71,20 +71,35 @@ namespace BotProject.Web.API
                                     foreach (var itemQues in lstQuestion)
                                     {
                                         string code = qGroupDb.ID + Guid.NewGuid().ToString();
-                                        Question quesDb = new Question();
-                                        quesDb.UpdateQuestion(itemQues);
-                                        quesDb.CodeSymbol = code;
-                                        quesDb.QuestionGroupID = qGroupDb.ID;
-                                        _qnaService.AddQuestion(quesDb);
+                                        if(itemQues.IsThatStar == false)
+                                        {
+                                            Question quesDb = new Question();
+                                            quesDb.UpdateQuestion(itemQues);
+                                            quesDb.CodeSymbol = code;
+                                            quesDb.QuestionGroupID = qGroupDb.ID;
+                                            _qnaService.AddQuestion(quesDb);
+                                        }else
+                                        {
+                                            Question quesDb = new Question();
+                                            quesDb.UpdateQuestion(itemQues);
+                                            quesDb.CodeSymbol = code;
+                                            quesDb.QuestionGroupID = qGroupDb.ID;
+                                            _qnaService.AddQuestion(quesDb);
 
-                                        // is that star
-                                        Question quesDbStar = new Question();
-                                        quesDbStar.UpdateQuestionIsStar(itemQues);
-                                        quesDbStar.CodeSymbol = code;
-                                        quesDbStar.QuestionGroupID = qGroupDb.ID;
-                                        _qnaService.AddQuestion(quesDbStar);
+                                            // is that star
+                                            Question quesDbStar = new Question();
+                                            quesDbStar.UpdateQuestionIsStar(itemQues);
+                                            quesDbStar.CodeSymbol = code;
+                                            quesDbStar.QuestionGroupID = qGroupDb.ID;
+                                            _qnaService.AddQuestion(quesDbStar);
+
+                                            Question quesDbStar2 = new Question();
+                                            quesDbStar2.UpdateQuestionIsStar2(itemQues);
+                                            quesDbStar2.CodeSymbol = code;
+                                            quesDbStar2.QuestionGroupID = qGroupDb.ID;
+                                            _qnaService.AddQuestion(quesDbStar2);
+                                        }
                                     }
-
                                     _qnaService.Save();
                                 }
                                 if (itemQGroup.QnAViewModel.AnswerViewModels != null &&

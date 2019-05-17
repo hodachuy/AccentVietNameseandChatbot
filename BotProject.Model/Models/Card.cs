@@ -31,6 +31,12 @@ namespace BotProject.Model.Models
 
         public int BotID { set; get; }
 
+        [Required]
+        public int GroupCardID { set; get; }
+
+        [ForeignKey("GroupCardID")]
+        public virtual GroupCard GroupCard { set; get; }
+
         public virtual IEnumerable<Answer> Answers { set; get; }
 
         public virtual IEnumerable<TemplateGenericGroup> TemplateGenericGroups { set; get; }

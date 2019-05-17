@@ -60,6 +60,15 @@ namespace BotProject.Web.Infrastructure.Extensions
             ques.ContentText = quesVm.ContentText.Trim() + " *";
         }
 
+        public static void UpdateQuestionIsStar2(this Question ques, QuestionViewModel quesVm)
+        {
+            ques.ID = quesVm.ID;
+            ques.Index = quesVm.Index;
+            ques.QuestionGroupID = quesVm.QuestionGroupID;
+            ques.IsThatStar = quesVm.IsThatStar;
+            ques.ContentText ="* " + quesVm.ContentText.Trim() + " *";
+        }
+
         public static void UpdateAnswer(this Answer answer, AnswerViewModel answerVm)
         {
             answer.ID = answerVm.ID;
@@ -76,6 +85,7 @@ namespace BotProject.Web.Infrastructure.Extensions
         {
             card.Name = cardVm.Name.ToUpper();
             card.BotID = cardVm.BotID;
+            card.GroupCardID = cardVm.GroupCardID;
             card.Alias = cardVm.Alias;
             card.TemplateJSON = cardVm.TemplateJSON;
         }
@@ -84,6 +94,7 @@ namespace BotProject.Web.Infrastructure.Extensions
         {
             temGnrGroup.ID = temGnrGroupVm.ID;
             temGnrGroup.Type = temGnrGroupVm.Type;
+            temGnrGroup.Index = temGnrGroupVm.Index;
         }
 
         public static void UpdateTemplateGenericItem(this TemplateGenericItem temGnrItem, TemplateGenericItemViewModel temGnrItemVm)
@@ -94,6 +105,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             temGnrItem.Url = temGnrItemVm.Url;
             temGnrItem.SubTitle = temGnrItemVm.Subtitle;
             temGnrItem.AttachmentID = temGnrItemVm.AttachmentID;
+            temGnrItem.Index = temGnrItemVm.Index;
         }
 
         public static void UpdateButtonLink(this ButtonLink btnLink, ButtonLinkViewModel btnLinkVm)
@@ -103,6 +115,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             btnLink.Title = btnLinkVm.Title;
             btnLink.Url = btnLinkVm.Url;
             btnLink.SizeHeight = btnLinkVm.SizeHeight;
+            btnLink.Index = btnLinkVm.Index;
         }
         public static void UpdateButtonPostback(this ButtonPostback btnPostback, ButtonPostbackViewModel btnPostbackVm)
         {
@@ -111,6 +124,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             btnPostback.Title = btnPostbackVm.Title;
             btnPostback.Payload = btnPostbackVm.Payload;
             btnPostback.CardPayloadID = btnPostbackVm.CardPayloadID;
+            btnPostback.Index = btnPostbackVm.Index;
         }
 
         public static void UpdateTemplateText(this TemplateText tempText, TemplateTextViewModel tempTextVm)
@@ -118,6 +132,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             tempText.ID = tempTextVm.ID;
             tempText.Type = tempTextVm.Type;
             tempText.Text = tempTextVm.Text;
+            tempText.Index = tempTextVm.Index;
         }
 
         public static void UpdateQuickReply(this BotProject.Model.Models.QuickReply quickReply, QuickReplyViewModel quickReplyVm)
@@ -131,6 +146,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             {
                 quickReply.Payload = "";
             }
+            quickReply.Index = quickReplyVm.Index;
             quickReply.ContentType = quickReplyVm.ContentType;
             quickReply.Icon = quickReplyVm.Icon;
             quickReply.Title = quickReplyVm.Title;

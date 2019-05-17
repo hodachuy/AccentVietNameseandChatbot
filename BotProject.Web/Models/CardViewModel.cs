@@ -15,7 +15,8 @@ namespace BotProject.Web.Models
         public string Alias { set; get; }
         public string TemplateJSON { set; get; }
         public string UserID { set; get; }
-
+        [Required]
+        public int GroupCardID { set; get; }
         [Required]
         public int BotID { set; get; }
 
@@ -29,6 +30,7 @@ namespace BotProject.Web.Models
         public string ContentType { set; get; }
         public string Icon { set; get; }
         public string Payload { set; get; }
+        public int Index { set; get; }
         public int? CardPayloadID { set; get; }
         public string Title { set; get; }
     }
@@ -47,6 +49,7 @@ namespace BotProject.Web.Models
     {
         public int ID { set; get; }
         public string Type { set; get; }
+        public int Index { set; get; }
         public virtual IEnumerable<TemplateGenericItemViewModel> TemplateGenericItemViewModels { set; get; }
     }
     public class TemplateGenericItemViewModel
@@ -56,6 +59,8 @@ namespace BotProject.Web.Models
         public string Subtitle { set; get; }
         public string Url { set; get; }
         public string Image { set; get;}
+        public int Index { set; get; }
+
         public int? AttachmentID { set; get; }
         public virtual IEnumerable<ButtonLinkViewModel> ButtonLinkViewModels { set; get; }
         public virtual IEnumerable<ButtonPostbackViewModel> ButtonPostbackViewModels { set; get; }
@@ -65,6 +70,8 @@ namespace BotProject.Web.Models
     {
         public int ID { set; get; }
         public string Type { set; get; }
+
+        public int Index { set; get; }
         public string Text { set; get; }
         public virtual IEnumerable<ButtonLinkViewModel> ButtonLinkViewModels { set; get; }
         public virtual IEnumerable<ButtonPostbackViewModel> ButtonPostbackViewModels { set; get; }
@@ -76,6 +83,7 @@ namespace BotProject.Web.Models
         public string SizeHeight { set; get; }
         public string Title { set; get; }
         public string Type { set; get; }
+        public int Index { set; get; }
     }
     public class ButtonPostbackViewModel
     {
@@ -83,6 +91,7 @@ namespace BotProject.Web.Models
         public string Payload { set; get; }
         public string Title { set; get; }
         public string Type { set; get; }
+        public int Index { set; get; }
         public int? CardPayloadID { set; get; }
     }
     public class FileAttach

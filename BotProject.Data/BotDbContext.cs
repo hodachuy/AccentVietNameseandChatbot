@@ -12,6 +12,7 @@ namespace BotProject.Data
         }
 
         public DbSet<Bot> Bots { set; get; }
+        public DbSet<GroupCard> GroupCards { set; get; }
         public DbSet<FormQuestionAnswer> FormQuestionAnswers { set; get; }
         public DbSet<Answer> Answers { set; get; }
         public DbSet<Question> Questions { set; get; }
