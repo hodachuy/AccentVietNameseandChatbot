@@ -18,17 +18,20 @@ namespace BotProject.Web.Controllers
 		private IQnAService _qnaService;
         private ISettingService _settingService;
         private IGroupCardService _groupCardService;
+        private IModuleService _moduleService;
         public BotController(IErrorService errorService,
             ICardService cardService,
             IQnAService qnaService,
             ISettingService settingService,
-            IGroupCardService groupCardService
+            IGroupCardService groupCardService,
+            IModuleService moduleService
            ) : base(errorService)
         {
             _cardService = cardService;
 			_qnaService = qnaService;
             _settingService = settingService;
             _groupCardService = groupCardService;
+            _moduleService = moduleService;
 
         }
 
@@ -57,9 +60,18 @@ namespace BotProject.Web.Controllers
 			return View(formQnA);
 		}
 
-		public ActionResult CardCategory(int id) {
+        public ActionResult Module(int id)
+        {
             ViewBag.BotID = id;
             return View();
+        }
+
+        public ActionResult CardCategory(int id) {
+
+            ViewBag.BotID = id;
+            var lstModule = _moduleService.GetAllModuleByBotID(id);
+            var lstModuleVm = Mapper.Map<IEnumerable<Module>, IEnumerable<ModuleViewModel>>(lstModule);
+            return View(lstModuleVm);
 		}
 
 		public ActionResult AIML(int id)

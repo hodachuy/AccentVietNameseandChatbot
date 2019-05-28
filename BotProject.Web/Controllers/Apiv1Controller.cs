@@ -3,6 +3,7 @@ using AutoMapper;
 using BotProject.Common;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
+using BotProject.Web.Infrastructure.HandleModuleBot;
 using BotProject.Web.Models;
 using Newtonsoft.Json;
 using SearchEngine.Data;
@@ -61,13 +62,17 @@ namespace BotProject.Web.Controllers
             var botDb = _botDbService.GetByID(botID);
             var settingDb = _settingService.GetSettingByBotID(botID);
             var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
-            if (Session[CommonConstants.SessionUserBot] == null)
-            {
+
+            //if (Session[CommonConstants.SessionUserBot] == null)
+            //{
                 UserBotViewModel userBot = new UserBotViewModel();
                 userBot.ID = Guid.NewGuid().ToString();
                 userBot.BotID = botId;
                 //load setting bot to user
                 _user = _botService.loadUserBot(userBot.ID);
+                // load tất cả module của bot và thêm key vao predicate
+                _user.Predicates.addSetting("phone", "");
+                _user.Predicates.addSetting("phonecheck", "false");
                 SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
                 settingDic.Count = _user.Predicates.Count;
                 settingDic.orderedKeys = _user.Predicates.orderedKeys;
@@ -75,17 +80,17 @@ namespace BotProject.Web.Controllers
                 settingDic.SettingNames = _user.Predicates.SettingNames;
                 userBot.SettingDicstionary = settingDic;
                 Session[CommonConstants.SessionUserBot] = userBot;
-            }
-            else
-            {
-                // cancel session current when refre to botId different
-                var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
-                if (userBot.BotID != botId)
-                {
-                    Session.Abandon();
-                    return RedirectToAction("FormChat", "Apiv1", new { token = token, botId = botId });
-                }
-            }
+            //}
+            //else
+            //{
+            //    // cancel session current when refre to botId different
+            //    var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
+            //    if (userBot.BotID != botId)
+            //    {
+            //        Session.Abandon();
+            //        return RedirectToAction("FormChat", "Apiv1", new { token = token, botId = botId });
+            //    }
+            //}
             return View(settingVm);
         }
 
@@ -98,7 +103,7 @@ namespace BotProject.Web.Controllers
 
             if (!String.IsNullOrEmpty(text))
             {
-                text = Regex.Replace(text, @"<(.|\n)*?>", "");
+                text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             }
 
             if (Session[CommonConstants.SessionUserBot] == null)
@@ -114,7 +119,68 @@ namespace BotProject.Web.Controllers
             _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
             _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
 
-            //module
+
+            // Xử lý module phone
+            bool isCheckPhone = bool.Parse(_user.Predicates.grabSetting("phonecheck"));
+            if (isCheckPhone)
+            {
+                var handlePhone = HandleModule.HandleIsPhoneNumber(text,"");
+                if(handlePhone.Status)// đúng số dt
+                {
+                    _user.Predicates.addSetting("phonecheck", "false");
+                    _user.Predicates.addSetting("phone", text);
+                }
+                return Json(new
+                {
+                    message = new List<string>() { handlePhone.Message },
+                    postback = new List<string>() { null},
+                    messageai = "",
+                    isCheck = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            if (text.Contains("postback_module_phone"))
+            {
+                string numberPhone = _user.Predicates.grabSetting("phone");
+                _user.Predicates.addSetting("phonecheck", "true");
+                var handlePhone = HandleModule.HandleIsPhoneNumber(text, "");
+                if (!String.IsNullOrEmpty(numberPhone))// hiển thị số điện thoại nếu đã cung cấp trước đó
+                {
+                    StringBuilder sbPostback = new StringBuilder();
+                    sbPostback.AppendLine("<div class=\"_6biu\">");
+                    sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
+                    sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
+                    sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
+                    sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
+                    sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
+                    sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\""+ numberPhone + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + numberPhone + "</div>");
+                    sbPostback.AppendLine(" </div>");
+                    sbPostback.AppendLine("                                                                                </div>");
+                    sbPostback.AppendLine("                                                                            </div>");
+                    sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
+                    sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+                    sbPostback.AppendLine("                                                                            </div>");
+                    sbPostback.AppendLine("                                                                        </div>");
+
+                    return Json(new
+                    {
+                        message = new List<string>() { handlePhone.Message },
+                        postback = new List<string>() { sbPostback.ToString() },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new
+                {
+                    message = new List<string>() { handlePhone.Message },
+                    postback = new List<string>() { null },
+                    messageai = "",
+                    isCheck = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            
+
+
+            // get predicate of module and check
             //string key = "email_" + userBot.ID;
             //string email = _user.Predicates.grabSetting(key);
 
@@ -122,6 +188,7 @@ namespace BotProject.Web.Controllers
             string result = aimlBotResult.OutputSentences[0].ToString();
             bool isMatch = true;
 
+            // K tìm thấy trong Rule gọi tới module tri thức
             if (result.Contains("NOT_MATCH"))
             {
                 isMatch = false;
@@ -140,6 +207,7 @@ namespace BotProject.Web.Controllers
             //{
             //    aimlBotResult.user.Predicates.addSetting(key, "true");
             //}
+
             //set new predicate to session user bot request
             SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = aimlBotResult.user.Predicates.Count;

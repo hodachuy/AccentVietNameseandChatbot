@@ -26,6 +26,8 @@ namespace BotProject.Data
         public DbSet<TemplateText> TemplateTexts { set; get; }
         public DbSet<ButtonLink> ButtonLinks { set; get; }
         public DbSet<ButtonPostback> ButtonPostbacks { set; get; }
+        public DbSet<ButtonModule> ButtonModules { set; get; }
+        public DbSet<ButtonCheck> ButtonChecks { set; get; }
         public DbSet<AIML> AIMLs { set; get; }
         public DbSet<SystemConfig> SystemConfigs { set; get; }
         public DbSet<VisitorStatistic> VisitorStatistics { set; get; }
@@ -35,7 +37,10 @@ namespace BotProject.Data
         public DbSet<MdArea> MdAreas { set; get; }
         public DbSet<MdQuestion> MdQuestions { set; get; }
         public DbSet <MdAnswer> MdAnswers { set; get; }
-        public DbSet <Module> Modules { set; get; }
+        public DbSet <ModuleCategory> ModuleCategories { set; get; }
+        public DbSet<Module> Modules { set; get; }
+        public DbSet<MdPhone> MdPhones { set; get; }
+        public DbSet<MdEmail> MdEmails { set; get; }
         public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
         public DbSet<ApplicationRole> ApplicationRoles { set; get; }
         public DbSet<ApplicationRoleGroup> ApplicationRoleGroups { set; get; }

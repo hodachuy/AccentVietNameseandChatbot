@@ -137,7 +137,9 @@ var common = {
             html += '<li class="nav-item">';
             html += '<a class="nav-link" href="'+_Host+'bot/' + data.Alias + '/' + data.ID + '/cardcategory"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
             html += '</li>';
-
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
+            html += '</li>';
             html += '<li class="nav-item">';
             html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '"><i class="fa fa-recycle"></i>Huấn luyện bot';
             html +=                '<span style="float: right;color: lightgray;cursor: pointer;">';

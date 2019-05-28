@@ -1047,7 +1047,7 @@ namespace AIMLbot
                             switch (childNode.Name)
                             {
                                 case "button":
-                                    if (childNode.OuterXml.Contains("<menu>") || childNode.OuterXml.Contains("<url>"))
+                                    if (childNode.OuterXml.Contains("<menu>") || childNode.OuterXml.Contains("<url>") || childNode.OuterXml.Contains("<module>"))
                                     {
                                         lstBtnMenuUrl.Add(tagHtml.Body);
                                     }

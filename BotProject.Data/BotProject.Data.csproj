@@ -218,6 +218,26 @@
     <Compile Include="Migrations\201905160310350_I12.Designer.cs">
       <DependentUpon>201905160310350_I12.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905210231304_UpdateModule.cs" />
+    <Compile Include="Migrations\201905210231304_UpdateModule.Designer.cs">
+      <DependentUpon>201905210231304_UpdateModule.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905210641052_UpdateModulePayload.cs" />
+    <Compile Include="Migrations\201905210641052_UpdateModulePayload.Designer.cs">
+      <DependentUpon>201905210641052_UpdateModulePayload.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905240146577_Update-ButtonCheck.cs" />
+    <Compile Include="Migrations\201905240146577_Update-ButtonCheck.Designer.cs">
+      <DependentUpon>201905240146577_Update-ButtonCheck.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905240201051_UpdateButton.cs" />
+    <Compile Include="Migrations\201905240201051_UpdateButton.Designer.cs">
+      <DependentUpon>201905240201051_UpdateButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201905270403253_UpdateMDPhoneEmail.cs" />
+    <Compile Include="Migrations\201905270403253_UpdateMDPhoneEmail.Designer.cs">
+      <DependentUpon>201905270403253_UpdateMDPhoneEmail.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -237,8 +257,10 @@
     <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\MdAnswerRepository.cs" />
     <Compile Include="Repositories\MdAreaRepository.cs" />
-    <Compile Include="Repositories\ModuleRepository.cs" />
+    <Compile Include="Repositories\MdPhone.cs" />
+    <Compile Include="Repositories\ModuleCategoryRepository.cs" />
     <Compile Include="Repositories\MdQuestionRepository.cs" />
+    <Compile Include="Repositories\ModuleRepository.cs" />
     <Compile Include="Repositories\NotifyRepository.cs" />
     <Compile Include="Repositories\QuestionGroupRepository.cs" />
     <Compile Include="Repositories\QuestionRepository.cs" />
@@ -382,6 +404,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201905160310350_I12.resx">
       <DependentUpon>201905160310350_I12.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905210231304_UpdateModule.resx">
+      <DependentUpon>201905210231304_UpdateModule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905210641052_UpdateModulePayload.resx">
+      <DependentUpon>201905210641052_UpdateModulePayload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905240146577_Update-ButtonCheck.resx">
+      <DependentUpon>201905240146577_Update-ButtonCheck.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905240201051_UpdateButton.resx">
+      <DependentUpon>201905240201051_UpdateButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905270403253_UpdateMDPhoneEmail.resx">
+      <DependentUpon>201905270403253_UpdateMDPhoneEmail.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

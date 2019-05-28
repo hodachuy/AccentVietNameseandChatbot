@@ -10,38 +10,39 @@ using System.Threading.Tasks;
 
 namespace BotProject.Service
 {
-    public interface IMdQnAService
+    public interface IModuleCategoryService
     {
         IEnumerable<MdQnAViewModel> GetListMdQnA(string filter, string sort, int pageNumber, int pageSize, long? selectedID);
         IEnumerable<MdArea> GetListMdArea(int? id);
         MdQuestion CreateQuestion(MdQuestion ques);
         MdAnswer CreateAnswer(MdAnswer ans);
+        IEnumerable<ModuleCategory> GetAllModuleCategory();
         void UpdateQuestion(MdQuestion ques);
         void UpdateAnswer(MdAnswer ans);
         void Save();
     }
-    public class MdQnAService : IMdQnAService
+    public class ModuleCategoryService : IModuleCategoryService
     {
         private IUnitOfWork _unitOfWork;
-        private IModuleRepository _moduleRepository;
+        private IModuleCategoryRepository _moduleCategoryRepository;
         private IMdAreaRepository _mdAreaRepository;
         private IMdQuestionRepository _mdQuesRepository;
         private IMdAnswerRepository _mdAnswerRepository;
-        public MdQnAService(IUnitOfWork unitOfWork,
-            IModuleRepository moduleRepository,
+        public ModuleCategoryService(IUnitOfWork unitOfWork,
+            IModuleCategoryRepository moduleCategoryRepository,
             IMdAreaRepository mdAreaRepository,
             IMdQuestionRepository mdQuesRepository,
             IMdAnswerRepository mdAnswerRepository)
         {
             _unitOfWork = unitOfWork;
-            _moduleRepository = moduleRepository;
+            _moduleCategoryRepository = moduleCategoryRepository;
             _mdAreaRepository = mdAreaRepository;
             _mdQuesRepository = mdQuesRepository;
             _mdAnswerRepository = mdAnswerRepository;
         }
         public IEnumerable<MdQnAViewModel> GetListMdQnA(string filter, string sort, int pageNumber, int pageSize, long? selectedID)
         {
-            return _moduleRepository.GetListMdQnA(filter,sort,pageNumber,pageSize,selectedID);
+            return _moduleCategoryRepository.GetListMdQnA(filter,sort,pageNumber,pageSize,selectedID);
         }
 
         public void Save()
@@ -76,5 +77,9 @@ namespace BotProject.Service
             _mdAnswerRepository.Update(ans);
         }
 
+        public IEnumerable<ModuleCategory> GetAllModuleCategory()
+        {
+            return _moduleCategoryRepository.GetAll();
+        }
     }
 }

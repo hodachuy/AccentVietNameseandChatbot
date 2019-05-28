@@ -74,7 +74,7 @@ function getDataTable(page, pageSize) {
     }
     //param = JSON.stringify(param)
     $.ajax({
-        url: _Host + 'api/module/getallqna',
+        url: _Host + 'api/modulecategory/getallqna',
         contentType: 'application/json; charset=utf-8',
         data: param,
         type: 'GET',
@@ -142,7 +142,7 @@ function addQnA() {
     qnaVm.AreaName = areaName;
     qnaVm.QuesID = $("#quesID").val();
     qnaVm.AnsID = $("#ansID").val();
-    var svr = new AjaxCall("api/module/createupdateqna", JSON.stringify(qnaVm));
+    var svr = new AjaxCall("api/modulecategory/createupdateqna", JSON.stringify(qnaVm));
     svr.callServicePOST(function (data) {
         if (data) {
             $("#addQnAModal").modal('hide');
@@ -170,7 +170,7 @@ function viewQnA(quesId, ansId) {
     var params = {
         quesId: quesId
     }
-    var svr = new AjaxCall("api/module/getqnabyquesid", params);
+    var svr = new AjaxCall("api/modulecategory/getqnabyquesid", params);
     svr.callServiceGET(function (data) {
         $("#quesID").val(data.QuesID);
         $("#ansID").val(data.AnsID);

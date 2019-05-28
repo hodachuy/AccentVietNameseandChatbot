@@ -1,22 +1,21 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <aiml>
-<category>
-<pattern>postback_card_3027</pattern>
-<template>
-abc
-<button>
-<text>abc 1</text>
-<menu>postback_card_3026</menu>
-</button>
-<button>
-<text>abc 2</text>
-<menu>postback_card_3026</menu>
-</button>
-<button>
-<text>link2</text>
-<url>http://localhost:54160/bot/phap-luat/3016/cardcategory</url>
-</button>
-<image>File/Images/Card/e256d9a4-2131-4f19-800c-724b9a52ee70-vietnam.jpg</image>
-</template>
-</category>
+  <category>
+    <pattern>postback_card_3027</pattern>
+    <template>
+      abc
+      <button>
+        <text>abc 1</text>
+        <menu>postback_card_3026</menu>
+      </button>
+      <button>
+        <text>abc 2</text>
+        <menu>postback_card_3026</menu>
+      </button>
+      <button>
+        <text>link2</text>
+        <url>http://localhost:54160/bot/phap-luat/3016/cardcategory</url>
+      </button>
+    </template>
+  </category>
 </aiml>

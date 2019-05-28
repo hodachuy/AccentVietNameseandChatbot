@@ -253,12 +253,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\GroupCardController.cs" />
+    <Compile Include="API\ModuleCategoryController.cs" />
     <Compile Include="API\ModuleController.cs" />
     <Compile Include="API\SettingController.cs" />
     <Compile Include="API\WebhookController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />
-    <Compile Include="Controllers\ModuleController.cs" />
+    <Compile Include="Controllers\ModuleCategoryController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
     <Compile Include="API\FormQnAController.cs" />
@@ -291,6 +292,7 @@
     <Compile Include="Infrastructure\Cors\AllowCrossSiteAttribute.cs" />
     <Compile Include="Infrastructure\Extensions\BotRequest.cs" />
     <Compile Include="Infrastructure\Extensions\EntityExtensions.cs" />
+    <Compile Include="Infrastructure\HandleModuleBot\HandleModule.cs" />
     <Compile Include="Infrastructure\Helper\Helper.cs" />
     <Compile Include="Infrastructure\Log4Net\BotLog.cs" />
     <Compile Include="Infrastructure\Log4Net\Log4NetDAL.cs" />
@@ -309,6 +311,7 @@
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\ModuleQnAViewModel.cs" />
     <Compile Include="Models\FormQnACommonViewModel.cs" />
+    <Compile Include="Models\ModuleViewModel.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\UserBotViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -344,7 +347,8 @@
     <Content Include="assets\client\js\eventBot\chat-dialog.js" />
     <Content Include="assets\client\js\common.js" />
     <Content Include="assets\client\js\helper\callServiceHelper.js" />
-    <Content Include="assets\client\js\module\search.js" />
+    <Content Include="assets\client\js\moduleBot\lstModuleBot.js" />
+    <Content Include="assets\client\js\moduleCategory\search.js" />
     <Content Include="assets\client\js\searchEngineQnA.js" />
     <Content Include="assets\client\js\setting.js" />
     <Content Include="assets\client\libs\ace\ace.js" />
@@ -879,8 +883,9 @@
     <Content Include="Views\SearchEngine\Index.cshtml" />
     <Content Include="Views\AccentVN\Index.cshtml" />
     <Content Include="Views\Bot\Setting.cshtml" />
-    <Content Include="Views\Module\Search.cshtml" />
+    <Content Include="Views\ModuleCategory\Search.cshtml" />
     <Content Include="Views\Bot\FormChatSetting.cshtml" />
+    <Content Include="Views\Bot\Module.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

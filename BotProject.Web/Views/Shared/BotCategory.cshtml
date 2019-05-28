@@ -6,6 +6,7 @@
         //var urlQnA = "/bot/" + item.Alias + "/" + item.ID + "/qna";
         var urlCard = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/cardcategory";
         var urlAIML = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/aiml";
+        var urlModule = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/module";
         var urlSetting = Url.Content("~") + "bot/setting/" + item.Alias + "/" + item.ID +"?name="+item.Name;
         <li class="nav-item">
             <a class="nav-link" id="dialog-bot" data-id="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-@item.ID">
@@ -17,11 +18,15 @@
                         <a class="nav-link" href="@urlCard"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="@urlModule"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="@item.ID"><i class="fa fa-recycle"></i>Huấn luyện bot
                             <span style="float: right;color: lightgray;cursor: pointer;">
                                 <i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>
                             </span>
                         </a>
+
                         <div class="submenu" style="">
                             <ul class="nav flex-column" id="form-bot-qna-@item.ID">
                                 @if (item.FormQuestionAnswers != null && item.FormQuestionAnswers.Count() != 0)

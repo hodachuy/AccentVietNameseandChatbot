@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Accent.Utils;
 using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace Accent.ConsoleApplication
 {
@@ -21,6 +22,9 @@ namespace Accent.ConsoleApplication
             //var a = x[right];
 
             //quickSort(x, left, right);
+            bool isNumber = Regex.Match("0375348328", @"/(09|01[2|6|8|9])+([0-9]{8})\b/g").Success;
+
+
 
             //printArray(x);
             Console.OutputEncoding = Encoding.UTF8;

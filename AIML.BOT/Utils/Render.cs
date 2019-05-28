@@ -71,6 +71,25 @@ namespace AIML.BOT.Utils
 						//_isFlag = false;
                         _tagHtml.Body = sb.ToString();
 					}
+                    else if (outerTagContent.Contains("<module>"))
+                    {
+                        dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+                        string dataModule = new Regex("<module>(.*)</module>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
+                        //if (_isFlag)
+                        //{
+                        //	sb.AppendLine("<div class=\"_6isd _6ir5\">");
+                        //}else
+                        //{
+                        //	sb.AppendLine("<div class=\"_6ir5\">");
+                        //}
+                        sb.AppendLine("<div class=\"_6ir5\">");
+                        sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
+                        sb.AppendLine("          <a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + dataModule + "\" href=\"#\" style=\"color: " + _color + "\">" + dataText + "</a>");
+                        sb.AppendLine("     </div>");
+                        sb.AppendLine("</div>");
+                        //_isFlag = false;
+                        _tagHtml.Body = sb.ToString();
+                    }
                     break;
                 case "link":
                     dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;

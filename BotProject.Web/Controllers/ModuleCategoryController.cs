@@ -9,10 +9,10 @@ using BotProject.Service;
 namespace BotProject.Web.Controllers
 {
     [OutputCacheAttribute(VaryByParam = "*", Duration = 0, NoStore = true)]
-    public class ModuleController : BaseController
+    public class ModuleCategoryController : BaseController
     {
-        private IMdQnAService _mdQnAService;
-        public ModuleController(IErrorService errorService, IMdQnAService mdQnAService) : base(errorService)
+        private IModuleCategoryService _mdQnAService;
+        public ModuleCategoryController(IErrorService errorService, IModuleCategoryService mdQnAService) : base(errorService)
         {
             _mdQnAService = mdQnAService;
         }

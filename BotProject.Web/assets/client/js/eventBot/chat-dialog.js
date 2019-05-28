@@ -289,6 +289,7 @@ function getMessageBot(text) {
         data: param,
         type: 'POST',
         success: function (result) {
+            console.log(result)
             var message = result.message[0];
             var postback = result.postback[0];
             var resultAPI = result.messageai.trim();

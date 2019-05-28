@@ -81,10 +81,6 @@ namespace BotProject.Web.API
                 return response;
             });
         }
-
-
-
-
         [Route("addupdate")]
 		[HttpPost]
 		public HttpResponseMessage AddUpdate(HttpRequestMessage request, CardViewModel cardVm)
@@ -263,7 +259,20 @@ namespace BotProject.Web.API
 										_commonCardService.Save();
 									}
 								}
-							}
+                                if (tempTextVm.ButtonPostbackViewModels.Count() != 0)
+                                {
+                                    var lstBtnPostbackVm = tempTextVm.ButtonPostbackViewModels;
+                                    foreach (var btnPostbackVm in lstBtnPostbackVm)
+                                    {
+                                        ButtonPostback btnPostbackDb = new ButtonPostback();
+                                        btnPostbackDb.UpdateButtonPostback(btnPostbackVm);
+                                        btnPostbackDb.CardID = cardDb.ID;
+                                        btnPostbackDb.TempTxtID = tempTextDb.ID;
+                                        _commonCardService.AddButtonPostback(btnPostbackDb);
+                                        _commonCardService.Save();
+                                    }
+                                }
+                            }
 							// Image
 							if (message.ImageViewModel != null)
 							{

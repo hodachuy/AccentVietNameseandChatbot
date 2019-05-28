@@ -18,6 +18,7 @@ namespace BotProject.Web.Mappings
                 cfg.CreateMap<Setting, BotSettingViewModel>();
                 cfg.CreateMap<GroupCard, GroupCardViewModel>();
                 cfg.CreateMap<Card, CardViewModel>();
+                cfg.CreateMap<Module, ModuleViewModel>();
             });
         }
     }

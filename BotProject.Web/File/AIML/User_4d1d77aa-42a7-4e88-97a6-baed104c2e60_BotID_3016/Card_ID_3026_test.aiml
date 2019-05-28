@@ -1,18 +1,17 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <aiml>
-<category>
-<pattern>postback_card_3026</pattern>
-<template>
-zxcxzc dsfdsf
-<button>
-<text>sdf</text>
-<menu>postback_card_3026</menu>
-</button>
-<button>
-<text>dsfs2</text>
-<menu>postback_card_3027</menu>
-</button>
-<image>File/Images/Card/f793c47f-8905-4892-90a6-0839cd87ff22-Unti1231313tled.png</image>
-</template>
-</category>
+  <category>
+    <pattern>postback_card_3026</pattern>
+    <template>
+      demo
+      <button>
+        <text>Giới thiệu</text>
+        <menu>postback_card_3026</menu>
+      </button>
+      <button>
+        <text>Số điện thoại</text>
+        <module>postback_module_phone</module>
+      </button>
+    </template>
+  </category>
 </aiml>

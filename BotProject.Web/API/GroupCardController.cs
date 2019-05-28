@@ -80,6 +80,7 @@ namespace BotProject.Web.API
                 GroupCard grCardDb = new GroupCard();
                 grCardDb.Name = grCardVm.Name;
                 grCardDb.BotID = grCardVm.BotID;
+                grCardDb.ID = grCardVm.ID;
                 _groupCardService.Update(grCardDb);
                 _groupCardService.Save();
                 response = request.CreateResponse(HttpStatusCode.OK, grCardDb);

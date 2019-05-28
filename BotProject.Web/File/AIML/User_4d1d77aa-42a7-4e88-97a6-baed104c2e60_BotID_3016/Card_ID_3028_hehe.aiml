@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <aiml>
-<category>
-<pattern>postback_card_3028</pattern>
-<template>
-dfgdfg
-</template>
-</category>
+  <category>
+    <pattern>postback_card_3028</pattern>
+    <template>
+      dfgdfg
+    </template>
+  </category>
 </aiml>

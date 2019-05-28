@@ -69,6 +69,8 @@
     <Compile Include="Models\ApplicationUser.cs" />
     <Compile Include="Models\ApplicationUserGroup.cs" />
     <Compile Include="Models\Bot.cs" />
+    <Compile Include="Models\ButtonCheck.cs" />
+    <Compile Include="Models\ButtonModule.cs" />
     <Compile Include="Models\FormQuestionAnswer.cs" />
     <Compile Include="Models\ButtonPostback.cs" />
     <Compile Include="Models\ButtonLink.cs" />
@@ -79,11 +81,15 @@
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\MdAnswer.cs" />
     <Compile Include="Models\MdArea.cs" />
+    <Compile Include="Models\MdEmail.cs" />
+    <Compile Include="Models\MdPhone.cs" />
     <Compile Include="Models\MdQuestion.cs" />
+    <Compile Include="Models\Module.cs" />
+    <Compile Include="Models\ModuleKnowledgeMedInfoPatient.cs" />
     <Compile Include="Models\Notify.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\QuestionGroup.cs" />
-    <Compile Include="Models\Module.cs" />
+    <Compile Include="Models\ModuleCategory.cs" />
     <Compile Include="Models\QuickReply.cs" />
     <Compile Include="Models\Setting.cs" />
     <Compile Include="Models\SystemConfig.cs" />

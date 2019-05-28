@@ -21,6 +21,13 @@ namespace BotProject.Web
             );
 
             routes.MapRoute(
+             name: "ModuleBot",
+             url: "bot/{alias}/{id}/module",
+             defaults: new { controller = "Bot", action = "Module", id = UrlParameter.Optional },
+               namespaces: new string[] { "BotProject.Web.Controllers" }
+             );
+
+            routes.MapRoute(
                name: "Bot Setting",
                url: "bot/setting/{alias}/{id}",
                defaults: new { controller = "Bot", action = "Setting", id = UrlParameter.Optional },

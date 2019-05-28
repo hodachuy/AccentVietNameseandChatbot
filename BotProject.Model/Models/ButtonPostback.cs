@@ -21,6 +21,10 @@ namespace BotProject.Model.Models
 
         public string Title { set; get; }
 
+        public string DictionaryKey { set; get; }
+
+        public string DictionaryValue { set; get; }
+
         public int Index { set; get; }
 
         public int? TempGnrItemID { set; get; }

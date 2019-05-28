@@ -125,6 +125,17 @@ namespace BotProject.Web.Infrastructure.Extensions
             btnPostback.Payload = btnPostbackVm.Payload;
             btnPostback.CardPayloadID = btnPostbackVm.CardPayloadID;
             btnPostback.Index = btnPostbackVm.Index;
+            btnPostback.DictionaryKey = btnPostbackVm.DictionaryKey;
+            btnPostback.DictionaryValue = btnPostbackVm.DictionaryValue;
+        }
+
+        public static void UpdateButtonModule(this ButtonModule btnModule, ButtonModule btnModuleVm)
+        {
+            btnModule.ID = btnModuleVm.ID;
+            btnModule.Type = btnModuleVm.Type;
+            btnModule.Title = btnModuleVm.Title;
+            btnModule.Payload = btnModuleVm.Payload;
+            btnModule.Index = btnModuleVm.Index;
         }
 
         public static void UpdateTemplateText(this TemplateText tempText, TemplateTextViewModel tempTextVm)
@@ -191,6 +202,18 @@ namespace BotProject.Web.Infrastructure.Extensions
             mdAnsDb.ContentHTML = HttpUtility.HtmlDecode(mdQnA.AnsContent);
             mdAnsDb.ContentText = Regex.Replace(HttpUtility.HtmlDecode(mdQnA.AnsContent), @"<(.|\n)*?>", "");
             mdAnsDb.MQuestionID = mdQnA.QuesID;
+        }
+        #endregion
+
+        #region
+        public static void UpdateModule(this Module module, ModuleViewModel moduleVm)
+        {
+            module.BotID = moduleVm.BotID;
+            module.Text = moduleVm.Text;
+            module.Title = moduleVm.Title;
+            module.ID = moduleVm.ID;
+            module.Type = moduleVm.Type;
+            module.Payload = moduleVm.Payload;
         }
         #endregion
     }

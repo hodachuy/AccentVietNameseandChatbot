@@ -66,6 +66,7 @@ namespace BotProject.Web.Models
         public virtual IEnumerable<ButtonPostbackViewModel> ButtonPostbackViewModels { set; get; }
 
     }
+
     public class TemplateTextViewModel
     {
         public int ID { set; get; }
@@ -75,6 +76,7 @@ namespace BotProject.Web.Models
         public string Text { set; get; }
         public virtual IEnumerable<ButtonLinkViewModel> ButtonLinkViewModels { set; get; }
         public virtual IEnumerable<ButtonPostbackViewModel> ButtonPostbackViewModels { set; get; }
+        public virtual IEnumerable<ButtonModuleViewModel> ButtonModuleViewModels { set; get; }
     }
     public class ButtonLinkViewModel
     {
@@ -93,6 +95,20 @@ namespace BotProject.Web.Models
         public string Type { set; get; }
         public int Index { set; get; }
         public int? CardPayloadID { set; get; }
+        public string DictionaryKey { set; get; }
+        public string DictionaryValue { set; get; }
+    }
+
+    public class ButtonModuleViewModel
+    {
+        public int ID { set; get; }
+        public string Payload { set; get; }
+        public string Title { set; get; }
+        public string Type { set; get; }
+        public int Index { set; get; }
+        public int? CardPayloadID { set; get; }
+        public string DictionaryKey { set; get; }
+        public string DictionaryValue { set; get; }
     }
     public class FileAttach
     {

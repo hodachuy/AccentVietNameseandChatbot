@@ -87,7 +87,7 @@ $(document).ready(function () {
     //card();
 
     module();
-
+    console.log(module())
     $('body').on('click', '#btn-create-card', function () {
         $('#form-card').hide();
         $('#form-card').show("slow");
@@ -531,28 +531,33 @@ $(document).ready(function () {
             $('#modal_button .modal-header .bt_name').val(el.find('.bt_title').text());
             $('#modal_button .modal-header span').text(20 - el.find('.bt_title').text().length);
             var moduleId = el.find('.bt_ct span').attr('module-id').split(/_|&/);
-            $("#modal_button .modal-body .blSelectModule select").select2("val", moduleId[0]);
-            if (moduleId.length > 0) {
-                $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-                $('#modal_button .modal-body .blSelectModule select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
-                var idMo = moduleId[0];
-                moduleId.splice(0, 1);
-                $.ajax({
-                    url: srcLayoutModule,
-                    type: 'POST',
-                    data: { id: idMo, dataMo: moduleId },
-                })
-                .done(function (val) {
-                    if (val != '') {
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').empty();
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').append(val);
-                    } else {
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-                    }
-                });
-            } else {
-                $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-            }
+            console.log(moduleId)
+            $('#modal_button .modal-body .blSelectModule .select option[value="' + moduleId[0] + '"]').attr('selected', 'selected');
+            $('#modal_button .modal-body .blSelectModule .select').select2({
+                // minimumResultsForSearch: "-1"
+            });
+            //$("#modal_button .modal-body .blSelectModule select").select2("val", moduleId[0]);
+            //if (moduleId.length > 0) {
+            //    $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //    $('#modal_button .modal-body .blSelectModule select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
+            //    var idMo = moduleId[0];
+            //    moduleId.splice(0, 1);
+            //    $.ajax({
+            //        url: srcLayoutModule,
+            //        type: 'POST',
+            //        data: { id: idMo, dataMo: moduleId },
+            //    })
+            //    .done(function (val) {
+            //        if (val != '') {
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').empty();
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').append(val);
+            //        } else {
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //        }
+            //    });
+            //} else {
+            //    $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //}
         } else if (el.attr('type-button') == 'buy') {
             str_popup = htmlPopup($(this));
             $('#modal_button').append(str_popup);
@@ -863,6 +868,7 @@ $(document).ready(function () {
                             var buttons = [];
                             var button_links_sql = [];
                             var button_postbacks_sql = [];
+                            var button_module_sql = [];
                             $(this).find('.wr_button .bt').each(function (index, el) {
                                 var button_object = {};
                                 var btn_object_sql = {};
@@ -911,7 +917,7 @@ $(document).ready(function () {
                                         "CardPayloadID": $(this).attr('postback-id'),
                                         "Index": $(this).attr('data-index')
                                     }
-                                    button_postbacks_sql.push(btn_object_sql);
+                                    button_module_sql.push(btn_object_sql);
 
                                 } else if ($(this).attr('type-button') == 'web_url') {
 
@@ -1012,6 +1018,7 @@ $(document).ready(function () {
                                 "Subtitle": subtitle,
                                 "ButtonPostbackViewModels": button_postbacks_sql,
                                 "ButtonLinkViewModels": button_links_sql,
+                                "ButtonModuleViewModels":button_module_sql,
                                 "Index": $(this).attr('data-index')
                             };
                             ar_galery_sql.push(galery_element_sql);
@@ -2341,30 +2348,33 @@ $(document).ready(function () {
             }
 
             var moduleId = $(this).find('.reply_btcontent span').attr('module-id').split(/_|&/);
-            $("#modal_button .modal-body .blSelectModule select").select2("val", moduleId[0]);
-
-            if (moduleId.length > 0) {
-                $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-                $('#modal_button .modal-body .blSelectModule select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
-                var idMo = moduleId[0];
-                moduleId.splice(0, 1);
-                $.ajax({
-                    url: srcLayoutModule,
-                    type: 'POST',
-                    data: { id: idMo, dataMo: moduleId },
-                })
-                .done(function (val) {
-                    console.log(val)
-                    if (val != '') {
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').empty();
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').append(val);
-                    } else {
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-                    }
-                });
-            } else {
-                $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-            }
+            //$("#modal_button .modal-body .blSelectModule select").select2("val", moduleId[0]);
+            $('#modal_button .modal-body .blSelectModule .select option[value="' + moduleId[0] + '"]').attr('selected', 'selected');
+            $('#modal_button .modal-body .blSelectModule .select').select2({
+                // minimumResultsForSearch: "-1"
+            });
+            //if (moduleId.length > 0) {
+            //    $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //    $('#modal_button .modal-body .blSelectModule select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
+            //    var idMo = moduleId[0];
+            //    moduleId.splice(0, 1);
+            //    $.ajax({
+            //        url: srcLayoutModule,
+            //        type: 'POST',
+            //        data: { id: idMo, dataMo: moduleId },
+            //    })
+            //    .done(function (val) {
+            //        console.log(val)
+            //        if (val != '') {
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').empty();
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').append(val);
+            //        } else {
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //        }
+            //    });
+            //} else {
+            //    $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //}
 
         }
 
@@ -3442,28 +3452,33 @@ $(document).ready(function () {
             $('#modal_button .modal-header .bt_name').val(el.find('.bt_title').text());
             $('#modal_button .modal-header span').text(20 - el.find('.bt_title').text().length);
             var moduleId = el.find('.bt_ct span').attr('module-id').split(/_|&/);
-            $("#modal_button .modal-body .blSelectModule select").select2("val", moduleId[0]);
-            if (moduleId.length > 0) {
-                $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-                $('#modal_button .modal-body .blSelectModule select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
-                var idMo = moduleId[0];
-                moduleId.splice(0, 1);
-                $.ajax({
-                    url: srcLayoutModule,
-                    type: 'POST',
-                    data: { id: idMo, dataMo: moduleId },
-                })
-                .done(function (val) {
-                    if (val != '') {
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').empty();
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').append(val);
-                    } else {
-                        $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-                    }
-                });
-            } else {
-                $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
-            }
+            $('#modal_button .modal-body .blSelectModule .select option[value="'+moduleId[0]+'"]').attr('selected', 'selected');
+            $('#modal_button .modal-body .blSelectModule .select').select2({
+                // minimumResultsForSearch: "-1"
+            });
+            //$("#modal_button .modal-body .blSelectModule select").select2("val", moduleId[0]);
+            //if (moduleId.length > 0) {
+            //    $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //    $('#modal_button .modal-body .blSelectModule select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
+            //    var idMo = moduleId[0];
+            //    moduleId.splice(0, 1);
+            //    $.ajax({
+            //        url: srcLayoutModule,
+            //        type: 'POST',
+            //        data: { id: idMo, dataMo: moduleId },
+            //    })
+            //    .done(function (val) {
+            //        if (val != '') {
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').empty();
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').append(val);
+            //        } else {
+            //            $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //        }
+            //    });
+            //}
+            //else {
+            //    $('#modal_button .modal-body .blSelectModule select').parent().children('.moduleExtension').remove();
+            //}
         } else if (el.attr('type-button') == 'buy') {
             str_popup = htmlPopup($(this));
             $('#modal_button').append(str_popup);
@@ -3551,252 +3566,6 @@ function loadEmojiPicker() {
     });
 }
 
-
-
-// ====================================================================
-// ============================LOAD ADD DATA CARD, MODULE ===============================
-// ====================================================================
-
-function loadGroupCard() {
-    var param = {
-        botId: botId
-    };
-    var urlTest = "api/groupcard/getbybot";
-    var svr = new AjaxCall(urlTest, param);
-    svr.callServiceGET(function (data) {
-        console.log(data)
-        templateGroupCard(data)
-    });
-}
-
-function templateGroupCard(data) {
-    var html = '';
-    if (data.length != 0) {
-        $.each(data, function (index, value) {
-            html += '<div class="wrBlock" data-gr-id="' + value.ID + '">';
-            html += '<i class="icon-cube2 fa fa-cube"></i>';
-            html += '<input type="text" maxlength="20" class="text-semibold text-uppercase titleBlock" value="' + value.Name + '" data="' + value.Name + '">';
-            html += '<span class="pull-right rmBlock">';
-            html += '<i class="icon-bin fa fa-trash"></i>';
-            html += '</span>';
-            html += '<ul class="sortable grid list-inline">';
-            html += '<li class="addItemCard">';
-            html += '<div>';
-            html += '<a href="#"><i class="icon-plus22 fa fa-plus"></i></a>';
-            html += '</div>';
-            html += '</li>';
-            if (value.Cards.length != 0) {
-                $.each(value.Cards, function (index, value) {
-                    html += '<li data-card-id="' + value.ID + '">';
-                    html += '<div>';
-                    html += '<a href="#" class="select-item-card">' + value.Name + '</a>';
-                    html += '</div>';
-                    html += '</li>';
-                })
-            }
-            html += '</ul>';
-            html += '</div>';
-        })
-    }
-    $("#build").show();
-    $("#build").empty().append(html);
-}
-$('body').on('click', '.rmBlock', function () {
-    var $el = $(this).parent();
-    var groupId = $(this).parent().attr('data-gr-id');
-    console.log($(this).parent().attr('data-gr-id'))
-    bootbox.confirm({
-        message: "Bạn có chắc muốn xóa nhóm thẻ này",
-        buttons: {
-            confirm: {
-                label: txtCard59,
-                className: 'btn-primary'
-            },
-            cancel: {
-                label: txtCard60,
-                className: 'btn-default'
-            }
-        },
-        callback: function (result) {
-            if (result) {
-                var params = {
-                    groupCardId: groupId
-                };
-                params = JSON.stringify(params);
-                var urlTest = "api/groupcard/delete";
-                var svr = new AjaxCall(urlTest, params);
-                svr.callServicePOST(function (data) {
-                    console.log(data)
-                    if (data) {
-                        $el.remove();
-                    }
-                });
-            }
-        }
-    })
-})
-
-function addBlock() {
-    var index = $(".wrBlock").size() + 1;
-    console.log(index);
-    var groupCardName = "Nhóm " + index;
-    var params = {
-        Name: groupCardName,
-        BotID: botId
-    };
-    params = JSON.stringify(params);
-    var urlTest = "api/groupcard/create";
-    var svr = new AjaxCall(urlTest, params);
-    svr.callServicePOST(function (data) {
-        if (data != null) {
-            var html = '';
-            html += '<div class="wrBlock" data-gr-id="' + data.ID + '">';
-            html += '<i class="icon-cube2 fa fa-cube"></i>';
-            html += '<input type="text" maxlength="20" class="text-semibold text-uppercase titleBlock" value="' + groupCardName + '" data="">';
-            html += '<span class="pull-right rmBlock">';
-            html += '<i class="icon-bin fa fa-trash"></i>';
-            html += '</span>';
-            html += '<ul class="sortable grid list-inline">';
-            html += '<li class="addItemCard">';
-            html += '<div>';
-            html += '<a href="#"><i class="icon-plus22 fa fa-plus"></i></a>';
-            html += '</div>';
-            html += '</li>';
-            html += '</ul>';
-            html += '</div>';
-            $("#build").append(html);
-        }
-    });
-}
-
-
-$('body').on('click', '.addItemCard', function () {
-    $("#block-card").hide();
-    $("#layout-card").show();
-    $("#lst-card").empty();
-
-    $("#btn-create-card").trigger('click');
-
-    var groupCardId = $(this).closest('.wrBlock').eq(0).attr('data-gr-id');
-    var groupCardName = $(this).closest('.wrBlock').find('.titleBlock').val();
-    console.log(groupCardId);
-    grCardId = groupCardId;
-    var params = {
-        groupCardId: groupCardId,
-    };
-    var urlTest = "api/card/getbygroupcard";
-    var svr = new AjaxCall(urlTest, params);
-    svr.callServiceGET(function (data) {
-
-        if (data.length != 0) {
-            var html = '';
-            $.each(data, function (index, value) {
-                html += '<li>';
-                html += '<a class="nav-link card-item" data-cardid="' + value.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + value.ID + '" aria-controls="setsmenu-' + value.ID + '">';
-                html += '<span class="icon">';
-                html += '<i class="fas fa-fw fa-copy"></i>';
-                html += '</span>' + value.Name + '';
-                html += '</a>';
-                html += '</li>';
-            })
-            $("#lst-card").empty().append(html)
-        } 
-        $("#groupCardName").html(groupCardName)
-    });
-})
-
-$('body').on('click', '.select-item-card', function () {
-    $("#block-card").hide();
-    $("#layout-card").show();
-    $("#lst-card").empty();
-    var groupCardId = $(this).closest('.wrBlock').eq(0).attr('data-gr-id');
-    var groupCardName = $(this).closest('.wrBlock').find('.titleBlock').val();
-    var cardId = $(this).parent().parent().attr('data-card-id');
-    grCardId = groupCardId;
-    var params = {
-        groupCardId: groupCardId,
-    };
-    var urlTest = "api/card/getbygroupcard";
-    var svr = new AjaxCall(urlTest, params);
-    svr.callServiceGET(function (data) {
-        if (data.length != 0) {
-            var html = '';
-            $.each(data, function (index, value) {
-                html += '<li>';
-                html += '<a class="nav-link card-item" data-cardid="' + value.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + value.ID + '" aria-controls="setsmenu-' + value.ID + '">';
-                html += '<span class="icon">';
-                html += '<i class="fas fa-fw fa-copy"></i>';
-                html += '</span>' + value.Name + '';
-                html += '</a>';
-                html += '</li>';
-            })
-            $("#lst-card").empty().append(html)
-            setTimeout(function () {
-                $(".card-item[data-cardid='" + cardId + "']").trigger('click');
-            },300)
-        }
-        $("#groupCardName").html(groupCardName)
-    });
-})
-
-$('body').on('click', '#groupCardName', function () {
-    $("#block-card").show();
-    $("#layout-card").hide();
-    loadGroupCard();
-})
-
-var card = function(){
-    var html = null;
-    var param = {
-        botId: botId
-    };
-    var urlGroupCard = "api/groupcard/getbybot";
-    $.ajax({
-        type: 'GET',
-        async: false,
-        global: false,
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        url: _Host + urlGroupCard,
-        data: param,
-        success: function (data) {
-            var temp = '';
-            if (data.length != 0) {
-                $.each(data, function (index, value) {
-                    temp += '<optgroup label="' + value.Name.toUpperCase() + '">';
-                    if (value.Cards.length != 0) {
-                        $.each(value.Cards, function (index, value) {
-                            temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
-                        })
-                    } else {
-                        temp += '<option value=""></option>';
-                    }
-                    temp += '</optgroup>';
-                })
-            }
-            html = temp;
-        }
-    });
-    return html;
-};
-
-
-//function card() {
-//    var html = '<optgroup label="DANH SÁCH THẺ">';
-//    if (lstCard.length != 0) {
-//        $.each(lstCard, function (index, value) {
-//            html += '<option value="' + value.ID + '">' + value.Name + '</option>';
-//        })
-//    } else {
-//        html += '<option value=""></option>';
-//    }
-//    html += '</optgroup>';
-//    return html;
-//};
-function module() {
-    var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
-    return htmlListModule;
-}
 // ====================================================================
 // ============================Function ===============================
 // ====================================================================
@@ -4038,26 +3807,26 @@ function actionTabPopup(el) {
     } else if (el.hasClass('add_module')) {
         var str_card = '<div class="blSelectModule"><select data-placeholder="' + txtCard47 + '" class="select"><option></option>' + module() + '</select></div>';
         el.parents('.bl_bt_content').find('.bl_bt_input').html(str_card);
-
-        $('#modal_button .blSelectModule select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
-            if ($('#modal_button .blSelectModule select option[value="' + e.val + '"]').attr('attr-template') == 'true') {
-                el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').remove();
-                el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
-                $.ajax({
-                    url: srcLayoutModule,
-                    type: 'POST',
-                    data: { id: e.val },
-                })
-                .done(function (val) {
-                    if (val != '') {
-                        el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').empty();
-                        el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').append(val);
-                    }
-                });
-            } else {
-                el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').remove();
-            }
-        });
+        $('.blSelectModule .select').select2({/*minimumResultsForSearch: "-1"*/ })
+        //$('#modal_button .blSelectModule select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
+        //    if ($('#modal_button .blSelectModule select option[value="' + e.val + '"]').attr('attr-template') == 'true') {
+        //        el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').remove();
+        //        el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
+        //        $.ajax({
+        //            url: srcLayoutModule,
+        //            type: 'POST',
+        //            data: { id: e.val },
+        //        })
+        //        .done(function (val) {
+        //            if (val != '') {
+        //                el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').empty();
+        //                el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').append(val);
+        //            }
+        //        });
+        //    } else {
+        //        el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').remove();
+        //    }
+        //});
 
     } else if (el.hasClass('add_location')) {
         var str_share = '<p>' + txtCard48 + '</p>';
@@ -4492,3 +4261,262 @@ ReOderItemButton = function () {
 }
 
 
+// ====================================================================
+// ============================LOAD ADD DATA BLOCK CARD, MODULE ===============================
+// ====================================================================
+
+function loadGroupCard() {
+    var param = {
+        botId: botId
+    };
+    var urlTest = "api/groupcard/getbybot";
+    var svr = new AjaxCall(urlTest, param);
+    svr.callServiceGET(function (data) {
+        console.log(data)
+        templateGroupCard(data)
+    });
+}
+
+function templateGroupCard(data) {
+    var html = '';
+    if (data.length != 0) {
+        $.each(data, function (index, value) {
+            html += '<div class="wrBlock" data-gr-id="' + value.ID + '">';
+            html += '<i class="icon-cube2 fa fa-cube"></i>';
+            html += '<input type="text" maxlength="20" class="text-semibold text-uppercase titleBlock" value="' + value.Name + '" data="' + value.Name + '">';
+            html += '<span class="pull-right rmBlock">';
+            html += '<i class="icon-bin fa fa-trash"></i>';
+            html += '</span>';
+            html += '<ul class="sortable grid list-inline">';
+            html += '<li class="addItemCard">';
+            html += '<div>';
+            html += '<a href="#"><i class="icon-plus22 fa fa-plus"></i></a>';
+            html += '</div>';
+            html += '</li>';
+            if (value.Cards.length != 0) {
+                $.each(value.Cards, function (index, value) {
+                    html += '<li data-card-id="' + value.ID + '">';
+                    html += '<div>';
+                    html += '<a href="#" class="select-item-card">' + value.Name + '</a>';
+                    html += '</div>';
+                    html += '</li>';
+                })
+            }
+            html += '</ul>';
+            html += '</div>';
+        })
+    }
+    $("#build").show();
+    $("#build").empty().append(html);
+}
+$('body').on('click', '.rmBlock', function () {
+    var $el = $(this).parent();
+    var groupId = $(this).parent().attr('data-gr-id');
+    console.log($(this).parent().attr('data-gr-id'))
+    bootbox.confirm({
+        message: "Bạn có chắc muốn xóa nhóm thẻ này",
+        buttons: {
+            confirm: {
+                label: txtCard59,
+                className: 'btn-primary'
+            },
+            cancel: {
+                label: txtCard60,
+                className: 'btn-default'
+            }
+        },
+        callback: function (result) {
+            if (result) {
+                var params = {
+                    groupCardId: groupId
+                };
+                params = JSON.stringify(params);
+                var urlTest = "api/groupcard/delete";
+                var svr = new AjaxCall(urlTest, params);
+                svr.callServicePOST(function (data) {
+                    console.log(data)
+                    if (data) {
+                        $el.remove();
+                    }
+                });
+            }
+        }
+    })
+})
+
+function addBlock() {
+    var index = $(".wrBlock").size() + 1;
+    console.log(index);
+    var groupCardName = "Nhóm " + index;
+    var params = {
+        Name: groupCardName,
+        BotID: botId
+    };
+    params = JSON.stringify(params);
+    var urlTest = "api/groupcard/create";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        if (data != null) {
+            var html = '';
+            html += '<div class="wrBlock" data-gr-id="' + data.ID + '">';
+            html += '<i class="icon-cube2 fa fa-cube"></i>';
+            html += '<input type="text" maxlength="20" class="text-semibold text-uppercase titleBlock" value="' + groupCardName + '" data="">';
+            html += '<span class="pull-right rmBlock">';
+            html += '<i class="icon-bin fa fa-trash"></i>';
+            html += '</span>';
+            html += '<ul class="sortable grid list-inline">';
+            html += '<li class="addItemCard">';
+            html += '<div>';
+            html += '<a href="#"><i class="icon-plus22 fa fa-plus"></i></a>';
+            html += '</div>';
+            html += '</li>';
+            html += '</ul>';
+            html += '</div>';
+            $("#build").append(html);
+        }
+    });
+}
+
+$('body').on('change','.titleBlock', function () {
+    var groupName = $(this).val();
+    var groupId = $(this).parent().attr('data-gr-id');
+    var params = {
+        Name: groupName,
+        ID: groupId,
+        BotID: botId
+    };
+    params = JSON.stringify(params);
+    var urlTest = "api/groupcard/update";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        console.log(data)
+    });
+})
+
+
+$('body').on('click', '.addItemCard', function () {
+    $("#block-card").hide();
+    $("#layout-card").show();
+    $("#lst-card").empty();
+
+    $("#btn-create-card").trigger('click');
+
+    var groupCardId = $(this).closest('.wrBlock').eq(0).attr('data-gr-id');
+    var groupCardName = $(this).closest('.wrBlock').find('.titleBlock').val();
+    grCardId = groupCardId;
+    var params = {
+        groupCardId: groupCardId,
+    };
+    var urlTest = "api/card/getbygroupcard";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServiceGET(function (data) {
+
+        if (data.length != 0) {
+            var html = '';
+            $.each(data, function (index, value) {
+                html += '<li>';
+                html += '<a class="nav-link card-item" data-cardid="' + value.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + value.ID + '" aria-controls="setsmenu-' + value.ID + '">';
+                html += '<span class="icon">';
+                html += '<i class="fas fa-fw fa-copy"></i>';
+                html += '</span>' + value.Name + '';
+                html += '</a>';
+                html += '</li>';
+            })
+            $("#lst-card").empty().append(html)
+        } 
+        $("#groupCardName").html(groupCardName)
+    });
+})
+
+$('body').on('click', '.select-item-card', function () {
+    $("#block-card").hide();
+    $("#layout-card").show();
+    $("#lst-card").empty();
+    var groupCardId = $(this).closest('.wrBlock').eq(0).attr('data-gr-id');
+    var groupCardName = $(this).closest('.wrBlock').find('.titleBlock').val();
+    var cardId = $(this).parent().parent().attr('data-card-id');
+    grCardId = groupCardId;
+    var params = {
+        groupCardId: groupCardId,
+    };
+    var urlTest = "api/card/getbygroupcard";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServiceGET(function (data) {
+        if (data.length != 0) {
+            var html = '';
+            $.each(data, function (index, value) {
+                html += '<li>';
+                html += '<a class="nav-link card-item" data-cardid="' + value.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + value.ID + '" aria-controls="setsmenu-' + value.ID + '">';
+                html += '<span class="icon">';
+                html += '<i class="fas fa-fw fa-copy"></i>';
+                html += '</span>' + value.Name + '';
+                html += '</a>';
+                html += '</li>';
+            })
+            $("#lst-card").empty().append(html)
+            setTimeout(function () {
+                $(".card-item[data-cardid='" + cardId + "']").trigger('click');
+            },300)
+        }
+        $("#groupCardName").html(groupCardName)
+    });
+})
+
+$('body').on('click', '#groupCardName', function () {
+    $("#block-card").show();
+    $("#layout-card").hide();
+    loadGroupCard();
+})
+
+var card = function(){
+    var html = null;
+    var param = {
+        botId: botId
+    };
+    var urlGroupCard = "api/groupcard/getbybot";
+    $.ajax({
+        type: 'GET',
+        async: false,
+        global: false,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        url: _Host + urlGroupCard,
+        data: param,
+        success: function (data) {
+            var temp = '';
+            if (data.length != 0) {
+                $.each(data, function (index, value) {
+                    temp += '<optgroup label="' + value.Name.toUpperCase() + '">';
+                    if (value.Cards.length != 0) {
+                        $.each(value.Cards, function (index, value) {
+                            temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
+                        })
+                    } else {
+                        temp += '<option value=""></option>';
+                    }
+                    temp += '</optgroup>';
+                })
+            }
+            html = temp;
+        }
+    });
+    return html;
+};
+
+
+//function card() {
+//    var html = '<optgroup label="DANH SÁCH THẺ">';
+//    if (lstCard.length != 0) {
+//        $.each(lstCard, function (index, value) {
+//            html += '<option value="' + value.ID + '">' + value.Name + '</option>';
+//        })
+//    } else {
+//        html += '<option value=""></option>';
+//    }
+//    html += '</optgroup>';
+//    return html;
+//};
+//function module() {
+//    var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
+//    return htmlListModule;
+//}

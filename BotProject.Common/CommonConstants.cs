@@ -20,7 +20,10 @@ namespace BotProject.Common
         public const string UpdateQnA = "Update";
 
         public const string SessionUserBot = "UserBot";
+
+        public const string ModulePhone = "postback_module_phone";
     }
+
 
     public class PathServer
     {
