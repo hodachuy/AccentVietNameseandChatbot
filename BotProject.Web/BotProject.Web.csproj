@@ -831,6 +831,15 @@
     <Content Include="assets\client\libs\KendoUI\styles\images\kendoui.woff" />
     <Content Include="assets\client\libs\KendoUI\styles\kendo.common-material.min.css.map" />
     <Content Include="assets\client\libs\KendoUI\styles\kendo.material.min.css.map" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3016\Card_ID_3026_test.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3016\Card_ID_3027_test-2.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3016\Card_ID_3028_hehe.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3016\formQnA_ID_1004_phapluattrainingv1.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3017\Card_ID_4030_loi-chao.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3017\formQnA_ID_1005_testtrainingv1.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3018\Card_ID_4028_gioi-thieu.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3018\Card_ID_4029_test.aiml" />
+    <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_3018\formQnA_ID_2004_qnav1.aiml" />
     <None Include="Properties\PublishProfiles\BotProject_Publish.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
