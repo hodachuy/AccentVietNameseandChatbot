@@ -238,6 +238,18 @@
     <Compile Include="Migrations\201905270403253_UpdateMDPhoneEmail.Designer.cs">
       <DependentUpon>201905270403253_UpdateMDPhoneEmail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905310646519_UpdateModuleKnowledge.cs" />
+    <Compile Include="Migrations\201905310646519_UpdateModuleKnowledge.Designer.cs">
+      <DependentUpon>201905310646519_UpdateModuleKnowledge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906030144093_Update685.cs" />
+    <Compile Include="Migrations\201906030144093_Update685.Designer.cs">
+      <DependentUpon>201906030144093_Update685.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906030331229_UpdateNameModule.cs" />
+    <Compile Include="Migrations\201906030331229_UpdateNameModule.Designer.cs">
+      <DependentUpon>201906030331229_UpdateNameModule.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -246,6 +258,7 @@
     <Compile Include="Repositories\ApplicationRoleGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationRoleRepository.cs" />
     <Compile Include="Repositories\ApplicationUserGroupRepository.cs" />
+    <Compile Include="Repositories\ButtonModuleRepository.cs" />
     <Compile Include="Repositories\FormQuestionAnswerRepository.cs" />
     <Compile Include="Repositories\BotRepository.cs" />
     <Compile Include="Repositories\ButtonLinkRepository.cs" />
@@ -257,9 +270,11 @@
     <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\MdAnswerRepository.cs" />
     <Compile Include="Repositories\MdAreaRepository.cs" />
+    <Compile Include="Repositories\MdEmail.cs" />
     <Compile Include="Repositories\MdPhone.cs" />
     <Compile Include="Repositories\ModuleCategoryRepository.cs" />
     <Compile Include="Repositories\MdQuestionRepository.cs" />
+    <Compile Include="Repositories\ModuleKnowledgeMedInfoPatientRepository.cs" />
     <Compile Include="Repositories\ModuleRepository.cs" />
     <Compile Include="Repositories\NotifyRepository.cs" />
     <Compile Include="Repositories\QuestionGroupRepository.cs" />
@@ -419,6 +434,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201905270403253_UpdateMDPhoneEmail.resx">
       <DependentUpon>201905270403253_UpdateMDPhoneEmail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905310646519_UpdateModuleKnowledge.resx">
+      <DependentUpon>201905310646519_UpdateModuleKnowledge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906030144093_Update685.resx">
+      <DependentUpon>201906030144093_Update685.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906030331229_UpdateNameModule.resx">
+      <DependentUpon>201906030331229_UpdateNameModule.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

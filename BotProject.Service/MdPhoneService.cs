@@ -20,9 +20,10 @@ namespace BotProject.Service
     {
         IMdPhoneRepository _mdPhoneRepository;
         IUnitOfWork _unitOfWork;
-        public MdPhoneService(IUnitOfWork unitOfWork)
+        public MdPhoneService(IUnitOfWork unitOfWork, IMdPhoneRepository mdPhoneRepository)
         {
             _unitOfWork = unitOfWork;
+            _mdPhoneRepository = mdPhoneRepository;
         }
         public MdPhone Create(MdPhone module)
         {

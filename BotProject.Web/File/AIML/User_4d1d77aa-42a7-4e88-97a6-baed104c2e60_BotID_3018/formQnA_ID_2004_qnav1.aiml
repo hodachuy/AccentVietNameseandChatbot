@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>*</pattern>
+    <template>
+      <random>
+        <li> NOT_MATCH_01 </li>
+        <li> NOT_MATCH_02 </li>
+        <li> NOT_MATCH_03 </li>
+        <li> NOT_MATCH_04 </li>
+        <li> NOT_MATCH_05 </li>
+        <li> NOT_MATCH_06 </li>
+      </random>
+    </template>
+  </category>
+  <category>
+    <pattern>HELLO</pattern>
+    <template>
+      <srai>postback_card_chao</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>* HELLO *</pattern>
+    <template>
+      <srai>postback_card_chao</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>HI</pattern>
+    <template>
+      <srai>postback_card_chao</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>* HI *</pattern>
+    <template>
+      <srai>postback_card_chao</srai>
+    </template>
+  </category>
+  <category>
+    <pattern>postback_card_chao</pattern>
+    <template>
+      Chào bạn! Tôi có thể giúp gì cho bạn?
+    </template>
+  </category>
+
+  <category>
+    <pattern>* ĐAU TAY *</pattern>
+    <template>
+      postback_module_age
+    </template>
+  </category>
+  <category>
+    <pattern>* ĐAU TAY</pattern>
+    <template>
+      postback_module_age
+    </template>
+  </category>
+
+  <category>
+    <pattern>postback_card_0001</pattern>
+    <template>
+      Thông tin địa chỉ Email của bạn.
+      <button>
+        <text>Email</text>
+        <module>postback_module_email</module>
+      </button>
+    </template>
+  </category>
+
+  <category>
+    <pattern>postback_card_0002</pattern>
+    <template>
+      Thông tin số điện thoại.
+      <button>
+        <text>Số điện thoại</text>
+        <module>postback_module_phone</module>
+      </button>
+    </template>
+  </category>
+</aiml>

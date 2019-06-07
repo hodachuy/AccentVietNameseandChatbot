@@ -917,6 +917,9 @@ namespace AIMLbot
                         case "image":
                             tagHandler = new AIMLTagHandlers.image(this, user, query, request, result, node);
                             break;
+                        case "br":
+                            tagHandler = new AIMLTagHandlers.br(this, user, query, request, result, node);
+                            break;
                         default:
                             tagHandler = null;
                             break;
@@ -1058,7 +1061,9 @@ namespace AIMLbot
                                 case "carousel":
                                     lstCarousel.Add(tagHtml.Body);
                                     break;
-								default:
+                                case "br":
+                                    break;
+                                default:
 									sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); \">");
 									sb.AppendLine(tagHtml.Body);
 									sb.AppendLine("</div>");

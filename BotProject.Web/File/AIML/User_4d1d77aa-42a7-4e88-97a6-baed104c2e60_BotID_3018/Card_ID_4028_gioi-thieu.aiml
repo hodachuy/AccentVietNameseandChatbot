@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_4028</pattern>
+<template>
+Xin chào! Tôi là bot trả lời về sức khỏe y tế!<br />Bạn cần tôi giúp gì ạ!
+</template>
+</category>
+</aiml>

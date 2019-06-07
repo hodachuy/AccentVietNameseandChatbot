@@ -149,6 +149,7 @@ $(document).ready(function () {
         var urlTest = "api/card/getbyid";
         var svr = new AjaxCall(urlTest, param);
         svr.callServiceGET(function (data) {
+            console.log(data)
             renderCard(data)
         });
         $('#form-card').show("slow");
@@ -161,6 +162,7 @@ $(document).ready(function () {
     }
 
     function renderCard(data) {
+        console.log(data)
         $('#card-name').val(data.Name);
         var lstCard = function () {
             var temp = [];
@@ -265,6 +267,39 @@ $(document).ready(function () {
                                 //tempGnrItem += '<div class="bt" data-index="' + value.Index + '" type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
                             })
                         }
+                        if (tempItem.ButtonModules.length != 0) {
+                            $.each(tempItem.ButtonModules, function (index, value) {
+                                var nameModule = "";
+                                if (value.Payload == "postback_module_phone") {
+                                    nameModule = "Xử lý số điện thoại";
+                                }
+                                if (value.Payload == "postback_module_age") {
+                                    nameModule = "Xử lý tuổi";
+                                }
+                                if (value.Payload == "postback_module_email") {
+                                    nameModule = "Xử lý email";
+                                }
+                                if (value.Payload == "postback_module_med_get_info_patient") {
+                                    nameModule = "Tri thức lấy thông tin bệnh nhân";
+                                }
+                                if (value.Payload == "postback_module_med_diagnostic") {
+                                    nameModule = "Tri thức chuẩn đoán bệnh";
+                                }
+                                if (value.Payload == "postback_module_qna_legal") {
+                                    nameModule = "Tri thức hỏi đáp pháp luật";
+                                }
+                                var payload = value.Payload.replace("postback_module_", "");
+                                var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '">' + nameModule + '</span></p></div>';
+                                var objBtn = {
+                                    "idx": value.Index,
+                                    "contentHTML": contentBtn
+                                }
+                                // mảng reup lại index
+                                arrBtn.push(objBtn)
+                                //tempGnrItem += '<div class="bt" data-index="'+ value.Index +'" type-button="postback" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
+                            })
+                        }
+
                         if (arrBtn.length != 0) {
                             arrBtn.sort(compareValues('idx', 'asc'))
                             $.each(arrBtn, function (index, value) {
@@ -293,8 +328,8 @@ $(document).ready(function () {
         }
         //image
         if (data.Images.length != 0) {
-            var tempImage = '';
             $.each(data.Images, function (index, value) {
+                var tempImage = '';
                 tempImage += '<div class="content" card="image" data-index="' + value.Index + '">';
                 tempImage += '<div class="bt_move_vertical">';
                 tempImage += '<i class="icon-x fa fa-remove"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i>';
@@ -323,8 +358,8 @@ $(document).ready(function () {
         }
         // temptext
         if (data.TemplateTexts.length != 0) {
-            var tempText = '';
             $.each(data.TemplateTexts, function (index, value) {
+                var tempText = '';
                 tempText += '<div class="content" card="text" data-index="' + value.Index + '"><div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="640" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">' + value.Text + '</textarea><span>633</span></div></div>';
                 tempText += '<div class="wr_button">';
                 var arrBtn = [];
@@ -355,6 +390,38 @@ $(document).ready(function () {
                         //tempText += '<div class="bt"  data-index="' + value.Index + '"  type-button="web_url"><p class="bt_title">' + value.Title + '</p><p class="bt_ct" webview_height_ratio="' + value.SizeHeight + '">' + value.Url + '</p></div>';
                     })
                 }
+                if (value.ButtonModules.length != 0) {
+                    $.each(value.ButtonModules, function (index, value) {
+                        var nameModule = "";
+                        if (value.Payload == "postback_module_phone") {
+                            nameModule = "Xử lý số điện thoại";
+                        }
+                        if (value.Payload == "postback_module_age") {
+                            nameModule = "Xử lý tuổi";
+                        }
+                        if (value.Payload == "postback_module_email") {
+                            nameModule = "Xử lý email";
+                        }
+                        if (value.Payload == "postback_module_med_get_info_patient") {
+                            nameModule = "Tri thức lấy thông tin bệnh nhân";
+                        }
+                        if (value.Payload == "postback_module_med_diagnostic") {
+                            nameModule = "Tri thức chuẩn đoán bệnh";
+                        }
+                        if (value.Payload == "postback_module_qna_legal") {
+                            nameModule = "Tri thức hỏi đáp pháp luật";
+                        }
+                        var payload = value.Payload.replace("postback_module_", "");
+                        var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '">' + nameModule + '</span></p></div>';
+                        var objBtn = {
+                            "idx": value.Index,
+                            "contentHTML": contentBtn
+                        }
+                        // mảng reup lại index
+                        arrBtn.push(objBtn)
+                        //tempGnrItem += '<div class="bt" data-index="'+ value.Index +'" type-button="postback" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
+                    })
+                }
 
                 if (arrBtn.length != 0) {
                     arrBtn.sort(compareValues('idx', 'asc'))
@@ -376,13 +443,16 @@ $(document).ready(function () {
             })
             //$("#multi").append(tempText);
         }
-
         // orderby append by index
         if (arrCardContent.length != 0) {
-            arrCardContent.sort(compareValues('idx', 'asc'))
-            $.each(arrCardContent, function (index, value) {
-                $("#multi").append(value.contentHTML);
+            var newArrCardSort = arrCardContent.sort(compareValues('idx', 'asc'));
+            //arrCardContent.sort(compareValues('idx', 'asc'))
+            var htmlTemp='';
+            $.each(newArrCardSort, function (index, value) {
+                htmlTemp += value.contentHTML;
+                //$("#multi").append(value.contentHTML);
             })
+            $("#multi").empty().append(htmlTemp);
         }
         // quickreply
         if (data.QuickReplys.length != 0) {
@@ -532,6 +602,7 @@ $(document).ready(function () {
             $('#modal_button .modal-header span').text(20 - el.find('.bt_title').text().length);
             var moduleId = el.find('.bt_ct span').attr('module-id').split(/_|&/);
             console.log(moduleId)
+            debugger;
             $('#modal_button .modal-body .blSelectModule .select option[value="' + moduleId[0] + '"]').attr('selected', 'selected');
             $('#modal_button .modal-body .blSelectModule .select').select2({
                 // minimumResultsForSearch: "-1"
@@ -914,7 +985,6 @@ $(document).ready(function () {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
                                         "Payload": postback_module,
-                                        "CardPayloadID": $(this).attr('postback-id'),
                                         "Index": $(this).attr('data-index')
                                     }
                                     button_module_sql.push(btn_object_sql);
@@ -1070,11 +1140,12 @@ $(document).ready(function () {
                             template_text_sql = {
                                 "Message": {
                                     "TemplateTextViewModel": {
-                                        "Text": $(this).find('.wr_title .wr-content-text textarea').val(),
+                                        "Text": $(this).find('.wr_title .wr-content-text textarea').val().replace(/\r?\n/g, '<br />'),
                                         "Type": "template",
                                         "Index": $(this).attr('data-index'),
                                         "ButtonPostbackViewModels": [],
-                                        "ButtonLinkViewModels": []
+                                        "ButtonLinkViewModels": [],
+                                        "ButtonModuleViewModels":[],
                                     }
                                 }
                             }
@@ -1082,6 +1153,7 @@ $(document).ready(function () {
                             var buttons = [];
                             var button_links_sql = [];
                             var button_postbacks_sql = [];
+                            var button_module_sql = [];
                             $(this).find('.wr_button .bt').each(function (index, el) {
                                 var button_object = {};
                                 var btn_object_sql = {};
@@ -1126,7 +1198,16 @@ $(document).ready(function () {
                                         "title": $(this).find('.bt_title').text(),
                                         "payload": postback_module
                                     }
-                                    button_postbacks_sql.push(btn_object_sql);
+
+                                    //database_sql
+                                    btn_object_sql = {
+                                        "Type": "postback",
+                                        "Title": $(this).find('.bt_title').text(),
+                                        "Payload": postback_module,
+                                        "Index": $(this).attr('data-index')
+                                    }
+                                    button_module_sql.push(btn_object_sql);
+
 
                                 } else if ($(this).attr('type-button') == 'web_url') {
                                     var wbLink = $(this).find('.bt_ct').text();
@@ -1200,11 +1281,12 @@ $(document).ready(function () {
                             template_text_sql = {
                                 "Message": {
                                     "TemplateTextViewModel": {
-                                        "Text": $(this).find('.wr_title .wr-content-text textarea').val(),
+                                        "Text": $(this).find('.wr_title .wr-content-text textarea').val().replace(/\r?\n/g, '<br />'),
                                         "Type": "template",
                                         "Index": $(this).attr('data-index'),
                                         "ButtonPostbackViewModels": button_postbacks_sql,
-                                        "ButtonLinkViewModels": button_links_sql
+                                        "ButtonLinkViewModels": button_links_sql,
+                                        "ButtonModuleViewModels":button_module_sql
                                     }
                                 }
                             };
@@ -2776,6 +2858,7 @@ $(document).ready(function () {
 
     // Validate Content Input
     $('#modal_button').on('select2-close', '.select', function (event) {
+        debugger;
         if ($(this).select2('val').length <= 0) {
             $(this).parents('.bl_bt_input').find('.blSelect').addClass('error');
         } else {
@@ -2985,7 +3068,8 @@ $(document).ready(function () {
             }
             var moduleExt = "_" + modExt;
             var done_data = elContent.find(".modal-body .bl_bt_content .bl_bt_input .select").select2("data");
-            str_btct = '<span module-id="' + done_data[0].id + moduleExt + '">' + done_data[0].text + '</span>';
+            str_btct = '<span module-id="' + done_data[0].id + '">' + done_data[0].text + '</span>';
+            // moduleExt + 
             type_button = 'module';
         } else if (elContent.find('.modal-body .bl_bt_content li.active').hasClass('add_location')) {
             str_bt_title = txtCard27;
@@ -3135,6 +3219,9 @@ $(document).ready(function () {
                     ReOderItemQuickReply();
                 }, 1000)
             }
+
+            // close sidenav module
+            $('#sidenav-module').css('width', '0');
         }
     });
     // End Done Button
@@ -3749,6 +3836,8 @@ function countChar(val) {
 };
 /// End Tab Popup
 
+
+//==================== Xử lý sự kiện khi hiện tab popup =========================//
 /// Action Tab Popup
 function actionTabPopup(el) {
     el.siblings('li').removeClass('active');
@@ -3807,7 +3896,20 @@ function actionTabPopup(el) {
     } else if (el.hasClass('add_module')) {
         var str_card = '<div class="blSelectModule"><select data-placeholder="' + txtCard47 + '" class="select"><option></option>' + module() + '</select></div>';
         el.parents('.bl_bt_content').find('.bl_bt_input').html(str_card);
-        $('.blSelectModule .select').select2({/*minimumResultsForSearch: "-1"*/ })
+        //$('.blSelectModule .select').select2({/*minimumResultsForSearch: "-1"*/ })
+        //debugger;
+        // hiển thị nav-module
+
+        $('#modal_button .blSelectModule select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
+            var moduleName = $(this).select2("val");
+            //if (moduleNmae == 'phone') {
+            //    $('#sidenav-module').css('width', '380');
+            //}
+            renderTemplateModuleByKey(moduleName);
+            //$('#sidenav-module').css('width', '380');
+        })
+
+        //debugger;
         //$('#modal_button .blSelectModule select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
         //    if ($('#modal_button .blSelectModule select option[value="' + e.val + '"]').attr('attr-template') == 'true') {
         //        el.parents('.bl_bt_content').find('.bl_bt_input .blSelectModule .moduleExtension').remove();
@@ -4260,7 +4362,6 @@ ReOderItemButton = function () {
     });
 }
 
-
 // ====================================================================
 // ============================LOAD ADD DATA BLOCK CARD, MODULE ===============================
 // ====================================================================
@@ -4504,19 +4605,264 @@ var card = function(){
 };
 
 
-//function card() {
-//    var html = '<optgroup label="DANH SÁCH THẺ">';
-//    if (lstCard.length != 0) {
-//        $.each(lstCard, function (index, value) {
-//            html += '<option value="' + value.ID + '">' + value.Name + '</option>';
-//        })
-//    } else {
-//        html += '<option value=""></option>';
-//    }
-//    html += '</optgroup>';
-//    return html;
-//};
-//function module() {
-//    var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
-//    return htmlListModule;
-//}
+//===================================================================//
+//============================= XỬ LÝ MODULE ========================//
+//===================================================================//
+function renderTemplateModuleByKey(moduleName) {
+    console.log(moduleName)
+    $("#template-module").empty();
+    var html = '';
+    if (moduleName == "phone") {
+        var params = {
+            botID: $("#botId").val(),
+        };
+        var urlTest = "api/module/getmdphone";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServiceGET(function (data) {
+            html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý số điện thoại</a>';
+            html += '<div class="row">';
+            html += '<div class="col-md-12">';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdPhoneMsgStart" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdPhoneMsgError"  maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-3 col-sm-3 col-xs-12">Xác nhận</label>';
+            html += '<label class="learn_switchbot text-left mb0"><input type="checkbox" id="mdPhoneChkSwitch" class="learn_switchinput" checked><div class="learn_sliderbot learn_roundbot"></div></label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdPhoneMsgEnd" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung xác nhận">' + data.MessageEnd + '</textarea>';
+            html += '<select data-live-search="true" class="form-control selectKeyword checkvalid hide" id="mdPhoneCard">'+card()+'</select>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html +=     '<div class="col-md-12 col-sm-12 col-xs-12">'
+            html +=         '<button id="mdPhoneSave" data-id="'+data.ID+'" class="btn btn-primary">Lưu</button>';
+            html +=     '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            $("#template-module").empty().append(html)
+        });
+    }
+    if (moduleName == "email") {
+                var params = {
+            botID: $("#botId").val(),
+        };
+        var urlTest = "api/module/getmdemail";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServiceGET(function (data) {
+            html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý email</a>';
+            html += '<div class="row">';
+            html += '<div class="col-md-12">';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdEmailMsgStart" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdEmailMsgError"  maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-3 col-sm-3 col-xs-12">Xác nhận</label>';
+            html += '<label class="learn_switchbot text-left mb0"><input type="checkbox" id="mdEmailChkSwitch" class="learn_switchinput" checked><div class="learn_sliderbot learn_roundbot"></div></label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdEmailMsgEnd" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung xác nhận">' + data.MessageEnd + '</textarea>';
+            html += '<select data-live-search="true" class="form-control selectKeyword checkvalid hide" id="mdEmailCard">' + card() + '</select>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html +=     '<div class="col-md-12 col-sm-12 col-xs-12">'
+            html += '<button id="mdEmaileSave" data-id="' + data.ID + '" class="btn btn-primary">Lưu</button>';
+            html +=     '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            $("#template-module").empty().append(html)
+        });
+    }
+    if (moduleName == "name") {
+    }
+    if (moduleName == "age") {
+    }
+    if (moduleName == "med_get_info_patient") {//lấy thông tin bệnh nhân
+        html += '<a href="#" style="text-decoration:underline" id="module-name">Lấy thông tin bệnh án</a>';
+        html +='<div class="row">';
+        html +=    '<div class="col-md-12">';
+        html +=        '<div class="form-group">';
+        html +=            '<label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">';
+        html +=                'Tiêu đề:';
+        html +=            '</label>';
+        html +=            '<div class="col-md-12 col-sm-12 col-xs-12">';
+        html +=                '<textarea type="text" id="first-name" required="required" class="form-control col-md-12 col-xs-12"></textarea>';
+        html +=            '</div>';
+        html +=        '</div>';
+        html +=        '<a href="javascript:void(0)" id="create-opt-module-medinfo"><i class="fa fa-plus"></i> Thêm </a>';
+        html +=        '<div id="template-module-med_get_info_patient">';
+        html +=            '<div class="temp-module-index" data-index="1">';
+        html +=                '<div class="attribute">';
+        html +=                    '<label><input type="text" placeholder="{Attribute}" value=""/></label>';
+        html +=                '</div>';
+        html +=                '<div class="checkbox">';
+        html +=                    '<label>';
+        html +=                        '<input type="checkbox" disabled>';
+        html +=                    '</label>';
+        html +=                '</div>';
+        html +=                '<div class="col-sm-9 col-md-9 col-xs-9 option">';
+        html +=                    '<input type="text" class="form-control">';
+        html +=                '</div>';
+        html +=                '<div class="col-sm-1 col-md-1 col-xs-1 rmAttribute">';
+        html +=                    '<span><i class="fas fa-trash"></i></span>';
+        html +=                '</div>';                 
+        html +=            '</div>';
+        html +=        '</div>';            
+        html += '</div>';
+        html += '<div class="col-md-12" style="padding-top: 30px;">';
+        html += '<div class="form-group">';
+        html +=     '<div class="col-md-12 col-sm-12 col-xs-12" style="float:right">';
+        html +=         '<button id="mdEmaileSave" data-id="" class="btn btn-primary">Lưu</button>';
+        html +=     '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+
+        $("#template-module").empty().append(html)
+    }
+    if (moduleName == "med_diagnostic") {//chuẩn đoán bệnh
+    }
+    if (moduleName == "qna_legal") {// hỏi đáp pháp luật
+    }
+    $('#sidenav-module').css('width', '380');
+}
+
+// MDPHONE - Learn switch mdPhone
+$('body').on('click', '#mdPhoneChkSwitch', function (event) {
+    if ($(this).is(':checked')) {
+        $("#mdPhoneCard").addClass('hide');
+        $("#mdPhoneMsgEnd").removeClass('hide');
+    } else {
+        $("#mdPhoneCard").removeClass('hide');
+        $("#mdPhoneMsgEnd").addClass('hide');
+    }
+});
+// MDPHONE - Save
+$('body').on('click', '#mdPhoneSave', function (event) {
+    var msgStart = $("#mdPhoneMsgStart").val();
+    var msgError = $("#mdPhoneMsgError").val();
+    var msgEnd = $("#mdPhoneMsgEnd").val();
+    var msgCard = $("#mdPhoneCard").val();
+    if(msgStart.trim() == '')
+    {
+        toastr.error('Vui lòng nhập nội dung');
+        return false;
+    }
+    if (msgError.trim() == '') {
+        toastr.error('Vui lòng nhập nội dung');
+        return false;
+    }
+
+    if ($("#mdPhoneMsgEnd").hasClass('hide')) {
+        msgEnd = "";
+    }
+    if ($("#mdPhoneCard").hasClass('hide')) {
+        if (msgEnd.trim() == '') {
+            toastr.error('Vui lòng nhập nội dung');
+            return false;
+        }
+        msgCard = "";
+    }
+    var params = {
+        BotID : $("#botId").val(),
+        MessageStart: msgStart,
+        MessageError: msgError,
+        MessageEnd: msgEnd,
+        CardPayloadID: msgCard
+    }
+    params = JSON.stringify(params);
+    var urlTest = "api/module/updatemdphone";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        console.log(data)
+        if (data != null) {
+            toastr.success('Lưu thành công');
+        }
+    });
+});
+// MDEMAIL -Learn switch mdEmail
+$('body').on('click', '#mdEmailChkSwitch', function (event) {
+    if ($(this).is(':checked')) {
+        $("#mdEmailCard").addClass('hide');
+        $("#mdEmailMsgEnd").removeClass('hide');
+    } else {
+        $("#mdEmailCard").removeClass('hide');
+        $("#mdEmailMsgEnd").addClass('hide');
+    }
+});
+// MDEMAIL - Save
+$('body').on('click', '#mdEmailSave', function (event) {
+    var msgStart = $("#mdEmailMsgStart").val();
+    var msgError = $("#mdEmailMsgError").val();
+    var msgEnd = $("#mdEmailMsgEnd").val();
+    var msgCard = $("#mdEmailCard").val();
+    if (msgStart.trim() == '') {
+        toastr.error('Vui lòng nhập nội dung');
+        return false;
+    }
+    if (msgError.trim() == '') {
+        toastr.error('Vui lòng nhập nội dung');
+        return false;
+    }
+
+    if ($("#mdEmailMsgEnd").hasClass('hide')) {
+        msgEnd = "";
+    }
+    if ($("#mdEmailCard").hasClass('hide')) {
+        if (msgEnd.trim() == '') {
+            toastr.error('Vui lòng nhập nội dung');
+            return false;
+        }
+        msgCard = "";
+    }
+    var params = {
+        BotID: $("#botId").val(),
+        MessageStart: msgStart,
+        MessageError: msgError,
+        MessageEnd: msgEnd,
+        CardPayloadID: msgCard
+    }
+    params = JSON.stringify(params);
+    var urlTest = "api/module/updatemdemail";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        console.log(data)
+        if (data != null) {
+            toastr.success('Lưu thành công');
+        }
+    });
+});
+
+
+
+var arrMdGetInfoPatient = [];
+$('body').on('click','#create-opt-module-medinfo',function(){
+
+
+})
+function renderItemModuleMedGInfo() {
+
+}
+
+function sortItemModuleMedGInfo() {
+
+}

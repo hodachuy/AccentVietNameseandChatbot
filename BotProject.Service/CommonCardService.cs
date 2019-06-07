@@ -13,6 +13,7 @@ namespace BotProject.Service
     {
         //add
         ButtonLink AddButtonLink(ButtonLink btnLink);
+        ButtonModule AddButtonModule(ButtonModule btnModule);
         ButtonPostback AddButtonPostback(ButtonPostback btnPostback);
         TemplateGenericGroup AddTempGnrGroup(TemplateGenericGroup tempGnrGroup);
         TemplateGenericItem AddTempGnrItem(TemplateGenericItem tempGnrItem);
@@ -39,6 +40,7 @@ namespace BotProject.Service
 
     public class CommonCardService : ICommonCardService
     {
+        IButtonModuleRepository _buttonModuleRepository;
         IButtonLinkRepository _buttonLinkRepository;
         IButtonPostbackRepository _buttonPostbackRepository;
         IImageRepository _imageRepository;
@@ -56,7 +58,8 @@ namespace BotProject.Service
                                 ITemplateGenericGroupRepository templateGenericGroupRepository,
                                 ITemplateGenericItemRepository templateGenericItemRepository,
                                 ITemplateTextRepository templateTextRepository,
-                                IQuickReplyRepository quickReplyRepository)
+                                IQuickReplyRepository quickReplyRepository,
+                                IButtonModuleRepository buttonModuleRepository)
         {
             _unitOfWork = unitOfWork;
             _cardRepository = cardRepository;
@@ -67,6 +70,7 @@ namespace BotProject.Service
             _templateGenericItemRepository = templateGenericItemRepository;
             _templateTextRepository = templateTextRepository;
             _quickReplyRepository = quickReplyRepository;
+            _buttonModuleRepository = buttonModuleRepository;
         }
         public ButtonLink AddButtonLink(ButtonLink btnLink)
         {
@@ -122,6 +126,7 @@ namespace BotProject.Service
                 {
                     item.ButtonLinks = _buttonLinkRepository.GetMulti(x => x.TempTxtID == item.ID).ToList();
                     item.ButtonPostbacks = _buttonPostbackRepository.GetMulti(x => x.TempTxtID == item.ID).ToList();
+                    item.ButtonModules = _buttonModuleRepository.GetMulti(x => x.TempTxtID == item.ID).ToList();
                 }
             }
             if(card.TemplateGenericGroups != null && card.TemplateGenericGroups.Count() != 0)
@@ -135,6 +140,7 @@ namespace BotProject.Service
                         {
                             tempItem.ButtonLinks = _buttonLinkRepository.GetMulti(x => x.TempGnrItemID == tempItem.ID).ToList();
                             tempItem.ButtonPostbacks = _buttonPostbackRepository.GetMulti(x => x.TempGnrItemID == tempItem.ID).ToList();
+                            tempItem.ButtonModules = _buttonModuleRepository.GetMulti(x => x.TempGnrItemID == tempItem.ID).ToList();
                         }
                     }
                 }
@@ -155,6 +161,7 @@ namespace BotProject.Service
         {
             _buttonLinkRepository.DeleteMulti(x => x.CardID == cardId);
             _buttonPostbackRepository.DeleteMulti(x => x.CardID == cardId);
+            _buttonModuleRepository.DeleteMulti(x => x.CardID == cardId);
             _templateTextRepository.DeleteMulti(x => x.CardID == cardId);
             _templateGenericItemRepository.DeleteMulti(x => x.CardID == cardId);
             _templateGenericGroupRepository.DeleteMulti(x => x.CardID == cardId);
@@ -165,8 +172,11 @@ namespace BotProject.Service
             //{
 
             //}
+        }
 
-
+        public ButtonModule AddButtonModule(ButtonModule btnModule)
+        {
+            return _buttonModuleRepository.Add(btnModule);
         }
     }
 }

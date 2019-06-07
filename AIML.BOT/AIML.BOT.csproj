@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AIMLTagHandlers\bot.cs" />
+    <Compile Include="AIMLTagHandlers\br.cs" />
     <Compile Include="AIMLTagHandlers\button.cs" />
     <Compile Include="AIMLTagHandlers\card.cs" />
     <Compile Include="AIMLTagHandlers\carousel.cs" />

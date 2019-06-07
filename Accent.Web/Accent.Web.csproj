@@ -750,6 +750,7 @@
     <Content Include="Views\Home\BotLearning.cshtml" />
     <Content Include="Views\Home\FormChatBot.cshtml" />
     <Content Include="Views\Home\TempCard.cshtml" />
+    <Content Include="Views\Home\demo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

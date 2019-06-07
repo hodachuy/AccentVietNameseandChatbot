@@ -129,7 +129,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             btnPostback.DictionaryValue = btnPostbackVm.DictionaryValue;
         }
 
-        public static void UpdateButtonModule(this ButtonModule btnModule, ButtonModule btnModuleVm)
+        public static void UpdateButtonModule(this ButtonModule btnModule, ButtonModuleViewModel btnModuleVm)
         {
             btnModule.ID = btnModuleVm.ID;
             btnModule.Type = btnModuleVm.Type;
@@ -213,6 +213,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             module.Title = moduleVm.Title;
             module.ID = moduleVm.ID;
             module.Type = moduleVm.Type;
+            module.Name = moduleVm.Name;
             module.Payload = moduleVm.Payload;
         }
         #endregion

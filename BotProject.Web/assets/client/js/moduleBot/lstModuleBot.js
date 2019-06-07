@@ -148,17 +148,20 @@ $('body').on('click', 'input.chkAddModule', function () {
         if (moduleName == "phone") {
             moduleVm.Title = "Xử lý số điện thoại";
             moduleVm.Text = "Điện thoại";
+            moduleVm.Name = "phone";
             moduleVm.Payload = "postback_module_phone";
             moduleVm.Type = "handle"
         }
         if (moduleName == "email") {
             moduleVm.Title = "Xử lý email";
             moduleVm.Text = "Email";
+            moduleVm.Name = "email";
             moduleVm.Payload = "postback_module_email";
             moduleVm.Type = "handle"
         }
         if (moduleName == "age") {
             moduleVm.Title = "Xử lý tuổi";
+            moduleVm.Name = "age";
             moduleVm.Text = "Tuổi";
             moduleVm.Payload = "postback_module_age";
             moduleVm.Type = "handle"
@@ -168,6 +171,7 @@ $('body').on('click', 'input.chkAddModule', function () {
         if (moduleName == "qna_legal") {
             moduleVm.Title = "Tri thức hỏi đáp pháp luật";
             moduleVm.Text = "";
+            moduleVm.Name = "qna_legal";
             moduleVm.Payload = "postback_module_qna_legal";
             moduleVm.Type = "knowledge"
         }
@@ -175,6 +179,7 @@ $('body').on('click', 'input.chkAddModule', function () {
         if (moduleName == "med_diagnostic") {
             moduleVm.Title = "Tri thức chuẩn đoán bệnh";
             moduleVm.Text = "";
+            moduleVm.Name = "med_diagnostic";
             moduleVm.Payload = "postback_module_med_diagnostic";
             moduleVm.Type = "knowledge"
         }
@@ -183,6 +188,7 @@ $('body').on('click', 'input.chkAddModule', function () {
         if (moduleName == "med_get_info_patient") {
             moduleVm.Title = "Tri thức lấy thông tin bệnh nhân";
             moduleVm.Text = "";
+            moduleVm.Name = "med_get_info_patient";
             moduleVm.Payload = "postback_module_med_get_info_patient";
             moduleVm.Type = "knowledge"
         }

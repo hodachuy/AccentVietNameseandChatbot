@@ -1,12 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BotProject.Model.Models
 {
-    class ModuleKnowledgeMedInfoPatient
+    public class ModuleKnowledgeMedInfoPatient
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int ID { set; get; }
+
+        public string Title { set; get; }
+
+        public string Text { set; get; }
+
+        public bool IsCheck { set; get; }
+
+        public int PatternText { set; get; }
+
+        public int? CardID { set; get; }
+
+        public int? ButtonModuleID { set; get; }
+
+        public int ModuleID { set; get; }
+
+        public int BotID { set; get; }
+
     }
 }

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>postback_card_4030</pattern>
+    <template>
+      Chào bạn! Gửi thông tin liên hệ tới tôi.
+      <button>
+        <text>Số điện thoại</text>
+        <module>postback_module_phone</module>
+      </button>
+    </template>
+  </category>
+</aiml>

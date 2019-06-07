@@ -11,7 +11,7 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
     public class HandleModule
     {
         private const string CharacterPattern = @"^[A-Za-z]+";
-        private const string NumberPattern = @"^\d$";
+        private const string NumberPattern = @"^\d+$";
         private const string PhonePattern = @"^(\+[0-9]{9})$";
         private const string EmailPattern =
         @"^\s*[\w\-\+_']+(\.[\w\-\+_']+)*\@[A-Za-z0-9]([\w\.-]*[A-Za-z0-9])?\.[A-Za-z][A-Za-z\.]*[A-Za-z]$";
@@ -88,7 +88,7 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
             if (number.Contains(Common.CommonConstants.ModulePhone))
             {
                 rsHandle.Status = false;
-                rsHandle.Message = tempText("Vui lòng nhập số điện thoại của bạn.") ;// sau này phát triển thêm random nhiều message, tạo aiml random li(thẻ error phone)
+                rsHandle.Message = tempText("Vui lòng nhập số điện thoại của bạn hoặc chọn bên dưới nếu có.") ;// sau này phát triển thêm random nhiều message, tạo aiml random li(thẻ error phone)
                 return rsHandle;
             }
             bool isNumber = ValidatePhoneNumber(number, true);
@@ -108,21 +108,21 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
             HandleResult rsHandle = new HandleResult();
             rsHandle.Postback = postbackCard;
             rsHandle.Status = true;
-            if (!String.IsNullOrEmpty(email))
+            if (email.Contains(Common.CommonConstants.ModuleEmail))
             {
                 rsHandle.Status = false;
-                rsHandle.Message = "Vui lòng nhập địa chỉ email của bạn.";
+                rsHandle.Message = tempText("Vui lòng nhập địa chỉ email của bạn hoặc chọn bên dưới nếu có.");
                 return rsHandle;
             }
             bool isEmail = Regex.Match(email, EmailPattern).Success;
             if (!isEmail)
             {
                 rsHandle.Status = false;
-                rsHandle.Message = "Địa chỉ email không hợp lệ.";
+                rsHandle.Message = tempText("Địa chỉ email không hợp lệ.");
                 return rsHandle;
             }
             rsHandle.Status = true;
-            rsHandle.Message = "Cảm ơn bạn, chúng đã tiếp nhận địa chỉ thành công!";// nếu call tới follow thẻ khác trả về postback id card
+            rsHandle.Message = tempText("Cảm ơn bạn, chúng đã tiếp nhận email thành công!");// nếu call tới follow thẻ khác trả về postback id card
             return rsHandle;
         }
 
@@ -131,17 +131,17 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
             HandleResult rsHandle = new HandleResult();
             rsHandle.Postback = postbackCard;
             rsHandle.Status = true;
-            if (!String.IsNullOrEmpty(age))
+            if (age.Contains(Common.CommonConstants.ModuleAge))
             {
                 rsHandle.Status = false;
-                rsHandle.Message = "Vui lòng nhập độ tuổi của bạn.";
+                rsHandle.Message = tempText("Bạn vui lòng cho tôi biết độ tuổi của bạn.");
                 return rsHandle;
             }
             bool isAge = Regex.Match(age, NumberPattern).Success;
             if (!isAge)
             {
                 rsHandle.Status = false;
-                rsHandle.Message = "Tôi không nghĩ đó là số tuổi, bạn vui lòng nhập vào chữ số.";
+                rsHandle.Message = tempText("Tôi không nghĩ đó là số tuổi, bạn vui lòng nhập vào chữ số.");
                 return rsHandle;
             }
             else
@@ -149,18 +149,18 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
                 if(Int32.Parse(age) < 6)
                 {
                     rsHandle.Status = false;
-                    rsHandle.Message = "Bạn còn quá trẻ để chúng tôi đưa ra tư vấn.";
+                    rsHandle.Message = tempText("Bạn còn quá trẻ để chúng tôi đưa ra tư vấn.");
                     return rsHandle;
                 }
-                if (Int32.Parse(age) < 120)
+                if (Int32.Parse(age) > 110)
                 {
                     rsHandle.Status = false;
-                    rsHandle.Message = "Xin lỗi chúng tôi không thể đưa ra tư vấn hợp lý lúc này khi bạn đã lớn tuổi.";
+                    rsHandle.Message = tempText("Xin lỗi chúng tôi không thể đưa ra tư vấn hợp lý lúc này khi bạn đã lớn tuổi.");
                     return rsHandle;
                 }
             }
             rsHandle.Status = true;
-            rsHandle.Message = "Cảm ơn bạn, chúng đã tiếp nhận địa chỉ thành công!";// nếu call tới follow thẻ khác trả về postback id card
+            rsHandle.Message = tempText("Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!");// nếu call tới follow thẻ khác trả về postback id card
             return rsHandle;
         }
 
@@ -168,21 +168,21 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
         {
             HandleResult rsHandle = new HandleResult();
             rsHandle.Postback = postbackCard;
-            if (!String.IsNullOrEmpty(name))
+            if (name.Contains(Common.CommonConstants.ModuleName))
             {
                 rsHandle.Status = false;
-                rsHandle.Message = "Vui lòng nhập tên của bạn";// sau này phát triển thêm random nhiều message, tạo aiml random li(thẻ error phone)
+                rsHandle.Message = tempText("Bạn tên là gì?");// sau này phát triển thêm random nhiều message, tạo aiml random li(thẻ error phone)
                 return rsHandle;
             }
             bool isName = Regex.Match(name, CharacterPattern).Success;
             if (!isName)
             {
                 rsHandle.Status = false;
-                rsHandle.Message = "Số điện thoại không hợp lệ.";
+                rsHandle.Message = tempText("Hình như không giống tên cho lắm?");
                 return rsHandle;
             }
             rsHandle.Status = true;
-            rsHandle.Message = "Cảm ơn bạn, chúng tôi sẽ liên hệ tới bạn!";
+            rsHandle.Message = tempText("Cảm ơn bạn đã cho biết tên!");
             return rsHandle;
         }
     }

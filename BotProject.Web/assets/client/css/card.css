@@ -1879,3 +1879,145 @@ input[type="file"].list_inputfile {
     .container-fluid {
         padding-left: 0px !important;
     }
+
+
+
+
+    /*FORM CARD*/
+
+    .option, .checkbox, .rmAttribute{
+  display: inline-block;
+}
+    .checkbox{
+        padding-left: 15px;
+    }
+    .attribute{
+        padding-left:45px;
+    }
+
+
+    .aside-nav .nav li a.active {
+    background-color: cornsilk;
+    color: black;
+    }
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 20050;
+  top: 0;
+  right: 0;
+  background-color: #eee;
+  overflow-x: hidden;
+  transition: 0.5s;
+  /*padding-top: 60px;*/
+  
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: cornflowerblue;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: -10px;
+  right: 0px;
+  font-size: 30px;
+  margin-left: 50px;
+}
+
+@@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+  .input-group {
+        position: relative;
+        display: table;
+        border-collapse: separate;
+    }
+
+    .learn_switchbot {
+        position: relative;
+        display: inline-block;
+        width: 45px;
+        height: 14px;
+        margin-bottom: 6px;
+        vertical-align: top;
+        margin-top: 3px;
+    }
+
+        .learn_switchbot input {
+            display: none;
+        }
+
+    .learn_sliderbot {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #73c990;
+        -webkit-transition: .3s;
+        transition: .3s;
+        text-transform: initial;
+    }
+
+        .learn_sliderbot:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 2px;
+            bottom: 1px;
+            background-color: white;
+            -webkit-transition: .3s;
+            transition: .3s;
+        }
+
+    input.learn_switchinput + .learn_sliderbot:after {
+        content: "Card";
+        position: absolute;
+        font-size: 11px;
+        right: 4px;
+        top: 1px;
+        color: #fff;
+        line-height: 13px;
+    }
+
+    input.learn_switchinput:checked + .learn_sliderbot:after {
+        content: "Text";
+        left: 5px;
+    }
+
+    input.learn_switchinput:checked + .learn_sliderbot {
+        background-color: #4492d8;
+    }
+
+    input.learn_switchinput:focus + .learn_sliderbot {
+        box-shadow: 0 0 1px #4492d8;
+    }
+
+    input.learn_switchinput:checked + .learn_sliderbot:before {
+        -webkit-transform: translateX(29px);
+        -ms-transform: translateX(29px);
+        transform: translateX(29px);
+    }
+
+    .learn_sliderbot.learn_roundbot {
+        border-radius: 3px;
+    }
+
+        .learn_sliderbot.learn_roundbot:before {
+            border-radius: 3px;
+        }

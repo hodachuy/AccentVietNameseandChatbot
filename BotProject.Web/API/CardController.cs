@@ -221,7 +221,20 @@ namespace BotProject.Web.API
 												_commonCardService.Save();
 											}
 										}
-									}
+                                        if (tempGnrItemVm.ButtonModuleViewModels.Count() != 0)
+                                        {
+                                            var lstBtnModuleVm = tempGnrItemVm.ButtonModuleViewModels;
+                                            foreach (var btnModuleVm in lstBtnModuleVm)
+                                            {
+                                                ButtonModule btnModuleDb = new ButtonModule();
+                                                btnModuleDb.UpdateButtonModule(btnModuleVm);
+                                                btnModuleDb.CardID = cardDb.ID;
+                                                btnModuleDb.TempGnrItemID = tempGnrItemVm.ID;
+                                                _commonCardService.AddButtonModule(btnModuleDb);
+                                                _commonCardService.Save();
+                                            }
+                                        }
+                                    }
 								}
 							}
 							// Template Text
@@ -259,16 +272,16 @@ namespace BotProject.Web.API
 										_commonCardService.Save();
 									}
 								}
-                                if (tempTextVm.ButtonPostbackViewModels.Count() != 0)
+                                if (tempTextVm.ButtonModuleViewModels.Count() != 0)
                                 {
-                                    var lstBtnPostbackVm = tempTextVm.ButtonPostbackViewModels;
-                                    foreach (var btnPostbackVm in lstBtnPostbackVm)
+                                    var lstBtnModuleVm = tempTextVm.ButtonModuleViewModels;
+                                    foreach (var btnModuleVm in lstBtnModuleVm)
                                     {
-                                        ButtonPostback btnPostbackDb = new ButtonPostback();
-                                        btnPostbackDb.UpdateButtonPostback(btnPostbackVm);
-                                        btnPostbackDb.CardID = cardDb.ID;
-                                        btnPostbackDb.TempTxtID = tempTextDb.ID;
-                                        _commonCardService.AddButtonPostback(btnPostbackDb);
+                                        ButtonModule btnModuleDb = new ButtonModule();
+                                        btnModuleDb.UpdateButtonModule(btnModuleVm);
+                                        btnModuleDb.CardID = cardDb.ID;
+                                        btnModuleDb.TempTxtID = tempTextDb.ID;
+                                        _commonCardService.AddButtonModule(btnModuleDb);
                                         _commonCardService.Save();
                                     }
                                 }
@@ -370,7 +383,18 @@ namespace BotProject.Web.API
 										sw.WriteLine("</button>");
 									}
 								}
-							}
+                                if (item.ButtonModules != null && item.ButtonModules.Count() != 0)
+                                {
+                                    var lstButtonModules = item.ButtonModules;
+                                    foreach (var itemBtnModule in lstButtonModules)
+                                    {
+                                        sw.WriteLine("<button>");
+                                        sw.WriteLine("<text>" + itemBtnModule.Title + "</text>");
+                                        sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
+                                        sw.WriteLine("</button>");
+                                    }
+                                }
+                            }
 						}
 						if(card.TemplateGenericGroups != null && card.TemplateGenericGroups.Count() != 0)
 						{
@@ -413,6 +437,17 @@ namespace BotProject.Web.API
                                                 sb.AppendLine("<button>");
                                                 sb.AppendLine("<text>" + itemBtnLink.Title + "</text>");
                                                 sb.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                                sb.AppendLine("</button>");
+                                            }
+                                        }
+                                        if (itemGnr.ButtonModules != null && itemGnr.ButtonModules.Count() != 0)
+                                        {
+                                            var lstButtonModules = itemGnr.ButtonModules;
+                                            foreach (var itemBtnModule in lstButtonModules)
+                                            {
+                                                sb.AppendLine("<button>");
+                                                sb.AppendLine("<text>" + itemBtnModule.Title + "</text>");
+                                                sb.AppendLine("<module>" + itemBtnModule.Payload + "</module>");
                                                 sb.AppendLine("</button>");
                                             }
                                         }

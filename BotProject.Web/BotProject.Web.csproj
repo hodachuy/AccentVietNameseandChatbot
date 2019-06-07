@@ -426,6 +426,8 @@
     <Content Include="assets\client\libs\selectboxit\3.8.0\jquery.selectBoxIt.min.js" />
     <Content Include="assets\client\libs\sortable\autogrow.js" />
     <Content Include="assets\client\libs\sortable\jquery.sortable.js" />
+    <Content Include="assets\client\libs\toastr\toastr.min.css" />
+    <Content Include="assets\client\libs\toastr\toastr.min.js" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.css" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.min.js" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.png" />

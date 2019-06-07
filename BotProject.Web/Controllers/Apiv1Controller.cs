@@ -65,21 +65,27 @@ namespace BotProject.Web.Controllers
 
             //if (Session[CommonConstants.SessionUserBot] == null)
             //{
-                UserBotViewModel userBot = new UserBotViewModel();
-                userBot.ID = Guid.NewGuid().ToString();
-                userBot.BotID = botId;
-                //load setting bot to user
-                _user = _botService.loadUserBot(userBot.ID);
-                // load tất cả module của bot và thêm key vao predicate
-                _user.Predicates.addSetting("phone", "");
-                _user.Predicates.addSetting("phonecheck", "false");
-                SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
-                settingDic.Count = _user.Predicates.Count;
-                settingDic.orderedKeys = _user.Predicates.orderedKeys;
-                settingDic.settingsHash = _user.Predicates.settingsHash;
-                settingDic.SettingNames = _user.Predicates.SettingNames;
-                userBot.SettingDicstionary = settingDic;
-                Session[CommonConstants.SessionUserBot] = userBot;
+            UserBotViewModel userBot = new UserBotViewModel();
+            userBot.ID = Guid.NewGuid().ToString();
+            userBot.BotID = botId;
+            //load setting bot to user
+            _user = _botService.loadUserBot(userBot.ID);
+            // load tất cả module của bot và thêm key vao predicate
+            _user.Predicates.addSetting("phone", "");
+            _user.Predicates.addSetting("phonecheck", "false");
+
+            _user.Predicates.addSetting("mail", "");
+            _user.Predicates.addSetting("mailcheck", "false");
+
+            _user.Predicates.addSetting("age", "");
+            _user.Predicates.addSetting("agecheck", "false");
+            SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
+            settingDic.Count = _user.Predicates.Count;
+            settingDic.orderedKeys = _user.Predicates.orderedKeys;
+            settingDic.settingsHash = _user.Predicates.settingsHash;
+            settingDic.SettingNames = _user.Predicates.SettingNames;
+            userBot.SettingDicstionary = settingDic;
+            Session[CommonConstants.SessionUserBot] = userBot;
             //}
             //else
             //{
@@ -98,19 +104,16 @@ namespace BotProject.Web.Controllers
         {
             string nameBotAIML = "User_" + token + "_BotID_" + botId;
             string fullPathAIML = pathAIML + nameBotAIML;
-
             _botService.loadAIMLFromFiles(fullPathAIML);
 
             if (!String.IsNullOrEmpty(text))
             {
                 text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             }
-
             if (Session[CommonConstants.SessionUserBot] == null)
             {
                 // return TimeOut
             }
-
             //get new predicate from session user bot request
             var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
             _user = _botService.loadUserBot(userBot.ID);
@@ -119,13 +122,18 @@ namespace BotProject.Web.Controllers
             _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
             _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
 
+            // Module lấy thông tin bệnh
+            #region 
+
+            #endregion
 
             // Xử lý module phone
+            #region 
             bool isCheckPhone = bool.Parse(_user.Predicates.grabSetting("phonecheck"));
             if (isCheckPhone)
             {
-                var handlePhone = HandleModule.HandleIsPhoneNumber(text,"");
-                if(handlePhone.Status)// đúng số dt
+                var handlePhone = HandleModule.HandleIsPhoneNumber(text, "");
+                if (handlePhone.Status)// đúng số dt
                 {
                     _user.Predicates.addSetting("phonecheck", "false");
                     _user.Predicates.addSetting("phone", text);
@@ -133,7 +141,7 @@ namespace BotProject.Web.Controllers
                 return Json(new
                 {
                     message = new List<string>() { handlePhone.Message },
-                    postback = new List<string>() { null},
+                    postback = new List<string>() { null },
                     messageai = "",
                     isCheck = true
                 }, JsonRequestBehavior.AllowGet);
@@ -152,7 +160,7 @@ namespace BotProject.Web.Controllers
                     sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
                     sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
                     sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
-                    sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\""+ numberPhone + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + numberPhone + "</div>");
+                    sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + numberPhone + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + numberPhone + "</div>");
                     sbPostback.AppendLine(" </div>");
                     sbPostback.AppendLine("                                                                                </div>");
                     sbPostback.AppendLine("                                                                            </div>");
@@ -177,16 +185,142 @@ namespace BotProject.Web.Controllers
                     isCheck = true
                 }, JsonRequestBehavior.AllowGet);
             }
-            
+            #endregion
 
+            // Xử lý email
+            #region
+            bool isCheckMail = bool.Parse(_user.Predicates.grabSetting("mailcheck"));
+            if (isCheckMail)
+            {
+                var handleEmail = HandleModule.HandledIsEmail(text, "");
+                if (handleEmail.Status)// đúng email
+                {
+                    _user.Predicates.addSetting("mailcheck", "false");
+                    _user.Predicates.addSetting("mail", text);
+                    if (String.IsNullOrEmpty(_user.Predicates.grabSetting("phone")))// check rỗng nếu chưa trả lời trước đó thì mới gọi tới
+                        return chatbot("postback_card_0002", group, token, botId, isMdSearch);
+                }
+                return Json(new
+                {
+                    message = new List<string>() { handleEmail.Message },
+                    postback = new List<string>() { null },
+                    messageai = "",
+                    isCheck = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            if (text.Contains("postback_module_email"))
+            {
+                string email = _user.Predicates.grabSetting("mail");
+                _user.Predicates.addSetting("mailcheck", "true");
+                var handleEmail = HandleModule.HandledIsEmail(text, "");
+                if (!String.IsNullOrEmpty(email))// hiển thị email đã cung cấp trước đó
+                {
+                    StringBuilder sbPostback = new StringBuilder();
+                    sbPostback.AppendLine("<div class=\"_6biu\">");
+                    sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
+                    sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
+                    sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
+                    sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
+                    sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
+                    sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + email + "\" style=\"border-color: {{color}} color: {{color}}\">" + email + "</div>");
+                    sbPostback.AppendLine(" </div>");
+                    sbPostback.AppendLine("                                                                                </div>");
+                    sbPostback.AppendLine("                                                                            </div>");
+                    sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
+                    sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+                    sbPostback.AppendLine("                                                                            </div>");
+                    sbPostback.AppendLine("                                                                        </div>");
 
-            // get predicate of module and check
-            //string key = "email_" + userBot.ID;
-            //string email = _user.Predicates.grabSetting(key);
+                    return Json(new
+                    {
+                        message = new List<string>() { handleEmail.Message },
+                        postback = new List<string>() { sbPostback.ToString() },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new
+                {
+                    message = new List<string>() { handleEmail.Message },
+                    postback = new List<string>() { null },
+                    messageai = "",
+                    isCheck = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            #endregion
+
+            // Xử lý age
+            #region
+            bool isCheckAge = bool.Parse(_user.Predicates.grabSetting("agecheck"));
+            if (isCheckAge)
+            {
+                var handleAge = HandleModule.HandledIsAge(text, "");
+                if (handleAge.Status)// đúng age
+                {
+                    _user.Predicates.addSetting("agecheck", "false");
+                    _user.Predicates.addSetting("age", text);
+                    // nếu xử lý module return về thẻ
+                    if (String.IsNullOrEmpty(_user.Predicates.grabSetting("email")))
+                        return chatbot("postback_card_0001", group, token, botId, isMdSearch);
+                }
+                return Json(new
+                {
+                    message = new List<string>() { handleAge.Message },
+                    postback = new List<string>() { null },
+                    messageai = "",
+                    isCheck = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            if (text.Contains("postback_module_age"))// nếu check đi từ đây trước
+            {
+                string age = _user.Predicates.grabSetting("age");
+                _user.Predicates.addSetting("agecheck", "true");
+                var handleAge = HandleModule.HandledIsAge(text, "");
+                if (!String.IsNullOrEmpty(age))// hiển thị age đã cung cấp trước đó
+                {
+                    StringBuilder sbPostback = new StringBuilder();
+                    sbPostback.AppendLine("<div class=\"_6biu\">");
+                    sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
+                    sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
+                    sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
+                    sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
+                    sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
+                    sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + age + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + age + "</div>");
+                    sbPostback.AppendLine(" </div>");
+                    sbPostback.AppendLine("                                                                                </div>");
+                    sbPostback.AppendLine("                                                                            </div>");
+                    sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
+                    sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+                    sbPostback.AppendLine("                                                                            </div>");
+                    sbPostback.AppendLine("                                                                        </div>");
+
+                    return Json(new
+                    {
+                        message = new List<string>() { handleAge.Message },
+                        postback = new List<string>() { sbPostback.ToString() },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new
+                {
+                    message = new List<string>() { handleAge.Message },
+                    postback = new List<string>() { null },
+                    messageai = "",
+                    isCheck = true
+                }, JsonRequestBehavior.AllowGet);
+            }
+            #endregion
 
             AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
             string result = aimlBotResult.OutputSentences[0].ToString();
             bool isMatch = true;
+            // nếu aiml bot có template trả thẳng ra module k thông qua button text module
+            if (result.Replace("\r\n", "").Trim().Contains("postback_module_age"))
+            {
+                string txtModule = result.Replace("\r\n", "").Trim();
+                return chatbot(txtModule, group, token, botId, isMdSearch);
+            }
 
             // K tìm thấy trong Rule gọi tới module tri thức
             if (result.Contains("NOT_MATCH"))
@@ -202,12 +336,6 @@ namespace BotProject.Web.Controllers
                     }
                 }
             }
-
-            //if (text.Contains("postback_email"))
-            //{
-            //    aimlBotResult.user.Predicates.addSetting(key, "true");
-            //}
-
             //set new predicate to session user bot request
             SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = aimlBotResult.user.Predicates.Count;
@@ -216,7 +344,6 @@ namespace BotProject.Web.Controllers
             settingDic.SettingNames = aimlBotResult.user.Predicates.SettingNames;
             userBot.SettingDicstionary = settingDic;
             Session[CommonConstants.SessionUserBot] = userBot;
-
             return Json(new
             {
                 message = aimlBotResult.OutputHtmlMessage,
