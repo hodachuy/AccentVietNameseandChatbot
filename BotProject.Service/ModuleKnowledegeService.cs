@@ -12,6 +12,7 @@ namespace BotProject.Service
     public interface IModuleKnowledegeService
     {
         ModuleKnowledgeMedInfoPatient Add(ModuleKnowledgeMedInfoPatient mdKnowledgeMedInfoPatient);
+        ModuleKnowledgeMedInfoPatient GetByMdMedInfoPatientID(int id);
         void Save();
     }
     public class ModuleKnowledegeService : IModuleKnowledegeService
@@ -28,6 +29,11 @@ namespace BotProject.Service
         public ModuleKnowledgeMedInfoPatient Add(ModuleKnowledgeMedInfoPatient mdKnowledgeMedInfoPatient)
         {
             return _mdKnowledgeMedInfoPatientRepository.Add(mdKnowledgeMedInfoPatient);
+        }
+
+        public ModuleKnowledgeMedInfoPatient GetByMdMedInfoPatientID(int id)
+        {
+            return _mdKnowledgeMedInfoPatientRepository.GetSingleById(id);
         }
 
         public void Save()

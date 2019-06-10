@@ -2910,7 +2910,7 @@ $(document).ready(function () {
     // End Menu Button
 
     // Done Button
-    $('#modal_button').on('click', '.bt_done', function (event) {
+    $('#modal_button').on('click', '.bt_done', function (event, mdGetInfoPatientID, mdInfoPatientType) {
         var str_btct = '',
             el = $(this),
             elContent = el.parents('.modal-content'),
@@ -3067,8 +3067,16 @@ $(document).ready(function () {
                 });
             }
             var moduleExt = "_" + modExt;
+
             var done_data = elContent.find(".modal-body .bl_bt_content .bl_bt_input .select").select2("data");
-            str_btct = '<span module-id="' + done_data[0].id + '">' + done_data[0].text + '</span>';
+
+            if (mdInfoPatientType == 'MdGetInfoPatient') {
+                console.log(mdGetInfoPatientID);
+                console.log(mdInfoPatientType);
+                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="' + mdGetInfoPatientID + '">' + done_data[0].text + '</span>';
+            } else {
+                str_btct = '<span module-id="' + done_data[0].id + '">' + done_data[0].text + '</span>';
+            }          
             // moduleExt + 
             type_button = 'module';
         } else if (elContent.find('.modal-body .bl_bt_content li.active').hasClass('add_location')) {
@@ -3538,7 +3546,7 @@ $(document).ready(function () {
             actionTabPopup($('.add_module'));
             $('#modal_button .modal-header .bt_name').val(el.find('.bt_title').text());
             $('#modal_button .modal-header span').text(20 - el.find('.bt_title').text().length);
-            var moduleId = el.find('.bt_ct span').attr('module-id').split(/_|&/);
+            var moduleId = el.find('.bt_ct span').attr('module-id').split(/&/);//.split(/_|&/);
             $('#modal_button .modal-body .blSelectModule .select option[value="'+moduleId[0]+'"]').attr('selected', 'selected');
             $('#modal_button .modal-body .blSelectModule .select').select2({
                 // minimumResultsForSearch: "-1"
@@ -4653,7 +4661,7 @@ function renderTemplateModuleByKey(moduleName) {
         });
     }
     if (moduleName == "email") {
-                var params = {
+        var params = {
             botID: $("#botId").val(),
         };
         var urlTest = "api/module/getmdemail";
@@ -4684,7 +4692,7 @@ function renderTemplateModuleByKey(moduleName) {
             html += '</div>';
             html += '<div class="form-group">';
             html +=     '<div class="col-md-12 col-sm-12 col-xs-12">'
-            html += '<button id="mdEmaileSave" data-id="' + data.ID + '" class="btn btn-primary">Lưu</button>';
+            html += '<button id="mdEmailSave" data-id="' + data.ID + '" class="btn btn-primary">Lưu</button>';
             html +=     '</div>';
             html += '</div>';
             html += '</div>';
@@ -4695,6 +4703,44 @@ function renderTemplateModuleByKey(moduleName) {
     if (moduleName == "name") {
     }
     if (moduleName == "age") {
+        var params = {
+            botID: $("#botId").val(),
+        };
+        var urlTest = "api/module/getmdage";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServiceGET(function (data) {
+            html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý lấy thông tin tuổi</a>';
+            html += '<div class="row">';
+            html += '<div class="col-md-12">';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdAgeMsgStart" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdAgeMsgError"  maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-3 col-sm-3 col-xs-12">Xác nhận</label>';
+            html += '<label class="learn_switchbot text-left mb0"><input type="checkbox" id="mdAgeChkSwitch" class="learn_switchinput" checked><div class="learn_sliderbot learn_roundbot"></div></label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdAgeMsgEnd" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung xác nhận">' + data.MessageEnd + '</textarea>';
+            html += '<select data-live-search="true" class="form-control selectKeyword checkvalid hide" id="mdAgeCard">' + card() + '</select>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">'
+            html += '<button id="mdAgeSave" data-id="' + data.ID + '" class="btn btn-primary">Lưu</button>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            $("#template-module").empty().append(html)
+        });
     }
     if (moduleName == "med_get_info_patient") {//lấy thông tin bệnh nhân
         html += '<a href="#" style="text-decoration:underline" id="module-name">Lấy thông tin bệnh án</a>';
@@ -4705,7 +4751,7 @@ function renderTemplateModuleByKey(moduleName) {
         html +=                'Tiêu đề:';
         html +=            '</label>';
         html +=            '<div class="col-md-12 col-sm-12 col-xs-12">';
-        html +=                '<textarea type="text" id="first-name" required="required" class="form-control col-md-12 col-xs-12"></textarea>';
+        html +=              '<textarea type="text" id="mdMedInfoPatientTitle" required="required" class="form-control col-md-12 col-xs-12"></textarea>';
         html +=            '</div>';
         html +=        '</div>';
         html +=        '<a href="javascript:void(0)" id="create-opt-module-medinfo"><i class="fa fa-plus"></i> Thêm </a>';
@@ -4722,16 +4768,27 @@ function renderTemplateModuleByKey(moduleName) {
         html +=                '<div class="col-sm-9 col-md-9 col-xs-9 option">';
         html +=                    '<input type="text" class="form-control">';
         html +=                '</div>';
-        html +=                '<div class="col-sm-1 col-md-1 col-xs-1 rmAttribute">';
-        html +=                    '<span><i class="fas fa-trash"></i></span>';
+        html +=                 '<div class="col-sm-1 col-md-1 col-xs-1 trashAttr">';
+        html +=                     '<span class="rmAtt"><i class="fas fa-trash"></i></span>';
         html +=                '</div>';                 
         html +=            '</div>';
         html +=        '</div>';            
         html += '</div>';
+        html += '<div class="col-md-12" style="padding-top:25px;">'
+        html += '<hr/>';
+        html += '<div class="form-group">';
+        html += '<label class="control-label col-md-3 col-sm-3 col-xs-12">Xác nhận</label>';
+        html += '<label class="learn_switchbot text-left mb0"><input type="checkbox" id="mdMedInfoPatientChkSwitch" class="learn_switchinput" checked><div class="learn_sliderbot learn_roundbot"></div></label>';
+        html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '<textarea id="mdMedInfoPatientMsgEnd" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung xác nhận">Chúng tôi sẽ gửi lời khuyên tư vấn tới bạn!</textarea>';
+        html += '<select data-live-search="true" class="form-control selectKeyword checkvalid hide" id="mdMedInfoPatientCard">' + card() + '</select>';
+        html += '</div>';
+        html += '</div>';
+        html +='</div>'
         html += '<div class="col-md-12" style="padding-top: 30px;">';
         html += '<div class="form-group">';
         html +=     '<div class="col-md-12 col-sm-12 col-xs-12" style="float:right">';
-        html +=         '<button id="mdEmaileSave" data-id="" class="btn btn-primary">Lưu</button>';
+        html +=         '<button id="mdMedInfoPatientSave" data-id="" class="btn btn-primary">Lưu</button>';
         html +=     '</div>';
         html += '</div>';
         html += '</div>';
@@ -4799,6 +4856,7 @@ $('body').on('click', '#mdPhoneSave', function (event) {
         }
     });
 });
+
 // MDEMAIL -Learn switch mdEmail
 $('body').on('click', '#mdEmailChkSwitch', function (event) {
     if ($(this).is(':checked')) {
@@ -4852,17 +4910,171 @@ $('body').on('click', '#mdEmailSave', function (event) {
     });
 });
 
+// MDAGE -Learn switch mdAge
+$('body').on('click', '#mdAgeChkSwitch', function (event) {
+    if ($(this).is(':checked')) {
+        $("#mdAgeCard").addClass('hide');
+        $("#mdAgeMsgEnd").removeClass('hide');
+    } else {
+        $("#mdAgeCard").removeClass('hide');
+        $("#mdAgeMsgEnd").addClass('hide');
+    }
+});
+// MDAGE - Save
+$('body').on('click', '#mdAgeSave', function (event) {
+    var msgStart = $("#mdAgeMsgStart").val();
+    var msgError = $("#mdAgeMsgError").val();
+    var msgEnd = $("#mdAgeMsgEnd").val();
+    var msgCard = $("#mdAgeCard").val();
+    if (msgStart.trim() == '') {
+        toastr.error('Vui lòng nhập nội dung');
+        return false;
+    }
+    if (msgError.trim() == '') {
+        toastr.error('Vui lòng nhập nội dung');
+        return false;
+    }
 
+    if ($("#mdAgeMsgEnd").hasClass('hide')) {
+        msgEnd = "";
+    }
+    if ($("#mdAgeCard").hasClass('hide')) {
+        if (msgEnd.trim() == '') {
+            toastr.error('Vui lòng nhập nội dung');
+            return false;
+        }
+        msgCard = "";
+    }
+    var params = {
+        BotID: $("#botId").val(),
+        MessageStart: msgStart,
+        MessageError: msgError,
+        MessageEnd: msgEnd,
+        CardPayloadID: msgCard
+    }
+    params = JSON.stringify(params);
+    var urlTest = "api/module/updatemdage";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        console.log(data)
+        if (data != null) {
+            toastr.success('Lưu thành công');
+        }
+    });
+});
 
+//MD MED_GET_INFO_PATIENT med_get_info_patient
 var arrMdGetInfoPatient = [];
 $('body').on('click','#create-opt-module-medinfo',function(){
+    var html = '';
+        html += '<div class="temp-module-index" data-index="1">';
+        html +=                '<div class="attribute">';
+        html +=                    '<label><input type="text" placeholder="{Attribute}" value=""/></label>';
+        html +=                '</div>';
+        html +=                '<div class="checkbox">';
+        html +=                    '<label>';
+        html +=                        '<input type="checkbox" disabled>';
+        html +=                    '</label>';
+        html +=                '</div>';
+        html +=                '<div class="col-sm-9 col-md-9 col-xs-9 option">';
+        html +=                    '<input type="text" class="form-control">';
+        html +=                '</div>';
+        html +=                 '<div class="col-sm-1 col-md-1 col-xs-1 trashAttr">';
+        html +=                     '<span class="rmAtt"><i class="fas fa-trash"></i></span>';
+        html +=                '</div>';                 
+        html += '</div>';
+        $("#template-module-med_get_info_patient").append(html)
 
+        sortItemModuleMedGInfo();
 
 })
-function renderItemModuleMedGInfo() {
+// MD MED_GET_INFO_PATIENT -Learn switch MED_GET_INFO_PATIENT
+$('body').on('click', '#mdMedInfoPatientChkSwitch', function (event) {
+    if ($(this).is(':checked')) {
+        $("#mdMedInfoPatientCard").addClass('hide');
+        $("#mdMedInfoPatientMsgEnd").removeClass('hide');
+    } else {
+        $("#mdMedInfoPatientCard").removeClass('hide');
+        $("#mdMedInfoPatientMsgEnd").addClass('hide');
+    }
+});
+$('body').on('click', '.rmAtt', function () {
+    $(this).parent().parent().remove();
+    sortItemModuleMedGInfo();
+})
+$('body').on('click', "#mdMedInfoPatientSave", function () {
+    var title = $("#mdMedInfoPatientTitle").val();
+    var msgEnd = $("#mdMedInfoPatientMsgEnd").val();
+    var msgCard = $("#mdMedInfoPatientCard").val();
+    var payLoadCard = "post_back_card_" + msgCard;
+    var isValidate = true;
 
-}
+    if (title.trim() == '') {
+        toastr.error('Vui lòng nhập tiêu đề');
+        isValidate = false;
+        return false;
+    }
+    if (title.trim() == '') {
+        toastr.error('Vui lòng nhập tiêu đề');
+        isValidate = false;
+        return false;
+    }
+    if ($("#mdMedInfoPatientMsgEnd").hasClass('hide')) {
+        msgEnd = "";
+    }
+    if ($("#mdMedInfoPatientCard").hasClass('hide')) {
+        if (msgEnd.trim() == '') {
+            toastr.error('Vui lòng nhập nội dung');
+            isValidate = false;
+            return false;
+        }
+        msgCard = "";
+        payLoadCard = "";
+    }
+    var objMedInfoPatient = {
+        BotID: $("#botId").val(),
+        Title: title,
+        MessageEnd: msgEnd,
+        CardPayloadID: msgCard,
+        Payload: payLoadCard,
+        OptionText: ""
+    };
 
+    var arrOptText = [];
+    $(".temp-module-index").each(function (index) {
+        index = index + 1;
+        var patternOption = $(this).find('.option').eq(0).children().val();
+        if (patternOption.trim() == '') {
+            toastr.error('Vui lòng nhập option');
+            isValidate = false;
+            return false;
+        }
+        arrOptText.push(patternOption);
+    })
+    if (isValidate) {
+        objMedInfoPatient.OptionText = arrOptText.join("||");
+
+        params = JSON.stringify(objMedInfoPatient);
+        var urlTest = "api/module/addmdmedgetinfopatient";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServicePOST(function (data) {
+            console.log(data)
+            if (data != null) {
+                toastr.success('Lưu thành công');
+            }
+        });
+
+
+
+        console.log(objMedInfoPatient)
+        var mdInfoPatientType = "MdGetInfoPatient";
+        var mdInfoPatientID = 1;
+        $("#modal_button .bt_done").trigger('click', [mdInfoPatientID, mdInfoPatientType]);
+    }
+})
 function sortItemModuleMedGInfo() {
-
+    $(".temp-module-index").each(function (index) {
+        index = index + 1;
+        $(this).attr('data-index', index);
+    })
 }

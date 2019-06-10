@@ -70,6 +70,7 @@
     <Compile Include="FileCardService.cs" />
     <Compile Include="GroupCardService.cs" />
     <Compile Include="ImageService.cs" />
+    <Compile Include="MdAgeService.cs" />
     <Compile Include="MdEmailService.cs" />
     <Compile Include="MdPhoneService.cs" />
     <Compile Include="ModuleCategoryService.cs" />

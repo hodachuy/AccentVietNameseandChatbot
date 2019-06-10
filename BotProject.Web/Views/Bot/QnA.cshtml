@@ -90,7 +90,7 @@
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
         <div class="d-flex">
             <h5 class="pageheader-title">@Model.Name.ToUpper() </h5>
-
+            @{Model.Alias != null ? }
             <div class="toolbar ml-auto p-r-10">
                 <a href="#" class="btn btn-success btn-sm saveKeyword"><i class="fas fa-sync-alt"></i> Save and retrain</a>
                 <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>

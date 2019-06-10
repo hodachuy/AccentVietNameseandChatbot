@@ -250,6 +250,18 @@
     <Compile Include="Migrations\201906030331229_UpdateNameModule.Designer.cs">
       <DependentUpon>201906030331229_UpdateNameModule.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906100123177_AddMdAge.cs" />
+    <Compile Include="Migrations\201906100123177_AddMdAge.Designer.cs">
+      <DependentUpon>201906100123177_AddMdAge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906100403368_UpdateMdGetInfoPatient.cs" />
+    <Compile Include="Migrations\201906100403368_UpdateMdGetInfoPatient.Designer.cs">
+      <DependentUpon>201906100403368_UpdateMdGetInfoPatient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906100650339_UpdateMdGetInfoPatientv1.cs" />
+    <Compile Include="Migrations\201906100650339_UpdateMdGetInfoPatientv1.Designer.cs">
+      <DependentUpon>201906100650339_UpdateMdGetInfoPatientv1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -268,6 +280,7 @@
     <Compile Include="Repositories\FileCardRepository.cs" />
     <Compile Include="Repositories\GroupCardRepository.cs" />
     <Compile Include="Repositories\ImageRepository.cs" />
+    <Compile Include="Repositories\MdAgeRepository.cs" />
     <Compile Include="Repositories\MdAnswerRepository.cs" />
     <Compile Include="Repositories\MdAreaRepository.cs" />
     <Compile Include="Repositories\MdEmail.cs" />
@@ -443,6 +456,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906030331229_UpdateNameModule.resx">
       <DependentUpon>201906030331229_UpdateNameModule.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906100123177_AddMdAge.resx">
+      <DependentUpon>201906100123177_AddMdAge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906100403368_UpdateMdGetInfoPatient.resx">
+      <DependentUpon>201906100403368_UpdateMdGetInfoPatient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906100650339_UpdateMdGetInfoPatientv1.resx">
+      <DependentUpon>201906100650339_UpdateMdGetInfoPatientv1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

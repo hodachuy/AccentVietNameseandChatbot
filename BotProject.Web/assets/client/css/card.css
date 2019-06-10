@@ -1885,7 +1885,7 @@ input[type="file"].list_inputfile {
 
     /*FORM CARD*/
 
-    .option, .checkbox, .rmAttribute{
+    .option, .checkbox, .trashAttr{
   display: inline-block;
 }
     .checkbox{

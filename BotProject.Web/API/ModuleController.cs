@@ -18,12 +18,20 @@ namespace BotProject.Web.API
         private IModuleService _moduleService;
         private IMdPhoneService _mdPhoneService;
         private IMdEmailService _mdEmailService;
-        public ModuleController(IErrorService errorService, IModuleService moduleService,
-            IMdPhoneService mdPhoneService, IMdEmailService mdEmailService) : base(errorService)
+        private IMdAgeService _mdAgeService;
+        private IModuleKnowledegeService _mdKnowledegeService;
+        public ModuleController(IErrorService errorService,
+            IModuleService moduleService,
+            IMdPhoneService mdPhoneService,
+            IMdEmailService mdEmailService,
+            IModuleKnowledegeService mdKnowledegeService,
+            IMdAgeService mdAgeService) : base(errorService)
         {
             _moduleService = moduleService;
             _mdPhoneService = mdPhoneService;
             _mdEmailService = mdEmailService;
+            _mdAgeService = mdAgeService;
+            _mdKnowledegeService = mdKnowledegeService;
         }
         [Route("getbybotid")]
         [HttpGet]
@@ -97,23 +105,23 @@ namespace BotProject.Web.API
                     _mdEmailService.Create(mdEmail);
                     _mdEmailService.Save();
                 }
-                //if (moduleVm.Payload == Common.CommonConstants.ModuleAge)
-                //{
-                //    MdPhone mdPhone = new MdPhone();
-                //    mdPhone.BotID = moduleVm.BotID;
-                //    mdPhone.MessageStart = "Bạn vui lòng cho tôi biết độ tuổi của bạn.";
-                //    mdPhone.MessageError = "Tôi không nghĩ đó là số tuổi, bạn vui lòng nhập vào chữ số.";
-                //    mdPhone.MessageEnd = "Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!";
-                //    mdPhone.ModuleID = moduleDb.ID;
-                //    //mdPhone.CardPayloadID = null;
-                //    //mdPhone.Payload = "";
-                //    mdPhone.Title = "Xử lý tuổi";
-                //    mdPhone.DictionaryKey = "age";
-                //    mdPhone.DictionaryValue = "false";
+                if (moduleVm.Payload == Common.CommonConstants.ModuleAge)
+                {
+                    MdAge mdAge = new MdAge();
+                    mdAge.BotID = moduleVm.BotID;
+                    mdAge.MessageStart = "Bạn vui lòng cho tôi biết độ tuổi của bạn.";
+                    mdAge.MessageError = "Tôi không nghĩ đó là số tuổi, bạn vui lòng nhập vào chữ số.";
+                    mdAge.MessageEnd = "Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!";
+                    mdAge.ModuleID = moduleDb.ID;
+                    //mdPhone.CardPayloadID = null;
+                    //mdPhone.Payload = "";
+                    mdAge.Title = "Xử lý tuổi";
+                    mdAge.DictionaryKey = "age";
+                    mdAge.DictionaryValue = "false";
 
-                //    _mdPhoneService.Create(mdPhone);
-                //    _mdPhoneService.Save();
-                //}
+                    _mdAgeService.Create(mdAge);
+                    _mdAgeService.Save();
+                }
 
                 response = request.CreateResponse(HttpStatusCode.OK, moduleDb);
                 return response;
@@ -165,7 +173,6 @@ namespace BotProject.Web.API
 
         #endregion
 
-
         #region MODULE EMAIL
         [Route("getmdemail")]
         [HttpGet]
@@ -208,6 +215,89 @@ namespace BotProject.Web.API
             });
         }
 
+        #endregion
+
+        #region MODULE AGE
+        [Route("getmdage")]
+        [HttpGet]
+        public HttpResponseMessage GetModuleAgeByBotID(HttpRequestMessage request, int botID)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var module = _mdAgeService.GetByBotID(botID);
+                response = request.CreateResponse(HttpStatusCode.OK, module);
+                return response;
+            });
+        }
+        [Route("updatemdage")]
+        [HttpPost]
+        public HttpResponseMessage CreateModuleAge(HttpRequestMessage request, MdAge mdAge)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+
+                var module = _mdAgeService.GetByBotID(mdAge.BotID);
+                module.MessageStart = mdAge.MessageStart;
+                module.MessageError = mdAge.MessageError;
+                module.MessageEnd = mdAge.MessageEnd;
+                module.CardPayloadID = mdAge.CardPayloadID;
+                if (mdAge.CardPayloadID != null && mdAge.CardPayloadID != 0)
+                {
+                    module.Payload = "postback_card_" + mdAge.CardPayloadID;
+                }
+                else
+                {
+                    module.Payload = "";
+                }
+
+                _mdAgeService.Update(module);
+                _mdAgeService.Save();
+                response = request.CreateResponse(HttpStatusCode.OK, module);
+                return response;
+            });
+        }
+
+        #endregion
+
+        #region MDMEDGETINFOPATIENT
+        [Route("getmdmedgetinfopatient")]
+        [HttpGet]
+        public HttpResponseMessage GetMdMedGetInfoPatient(HttpRequestMessage request, int id)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var module = _mdKnowledegeService.GetByMdMedInfoPatientID(id);
+                response = request.CreateResponse(HttpStatusCode.OK, module);
+                return response;
+            });
+        }
+
+        [Route("addmdmedgetinfopatient")]
+        [HttpPost]
+        public HttpResponseMessage AddMdMedInfoPatient(HttpRequestMessage request, ModuleKnowledgeMedInfoPatientViewModel mdKnowledgePatientVm)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+
+                ModuleKnowledgeMedInfoPatient mdKnowledgePatientDb = new ModuleKnowledgeMedInfoPatient();
+                mdKnowledgePatientDb.BotID = mdKnowledgePatientVm.BotID;
+                mdKnowledgePatientDb.CardPayloadID = mdKnowledgePatientVm.CardPayloadID;
+                mdKnowledgePatientDb.Payload = mdKnowledgePatientVm.Payload;
+                mdKnowledgePatientDb.MessageEnd = mdKnowledgePatientVm.MessageEnd;
+                mdKnowledgePatientDb.Title = mdKnowledgePatientVm.Title;
+                mdKnowledgePatientDb.OptionText = mdKnowledgePatientVm.OptionText;
+
+                _mdKnowledegeService.Add(mdKnowledgePatientDb);
+                _mdKnowledegeService.Save();
+
+                response = request.CreateResponse(HttpStatusCode.OK, mdKnowledgePatientDb);
+                return response;
+            });
+        }
         #endregion
     }
 }

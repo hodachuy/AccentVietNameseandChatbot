@@ -42,6 +42,7 @@ namespace BotProject.Data
         public DbSet<Module> Modules { set; get; }
         public DbSet<MdPhone> MdPhones { set; get; }
         public DbSet<MdEmail> MdEmails { set; get; }
+        public DbSet<MdAge> MdAges { set; get; }
         public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
         public DbSet<ApplicationRole> ApplicationRoles { set; get; }
         public DbSet<ApplicationRoleGroup> ApplicationRoleGroups { set; get; }

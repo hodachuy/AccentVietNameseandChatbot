@@ -79,6 +79,7 @@
     <Compile Include="Models\FileCard.cs" />
     <Compile Include="Models\GroupCard.cs" />
     <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\MdAge.cs" />
     <Compile Include="Models\MdAnswer.cs" />
     <Compile Include="Models\MdArea.cs" />
     <Compile Include="Models\MdEmail.cs" />
