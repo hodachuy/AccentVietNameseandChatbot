@@ -309,6 +309,7 @@
     <Compile Include="Models\GroupCardViewModel.cs" />
     <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\ModuleFollowCardViewModel.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatientViewModel.cs" />
     <Compile Include="Models\ModuleQnAViewModel.cs" />
     <Compile Include="Models\FormQnACommonViewModel.cs" />
@@ -341,6 +342,7 @@
     <Content Include="assets\client\css\lvbot-chat-dialog\c8_D4caviXZRzb.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c9_qa0aCGHSAgX.css" />
     <Content Include="assets\client\css\style.css" />
+    <Content Include="assets\client\img\module.png" />
     <Content Include="assets\client\js\accentVN.js" />
     <Content Include="assets\client\js\aiml.js" />
     <Content Include="assets\client\js\eventBot\form-learning.js" />
@@ -901,7 +903,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="assets\client\img\" />
     <Folder Include="assets\images\logo\" />
     <Folder Include="File\Images\Card\" />
     <Folder Include="Views\FacebookBot\" />

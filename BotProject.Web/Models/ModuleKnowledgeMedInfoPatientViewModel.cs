@@ -11,7 +11,7 @@ namespace BotProject.Web.Models
 
         public string Title { set; get; }
 
-        public int OptionText { set; get; }
+        public string OptionText { set; get; }
 
         public string Payload { set; get; }
 

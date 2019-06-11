@@ -44,6 +44,7 @@ namespace BotProject.Web.Models
         public virtual TemplateGenericGroupViewModel TemplateGenericGroupViewModel { set; get; }
         public virtual TemplateTextViewModel TemplateTextViewModel { set; get; }
         public virtual ImageViewModel ImageViewModel { set; get; }
+        public virtual ModuleFollowCardViewModel ModuleFollowCardViewModel { set; get; }
     }
     public class TemplateGenericGroupViewModel
     {

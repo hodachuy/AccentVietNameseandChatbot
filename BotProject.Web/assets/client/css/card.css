@@ -760,7 +760,7 @@ div.sortable-placeholder {
         }
 
 .module_child {
-    background: url(../img/module.png) no-repeat bottom center;
+    background: url('../img/module.png') no-repeat bottom center;
     background-size: 60% auto;
     padding-bottom: 120px;
     padding-left: 10px;

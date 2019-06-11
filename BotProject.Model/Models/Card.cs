@@ -45,6 +45,8 @@ namespace BotProject.Model.Models
 
         public virtual IEnumerable<Image> Images { set; get; }
 
+        public virtual IEnumerable<ModuleFollowCard> ModuleFollowCards { set; get; }
+
         public virtual IEnumerable<ButtonLink> ButtonLinks { set; get; }
 
         public virtual IEnumerable <ButtonPostback> ButtonPostbacks { set; get; }

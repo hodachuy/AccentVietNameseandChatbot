@@ -316,7 +316,7 @@ namespace BotProject.Web.Controllers
             string result = aimlBotResult.OutputSentences[0].ToString();
             bool isMatch = true;
             // nếu aiml bot có template trả thẳng ra module k thông qua button text module
-            if (result.Replace("\r\n", "").Trim().Contains("postback_module_age"))
+            if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
             {
                 string txtModule = result.Replace("\r\n", "").Trim();
                 return chatbot(txtModule, group, token, botId, isMdSearch);

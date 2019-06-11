@@ -12,6 +12,7 @@ namespace BotProject.Service
     public interface ICommonCardService
     {
         //add
+        ModuleFollowCard AddModuleFollowCard(ModuleFollowCard mdFollowCard);
         ButtonLink AddButtonLink(ButtonLink btnLink);
         ButtonModule AddButtonModule(ButtonModule btnModule);
         ButtonPostback AddButtonPostback(ButtonPostback btnPostback);
@@ -49,6 +50,7 @@ namespace BotProject.Service
         ITemplateTextRepository _templateTextRepository;
         IQuickReplyRepository _quickReplyRepository;
         ICardRepository _cardRepository;
+        IModuleFollowCardRepository _mdFollowCardRepository;
         IUnitOfWork _unitOfWork;
         public CommonCardService(IUnitOfWork unitOfWork,
                                 ICardRepository cardRepository,
@@ -59,7 +61,8 @@ namespace BotProject.Service
                                 ITemplateGenericItemRepository templateGenericItemRepository,
                                 ITemplateTextRepository templateTextRepository,
                                 IQuickReplyRepository quickReplyRepository,
-                                IButtonModuleRepository buttonModuleRepository)
+                                IButtonModuleRepository buttonModuleRepository,
+                                IModuleFollowCardRepository mdFollowCardRepository)
         {
             _unitOfWork = unitOfWork;
             _cardRepository = cardRepository;
@@ -71,6 +74,7 @@ namespace BotProject.Service
             _templateTextRepository = templateTextRepository;
             _quickReplyRepository = quickReplyRepository;
             _buttonModuleRepository = buttonModuleRepository;
+            _mdFollowCardRepository = mdFollowCardRepository;
         }
         public ButtonLink AddButtonLink(ButtonLink btnLink)
         {
@@ -116,6 +120,7 @@ namespace BotProject.Service
         {
             Card card = new Card();
             card = _cardRepository.GetSingleById(cardId);
+            card.ModuleFollowCards = _mdFollowCardRepository.GetMulti(x => x.CardID == cardId).ToList();
             card.Images = _imageRepository.GetMulti(x => x.CardID == cardId).ToList();
             card.TemplateTexts = _templateTextRepository.GetMulti(x => x.CardID == cardId).ToList();
             card.TemplateGenericGroups = _templateGenericGroupRepository.GetMulti(x => x.CardID == cardId).ToList();
@@ -167,6 +172,7 @@ namespace BotProject.Service
             _templateGenericGroupRepository.DeleteMulti(x => x.CardID == cardId);
             _quickReplyRepository.DeleteMulti(x => x.CardID == cardId);
             _imageRepository.DeleteMulti(x => x.CardID == cardId);
+            _mdFollowCardRepository.DeleteMulti(x => x.CardID == cardId);
             //var lstImage = _imageRepository.GetMulti(x => x.CardID == cardId).ToList();
             //if(lstImage.Count() != 0)
             //{
@@ -177,6 +183,11 @@ namespace BotProject.Service
         public ButtonModule AddButtonModule(ButtonModule btnModule)
         {
             return _buttonModuleRepository.Add(btnModule);
+        }
+
+        public ModuleFollowCard AddModuleFollowCard(ModuleFollowCard mdFollowCard)
+        {
+            return _mdFollowCardRepository.Add(mdFollowCard);
         }
     }
 }

@@ -291,6 +291,8 @@ namespace BotProject.Web.API
                 mdKnowledgePatientDb.Title = mdKnowledgePatientVm.Title;
                 mdKnowledgePatientDb.OptionText = mdKnowledgePatientVm.OptionText;
 
+                //mdKnowledgePatientDb.Key = "med_get_info_patinent_ID_index";
+
                 _mdKnowledegeService.Add(mdKnowledgePatientDb);
                 _mdKnowledegeService.Save();
 

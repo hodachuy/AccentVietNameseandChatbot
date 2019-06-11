@@ -230,6 +230,12 @@ namespace BotProject.Web.API
                                                 btnModuleDb.UpdateButtonModule(btnModuleVm);
                                                 btnModuleDb.CardID = cardDb.ID;
                                                 btnModuleDb.TempGnrItemID = tempGnrItemVm.ID;
+                                                if(btnModuleVm.ModuleKnowledgeID != null)
+                                                {
+                                                    btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
+                                                    btnModuleDb.Payload = btnModuleVm.Payload+"_"+ btnModuleVm.ModuleKnowledgeID;
+                                                }
+
                                                 _commonCardService.AddButtonModule(btnModuleDb);
                                                 _commonCardService.Save();
                                             }
@@ -298,7 +304,21 @@ namespace BotProject.Web.API
 								_commonCardService.AddImage(imgDb);
 								_commonCardService.Save();
 							}
-							if (cardVm.QuickReplyViewModels != null && cardVm.QuickReplyViewModels.Count() != 0)
+                            // module follow card
+                            if (message.ModuleFollowCardViewModel != null)
+                            {
+                                var mdFollowCardVm = message.ModuleFollowCardViewModel;
+                                ModuleFollowCard mdFCardDb = new ModuleFollowCard();
+                                mdFCardDb.CardID = cardDb.ID;
+                                mdFCardDb.BotID = cardVm.BotID;
+                                mdFCardDb.PartternText = mdFollowCardVm.PartternText;//postback_moudle_phone...//
+                                mdFCardDb.Index = mdFollowCardVm.Index;
+                                _commonCardService.AddModuleFollowCard(mdFCardDb);
+                                _commonCardService.Save();
+                            }
+
+                            // trả lời nhanh
+                            if (cardVm.QuickReplyViewModels != null && cardVm.QuickReplyViewModels.Count() != 0)
 							{
 								var lstQuickReplyVm = cardVm.QuickReplyViewModels;
 								foreach (var itemQuickReplyVm in lstQuickReplyVm)
@@ -475,7 +495,14 @@ namespace BotProject.Web.API
                                 sw.WriteLine("<image>"+itemImg.Url+"</image>");
                             }
                         }
-                        if(card.QuickReplys != null && card.QuickReplys.Count() != 0)
+                        if (card.ModuleFollowCards != null && card.ModuleFollowCards.Count() != 0)
+                        {
+                            foreach (var itemMdFollowCards in card.ModuleFollowCards)
+                            {
+                                sw.WriteLine(itemMdFollowCards.PartternText);
+                            }
+                        }
+                        if (card.QuickReplys != null && card.QuickReplys.Count() != 0)
                         {
                             var lstQuickReply = card.QuickReplys;
                             foreach(var itemQ in lstQuickReply)

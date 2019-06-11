@@ -973,6 +973,7 @@ $(document).ready(function () {
 
                                 } else if ($(this).attr('type-button') == 'module') {
                                     var postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id');
+                                    var module_medGetInfoPatient_ID = $(this).find('.bt_ct span').attr('data-md-info-patient-id');
                                     button_object = {
                                         "type": "postback",
                                         "title": $(this).find('.bt_title').text(),
@@ -985,7 +986,8 @@ $(document).ready(function () {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
                                         "Payload": postback_module,
-                                        "Index": $(this).attr('data-index')
+                                        "Index": $(this).attr('data-index'),
+                                        "ModuleKnowledgeID": module_medGetInfoPatient_ID
                                     }
                                     button_module_sql.push(btn_object_sql);
 
@@ -1186,6 +1188,8 @@ $(document).ready(function () {
 
                                 } else if ($(this).attr('type-button') == 'module') {
                                     var postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id');
+                                    var module_medGetInfoPatient_ID = $(this).find('.bt_ct span').attr('data-md-info-patient-id');
+                                    console.log(module_medGetInfoPatient_ID)
                                     button_object = {
                                         "type": "postback",
                                         "title": $(this).find('.bt_title').text(),
@@ -1204,7 +1208,9 @@ $(document).ready(function () {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
                                         "Payload": postback_module,
-                                        "Index": $(this).attr('data-index')
+                                        "Index": $(this).attr('data-index'),
+                                        "ModuleKnowledgeID": module_medGetInfoPatient_ID
+
                                     }
                                     button_module_sql.push(btn_object_sql);
 
@@ -1466,6 +1472,16 @@ $(document).ready(function () {
                         "module": $(this).find('.blSelectModule select').val() + moduleExt
                     };
                     card.push(template_file);
+
+                    var template_MdFollowCard_sql = {
+                        "Message": {
+                            "ModuleFollowCardViewModel": {
+                                "PartternText": srcImage,
+                                "Index": $(this).attr('data-index')
+                            }
+                        }
+                    };
+                    card_sql.push(template_MdFollowCard_sql);
                 }
                 else if ($(this).attr('card') == 'list') {
 
@@ -1859,78 +1875,41 @@ $(document).ready(function () {
 
         if (checkCard) {
             var element = $(this);
-            //var block = element.parents('body');
-            //$(block).block({
-            //    message: '<i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i>',
-            //    overlayCSS: {
-            //        backgroundColor: '#000',
-            //        opacity: 0.8,
-            //        cursor: 'wait'
-            //    },
-            //    css: {
-            //        border: 0,
-            //        padding: 0,
-            //        backgroundColor: 'transparent'
-            //    }
-            //});
 
             console.log(objectCard)
             console.log(listUpdate)
 
             console.log(cardVm)
 
-            // lấy chuỗi obj json tới fb
-            //var strObj = JSON.stringify(objectCard.cardContent[0])
-            //console.log(strObj)
-
-            //console.log(arLink)
-            //$.ajax({
-            //    url: ajaxSave,
-            //    type: 'POST',
-            //    data: {
-            //        data        : objectCard,
-            //        // listUpdate  : listUpdate,
-            //        arLink      : arLink
-            //    },
-            //}).done(function(val) {
-            //    if(val!=false){
-            //        window.location.href = urlBuild;
-            //    }else{
-            //        $(block).unblock();
+            //var urlTest = "api/card/addupdate";
+            //var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
+            //svr.callServicePOST(function (data) {
+            //    var isAction = data.IsActionDb;
+            //    var card = data.Card;
+            //    if (isAction) {
+            //        var html = '';
+            //        html += '<li>';
+            //        html += '<a class="nav-link card-item" data-cardid="' + card.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + card.ID + '" aria-controls="setsmenu-' + card.ID + '">';
+            //        html += '<span class="icon">';
+            //        html += '<i class="fas fa-fw fa-copy"></i>';
+            //        html += '</span>' + card.Name + '';
+            //        html += '</a>';
+            //        html += '</li>';
+            //        $('#lst-card').append(html);
+            //        $('#idCard').val(card.ID);
+            //        $("#model-notify").modal('hide');
+            //        swal({
+            //            title: "Thông báo",
+            //            text: "Đã lưu",
+            //            confirmButtonColor: "#EF5350",
+            //            type: "success"
+            //        }, function () { $("#model-notify").modal('show'); });
             //    }
-            //}).fail(function() {
-            //    $(block).unblock();
+            //    setTimeout(function () {
+            //        getAimlCard(card.ID);
+            //    }, 500)
+            //    console.log(data)
             //});
-
-            var urlTest = "api/card/addupdate";
-            var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
-            svr.callServicePOST(function (data) {
-                var isAction = data.IsActionDb;
-                var card = data.Card;
-                if (isAction) {
-                    var html = '';
-                    html += '<li>';
-                    html += '<a class="nav-link card-item" data-cardid="' + card.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + card.ID + '" aria-controls="setsmenu-' + card.ID + '">';
-                    html += '<span class="icon">';
-                    html += '<i class="fas fa-fw fa-copy"></i>';
-                    html += '</span>' + card.Name + '';
-                    html += '</a>';
-                    html += '</li>';
-                    $('#lst-card').append(html);
-                    $('#idCard').val(card.ID);
-                    $("#model-notify").modal('hide');
-                    swal({
-                        title: "Thông báo",
-                        text: "Đã lưu",
-                        confirmButtonColor: "#EF5350",
-                        type: "success"
-                    }, function () { $("#model-notify").modal('show'); });
-                }
-                setTimeout(function () {
-                    getAimlCard(card.ID);
-                }, 500)
-                console.log(data)
-            });
 
         } else {
             $("#model-tag-bot").modal('hide');
@@ -2157,13 +2136,13 @@ $(document).ready(function () {
     $('.card_module').click(function (event) {
         var str_module = '<div class="content" card="module" data-index="">' +
                 '<div class="bt_move_vertical" draggable="true">' +
-                    '<i class="icon-x"></i>' +
-                    '<i class="icon-arrow-up13"></i>' +
-                    '<i class="icon-arrow-down132"></i>' +
+                    '<i class="icon-x fa fa-remove"></i>' +
+                    '<i class="icon-arrow-up13 fa fa-arrow-up"></i>' +
+                    '<i class="icon-arrow-down132 fa fa-arrow-down"></i>' +
                 '</div>' +
                 '<div class="layer tile" draggable="true">' +
                     '<div class="bt_move_horizontal">' +
-                        '<div class="layer_rm"><i class="icon-bin"></i></div>' +
+                        '<div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div>' +
                     '</div>' +
                     '<div class="wr_module">' +
                         '<div class="module_child">' +
@@ -2193,25 +2172,32 @@ $(document).ready(function () {
         $('.card_quickReply').addClass('disable');
 
         $('#multi .blSelectModule>select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
-            if ($('#multi .blSelectModule>select option[value="' + e.val + '"]').attr('attr-template') == 'true') {
+            //if ($('#multi .blSelectModule>select option[value="' + e.val + '"]').attr('attr-template') == 'true') {
 
-                $('#multi .bl_bt_input .blSelectModule .moduleExtension').remove();
-                $('#multi .bl_bt_input .blSelectModule>select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
-                $.ajax({
-                    url: srcLayoutModule,
-                    type: 'POST',
-                    data: { id: e.val },
-                })
-                .done(function (val) {
-                    console.log(val)
-                    if (val != '') {
-                        $('#multi .bl_bt_input .blSelectModule .moduleExtension').empty();
-                        $('#multi .bl_bt_input .blSelectModule .moduleExtension').append(val);
-                    }
-                });
-            } else {
-                $('#multi .bl_bt_input .blSelectModule .moduleExtension').remove();
-            }
+            //    $('#multi .bl_bt_input .blSelectModule .moduleExtension').remove();
+            //    $('#multi .bl_bt_input .blSelectModule>select').after('<div class="moduleExtension"><div class="loadingModule"><i class="icon-spinner3 spinner"></i></div></div>');
+            //    $.ajax({
+            //        url: srcLayoutModule,
+            //        type: 'POST',
+            //        data: { id: e.val },
+            //    })
+            //    .done(function (val) {
+            //        console.log(val)
+            //        if (val != '') {
+            //            $('#multi .bl_bt_input .blSelectModule .moduleExtension').empty();
+            //            $('#multi .bl_bt_input .blSelectModule .moduleExtension').append(val);
+            //        }
+            //    });
+            //} else {
+            //    $('#multi .bl_bt_input .blSelectModule .moduleExtension').remove();
+            //}
+            var moduleName = $(this).select2("val");
+            var typeActionModule = "CLICK_FORM_CARD_MODULE";
+            //if (moduleNmae == 'phone') {
+            //    $('#sidenav-module').css('width', '380');
+            //}
+            renderTemplateModuleByKey(moduleName, typeActionModule);
+            // tao biến session storage lưu id mdPatient trả về
         });
 
         ReOderItemContentCard();
@@ -3071,8 +3057,6 @@ $(document).ready(function () {
             var done_data = elContent.find(".modal-body .bl_bt_content .bl_bt_input .select").select2("data");
 
             if (mdInfoPatientType == 'MdGetInfoPatient') {
-                console.log(mdGetInfoPatientID);
-                console.log(mdInfoPatientType);
                 str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="' + mdGetInfoPatientID + '">' + done_data[0].text + '</span>';
             } else {
                 str_btct = '<span module-id="' + done_data[0].id + '">' + done_data[0].text + '</span>';
@@ -3910,10 +3894,11 @@ function actionTabPopup(el) {
 
         $('#modal_button .blSelectModule select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
             var moduleName = $(this).select2("val");
+            var typeActionModule = "CLICK_BUTTON_MODULE";
             //if (moduleNmae == 'phone') {
             //    $('#sidenav-module').css('width', '380');
             //}
-            renderTemplateModuleByKey(moduleName);
+            renderTemplateModuleByKey(moduleName, typeActionModule);
             //$('#sidenav-module').css('width', '380');
         })
 
@@ -4616,7 +4601,7 @@ var card = function(){
 //===================================================================//
 //============================= XỬ LÝ MODULE ========================//
 //===================================================================//
-function renderTemplateModuleByKey(moduleName) {
+function renderTemplateModuleByKey(moduleName, typeAction) {
     console.log(moduleName)
     $("#template-module").empty();
     var html = '';
@@ -4788,7 +4773,7 @@ function renderTemplateModuleByKey(moduleName) {
         html += '<div class="col-md-12" style="padding-top: 30px;">';
         html += '<div class="form-group">';
         html +=     '<div class="col-md-12 col-sm-12 col-xs-12" style="float:right">';
-        html +=         '<button id="mdMedInfoPatientSave" data-id="" class="btn btn-primary">Lưu</button>';
+        html +=         '<button id="mdMedInfoPatientSave" data-id="" data-action="'+typeAction+'" class="btn btn-primary">Lưu</button>';
         html +=     '</div>';
         html += '</div>';
         html += '</div>';
@@ -5053,7 +5038,6 @@ $('body').on('click', "#mdMedInfoPatientSave", function () {
     })
     if (isValidate) {
         objMedInfoPatient.OptionText = arrOptText.join("||");
-
         params = JSON.stringify(objMedInfoPatient);
         var urlTest = "api/module/addmdmedgetinfopatient";
         var svr = new AjaxCall(urlTest, params);
@@ -5061,15 +5045,18 @@ $('body').on('click', "#mdMedInfoPatientSave", function () {
             console.log(data)
             if (data != null) {
                 toastr.success('Lưu thành công');
+                var type = $(this).attr('data-action');
+                if (type == "CLICK_BUTTON_MODULE") {
+                    console.log(objMedInfoPatient)
+                    var mdInfoPatientType = "MdGetInfoPatient";
+                    var mdInfoPatientID = data.ID;
+                    $("#modal_button .bt_done").trigger('click', [mdInfoPatientID, mdInfoPatientType]);
+                }
+                if (type == "CLICK_FORM_CARD_MODULE") {
+                    console.log('FORMCARD')
+                }
             }
         });
-
-
-
-        console.log(objMedInfoPatient)
-        var mdInfoPatientType = "MdGetInfoPatient";
-        var mdInfoPatientID = 1;
-        $("#modal_button .bt_done").trigger('click', [mdInfoPatientID, mdInfoPatientType]);
     }
 })
 function sortItemModuleMedGInfo() {

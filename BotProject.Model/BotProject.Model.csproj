@@ -86,6 +86,7 @@
     <Compile Include="Models\MdPhone.cs" />
     <Compile Include="Models\MdQuestion.cs" />
     <Compile Include="Models\Module.cs" />
+    <Compile Include="Models\ModuleFollowCard.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatient.cs" />
     <Compile Include="Models\Notify.cs" />
     <Compile Include="Models\Question.cs" />

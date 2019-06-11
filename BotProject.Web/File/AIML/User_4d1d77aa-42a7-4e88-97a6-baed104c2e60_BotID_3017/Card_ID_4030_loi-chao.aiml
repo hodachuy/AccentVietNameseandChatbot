@@ -8,6 +8,10 @@
         <text>Số điện thoại</text>
         <module>postback_module_phone</module>
       </button>
+      <button>
+        <text>asdasd</text>
+        <module>postback_module_email</module>
+      </button>
     </template>
   </category>
 </aiml>

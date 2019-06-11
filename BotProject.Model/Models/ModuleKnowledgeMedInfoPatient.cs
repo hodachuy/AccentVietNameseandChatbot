@@ -13,7 +13,7 @@ namespace BotProject.Model.Models
 
         public bool IsCheck { set; get; }
 
-        public int OptionText { set; get; }
+        public string OptionText { set; get; }
 
         public string Payload { set; get; }
 

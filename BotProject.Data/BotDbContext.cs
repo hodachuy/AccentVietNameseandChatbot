@@ -40,6 +40,7 @@ namespace BotProject.Data
         public DbSet <ModuleCategory> ModuleCategories { set; get; }
         public DbSet<ModuleKnowledgeMedInfoPatient> ModuleKnowledgeMedInfoPatients { set; get; }
         public DbSet<Module> Modules { set; get; }
+        public DbSet<ModuleFollowCard> ModuleFollowCards { set; get; }
         public DbSet<MdPhone> MdPhones { set; get; }
         public DbSet<MdEmail> MdEmails { set; get; }
         public DbSet<MdAge> MdAges { set; get; }
