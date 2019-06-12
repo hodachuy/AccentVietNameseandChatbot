@@ -270,6 +270,10 @@
     <Compile Include="Migrations\201906110717203_UpdateModuleFollowCard.Designer.cs">
       <DependentUpon>201906110717203_UpdateModuleFollowCard.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906120258385_UpdateModuleFollowPatient090.cs" />
+    <Compile Include="Migrations\201906120258385_UpdateModuleFollowPatient090.Designer.cs">
+      <DependentUpon>201906120258385_UpdateModuleFollowPatient090.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -480,6 +484,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906110717203_UpdateModuleFollowCard.resx">
       <DependentUpon>201906110717203_UpdateModuleFollowCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906120258385_UpdateModuleFollowPatient090.resx">
+      <DependentUpon>201906120258385_UpdateModuleFollowPatient090.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -18,5 +18,7 @@ namespace BotProject.Web.Models
 		public int BotID { set; get; }
 
 		public string UserID { set; get; }
-	}
+
+        public virtual IEnumerable<QuestionGroupViewModel> QuestionGroups { set; get; }
+    }
 }

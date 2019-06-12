@@ -15,8 +15,8 @@ namespace BotProject.Web
 
             routes.MapRoute(
                 name: "QnA",
-                url: "bot/qna/{alias}/{id}",
-                defaults: new { controller = "Bot", action = "QnA", id = UrlParameter.Optional },
+                url: "bot/qna/{alias}/{formQnAId}/{botId}",
+                defaults: new { controller = "Bot", action = "QnA", formQnAId = UrlParameter.Optional, botId = UrlParameter.Optional },
                   namespaces: new string[] { "BotProject.Web.Controllers" }
             );
 

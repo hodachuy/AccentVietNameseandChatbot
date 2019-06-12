@@ -1,4 +1,5 @@
-﻿@model BotProject.Model.Models.FormQuestionAnswer
+﻿@using BotProject.Web.Models;
+@model FormQuestionAnswerViewModel
 @{
     ViewBag.Title = "QnA";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -90,7 +91,6 @@
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
         <div class="d-flex">
             <h5 class="pageheader-title">@Model.Name.ToUpper() </h5>
-            @{Model.Alias != null ? }
             <div class="toolbar ml-auto p-r-10">
                 <a href="#" class="btn btn-success btn-sm saveKeyword"><i class="fas fa-sync-alt"></i> Save and retrain</a>
                 <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>
@@ -178,24 +178,24 @@
 </div>
 
 @section dialogBotJS{
-<script src="~/static/js/app.js"></script>
+    <script src="~/static/js/app.js"></script>
 
     <!--Lacviet-->
     @*<script>
-    (function (l, a, c, v, i, e, t){
-        a[v] = a[v] || function (){
-            a[v].t =+ new Date();
-            (a[v].q = a[v].q || []).push(arguments);
-        };
-        i = l.createElement('script');
-        var ii = l.getElementsByTagName('script')[0];
-        i.async = 1;
-        i.src = c;
-        i.id = 'lacviet-script';
-        ii.parentNode.insertBefore(i, ii);
-    })(document, window, 'http://localhost:54160/static/js/app.js', 'lacviet');
-    setTimeout(function(){lacviet.load('U2FsdGVkX19hLyZ3+0e7J+6o2nc9UhCOW54+qG73sjSWMip1szuIeYnp+3na+IZW','U2FsdGVkX180mQVdMji5+0ZHrvdmwR2TyyX1k2HwEEWXIaOpc4aUH7HG/jyn1R1KikKAPO07b8EuJ704FPjZ2Q==','U2FsdGVkX1+ZqiM+BCo9X/bxdtZZa4dQrAp49aDY+tM=');},1500)
-    </script>*@
+        (function (l, a, c, v, i, e, t){
+            a[v] = a[v] || function (){
+                a[v].t =+ new Date();
+                (a[v].q = a[v].q || []).push(arguments);
+            };
+            i = l.createElement('script');
+            var ii = l.getElementsByTagName('script')[0];
+            i.async = 1;
+            i.src = c;
+            i.id = 'lacviet-script';
+            ii.parentNode.insertBefore(i, ii);
+        })(document, window, 'http://localhost:54160/static/js/app.js', 'lacviet');
+        setTimeout(function(){lacviet.load('U2FsdGVkX19hLyZ3+0e7J+6o2nc9UhCOW54+qG73sjSWMip1szuIeYnp+3na+IZW','U2FsdGVkX180mQVdMji5+0ZHrvdmwR2TyyX1k2HwEEWXIaOpc4aUH7HG/jyn1R1KikKAPO07b8EuJ704FPjZ2Q==','U2FsdGVkX1+ZqiM+BCo9X/bxdtZZa4dQrAp49aDY+tM=');},1500)
+        </script>*@
     <!-- End Lacviet -->
 
     <script>
@@ -225,7 +225,7 @@
             }
             return temp;
         }
-       
+
         function module() {
             var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>'; return htmlListModule;
         }

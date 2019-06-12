@@ -888,7 +888,6 @@
     <Content Include="Views\Bot\Index.cshtml" />
     <Content Include="Views\Shared\BotCategory.cshtml" />
     <Content Include="Views\Shared\Header.cshtml" />
-    <Content Include="Views\Bot\QnA.cshtml" />
     <Content Include="Views\Bot\CardCategory.cshtml" />
     <Content Include="Views\Bot\AIML.cshtml" />
     <Content Include="Views\Shared\Footer.cshtml" />
@@ -900,6 +899,7 @@
     <Content Include="Views\ModuleCategory\Search.cshtml" />
     <Content Include="Views\Bot\FormChatSetting.cshtml" />
     <Content Include="Views\Bot\Module.cshtml" />
+    <Content Include="Views\Bot\QnA.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

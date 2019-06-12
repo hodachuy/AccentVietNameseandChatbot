@@ -11,6 +11,8 @@ namespace BotProject.Web.Models
 
         public string PartternText { set; get; }
 
+        public int? ModuleInfoPatientID { set; get; }
+
         public int Index { set; get; }
 
         public int? CardID { set; get; }

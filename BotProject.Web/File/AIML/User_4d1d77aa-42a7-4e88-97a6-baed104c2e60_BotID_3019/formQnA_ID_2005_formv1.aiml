@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>*</pattern>
+<template>
+<random>
+<li> NOT_MATCH_01 </li>
+<li> NOT_MATCH_02 </li>
+<li> NOT_MATCH_03 </li>
+<li> NOT_MATCH_04 </li>
+<li> NOT_MATCH_05 </li>
+<li> NOT_MATCH_06 </li>
+</random>
+</template>
+</category>
+<category>
+<pattern>HI</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>HI *</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>* HI *</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>CHÀO BẠN</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>CHÀO BẠN *</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>* CHÀO BẠN *</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>CHÀO</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>CHÀO *</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>* CHÀO *</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>HELLO</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>HELLO *</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>* HELLO *</pattern>
+<template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+</aiml>

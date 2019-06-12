@@ -45,7 +45,7 @@ namespace BotProject.Web.Controllers
 		{
             ViewBag.BotQnAnswerID = formQnAId;
 			var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
-			//var lstCard = _cardService.GetListCardByBotID(formQnA.BotID).ToList();
+            var formQnAVm = Mapper.Map<FormQuestionAnswer, FormQuestionAnswerViewModel>(formQnA);
             var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botId);
             var lstGroupCardVm = Mapper.Map<IEnumerable<GroupCard>, IEnumerable<GroupCardViewModel>>(lstGroupCard);
             if (lstGroupCardVm != null && lstGroupCardVm.Count() != 0)
@@ -57,7 +57,7 @@ namespace BotProject.Web.Controllers
                 }
             }
             ViewBag.Cards = lstGroupCardVm;
-			return View(formQnA);
+            return View(formQnAVm);
 		}
 
         public ActionResult Module(int id)

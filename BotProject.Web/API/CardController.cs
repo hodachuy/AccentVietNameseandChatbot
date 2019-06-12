@@ -230,10 +230,10 @@ namespace BotProject.Web.API
                                                 btnModuleDb.UpdateButtonModule(btnModuleVm);
                                                 btnModuleDb.CardID = cardDb.ID;
                                                 btnModuleDb.TempGnrItemID = tempGnrItemVm.ID;
-                                                if(btnModuleVm.ModuleKnowledgeID != null)
+                                                if(btnModuleVm.ModuleKnowledgeID != null && btnModuleVm.ModuleKnowledgeID != 0)
                                                 {
                                                     btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
-                                                    btnModuleDb.Payload = btnModuleVm.Payload+"_"+ btnModuleVm.ModuleKnowledgeID;
+                                                    btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
                                                 }
 
                                                 _commonCardService.AddButtonModule(btnModuleDb);
@@ -287,6 +287,11 @@ namespace BotProject.Web.API
                                         btnModuleDb.UpdateButtonModule(btnModuleVm);
                                         btnModuleDb.CardID = cardDb.ID;
                                         btnModuleDb.TempTxtID = tempTextDb.ID;
+                                        if (btnModuleVm.ModuleKnowledgeID != null && btnModuleVm.ModuleKnowledgeID != 0)
+                                        {
+                                            btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
+                                            btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
+                                        }
                                         _commonCardService.AddButtonModule(btnModuleDb);
                                         _commonCardService.Save();
                                     }
@@ -311,6 +316,7 @@ namespace BotProject.Web.API
                                 ModuleFollowCard mdFCardDb = new ModuleFollowCard();
                                 mdFCardDb.CardID = cardDb.ID;
                                 mdFCardDb.BotID = cardVm.BotID;
+                                mdFCardDb.ModuleInfoPatientID = mdFollowCardVm.ModuleInfoPatientID;
                                 mdFCardDb.PartternText = mdFollowCardVm.PartternText;//postback_moudle_phone...//
                                 mdFCardDb.Index = mdFollowCardVm.Index;
                                 _commonCardService.AddModuleFollowCard(mdFCardDb);
@@ -410,7 +416,14 @@ namespace BotProject.Web.API
                                     {
                                         sw.WriteLine("<button>");
                                         sw.WriteLine("<text>" + itemBtnModule.Title + "</text>");
-                                        sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
+                                        if(itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
+                                        {
+                                            sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                        }
+                                        else
+                                        {
+                                            sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
+                                        }
                                         sw.WriteLine("</button>");
                                     }
                                 }
@@ -467,7 +480,14 @@ namespace BotProject.Web.API
                                             {
                                                 sb.AppendLine("<button>");
                                                 sb.AppendLine("<text>" + itemBtnModule.Title + "</text>");
-                                                sb.AppendLine("<module>" + itemBtnModule.Payload + "</module>");
+                                                if (itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
+                                                {
+                                                    sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                                }
+                                                else
+                                                {
+                                                    sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
+                                                }
                                                 sb.AppendLine("</button>");
                                             }
                                         }
@@ -499,7 +519,12 @@ namespace BotProject.Web.API
                         {
                             foreach (var itemMdFollowCards in card.ModuleFollowCards)
                             {
-                                sw.WriteLine(itemMdFollowCards.PartternText);
+                                string patternText = itemMdFollowCards.PartternText;
+                                if(itemMdFollowCards.ModuleInfoPatientID != null && itemMdFollowCards.ModuleInfoPatientID != 0)
+                                {
+                                    patternText = patternText + "_" + "itemMdFollowCards.ModuleInfoPatientID";
+                                }
+                                sw.WriteLine(patternText);
                             }
                         }
                         if (card.QuickReplys != null && card.QuickReplys.Count() != 0)
