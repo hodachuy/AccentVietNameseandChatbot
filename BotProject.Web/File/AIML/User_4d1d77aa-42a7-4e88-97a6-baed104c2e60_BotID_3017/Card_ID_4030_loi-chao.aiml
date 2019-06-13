@@ -3,11 +3,11 @@
 <category>
 <pattern>postback_card_4030</pattern>
 <template>
-Xin chào! Tôi là bot trả lời về sức khỏe y tế!
-Nếu bạn đang có vấn đề khẩn cấp, hãy gọi 911 hoặc số điện thoại dịch vụ cấp cứu địa phương ngay bây giờ.
-Bạn có thể hỏi tôi về các thông tin như:<br />“Tội bị sốt”<br />“Tôi bị đau tay”
-postback_module_age
-  
+chao ban
+<button>
+<text>lay thong tin benh an</text>
+<module>postback_module_med_get_info_patient_7</module>
+</button>
 </template>
 </category>
 </aiml>

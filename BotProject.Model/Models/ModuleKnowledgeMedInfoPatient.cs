@@ -24,6 +24,7 @@ namespace BotProject.Model.Models
         public string Key { set; get; }
 
         public int? ButtonModuleID { set; get; }
+        public int? ModuleFollowCardID { set; get; }
 
         public int ModuleID { set; get; }
 

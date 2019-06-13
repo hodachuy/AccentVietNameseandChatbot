@@ -264,12 +264,12 @@ namespace BotProject.Web.API
         #region MDMEDGETINFOPATIENT
         [Route("getmdmedgetinfopatient")]
         [HttpGet]
-        public HttpResponseMessage GetMdMedGetInfoPatient(HttpRequestMessage request, int id)
+        public HttpResponseMessage GetMdMedGetInfoPatient(HttpRequestMessage request, int mdInfPatientID)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                var module = _mdKnowledegeService.GetByMdMedInfoPatientID(id);
+                var module = _mdKnowledegeService.GetByMdMedInfoPatientID(mdInfPatientID);
                 response = request.CreateResponse(HttpStatusCode.OK, module);
                 return response;
             });
@@ -300,6 +300,34 @@ namespace BotProject.Web.API
                 return response;
             });
         }
+
+        [Route("updatemdmedgetinfopatient")]
+        [HttpPost]
+        public HttpResponseMessage UpdateMdMedInfoPatient(HttpRequestMessage request, ModuleKnowledgeMedInfoPatientViewModel mdKnowledgePatientVm)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+
+                var moduleInfoPatientDb = _mdKnowledegeService.GetByMdMedInfoPatientID(mdKnowledgePatientVm.ID);
+
+                moduleInfoPatientDb.BotID = mdKnowledgePatientVm.BotID;
+                moduleInfoPatientDb.CardPayloadID = mdKnowledgePatientVm.CardPayloadID;
+                moduleInfoPatientDb.Payload = mdKnowledgePatientVm.Payload;
+                moduleInfoPatientDb.MessageEnd = mdKnowledgePatientVm.MessageEnd;
+                moduleInfoPatientDb.Title = mdKnowledgePatientVm.Title;
+                moduleInfoPatientDb.OptionText = mdKnowledgePatientVm.OptionText;
+
+                //mdKnowledgePatientDb.Key = "med_get_info_patinent_ID_index";
+
+                _mdKnowledegeService.UpdateMdKnowledfeMedInfoPatient(moduleInfoPatientDb);
+                _mdKnowledegeService.Save();
+
+                response = request.CreateResponse(HttpStatusCode.OK, moduleInfoPatientDb);
+                return response;
+            });
+        }
+
         #endregion
     }
 }

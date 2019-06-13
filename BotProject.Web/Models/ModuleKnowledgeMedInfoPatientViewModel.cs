@@ -20,6 +20,7 @@ namespace BotProject.Web.Models
         public string MessageEnd { set; get; }
 
         public int? ButtonModuleID { set; get; }
+        public int? ModuleFollowCardID { set; get; }
 
         public int BotID { set; get; }
     }

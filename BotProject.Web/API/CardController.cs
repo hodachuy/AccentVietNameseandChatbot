@@ -26,7 +26,8 @@ namespace BotProject.Web.API
 		private IImageService _imageService;
 		private ICommonCardService _commonCardService;
 		private IFileCardService _fileCardService;
-		public CardController(IErrorService errorService,
+        private IModuleKnowledegeService _mdKnowledgeService;
+        public CardController(IErrorService errorService,
 							ICardService cardService,
 							IImageService imageService,
 							ICommonCardService commonCardService,
@@ -294,6 +295,15 @@ namespace BotProject.Web.API
                                         }
                                         _commonCardService.AddButtonModule(btnModuleDb);
                                         _commonCardService.Save();
+
+                                        // update button id tới module med get info patient
+                                        if (btnModuleVm.ModuleKnowledgeID != null && btnModuleVm.ModuleKnowledgeID != 0)
+                                        {
+                                            var mdMedGetInfoPatientDb = _mdKnowledgeService.GetByMdMedInfoPatientID(btnModuleVm.ModuleKnowledgeID ?? default(int));
+                                            mdMedGetInfoPatientDb.ButtonModuleID = btnModuleDb.ID;
+                                            _mdKnowledgeService.UpdateMdKnowledfeMedInfoPatient(mdMedGetInfoPatientDb);
+                                            _mdKnowledgeService.Save();
+                                        }
                                     }
                                 }
                             }
@@ -316,11 +326,29 @@ namespace BotProject.Web.API
                                 ModuleFollowCard mdFCardDb = new ModuleFollowCard();
                                 mdFCardDb.CardID = cardDb.ID;
                                 mdFCardDb.BotID = cardVm.BotID;
-                                mdFCardDb.ModuleInfoPatientID = mdFollowCardVm.ModuleInfoPatientID;
                                 mdFCardDb.PartternText = mdFollowCardVm.PartternText;//postback_moudle_phone...//
+                                if (mdFollowCardVm.PartternText != "post_back_med_get_info_patient")
+                                {
+                                    mdFCardDb.ModuleInfoPatientID = 0;
+                                    if(mdFollowCardVm.ModuleInfoPatientID != null && mdFollowCardVm.ModuleInfoPatientID != 0)
+                                    {
+                                        _mdKnowledgeService.DeleteMdMedInfoPatient(mdFollowCardVm.ModuleInfoPatientID ?? default(int));
+                                    }
+                                }else
+                                {
+                                    mdFCardDb.ModuleInfoPatientID = mdFollowCardVm.ModuleInfoPatientID;
+                                }
                                 mdFCardDb.Index = mdFollowCardVm.Index;
                                 _commonCardService.AddModuleFollowCard(mdFCardDb);
                                 _commonCardService.Save();
+                                // update
+                                if (mdFollowCardVm.PartternText == "post_back_med_get_info_patient")
+                                {
+                                    var mdMedGetInfoPatientDb = _mdKnowledgeService.GetByMdMedInfoPatientID(mdFCardDb.ModuleInfoPatientID ?? default(int));
+                                    mdMedGetInfoPatientDb.ModuleFollowCardID = mdFCardDb.ID;
+                                    _mdKnowledgeService.UpdateMdKnowledfeMedInfoPatient(mdMedGetInfoPatientDb);
+                                    _mdKnowledgeService.Save();
+                                }
                             }
 
                             // trả lời nhanh
@@ -522,7 +550,7 @@ namespace BotProject.Web.API
                                 string patternText = itemMdFollowCards.PartternText;
                                 if(itemMdFollowCards.ModuleInfoPatientID != null && itemMdFollowCards.ModuleInfoPatientID != 0)
                                 {
-                                    patternText = patternText + "_" + "itemMdFollowCards.ModuleInfoPatientID";
+                                    patternText = patternText + "_" + itemMdFollowCards.ModuleInfoPatientID;
                                 }
                                 sw.WriteLine(patternText);
                             }

@@ -12,7 +12,9 @@ namespace BotProject.Service
     public interface IModuleKnowledegeService
     {
         ModuleKnowledgeMedInfoPatient Add(ModuleKnowledgeMedInfoPatient mdKnowledgeMedInfoPatient);
+        void UpdateMdKnowledfeMedInfoPatient(ModuleKnowledgeMedInfoPatient mdKnowledgeMedInfoPatien);
         ModuleKnowledgeMedInfoPatient GetByMdMedInfoPatientID(int id);
+        void DeleteMdMedInfoPatient(int id);
         void Save();
     }
     public class ModuleKnowledegeService : IModuleKnowledegeService
@@ -31,6 +33,11 @@ namespace BotProject.Service
             return _mdKnowledgeMedInfoPatientRepository.Add(mdKnowledgeMedInfoPatient);
         }
 
+        public void DeleteMdMedInfoPatient(int id)
+        {
+            _mdKnowledgeMedInfoPatientRepository.Delete(id);
+        }
+
         public ModuleKnowledgeMedInfoPatient GetByMdMedInfoPatientID(int id)
         {
             return _mdKnowledgeMedInfoPatientRepository.GetSingleById(id);
@@ -39,6 +46,11 @@ namespace BotProject.Service
         public void Save()
         {
             _unitOfWork.Commit();
+        }
+
+        public void UpdateMdKnowledfeMedInfoPatient(ModuleKnowledgeMedInfoPatient mdKnowledgeMedInfoPatien)
+        {
+            _mdKnowledgeMedInfoPatientRepository.Update(mdKnowledgeMedInfoPatien);
         }
     }
 }
