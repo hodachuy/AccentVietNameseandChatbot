@@ -80,6 +80,7 @@ namespace BotProject.Web.API
                                             _qnaService.AddQuestion(quesDb);
                                         }else
                                         {
+                                            //content
                                             Question quesDb = new Question();
                                             quesDb.UpdateQuestion(itemQues);
                                             quesDb.CodeSymbol = code;
@@ -87,17 +88,26 @@ namespace BotProject.Web.API
                                             _qnaService.AddQuestion(quesDb);
 
                                             // is that star
+                                            // content *
                                             Question quesDbStar = new Question();
                                             quesDbStar.UpdateQuestionIsStar(itemQues);
                                             quesDbStar.CodeSymbol = code;
                                             quesDbStar.QuestionGroupID = qGroupDb.ID;
                                             _qnaService.AddQuestion(quesDbStar);
 
+                                            //* content *
                                             Question quesDbStar2 = new Question();
                                             quesDbStar2.UpdateQuestionIsStar2(itemQues);
                                             quesDbStar2.CodeSymbol = code;
                                             quesDbStar2.QuestionGroupID = qGroupDb.ID;
                                             _qnaService.AddQuestion(quesDbStar2);
+
+                                            // * content
+                                            Question quesDbStar3 = new Question();
+                                            quesDbStar3.UpdateQuestionIsStar3(itemQues);
+                                            quesDbStar3.CodeSymbol = code;
+                                            quesDbStar3.QuestionGroupID = qGroupDb.ID;
+                                            _qnaService.AddQuestion(quesDbStar3);
                                         }
                                     }
                                     _qnaService.Save();

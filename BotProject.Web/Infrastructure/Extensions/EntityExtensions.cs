@@ -69,6 +69,15 @@ namespace BotProject.Web.Infrastructure.Extensions
             ques.ContentText ="* " + quesVm.ContentText.Trim() + " *";
         }
 
+        public static void UpdateQuestionIsStar3(this Question ques, QuestionViewModel quesVm)
+        {
+            ques.ID = quesVm.ID;
+            ques.Index = quesVm.Index;
+            ques.QuestionGroupID = quesVm.QuestionGroupID;
+            ques.IsThatStar = quesVm.IsThatStar;
+            ques.ContentText = "* " + quesVm.ContentText.Trim();
+        }
+
         public static void UpdateAnswer(this Answer answer, AnswerViewModel answerVm)
         {
             answer.ID = answerVm.ID;

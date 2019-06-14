@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_5034</pattern>
+<template>
+Bạn cảm thấy đau như thế nào? Có đau lắm không?
+<button>
+<text>Không đau lắm</text>
+<menu>postback_card_5035</menu>
+</button>
+<button>
+<text>Đau nhẹ(1 - 3 cấp độ trên 10)</text>
+<menu>postback_card_5035</menu>
+</button>
+<button>
+<text>Đau vừa phải (4 - 6)</text>
+<menu>postback_card_5035</menu>
+</button>
+<button>
+<text>Đau nghiêm trọng (7 - 9)</text>
+<menu>postback_card_5035</menu>
+</button>
+<button>
+<text>Đau nhức, không thể cử động</text>
+<menu>postback_card_5035</menu>
+</button>
+</template>
+</category>
+</aiml>

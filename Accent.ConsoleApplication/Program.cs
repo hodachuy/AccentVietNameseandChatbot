@@ -24,6 +24,11 @@ namespace Accent.ConsoleApplication
             //quickSort(x, left, right);
             bool isNumber = Regex.Match("0375348328", @"/(09|01[2|6|8|9])+([0-9]{8})\b/g").Success;
 
+            string text = "postback_module_med_get_info_patient_13";
+            if (text.Contains("postback_module_med_get_info_patient"))
+            {
+                string x1 = "1";
+            }
 
 
             //printArray(x);

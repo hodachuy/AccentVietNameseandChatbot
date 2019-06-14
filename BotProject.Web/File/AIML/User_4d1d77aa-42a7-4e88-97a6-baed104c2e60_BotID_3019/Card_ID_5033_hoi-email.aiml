@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_5033</pattern>
+<template>
+postback_module_email
+</template>
+</category>
+</aiml>

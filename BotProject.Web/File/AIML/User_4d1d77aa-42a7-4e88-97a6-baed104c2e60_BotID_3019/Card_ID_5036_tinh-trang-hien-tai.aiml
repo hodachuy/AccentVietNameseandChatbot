@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_5036</pattern>
+<template>
+Giờ bạn cảm thấy như thế nào?Có bớt đau đi không
+<button>
+<text>Cảm thấy tốt hơn</text>
+<menu>postback_card_5039</menu>
+</button>
+<button>
+<text>Vẫn còn đau lắm</text>
+<menu>postback_card_5039</menu>
+</button>
+<button>
+<text>Càng ngày đau hơn</text>
+<menu>postback_card_5039</menu>
+</button>
+</template>
+</category>
+</aiml>

@@ -31,13 +31,15 @@ namespace BotProject.Web.API
 							ICardService cardService,
 							IImageService imageService,
 							ICommonCardService commonCardService,
-							IFileCardService fileCardService) : base(errorService)
+                            IModuleKnowledegeService mdKnowledgeService,
+                            IFileCardService fileCardService) : base(errorService)
 		{
 			_cardService = cardService;
 			_imageService = imageService;
 			_commonCardService = commonCardService;
 			_errorService = errorService;
-			_fileCardService = fileCardService;
+            _mdKnowledgeService = mdKnowledgeService;
+            _fileCardService = fileCardService;
 
 		}
 
@@ -231,10 +233,21 @@ namespace BotProject.Web.API
                                                 btnModuleDb.UpdateButtonModule(btnModuleVm);
                                                 btnModuleDb.CardID = cardDb.ID;
                                                 btnModuleDb.TempGnrItemID = tempGnrItemVm.ID;
-                                                if(btnModuleVm.ModuleKnowledgeID != null && btnModuleVm.ModuleKnowledgeID != 0)
+                                                if (btnModuleVm.ModuleKnowledgeID != null && btnModuleVm.ModuleKnowledgeID != 0)
                                                 {
                                                     btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
                                                     btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
+                                                }
+                                                _commonCardService.AddButtonModule(btnModuleDb);
+                                                _commonCardService.Save();
+
+                                                // update button id tới module med get info patient
+                                                if (btnModuleVm.ModuleKnowledgeID != null && btnModuleVm.ModuleKnowledgeID != 0)
+                                                {
+                                                    var mdMedGetInfoPatientDb = _mdKnowledgeService.GetByMdMedInfoPatientID(btnModuleVm.ModuleKnowledgeID ?? default(int));
+                                                    mdMedGetInfoPatientDb.ButtonModuleID = btnModuleDb.ID;
+                                                    _mdKnowledgeService.UpdateMdKnowledfeMedInfoPatient(mdMedGetInfoPatientDb);
+                                                    _mdKnowledgeService.Save();
                                                 }
 
                                                 _commonCardService.AddButtonModule(btnModuleDb);
@@ -327,7 +340,7 @@ namespace BotProject.Web.API
                                 mdFCardDb.CardID = cardDb.ID;
                                 mdFCardDb.BotID = cardVm.BotID;
                                 mdFCardDb.PartternText = mdFollowCardVm.PartternText;//postback_moudle_phone...//
-                                if (mdFollowCardVm.PartternText != "post_back_med_get_info_patient")
+                                if (mdFollowCardVm.PartternText != "postback_module_med_get_info_patient")
                                 {
                                     mdFCardDb.ModuleInfoPatientID = 0;
                                     if(mdFollowCardVm.ModuleInfoPatientID != null && mdFollowCardVm.ModuleInfoPatientID != 0)
@@ -342,7 +355,7 @@ namespace BotProject.Web.API
                                 _commonCardService.AddModuleFollowCard(mdFCardDb);
                                 _commonCardService.Save();
                                 // update
-                                if (mdFollowCardVm.PartternText == "post_back_med_get_info_patient")
+                                if (mdFollowCardVm.PartternText == "postback_module_med_get_info_patient")
                                 {
                                     var mdMedGetInfoPatientDb = _mdKnowledgeService.GetByMdMedInfoPatientID(mdFCardDb.ModuleInfoPatientID ?? default(int));
                                     mdMedGetInfoPatientDb.ModuleFollowCardID = mdFCardDb.ID;

@@ -96,6 +96,7 @@ $(document).ready(function () {
         $('#idCard').val('');
         $('#card-name').val('');
         resetFormCard();
+
         //}
     })
 
@@ -159,6 +160,9 @@ $(document).ready(function () {
         $('#multi').empty();
         $('#blReply .reply').remove();
         $('#wr_reply').hide();
+        $('.card_text').removeClass('disable');
+        $('.card_galery').removeClass('disable');
+        $('.card_module').removeClass('disable');
     }
 
     function renderCard(data) {
@@ -5255,7 +5259,7 @@ function getTemplateInfoPatient(mdInfoPatientID, typeActionMdGetInfoPatient) {
                         $("#mdMedInfoPatientCard").addClass('hide');
                         $("#mdMedInfoPatientMsgEnd").val(data.MessageEnd);
                     }
-                }, 1500)
+                }, 1000)
             }
         });
     }

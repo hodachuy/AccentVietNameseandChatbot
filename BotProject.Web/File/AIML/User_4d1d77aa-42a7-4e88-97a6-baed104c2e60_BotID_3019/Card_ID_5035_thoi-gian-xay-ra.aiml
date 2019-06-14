@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>postback_card_5035</pattern>
+    <template>
+      Bạn bị đau thế này lâu chưa? Tình trạng này có diễn ra thường xuyên không?
+      <button>
+        <text>1 phút trước</text>
+        <menu>postback_card_5036</menu>
+      </button>
+      <button>
+        <text>1 ngày trước</text>
+        <menu>postback_card_5036</menu>
+      </button>
+      <button>
+        <text>1 ngày trước hoặc lâu hơn</text>
+        <menu>postback_card_5036</menu>
+      </button>
+      <button>
+        <text>Nhiều ngày trước</text>
+        <menu>postback_card_5036</menu>
+      </button>
+      <button>
+        <text>Tuần trước</text>
+        <menu>postback_card_5036</menu>
+      </button>
+      <button>
+        <text>Tháng trước đó</text>
+        <menu>postback_card_5036</menu>
+      </button>
+    </template>
+  </category>
+</aiml>

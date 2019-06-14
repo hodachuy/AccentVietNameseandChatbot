@@ -36,16 +36,25 @@ namespace BotProject.Web.Controllers
         private ElasticSearch _elastic;
         private IBotService _botDbService;
         private ISettingService _settingService;
-
+        private IHandleModuleServiceService _handleMdService;
+        private IModuleService _mdService;
+        private IModuleKnowledegeService _mdKnowledgeService;
         //private Bot _bot;
         private User _user;
 
-        public Apiv1Controller(IBotService botDbService, ISettingService settingService)
+        public Apiv1Controller(IBotService botDbService,
+                                ISettingService settingService,
+                                IHandleModuleServiceService handleMdService,
+                                IModuleService mdService,
+                                IModuleKnowledegeService mdKnowledgeService)
         {
             _elastic = new ElasticSearch();
             _accentService = AccentService.AccentInstance;
             _botDbService = botDbService;
             _settingService = settingService;
+            _handleMdService = handleMdService;
+            _mdService = mdService;
+            _mdKnowledgeService = mdKnowledgeService;
             _botService = BotService.BotInstance;
         }
 
@@ -63,22 +72,54 @@ namespace BotProject.Web.Controllers
             var settingDb = _settingService.GetSettingByBotID(botID);
             var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
 
-            //if (Session[CommonConstants.SessionUserBot] == null)
-            //{
             UserBotViewModel userBot = new UserBotViewModel();
             userBot.ID = Guid.NewGuid().ToString();
             userBot.BotID = botId;
-            //load setting bot to user
             _user = _botService.loadUserBot(userBot.ID);
+
             // load tất cả module của bot và thêm key vao predicate
-            _user.Predicates.addSetting("phone", "");
-            _user.Predicates.addSetting("phonecheck", "false");
+            var mdBotDb = _mdService.GetAllModuleByBotID(botID).Where(x =>x.Name != "med_get_info_patient").ToList();
+            if(mdBotDb.Count() != 0)
+            {
+                foreach(var item in mdBotDb)
+                {
+                    _user.Predicates.addSetting(item.Name, "");
+                    _user.Predicates.addSetting(item.Name+"check", "false");
+                }
+            }
 
-            _user.Predicates.addSetting("mail", "");
-            _user.Predicates.addSetting("mailcheck", "false");
+            var mdGetInfoPatientDb = _mdKnowledgeService.GetAllMdKnowledgeMedInfPatientByBotID(botID).ToList();
+            if(mdGetInfoPatientDb.Count() != 0)
+            {
+                foreach(var item in mdGetInfoPatientDb)
+                {
+                    if (!String.IsNullOrEmpty(item.OptionText))
+                    {
+                        int index = 0;
+                        var arrOpt = item.OptionText.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach(var opt in arrOpt)
+                        {
+                            index++;
+                            _user.Predicates.addSetting(item.ID+"_opt_"+index, "");
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(item.Payload))
+                    {
+                        _user.Predicates.addSetting("med_get_info_patient_" + item.ID, "");
+                        _user.Predicates.addSetting("med_get_info_patient_check_" + item.ID, "false");
+                    }
+                }
+            }
 
-            _user.Predicates.addSetting("age", "");
-            _user.Predicates.addSetting("agecheck", "false");
+            //_user.Predicates.addSetting("phone", "");
+            //_user.Predicates.addSetting("phonecheck", "false");
+
+            //_user.Predicates.addSetting("mail", "");
+            //_user.Predicates.addSetting("mailcheck", "false");
+
+            //_user.Predicates.addSetting("age", "");
+            //_user.Predicates.addSetting("agecheck", "false");
+
             SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = _user.Predicates.Count;
             settingDic.orderedKeys = _user.Predicates.orderedKeys;
@@ -86,17 +127,7 @@ namespace BotProject.Web.Controllers
             settingDic.SettingNames = _user.Predicates.SettingNames;
             userBot.SettingDicstionary = settingDic;
             Session[CommonConstants.SessionUserBot] = userBot;
-            //}
-            //else
-            //{
-            //    // cancel session current when refre to botId different
-            //    var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
-            //    if (userBot.BotID != botId)
-            //    {
-            //        Session.Abandon();
-            //        return RedirectToAction("FormChat", "Apiv1", new { token = token, botId = botId });
-            //    }
-            //}
+
             return View(settingVm);
         }
 
@@ -104,7 +135,9 @@ namespace BotProject.Web.Controllers
         {
             string nameBotAIML = "User_" + token + "_BotID_" + botId;
             string fullPathAIML = pathAIML + nameBotAIML;
+            int valBotID = Int32.Parse(botId);
             _botService.loadAIMLFromFiles(fullPathAIML);
+
 
             if (!String.IsNullOrEmpty(text))
             {
@@ -124,7 +157,10 @@ namespace BotProject.Web.Controllers
 
             // Module lấy thông tin bệnh
             #region 
+            if (text.Contains("postback_module_med_get_info_patient"))
+            {
 
+            }
             #endregion
 
             // Xử lý module phone
@@ -132,11 +168,15 @@ namespace BotProject.Web.Controllers
             bool isCheckPhone = bool.Parse(_user.Predicates.grabSetting("phonecheck"));
             if (isCheckPhone)
             {
-                var handlePhone = HandleModule.HandleIsPhoneNumber(text, "");
+                var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
                 if (handlePhone.Status)// đúng số dt
                 {
                     _user.Predicates.addSetting("phonecheck", "false");
                     _user.Predicates.addSetting("phone", text);
+                    if (!String.IsNullOrEmpty(handlePhone.Postback))
+                    {
+                        return chatbot(handlePhone.Postback, group, token, botId, isMdSearch);
+                    }
                 }
                 return Json(new
                 {
@@ -150,7 +190,7 @@ namespace BotProject.Web.Controllers
             {
                 string numberPhone = _user.Predicates.grabSetting("phone");
                 _user.Predicates.addSetting("phonecheck", "true");
-                var handlePhone = HandleModule.HandleIsPhoneNumber(text, "");
+                var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
                 if (!String.IsNullOrEmpty(numberPhone))// hiển thị số điện thoại nếu đã cung cấp trước đó
                 {
                     StringBuilder sbPostback = new StringBuilder();
@@ -189,16 +229,20 @@ namespace BotProject.Web.Controllers
 
             // Xử lý email
             #region
-            bool isCheckMail = bool.Parse(_user.Predicates.grabSetting("mailcheck"));
+            bool isCheckMail = bool.Parse(_user.Predicates.grabSetting("emailcheck"));
             if (isCheckMail)
             {
-                var handleEmail = HandleModule.HandledIsEmail(text, "");
+                var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
                 if (handleEmail.Status)// đúng email
                 {
-                    _user.Predicates.addSetting("mailcheck", "false");
-                    _user.Predicates.addSetting("mail", text);
-                    if (String.IsNullOrEmpty(_user.Predicates.grabSetting("phone")))// check rỗng nếu chưa trả lời trước đó thì mới gọi tới
-                        return chatbot("postback_card_0002", group, token, botId, isMdSearch);
+                    _user.Predicates.addSetting("emailcheck", "false");
+                    _user.Predicates.addSetting("email", text);
+                    //if (String.IsNullOrEmpty(_user.Predicates.grabSetting("phone")))// check rỗng nếu chưa trả lời trước đó thì mới gọi tới
+                    //    return chatbot("postback_card_0002", group, token, botId, isMdSearch);
+                    if (!String.IsNullOrEmpty(handleEmail.Postback))
+                    {
+                        return chatbot(handleEmail.Postback, group, token, botId, isMdSearch);
+                    }
                 }
                 return Json(new
                 {
@@ -210,9 +254,9 @@ namespace BotProject.Web.Controllers
             }
             if (text.Contains("postback_module_email"))
             {
-                string email = _user.Predicates.grabSetting("mail");
-                _user.Predicates.addSetting("mailcheck", "true");
-                var handleEmail = HandleModule.HandledIsEmail(text, "");
+                string email = _user.Predicates.grabSetting("email");
+                _user.Predicates.addSetting("emailcheck", "true");
+                var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
                 if (!String.IsNullOrEmpty(email))// hiển thị email đã cung cấp trước đó
                 {
                     StringBuilder sbPostback = new StringBuilder();
@@ -254,14 +298,15 @@ namespace BotProject.Web.Controllers
             bool isCheckAge = bool.Parse(_user.Predicates.grabSetting("agecheck"));
             if (isCheckAge)
             {
-                var handleAge = HandleModule.HandledIsAge(text, "");
+                var handleAge = _handleMdService.HandledIsAge(text, valBotID);
                 if (handleAge.Status)// đúng age
                 {
                     _user.Predicates.addSetting("agecheck", "false");
                     _user.Predicates.addSetting("age", text);
-                    // nếu xử lý module return về thẻ
-                    if (String.IsNullOrEmpty(_user.Predicates.grabSetting("email")))
-                        return chatbot("postback_card_0001", group, token, botId, isMdSearch);
+                    if (!String.IsNullOrEmpty(handleAge.Postback))
+                    {
+                        return chatbot(handleAge.Postback, group, token, botId, isMdSearch);
+                    }
                 }
                 return Json(new
                 {
@@ -275,7 +320,7 @@ namespace BotProject.Web.Controllers
             {
                 string age = _user.Predicates.grabSetting("age");
                 _user.Predicates.addSetting("agecheck", "true");
-                var handleAge = HandleModule.HandledIsAge(text, "");
+                var handleAge = _handleMdService.HandledIsAge(text, valBotID);
                 if (!String.IsNullOrEmpty(age))// hiển thị age đã cung cấp trước đó
                 {
                     StringBuilder sbPostback = new StringBuilder();

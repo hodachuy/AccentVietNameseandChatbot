@@ -1,4 +1,5 @@
-﻿using BotProject.Web.Infrastructure.HandleModuleBot;
+﻿using BotProject.Service;
+using BotProject.Web.Infrastructure.HandleModuleBot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,22 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
         private const string PhonePattern = @"^(\+[0-9]{9})$";
         private const string EmailPattern =
         @"^\s*[\w\-\+_']+(\.[\w\-\+_']+)*\@[A-Za-z0-9]([\w\.-]*[A-Za-z0-9])?\.[A-Za-z][A-Za-z\.]*[A-Za-z]$";
+
+        private IMdPhoneService _mdPhoneService;
+        private IMdEmailService _mdEmailService;
+        private IMdAgeService _mdAgeService;
+        private IModuleKnowledegeService _mdKnowledegeService;
+
+        public HandleModule(IMdPhoneService mdPhoneService,
+                            IMdEmailService mdEmailService,
+                            IMdAgeService mdAgeService,
+                            IModuleKnowledegeService mdKnowledegeService)
+        {
+            _mdPhoneService = mdPhoneService;
+            _mdEmailService = mdEmailService;
+            _mdAgeService = mdAgeService;
+            _mdKnowledegeService = mdKnowledegeService;
+        }
 
         private static string tempText(string text)
         {
@@ -126,27 +143,29 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
             return rsHandle;
         }
 
-        public static HandleResult HandledIsAge(string age, string postbackCard)
+        public HandleResult HandledIsAge(string age, int botID)
         {
             HandleResult rsHandle = new HandleResult();
-            rsHandle.Postback = postbackCard;
+            var mdAgeDb = _mdAgeService.GetByBotID(botID);
+
+            rsHandle.Postback = mdAgeDb.Payload;
             rsHandle.Status = true;
             if (age.Contains(Common.CommonConstants.ModuleAge))
             {
                 rsHandle.Status = false;
-                rsHandle.Message = tempText("Bạn vui lòng cho tôi biết độ tuổi của bạn.");
+                rsHandle.Message = tempText(mdAgeDb.MessageStart);
                 return rsHandle;
             }
             bool isAge = Regex.Match(age, NumberPattern).Success;
             if (!isAge)
             {
                 rsHandle.Status = false;
-                rsHandle.Message = tempText("Tôi không nghĩ đó là số tuổi, bạn vui lòng nhập vào chữ số.");
+                rsHandle.Message = tempText(mdAgeDb.MessageError);
                 return rsHandle;
             }
             else
             {
-                if(Int32.Parse(age) < 6)
+                if(Int32.Parse(age) < 5)
                 {
                     rsHandle.Status = false;
                     rsHandle.Message = tempText("Bạn còn quá trẻ để chúng tôi đưa ra tư vấn.");
@@ -160,7 +179,7 @@ namespace BotProject.Web.Infrastructure.HandleModuleBot
                 }
             }
             rsHandle.Status = true;
-            rsHandle.Message = tempText("Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!");// nếu call tới follow thẻ khác trả về postback id card
+            rsHandle.Message = tempText(mdAgeDb.MessageEnd);// nếu call tới follow thẻ khác trả về postback id card
             return rsHandle;
         }
 

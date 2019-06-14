@@ -69,6 +69,7 @@
     <Compile Include="ErrorService.cs" />
     <Compile Include="FileCardService.cs" />
     <Compile Include="GroupCardService.cs" />
+    <Compile Include="HandleModuleService.cs" />
     <Compile Include="ImageService.cs" />
     <Compile Include="MdAgeService.cs" />
     <Compile Include="MdEmailService.cs" />

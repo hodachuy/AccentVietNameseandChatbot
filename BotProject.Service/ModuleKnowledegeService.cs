@@ -14,6 +14,7 @@ namespace BotProject.Service
         ModuleKnowledgeMedInfoPatient Add(ModuleKnowledgeMedInfoPatient mdKnowledgeMedInfoPatient);
         void UpdateMdKnowledfeMedInfoPatient(ModuleKnowledgeMedInfoPatient mdKnowledgeMedInfoPatien);
         ModuleKnowledgeMedInfoPatient GetByMdMedInfoPatientID(int id);
+        IEnumerable<ModuleKnowledgeMedInfoPatient> GetAllMdKnowledgeMedInfPatientByBotID(int botID);
         void DeleteMdMedInfoPatient(int id);
         void Save();
     }
@@ -36,6 +37,11 @@ namespace BotProject.Service
         public void DeleteMdMedInfoPatient(int id)
         {
             _mdKnowledgeMedInfoPatientRepository.Delete(id);
+        }
+
+        public IEnumerable<ModuleKnowledgeMedInfoPatient> GetAllMdKnowledgeMedInfPatientByBotID(int botID)
+        {
+            return _mdKnowledgeMedInfoPatientRepository.GetMulti(x => x.BotID == botID);
         }
 
         public ModuleKnowledgeMedInfoPatient GetByMdMedInfoPatientID(int id)

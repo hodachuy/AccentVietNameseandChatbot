@@ -61,6 +61,7 @@
     <Compile Include="HelperMethods\HelperMethods.cs" />
     <Compile Include="MailHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\HandleResultBotViewModel.cs" />
     <Compile Include="ViewModels\MdQnAViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -542,7 +542,7 @@ $(document).ready(function () {
                 //userExactly = userExactly ? 1 : 0;
                 $(this).find('.tags .addedTag').each(function (index1, el1) {
                     var question = {
-                        'ContentText': decodeEntities($(el1).children('input').val()).trim(),//decode bỏ các ký tự đặc biệt
+                        'ContentText': decodeEntities($(el1).children('input').val()).trim(),//decode bỏ các ký tự đặc biệt ngoại trừ dấu *
                         'IsThatStar': userExactly,
                         'QuestionGroupID': quesGroupId,
                         'CodeSymbol': $(el1).children('input').attr('data-ques-symbol'),
@@ -1047,7 +1047,7 @@ var decodeEntities = (function () {
             str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
             str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
             // replace special character in string
-            str = str.replace(/[&\/\\#,+()$~%.'":*?<>!]/g, ' ');
+            str = str.replace(/[&\/\\#,+()$~%.'":?<>!]/g, ' ');///[&\/\\#,+()$~%.'":*?<>!]/g
             str = str.replace(/  +/g, ' ');
             console.log(str)
             element.innerHTML = str;
