@@ -14,7 +14,7 @@ namespace BotProject.Service
         HandleResultBotViewModel HandledIsEmail(string email, int botID);
         HandleResultBotViewModel HandledIsAge(string age, int botID);
         HandleResultBotViewModel HandleIsName(string name, int botID);
-        HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID);      
+        HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID);
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
@@ -154,7 +154,7 @@ namespace BotProject.Service
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             string mdInfoPatientID = mdName.Replace("postback_module_med_get_info_patient_", "");
             var mdGetInfoPatientDb = _mdKnowledegeService.GetByMdMedInfoPatientID(Int32.Parse(mdInfoPatientID));
-            if(mdGetInfoPatientDb != null)
+            if (mdGetInfoPatientDb != null)
             {
                 if (!String.IsNullOrEmpty(mdGetInfoPatientDb.OptionText))
                 {
@@ -162,17 +162,18 @@ namespace BotProject.Service
                     rsHandle.Message = TemplateOptionBot(arrOpt, mdGetInfoPatientDb.Title, mdGetInfoPatientDb.Payload);
                 }
             }
-          
+
             return rsHandle;
         }
 
         private static string TemplateOptionBot(string[] arrOpt, string title, string postback)
         {
             StringBuilder sb = new StringBuilder();
+            var url = "http://localhost:54160/assets/images/user_bot.jpg";
             sb.AppendLine("<div class=\"_4xkn clearfix\">");
-            sb.AppendLine (     "<div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
+            sb.AppendLine("<div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
             sb.AppendLine("<div class=\"_4cqr\">");
-            sb.AppendLine("<img class=\"profilePicture img\" src=\"~/assets/images/user_bot.jpg\"/>");
+            sb.AppendLine("<img class=\"profilePicture img\" src=\"" + url + "\"/>");
             sb.AppendLine("<div class=\"clearfix\"></div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
@@ -181,31 +182,32 @@ namespace BotProject.Service
             sb.AppendLine("<div class=\"clearfix _2a0-\">");
             sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);\">");
             sb.AppendLine("<span>");
-            sb.AppendLine("<span>"+title+"</span>");
+            sb.AppendLine("<span>" + title + "</span>");
             sb.AppendLine("</span>");
             sb.AppendLine("</div>");
             sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);width:100%\">");
             sb.AppendLine("<ul>");
-            foreach(var item in arrOpt)
+            foreach (var item in arrOpt)
             {
-                sb.AppendLine("<li><input type = \"checkbox\"/> "+ item + "</li>");
+                sb.AppendLine("<li><input type = \"checkbox\"/> " + item + "</li>");
             }
             sb.AppendLine("</ul>");
             sb.AppendLine("</div>");
             if (!String.IsNullOrEmpty(postback))
             {
-               sb.AppendLine("<div class=\"_6ir5\">");
-               sb.AppendLine("<div class=\"_4bqf _6ir3\">");
-               sb.AppendLine("<a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + postback + "\" href=\"#\" style=\"color: rgb(234, 82, 105);\">Tiếp tục</a>");
-               sb.AppendLine("</div>");
-               sb.AppendLine("</div>");
+                sb.AppendLine("<div class=\"_6b7s\">");
+                sb.AppendLine("<div class=\"_6ir5\">");
+                sb.AppendLine("<div class=\"_4bqf _6ir3\">");
+                sb.AppendLine("<a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + postback + "\" href=\"#\" style=\"color: rgb(234, 82, 105);\">Tiếp tục</a>");
+                sb.AppendLine("</div>");
+                sb.AppendLine("</div>");
+                sb.AppendLine("</div>");
             }
 
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
-            sb.AppendLine("<div class=\"_4xkn clearfix\">");
 
             return sb.ToString();
         }

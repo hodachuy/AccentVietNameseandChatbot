@@ -159,7 +159,14 @@ namespace BotProject.Web.Controllers
             #region 
             if (text.Contains("postback_module_med_get_info_patient"))
             {
-
+                var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient(text, valBotID);
+                return Json(new
+                {
+                    message = new List<string>() { handlePatient.Message },
+                    postback = new List<string>() { null },
+                    messageai = "",
+                    isCheck = true
+                }, JsonRequestBehavior.AllowGet);
             }
             #endregion
 
