@@ -14,7 +14,7 @@ namespace BotProject.Service
         HandleResultBotViewModel HandledIsEmail(string email, int botID);
         HandleResultBotViewModel HandledIsAge(string age, int botID);
         HandleResultBotViewModel HandleIsName(string name, int botID);
-        HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID);
+        HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
@@ -149,7 +149,7 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-        public HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID)
+        public HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             string mdInfoPatientID = mdName.Replace("postback_module_med_get_info_patient_", "");
@@ -159,15 +159,19 @@ namespace BotProject.Service
                 if (!String.IsNullOrEmpty(mdGetInfoPatientDb.OptionText))
                 {
                     var arrOpt = mdGetInfoPatientDb.OptionText.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
-                    rsHandle.Message = TemplateOptionBot(arrOpt, mdGetInfoPatientDb.Title, mdGetInfoPatientDb.Payload);
+                    rsHandle.Message = TemplateOptionBot(arrOpt, mdGetInfoPatientDb.Title, mdGetInfoPatientDb.Payload, mdInfoPatientID, notFound);
                 }
             }
 
             return rsHandle;
         }
 
-        private static string TemplateOptionBot(string[] arrOpt, string title, string postback)
+        private static string TemplateOptionBot(string[] arrOpt, string title, string postback, string mdInfoPatientID,string notFound)
         {
+            if (!String.IsNullOrEmpty(notFound))
+            {
+                title = notFound;
+            }
             StringBuilder sb = new StringBuilder();
             var url = "http://localhost:54160/assets/images/user_bot.jpg";
             sb.AppendLine("<div class=\"_4xkn clearfix\">");
@@ -189,21 +193,24 @@ namespace BotProject.Service
             sb.AppendLine("<ul>");
             foreach (var item in arrOpt)
             {
-                sb.AppendLine("<li><input type = \"checkbox\"/> " + item + "</li>");
+                sb.AppendLine("<li><input type=\"checkbox\" value=\"" + item + "\" class=\"chk-opt-module-" + mdInfoPatientID + "\"/>" + item + "</li>");
             }
             sb.AppendLine("</ul>");
             sb.AppendLine("</div>");
             if (!String.IsNullOrEmpty(postback))
             {
+                sb.AppendLine("<div class=\"_4xko _2k7w _4xkr\">");
+                sb.AppendLine("<div class=\"_2k7x\">");
                 sb.AppendLine("<div class=\"_6b7s\">");
                 sb.AppendLine("<div class=\"_6ir5\">");
                 sb.AppendLine("<div class=\"_4bqf _6ir3\">");
-                sb.AppendLine("<a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + postback + "\" href=\"#\" style=\"color: rgb(234, 82, 105);\">Tiếp tục</a>");
+                sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"" + postback + "\" href=\"#\" style=\"color: rgb(234, 82, 105);\">Tiếp tục</a>");
+                sb.AppendLine("</div>");
+                sb.AppendLine("</div>");
                 sb.AppendLine("</div>");
                 sb.AppendLine("</div>");
                 sb.AppendLine("</div>");
             }
-
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");

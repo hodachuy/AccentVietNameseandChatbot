@@ -106,7 +106,9 @@ $(document).ready(function () {
             if (text !== "") {
                 $("._4bqf_btn_submit").hide();
                 $(this).val('');
+                
                 submitMessage(text, '');
+                
             }
         }
     })
@@ -149,7 +151,21 @@ $(document).ready(function () {
         // chặn ảnh hưởng tới thẻ a href next
         e.stopPropagation();
     })
+    //module
+    $('body').on('click', '._6ir4_module', function (e) {
+        e.preventDefault();
+        var dataText = $(this).text();
+        var dataPostback = $(this).attr('data-postback');
+        var mdInfoPatientID = $(this).attr('data-id');
+        $('.chk-opt-module-' + mdInfoPatientID + '').each(function(){
+            if ($(this).prop('checked')) {
+                console.log($(this).val());
+            }
+        })
 
+        submitMessage(dataText, dataPostback);
+        e.stopPropagation();
+    })
     //popup
     $('body').on('click', '._6ir4_popup', function (e) {
         e.preventDefault();
@@ -255,7 +271,20 @@ function get_message_bot_accent(text) {
             console.log("Load data accent vietnamese not success")
             return false;
         }
-        getMessageBot(response);
+        if (response != "") {
+            response = response.replace('\n', '.');
+            if (text != response) {
+                var messageDidYouMean = tempDidYouMeanBot(response);
+                $(".conversationContainer").append(messageDidYouMean);
+            }
+            setTimeout(function () {
+                getMessageBot(response);
+            }, 1500)
+        } else {
+            setTimeout(function () {
+                getMessageBot(text);
+            }, 1500)
+        }
     })
 }
 
@@ -395,6 +424,29 @@ function tempTextBot(text) {
 '                               <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240);">' +
 '                                   <span>' +
 '                                       <span>' + text + '</span>' +
+'                                   </span>' +
+'                               </div>' +
+'                          </div>' +
+'                     </div>' +
+'                </div>' +
+'          </div>';
+    return htmlText;
+}
+
+function tempDidYouMeanBot(text) {
+    var htmlText = '<div class="_4xkn clearfix">' +
+'               <div class="profilePictureColumn" style="bottom:0px;">' +
+'                    <div class="_4cqr">' +
+'                         <img class="profilePicture img" src="' + _srcLogo + '" alt="">' +
+'                         <div class="clearfix"></div>' +
+'                     </div>' +
+'                </div>' +
+'                <div class="messages">' +
+                      '<div class="_21c3">' +
+'                          <div class="clearfix _2a0-">' +
+'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="font-style:italic">' +
+'                                   <span>' +
+'                                       <span> Ý bạn là: ' + text + '</span>' +
 '                                   </span>' +
 '                               </div>' +
 '                          </div>' +

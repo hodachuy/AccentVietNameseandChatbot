@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_5042</pattern>
+<template>
+Bạn vui lòng tới bác sỹ để tư vấn sớm nhất , có thể bạn bị đau ruột thừa?
+</template>
+</category>
+</aiml>

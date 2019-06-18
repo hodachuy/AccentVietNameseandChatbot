@@ -14,6 +14,54 @@
 </template>
 </category>
 <category>
+<pattern>ĐAU * BỤNG</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>ĐAU * BỤNG *</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>* ĐAU * BỤNG *</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>* ĐAU * BỤNG</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>ĐAU BỤNG</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>ĐAU BỤNG *</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>* ĐAU BỤNG *</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>* ĐAU BỤNG</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>BỤNG * ĐAU</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>BỤNG * ĐAU *</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>* BỤNG * ĐAU *</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
+<pattern>* BỤNG * ĐAU</pattern>
+<template><srai>postback_card_5041</srai></template>
+</category>
+<category>
 <pattern>TAY * ĐAU</pattern>
 <template><srai>postback_card_5031</srai></template>
 </category>
@@ -140,5 +188,64 @@
 <category>
 <pattern>* HELLO</pattern>
 <template>Tôi có thể giúp gì cho bạn?</template>
+</category>
+<category>
+<pattern>postback_answer_4032</pattern>
+<template>
+<random>
+<li>Hẹn gặp lại bạn!</li>
+<li>Tạm biệt bạn! Mong bạn giữ gìn sức khỏe!</li>
+<li>Tạm biệt bạn!</li>
+</random>
+</template>
+</category>
+
+<category>
+<pattern>CHÀO TẠM BIỆT</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>CHÀO TẠM BIỆT *</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>* CHÀO TẠM BIỆT *</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>* CHÀO TẠM BIỆT</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>BYE</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>BYE *</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>* BYE *</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>* BYE</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>HẸN GẶP LẠI</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>HẸN GẶP LẠI *</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>* HẸN GẶP LẠI *</pattern>
+<template><srai>postback_answer_4032</srai></template>
+</category>
+<category>
+<pattern>* HẸN GẶP LẠI</pattern>
+<template><srai>postback_answer_4032</srai></template>
 </category>
 </aiml>

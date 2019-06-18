@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_5041</pattern>
+<template>
+Bạn đau bụng lâu chưa? Bạn đau ở vị trí nào?
+<button>
+<text>Đau bên phải</text>
+<menu>postback_card_5042</menu>
+</button>
+<button>
+<text>Đau bên trái</text>
+<menu>postback_card_5043</menu>
+</button>
+</template>
+</category>
+</aiml>

@@ -39,15 +39,19 @@ namespace BotProject.Web.Controllers
         private IHandleModuleServiceService _handleMdService;
         private IModuleService _mdService;
         private IModuleKnowledegeService _mdKnowledgeService;
+        private IErrorService _errorService;
+
         //private Bot _bot;
         private User _user;
 
-        public Apiv1Controller(IBotService botDbService,
+        public Apiv1Controller(IErrorService errorService,
+                                IBotService botDbService,
                                 ISettingService settingService,
                                 IHandleModuleServiceService handleMdService,
                                 IModuleService mdService,
                                 IModuleKnowledegeService mdKnowledgeService)
         {
+            _errorService = errorService;
             _elastic = new ElasticSearch();
             _accentService = AccentService.AccentInstance;
             _botDbService = botDbService;
@@ -77,30 +81,39 @@ namespace BotProject.Web.Controllers
             userBot.BotID = botId;
             _user = _botService.loadUserBot(userBot.ID);
 
+            _user.Predicates.addSetting("phone", "");
+            _user.Predicates.addSetting("phonecheck", "false");
+
+            _user.Predicates.addSetting("email", "");
+            _user.Predicates.addSetting("emailcheck", "false");
+
+            _user.Predicates.addSetting("age", "");
+            _user.Predicates.addSetting("agecheck", "false");
+
             // load tất cả module của bot và thêm key vao predicate
-            var mdBotDb = _mdService.GetAllModuleByBotID(botID).Where(x =>x.Name != "med_get_info_patient").ToList();
-            if(mdBotDb.Count() != 0)
+            var mdBotDb = _mdService.GetAllModuleByBotID(botID).Where(x => x.Name != "med_get_info_patient").ToList();
+            if (mdBotDb.Count() != 0)
             {
-                foreach(var item in mdBotDb)
+                foreach (var item in mdBotDb)
                 {
                     _user.Predicates.addSetting(item.Name, "");
-                    _user.Predicates.addSetting(item.Name+"check", "false");
+                    _user.Predicates.addSetting(item.Name + "check", "false");
                 }
             }
 
             var mdGetInfoPatientDb = _mdKnowledgeService.GetAllMdKnowledgeMedInfPatientByBotID(botID).ToList();
-            if(mdGetInfoPatientDb.Count() != 0)
+            if (mdGetInfoPatientDb.Count() != 0)
             {
-                foreach(var item in mdGetInfoPatientDb)
+                foreach (var item in mdGetInfoPatientDb)
                 {
                     if (!String.IsNullOrEmpty(item.OptionText))
                     {
                         int index = 0;
                         var arrOpt = item.OptionText.Split(new string[] { "||" }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach(var opt in arrOpt)
+                        foreach (var opt in arrOpt)
                         {
                             index++;
-                            _user.Predicates.addSetting(item.ID+"_opt_"+index, "");
+                            _user.Predicates.addSetting(item.ID + "_opt_" + index, "");
                         }
                     }
                     if (!String.IsNullOrEmpty(item.Payload))
@@ -111,14 +124,9 @@ namespace BotProject.Web.Controllers
                 }
             }
 
-            //_user.Predicates.addSetting("phone", "");
-            //_user.Predicates.addSetting("phonecheck", "false");
+            _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
+            _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
 
-            //_user.Predicates.addSetting("mail", "");
-            //_user.Predicates.addSetting("mailcheck", "false");
-
-            //_user.Predicates.addSetting("age", "");
-            //_user.Predicates.addSetting("agecheck", "false");
 
             SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = _user.Predicates.Count;
@@ -136,273 +144,321 @@ namespace BotProject.Web.Controllers
             string nameBotAIML = "User_" + token + "_BotID_" + botId;
             string fullPathAIML = pathAIML + nameBotAIML;
             int valBotID = Int32.Parse(botId);
-            _botService.loadAIMLFromFiles(fullPathAIML);
+            try
+            {
+                _botService.loadAIMLFromFiles(fullPathAIML);
 
 
-            if (!String.IsNullOrEmpty(text))
-            {
-                text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
-            }
-            if (Session[CommonConstants.SessionUserBot] == null)
-            {
-                // return TimeOut
-            }
-            //get new predicate from session user bot request
-            var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
-            _user = _botService.loadUserBot(userBot.ID);
-            _user.Predicates.Count = userBot.SettingDicstionary.Count;
-            _user.Predicates.SettingNames = userBot.SettingDicstionary.SettingNames;
-            _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
-            _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
-
-            // Module lấy thông tin bệnh
-            #region 
-            if (text.Contains("postback_module_med_get_info_patient"))
-            {
-                var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient(text, valBotID);
-                return Json(new
+                if (!String.IsNullOrEmpty(text))
                 {
-                    message = new List<string>() { handlePatient.Message },
-                    postback = new List<string>() { null },
-                    messageai = "",
-                    isCheck = true
-                }, JsonRequestBehavior.AllowGet);
-            }
-            #endregion
-
-            // Xử lý module phone
-            #region 
-            bool isCheckPhone = bool.Parse(_user.Predicates.grabSetting("phonecheck"));
-            if (isCheckPhone)
-            {
-                var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
-                if (handlePhone.Status)// đúng số dt
+                    text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
+                }
+                if (Session[CommonConstants.SessionUserBot] == null)
                 {
-                    _user.Predicates.addSetting("phonecheck", "false");
-                    _user.Predicates.addSetting("phone", text);
-                    if (!String.IsNullOrEmpty(handlePhone.Postback))
+                    // return TimeOut
+                }
+                //get new predicate from session user bot request
+                var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
+                _user = _botService.loadUserBot(userBot.ID);
+                _user.Predicates.Count = userBot.SettingDicstionary.Count;
+                _user.Predicates.SettingNames = userBot.SettingDicstionary.SettingNames;
+                _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
+                _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
+
+                // Module lấy thông tin bệnh
+                #region 
+                // nếu là true
+                if (bool.Parse(_user.Predicates.grabSetting("isChkMdGetInfoPatient")))
+                {
+                    if (text.Contains("postback_card"))
                     {
-                        return chatbot(handlePhone.Postback, group, token, botId, isMdSearch);
+                        string MdGetInfoPatientId = _user.Predicates.grabSetting("ThreadMdGetInfoPatientId");
+                        _user.Predicates.addSetting("med_get_info_patient_check_" + MdGetInfoPatientId, "false");
+                        _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
+
+                        _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
+
+                        return chatbot(text, group, token, botId, isMdSearch);
+                    }
+                    else
+                    {
+                        string MdGetInfoPatientId = _user.Predicates.grabSetting("ThreadMdGetInfoPatientId");
+                        var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient("postback_module_med_get_info_patient_" + MdGetInfoPatientId + "", valBotID, "Tôi không hiểu, vui lòng chọn lại thông tin bên dưới.");
+                        return Json(new
+                        {
+                            message = new List<string>() { handlePatient.Message },
+                            postback = new List<string>() { null },
+                            messageai = "",
+                            isCheck = true
+                        }, JsonRequestBehavior.AllowGet);
                     }
                 }
-                return Json(new
+                if (text.Contains("postback_module_med_get_info_patient"))
                 {
-                    message = new List<string>() { handlePhone.Message },
-                    postback = new List<string>() { null },
-                    messageai = "",
-                    isCheck = true
-                }, JsonRequestBehavior.AllowGet);
-            }
-            if (text.Contains("postback_module_phone"))
-            {
-                string numberPhone = _user.Predicates.grabSetting("phone");
-                _user.Predicates.addSetting("phonecheck", "true");
-                var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
-                if (!String.IsNullOrEmpty(numberPhone))// hiển thị số điện thoại nếu đã cung cấp trước đó
-                {
-                    StringBuilder sbPostback = new StringBuilder();
-                    sbPostback.AppendLine("<div class=\"_6biu\">");
-                    sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
-                    sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
-                    sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
-                    sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
-                    sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
-                    sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + numberPhone + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + numberPhone + "</div>");
-                    sbPostback.AppendLine(" </div>");
-                    sbPostback.AppendLine("                                                                                </div>");
-                    sbPostback.AppendLine("                                                                            </div>");
-                    sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
-                    sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
-                    sbPostback.AppendLine("                                                                            </div>");
-                    sbPostback.AppendLine("                                                                        </div>");
+                    var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient(text, valBotID, "");
 
+                    string MdGetInfoPatientId = text.Replace("postback_module_med_get_info_patient_", "");
+                    _user.Predicates.addSetting("ThreadMdGetInfoPatientId", MdGetInfoPatientId);
+
+                    _user.Predicates.addSetting("med_get_info_patient_check_" + MdGetInfoPatientId, "true");
+
+                    _user.Predicates.addSetting("isChkMdGetInfoPatient", "true");
+
+                    return Json(new
+                    {
+                        message = new List<string>() { handlePatient.Message },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
+
+                // Xử lý module phone
+                #region 
+                bool isCheckPhone = bool.Parse(_user.Predicates.grabSetting("phonecheck"));
+                if (isCheckPhone)
+                {
+                    var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
+                    if (handlePhone.Status)// đúng số dt
+                    {
+                        _user.Predicates.addSetting("phonecheck", "false");
+                        _user.Predicates.addSetting("phone", text);
+                        if (!String.IsNullOrEmpty(handlePhone.Postback))
+                        {
+                            return chatbot(handlePhone.Postback, group, token, botId, isMdSearch);
+                        }
+                    }
                     return Json(new
                     {
                         message = new List<string>() { handlePhone.Message },
-                        postback = new List<string>() { sbPostback.ToString() },
+                        postback = new List<string>() { null },
                         messageai = "",
                         isCheck = true
                     }, JsonRequestBehavior.AllowGet);
                 }
-                return Json(new
+                if (text.Contains("postback_module_phone"))
                 {
-                    message = new List<string>() { handlePhone.Message },
-                    postback = new List<string>() { null },
-                    messageai = "",
-                    isCheck = true
-                }, JsonRequestBehavior.AllowGet);
-            }
-            #endregion
-
-            // Xử lý email
-            #region
-            bool isCheckMail = bool.Parse(_user.Predicates.grabSetting("emailcheck"));
-            if (isCheckMail)
-            {
-                var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
-                if (handleEmail.Status)// đúng email
-                {
-                    _user.Predicates.addSetting("emailcheck", "false");
-                    _user.Predicates.addSetting("email", text);
-                    //if (String.IsNullOrEmpty(_user.Predicates.grabSetting("phone")))// check rỗng nếu chưa trả lời trước đó thì mới gọi tới
-                    //    return chatbot("postback_card_0002", group, token, botId, isMdSearch);
-                    if (!String.IsNullOrEmpty(handleEmail.Postback))
+                    string numberPhone = _user.Predicates.grabSetting("phone");
+                    _user.Predicates.addSetting("phonecheck", "true");
+                    var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
+                    if (!String.IsNullOrEmpty(numberPhone))// hiển thị số điện thoại nếu đã cung cấp trước đó
                     {
-                        return chatbot(handleEmail.Postback, group, token, botId, isMdSearch);
-                    }
-                }
-                return Json(new
-                {
-                    message = new List<string>() { handleEmail.Message },
-                    postback = new List<string>() { null },
-                    messageai = "",
-                    isCheck = true
-                }, JsonRequestBehavior.AllowGet);
-            }
-            if (text.Contains("postback_module_email"))
-            {
-                string email = _user.Predicates.grabSetting("email");
-                _user.Predicates.addSetting("emailcheck", "true");
-                var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
-                if (!String.IsNullOrEmpty(email))// hiển thị email đã cung cấp trước đó
-                {
-                    StringBuilder sbPostback = new StringBuilder();
-                    sbPostback.AppendLine("<div class=\"_6biu\">");
-                    sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
-                    sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
-                    sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
-                    sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
-                    sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
-                    sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + email + "\" style=\"border-color: {{color}} color: {{color}}\">" + email + "</div>");
-                    sbPostback.AppendLine(" </div>");
-                    sbPostback.AppendLine("                                                                                </div>");
-                    sbPostback.AppendLine("                                                                            </div>");
-                    sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
-                    sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
-                    sbPostback.AppendLine("                                                                            </div>");
-                    sbPostback.AppendLine("                                                                        </div>");
+                        StringBuilder sbPostback = new StringBuilder();
+                        sbPostback.AppendLine("<div class=\"_6biu\">");
+                        sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
+                        sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
+                        sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
+                        sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
+                        sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
+                        sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + numberPhone + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + numberPhone + "</div>");
+                        sbPostback.AppendLine(" </div>");
+                        sbPostback.AppendLine("                                                                                </div>");
+                        sbPostback.AppendLine("                                                                            </div>");
+                        sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
+                        sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+                        sbPostback.AppendLine("                                                                            </div>");
+                        sbPostback.AppendLine("                                                                        </div>");
 
+                        return Json(new
+                        {
+                            message = new List<string>() { handlePhone.Message },
+                            postback = new List<string>() { sbPostback.ToString() },
+                            messageai = "",
+                            isCheck = true
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handlePhone.Message },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
+
+                // Xử lý email
+                #region
+                bool isCheckMail = bool.Parse(_user.Predicates.grabSetting("emailcheck"));
+                if (isCheckMail)
+                {
+                    var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
+                    if (handleEmail.Status)// đúng email
+                    {
+                        _user.Predicates.addSetting("emailcheck", "false");
+                        _user.Predicates.addSetting("email", text);
+                        //if (String.IsNullOrEmpty(_user.Predicates.grabSetting("phone")))// check rỗng nếu chưa trả lời trước đó thì mới gọi tới
+                        //    return chatbot("postback_card_0002", group, token, botId, isMdSearch);
+                        if (!String.IsNullOrEmpty(handleEmail.Postback))
+                        {
+                            return chatbot(handleEmail.Postback, group, token, botId, isMdSearch);
+                        }
+                    }
                     return Json(new
                     {
                         message = new List<string>() { handleEmail.Message },
-                        postback = new List<string>() { sbPostback.ToString() },
+                        postback = new List<string>() { null },
                         messageai = "",
                         isCheck = true
                     }, JsonRequestBehavior.AllowGet);
                 }
-                return Json(new
+                if (text.Contains("postback_module_email"))
                 {
-                    message = new List<string>() { handleEmail.Message },
-                    postback = new List<string>() { null },
-                    messageai = "",
-                    isCheck = true
-                }, JsonRequestBehavior.AllowGet);
-            }
-            #endregion
-
-            // Xử lý age
-            #region
-            bool isCheckAge = bool.Parse(_user.Predicates.grabSetting("agecheck"));
-            if (isCheckAge)
-            {
-                var handleAge = _handleMdService.HandledIsAge(text, valBotID);
-                if (handleAge.Status)// đúng age
-                {
-                    _user.Predicates.addSetting("agecheck", "false");
-                    _user.Predicates.addSetting("age", text);
-                    if (!String.IsNullOrEmpty(handleAge.Postback))
+                    string email = _user.Predicates.grabSetting("email");
+                    _user.Predicates.addSetting("emailcheck", "true");
+                    var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
+                    if (!String.IsNullOrEmpty(email))// hiển thị email đã cung cấp trước đó
                     {
-                        return chatbot(handleAge.Postback, group, token, botId, isMdSearch);
-                    }
-                }
-                return Json(new
-                {
-                    message = new List<string>() { handleAge.Message },
-                    postback = new List<string>() { null },
-                    messageai = "",
-                    isCheck = true
-                }, JsonRequestBehavior.AllowGet);
-            }
-            if (text.Contains("postback_module_age"))// nếu check đi từ đây trước
-            {
-                string age = _user.Predicates.grabSetting("age");
-                _user.Predicates.addSetting("agecheck", "true");
-                var handleAge = _handleMdService.HandledIsAge(text, valBotID);
-                if (!String.IsNullOrEmpty(age))// hiển thị age đã cung cấp trước đó
-                {
-                    StringBuilder sbPostback = new StringBuilder();
-                    sbPostback.AppendLine("<div class=\"_6biu\">");
-                    sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
-                    sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
-                    sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
-                    sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
-                    sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
-                    sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + age + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + age + "</div>");
-                    sbPostback.AppendLine(" </div>");
-                    sbPostback.AppendLine("                                                                                </div>");
-                    sbPostback.AppendLine("                                                                            </div>");
-                    sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
-                    sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
-                    sbPostback.AppendLine("                                                                            </div>");
-                    sbPostback.AppendLine("                                                                        </div>");
+                        StringBuilder sbPostback = new StringBuilder();
+                        sbPostback.AppendLine("<div class=\"_6biu\">");
+                        sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
+                        sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
+                        sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
+                        sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
+                        sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
+                        sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + email + "\" style=\"border-color: {{color}} color: {{color}}\">" + email + "</div>");
+                        sbPostback.AppendLine(" </div>");
+                        sbPostback.AppendLine("                                                                                </div>");
+                        sbPostback.AppendLine("                                                                            </div>");
+                        sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
+                        sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+                        sbPostback.AppendLine("                                                                            </div>");
+                        sbPostback.AppendLine("                                                                        </div>");
 
+                        return Json(new
+                        {
+                            message = new List<string>() { handleEmail.Message },
+                            postback = new List<string>() { sbPostback.ToString() },
+                            messageai = "",
+                            isCheck = true
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleEmail.Message },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
+
+                // Xử lý age
+                #region
+                bool isCheckAge = bool.Parse(_user.Predicates.grabSetting("agecheck"));
+                if (isCheckAge)
+                {
+                    var handleAge = _handleMdService.HandledIsAge(text, valBotID);
+                    if (handleAge.Status)// đúng age
+                    {
+                        _user.Predicates.addSetting("agecheck", "false");
+                        _user.Predicates.addSetting("age", text);
+                        if (!String.IsNullOrEmpty(handleAge.Postback))
+                        {
+                            return chatbot(handleAge.Postback, group, token, botId, isMdSearch);
+                        }
+                    }
                     return Json(new
                     {
                         message = new List<string>() { handleAge.Message },
-                        postback = new List<string>() { sbPostback.ToString() },
+                        postback = new List<string>() { null },
                         messageai = "",
                         isCheck = true
                     }, JsonRequestBehavior.AllowGet);
                 }
+                if (text.Contains("postback_module_age"))// nếu check đi từ đây trước
+                {
+                    string age = _user.Predicates.grabSetting("age");
+                    _user.Predicates.addSetting("agecheck", "true");
+                    var handleAge = _handleMdService.HandledIsAge(text, valBotID);
+                    if (!String.IsNullOrEmpty(age))// hiển thị age đã cung cấp trước đó
+                    {
+                        StringBuilder sbPostback = new StringBuilder();
+                        sbPostback.AppendLine("<div class=\"_6biu\">");
+                        sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
+                        sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
+                        sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
+                        sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
+                        sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
+                        sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + age + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + age + "</div>");
+                        sbPostback.AppendLine(" </div>");
+                        sbPostback.AppendLine("                                                                                </div>");
+                        sbPostback.AppendLine("                                                                            </div>");
+                        sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
+                        sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+                        sbPostback.AppendLine("                                                                            </div>");
+                        sbPostback.AppendLine("                                                                        </div>");
+
+                        return Json(new
+                        {
+                            message = new List<string>() { handleAge.Message },
+                            postback = new List<string>() { sbPostback.ToString() },
+                            messageai = "",
+                            isCheck = true
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleAge.Message },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
+
+                AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
+                string result = aimlBotResult.OutputSentences[0].ToString();
+                bool isMatch = true;
+                // nếu aiml bot có template trả thẳng ra module k thông qua button text module
+                if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
+                {
+                    string txtModule = result.Replace("\r\n", "").Trim();
+                    return chatbot(txtModule, group, token, botId, isMdSearch);
+                }
+
+                // K tìm thấy trong Rule gọi tới module tri thức
+                if (result.Contains("NOT_MATCH"))
+                {
+                    isMatch = false;
+                    if (isMdSearch)
+                    {
+                        result = GetRelatedQuestion(text, group);
+                        if (String.IsNullOrEmpty(result))
+                        {
+                            //result = NOT_MATCH[res.OutputSentences[0]];
+                            result = aimlBotResult.OutputSentences[0].ToString();
+                        }
+                    }
+                }
+                //set new predicate to session user bot request
+                SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
+                settingDic.Count = aimlBotResult.user.Predicates.Count;
+                settingDic.orderedKeys = aimlBotResult.user.Predicates.orderedKeys;
+                settingDic.settingsHash = aimlBotResult.user.Predicates.settingsHash;
+                settingDic.SettingNames = aimlBotResult.user.Predicates.SettingNames;
+                userBot.SettingDicstionary = settingDic;
+                Session[CommonConstants.SessionUserBot] = userBot;
                 return Json(new
                 {
-                    message = new List<string>() { handleAge.Message },
+                    message = aimlBotResult.OutputHtmlMessage,
+                    postback = aimlBotResult.OutputHtmlPostback,
+                    messageai = result,
+                    isCheck = isMatch
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch(Exception ex)
+            {
+                LogError(ex);
+                return Json(new
+                {
+                    message = new List<string>() { "Session Timeout" },
                     postback = new List<string>() { null },
                     messageai = "",
                     isCheck = true
                 }, JsonRequestBehavior.AllowGet);
-            }
-            #endregion
-
-            AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
-            string result = aimlBotResult.OutputSentences[0].ToString();
-            bool isMatch = true;
-            // nếu aiml bot có template trả thẳng ra module k thông qua button text module
-            if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
-            {
-                string txtModule = result.Replace("\r\n", "").Trim();
-                return chatbot(txtModule, group, token, botId, isMdSearch);
-            }
-
-            // K tìm thấy trong Rule gọi tới module tri thức
-            if (result.Contains("NOT_MATCH"))
-            {
-                isMatch = false;
-                if (isMdSearch)
-                {
-                    result = GetRelatedQuestion(text, group);
-                    if (String.IsNullOrEmpty(result))
-                    {
-                        //result = NOT_MATCH[res.OutputSentences[0]];
-                        result = aimlBotResult.OutputSentences[0].ToString();
-                    }
-                }
-            }
-            //set new predicate to session user bot request
-            SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
-            settingDic.Count = aimlBotResult.user.Predicates.Count;
-            settingDic.orderedKeys = aimlBotResult.user.Predicates.orderedKeys;
-            settingDic.settingsHash = aimlBotResult.user.Predicates.settingsHash;
-            settingDic.SettingNames = aimlBotResult.user.Predicates.SettingNames;
-            userBot.SettingDicstionary = settingDic;
-            Session[CommonConstants.SessionUserBot] = userBot;
-            return Json(new
-            {
-                message = aimlBotResult.OutputHtmlMessage,
-                postback = aimlBotResult.OutputHtmlPostback,
-                messageai = result,
-                isCheck = isMatch
-            }, JsonRequestBehavior.AllowGet);
+            }          
         }
 
         #endregion
@@ -714,6 +770,22 @@ namespace BotProject.Web.Controllers
                     Session.Remove(CommonConstants.SessionUserBot);
                 else
                     Session[CommonConstants.SessionUserBot] = value;
+            }
+        }
+
+        private void LogError(Exception ex)
+        {
+            try
+            {
+                BotProject.Model.Models.Error error = new BotProject.Model.Models.Error();
+                error.CreatedDate = DateTime.Now;
+                error.Message = ex.Message;
+                error.StackTrace = ex.StackTrace;
+                _errorService.Create(error);
+                _errorService.Save();
+            }
+            catch
+            {
             }
         }
     }
