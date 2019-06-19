@@ -6,4 +6,10 @@
 postback_module_med_get_info_patient_13
 </template>
 </category>
+<category>
+<pattern>module_patient_postback_card_5040</pattern>
+<template>
+<srai>postback_card_5040</srai>
+</template>
+</category>
 </aiml>

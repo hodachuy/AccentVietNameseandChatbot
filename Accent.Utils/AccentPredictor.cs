@@ -309,7 +309,21 @@ namespace Accent.Utils
                     BaseVertex vertext = pathVertex[i];
                     text += idxWordMap[vertext.get_id()] + " ";
                     if (text.Contains("đầm dáng"))
+                    {
                         text.Replace("đầm dáng", "đảm đang");
+                    }
+                    if (text.Contains("chào bán"))
+                    {
+                        text = Regex.Replace(text, "chào bán", "chào bạn");
+                    }
+                    if (text.Contains("bị đầu tay"))
+                    {
+                        text = Regex.Replace(text, "bị đầu tay", "bị đau tay");
+                    }
+                    if (text.Contains("tay tôi bị đầu"))
+                    {
+                        text = Regex.Replace(text, "tay tôi bị đầu", "tay tôi bị đau");
+                    }
                 }
                 output.Add(processOutput(@in, text.Trim()), path.get_weight());
             }
@@ -532,7 +546,24 @@ namespace Accent.Utils
 
                 }
             }
-            return output.ToString().Replace("đầm dáng","đảm đang").Trim();
+            string resultOutput = output.ToString();
+            if (resultOutput.Contains("đầm dáng"))
+            {
+                resultOutput.Replace("đầm dáng", "đảm đang");
+            }
+            if (resultOutput.Contains("bị đầu tay"))
+            {
+                resultOutput = Regex.Replace(resultOutput, "bị đầu tay", "bị đau tay");
+            }
+            if (resultOutput.Contains("chào bán"))
+            {
+                resultOutput = Regex.Replace(resultOutput, "chào bán", "chào bạn");
+            }
+            if (resultOutput.Contains("tay tôi bị đầu"))
+            {
+                resultOutput = Regex.Replace(resultOutput, "tay tôi bị đầu", "tay tôi bị đau");
+            }
+            return resultOutput.Trim();
         }
 
         private string processOutput(string input, string output)

@@ -152,7 +152,7 @@ namespace BotProject.Service
         public HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
-            string mdInfoPatientID = mdName.Replace("postback_module_med_get_info_patient_", "");
+            string mdInfoPatientID = mdName.Replace(".",String.Empty).Replace("postback_module_med_get_info_patient_", "");
             var mdGetInfoPatientDb = _mdKnowledegeService.GetByMdMedInfoPatientID(Int32.Parse(mdInfoPatientID));
             if (mdGetInfoPatientDb != null)
             {
@@ -204,7 +204,7 @@ namespace BotProject.Service
                 sb.AppendLine("<div class=\"_6b7s\">");
                 sb.AppendLine("<div class=\"_6ir5\">");
                 sb.AppendLine("<div class=\"_4bqf _6ir3\">");
-                sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"" + postback + "\" href=\"#\" style=\"color: rgb(234, 82, 105);\">Tiếp tục</a>");
+                sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"module_patient_" + postback + "\" href=\"#\" style=\"color: rgb(234, 82, 105);\">Tiếp tục</a>");
                 sb.AppendLine("</div>");
                 sb.AppendLine("</div>");
                 sb.AppendLine("</div>");

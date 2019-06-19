@@ -126,126 +126,125 @@
 <template><srai>postback_card_5031</srai></template>
 </category>
 <category>
-<pattern>HI</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>HI *</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>* HI *</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>* HI</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>CHÀO BẠN</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>CHÀO BẠN *</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>* CHÀO BẠN *</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>* CHÀO BẠN</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>CHÀO</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>CHÀO *</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>* CHÀO *</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>* CHÀO</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>HELLO</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>HELLO *</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>* HELLO *</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>* HELLO</pattern>
-<template>Tôi có thể giúp gì cho bạn?</template>
-</category>
-<category>
-<pattern>postback_answer_4032</pattern>
+<pattern>postback_answer_4045</pattern>
 <template>
 <random>
-<li>Hẹn gặp lại bạn!</li>
-<li>Tạm biệt bạn! Mong bạn giữ gìn sức khỏe!</li>
-<li>Tạm biệt bạn!</li>
+<li>Chào bạn! Bạn cần tôi giúp gì ạ?</li>
+<li>Tôi có thể giúp gì cho bạn?</li>
 </random>
 </template>
 </category>
 
 <category>
+<pattern>HI</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>HI *</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>* HI *</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>* HI</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>CHÀO BẠN</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>CHÀO BẠN *</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>* CHÀO BẠN *</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>* CHÀO BẠN</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>CHÀO</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>CHÀO *</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>* CHÀO *</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>* CHÀO</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>HELLO</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>HELLO *</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>* HELLO *</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
+<pattern>* HELLO</pattern>
+<template><srai>postback_answer_4045</srai></template>
+</category>
+<category>
 <pattern>CHÀO TẠM BIỆT</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>CHÀO TẠM BIỆT *</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>* CHÀO TẠM BIỆT *</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>* CHÀO TẠM BIỆT</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>BYE</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>BYE *</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>* BYE *</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>* BYE</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>HẸN GẶP LẠI</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>HẸN GẶP LẠI *</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>* HẸN GẶP LẠI *</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 <category>
 <pattern>* HẸN GẶP LẠI</pattern>
-<template><srai>postback_answer_4032</srai></template>
+<template>Hẹn gặp lại bạn!</template>
 </category>
 </aiml>

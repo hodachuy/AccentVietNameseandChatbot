@@ -166,11 +166,11 @@ namespace BotProject.Web.Controllers
                 _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
 
                 // Module lấy thông tin bệnh
-                #region 
+                #region Module lấy thông tin bệnh
                 // nếu là true
                 if (bool.Parse(_user.Predicates.grabSetting("isChkMdGetInfoPatient")))
                 {
-                    if (text.Contains("postback_card"))
+                    if (text.Contains("module_patient"))
                     {
                         string MdGetInfoPatientId = _user.Predicates.grabSetting("ThreadMdGetInfoPatientId");
                         _user.Predicates.addSetting("med_get_info_patient_check_" + MdGetInfoPatientId, "false");

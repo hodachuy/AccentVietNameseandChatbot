@@ -115,19 +115,19 @@ namespace BotProject.Web.API
                 int botID = json.botId;
 
                 var botDb = _botService.GetByID(botID);
-                botDb.Status = true;
+                botDb.Status = false;
                 _botService.Update(botDb);
                 _botService.Save();
 
                 //delete database
-                var lstCard = _cardService.GetListCardByBotID(botID).ToList();
-                if (lstCard.Count() != 0)
-                {
-                    foreach (var item in lstCard)
-                    {
-                        _commonCardService.DeleteCard(item.ID);
-                    }
-                }
+                //var lstCard = _cardService.GetListCardByBotID(botID).ToList();
+                //if (lstCard.Count() != 0)
+                //{
+                //    foreach (var item in lstCard)
+                //    {
+                //        _commonCardService.DeleteCard(item.ID);
+                //    }
+                //}
 
                 //var lstBotQnAnswer = _qnaService.GetListBotQnAnswerByBotID(botID);
                 //if (lstBotQnAnswer != null && lstBotQnAnswer.Count() != 0)
@@ -146,7 +146,7 @@ namespace BotProject.Web.API
                 //        }
                 //    }
                 //}
-
+                response = request.CreateResponse(HttpStatusCode.OK, true);
                 return response;
             });
         }

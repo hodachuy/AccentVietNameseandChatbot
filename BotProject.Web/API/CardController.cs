@@ -581,7 +581,28 @@ namespace BotProject.Web.API
                         }
 						sw.WriteLine("</template>");
 						sw.WriteLine("</category>");
-						sw.WriteLine("</aiml>");
+
+                        if (card.ModuleFollowCards != null && card.ModuleFollowCards.Count() != 0)
+                        {
+                            foreach (var itemMdFollowCards in card.ModuleFollowCards)
+                            {
+                                if (itemMdFollowCards.ModuleInfoPatientID != null && itemMdFollowCards.ModuleInfoPatientID != 0)
+                                {
+                                    var mdGetInfoPatientDb = _mdKnowledgeService.GetByMdMedInfoPatientID(itemMdFollowCards.ModuleInfoPatientID ?? default(int));
+                                    if (!String.IsNullOrEmpty(mdGetInfoPatientDb.Payload))
+                                    {
+                                        sw.WriteLine("<category>");
+                                        sw.WriteLine("<pattern>module_patient_" + mdGetInfoPatientDb.Payload + "</pattern>");
+                                        sw.WriteLine("<template>");
+                                        sw.WriteLine("<srai>" + mdGetInfoPatientDb.Payload + "</srai>");
+                                        sw.WriteLine("</template>");
+                                        sw.WriteLine("</category>");
+                                    }
+                                }
+                            }
+                        }
+
+                        sw.WriteLine("</aiml>");
 						sw.Close();
 					}
 					catch (Exception e)

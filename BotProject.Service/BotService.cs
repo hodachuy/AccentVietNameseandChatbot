@@ -47,7 +47,7 @@ namespace BotProject.Service
 
         public IEnumerable<Bot> GetListBotByUserID(string userId)
         {
-            return _botRepository.GetMulti(x => x.UserID == userId && x.Status == false).OrderBy(x => x.CreatedDate);
+            return _botRepository.GetMulti(x => x.UserID == userId && x.Status == true).OrderBy(x => x.CreatedDate);
         }
 
         public Bot GetByID(int botId)

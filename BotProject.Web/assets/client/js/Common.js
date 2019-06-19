@@ -1,7 +1,7 @@
 ﻿var urlCreateBot = "api/bot/create",
     urlCreateFormQnA = "api/formqna/create",
     urlSettingBot = "api/setting/getbybotid",
-    urlDeleteBot = "api/bot/delete";
+    urlDeleteBot = "api/bot/deletebot";
 var bot = {
     Name: '',
     Alias: '',
@@ -89,6 +89,7 @@ var common = {
                         var svr = new AjaxCall(urlDeleteBot, params);
                         svr.callServicePOST(function (data) {
                             console.log(data)
+                            location.reload();
                         });
                     }
                 }
@@ -175,6 +176,7 @@ var common = {
                 return false;
 
             bot.Name = botName;
+            bot.Status = true;
             bot.Alias = common.getSeoTitle(botName);
             bot.UserID = $('#userId').val();
             var svr = new AjaxCall(urlCreateBot, JSON.stringify(bot));
