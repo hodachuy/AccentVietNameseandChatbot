@@ -148,7 +148,6 @@ namespace BotProject.Web.Controllers
             {
                 _botService.loadAIMLFromFiles(fullPathAIML);
 
-
                 if (!String.IsNullOrEmpty(text))
                 {
                     text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
