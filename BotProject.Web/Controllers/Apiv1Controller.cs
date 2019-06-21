@@ -155,6 +155,13 @@ namespace BotProject.Web.Controllers
                 if (Session[CommonConstants.SessionUserBot] == null)
                 {
                     // return TimeOut
+                    return Json(new
+                    {
+                        message = new List<string>() { "Session Timeout" },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
                 }
                 //get new predicate from session user bot request
                 var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
@@ -452,7 +459,7 @@ namespace BotProject.Web.Controllers
                 LogError(ex);
                 return Json(new
                 {
-                    message = new List<string>() { "Session Timeout" },
+                    message = new List<string>() { "Error" },
                     postback = new List<string>() { null },
                     messageai = "",
                     isCheck = true
