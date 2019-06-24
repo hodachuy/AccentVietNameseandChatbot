@@ -342,7 +342,9 @@
     <Content Include="assets\client\css\lvbot-chat-dialog\c8_D4caviXZRzb.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c9_qa0aCGHSAgX.css" />
     <Content Include="assets\client\css\style.css" />
+    <Content Include="assets\client\img\faq_tyJQplIright.png" />
     <Content Include="assets\client\img\module.png" />
+    <Content Include="assets\client\img\TL-H3CXYU4Nleft.png" />
     <Content Include="assets\client\js\accentVN.js" />
     <Content Include="assets\client\js\aiml.js" />
     <Content Include="assets\client\js\eventBot\form-learning.js" />

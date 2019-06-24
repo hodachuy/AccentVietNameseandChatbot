@@ -112,13 +112,13 @@ namespace BotProject.Service
                 if (Int32.Parse(age) < 5)
                 {
                     rsHandle.Status = false;
-                    rsHandle.Message = tempText("Bạn còn quá trẻ để chúng tôi đưa ra tư vấn.");
+                    rsHandle.Message = tempText("Bạn còn quá nhỏ để tôi đưa ra tư vấn.");
                     return rsHandle;
                 }
                 if (Int32.Parse(age) > 110)
                 {
                     rsHandle.Status = false;
-                    rsHandle.Message = tempText("Xin lỗi chúng tôi không thể đưa ra tư vấn hợp lý lúc này khi bạn đã lớn tuổi.");
+                    rsHandle.Message = tempText("Xin lỗi tôi không thể đưa ra tư vấn hợp lý với độ tuổi này.");
                     return rsHandle;
                 }
             }
@@ -162,7 +162,6 @@ namespace BotProject.Service
                     rsHandle.Message = TemplateOptionBot(arrOpt, mdGetInfoPatientDb.Title, mdGetInfoPatientDb.Payload, mdInfoPatientID, notFound);
                 }
             }
-
             return rsHandle;
         }
 
@@ -173,11 +172,10 @@ namespace BotProject.Service
                 title = notFound;
             }
             StringBuilder sb = new StringBuilder();
-            var url = "http://localhost:54160/assets/images/user_bot.jpg";
             sb.AppendLine("<div class=\"_4xkn clearfix\">");
             sb.AppendLine("<div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
             sb.AppendLine("<div class=\"_4cqr\">");
-            sb.AppendLine("<img class=\"profilePicture img\" src=\"" + url + "\"/>");
+            sb.AppendLine("<img class=\"profilePicture img\" src=\"{{image_logo}}\"/>");
             sb.AppendLine("<div class=\"clearfix\"></div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
@@ -189,7 +187,7 @@ namespace BotProject.Service
             sb.AppendLine("<span>" + title + "</span>");
             sb.AppendLine("</span>");
             sb.AppendLine("</div>");
-            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);width:100%\">");
+            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240); width:100%\">");
             sb.AppendLine("<ul>");
             foreach (var item in arrOpt)
             {
@@ -204,7 +202,7 @@ namespace BotProject.Service
                 sb.AppendLine("<div class=\"_6b7s\">");
                 sb.AppendLine("<div class=\"_6ir5\">");
                 sb.AppendLine("<div class=\"_4bqf _6ir3\">");
-                sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"module_patient_" + postback + "\" href=\"#\" style=\"color: rgb(234, 82, 105);\">Tiếp tục</a>");
+                sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"module_patient_" + postback + "\" href=\"#\" style=\"color: {{color}}\">Tiếp tục</a>");
                 sb.AppendLine("</div>");
                 sb.AppendLine("</div>");
                 sb.AppendLine("</div>");

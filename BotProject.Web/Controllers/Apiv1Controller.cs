@@ -3,22 +3,18 @@ using AutoMapper;
 using BotProject.Common;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
-using BotProject.Web.Infrastructure.HandleModuleBot;
 using BotProject.Web.Models;
 using Newtonsoft.Json;
 using SearchEngine.Data;
 using SearchEngine.Service;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Hosting;
-using System.Web.Http.Cors;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 
@@ -90,6 +86,9 @@ namespace BotProject.Web.Controllers
             _user.Predicates.addSetting("age", "");
             _user.Predicates.addSetting("agecheck", "false");
 
+            _user.Predicates.addSetting("name","");
+            _user.Predicates.addSetting("namecheck", "false");
+
             // load tất cả module của bot và thêm key vao predicate
             var mdBotDb = _mdService.GetAllModuleByBotID(botID).Where(x => x.Name != "med_get_info_patient").ToList();
             if (mdBotDb.Count() != 0)
@@ -127,7 +126,6 @@ namespace BotProject.Web.Controllers
             _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
             _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
 
-
             SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = _user.Predicates.Count;
             settingDic.orderedKeys = _user.Predicates.orderedKeys;
@@ -147,14 +145,12 @@ namespace BotProject.Web.Controllers
             try
             {
                 _botService.loadAIMLFromFiles(fullPathAIML);
-
                 if (!String.IsNullOrEmpty(text))
                 {
                     text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
                 }
                 if (Session[CommonConstants.SessionUserBot] == null)
                 {
-                    // return TimeOut
                     return Json(new
                     {
                         message = new List<string>() { "Session Timeout" },
@@ -220,6 +216,9 @@ namespace BotProject.Web.Controllers
                 }
                 #endregion
 
+                // Module pháp luật
+
+
                 // Xử lý module phone
                 #region 
                 bool isCheckPhone = bool.Parse(_user.Predicates.grabSetting("phonecheck"));
@@ -250,21 +249,7 @@ namespace BotProject.Web.Controllers
                     var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
                     if (!String.IsNullOrEmpty(numberPhone))// hiển thị số điện thoại nếu đã cung cấp trước đó
                     {
-                        StringBuilder sbPostback = new StringBuilder();
-                        sbPostback.AppendLine("<div class=\"_6biu\">");
-                        sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
-                        sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
-                        sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
-                        sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
-                        sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
-                        sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + numberPhone + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + numberPhone + "</div>");
-                        sbPostback.AppendLine(" </div>");
-                        sbPostback.AppendLine("                                                                                </div>");
-                        sbPostback.AppendLine("                                                                            </div>");
-                        sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
-                        sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
-                        sbPostback.AppendLine("                                                                            </div>");
-                        sbPostback.AppendLine("                                                                        </div>");
+                        string sbPostback = tempNodeBtnModule(numberPhone);
 
                         return Json(new
                         {
@@ -294,8 +279,6 @@ namespace BotProject.Web.Controllers
                     {
                         _user.Predicates.addSetting("emailcheck", "false");
                         _user.Predicates.addSetting("email", text);
-                        //if (String.IsNullOrEmpty(_user.Predicates.grabSetting("phone")))// check rỗng nếu chưa trả lời trước đó thì mới gọi tới
-                        //    return chatbot("postback_card_0002", group, token, botId, isMdSearch);
                         if (!String.IsNullOrEmpty(handleEmail.Postback))
                         {
                             return chatbot(handleEmail.Postback, group, token, botId, isMdSearch);
@@ -316,22 +299,7 @@ namespace BotProject.Web.Controllers
                     var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
                     if (!String.IsNullOrEmpty(email))// hiển thị email đã cung cấp trước đó
                     {
-                        StringBuilder sbPostback = new StringBuilder();
-                        sbPostback.AppendLine("<div class=\"_6biu\">");
-                        sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
-                        sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
-                        sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
-                        sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
-                        sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
-                        sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + email + "\" style=\"border-color: {{color}} color: {{color}}\">" + email + "</div>");
-                        sbPostback.AppendLine(" </div>");
-                        sbPostback.AppendLine("                                                                                </div>");
-                        sbPostback.AppendLine("                                                                            </div>");
-                        sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
-                        sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
-                        sbPostback.AppendLine("                                                                            </div>");
-                        sbPostback.AppendLine("                                                                        </div>");
-
+                        string sbPostback = tempNodeBtnModule(email);
                         return Json(new
                         {
                             message = new List<string>() { handleEmail.Message },
@@ -380,22 +348,7 @@ namespace BotProject.Web.Controllers
                     var handleAge = _handleMdService.HandledIsAge(text, valBotID);
                     if (!String.IsNullOrEmpty(age))// hiển thị age đã cung cấp trước đó
                     {
-                        StringBuilder sbPostback = new StringBuilder();
-                        sbPostback.AppendLine("<div class=\"_6biu\">");
-                        sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
-                        sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
-                        sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
-                        sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
-                        sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
-                        sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + age + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + age + "</div>");
-                        sbPostback.AppendLine(" </div>");
-                        sbPostback.AppendLine("                                                                                </div>");
-                        sbPostback.AppendLine("                                                                            </div>");
-                        sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
-                        sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
-                        sbPostback.AppendLine("                                                                            </div>");
-                        sbPostback.AppendLine("                                                                        </div>");
-
+                        string sbPostback = tempNodeBtnModule(age);
                         return Json(new
                         {
                             message = new List<string>() { handleAge.Message },
@@ -413,7 +366,6 @@ namespace BotProject.Web.Controllers
                     }, JsonRequestBehavior.AllowGet);
                 }
                 #endregion
-
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
                 bool isMatch = true;
@@ -423,7 +375,6 @@ namespace BotProject.Web.Controllers
                     string txtModule = result.Replace("\r\n", "").Trim();
                     return chatbot(txtModule, group, token, botId, isMdSearch);
                 }
-
                 // K tìm thấy trong Rule gọi tới module tri thức
                 if (result.Contains("NOT_MATCH"))
                 {
@@ -431,7 +382,11 @@ namespace BotProject.Web.Controllers
                     if (isMdSearch)
                     {
                         result = GetRelatedQuestion(text, group);
-                        if (String.IsNullOrEmpty(result))
+                        if (!String.IsNullOrEmpty(result))
+                        {
+                            var lstQnaAPI = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<List<ObjQnaAPI>>(result);
+                        }
+                        else
                         {
                             //result = NOT_MATCH[res.OutputSentences[0]];
                             result = aimlBotResult.OutputSentences[0].ToString();
@@ -454,7 +409,7 @@ namespace BotProject.Web.Controllers
                     isCheck = isMatch
                 }, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogError(ex);
                 return Json(new
@@ -464,8 +419,36 @@ namespace BotProject.Web.Controllers
                     messageai = "",
                     isCheck = true
                 }, JsonRequestBehavior.AllowGet);
-            }          
+            }
         }
+
+        public string tempNodeBtnModule(string valModule)
+        {
+            StringBuilder sbPostback = new StringBuilder();
+            sbPostback.AppendLine("<div class=\"_6biu\">");
+            sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
+            sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
+            sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
+            sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
+            sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
+            sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + valModule + "\" style=\"border-color: {{color}} color: {{color}}\">+ " + valModule + "</div>");
+            sbPostback.AppendLine(" </div>");
+            sbPostback.AppendLine("                                                                                </div>");
+            sbPostback.AppendLine("                                                                            </div>");
+            sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
+            sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+            sbPostback.AppendLine("                                                                            </div>");
+            sbPostback.AppendLine("                                                                        </div>");
+            return sbPostback.ToString();
+        }
+        
+        public List<ObjQnaAPI> GetListQnaByCategory(string category)
+        {
+            List<ObjQnaAPI> lstQnA = new List<ObjQnaAPI>();
+
+            return lstQnA;
+        }
+
 
         #endregion
 
@@ -755,6 +738,16 @@ namespace BotProject.Web.Controllers
         {
             public string Item { get; set; }
             public string[] ArrItems { get; set; }
+        }
+
+        public class ObjQnaAPI
+        {
+            public string _id { set; get; }
+            public string question { set; get; }
+            public string answer { set; get; }
+            public string html { set; get; }
+            public string field { set; get; }
+            public int id { set; get; }
         }
 
         public UserBotViewModel UserBotInfo

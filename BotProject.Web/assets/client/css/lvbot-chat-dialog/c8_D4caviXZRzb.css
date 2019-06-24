@@ -152,7 +152,8 @@
 }
 
 .sp_bfeq6p {
-    background-image: url(https://static.xx.fbcdn.net/rsrc.php/v3/yA/r/rWjOpvlEKrc.png);
+    background-image: url('../../img/TL-H3CXYU4Nleft.png');
+    /*background-image: url(https://static.xx.fbcdn.net/rsrc.php/v3/yA/r/rWjOpvlEKrc.png);*/
     background-size: auto;
     background-repeat: no-repeat;
     display: inline-block;
@@ -171,7 +172,7 @@
 
 .sp_bfeq6p.sx_c4c7bc {
     height: 12px;
-    background-position: 0 -15px;
+    background-position: -78px -182px;
 }
 
 .sp_sYum9Ehjk5n {

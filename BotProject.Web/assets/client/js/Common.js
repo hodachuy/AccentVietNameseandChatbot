@@ -60,8 +60,7 @@ var common = {
             html += "})(document, window, '" + urlApp + "', 'lacviet');";
             html += "setTimeout(function(){lacviet.load('" + encryptedUrl + "','" + encryptedUserID + "','" + encryptedBotID + "','" + encryptedColor + "');},1500)</script>";
             html += "<!-- End Lacviet -->"
-            $('#editorTest').text('');
-            $('#editorTest').text(html);
+            $('#editorTest').empty().text(html);
             $("#modalDeployBot").modal('show');
         });
 
