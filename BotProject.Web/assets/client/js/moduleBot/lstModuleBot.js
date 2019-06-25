@@ -166,7 +166,6 @@ $('body').on('click', 'input.chkAddModule', function () {
             moduleVm.Payload = "postback_module_age";
             moduleVm.Type = "handle"
         }
-        // nếu module tri thức
         // tri thức hỏi đáp pháp luật
         if (moduleName == "qna_legal") {
             moduleVm.Title = "Tri thức hỏi đáp pháp luật";
@@ -184,7 +183,7 @@ $('body').on('click', 'input.chkAddModule', function () {
             moduleVm.Type = "knowledge"
         }
 
-        // tri thức chuẩn đoán bệnh
+        // tri thức lấy thông tin bệnh nhân
         if (moduleName == "med_get_info_patient") {
             moduleVm.Title = "Tri thức lấy thông tin bệnh nhân";
             moduleVm.Text = "";
@@ -192,6 +191,16 @@ $('body').on('click', 'input.chkAddModule', function () {
             moduleVm.Payload = "postback_module_med_get_info_patient";
             moduleVm.Type = "knowledge"
         }
+
+        // tri thức tìm kiếm với api
+        if (moduleName == "med_get_info_patient") {
+            moduleVm.Title = "Tri thức tìm kiếm";
+            moduleVm.Text = "";
+            moduleVm.Name = "api_search";
+            moduleVm.Payload = "postback_module_api_search";
+            moduleVm.Type = "knowledge"
+        }
+
 
         var svr = new AjaxCall("api/module/create", JSON.stringify(moduleVm));
         svr.callServicePOST(function (data) {

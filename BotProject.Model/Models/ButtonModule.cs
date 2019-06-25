@@ -30,8 +30,13 @@ namespace BotProject.Model.Models
         public int? TempTxtID { set; get; }
 
         public int? ModuleID { set; get; }
+
         public int? ModuleKnowledgeID { set; get; }
+
+        public int? MdSearchID { set; get; }
+
         public string ModuleType { set; get; }
+
         public int? CardID { set; get; }
     }
 }

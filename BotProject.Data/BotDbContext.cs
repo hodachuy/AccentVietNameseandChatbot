@@ -36,8 +36,9 @@ namespace BotProject.Data
         public DbSet<Notify> Notifies { set; get; }
         public DbSet<MdArea> MdAreas { set; get; }
         public DbSet<MdQuestion> MdQuestions { set; get; }
-        public DbSet <MdAnswer> MdAnswers { set; get; }
-        public DbSet <ModuleCategory> ModuleCategories { set; get; }
+        public DbSet<MdSearch> MdSearchs { set; get; }
+        public DbSet<MdAnswer> MdAnswers { set; get; }
+        public DbSet<ModuleCategory> ModuleCategories { set; get; }
         public DbSet<ModuleKnowledgeMedInfoPatient> ModuleKnowledgeMedInfoPatients { set; get; }
         public DbSet<Module> Modules { set; get; }
         public DbSet<ModuleFollowCard> ModuleFollowCards { set; get; }

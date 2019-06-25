@@ -19,11 +19,13 @@ namespace BotProject.Web.API
         private IMdPhoneService _mdPhoneService;
         private IMdEmailService _mdEmailService;
         private IMdAgeService _mdAgeService;
+        private IMdSearchService _mdSearchService;
         private IModuleKnowledegeService _mdKnowledegeService;
         public ModuleController(IErrorService errorService,
             IModuleService moduleService,
             IMdPhoneService mdPhoneService,
             IMdEmailService mdEmailService,
+            IMdSearchService mdSearchService,
             IModuleKnowledegeService mdKnowledegeService,
             IMdAgeService mdAgeService) : base(errorService)
         {
@@ -31,6 +33,7 @@ namespace BotProject.Web.API
             _mdPhoneService = mdPhoneService;
             _mdEmailService = mdEmailService;
             _mdAgeService = mdAgeService;
+            _mdSearchService = mdSearchService;
             _mdKnowledegeService = mdKnowledegeService;
         }
         [Route("getbybotid")]
@@ -327,6 +330,49 @@ namespace BotProject.Web.API
                 return response;
             });
         }
+
+        #endregion
+
+        #region MODULE SEARCH
+        //[Route("getmdsearch")]
+        //[HttpGet]
+        //public HttpResponseMessage GetModuleSearchByAPI(HttpRequestMessage request, int mdSearchID)
+        //{
+        //    return CreateHttpResponse(request, () =>
+        //    {
+        //        HttpResponseMessage response = null;
+        //        var module = _mdSearchService.GetByID(mdSearchID);
+        //        response = request.CreateResponse(HttpStatusCode.OK, module);
+        //        return response;
+        //    });
+        //}
+
+        //[Route("addmdsearch")]
+        //[HttpPost]
+        //public HttpResponseMessage AddModuleSearch(HttpRequestMessage request, MdSearchViewModel mdSearchVm)
+        //{
+        //    return CreateHttpResponse(request, () =>
+        //    {
+        //        HttpResponseMessage response = null;
+        //        MdSearch mdSearchDb = new MdSearch();
+        //        mdSearchDb.BotID = mdSearchVm.BotID;
+        //        mdSearchDb.Title = mdSearchVm.Title;
+        //        mdSearchDb.Payload = mdSearchVm.Payload;
+        //        mdSearchDb.CardPayloadID = mdSearchVm.CardPayloadID;
+        //        mdSearchDb.UrlAPI = mdSearchVm.UrlAPI;
+        //        mdSearchDb.MethodeAPI = mdSearchVm.MethodeAPI;
+        //        mdSearchDb.KeyAPI = mdSearchVm.KeyAPI;
+        //        mdSearchDb.ParamAPI = mdSearchVm.ParamAPI;
+        //        mdSearchDb.MessageStart = mdSearchVm.MessageStart;
+        //        mdSearchDb.MessageError = mdSearchVm.MessageError;
+        //        mdSearchDb.MessageEnd = mdSearchDb.MessageEnd;
+        //        mdSearchDb.ID = mdSearchVm.ID;
+
+        //        _mdSearchService.Create(mdSearchDb);
+        //        _mdSearchService.Save();
+        //        return response;
+        //    });
+        //}
 
         #endregion
     }

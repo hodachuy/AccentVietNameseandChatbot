@@ -92,6 +92,7 @@
     <Compile Include="MdAgeService.cs" />
     <Compile Include="MdEmailService.cs" />
     <Compile Include="MdPhoneService.cs" />
+    <Compile Include="MdSearchService.cs" />
     <Compile Include="ModuleCategoryService.cs" />
     <Compile Include="ModuleFollowCardService.cs" />
     <Compile Include="ModuleKnowledegeService.cs" />

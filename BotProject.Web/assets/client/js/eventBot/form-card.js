@@ -4822,6 +4822,9 @@ function renderTemplateModuleByKey(moduleName, typeActionMdGetInfoPatient, mdGet
     }
     if (moduleName == "qna_legal") {// hỏi đáp pháp luật
     }
+    if (moduleName == "api_search") {
+
+    }
     $('#sidenav-module').css('width', '380');
 }
 
@@ -5262,5 +5265,55 @@ function getTemplateInfoPatient(mdInfoPatientID, typeActionMdGetInfoPatient) {
                 }, 1000)
             }
         });
+    }
+}
+
+function getTemplateSearchAPI(mdSearchID, typeActionMdSearch) {
+    var html = '';
+    if (mdSearchID == 0 || mdSearchID == undefined) {
+        typeActionMdSearch = true;
+        html +='  <a href="#" style="text-decoration:underline" id="module-name">Tìm kiếm</a>';
+        html +=' <div class="row">';
+        html +='    <div class="col-md-12">';
+        html +='        <div class="form-group">';
+        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">Đường dẫn API</label>';
+        html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html +='                <input type="text" placeholder="Đường dẫn api" class="form-control" />';
+        html +='            </div>';
+        html +='        </div>';
+        html +='        <div class="form-group">';
+        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>';
+        html +='            <div class="row" style="margin:unset;">';
+        html +='                <div class="col-md-6 col-sm-6 col-xs-6">';
+        html +='                    <input type="text" placeholder="x-api-key" class="form-control" />';
+        html +='                </div>';
+        html +='                <div class="col-md-6 col-sm-6 col-xs-6">';
+        html +='                    <input type="text" placeholder="2Zhldc3aq1" class="form-control" />';
+        html +='                </div>';
+        html +='            </div>';
+        html +='        </div>';
+        html +='        <div class="form-group">';
+        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Param</label>';
+        html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html +='                <input type="text" placeholder="params" class="form-control" />';
+        html +='            </div>';
+        html +='        </div>';
+        html +='        <div class="form-group">';
+        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>';
+        html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html +='                <textarea name="data2[default]" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>';
+        html +='            </div>';
+        html +='        </div>';
+        html +='        <div class="form-group">';
+        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
+        html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html +='                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch"></select>';
+        html +='            </div>';
+        html +='        </div>';
+        html +='        <div class="form-group">';
+        html +='            <button id="saveMdSearch" class="btn btn-default">Lưu</button>';
+        html +='        </div>';
+        html +='    </div>';
+        html += '</div>';
     }
 }

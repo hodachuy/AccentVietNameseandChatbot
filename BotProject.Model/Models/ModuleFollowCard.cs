@@ -19,6 +19,8 @@ namespace BotProject.Model.Models
 
         public int? ModuleInfoPatientID { set; get; }// trường hợp dành cho module Patient get info
 
+        public int? MdSearchID { set; get; }
+
         public int Index { set; get; }
 
         public int? CardID { set; get; }

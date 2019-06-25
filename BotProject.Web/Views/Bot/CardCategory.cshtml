@@ -9,19 +9,23 @@
 <link href="~/assets/client/css/components.css" rel="stylesheet" />
 <link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
 <style>
-    .hide{
-        display:none !important;
+    .hide {
+        display: none !important;
     }
-    .attribute{
-        display:none;
+
+    .attribute {
+        display: none;
     }
-    .rmAtt{
-        cursor:pointer;
+
+    .rmAtt {
+        cursor: pointer;
     }
-    .error{
+
+    .error {
         border: 1px solid rgba(244, 67, 54, 0.64);
     }
-    .bl_bt_view{
+
+    .bl_bt_view {
         position: absolute;
         padding-left: 110px;
         padding-top: 6px;
@@ -32,31 +36,47 @@
 <div id="sidenav-module" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNavModule()">&times;</a>
     <div id="template-module">
-        <a href="#" style="text-decoration:underline" id="module-name">Lấy thông tin bệnh án</a>
+        <a href="#" style="text-decoration:underline" id="module-name">Tìm kiếm</a>
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>
+                    <label class="control-label col-md-12 col-sm-12 col-xs-12">Đường dẫn API</label>
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <textarea name="data1[default]" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">Vui lòng nhấn vào số điện thoại (nếu có) hoặc nhập số điện thoại của bạn!</textarea>
+                        <input type="text" placeholder="Đường dẫn api" class="form-control" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>
+                    <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>
+                    <div class="row" style="margin:unset;">
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <input type="text" placeholder="x-api-key" class="form-control" />
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-6">
+                            <input type="text" placeholder="2Zhldc3aq1" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-sm-12 col-xs-12">API Param</label>
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <input type="text" placeholder="params" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>
                     <div class="col-md-12 col-sm-12 col-xs-12">
                         <textarea name="data2[default]" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Xác nhận</label>
-                    <label class="learn_switchbot text-left mb0"><input type="checkbox" class="learn_switchinput" checked=""><div class="learn_sliderbot learn_roundbot"></div></label>
+                    <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>
                     <div class="col-md-12 col-sm-12 col-xs-12">
-                        <textarea name="data3[default]" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung xác nhận">Chúng tôi đã nhận được số điện thoại của bạn. Cảm ơn!</textarea>
+                        <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch"></select>
                     </div>
-                </div>  
+                </div>
                 <div class="form-group">
-                    <button id="saveMdPhone">Lưu</button>
-                </div>           
+                    <button id="saveMdSearch" class="btn btn-default">Lưu</button>
+                </div>
             </div>
         </div>
     </div>
@@ -98,9 +118,7 @@
                 <p class="description">Tạo thẻ trả lời cho bot</p>
             </div>
             <div class="aside-nav collapse">
-                <ul class="nav" id="lst-card">
-
-                </ul>
+                <ul class="nav" id="lst-card"></ul>
             </div>
         </div>
     </aside>

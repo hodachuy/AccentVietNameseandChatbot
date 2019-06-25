@@ -23,7 +23,7 @@
             //CreateSlide(context);
             //ContactDetail(context);
 
-             CreateUser(context);
+             //CreateUser(context);
         }
 
         private void CreateUser(BotDbContext context)

@@ -13,6 +13,8 @@ namespace BotProject.Web.Models
 
         public int? ModuleInfoPatientID { set; get; }
 
+        public int? MdSearchID { set; get; }
+
         public int Index { set; get; }
 
         public int? CardID { set; get; }

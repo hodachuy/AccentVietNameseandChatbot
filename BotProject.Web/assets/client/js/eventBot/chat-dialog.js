@@ -391,7 +391,7 @@ function getMessageUser(text) {
                     '    <div class="_21c3">' +
                     '        <h4 class="datebreak _497p _2lpt hide"><time class="_3oh-">T6 16:52</time></h4>' +
                     '        <div class="clearfix _2a0-">' +
-                    '            <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: ' + _color + '">' +
+                    '            <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: ' + _color + '";font-family: Segoe UI;>' +
                     '                 <span>' +
                     '                      <span>' +
                     '                          ' + text + '' +
@@ -421,7 +421,7 @@ function tempTextBot(text) {
 '                <div class="messages">' +
                       '<div class="_21c3">' +
 '                          <div class="clearfix _2a0-">' +
-'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240);">' +
+'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240); font-family: Segoe UI;">' +
 '                                   <span>' +
 '                                       <span>' + text + '</span>' +
 '                                   </span>' +
@@ -444,7 +444,7 @@ function tempDidYouMeanBot(text) {
 '                <div class="messages">' +
                       '<div class="_21c3">' +
 '                          <div class="clearfix _2a0-">' +
-'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="font-style:italic">' +
+'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="font-style:italic;font-family: Segoe UI">' +
 '                                   <span>' +
 '                                       <span> Ý bạn là: ' + text + '</span>' +
 '                                   </span>' +

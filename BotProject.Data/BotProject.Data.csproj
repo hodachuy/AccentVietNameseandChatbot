@@ -296,6 +296,30 @@
     <Compile Include="Migrations\201906130354268_UpdateModuleFlowCard9431.Designer.cs">
       <DependentUpon>201906130354268_UpdateModuleFlowCard9431.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906250248287_AddMdSearch.cs" />
+    <Compile Include="Migrations\201906250248287_AddMdSearch.Designer.cs">
+      <DependentUpon>201906250248287_AddMdSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906250252366_AddMdSearch123.cs" />
+    <Compile Include="Migrations\201906250252366_AddMdSearch123.Designer.cs">
+      <DependentUpon>201906250252366_AddMdSearch123.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906250305015_Update9076.cs" />
+    <Compile Include="Migrations\201906250305015_Update9076.Designer.cs">
+      <DependentUpon>201906250305015_Update9076.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906250311293_AddModuleSearch12354.cs" />
+    <Compile Include="Migrations\201906250311293_AddModuleSearch12354.Designer.cs">
+      <DependentUpon>201906250311293_AddModuleSearch12354.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906250321014_Up96056.cs" />
+    <Compile Include="Migrations\201906250321014_Up96056.Designer.cs">
+      <DependentUpon>201906250321014_Up96056.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201906250632224_UpMethodeSearch.cs" />
+    <Compile Include="Migrations\201906250632224_UpMethodeSearch.Designer.cs">
+      <DependentUpon>201906250632224_UpMethodeSearch.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -317,8 +341,9 @@
     <Compile Include="Repositories\MdAgeRepository.cs" />
     <Compile Include="Repositories\MdAnswerRepository.cs" />
     <Compile Include="Repositories\MdAreaRepository.cs" />
-    <Compile Include="Repositories\MdEmail.cs" />
-    <Compile Include="Repositories\MdPhone.cs" />
+    <Compile Include="Repositories\MdEmailRepository.cs" />
+    <Compile Include="Repositories\MdPhoneRepository.cs" />
+    <Compile Include="Repositories\MdSearchRepository.cs" />
     <Compile Include="Repositories\ModuleCategoryRepository.cs" />
     <Compile Include="Repositories\MdQuestionRepository.cs" />
     <Compile Include="Repositories\ModuleFollowCardRepository.cs" />
@@ -512,6 +537,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906130354268_UpdateModuleFlowCard9431.resx">
       <DependentUpon>201906130354268_UpdateModuleFlowCard9431.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906250248287_AddMdSearch.resx">
+      <DependentUpon>201906250248287_AddMdSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906250252366_AddMdSearch123.resx">
+      <DependentUpon>201906250252366_AddMdSearch123.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906250305015_Update9076.resx">
+      <DependentUpon>201906250305015_Update9076.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906250311293_AddModuleSearch12354.resx">
+      <DependentUpon>201906250311293_AddModuleSearch12354.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906250321014_Up96056.resx">
+      <DependentUpon>201906250321014_Up96056.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906250632224_UpMethodeSearch.resx">
+      <DependentUpon>201906250632224_UpMethodeSearch.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

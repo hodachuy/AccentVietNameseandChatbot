@@ -309,6 +309,7 @@
     <Compile Include="Models\GroupCardViewModel.cs" />
     <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\MdSearchViewModel.cs" />
     <Compile Include="Models\ModuleFollowCardViewModel.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatientViewModel.cs" />
     <Compile Include="Models\ModuleQnAViewModel.cs" />

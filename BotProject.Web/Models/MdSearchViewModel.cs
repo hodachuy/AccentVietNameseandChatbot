@@ -5,17 +5,27 @@ using System.Web;
 
 namespace BotProject.Web.Models
 {
-    public class ModuleKnowledgeMedInfoPatientViewModel
+    public class MdSearchViewModel
     {
         public int ID { set; get; }
 
         public string Title { set; get; }
 
-        public string OptionText { set; get; }
-
         public string Payload { set; get; }
 
         public int? CardPayloadID { set; get; }
+
+        public string UrlAPI { set; get; }
+
+        public string KeyAPI { set; get; }
+
+        public string MethodeAPI { set; get; }
+
+        public string ParamAPI { set; get; }
+
+        public string MessageStart { set; get; }
+
+        public string MessageError { set; get; }
 
         public string MessageEnd { set; get; }
 
