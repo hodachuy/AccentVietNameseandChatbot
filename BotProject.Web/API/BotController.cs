@@ -49,7 +49,7 @@ namespace BotProject.Web.API
 				HttpResponseMessage response;
 				if (String.IsNullOrEmpty(userID))
 				{
-					response = request.CreateErrorResponse(HttpStatusCode.RequestTimeout, "SessionTimeout");
+					response = request.CreateResponse(HttpStatusCode.NotFound);
 					return response;
 				}
 
@@ -72,7 +72,7 @@ namespace BotProject.Web.API
                 HttpResponseMessage response = null;
                 if (String.IsNullOrEmpty(botVm.UserID))
                 {
-                    response = request.CreateErrorResponse(HttpStatusCode.RequestTimeout, "SessionTimeout");
+                    response = request.CreateResponse(HttpStatusCode.NotFound);
                     return response;
                 }
                 Bot botDb = new Bot();

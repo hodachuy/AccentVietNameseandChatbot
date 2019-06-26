@@ -5307,13 +5307,16 @@ function getTemplateSearchAPI(mdSearchID, typeActionMdSearch) {
         html +='        <div class="form-group">';
         html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
         html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
-        html +='                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch"></select>';
+        html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch">' + card() + '</select>';
         html +='            </div>';
         html +='        </div>';
         html +='        <div class="form-group">';
-        html +='            <button id="saveMdSearch" class="btn btn-default">Lưu</button>';
+        html += '            <button id="saveMdSearch" data-id="" data-action="' + typeActionMdSearch + '"  class="btn btn-primary">Lưu</button>';
         html +='        </div>';
         html +='    </div>';
         html += '</div>';
+        $("#template-module").empty().append(html)
+    } else {
+
     }
 }
