@@ -193,14 +193,14 @@ $('body').on('click', 'input.chkAddModule', function () {
         }
 
         // tri thức tìm kiếm với api
-        if (moduleName == "med_get_info_patient") {
+        if (moduleName == "api_search") {
             moduleVm.Title = "Tri thức tìm kiếm";
             moduleVm.Text = "";
             moduleVm.Name = "api_search";
             moduleVm.Payload = "postback_module_api_search";
             moduleVm.Type = "knowledge"
         }
-
+        console.log(moduleVm)
 
         var svr = new AjaxCall("api/module/create", JSON.stringify(moduleVm));
         svr.callServicePOST(function (data) {

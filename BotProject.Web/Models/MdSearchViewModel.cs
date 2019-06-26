@@ -17,7 +17,9 @@ namespace BotProject.Web.Models
 
         public string UrlAPI { set; get; }
 
-        public string KeyAPI { set; get; }
+        public string KeyNameAPI { set; get; }
+
+        public string KeyCodeAPI { set; get; }
 
         public string MethodeAPI { set; get; }
 

@@ -311,22 +311,25 @@ namespace BotProject.Web.API
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
+                try
+                {
+                    var moduleInfoPatientDb = _mdKnowledegeService.GetByMdMedInfoPatientID(mdKnowledgePatientVm.ID);
 
-                var moduleInfoPatientDb = _mdKnowledegeService.GetByMdMedInfoPatientID(mdKnowledgePatientVm.ID);
-
-                moduleInfoPatientDb.BotID = mdKnowledgePatientVm.BotID;
-                moduleInfoPatientDb.CardPayloadID = mdKnowledgePatientVm.CardPayloadID;
-                moduleInfoPatientDb.Payload = mdKnowledgePatientVm.Payload;
-                moduleInfoPatientDb.MessageEnd = mdKnowledgePatientVm.MessageEnd;
-                moduleInfoPatientDb.Title = mdKnowledgePatientVm.Title;
-                moduleInfoPatientDb.OptionText = mdKnowledgePatientVm.OptionText;
-
-                //mdKnowledgePatientDb.Key = "med_get_info_patinent_ID_index";
-
-                _mdKnowledegeService.UpdateMdKnowledfeMedInfoPatient(moduleInfoPatientDb);
-                _mdKnowledegeService.Save();
-
-                response = request.CreateResponse(HttpStatusCode.OK, moduleInfoPatientDb);
+                    moduleInfoPatientDb.BotID = mdKnowledgePatientVm.BotID;
+                    moduleInfoPatientDb.CardPayloadID = mdKnowledgePatientVm.CardPayloadID;
+                    moduleInfoPatientDb.Payload = mdKnowledgePatientVm.Payload;
+                    moduleInfoPatientDb.MessageEnd = mdKnowledgePatientVm.MessageEnd;
+                    moduleInfoPatientDb.Title = mdKnowledgePatientVm.Title;
+                    moduleInfoPatientDb.OptionText = mdKnowledgePatientVm.OptionText;
+                    //mdKnowledgePatientDb.Key = "med_get_info_patinent_ID_index";
+                    _mdKnowledegeService.UpdateMdKnowledfeMedInfoPatient(moduleInfoPatientDb);
+                    _mdKnowledegeService.Save();
+                    response = request.CreateResponse(HttpStatusCode.OK, moduleInfoPatientDb);
+                }
+                catch(Exception ex)
+                {
+                    response = request.CreateResponse(HttpStatusCode.BadGateway);
+                }           
                 return response;
             });
         }
@@ -334,45 +337,95 @@ namespace BotProject.Web.API
         #endregion
 
         #region MODULE SEARCH
-        //[Route("getmdsearch")]
-        //[HttpGet]
-        //public HttpResponseMessage GetModuleSearchByAPI(HttpRequestMessage request, int mdSearchID)
-        //{
-        //    return CreateHttpResponse(request, () =>
-        //    {
-        //        HttpResponseMessage response = null;
-        //        var module = _mdSearchService.GetByID(mdSearchID);
-        //        response = request.CreateResponse(HttpStatusCode.OK, module);
-        //        return response;
-        //    });
-        //}
+        [Route("getmdsearch")]
+        [HttpGet]
+        public HttpResponseMessage GetModuleSearchByAPI(HttpRequestMessage request, int mdSearchID)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var module = _mdSearchService.GetByID(mdSearchID);
+                response = request.CreateResponse(HttpStatusCode.OK, module);
+                return response;
+            });
+        }
 
-        //[Route("addmdsearch")]
-        //[HttpPost]
-        //public HttpResponseMessage AddModuleSearch(HttpRequestMessage request, MdSearchViewModel mdSearchVm)
-        //{
-        //    return CreateHttpResponse(request, () =>
-        //    {
-        //        HttpResponseMessage response = null;
-        //        MdSearch mdSearchDb = new MdSearch();
-        //        mdSearchDb.BotID = mdSearchVm.BotID;
-        //        mdSearchDb.Title = mdSearchVm.Title;
-        //        mdSearchDb.Payload = mdSearchVm.Payload;
-        //        mdSearchDb.CardPayloadID = mdSearchVm.CardPayloadID;
-        //        mdSearchDb.UrlAPI = mdSearchVm.UrlAPI;
-        //        mdSearchDb.MethodeAPI = mdSearchVm.MethodeAPI;
-        //        mdSearchDb.KeyAPI = mdSearchVm.KeyAPI;
-        //        mdSearchDb.ParamAPI = mdSearchVm.ParamAPI;
-        //        mdSearchDb.MessageStart = mdSearchVm.MessageStart;
-        //        mdSearchDb.MessageError = mdSearchVm.MessageError;
-        //        mdSearchDb.MessageEnd = mdSearchDb.MessageEnd;
-        //        mdSearchDb.ID = mdSearchVm.ID;
+        [Route("addmdsearch")]
+        [HttpPost]
+        public HttpResponseMessage AddModuleSearch(HttpRequestMessage request, MdSearchViewModel mdSearchVm)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                try
+                {
+                    MdSearch mdSearchDb = new MdSearch();
+                    mdSearchDb.BotID = mdSearchVm.BotID;
+                    mdSearchDb.Title = mdSearchVm.Title;
+                    mdSearchDb.Payload = mdSearchVm.Payload;
+                    mdSearchDb.CardPayloadID = mdSearchVm.CardPayloadID;
+                    mdSearchDb.UrlAPI = mdSearchVm.UrlAPI;
+                    mdSearchDb.MethodeAPI = mdSearchVm.MethodeAPI;
+                    if (!String.IsNullOrEmpty(mdSearchVm.KeyCodeAPI) && !String.IsNullOrEmpty(mdSearchVm.KeyNameAPI))
+                    {
+                        mdSearchDb.KeyAPI = mdSearchVm.KeyNameAPI + ":" + mdSearchVm.KeyCodeAPI;
+                    }
 
-        //        _mdSearchService.Create(mdSearchDb);
-        //        _mdSearchService.Save();
-        //        return response;
-        //    });
-        //}
+                    mdSearchDb.ParamAPI = mdSearchVm.ParamAPI;
+                    mdSearchDb.MessageStart = mdSearchVm.MessageStart;
+                    mdSearchDb.MessageError = mdSearchVm.MessageError;
+                    mdSearchDb.MessageEnd = mdSearchDb.MessageEnd;
+                    mdSearchDb.ID = mdSearchVm.ID;
+
+                    _mdSearchService.Create(mdSearchDb);
+                    _mdSearchService.Save();
+                    response = request.CreateResponse(HttpStatusCode.OK, mdSearchDb);
+                }
+                catch (Exception ex)
+                {
+                    response = request.CreateResponse(HttpStatusCode.BadGateway);
+                }
+                return response;
+            });
+        }
+
+        [Route("updatemdsearch")]
+        [HttpPost]
+        public HttpResponseMessage UpdateModuleSearch(HttpRequestMessage request, MdSearchViewModel mdSearchVm)
+        {
+            return CreateHttpResponse(request, () => {
+                HttpResponseMessage response = null;
+                try
+                {
+                    var mdSearchDb = _mdSearchService.GetByID(mdSearchVm.ID);
+                    mdSearchDb.BotID = mdSearchVm.BotID;
+                    mdSearchDb.Title = mdSearchVm.Title;
+                    mdSearchDb.Payload = mdSearchVm.Payload;
+                    mdSearchDb.CardPayloadID = mdSearchVm.CardPayloadID;
+                    mdSearchDb.UrlAPI = mdSearchVm.UrlAPI;
+                    mdSearchDb.MethodeAPI = mdSearchVm.MethodeAPI;
+                    if (!String.IsNullOrEmpty(mdSearchVm.KeyCodeAPI) && !String.IsNullOrEmpty(mdSearchVm.KeyNameAPI))
+                    {
+                        mdSearchDb.KeyAPI = mdSearchVm.KeyNameAPI + ":" + mdSearchVm.KeyCodeAPI;
+                    }
+
+                    mdSearchDb.ParamAPI = mdSearchVm.ParamAPI;
+                    mdSearchDb.MessageStart = mdSearchVm.MessageStart;
+                    mdSearchDb.MessageError = mdSearchVm.MessageError;
+                    mdSearchDb.MessageEnd = mdSearchDb.MessageEnd;
+                    mdSearchDb.ID = mdSearchVm.ID;
+
+                    _mdSearchService.Update(mdSearchDb);
+                    _mdSearchService.Save();
+                    response = request.CreateResponse(HttpStatusCode.OK, mdSearchDb);
+                }
+                catch(Exception ex)
+                {
+                    response = request.CreateResponse(HttpStatusCode.BadGateway);
+                }              
+                return response;
+            });
+        }
 
         #endregion
     }

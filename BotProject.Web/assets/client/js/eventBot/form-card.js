@@ -2241,10 +2241,10 @@ $(document).ready(function () {
                     '<div class="wr_value">' +
                         '<div class="bl_module" action="add">' +
                             '<div class="bl_bt_content">' +
-                                '<i class="fa fa-eye bl_bt_view"></i>'+
+                                '<i class="fa fa-eye bl_bt_view"></i>' +
                                 '<div class="bl_bt_input">' +
                                     '<div class="blSelectModule">' +
-                                        '<select data-md-info-patient-id="0">' +
+                                        '<select data-md-info-patient-id="0" data-md-search-id="0">' +
                                             module() +
                                         '</select>' +
                                     '</div>' +
@@ -2264,21 +2264,22 @@ $(document).ready(function () {
         $('.card_galery').addClass('disable');
 
         $('#multi .blSelectModule>select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
-           
+            var mdSearchID = $(this).attr('data-md-search-id');
             var mdGetInfoPatientID = $(this).attr('data-md-info-patient-id');
             var moduleName = $(this).select2("val");
             var typeActionModule = "CLICK_FORM_CARD_MODULE";
-            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID);
-        });    
+            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
+        });
         ReOderItemContentCard();
     });
     // view module
     $('body').on('click', '.bl_bt_view', function () {
         var mdVal = $('#multi .blSelectModule>select').select2("val");
         var mdGetInfoPatientID = $('#multi .blSelectModule>select').attr('data-md-info-patient-id');
+        var mdSearchID = $('#multi .blSelectModule>select').attr('data-md-info-patient-id');
         var moduleName = $('#multi .blSelectModule>select').select2("val");
         var typeActionModule = "CLICK_FORM_CARD_MODULE";
-        renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID);
+        renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
     })
 
 
@@ -3004,7 +3005,7 @@ $(document).ready(function () {
     // End Menu Button
 
     // Done Button
-    $('#modal_button').on('click', '.bt_done', function (event, mdGetInfoPatientID, mdInfoPatientType) {
+    $('#modal_button').on('click', '.bt_done', function (event, mdDetailID, MdDetailName) {
         var str_btct = '',
             el = $(this),
             elContent = el.parents('.modal-content'),
@@ -3163,10 +3164,14 @@ $(document).ready(function () {
             var moduleExt = "_" + modExt;
 
             var done_data = elContent.find(".modal-body .bl_bt_content .bl_bt_input .select").select2("data");
-            if (mdInfoPatientType == 'MdGetInfoPatient') {
-                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="' + mdGetInfoPatientID + '">' + done_data[0].text + '</span>';
-            } else {
-                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id = "0">' + done_data[0].text + '</span>';
+            if (mdDetailName == 'MdGetInfoPatient') {
+                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="' + mdDetailID + '" data-md-search-id = "0">' + done_data[0].text + '</span>';
+            }
+            else if (mdDetailName == 'ApiSEARCH') {
+                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="0" data-md-search-id = "' + mdDetailID + '">' + done_data[0].text + '</span>';
+            }
+            else {
+                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id = "0" data-md-search-id = "0">' + done_data[0].text + '</span>';
             }
             // moduleExt + 
             type_button = 'module';
@@ -3644,8 +3649,9 @@ $(document).ready(function () {
             });
             var typeActionModule = "CLICK_BUTTON_MODULE";
             var mdGetInfoPatientID = el.find('.bt_ct span').attr('data-md-info-patient-id');
+            var mdSearchID = el.find('.bt_ct span').attr('data-md-search-id');
             var moduleName = moduleId;
-            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID);
+            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
 
         } else if (el.attr('type-button') == 'buy') {
             str_popup = htmlPopup($(this));
@@ -3975,7 +3981,7 @@ function actionTabPopup(el) {
         el.parents('.modal-content').find('.pr_bt_name .bt_name').hide();
         el.parents('.modal-content').find('.pr_bt_name').append('<p><i class="icon-lock2"></i> ' + txtCard37 + '</p>');
     } else if (el.hasClass('add_module')) {
-        var str_card = '<div class="blSelectModule"><select data-placeholder="' + txtCard47 + '" class="select" data-md-info-patient-id="0"><option></option>' + module() + '</select></div>';
+        var str_card = '<div class="blSelectModule"><select data-placeholder="' + txtCard47 + '" class="select" data-md-info-patient-id="0" data-md-search-id = "0"><option></option>' + module() + '</select></div>';
         el.parents('.bl_bt_content').find('.bl_bt_input').html(str_card);
         //$('.blSelectModule .select').select2({/*minimumResultsForSearch: "-1"*/ })
         //debugger;
@@ -3985,8 +3991,8 @@ function actionTabPopup(el) {
             var moduleName = $(this).select2("val");
             var typeActionModule = "CLICK_BUTTON_MODULE";
             var mdGetInfoPatientID = $(this).attr('data-md-info-patient-id');
-
-            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID);
+            var mdSearchID = $(this).attr('data-md-search-id');
+            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
             //$('#sidenav-module').css('width', '380');
         })
 
@@ -4689,7 +4695,7 @@ var card = function () {
 //===================================================================//
 //============================= XỬ LÝ MODULE ========================//
 //===================================================================//
-function renderTemplateModuleByKey(moduleName, typeActionMdGetInfoPatient, mdGetInfoPatientID) {
+function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoPatientID, mdSearchID) {
     console.log(moduleName)
     $("#template-module").empty();
     var html = '';
@@ -4816,14 +4822,14 @@ function renderTemplateModuleByKey(moduleName, typeActionMdGetInfoPatient, mdGet
         });
     }
     if (moduleName == "med_get_info_patient") {//lấy thông tin bệnh nhân
-        getTemplateInfoPatient(mdGetInfoPatientID, typeActionMdGetInfoPatient);
+        getTemplateInfoPatient(mdGetInfoPatientID, typeActionClickModule);
     }
     if (moduleName == "med_diagnostic") {//chuẩn đoán bệnh
     }
     if (moduleName == "qna_legal") {// hỏi đáp pháp luật
     }
     if (moduleName == "api_search") {
-
+        getTemplateSearchAPI(mdSearchID, typeActionClickModule);
     }
     $('#sidenav-module').css('width', '380');
 }
@@ -5040,11 +5046,6 @@ $('body').on('click', "#mdMedInfoPatientSave", function () {
         isValidate = false;
         return false;
     }
-    if (title.trim() == '') {
-        toastr.error('Vui lòng nhập tiêu đề');
-        isValidate = false;
-        return false;
-    }
     if ($("#mdMedInfoPatientMsgEnd").hasClass('hide')) {
         msgEnd = "";
     }
@@ -5058,7 +5059,7 @@ $('body').on('click', "#mdMedInfoPatientSave", function () {
         payLoadCard = "";
     }
     var objMedInfoPatient = {
-        ID:'',
+        ID: '',
         BotID: $("#botId").val(),
         Title: title,
         MessageEnd: msgEnd,
@@ -5268,55 +5269,240 @@ function getTemplateInfoPatient(mdInfoPatientID, typeActionMdGetInfoPatient) {
     }
 }
 
+// MDSEARCH
+var typeActionMdSearch = true;
+$('body').on('click', '#saveMdSearch', function () {
+    var element = $(this),
+        Title = $('#mdSearchTitle').val(),
+        Url = $('#mdSearchUrl').val(),
+        KeyAPI = $('#mdSearchKeyName').val(),
+        CodeAPI = $('#mdSearchKeyCode').val(),
+        Params = $('#mdSearchParam').val(),
+        MessageError = $('#mdSearchMessageError').val(),
+        CardPayloadID = $('#mdCardSearch').val(),
+        MethodeAPI = $('#mdSearchMethode').val(),
+        PayLoadCard = "postback_card_" + CardPayloadID;
+    var isSuscess = true;
+
+    if (Title == "") {
+        toastr.error('Vui lòng nhập tiêu đề');
+        isSuscess = false;
+        return isSuscess;
+    }
+    if (Url == "") {
+        toastr.error('Vui lòng nhập đường dẫn api');
+        isSuscess = false;
+        return isSuscess;
+    }
+    if (MessageError == "") {
+        toastr.error('Vui lòng nhập thông báo khi không tìm thấy');
+        isSuscess = false;
+        return isSuscess;
+    }
+    if (CodeAPI != "" && KeyAPI == "") {
+        toastr.error('Vui lòng nhập tên key api');
+        isSuscess = false;
+        return isSuscess;
+    }
+    if (CodeAPI == "" && KeyAPI != "") {
+        toastr.error('Vui lòng nhập mã  key api');
+        isSuscess = false;
+        return isSuscess;
+    }
+    if (CardPayloadID == "") {
+        PayLoadCard = "";
+    }
+    if (isSuscess) {
+        var objMdSearch = {
+            ID: '',
+            Title: Title,
+            BotID: $("#botId").val(),
+            UrlAPI: Url,
+            KeyNameAPI: KeyAPI,
+            KeyCodeAPI: CodeAPI,
+            MethodeAPI: MethodeAPI,
+            Param: Params,
+            CardPayloadID: CardPayloadID,
+            Payload: PayLoadCard,
+            MessageError: MessageError,
+        };
+        if (typeActionMdSearch) {
+            var params = JSON.stringify(objMdSearch);
+            console.log(params)
+            var urlTest = "api/module/addmdsearch";
+            var svr = new AjaxCall(urlTest, params);
+            svr.callServicePOST(function (data) {
+                console.log(data)
+                if (data != null) {
+                    toastr.success('Lưu thành công');
+                    var type = elemSave.attr('data-action');//typeActionMdGetInfoPatient
+                    var mdDetailName = "ApiSEARCH";
+                    var mdDetailID = data.ID;
+                    console.log(type)
+                    if (type == "CLICK_BUTTON_MODULE") {
+                        $("#modal_button .bt_done").trigger('click', [mdDetailID, mdDetailName]);
+                    }
+                    if (type == "CLICK_FORM_CARD_MODULE") {
+                        if ($('#multi .content').length > 0) {
+                            $('#multi .content').each(function (index, el) {
+                                if ($(this).attr('card') == 'module') {
+                                    //set id trả về tới select
+                                    $(this).find('.blSelectModule select').attr('data-md-search-id', mdDetailID);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        } else {
+            var mdSearchID = elemSave.closest('.form-patient').eq(0).attr('data-module-search-id');
+            console.log(mdSearchID)
+            objMdSearch.ID = mdSearchID;
+            params = JSON.stringify(objMdSearch);
+            var urlTest = "api/module/updatemdsearch";
+            var svr = new AjaxCall(urlTest, params);
+            svr.callServicePOST(function (data) {
+                console.log(data)
+                if (data != null) {
+                    toastr.success('Cập nhật thành công');
+                    $("#modal_button").modal("hide");
+                    $('#sidenav-module').css('width', '0');
+                }
+            });
+        }
+    }
+})
+
 function getTemplateSearchAPI(mdSearchID, typeActionMdSearch) {
     var html = '';
     if (mdSearchID == 0 || mdSearchID == undefined) {
         typeActionMdSearch = true;
-        html +='  <a href="#" style="text-decoration:underline" id="module-name">Tìm kiếm</a>';
-        html +=' <div class="row">';
-        html +='    <div class="col-md-12">';
-        html +='        <div class="form-group">';
-        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">Đường dẫn API</label>';
-        html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
-        html +='                <input type="text" placeholder="Đường dẫn api" class="form-control" />';
-        html +='            </div>';
-        html +='        </div>';
-        html +='        <div class="form-group">';
-        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>';
-        html +='            <div class="row" style="margin:unset;">';
-        html +='                <div class="col-md-6 col-sm-6 col-xs-6">';
-        html +='                    <input type="text" placeholder="x-api-key" class="form-control" />';
-        html +='                </div>';
-        html +='                <div class="col-md-6 col-sm-6 col-xs-6">';
-        html +='                    <input type="text" placeholder="2Zhldc3aq1" class="form-control" />';
-        html +='                </div>';
-        html +='            </div>';
-        html +='        </div>';
-        html +='        <div class="form-group">';
-        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Param</label>';
-        html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
-        html +='                <input type="text" placeholder="params" class="form-control" />';
-        html +='            </div>';
-        html +='        </div>';
-        html +='        <div class="form-group">';
-        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>';
-        html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
-        html +='                <textarea name="data2[default]" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>';
-        html +='            </div>';
-        html +='        </div>';
-        html +='        <div class="form-group">';
-        html +='            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
-        html +='            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '  <a href="#" style="text-decoration:underline" id="module-name" data-module-search-id="0">Tìm kiếm</a>';
+        html += ' <div class="row">';
+        html += '    <div class="col-md-12">';
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '                <input type="text" placeholder="" id="mdSearchTitle" class="form-control" />';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Đường dẫn API</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '                <input type="text" placeholder="http://" id="mdSearchUrl" class="form-control" />';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>';
+        html += '            <div class="row" style="margin:unset;">';
+        html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
+        html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control" />';
+        html += '                </div>';
+        html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
+        html += '                    <input type="text" placeholder="2Zhldc3aq1" id="mdSearchKeyCode" class="form-control" />';
+        html += '                </div>';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Methode</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '                <input type="text" placeholder="POST GET" id="mdSearchMethode" class="form-control" />';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Param</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '                <input type="text" placeholder="params" id="mdSearchParam" class="form-control" />';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '                <textarea id="mdSearchMessageError" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
         html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch">' + card() + '</select>';
-        html +='            </div>';
-        html +='        </div>';
-        html +='        <div class="form-group">';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
         html += '            <button id="saveMdSearch" data-id="" data-action="' + typeActionMdSearch + '"  class="btn btn-primary">Lưu</button>';
-        html +='        </div>';
-        html +='    </div>';
+        html += '        </div>';
+        html += '    </div>';
         html += '</div>';
-        $("#template-module").empty().append(html)
+        $("#template-module").empty().append(html);
     } else {
+        typeActionMdSearch = false;
+        var params = {
+            mdSearchID: mdSearchID,
+        };
+        var urlTest = "api/module/getmdsearch";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServiceGET(function (data) {
+            html += '  <a href="#" style="text-decoration:underline" id="module-name" data-module-search-id="'+data.ID+'">Tìm kiếm</a>';
+            html += ' <div class="row">';
+            html += '    <div class="col-md-12">';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <input type="text" placeholder="" id="mdSearchTitle" class="form-control" value="'+data.Title+'"/>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Đường dẫn API</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <input type="text" placeholder="http://" id="mdSearchUrl" class="form-control" value="' + data.UrlAPI + '"/>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>';
+            html += '            <div class="row" style="margin:unset;">';
+            html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
+            html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control" />';
+            html += '                </div>';
+            html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
+            html += '                    <input type="text" placeholder="2Zhldc3aq1" id="mdSearchKeyCode" class="form-control" />';
+            html += '                </div>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Methode</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <input type="text" placeholder="POST GET" id="mdSearchMethode" class="form-control" value="' + data.MethodeAPI + '"/>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Param</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <input type="text" placeholder="params" id="mdSearchParam" class="form-control" />';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <textarea id="mdSearchMessageError" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch">' + card() + '</select>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <button id="saveMdSearch" data-id="" data-action="' + typeActionMdSearch + '"  class="btn btn-primary">Lưu</button>';
+            html += '        </div>';
+            html += '    </div>';
+            html += '</div>';
+            $("#template-module").empty().append(html);
 
+            setTimeout(function () {
+                if (data.CardPayloadID != "" || data.CardPayloadID != null) {
+                    $('#mdCardSearch option[value="' + data.CardPayloadID + '"]').attr('selected', 'selected');
+                }
+            }, 1000)
+        });
     }
 }
