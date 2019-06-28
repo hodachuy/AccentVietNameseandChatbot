@@ -35,6 +35,7 @@ namespace BotProject.Web.Controllers
         private IHandleModuleServiceService _handleMdService;
         private IModuleService _mdService;
         private IModuleKnowledegeService _mdKnowledgeService;
+        private IMdSearchService _mdSearchService;
         private IErrorService _errorService;
 
         //private Bot _bot;
@@ -45,6 +46,7 @@ namespace BotProject.Web.Controllers
                                 ISettingService settingService,
                                 IHandleModuleServiceService handleMdService,
                                 IModuleService mdService,
+                                IMdSearchService mdSearchService,
                                 IModuleKnowledegeService mdKnowledgeService)
         {
             _errorService = errorService;
@@ -55,6 +57,7 @@ namespace BotProject.Web.Controllers
             _handleMdService = handleMdService;
             _mdService = mdService;
             _mdKnowledgeService = mdKnowledgeService;
+            _mdSearchService = mdSearchService;
             _botService = BotService.BotInstance;
         }
 
@@ -100,10 +103,10 @@ namespace BotProject.Web.Controllers
                 }
             }
 
-            var mdGetInfoPatientDb = _mdKnowledgeService.GetAllMdKnowledgeMedInfPatientByBotID(botID).ToList();
-            if (mdGetInfoPatientDb.Count() != 0)
+            var lstMdGetInfoPatientDb = _mdKnowledgeService.GetAllMdKnowledgeMedInfPatientByBotID(botID).ToList();
+            if (lstMdGetInfoPatientDb.Count() != 0)
             {
-                foreach (var item in mdGetInfoPatientDb)
+                foreach (var item in lstMdGetInfoPatientDb)
                 {
                     if (!String.IsNullOrEmpty(item.OptionText))
                     {
@@ -123,8 +126,25 @@ namespace BotProject.Web.Controllers
                 }
             }
 
+            var lstMdSearchDb = _mdSearchService.GetByBotID(botID).ToList();
+            if (lstMdSearchDb.Count() != 0)
+            {
+                foreach (var item in lstMdSearchDb)
+                {                    
+                    if (!String.IsNullOrEmpty(item.Payload))
+                    {
+                        _user.Predicates.addSetting("api_search" + item.ID, "");//check bat mo truong hop nut' payload khi qua the moi
+                        _user.Predicates.addSetting("api_search_check_" + item.ID, "false");
+                    }
+                }
+            }
+
+
             _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
             _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
+
+            _user.Predicates.addSetting("isChkMdSearch","false");
+            _user.Predicates.addSetting("ThreadMdSearchID", "");
 
             SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = _user.Predicates.Count;
@@ -216,8 +236,14 @@ namespace BotProject.Web.Controllers
                 }
                 #endregion
 
-                // Module pháp luật
+                // Module tìm kiếm 
+                #region Module Tìm kiếm với api
+                if (text.Contains("postback_module_api_search"))
+                {
+                    var handleMdSearch = "";
+                }
 
+                #endregion
 
                 // Xử lý module phone
                 #region 

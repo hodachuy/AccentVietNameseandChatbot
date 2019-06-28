@@ -320,6 +320,10 @@
     <Compile Include="Migrations\201906250632224_UpMethodeSearch.Designer.cs">
       <DependentUpon>201906250632224_UpMethodeSearch.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906280239454_UpdateMdSearch451.cs" />
+    <Compile Include="Migrations\201906280239454_UpdateMdSearch451.Designer.cs">
+      <DependentUpon>201906280239454_UpdateMdSearch451.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -555,6 +559,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906250632224_UpMethodeSearch.resx">
       <DependentUpon>201906250632224_UpMethodeSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906280239454_UpdateMdSearch451.resx">
+      <DependentUpon>201906280239454_UpdateMdSearch451.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

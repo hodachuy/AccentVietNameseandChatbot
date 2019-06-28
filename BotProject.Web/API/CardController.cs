@@ -26,13 +26,15 @@ namespace BotProject.Web.API
 		private IImageService _imageService;
 		private ICommonCardService _commonCardService;
 		private IFileCardService _fileCardService;
+        private IMdSearchService _mdSearchService;
         private IModuleKnowledegeService _mdKnowledgeService;
         public CardController(IErrorService errorService,
 							ICardService cardService,
 							IImageService imageService,
 							ICommonCardService commonCardService,
                             IModuleKnowledegeService mdKnowledgeService,
-                            IFileCardService fileCardService) : base(errorService)
+                            IFileCardService fileCardService,
+                            IMdSearchService mdSearchService) : base(errorService)
 		{
 			_cardService = cardService;
 			_imageService = imageService;
@@ -40,8 +42,10 @@ namespace BotProject.Web.API
 			_errorService = errorService;
             _mdKnowledgeService = mdKnowledgeService;
             _fileCardService = fileCardService;
+            _mdSearchService = mdSearchService;
 
-		}
+
+        }
 
 		[Route("getbyid")]
 		[HttpGet]
@@ -233,11 +237,9 @@ namespace BotProject.Web.API
                                                 btnModuleDb.UpdateButtonModule(btnModuleVm);
                                                 btnModuleDb.CardID = cardDb.ID;
                                                 btnModuleDb.TempGnrItemID = tempGnrItemVm.ID;
-                                                if (btnModuleVm.ModuleKnowledgeID != null && btnModuleVm.ModuleKnowledgeID != 0)
-                                                {
-                                                    btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
-                                                    btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
-                                                }
+                                                btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
+                                                btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
+                                                btnModuleDb.MdSearchID = btnModuleVm.MdSearchID;
                                                 _commonCardService.AddButtonModule(btnModuleDb);
                                                 _commonCardService.Save();
 
@@ -248,6 +250,13 @@ namespace BotProject.Web.API
                                                     mdMedGetInfoPatientDb.ButtonModuleID = btnModuleDb.ID;
                                                     _mdKnowledgeService.UpdateMdKnowledfeMedInfoPatient(mdMedGetInfoPatientDb);
                                                     _mdKnowledgeService.Save();
+                                                }
+                                                if(btnModuleVm.MdSearchID != null && btnModuleVm.MdSearchID != 0)
+                                                {
+                                                    var mdSearchDb = _mdSearchService.GetByID(btnModuleVm.MdSearchID ?? default(int));
+                                                    mdSearchDb.ButtonModuleID = btnModuleDb.ID;
+                                                    _mdSearchService.Update(mdSearchDb);
+                                                    _mdSearchService.Save();
                                                 }
 
                                                 _commonCardService.AddButtonModule(btnModuleDb);
@@ -301,11 +310,9 @@ namespace BotProject.Web.API
                                         btnModuleDb.UpdateButtonModule(btnModuleVm);
                                         btnModuleDb.CardID = cardDb.ID;
                                         btnModuleDb.TempTxtID = tempTextDb.ID;
-                                        if (btnModuleVm.ModuleKnowledgeID != null && btnModuleVm.ModuleKnowledgeID != 0)
-                                        {
-                                            btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
-                                            btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
-                                        }
+                                        btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
+                                        btnModuleDb.MdSearchID = btnModuleVm.MdSearchID;
+                                        btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
                                         _commonCardService.AddButtonModule(btnModuleDb);
                                         _commonCardService.Save();
 
@@ -317,6 +324,14 @@ namespace BotProject.Web.API
                                             _mdKnowledgeService.UpdateMdKnowledfeMedInfoPatient(mdMedGetInfoPatientDb);
                                             _mdKnowledgeService.Save();
                                         }
+                                        if (btnModuleVm.MdSearchID != null && btnModuleVm.MdSearchID != 0)
+                                        {
+                                            var mdSearchDb = _mdSearchService.GetByID(btnModuleVm.MdSearchID ?? default(int));
+                                            mdSearchDb.ButtonModuleID = btnModuleDb.ID;
+                                            _mdSearchService.Update(mdSearchDb);
+                                            _mdSearchService.Save();
+                                        }
+
                                     }
                                 }
                             }
@@ -340,17 +355,25 @@ namespace BotProject.Web.API
                                 mdFCardDb.CardID = cardDb.ID;
                                 mdFCardDb.BotID = cardVm.BotID;
                                 mdFCardDb.PartternText = mdFollowCardVm.PartternText;//postback_moudle_phone...//
+                                mdFCardDb.ModuleInfoPatientID = mdFollowCardVm.ModuleInfoPatientID == null ? 0 : mdFollowCardVm.ModuleInfoPatientID;
+                                mdFCardDb.MdSearchID = mdFollowCardVm.MdSearchID == null ? 0 : mdFollowCardVm.MdSearchID;
                                 if (mdFollowCardVm.PartternText != "postback_module_med_get_info_patient")
                                 {
-                                    mdFCardDb.ModuleInfoPatientID = 0;
                                     if(mdFollowCardVm.ModuleInfoPatientID != null && mdFollowCardVm.ModuleInfoPatientID != 0)
                                     {
                                         _mdKnowledgeService.DeleteMdMedInfoPatient(mdFollowCardVm.ModuleInfoPatientID ?? default(int));
+                                        mdFCardDb.ModuleInfoPatientID = 0;
                                     }
-                                }else
-                                {
-                                    mdFCardDb.ModuleInfoPatientID = mdFollowCardVm.ModuleInfoPatientID;
                                 }
+                                if (mdFollowCardVm.PartternText != "postback_module_api_search")
+                                {
+                                    if (mdFollowCardVm.MdSearchID != null && mdFollowCardVm.MdSearchID != 0)
+                                    {
+                                        _mdSearchService.Delete(mdFollowCardVm.MdSearchID ?? default(int));
+                                        mdFCardDb.MdSearchID = 0;
+                                    }
+                                }
+
                                 mdFCardDb.Index = mdFollowCardVm.Index;
                                 _commonCardService.AddModuleFollowCard(mdFCardDb);
                                 _commonCardService.Save();
@@ -361,6 +384,14 @@ namespace BotProject.Web.API
                                     mdMedGetInfoPatientDb.ModuleFollowCardID = mdFCardDb.ID;
                                     _mdKnowledgeService.UpdateMdKnowledfeMedInfoPatient(mdMedGetInfoPatientDb);
                                     _mdKnowledgeService.Save();
+                                }
+                                // update
+                                if (mdFollowCardVm.PartternText == "postback_module_api_search")
+                                {
+                                    var mdSearchDb = _mdSearchService.GetByID(mdFCardDb.MdSearchID ?? default(int));
+                                    mdSearchDb.ModuleFollowCardID = mdFCardDb.ID;
+                                    _mdSearchService.Update(mdSearchDb);
+                                    _mdSearchService.Save();
                                 }
                             }
 
@@ -460,6 +491,10 @@ namespace BotProject.Web.API
                                         if(itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
                                         {
                                             sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                        }                                   
+                                        else if (itemBtnModule.MdSearchID != null && itemBtnModule.MdSearchID != 0)
+                                        {
+                                            sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
                                         }
                                         else
                                         {
@@ -524,6 +559,10 @@ namespace BotProject.Web.API
                                                 if (itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
                                                 {
                                                     sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                                }   
+                                                else if (itemBtnModule.MdSearchID != null && itemBtnModule.MdSearchID != 0)
+                                                {
+                                                    sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
                                                 }
                                                 else
                                                 {
@@ -565,6 +604,10 @@ namespace BotProject.Web.API
                                 {
                                     patternText = patternText + "_" + itemMdFollowCards.ModuleInfoPatientID;
                                 }
+                                if (itemMdFollowCards.MdSearchID != null && itemMdFollowCards.MdSearchID != 0)
+                                {
+                                    patternText = patternText + "_" + itemMdFollowCards.MdSearchID;
+                                }
                                 sw.WriteLine(patternText);
                             }
                         }
@@ -595,6 +638,19 @@ namespace BotProject.Web.API
                                         sw.WriteLine("<pattern>module_patient_" + mdGetInfoPatientDb.Payload + "</pattern>");
                                         sw.WriteLine("<template>");
                                         sw.WriteLine("<srai>" + mdGetInfoPatientDb.Payload + "</srai>");
+                                        sw.WriteLine("</template>");
+                                        sw.WriteLine("</category>");
+                                    }
+                                }
+                                if (itemMdFollowCards.MdSearchID != null && itemMdFollowCards.MdSearchID != 0)
+                                {
+                                    var mdSearchDb = _mdSearchService.GetByID(itemMdFollowCards.MdSearchID ?? default(int));
+                                    if (!String.IsNullOrEmpty(mdSearchDb.Payload))
+                                    {
+                                        sw.WriteLine("<category>");
+                                        sw.WriteLine("<pattern>module_api_search" + mdSearchDb.Payload + "</pattern>");
+                                        sw.WriteLine("<template>");
+                                        sw.WriteLine("<srai>" + mdSearchDb.Payload + "</srai>");
                                         sw.WriteLine("</template>");
                                         sw.WriteLine("</category>");
                                     }

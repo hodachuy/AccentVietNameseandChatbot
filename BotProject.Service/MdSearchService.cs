@@ -14,6 +14,7 @@ namespace BotProject.Service
         MdSearch GetByID(int id);
         IEnumerable<MdSearch> GetByBotID(int botID);
         MdSearch Create(MdSearch module);
+        void Delete(int id);
         void Update(MdSearch module);
         void Save();
     }
@@ -31,6 +32,11 @@ namespace BotProject.Service
         public MdSearch Create(MdSearch module)
         {
             return _mdSearchRepository.Add(module);
+        }
+
+        public void Delete(int id)
+        {
+            _mdSearchRepository.Delete(id);
         }
 
         public IEnumerable<MdSearch> GetByBotID(int botID)

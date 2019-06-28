@@ -274,8 +274,12 @@ $(document).ready(function () {
                         if (tempItem.ButtonModules.length != 0) {
                             $.each(tempItem.ButtonModules, function (index, value) {
                                 var mdMedGetInfoPatientID = 0;
+                                var mdSearchID = 0;
                                 if (value.ModuleKnowledgeID != null && value.ModuleKnowledgeID != 0) {
                                     mdMedGetInfoPatientID = value.ModuleKnowledgeID;
+                                }
+                                if (value.MdSearchID != null && value.MdSearchID != 0) {
+                                    mdSearchID = value.MdSearchID;
                                 }
                                 var nameModule = "";
                                 if (value.Payload == "postback_module_phone") {
@@ -296,9 +300,12 @@ $(document).ready(function () {
                                 if (value.Payload == "postback_module_qna_legal") {
                                     nameModule = "Tri thức hỏi đáp pháp luật";
                                 }
+                                if (value.Payload == "postback_module_api_search") {
+                                    nameModule = "Tri thức tìm kiếm";
+                                }
 
                                 var payload = value.Payload.replace("postback_module_", "");
-                                var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '" data-md-info-patient-id="' + mdMedGetInfoPatientID + '">' + nameModule + '</span></p></div>';
+                                var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '" data-md-info-patient-id="' + mdMedGetInfoPatientID + '" data-md-search-id = "' + mdSearchID + '">' + nameModule + '</span></p></div>';
                                 var objBtn = {
                                     "idx": value.Index,
                                     "contentHTML": contentBtn
@@ -366,15 +373,17 @@ $(document).ready(function () {
         }
 
         //module follow card
-        var mdGetInfoPatientName;
-        var mdGetInfoPatientID;
+        var moduleName;
+        var mdGetInfoPatientID = 0;
+        var mdSearchID = 0;
         if (data.ModuleFollowCards.length != 0) {
             $.each(data.ModuleFollowCards, function (index, value) {
-                mdGetInfoPatientName = value.PartternText;
+                moduleName = value.PartternText;
                 if (value.ModuleInfoPatientID != null && value.ModuleInfoPatientID != undefined) {
                     mdGetInfoPatientID = value.ModuleInfoPatientID;
-                } else {
-                    mdGetInfoPatientID = 0;
+                }
+                if (value.MdSearchID != null && value.MdSearchID != undefined) {
+                    mdSearchID = value.MdSearchID;
                 }
 
                 var tempModuleFollowCard = '';
@@ -399,7 +408,7 @@ $(document).ready(function () {
                                 '<i class="fa fa-eye bl_bt_view"></i>' +
                                 '<div class="bl_bt_input">' +
                                     '<div class="blSelectModule">' +
-                                        '<select data-md-info-patient-id="' + mdGetInfoPatientID + '">' +
+                                        '<select data-md-info-patient-id="' + mdGetInfoPatientID + '" data-md-search-id="' + mdSearchID + '">' +
                                             module() +
                                         '</select>' +
                                     '</div>' +
@@ -454,8 +463,12 @@ $(document).ready(function () {
                 if (value.ButtonModules.length != 0) {
                     $.each(value.ButtonModules, function (index, value) {
                         var mdMedGetInfoPatientID = 0;
+                        var mdSearchID = 0;
                         if (value.ModuleKnowledgeID != null && value.ModuleKnowledgeID != 0) {
                             mdMedGetInfoPatientID = value.ModuleKnowledgeID;
+                        }
+                        if (value.MdSearchID != null && value.MdSearchID != 0) {
+                            mdSearchID = value.MdSearchID;
                         }
                         var nameModule = "";
                         if (value.Payload == "postback_module_phone") {
@@ -476,8 +489,11 @@ $(document).ready(function () {
                         if (value.Payload == "postback_module_qna_legal") {
                             nameModule = "Tri thức hỏi đáp pháp luật";
                         }
+                        if (value.Payload == "postback_module_api_search") {
+                            nameModule = "Tri thức tìm kiếm";
+                        }
                         var payload = value.Payload.replace("postback_module_", "");
-                        var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '" data-md-info-patient-id="' + mdMedGetInfoPatientID + '">' + nameModule + '</span></p></div>';
+                        var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '" data-md-info-patient-id="' + mdMedGetInfoPatientID + '" data-md-search-id="' + mdSearchID + '">' + nameModule + '</span></p></div>';
                         var objBtn = {
                             "idx": value.Index,
                             "contentHTML": contentBtn
@@ -542,17 +558,18 @@ $(document).ready(function () {
                 $('#multi .content').each(function (index, el) {
                     if ($(this).attr('card') == 'module') {
                         //set id trả về tới select
-                        mdGetInfoPatientName = mdGetInfoPatientName.replace("postback_module_", "");
-                        $(this).find('.blSelectModule select option[value="' + mdGetInfoPatientName + '"]').attr('selected', 'selected');
+                        mdName = moduleName.replace("postback_module_", "");
+                        $(this).find('.blSelectModule select option[value="' + mdName + '"]').attr('selected', 'selected');
                         $(".card_module").addClass('disable');
                         $('#wr_reply').hide();
                         $('.card_quickReply').addClass('disable');
 
                         $(this).find('.blSelectModule>select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
                             var mdPatientID = mdGetInfoPatientID;
+                            var mdSearchID = mdSearchID;
                             var moduleName = $(this).select2("val");
                             var typeActionModule = "CLICK_FORM_CARD_MODULE";
-                            renderTemplateModuleByKey(moduleName, typeActionModule, mdPatientID);
+                            renderTemplateModuleByKey(moduleName, typeActionModule, mdPatientID, mdSearchID);
                         });
                     }
                 });
@@ -1061,6 +1078,7 @@ $(document).ready(function () {
                                 } else if ($(this).attr('type-button') == 'module') {
                                     var postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id');
                                     var module_medGetInfoPatient_ID = $(this).find('.bt_ct span').attr('data-md-info-patient-id');
+                                    var module_mdSearchID = $(this).find('.bt_ct span').attr('data-md-search-id');
                                     button_object = {
                                         "type": "postback",
                                         "title": $(this).find('.bt_title').text(),
@@ -1074,7 +1092,8 @@ $(document).ready(function () {
                                         "Title": $(this).find('.bt_title').text(),
                                         "Payload": postback_module,
                                         "Index": $(this).attr('data-index'),
-                                        "ModuleKnowledgeID": module_medGetInfoPatient_ID
+                                        "ModuleKnowledgeID": module_medGetInfoPatient_ID,
+                                        "MdSearchID": module_mdSearchID
                                     }
                                     button_module_sql.push(btn_object_sql);
 
@@ -1273,7 +1292,9 @@ $(document).ready(function () {
                                 } else if ($(this).attr('type-button') == 'module') {
                                     var postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id');
                                     var module_medGetInfoPatient_ID = $(this).find('.bt_ct span').attr('data-md-info-patient-id');
+                                    var module_mdSearchID = $(this).find('.bt_ct span').attr('data-md-search-id');
                                     console.log(module_medGetInfoPatient_ID)
+                                    console.log(module_mdSearchID)
                                     button_object = {
                                         "type": "postback",
                                         "title": $(this).find('.bt_title').text(),
@@ -1293,8 +1314,8 @@ $(document).ready(function () {
                                         "Title": $(this).find('.bt_title').text(),
                                         "Payload": postback_module,
                                         "Index": $(this).attr('data-index'),
-                                        "ModuleKnowledgeID": module_medGetInfoPatient_ID
-
+                                        "ModuleKnowledgeID": module_medGetInfoPatient_ID,
+                                        "MdSearchID": module_mdSearchID
                                     }
                                     button_module_sql.push(btn_object_sql);
 
@@ -1552,6 +1573,7 @@ $(document).ready(function () {
                     var moduleExt = "_" + modExt;
                     var postback_module = $(this).find('.blSelectModule select').val();
                     var mdGetInfoPatientID = $(this).find('.blSelectModule select').attr('data-md-info-patient-id');
+                    var module_mdSearchID = $(this).find('.blSelectModule select').attr('data-md-search-id');
                     postback_module = "postback_module_" + postback_module;
                     var template_file = {
                         "module": $(this).find('.blSelectModule select').val() + moduleExt
@@ -1564,6 +1586,7 @@ $(document).ready(function () {
                             "ModuleFollowCardViewModel": {
                                 "PartternText": postback_module,
                                 "ModuleInfoPatientID": mdGetInfoPatientID,
+                                "MdSearchID":module_mdSearchID,
                                 "Index": $(this).attr('data-index')
                             }
                         }
@@ -2276,7 +2299,7 @@ $(document).ready(function () {
     $('body').on('click', '.bl_bt_view', function () {
         var mdVal = $('#multi .blSelectModule>select').select2("val");
         var mdGetInfoPatientID = $('#multi .blSelectModule>select').attr('data-md-info-patient-id');
-        var mdSearchID = $('#multi .blSelectModule>select').attr('data-md-info-patient-id');
+        var mdSearchID = $('#multi .blSelectModule>select').attr('data-md-search-id');
         var moduleName = $('#multi .blSelectModule>select').select2("val");
         var typeActionModule = "CLICK_FORM_CARD_MODULE";
         renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
@@ -3005,7 +3028,7 @@ $(document).ready(function () {
     // End Menu Button
 
     // Done Button
-    $('#modal_button').on('click', '.bt_done', function (event, mdDetailID, MdDetailName) {
+    $('#modal_button').on('click', '.bt_done', function (event, mdDetailID, mdDetailName) {
         var str_btct = '',
             el = $(this),
             elContent = el.parents('.modal-content'),
@@ -3164,6 +3187,8 @@ $(document).ready(function () {
             var moduleExt = "_" + modExt;
 
             var done_data = elContent.find(".modal-body .bl_bt_content .bl_bt_input .select").select2("data");
+            console.log(mdDetailName)
+            console.log(mdDetailID)
             if (mdDetailName == 'MdGetInfoPatient') {
                 str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="' + mdDetailID + '" data-md-search-id = "0">' + done_data[0].text + '</span>';
             }
@@ -4696,7 +4721,6 @@ var card = function () {
 //============================= XỬ LÝ MODULE ========================//
 //===================================================================//
 function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoPatientID, mdSearchID) {
-    console.log(moduleName)
     $("#template-module").empty();
     var html = '';
     if (moduleName == "phone") {
@@ -5089,7 +5113,7 @@ $('body').on('click', "#mdMedInfoPatientSave", function () {
                 console.log(data)
                 if (data != null) {
                     toastr.success('Lưu thành công');
-                    var type = elemSave.attr('data-action');//typeActionMdGetInfoPatient
+                    var type = elemSave.attr('data-action');//typeActionFormOrButton
                     var mdInfoPatientType = "MdGetInfoPatient";
                     var mdInfoPatientID = data.ID;
                     console.log(type)
@@ -5135,7 +5159,7 @@ function sortItemModuleMedGInfo() {
         $(this).attr('data-index', index);
     })
 }
-function getTemplateInfoPatient(mdInfoPatientID, typeActionMdGetInfoPatient) {
+function getTemplateInfoPatient(mdInfoPatientID, typeActionFormOrButton) {
     var html = '';
     if (mdInfoPatientID == 0 || mdInfoPatientID == undefined) {
         typeActionDbMDInfoPatient = true;
@@ -5181,7 +5205,7 @@ function getTemplateInfoPatient(mdInfoPatientID, typeActionMdGetInfoPatient) {
         html += '<div class="col-md-12" style="padding-top: 30px;">';
         html += '<div class="form-group">';
         html += '<div class="col-md-12 col-sm-12 col-xs-12" style="float:right">';
-        html += '<button id="mdMedInfoPatientSave" data-id="" data-action="' + typeActionMdGetInfoPatient + '" class="btn btn-primary">Lưu</button>';
+        html += '<button id="mdMedInfoPatientSave" data-id="" data-action="' + typeActionFormOrButton + '" class="btn btn-primary">Lưu</button>';
         html += '</div>';
         html += '</div>';
         html += '</div>';
@@ -5244,7 +5268,7 @@ function getTemplateInfoPatient(mdInfoPatientID, typeActionMdGetInfoPatient) {
                 html += '<div class="col-md-12" style="padding-top: 30px;">';
                 html += '<div class="form-group">';
                 html += '<div class="col-md-12 col-sm-12 col-xs-12" style="float:right">';
-                html += '<button id="mdMedInfoPatientSave" data-id="" data-action="' + typeActionMdGetInfoPatient + '" class="btn btn-primary">Lưu</button>';
+                html += '<button id="mdMedInfoPatientSave" data-id="" data-action="' + typeActionFormOrButton + '" class="btn btn-primary">Lưu</button>';
                 html += '</div>';
                 html += '</div>';
                 html += '</div>';
@@ -5321,7 +5345,7 @@ $('body').on('click', '#saveMdSearch', function () {
             KeyNameAPI: KeyAPI,
             KeyCodeAPI: CodeAPI,
             MethodeAPI: MethodeAPI,
-            Param: Params,
+            ParamAPI: Params,
             CardPayloadID: CardPayloadID,
             Payload: PayLoadCard,
             MessageError: MessageError,
@@ -5335,7 +5359,7 @@ $('body').on('click', '#saveMdSearch', function () {
                 console.log(data)
                 if (data != null) {
                     toastr.success('Lưu thành công');
-                    var type = elemSave.attr('data-action');//typeActionMdGetInfoPatient
+                    var type = element.attr('data-action');//typeActionMd
                     var mdDetailName = "ApiSEARCH";
                     var mdDetailID = data.ID;
                     console.log(type)
@@ -5343,6 +5367,7 @@ $('body').on('click', '#saveMdSearch', function () {
                         $("#modal_button .bt_done").trigger('click', [mdDetailID, mdDetailName]);
                     }
                     if (type == "CLICK_FORM_CARD_MODULE") {
+
                         if ($('#multi .content').length > 0) {
                             $('#multi .content').each(function (index, el) {
                                 if ($(this).attr('card') == 'module') {
@@ -5373,7 +5398,7 @@ $('body').on('click', '#saveMdSearch', function () {
     }
 })
 
-function getTemplateSearchAPI(mdSearchID, typeActionMdSearch) {
+function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
     var html = '';
     if (mdSearchID == 0 || mdSearchID == undefined) {
         typeActionMdSearch = true;
@@ -5428,7 +5453,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionMdSearch) {
         html += '            </div>';
         html += '        </div>';
         html += '        <div class="form-group">';
-        html += '            <button id="saveMdSearch" data-id="" data-action="' + typeActionMdSearch + '"  class="btn btn-primary">Lưu</button>';
+        html += '            <button id="saveMdSearch" data-id="" data-action="' + typeActionFormOrButton + '"  class="btn btn-primary">Lưu</button>';
         html += '        </div>';
         html += '    </div>';
         html += '</div>';
@@ -5441,6 +5466,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionMdSearch) {
         var urlTest = "api/module/getmdsearch";
         var svr = new AjaxCall(urlTest, params);
         svr.callServiceGET(function (data) {
+            var keySecurAPI;
             html += '  <a href="#" style="text-decoration:underline" id="module-name" data-module-search-id="'+data.ID+'">Tìm kiếm</a>';
             html += ' <div class="row">';
             html += '    <div class="col-md-12">';
@@ -5459,12 +5485,22 @@ function getTemplateSearchAPI(mdSearchID, typeActionMdSearch) {
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>';
             html += '            <div class="row" style="margin:unset;">';
-            html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
-            html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control" />';
-            html += '                </div>';
-            html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
-            html += '                    <input type="text" placeholder="2Zhldc3aq1" id="mdSearchKeyCode" class="form-control" />';
-            html += '                </div>';
+            if (data.KeyAPI != "") {
+                keySecurAPI = data.KeyAPI.split(':');
+                html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
+                html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control" value="'+keySecurAPI[0]+'"/>';
+                html += '                </div>';
+                html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
+                html += '                    <input type="text" placeholder="2Zhldc3aq1" id="mdSearchKeyCode" class="form-control" value="' + keySecurAPI[1] + '"/>';
+                html += '                </div>';
+            }else{
+                html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
+                html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control"/>';
+                html += '                </div>';
+                html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
+                html += '                    <input type="text" placeholder="2Zhldc3aq1" id="mdSearchKeyCode" class="form-control" />';
+                html += '                </div>';
+            }
             html += '            </div>';
             html += '        </div>';
             html += '        <div class="form-group">';
@@ -5492,7 +5528,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionMdSearch) {
             html += '            </div>';
             html += '        </div>';
             html += '        <div class="form-group">';
-            html += '            <button id="saveMdSearch" data-id="" data-action="' + typeActionMdSearch + '"  class="btn btn-primary">Lưu</button>';
+            html += '            <button id="saveMdSearch" data-id="" data-action="' + typeActionFormOrButton + '"  class="btn btn-primary">Lưu</button>';
             html += '        </div>';
             html += '    </div>';
             html += '</div>';

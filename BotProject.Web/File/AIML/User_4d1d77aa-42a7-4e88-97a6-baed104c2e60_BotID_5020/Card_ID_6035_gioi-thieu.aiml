@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>postback_card_6035</pattern>
+    <template>
+      test ne haha
+      <button>
+        <text>tim kiem shtt</text>
+        <module>postback_module_api_search_11</module>
+      </button>
+    </template>
+  </category>
+</aiml>

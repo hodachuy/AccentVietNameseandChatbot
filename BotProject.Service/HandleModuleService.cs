@@ -15,6 +15,7 @@ namespace BotProject.Service
         HandleResultBotViewModel HandledIsAge(string age, int botID);
         HandleResultBotViewModel HandleIsName(string name, int botID);
         HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
+        HandleResultBotViewModel HandleIsSearchAPI(string mdName,int botID, string notFound);
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
@@ -28,16 +29,19 @@ namespace BotProject.Service
         private IMdEmailService _mdEmailService;
         private IMdAgeService _mdAgeService;
         private IModuleKnowledegeService _mdKnowledegeService;
+        private IMdSearchService _mdSearchService;
 
         public HandleModuleService(IMdPhoneService mdPhoneService,
                                     IMdEmailService mdEmailService,
                                     IMdAgeService mdAgeService,
-                                    IModuleKnowledegeService mdKnowledegeService)
+                                    IModuleKnowledegeService mdKnowledegeService,
+                                    IMdSearchService mdSearchService)
         {
             _mdPhoneService = mdPhoneService;
             _mdEmailService = mdEmailService;
             _mdAgeService = mdAgeService;
             _mdKnowledegeService = mdKnowledegeService;
+            _mdSearchService = mdSearchService;
         }
         public HandleResultBotViewModel HandleIsPhoneNumber(string number, int botID)
         {
@@ -215,6 +219,42 @@ namespace BotProject.Service
             sb.AppendLine("</div>");
 
             return sb.ToString();
+        }
+
+        public HandleResultBotViewModel HandleIsSearchAPI(string mdName, int botID, string notFound)
+        {
+            HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
+            string mdSearchID = mdName.Replace(".",String.Empty).Replace("postback_module_api_search_","");
+            var mdSearchDb = _mdSearchService.GetByID(Int32.Parse(mdSearchID));
+            try
+            {
+                // Đối với module tìm kiếm , tắt mở check cho thẻ tiếp theo, khi có message error hoặc không.
+                if (!mdSearchDb.Equals(null))
+                {
+                    //rsHandle.Postback = postbackCard;
+                    if (mdName.Contains(Common.CommonConstants.ModuleName))
+                    {
+                        rsHandle.Status = false;
+                        rsHandle.Message = tempText("Bạn tên là gì?");// sau này phát triển thêm random nhiều message, tạo aiml random li(thẻ error phone)
+                        return rsHandle;
+                    }
+                    //bool isName = Regex.Match(name, CharacterPattern).Success;
+                    //if (!isName)
+                    //{
+                    //    rsHandle.Status = false;
+                    //    rsHandle.Message = tempText("Hình như không giống tên cho lắm?");
+                    //    return rsHandle;
+                    //}
+                    //rsHandle.Status = true;
+                    //rsHandle.Message = tempText("Cảm ơn bạn đã cho biết tên!");
+                    //return rsHandle;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.ToString());
+            }
+            return rsHandle;
         }
 
 
