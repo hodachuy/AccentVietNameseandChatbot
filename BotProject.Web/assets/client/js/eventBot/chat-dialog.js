@@ -391,7 +391,7 @@ function getMessageUser(text) {
                     '    <div class="_21c3">' +
                     '        <h4 class="datebreak _497p _2lpt hide"><time class="_3oh-">T6 16:52</time></h4>' +
                     '        <div class="clearfix _2a0-">' +
-                    '            <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: ' + _color + '";font-family: Segoe UI;>' +
+                    '            <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: ' + _color + 'font-family: Segoe UI;">' +
                     '                 <span>' +
                     '                      <span>' +
                     '                          ' + text + '' +

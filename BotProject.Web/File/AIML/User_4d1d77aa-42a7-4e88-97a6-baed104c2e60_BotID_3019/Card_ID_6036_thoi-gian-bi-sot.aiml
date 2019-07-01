@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6036</pattern>
+<template>
+Bạn bị sốt lâu chưa?
+<button>
+<text>1 - 3 NGÀY</text>
+<menu>postback_card_6037</menu>
+</button>
+<button>
+<text>4 - 5 NGÀY</text>
+<menu>postback_card_6037</menu>
+</button>
+</template>
+</category>
+</aiml>

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6038</pattern>
+<template>
+Bạn có thể bị:<br />- Hẹp ống cổ tay<br />- Chấn thương phần xương cổ tay<br />Tôi khuyên bạn đến BV Chấn thương
+</template>
+</category>
+</aiml>

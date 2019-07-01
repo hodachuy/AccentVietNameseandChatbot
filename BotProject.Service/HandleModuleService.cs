@@ -1,10 +1,15 @@
 ﻿using BotProject.Common.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Script.Serialization;
 
 namespace BotProject.Service
 {
@@ -15,7 +20,7 @@ namespace BotProject.Service
         HandleResultBotViewModel HandledIsAge(string age, int botID);
         HandleResultBotViewModel HandleIsName(string name, int botID);
         HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
-        HandleResultBotViewModel HandleIsSearchAPI(string mdName,int botID, string notFound);
+        HandleResultBotViewModel HandleIsSearchAPI(string mdName, string mdSearchID, string notFound);
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
@@ -221,33 +226,33 @@ namespace BotProject.Service
             return sb.ToString();
         }
 
-        public HandleResultBotViewModel HandleIsSearchAPI(string mdName, int botID, string notFound)
+        public HandleResultBotViewModel HandleIsSearchAPI(string text, string mdSearchID, string notFound)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
-            string mdSearchID = mdName.Replace(".",String.Empty).Replace("postback_module_api_search_","");
             var mdSearchDb = _mdSearchService.GetByID(Int32.Parse(mdSearchID));
             try
             {
                 // Đối với module tìm kiếm , tắt mở check cho thẻ tiếp theo, khi có message error hoặc không.
                 if (!mdSearchDb.Equals(null))
                 {
-                    //rsHandle.Postback = postbackCard;
-                    if (mdName.Contains(Common.CommonConstants.ModuleName))
+                    if (text.Contains(Common.CommonConstants.ModuleSearchAPI))
                     {
                         rsHandle.Status = false;
-                        rsHandle.Message = tempText("Bạn tên là gì?");// sau này phát triển thêm random nhiều message, tạo aiml random li(thẻ error phone)
-                        return rsHandle;
+                        rsHandle.Message = tempText(mdSearchDb.MessageStart);
                     }
-                    //bool isName = Regex.Match(name, CharacterPattern).Success;
-                    //if (!isName)
-                    //{
-                    //    rsHandle.Status = false;
-                    //    rsHandle.Message = tempText("Hình như không giống tên cho lắm?");
-                    //    return rsHandle;
-                    //}
-                    //rsHandle.Status = true;
-                    //rsHandle.Message = tempText("Cảm ơn bạn đã cho biết tên!");
-                    //return rsHandle;
+                    else
+                    {
+                        rsHandle.Status = false;
+                        rsHandle.Message = GetModuleSearchAPI(text, mdSearchDb.ParamAPI, mdSearchDb.UrlAPI, mdSearchDb.KeyAPI, mdSearchDb.MethodeAPI);
+                        if (String.IsNullOrEmpty(rsHandle.Message))
+                        {
+                            rsHandle.Message = mdSearchDb.MessageError;
+                        }
+                        if (String.IsNullOrEmpty(mdSearchDb.Payload))
+                        {
+                            rsHandle.Postback = mdSearchDb.Payload;
+                        }
+                    }                                  
                 }
             }
             catch (Exception ex)
@@ -256,7 +261,6 @@ namespace BotProject.Service
             }
             return rsHandle;
         }
-
 
         /// <summary>
         /// Template text UI BOT
@@ -288,12 +292,7 @@ namespace BotProject.Service
             sb.AppendLine("</div>");
             return sb.ToString();
         }
-        /// <summary>
-        /// Validate Phone
-        /// </summary>
-        /// <param name="phone"></param>
-        /// <param name="IsRequired"></param>
-        /// <returns></returns>
+
         private static bool ValidatePhoneNumber(string phone, bool IsRequired)
         {
             if (string.IsNullOrEmpty(phone) & !IsRequired)
@@ -322,14 +321,75 @@ namespace BotProject.Service
                     return false; // should never get here
             }
         }
-        /// <summary>
-        /// Removes all non numeric characters from a string
-        /// </summary>
-        /// <param name="phone"></param>
-        /// <returns></returns>
+
         private static string RemoveNonNumeric(string phone)
         {
             return Regex.Replace(phone, @"[^0-9]+", "");
         }
+
+        #region --DATA SOURCE API--
+        private string apiRelateQA = "/api/get_related_pairs";
+        private string ExcuteModuleSearchAPI(string NameFuncAPI, string param, string UrlAPI, string KeySecrectAPI, string Type = "Post")
+        {
+            string result = null;
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(UrlAPI);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                if (!String.IsNullOrEmpty(KeySecrectAPI))
+                {
+                    string[] key = KeySecrectAPI.Split(':');
+                    client.DefaultRequestHeaders.Add(key[0], key[1]);
+                }
+                HttpResponseMessage response = new HttpResponseMessage();
+                param = Uri.UnescapeDataString(param);
+                var dict = HttpUtility.ParseQueryString(param);
+                string json = JsonConvert.SerializeObject(dict.Cast<string>().ToDictionary(k => k, v => dict[v]));
+
+                StringContent httpContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+                try
+                {
+                    switch (Type)
+                    {
+                        case "Post":
+                            response = client.PostAsync(NameFuncAPI, httpContent).Result;
+                            break;
+                        case "Get":
+                            string requestUri = NameFuncAPI + "?" + httpContent;
+                            response = client.GetAsync(requestUri).Result;
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+                if (response.IsSuccessStatusCode)
+                {
+                    result = response.Content.ReadAsStringAsync().Result;
+                }
+            }
+            return result;
+        }
+        private string GetModuleSearchAPI(string contentText,string param, string urlAPI, string keyAPI, string methodeHttp)
+        {
+            string responseString;
+            if (String.IsNullOrEmpty(param))
+            {
+                param = "question=" + contentText;
+            }
+            responseString = ExcuteModuleSearchAPI(apiRelateQA, param, urlAPI, keyAPI, methodeHttp);
+            if (responseString != null)
+            {
+                var lstQues = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue,
+                                                         RecursionLimit = 100
+                                                       }
+                .Deserialize<List<dynamic>>(responseString);
+            }
+            return responseString;
+        }
+
+        #endregion
     }
 }

@@ -5305,7 +5305,8 @@ $('body').on('click', '#saveMdSearch', function () {
         MessageError = $('#mdSearchMessageError').val(),
         CardPayloadID = $('#mdCardSearch').val(),
         MethodeAPI = $('#mdSearchMethode').val(),
-        PayLoadCard = "postback_card_" + CardPayloadID;
+        PayLoadCard = "postback_card_" + CardPayloadID,
+        MessageStart = $('#mdSearchMessageStart').val()
     var isSuscess = true;
 
     if (Title == "") {
@@ -5349,6 +5350,7 @@ $('body').on('click', '#saveMdSearch', function () {
             CardPayloadID: CardPayloadID,
             Payload: PayLoadCard,
             MessageError: MessageError,
+            MessageStart: MessageStart
         };
         if (typeActionMdSearch) {
             var params = JSON.stringify(objMdSearch);
@@ -5441,6 +5443,12 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
         html += '            </div>';
         html += '        </div>';
         html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập lời chào</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '                <textarea id="mdSearchMessageStart" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Nhập thông tin tìm kiếm bên dưới</textarea>';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
         html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>';
         html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
         html += '                <textarea id="mdSearchMessageError" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>';
@@ -5516,9 +5524,15 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             html += '            </div>';
             html += '        </div>';
             html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập lời chào</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <textarea id="mdSearchMessageStart" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageStart + '</textarea>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '                <textarea id="mdSearchMessageError" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>';
+            html += '                <textarea id="mdSearchMessageError" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
             html += '            </div>';
             html += '        </div>';
             html += '        <div class="form-group">';

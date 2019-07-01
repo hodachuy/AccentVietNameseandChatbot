@@ -187,10 +187,10 @@ var common = {
         })
     },
     createFormBotQnA: function () {
-        var temp = function (data) {
+        var temp = function (data,botId) {
             var html = '';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link bot-qna-link" href="' + _Host + 'bot/qna/' + data.Alias + '/' + data.ID + '"><i class="fa fa-file" aria-hidden="true"></i>' + data.Name + '</a>';
+            html += '<a class="nav-link bot-qna-link" href="' + _Host + 'bot/qna?formQnAId=' + data.ID + '&botId=' + botId + '"><i class="fa fa-file" aria-hidden="true"></i>' + data.Name + '</a>';
             html += '</li>';
             return html;
         }
@@ -212,7 +212,7 @@ var common = {
             console.log(formQnA)
             var svr = new AjaxCall(urlCreateFormQnA, JSON.stringify(formQnA));
             svr.callServicePOST(function (data) {
-                var tempHtml = temp(data);
+                var tempHtml = temp(data, formQnA.BotID);
                 $('#form-bot-qna-'+formQnA.BotID).append(tempHtml);
                 $('#modalCreateBotQnAnswer').modal('hide');
             });

@@ -238,11 +238,34 @@ namespace BotProject.Web.Controllers
 
                 // Module tìm kiếm 
                 #region Module Tìm kiếm với api
-                if (text.Contains("postback_module_api_search"))
+                if (bool.Parse(_user.Predicates.grabSetting("isChkMdSearch")))
                 {
-                    var handleMdSearch = "";
+                    string mdSearchId = _user.Predicates.grabSetting("ThreadMdSearchID");
+                    var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
+                    return Json(new
+                    {
+                        message = new List<string>() { null },
+                        postback = new List<string>() { handleMdSearch.Postback },// sửa lại set trả lời nhanh (Hủy, tiếp tục)
+                        messageai = handleMdSearch.Message,
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
                 }
 
+                if (text.Contains("postback_module_api_search"))
+                {
+                    string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search", "");
+                    var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
+                    _user.Predicates.addSetting("ThreadMdSearchID", mdSearchId);
+                    _user.Predicates.addSetting("api_search_check_" + mdSearchId, "true");
+                    _user.Predicates.addSetting("isChkMdSearch", "true");
+                    return Json(new
+                    {
+                        message = new List<string>() { handleMdSearch.Message },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
                 #endregion
 
                 // Xử lý module phone
@@ -717,7 +740,7 @@ namespace BotProject.Web.Controllers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Add("x-api-key", KeyAPI);
                 HttpResponseMessage response = new HttpResponseMessage();
-                string json = JsonConvert.SerializeObject(T);
+                string json = JsonConvert.SerializeObject(T);            
                 StringContent httpContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
                 try
                 {

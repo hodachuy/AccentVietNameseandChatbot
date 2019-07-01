@@ -8,6 +8,12 @@ using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Collections.Specialized;
+using System.Dynamic;
+using System.ComponentModel;
+using System.Globalization;
+using Newtonsoft.Json;
+using System.Web;
 
 namespace Accent.ConsoleApplication
 {
@@ -25,6 +31,14 @@ namespace Accent.ConsoleApplication
 
             //quickSort(x, left, right);
             //printArray(x);
+
+            string url = "ques=haha toi biet ma&number=10&groupques=abc";
+            url = Uri.UnescapeDataString(url);
+
+            var dict = HttpUtility.ParseQueryString(url);
+            string json = JsonConvert.SerializeObject(dict.Cast<string>().ToDictionary(k => k, v => dict[v]));
+            dynamic respObj = JsonConvert.DeserializeObject<dynamic>(json);
+
             Console.OutputEncoding = Encoding.UTF8;
             string x = GetMessageTemplate("abc", "1").ToString();
             Console.WriteLine(x);
@@ -134,7 +148,16 @@ namespace Accent.ConsoleApplication
 
             Console.WriteLine();
         }
+
+        public object Parse(string valueToConvert, Type dataType)
+        {
+            TypeConverter obj = TypeDescriptor.GetConverter(dataType);
+            object value = obj.ConvertFromString(null, CultureInfo.InvariantCulture, valueToConvert);
+            return value;
+        }
+
     }
+
 
     public class MyClassBuilder
     {
