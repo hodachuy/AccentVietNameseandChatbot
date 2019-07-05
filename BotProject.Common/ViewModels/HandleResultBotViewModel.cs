@@ -11,5 +11,6 @@ namespace BotProject.Common.ViewModels
         public string Message { set; get; }
         public bool Status { set; get; }
         public string Postback { set; get; }
+        public string ResultAPI { set; get; }
     }
 }

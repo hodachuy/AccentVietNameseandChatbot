@@ -161,7 +161,7 @@ namespace BotProject.Service
         public HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
-            string mdInfoPatientID = mdName.Replace(".",String.Empty).Replace("postback_module_med_get_info_patient_", "");
+            string mdInfoPatientID = mdName.Replace(".", String.Empty).Replace("postback_module_med_get_info_patient_", "");
             var mdGetInfoPatientDb = _mdKnowledegeService.GetByMdMedInfoPatientID(Int32.Parse(mdInfoPatientID));
             if (mdGetInfoPatientDb != null)
             {
@@ -174,7 +174,7 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-        private static string TemplateOptionBot(string[] arrOpt, string title, string postback, string mdInfoPatientID,string notFound)
+        private static string TemplateOptionBot(string[] arrOpt, string title, string postback, string mdInfoPatientID, string notFound)
         {
             if (!String.IsNullOrEmpty(notFound))
             {
@@ -243,16 +243,19 @@ namespace BotProject.Service
                     else
                     {
                         rsHandle.Status = false;
-                        rsHandle.Message = GetModuleSearchAPI(text, mdSearchDb.ParamAPI, mdSearchDb.UrlAPI, mdSearchDb.KeyAPI, mdSearchDb.MethodeAPI);
-                        if (String.IsNullOrEmpty(rsHandle.Message))
+                        rsHandle.ResultAPI = GetModuleSearchAPI(text, mdSearchDb.ParamAPI, mdSearchDb.UrlAPI, mdSearchDb.KeyAPI, mdSearchDb.MethodeAPI);
+                        if (String.IsNullOrEmpty(rsHandle.ResultAPI))
                         {
-                            rsHandle.Message = mdSearchDb.MessageError;
-                        }
-                        if (String.IsNullOrEmpty(mdSearchDb.Payload))
+                            rsHandle.Message = tempText(mdSearchDb.MessageError);
+                        }else
                         {
-                            rsHandle.Postback = mdSearchDb.Payload;
+                            rsHandle.Message = "NOT_MATCH_01";
                         }
-                    }                                  
+                        if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
+                        {
+                            rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -291,6 +294,26 @@ namespace BotProject.Service
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
             return sb.ToString();
+        }
+
+        private static string tempNodeBtnModule(string payload, string titlePayload)
+        {
+            StringBuilder sbPostback = new StringBuilder();
+            sbPostback.AppendLine("<div class=\"_6biu\">");
+            sbPostback.AppendLine("                                                                    <div  class=\"_23n- form_carousel\">");
+            sbPostback.AppendLine("                                                                        <div class=\"_4u-c\">");
+            sbPostback.AppendLine("                                                                            <div index=\"0\" class=\"_a28 lst_btn_carousel\">");
+            sbPostback.AppendLine("                                                                                <div class=\"_a2e\">");
+            sbPostback.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
+            sbPostback.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + payload + "\" style=\"border-color: {{color}} color: {{color}}\">" + titlePayload + "</div>");
+            sbPostback.AppendLine(" </div>");
+            sbPostback.AppendLine("                                                                                </div>");
+            sbPostback.AppendLine("                                                                            </div>");
+            sbPostback.AppendLine("                                                                            <div class=\"_4u-f\">");
+            sbPostback.AppendLine("                                                                                <iframe aria-hidden=\"true\" class=\"_1_xb\" tabindex=\"-1\"></iframe>");
+            sbPostback.AppendLine("                                                                            </div>");
+            sbPostback.AppendLine("                                                                        </div>");
+            return sbPostback.ToString();
         }
 
         private static bool ValidatePhoneNumber(string phone, bool IsRequired)
@@ -350,41 +373,45 @@ namespace BotProject.Service
                 StringContent httpContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
                 try
                 {
-                    switch (Type)
+                    if (Type.ToUpper().Equals(Common.CommonConstants.MethodeHTTP_POST))
                     {
-                        case "Post":
-                            response = client.PostAsync(NameFuncAPI, httpContent).Result;
-                            break;
-                        case "Get":
-                            string requestUri = NameFuncAPI + "?" + httpContent;
-                            response = client.GetAsync(requestUri).Result;
-                            break;
+                        response = client.PostAsync(NameFuncAPI, httpContent).Result;
+                    }
+                    else if (Type.ToUpper().Equals(Common.CommonConstants.MethodeHTTP_GET))
+                    {
+                        string requestUri = NameFuncAPI + "?" + httpContent;
+                        response = client.GetAsync(requestUri).Result;
                     }
                 }
                 catch (Exception ex)
                 {
-                    return null;
+                    return String.Empty;
                 }
                 if (response.IsSuccessStatusCode)
                 {
                     result = response.Content.ReadAsStringAsync().Result;
+                }else
+                {
+                    result = String.Empty;
                 }
             }
             return result;
         }
-        private string GetModuleSearchAPI(string contentText,string param, string urlAPI, string keyAPI, string methodeHttp)
+        private string GetModuleSearchAPI(string contentText, string param, string urlAPI, string keyAPI, string methodeHttp)
         {
             string responseString;
             if (String.IsNullOrEmpty(param))
             {
-                param = "question=" + contentText;
+                param = "question=" + contentText + "&type=leg&number=10";
             }
             responseString = ExcuteModuleSearchAPI(apiRelateQA, param, urlAPI, keyAPI, methodeHttp);
             if (responseString != null)
             {
-                var lstQues = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue,
-                                                         RecursionLimit = 100
-                                                       }
+                var lstQues = new JavaScriptSerializer
+                {
+                    MaxJsonLength = Int32.MaxValue,
+                    RecursionLimit = 100
+                }
                 .Deserialize<List<dynamic>>(responseString);
             }
             return responseString;

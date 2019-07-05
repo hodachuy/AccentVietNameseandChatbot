@@ -328,7 +328,6 @@ function getMessageBot(text) {
                 if (resultAPI.includes("[{")) {
                     resultAPI = JSON.parse(resultAPI);
                     var data = tempModuleSearchAPI(resultAPI);
-
                     new Promise((resolve, reject) => {
                         submitMessageBot(tempTextBot('Tôi tìm thấy ' + data.count + ' câu hỏi liên quan đến câu hỏi của bạn.'), 0)
                         resolve();
@@ -338,6 +337,13 @@ function getMessageBot(text) {
                     })
                     .then(() => {
                         submitMessageBot(data.dataHtml, 1500);
+                        setTimeout(function () {
+                            if (postback !== null) {
+                                postback = postback.replace(/{{color}}/g, _color);
+                                $("#_12cd_event_button").empty().append(postback);
+                                scrollBar();
+                            }
+                        },1500)
                     });
                 } else {
                     switch (resultAPI) {
@@ -360,7 +366,7 @@ function getMessageBot(text) {
                             html = MESSAGE.ERROR_06;
                             break;
                         default:
-                            html = "SessionTimeout";
+                            html = "NOT_MATCH_01";
                             break;
                     }
                     html = tempTextBot(html);

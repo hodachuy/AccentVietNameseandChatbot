@@ -5306,7 +5306,8 @@ $('body').on('click', '#saveMdSearch', function () {
         CardPayloadID = $('#mdCardSearch').val(),
         MethodeAPI = $('#mdSearchMethode').val(),
         PayLoadCard = "postback_card_" + CardPayloadID,
-        MessageStart = $('#mdSearchMessageStart').val()
+        MessageStart = $('#mdSearchMessageStart').val(),
+        TitlePayload = $('#mdSearchTitlePayload').val()
     var isSuscess = true;
 
     if (Title == "") {
@@ -5350,7 +5351,8 @@ $('body').on('click', '#saveMdSearch', function () {
             CardPayloadID: CardPayloadID,
             Payload: PayLoadCard,
             MessageError: MessageError,
-            MessageStart: MessageStart
+            MessageStart: MessageStart,
+            TitlePayload: TitlePayload
         };
         if (typeActionMdSearch) {
             var params = JSON.stringify(objMdSearch);
@@ -5382,7 +5384,7 @@ $('body').on('click', '#saveMdSearch', function () {
                 }
             });
         } else {
-            var mdSearchID = elemSave.closest('.form-patient').eq(0).attr('data-module-search-id');
+            var mdSearchID = element.closest('.form-md-search').eq(0).attr('data-module-search-id');
             console.log(mdSearchID)
             objMdSearch.ID = mdSearchID;
             params = JSON.stringify(objMdSearch);
@@ -5404,8 +5406,8 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
     var html = '';
     if (mdSearchID == 0 || mdSearchID == undefined) {
         typeActionMdSearch = true;
-        html += '  <a href="#" style="text-decoration:underline" id="module-name" data-module-search-id="0">Tìm kiếm</a>';
-        html += ' <div class="row">';
+        html += '  <a href="#" style="text-decoration:underline" id="module-name">Tìm kiếm</a>';
+        html += ' <div class="row form-md-search" data-module-search-id="0">';
         html += '    <div class="col-md-12">';
         html += '        <div class="form-group">';
         html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
@@ -5456,6 +5458,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
         html += '        </div>';
         html += '        <div class="form-group">';
         html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
+        html += '            <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdSearchTitlePayload" class="form-control"/>';
         html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
         html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch">' + card() + '</select>';
         html += '            </div>';
@@ -5475,8 +5478,8 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
         var svr = new AjaxCall(urlTest, params);
         svr.callServiceGET(function (data) {
             var keySecurAPI;
-            html += '  <a href="#" style="text-decoration:underline" id="module-name" data-module-search-id="'+data.ID+'">Tìm kiếm</a>';
-            html += ' <div class="row">';
+            html += '  <a href="#" style="text-decoration:underline" id="module-name">Tìm kiếm</a>';
+            html += ' <div class="row form-md-search" data-module-search-id="'+data.ID+'">';
             html += '    <div class="col-md-12">';
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
@@ -5537,6 +5540,9 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             html += '        </div>';
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
+            html += '            <div class="col-md-6 col-sm-6 col-xs-6">';
+            html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdSearchTitlePayload" class="form-control" value="' + data.TitlePayload + '"/>';
+            html += '            </div>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
             html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch">' + card() + '</select>';
             html += '            </div>';
@@ -5553,6 +5559,8 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
                     $('#mdCardSearch option[value="' + data.CardPayloadID + '"]').attr('selected', 'selected');
                 }
             }, 1000)
+            loadEmojiPicker();
         });
+
     }
 }

@@ -365,6 +365,7 @@ namespace BotProject.Web.API
                     mdSearchDb.Payload = mdSearchVm.Payload;
                     mdSearchDb.CardPayloadID = mdSearchVm.CardPayloadID;
                     mdSearchDb.UrlAPI = mdSearchVm.UrlAPI;
+                    mdSearchDb.TitlePayload = mdSearchVm.TitlePayload;
                     mdSearchDb.MethodeAPI = mdSearchVm.MethodeAPI;
                     if (!String.IsNullOrEmpty(mdSearchVm.KeyCodeAPI) && !String.IsNullOrEmpty(mdSearchVm.KeyNameAPI))
                     {
@@ -402,6 +403,7 @@ namespace BotProject.Web.API
                     mdSearchDb.Title = mdSearchVm.Title;
                     mdSearchDb.Payload = mdSearchVm.Payload;
                     mdSearchDb.CardPayloadID = mdSearchVm.CardPayloadID;
+                    mdSearchDb.TitlePayload = mdSearchVm.TitlePayload;
                     mdSearchDb.UrlAPI = mdSearchVm.UrlAPI;
                     mdSearchDb.MethodeAPI = mdSearchVm.MethodeAPI;
                     if (!String.IsNullOrEmpty(mdSearchVm.KeyCodeAPI) && !String.IsNullOrEmpty(mdSearchVm.KeyNameAPI))

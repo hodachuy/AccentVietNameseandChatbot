@@ -35,6 +35,8 @@ namespace Accent.ConsoleApplication
             string url = "ques=haha toi biet ma&number=10&groupques=abc";
             url = Uri.UnescapeDataString(url);
 
+            throw new NameDuplicatedException("Tên không được trùng");
+
             var dict = HttpUtility.ParseQueryString(url);
             string json = JsonConvert.SerializeObject(dict.Cast<string>().ToDictionary(k => k, v => dict[v]));
             dynamic respObj = JsonConvert.DeserializeObject<dynamic>(json);
@@ -155,7 +157,22 @@ namespace Accent.ConsoleApplication
             object value = obj.ConvertFromString(null, CultureInfo.InvariantCulture, valueToConvert);
             return value;
         }
+        public class NameDuplicatedException : Exception
+        {
+            public NameDuplicatedException()
+            {
+            }
 
+            public NameDuplicatedException(string message)
+            : base(message)
+            {
+            }
+
+            public NameDuplicatedException(string message, Exception inner)
+            : base(message, inner)
+            {
+            }
+        }
     }
 
 

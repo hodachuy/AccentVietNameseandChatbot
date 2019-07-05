@@ -240,20 +240,27 @@ namespace BotProject.Web.Controllers
                 #region Module Tìm kiếm với api
                 if (bool.Parse(_user.Predicates.grabSetting("isChkMdSearch")))
                 {
+                    if (text.Contains("postback_card"))
+                    {
+                        _user.Predicates.addSetting("isChkMdSearch", "false");
+                        _user.Predicates.addSetting("ThreadMdSearchID", "");
+                        return chatbot(text, group, token, botId, isMdSearch);
+                    }
                     string mdSearchId = _user.Predicates.grabSetting("ThreadMdSearchID");
                     var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
+                    bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true ;                    
                     return Json(new
                     {
-                        message = new List<string>() { null },
-                        postback = new List<string>() { handleMdSearch.Postback },// sửa lại set trả lời nhanh (Hủy, tiếp tục)
-                        messageai = handleMdSearch.Message,
-                        isCheck = true
+                        message = new List<string>() { handleMdSearch.Message },
+                        postback = new List<string>() { handleMdSearch.Postback },
+                        messageai = handleMdSearch.ResultAPI,
+                        isCheck = chkAPI
                     }, JsonRequestBehavior.AllowGet);
                 }
 
                 if (text.Contains("postback_module_api_search"))
                 {
-                    string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search", "");
+                    string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
                     var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
                     _user.Predicates.addSetting("ThreadMdSearchID", mdSearchId);
                     _user.Predicates.addSetting("api_search_check_" + mdSearchId, "true");
@@ -421,8 +428,11 @@ namespace BotProject.Web.Controllers
                 // nếu aiml bot có template trả thẳng ra module k thông qua button text module
                 if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
                 {
-                    string txtModule = result.Replace("\r\n", "").Trim();
-                    return chatbot(txtModule, group, token, botId, isMdSearch);
+                    if (!result.Contains("<module>"))// k phải button module trả về
+                    {
+                        string txtModule = result.Replace("\r\n", "").Trim();
+                        return chatbot(txtModule, group, token, botId, isMdSearch);
+                    }
                 }
                 // K tìm thấy trong Rule gọi tới module tri thức
                 if (result.Contains("NOT_MATCH"))

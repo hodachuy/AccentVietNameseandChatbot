@@ -13,4 +13,20 @@
 </random>
 </template>
 </category>
+<category>
+<pattern>HI</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>HI *</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>* HI *</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>* HI</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
 </aiml>

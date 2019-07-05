@@ -11,6 +11,8 @@ namespace BotProject.Web.Models
 
         public string Title { set; get; }
 
+        public string TitlePayload { set; get; }
+
         public string Payload { set; get; }
 
         public int? CardPayloadID { set; get; }

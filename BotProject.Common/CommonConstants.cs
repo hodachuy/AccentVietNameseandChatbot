@@ -26,6 +26,10 @@ namespace BotProject.Common
         public const string ModuleEmail = "postback_module_email";
         public const string ModuleName = "postback_module_name";
         public const string ModuleSearchAPI = "postback_module_api_search";
+
+        public const string MethodeHTTP_POST = "POST";
+        public const string MethodeHTTP_GET = "GET";
+
     }
 
 
