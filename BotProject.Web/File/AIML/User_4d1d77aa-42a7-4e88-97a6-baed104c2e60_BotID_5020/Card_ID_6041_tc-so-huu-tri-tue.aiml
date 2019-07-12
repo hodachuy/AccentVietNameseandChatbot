@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <category>
+    <pattern>postback_card_6041</pattern>
+    <template>
+      postback_module_api_search_13
+    </template>
+  </category>
+  <category>
+    <pattern>module_api_searchpostback_card_6039</pattern>
+    <template>
+      <srai>postback_card_6039</srai>
+    </template>
+  </category>
+</aiml>

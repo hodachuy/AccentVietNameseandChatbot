@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6043</pattern>
+<template>
+Xin chào mừng bạn đến với tư vấn luật!<br/><br />Nếu bạn đang có trường hợp cần tư vấn chi tiết bạn vui lòng để lại thông tin số điện thoại bên dưới nhé.<br />Chúng tôi sẽ liên hệ lại sớm nhất.<br/><br />Bạn có thể hỏi tôi về các thông tin như:“vấn đề đăng ký logo"...
+<button>
+<text>☎️ Số điện thoại</text>
+<menu>postback_card_6044</menu>
+</button>
+</template>
+</category>
+</aiml>

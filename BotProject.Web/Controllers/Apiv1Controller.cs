@@ -102,7 +102,6 @@ namespace BotProject.Web.Controllers
                     _user.Predicates.addSetting(item.Name + "check", "false");
                 }
             }
-
             var lstMdGetInfoPatientDb = _mdKnowledgeService.GetAllMdKnowledgeMedInfPatientByBotID(botID).ToList();
             if (lstMdGetInfoPatientDb.Count() != 0)
             {
@@ -125,7 +124,6 @@ namespace BotProject.Web.Controllers
                     }
                 }
             }
-
             var lstMdSearchDb = _mdSearchService.GetByBotID(botID).ToList();
             if (lstMdSearchDb.Count() != 0)
             {
@@ -138,14 +136,10 @@ namespace BotProject.Web.Controllers
                     }
                 }
             }
-
-
             _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
             _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
-
             _user.Predicates.addSetting("isChkMdSearch","false");
             _user.Predicates.addSetting("ThreadMdSearchID", "");
-
             SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = _user.Predicates.Count;
             settingDic.orderedKeys = _user.Predicates.orderedKeys;
@@ -504,10 +498,8 @@ namespace BotProject.Web.Controllers
         public List<ObjQnaAPI> GetListQnaByCategory(string category)
         {
             List<ObjQnaAPI> lstQnA = new List<ObjQnaAPI>();
-
             return lstQnA;
         }
-
 
         #endregion
 

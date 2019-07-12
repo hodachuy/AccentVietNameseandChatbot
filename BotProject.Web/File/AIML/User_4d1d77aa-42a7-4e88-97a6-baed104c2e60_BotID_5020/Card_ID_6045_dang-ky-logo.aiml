@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6045</pattern>
+<template>
+Quy trình thiết kế logo bao gồm các bước sau:<br/><br />- Bước 1: Đăng ký thiết kế logo<br/><br />- Bước 2: Hồ sơ đăng ký logo công ty tại Cục Sở hữu trí tuệ<br/><br />- Bước 3: Nộp hồ sơ đăng ký logo công ty tại Cục sở hữu trí tuệ<br/><br />- Bước 4: Theo dõi đơn đăng ký logo công ty<br/><br />
+<button>
+<text>👉 Bước 1</text>
+<menu>postback_card_6046</menu>
+</button>
+<button>
+<text>👉 Bước 2</text>
+<menu>postback_card_6047</menu>
+</button>
+<button>
+<text>👉Bước 3</text>
+<menu>postback_card_6048</menu>
+</button>
+<button>
+<text>👉Bước 4</text>
+<menu>postback_card_6049</menu>
+</button>
+<button>
+<text>📝 Lệ phí đăng ký logo</text>
+<menu>postback_card_6050</menu>
+</button>
+</template>
+</category>
+</aiml>

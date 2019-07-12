@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6040</pattern>
+<template>
+Bạn vui lòng chọn lĩnh vực tra cứu hoặc tư vấn luật?
+<button>
+<text>📝 Sở hữu trí tuệ</text>
+<menu>postback_card_6041</menu>
+</button>
+<button>
+<text>📝 Thuế - phí - lệ phí</text>
+<menu>postback_card_6042</menu>
+</button>
+<button>
+<text>💼 Tư vấn luật</text>
+<menu>postback_card_6043</menu>
+</button>
+</template>
+</category>
+</aiml>

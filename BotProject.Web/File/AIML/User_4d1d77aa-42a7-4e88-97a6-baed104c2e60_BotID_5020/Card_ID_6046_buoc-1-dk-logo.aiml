@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6046</pattern>
+<template>
+Để có thể nộp hồ sơ đăng ký logo công ty tại cơ quan chức năng, khách hàng cần thiết kế logo và lựa chọn mẫu logo thích hợp để tiến hành đăng ký, khi thiết kế logo khách hàng cần lưu ý những vấn đề sau để đảm bảo logo có khả năng đăng ký.<br/><br /><br />Logo có khả năng đăng ký khi đáp ứng các điều kiện sau:<br/><br /><br />– Là dấu hiệu nhìn thấy được dưới dạng hình vẽ, hình ảnh, kể cả hình ba chiều hoặc sự kết hợp các yếu tố đó, được thể hiện bằng một hoặc nhiều mầu sắc;<br /><br/><br />– Có khả năng phân biệt (không trùng hoặc tương tự tới mức gây nhầm lẫn với logo khác) cho cùng đối tượng cung cấp dịch vụ
+<button>
+<text>👉 Xem tiếp bước 2</text>
+<postback>postback_card_6047</postback>
+</button>
+<button>
+<text>🔄 Quay về</text>
+<postback>postback_card_6035</postback>
+</button>
+</template>
+</category>
+</aiml>

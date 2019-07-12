@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6047</pattern>
+<template>
+Sau khi việc thiết kế logo được hoàn thành, khách hàng cần chuẩn bị hồ sơ cho việc đăng ký logo công ty bao gồm những tài liệu sau:<br/><br /><br />– Tờ khai đăng ký logo công ty theo mẫu của Cục sở hữu trí tuệ<br/><br /><br />– 05 mẫu logo công ty đăng ký được in trên Giấy A4 với kích thước 8cmx8cm<br/><br /><br />– Giấy giới thiệu công ty cho nhân viên đi nộp hồ sơ đăng ký logo công ty (trong trường hợp chủ sở hữu tự mình nộp đơn đăng ký) hoặc<br/><br />– Giấy ủy quyền (áp dụng trong trường hợp chủ sở hữu ủy quyền cho Công ty đại diện nộp đơn đăng ký logo)<br/><br /><br />– Chứng từ lệ phí xác nhận đã nộp phí đăng ký logo công ty<br/><br /><br />– Tài liệu khác (nếu có) phụ thuộc vào từng trường hợp cụ thể<br/>
+<button>
+<text>👉 Xem tiếp bước 3</text>
+<postback>postback_card_6048</postback>
+</button>
+<button>
+<text>🔄 Quay về</text>
+<postback>postback_card_6035</postback>
+</button>
+</template>
+</category>
+</aiml>

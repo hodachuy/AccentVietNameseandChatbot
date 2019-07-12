@@ -71,15 +71,5 @@ namespace BotProject.Web
         {
             _bot.loadAIMLFromFiles(path);
         }
-        public string getEmailCurrent(string userId)
-        {
-            string key = "email_"+ userId;
-            return _user.Predicates.grabSetting(key);
-        }
-        public void addEmailCurrent(string userId)
-        {
-            string key = "email_"+ userId;
-            _user.Predicates.addSetting(key, "true");
-        }
     }
 }

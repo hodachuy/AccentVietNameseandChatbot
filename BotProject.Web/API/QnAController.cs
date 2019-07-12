@@ -142,7 +142,7 @@ namespace BotProject.Web.API
 
         [Route("getaimlqna")]
         [HttpGet]
-        public HttpResponseMessage GetAimlQnA(HttpRequestMessage request, int formQnaID, string botAlias, string userID, int botID)
+        public HttpResponseMessage GetAimlQnA(HttpRequestMessage request, int formQnaID, string formAlias, string userID, int botID)
         {
             return CreateHttpResponse(request, () =>
             {
@@ -150,13 +150,13 @@ namespace BotProject.Web.API
                 var lstQnaGroup = _qnaService.GetListQuesGroupToAimlByFormQnAnswerID(formQnaID).ToList();
                 bool IsAiml = false;
                 // open file bot aiml
-                //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userID + "_BotID_" + botID;
+                //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"].ToString() + "User_" + userID + "_BotID_" + botID;
                 string pathFolderAIML = PathServer.PathAIML + "User_" + userID + "_BotID_" + botID;
-                string nameFolderAIML = "formQnA_ID_" + formQnaID + "_" + botAlias + ".aiml";
+                string nameFolderAIML = "formQnA_ID_" + formQnaID + "_" + formAlias + ".aiml";
                 string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
                 if (System.IO.File.Exists(pathString))
                 {
-                    File.WriteAllText(pathString, string.Empty);
+                    File.WriteAllText(pathString, String.Empty);
                     try
                     {
                         StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
@@ -250,7 +250,8 @@ namespace BotProject.Web.API
                     catch (Exception ex)
                     {
                         IsAiml = false;
-                        response = request.CreateResponse(HttpStatusCode.BadGateway, IsAiml);
+                        response = request.CreateResponse(HttpStatusCode.OK, IsAiml);
+                        return response;
                     }
                     finally
                     {

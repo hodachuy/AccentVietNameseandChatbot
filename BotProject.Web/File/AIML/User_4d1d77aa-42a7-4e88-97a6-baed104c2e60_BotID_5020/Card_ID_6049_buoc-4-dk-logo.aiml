@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6049</pattern>
+<template>
+Sau khi hồ sơ đăng ký logo công ty được nộp, Cục sở hữu trí tuệ sẽ xem xét đơn đăng ký logo công ty, đơn đăng ký sẽ trải qua các giai đoạn xét nhiệm trước khi được Cục sở hữu trí tuệ cấp Giấy chứng nhận đăng ký logo công ty<br/><br /><br />– Giai đoạn xét nhiệm hình thức: 1-2 tháng sau khi nộp đơn<br/><br /><br />– Giai đoạn đăng công báo: 1-2 tháng sau khi đơn được chấp nhận hợp lệ<br/><br /><br />– Giai đoạn xét nhiệm nội dung: 12-15 tháng sau khi đăng công báo<br/><br /><br />– Thông báo cấp văn bằng bảo hộ: 1-2 tháng sau khi có thông báo cấp văn bằng bảo hộ và chủ hở hữu nộp phí cấp văn bằng
+<button>
+<text>📝 Xem lệ phí đăng ký logo</text>
+<postback>postback_card_6050</postback>
+</button>
+<button>
+<text>🔄 Quay về</text>
+<postback>postback_card_6035</postback>
+</button>
+</template>
+</category>
+</aiml>

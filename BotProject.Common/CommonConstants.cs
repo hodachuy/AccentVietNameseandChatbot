@@ -37,6 +37,7 @@ namespace BotProject.Common
     {
         /// <summary>
         /// HttpContext.Current.Server.MapPath("~/File/Images/");
+        /// System.Web.HttpContext.Current.Server.MapPath
         /// </summary>
         public static string PathImage = HttpContext.Current.Server.MapPath("~/File/Images/");
         /// <summary>

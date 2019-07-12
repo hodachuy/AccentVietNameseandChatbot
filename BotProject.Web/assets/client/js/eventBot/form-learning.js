@@ -615,7 +615,7 @@ $(document).ready(function () {
                 } else {
                     swal({
                         title: "Error",
-                        text: "Lỗi lưu dữ liệu!",
+                        text: "Lỗi quy trình đọc dữ liệu ra file AIML!",
                         confirmButtonColor: "#ed4956",
                         type: "error"
                     });
@@ -873,7 +873,7 @@ ActionFormQnA = function () {
         var param = {
             botId: $("#botId").val(),
             formQnaID: $("#formQnaID").val(),
-            botAlias: $("#botAlias").val(),
+            formAlias: $("#formAlias").val(),
             userID: $("#userId").val()
         };
         var urlTest = "api/qna/getaimlqna";

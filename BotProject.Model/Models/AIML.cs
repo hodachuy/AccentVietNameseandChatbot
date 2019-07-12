@@ -15,8 +15,9 @@ namespace BotProject.Model.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { set; get; }
 
-        [Required]
-        public int FormQnAnswerID { set; get; }
+        public int? FormQnAnswerID { set; get; }
+
+        public int? CardID { set; get; }
 
         public int BotID { set; get; }
 
@@ -29,5 +30,7 @@ namespace BotProject.Model.Models
         public string Extension { set; get; }
 
         public string Content { set; get; }
+
+        public string UserID { set; get; }
     }
 }

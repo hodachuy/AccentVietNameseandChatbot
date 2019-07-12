@@ -1,13 +1,26 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <aiml>
-  <category>
-    <pattern>postback_card_6035</pattern>
-    <template>
-      test ne haha
-      <button>
-        <text>tim kiem shtt</text>
-        <module>postback_module_api_search_11</module>
-      </button>
-    </template>
-  </category>
+<category>
+<pattern>postback_card_6035</pattern>
+<template>
+<card>
+<image>File/Images/Card/6e07c289-fd9d-4ea7-90e0-21f7a5235ce7-banner_resize_3.jpg</image>
+<title>Hệ thống hỏi đáp pháp luật thông minh</title>
+<subtitle>Chào mừng bạn đến với hỏi đáp pháp luật!</subtitle>
+<link>
+<text>http://qa.surelrn.vn/</text>
+<url>http://qa.surelrn.vn/</url>
+</link>
+<button>
+<text>💬 Hỏi đáp pháp lý</text>
+<menu>postback_card_6040</menu>
+</button>
+<button>
+<text>🌍 Website</text>
+<url>http://qa.surelrn.vn/</url>
+</button>
+</card>
+
+</template>
+</category>
 </aiml>

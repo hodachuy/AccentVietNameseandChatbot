@@ -430,7 +430,7 @@ $(document).ready(function () {
         if (data.TemplateTexts.length != 0) {
             $.each(data.TemplateTexts, function (index, value) {
                 var tempText = '';
-                tempText += '<div class="content" card="text" data-index="' + value.Index + '"><div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="640" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">' + value.Text + '</textarea><span>633</span></div></div>';
+                tempText += '<div class="content" card="text" data-index="' + value.Index + '"><div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="1040" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">' + value.Text + '</textarea><span>1040</span></div></div>';
                 tempText += '<div class="wr_button">';
                 var arrBtn = [];
                 if (value.ButtonPostbacks.length != 0) {
@@ -2122,8 +2122,8 @@ $(document).ready(function () {
                 '</div>' +
                 '<div class="wr_title wr_title_noborder">' +
                     '<div class="wr-content-text">' +
-                        '<textarea class="content-text" placeholder="' + txtCard20 + '" maxlength="640"></textarea>' +
-                        '<span>640</span>' +
+                        '<textarea class="content-text" placeholder="' + txtCard20 + '" maxlength="1040"></textarea>' +
+                        '<span>1040</span>' +
                     '</div>' +
                 '</div>' +
                 '<div class="wr_button">' +
@@ -2657,8 +2657,8 @@ $(document).ready(function () {
     $('.content-text').autogrow();
     $('#multi').on('keyup', '.content-text', function (event) {
         var str_head = $(this).val().length;
-        $(this).siblings('span').html(640 - str_head);
-        if (str_head >= 630) {
+        $(this).siblings('span').html(1040 - str_head);
+        if (str_head >= 1030) {
             $(this).siblings('span').addClass("error");
         } else {
             $(this).siblings('span').removeClass("error");
@@ -4736,20 +4736,20 @@ function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoP
             html += '<div class="form-group">';
             html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
             html += '<div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '<textarea id="mdPhoneMsgStart" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '<textarea id="mdPhoneMsgStart" rows="5" maxlength="1040" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
             html += '</div>';
             html += '</div>';
             html += '<div class="form-group">';
             html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>';
             html += '<div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '<textarea id="mdPhoneMsgError"  maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
+            html += '<textarea id="mdPhoneMsgError"  maxlength="1040" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
             html += '</div>';
             html += '</div>';
             html += '<div class="form-group">';
             html += '<label class="control-label col-md-3 col-sm-3 col-xs-12">Xác nhận</label>';
             html += '<label class="learn_switchbot text-left mb0"><input type="checkbox" id="mdPhoneChkSwitch" class="learn_switchinput" checked><div class="learn_sliderbot learn_roundbot"></div></label>';
             html += '<div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '<textarea id="mdPhoneMsgEnd" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung xác nhận">' + data.MessageEnd + '</textarea>';
+            html += '<textarea id="mdPhoneMsgEnd" rows="5" maxlength="1040" class="form-control required" placeholder="Nhập nội dung xác nhận">' + data.MessageEnd + '</textarea>';
             html += '<select data-live-search="true" class="form-control selectKeyword checkvalid hide" id="mdPhoneCard">' + card() + '</select>';
             html += '</div>';
             html += '</div>';
@@ -5458,7 +5458,9 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
         html += '        </div>';
         html += '        <div class="form-group">';
         html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
-        html += '            <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdSearchTitlePayload" class="form-control"/>';
+        html += '            <div class="col-md-10 col-sm-10 col-xs-10">';
+        html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdSearchTitlePayload" class="form-control"/>';
+        html += '            </div>';
         html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
         html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch">' + card() + '</select>';
         html += '            </div>';
@@ -5523,7 +5525,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Param</label>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '                <input type="text" placeholder="params" id="mdSearchParam" class="form-control" />';
+            html += '                <input type="text" placeholder="params" id="mdSearchParam" class="form-control" value="' + data.ParamAPI + '"/>';
             html += '            </div>';
             html += '        </div>';
             html += '        <div class="form-group">';
@@ -5540,7 +5542,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             html += '        </div>';
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
-            html += '            <div class="col-md-6 col-sm-6 col-xs-6">';
+            html += '            <div class="col-md-10 col-sm-10 col-xs-10">';
             html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdSearchTitlePayload" class="form-control" value="' + data.TitlePayload + '"/>';
             html += '            </div>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';

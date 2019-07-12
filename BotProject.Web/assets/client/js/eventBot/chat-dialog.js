@@ -1,5 +1,5 @@
 ﻿var _color = $("#botColor").val(),
-    _srcLogo = _Host + $("#botLogo").val(),
+    _srcLogo = _Host + $("#botLogo").val(),//_Host http://113.161.108.36
     _isActiveIntroduct = false;
 
 var MESSAGE = {
@@ -397,7 +397,7 @@ function getMessageUser(text) {
                     '    <div class="_21c3">' +
                     '        <h4 class="datebreak _497p _2lpt hide"><time class="_3oh-">T6 16:52</time></h4>' +
                     '        <div class="clearfix _2a0-">' +
-                    '            <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: ' + _color + 'font-family: Segoe UI;">' +
+                    '            <div class="_4xko _4xks" tabindex="0" role="button" style="background-color: ' + _color + 'font-family: Segoe UI Light;">' +
                     '                 <span>' +
                     '                      <span>' +
                     '                          ' + text + '' +
@@ -427,7 +427,7 @@ function tempTextBot(text) {
 '                <div class="messages">' +
                       '<div class="_21c3">' +
 '                          <div class="clearfix _2a0-">' +
-'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240); font-family: Segoe UI;">' +
+'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240); font-family: Segoe UI Light;">' +
 '                                   <span>' +
 '                                       <span>' + text + '</span>' +
 '                                   </span>' +
@@ -450,7 +450,7 @@ function tempDidYouMeanBot(text) {
 '                <div class="messages">' +
                       '<div class="_21c3">' +
 '                          <div class="clearfix _2a0-">' +
-'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="font-style:italic;font-family: Segoe UI">' +
+'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="font-style:italic;font-family: Segoe UI Light">' +
 '                                   <span>' +
 '                                       <span> Ý bạn là: ' + text + '</span>' +
 '                                   </span>' +

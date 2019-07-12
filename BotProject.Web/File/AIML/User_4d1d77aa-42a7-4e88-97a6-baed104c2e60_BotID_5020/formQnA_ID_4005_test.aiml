@@ -14,6 +14,86 @@
 </template>
 </category>
 <category>
+<pattern>ĐĂNG KÝ LOGO</pattern>
+<template><srai>postback_card_6045</srai></template>
+</category>
+<category>
+<pattern>ĐĂNG KÝ LOGO *</pattern>
+<template><srai>postback_card_6045</srai></template>
+</category>
+<category>
+<pattern>* ĐĂNG KÝ LOGO *</pattern>
+<template><srai>postback_card_6045</srai></template>
+</category>
+<category>
+<pattern>* ĐĂNG KÝ LOGO</pattern>
+<template><srai>postback_card_6045</srai></template>
+</category>
+<category>
+<pattern>QUY TRÌNH * LOGO</pattern>
+<template><srai>postback_card_6045</srai></template>
+</category>
+<category>
+<pattern>QUY TRÌNH * LOGO *</pattern>
+<template><srai>postback_card_6045</srai></template>
+</category>
+<category>
+<pattern>* QUY TRÌNH * LOGO *</pattern>
+<template><srai>postback_card_6045</srai></template>
+</category>
+<category>
+<pattern>* QUY TRÌNH * LOGO</pattern>
+<template><srai>postback_card_6045</srai></template>
+</category>
+<category>
+<pattern>HELLO</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>HELLO *</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>* HELLO *</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>* HELLO</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>CHÀO</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>CHÀO *</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>* CHÀO *</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>* CHÀO</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>XIN CHÀO</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>XIN CHÀO *</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>* XIN CHÀO *</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>* XIN CHÀO</pattern>
+<template><srai>postback_card_6035</srai></template>
+</category>
+<category>
 <pattern>HI</pattern>
 <template><srai>postback_card_6035</srai></template>
 </category>
@@ -28,5 +108,37 @@
 <category>
 <pattern>* HI</pattern>
 <template><srai>postback_card_6035</srai></template>
+</category>
+<category>
+<pattern>BYE</pattern>
+<template>Tạm biệt bạn!</template>
+</category>
+<category>
+<pattern>BYE *</pattern>
+<template>Tạm biệt bạn!</template>
+</category>
+<category>
+<pattern>* BYE *</pattern>
+<template>Tạm biệt bạn!</template>
+</category>
+<category>
+<pattern>* BYE</pattern>
+<template>Tạm biệt bạn!</template>
+</category>
+<category>
+<pattern>CHÀO TẠM BIỆT</pattern>
+<template>Tạm biệt bạn!</template>
+</category>
+<category>
+<pattern>CHÀO TẠM BIỆT *</pattern>
+<template>Tạm biệt bạn!</template>
+</category>
+<category>
+<pattern>* CHÀO TẠM BIỆT *</pattern>
+<template>Tạm biệt bạn!</template>
+</category>
+<category>
+<pattern>* CHÀO TẠM BIỆT</pattern>
+<template>Tạm biệt bạn!</template>
 </category>
 </aiml>

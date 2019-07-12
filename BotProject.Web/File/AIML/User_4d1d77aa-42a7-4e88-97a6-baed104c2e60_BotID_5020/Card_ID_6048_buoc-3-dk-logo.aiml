@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6048</pattern>
+<template>
+Sau khi đã chuẩn bị xong hồ sơ đăng ký logo công ty, khách hàng in hồ sơ thành 02 bộ và trực tiếp đến Cục sở hữu trí tuệ Việt Nam có trụ sở chính đặt tại 386 đường Nguyễn Trãi, quận Thanh Xuân, Hà Nội hoặc 02 văn phòng đại diện của Cục SHTT tại Đà Nẵng và Hồ Chí Minh để nộp hồ sơ, 01 bản lưu hồ sơ có dấu xác nhận và mã vạch của Cục Sở hữu trí tuệ sẽ được trả lại cho người đi nộp để làm căn cứ xác nhận hồ sơ đã được nộp và được hưởng quyền ưu tiên từ ngày nộp hồ sơ.
+<button>
+<text>👉 Xem tiếp bước 4</text>
+<postback>postback_card_6049</postback>
+</button>
+<button>
+<text>🔄 Quay về</text>
+<postback>postback_card_6035</postback>
+</button>
+</template>
+</category>
+</aiml>

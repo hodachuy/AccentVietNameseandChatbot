@@ -328,6 +328,10 @@
     <Compile Include="Migrations\201907020430588_UpdateMdSearchTitlePayload.Designer.cs">
       <DependentUpon>201907020430588_UpdateMdSearchTitlePayload.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907120935018_UpdateAIML.cs" />
+    <Compile Include="Migrations\201907120935018_UpdateAIML.Designer.cs">
+      <DependentUpon>201907120935018_UpdateAIML.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLRepository.cs" />
@@ -569,6 +573,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907020430588_UpdateMdSearchTitlePayload.resx">
       <DependentUpon>201907020430588_UpdateMdSearchTitlePayload.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907120935018_UpdateAIML.resx">
+      <DependentUpon>201907120935018_UpdateAIML.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

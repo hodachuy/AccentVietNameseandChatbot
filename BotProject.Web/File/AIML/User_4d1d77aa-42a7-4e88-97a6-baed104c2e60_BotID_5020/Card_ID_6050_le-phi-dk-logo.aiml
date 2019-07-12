@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+<category>
+<pattern>postback_card_6050</pattern>
+<template>
+Chi phí đăng ký logo công ty:<br/><br />Chi phí đăng ký logo độc quyền sẽ bao gồm 02 loại chi phí là (i) lệ phí, chi phí nhà nước (ii) chi phí dịch vụ đăng ký. Cụ thể như sau:<br/><br /><br />– Lệ phí, chi phí đăng ký logo độc quyền:<br />+ Chi phí tra cứu khả năng đăng ký: 250.000 VND(áp dụng tối đa cho 01 nhãn hiệu/01 nhóm sản phẩm dịch vụ)<br/><br /><br />+ Chi phí nộp đơn đăng ký: 1.000.000 VND (áp dụng tối đa cho 01 nhãn hiệu/01 nhóm sản phẩm dịch vụ)<br/><br /><br />+ Chi phí cấp văn bằng bảo hộ (giấy chứng nhận đăng ký độc quyền): 360.000 VND<br/><br /><br />Ngoài ra, có thể phát sinh thêm chi phí cho nhóm dịch vụ/sản phẩm tăng thêm hoặc sản phẩm/dịch vụ tăng thêm trong cùng 1 nhóm<br/><br /><br />– Phí dịch vụ đăng ký logo công ty<br />Chi phí dịch vụ đăng ký logo cũng được tính theo các giai đoạn của công việc bao gồm (i) tra cứu (ii) nộp đơn (iii) cấp văn bằng bảo hộ.
+</template>
+</category>
+</aiml>
