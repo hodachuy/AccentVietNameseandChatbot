@@ -20,10 +20,13 @@ namespace BotProject.Web.API
     public class QnAController : ApiControllerBase
     {
         private IQnAService _qnaService;
-        public QnAController(IErrorService errorService, IQnAService qnaService) : base(errorService)
+        private IAIMLFileService _aimlService;
+        public QnAController(IErrorService errorService,
+                            IQnAService qnaService,
+                            IAIMLFileService aimlService) : base(errorService)
         {
             _qnaService = qnaService;
-
+            _aimlService = aimlService;
         }
 
         [Route("create")]
@@ -151,30 +154,49 @@ namespace BotProject.Web.API
                 bool IsAiml = false;
                 // open file bot aiml
                 //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"].ToString() + "User_" + userID + "_BotID_" + botID;
-                string pathFolderAIML = PathServer.PathAIML + "User_" + userID + "_BotID_" + botID;
-                string nameFolderAIML = "formQnA_ID_" + formQnaID + "_" + formAlias + ".aiml";
+                string pathFolderAIML = PathServer.PathAIML;
+                string nameFolderAIML = "User_" + userID + "_BotID_" + botID + "\\formQnA_ID_" + formQnaID + "_" + formAlias + ".aiml";
                 string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
-                if (System.IO.File.Exists(pathString))
-                {
-                    File.WriteAllText(pathString, String.Empty);
+
+                var aimlDb = _aimlService.GetByFormId(formQnaID);
+                StringBuilder sbFormDb = new StringBuilder();
+                //if (System.IO.File.Exists(pathString))
+                //{
+                    //File.WriteAllText(pathString, String.Empty);
                     try
                     {
-                        StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
-                        sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                        sw.WriteLine("<aiml>");
-                        sw.WriteLine("<category>");
-                        sw.WriteLine("<pattern>*</pattern>");
-                        sw.WriteLine("<template>");
-                        sw.WriteLine("<random>");
-                        sw.WriteLine("<li> NOT_MATCH_01 </li>");
-                        sw.WriteLine("<li> NOT_MATCH_02 </li>");
-                        sw.WriteLine("<li> NOT_MATCH_03 </li>");
-                        sw.WriteLine("<li> NOT_MATCH_04 </li>");
-                        sw.WriteLine("<li> NOT_MATCH_05 </li>");
-                        sw.WriteLine("<li> NOT_MATCH_06 </li>");
-                        sw.WriteLine("</random>");
-                        sw.WriteLine("</template>");
-                        sw.WriteLine("</category>");
+                        //StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
+                        //////sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                        ////sw.WriteLine("<aiml>");
+                        //sw.WriteLine("<category>");
+                        //sw.WriteLine("<pattern>*</pattern>");
+                        //sw.WriteLine("<template>");
+                        //sw.WriteLine("<random>");
+                        //sw.WriteLine("<li> NOT_MATCH_01 </li>");
+                        //sw.WriteLine("<li> NOT_MATCH_02 </li>");
+                        //sw.WriteLine("<li> NOT_MATCH_03 </li>");
+                        //sw.WriteLine("<li> NOT_MATCH_04 </li>");
+                        //sw.WriteLine("<li> NOT_MATCH_05 </li>");
+                        //sw.WriteLine("<li> NOT_MATCH_06 </li>");
+                        //sw.WriteLine("</random>");
+                        //sw.WriteLine("</template>");
+                        //sw.WriteLine("</category>");
+
+                        sbFormDb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                        sbFormDb.AppendLine("<aiml>");
+                        sbFormDb.AppendLine("<category>");
+                        sbFormDb.AppendLine("<pattern>*</pattern>");
+                        sbFormDb.AppendLine("<template>");
+                        sbFormDb.AppendLine("<random>");
+                        sbFormDb.AppendLine("<li> NOT_MATCH_01 </li>");
+                        sbFormDb.AppendLine("<li> NOT_MATCH_02 </li>");
+                        sbFormDb.AppendLine("<li> NOT_MATCH_03 </li>");
+                        sbFormDb.AppendLine("<li> NOT_MATCH_04 </li>");
+                        sbFormDb.AppendLine("<li> NOT_MATCH_05 </li>");
+                        sbFormDb.AppendLine("<li> NOT_MATCH_06 </li>");
+                        sbFormDb.AppendLine("</random>");
+                        sbFormDb.AppendLine("</template>");
+                        sbFormDb.AppendLine("</category>");
                         if (lstQnaGroup != null && lstQnaGroup.Count() != 0)
                         {
                             int total = lstQnaGroup.Count();
@@ -209,7 +231,8 @@ namespace BotProject.Web.API
                                     sb.AppendLine("</random>");
                                     sb.AppendLine("</template>");
                                     sb.AppendLine("</category>");
-                                    sw.WriteLine(sb.ToString());
+                                    //sw.WriteLine(sb.ToString());
+                                    sbFormDb.AppendLine(sb.ToString());
                                 }
                                 else
                                 {                                    
@@ -235,17 +258,43 @@ namespace BotProject.Web.API
                                         {
                                             tempAnswer = postbackAnswer;
                                         }
-                                        sw.WriteLine("<category>");
-                                        sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
-                                        sw.WriteLine("<template>"+ tempAnswer + "</template>");
-                                        sw.WriteLine("</category>");
+                                        //sw.WriteLine("<category>");
+                                        //sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
+                                        //sw.WriteLine("<template>"+ tempAnswer + "</template>");
+                                        //sw.WriteLine("</category>");
+
+                                        sbFormDb.AppendLine("<category>");
+                                        sbFormDb.AppendLine("<pattern>" + itemQ.ContentText.ToUpper() + "</pattern>");
+                                        sbFormDb.AppendLine("<template>" + tempAnswer + "</template>");
+                                        sbFormDb.AppendLine("</category>");
                                     }
                                 }
                             }
                         }
-                        sw.WriteLine("</aiml>");
-                        sw.Close();
+                        //sw.WriteLine("</aiml>");
+                        sbFormDb.AppendLine("</aiml>");
+                        //sw.Close();
                         IsAiml = true;
+
+                        if (aimlDb == null)
+                        {
+                            AIMLFile aimlFileDb = new AIMLFile();
+                            aimlFileDb.UserID = userID;
+                            aimlFileDb.BotID = botID;
+                            aimlFileDb.Src = nameFolderAIML;
+                            aimlFileDb.FormQnAnswerID = formQnaID;
+                            aimlFileDb.Extension = "aiml";
+                            aimlFileDb.Name = "Form-"+ formAlias;
+                            aimlFileDb.Content = sbFormDb.ToString();
+                            _aimlService.Create(aimlFileDb);
+                            _aimlService.Save();
+                        }
+                        else
+                        {
+                            aimlDb.Content = sbFormDb.ToString();
+                            _aimlService.Update(aimlDb);
+                            _aimlService.Save();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -257,7 +306,7 @@ namespace BotProject.Web.API
                     {
 
                     }
-                }
+                //}
                 response = request.CreateResponse(HttpStatusCode.OK, IsAiml);
                 return response;
             });

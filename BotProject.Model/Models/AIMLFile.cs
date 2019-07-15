@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-    [Table("AIMLs")]
-    public class AIML
+    [Table("AIMLFiles")]
+    public class AIMLFile
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -7,6 +7,8 @@ using System.Web.Hosting;
 using System.Threading.Tasks;
 using BotProject.Common;
 using BotProject.Web.Models;
+using BotProject.Service;
+using System.Xml;
 
 namespace BotProject.Web
 {
@@ -70,6 +72,19 @@ namespace BotProject.Web
         public void loadAIMLFromFiles(string path)
         {
             _bot.loadAIMLFromFiles(path);
+        }
+
+        public void loadAIMLFromDatabase(IEnumerable<AIMLViewModel> lstAIML)
+        {
+            if(lstAIML.Count() != 0)
+            {
+                foreach(var item in lstAIML)
+                {
+                    XmlDocument doc = new XmlDocument();
+                    doc.LoadXml(item.Content);
+                    _bot.loadAIMLFromXML(doc, item.Src);
+                }
+            }
         }
     }
 }

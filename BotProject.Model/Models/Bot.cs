@@ -35,7 +35,7 @@ namespace BotProject.Model.Models
 
         public virtual IEnumerable<QuestionGroup> QuestionGroups { set; get; }
 
-        public virtual IEnumerable<AIML> AIMLs { set; get; }
+        public virtual IEnumerable<AIMLFile> AIMLFiles { set; get; }
 
 		public virtual IEnumerable<FormQuestionAnswer> FormQuestionAnswers { set; get; }
 	}

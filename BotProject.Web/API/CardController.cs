@@ -28,12 +28,14 @@ namespace BotProject.Web.API
 		private IFileCardService _fileCardService;
         private IMdSearchService _mdSearchService;
         private IModuleKnowledegeService _mdKnowledgeService;
+        private IAIMLFileService _aimlService;
         public CardController(IErrorService errorService,
 							ICardService cardService,
 							IImageService imageService,
 							ICommonCardService commonCardService,
                             IModuleKnowledegeService mdKnowledgeService,
                             IFileCardService fileCardService,
+                            IAIMLFileService aimlService,
                             IMdSearchService mdSearchService) : base(errorService)
 		{
 			_cardService = cardService;
@@ -43,7 +45,7 @@ namespace BotProject.Web.API
             _mdKnowledgeService = mdKnowledgeService;
             _fileCardService = fileCardService;
             _mdSearchService = mdSearchService;
-
+            _aimlService = aimlService;
 
         }
 
@@ -117,14 +119,13 @@ namespace BotProject.Web.API
 						//string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + cardVm.UserID + "_BotID_" + cardVm.BotID;
                         string pathFolderAIML = PathServer.PathAIML + "User_" + cardVm.UserID + "_BotID_" + cardVm.BotID;
                         string nameFolderAIML = "Card_ID_" + cardDb.ID + "_" + cardDb.Alias + ".aiml";
-						string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
-						if (!System.IO.File.Exists(pathString))
+						string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);                
+                        if (!System.IO.File.Exists(pathString))
 						{
 							try
 							{
 								//Open the File
 								StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
-								//sw.WriteLine("Hello World!!");
 								sw.Close();
 							}
 							catch (Exception e)
@@ -135,7 +136,6 @@ namespace BotProject.Web.API
 							{
 
 							}
-
 						}
 						else
 						{
@@ -143,7 +143,6 @@ namespace BotProject.Web.API
 							response = request.CreateErrorResponse(HttpStatusCode.BadRequest, message);
 							return response;
 						}
-
 					}
 					else
 					{
@@ -175,7 +174,6 @@ namespace BotProject.Web.API
 						//    _fileCardService.Save();
 						//}
 					}
-
 					//xác định index của template => đánh số index trên div class="content" card="text" 
 					if (cardVm.CardContents != null && cardVm.CardContents.Count() != 0)
 					{
@@ -426,7 +424,6 @@ namespace BotProject.Web.API
 				return response;
 			});
 		}
-
 		[Route("getaimlcard")]
 		[HttpGet]
 		public HttpResponseMessage GetAimlCard(HttpRequestMessage request, int cardId, string userId)
@@ -438,69 +435,99 @@ namespace BotProject.Web.API
 				var card = _commonCardService.GetFullDetailCard(cardId);
                 // open file card aiml
                 //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userId + "_BotID_" + card.BotID;
-                string pathFolderAIML = PathServer.PathAIML + "User_" + userId + "_BotID_" + card.BotID;
-                string nameFolderAIML = "Card_ID_" + card.ID + "_" + card.Alias + ".aiml";
+                string pathFolderAIML = PathServer.PathAIML;
+                string nameFolderAIML = "User_" + userId + "_BotID_" + card.BotID + "\\Card_ID_" + card.ID + "_" + card.Alias + ".aiml";
 				string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
-				if (System.IO.File.Exists(pathString))
-				{
-					File.WriteAllText(pathString, string.Empty);
+
+                var aimlDb = _aimlService.GetByCardId(cardId);
+
+                StringBuilder sbAIML = new StringBuilder();         
+
+				//if (System.IO.File.Exists(pathString))
+				//{
+					//File.WriteAllText(pathString, string.Empty);
 					try
 					{
-						StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
-						sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-						sw.WriteLine("<aiml>");
-						sw.WriteLine("<category>");
-						sw.WriteLine("<pattern>"+card.PatternText+"</pattern>");
-						sw.WriteLine("<template>");
+						//StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
+                        sbAIML.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                        sbAIML.AppendLine("<aiml>");
+                        sbAIML.AppendLine("<category>");
+                        sbAIML.AppendLine("<pattern>" + card.PatternText + "</pattern>");
+                        sbAIML.AppendLine("<template>");
+
+                        //sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+						//sw.WriteLine("<aiml>");
+						//sw.WriteLine("<category>");
+						//sw.WriteLine("<pattern>"+card.PatternText+"</pattern>");
+						//sw.WriteLine("<template>");
 						if(card.TemplateTexts != null && card.TemplateTexts.Count() != 0)
 						{
 							var lstTemplateText = card.TemplateTexts;
 							foreach(var item in lstTemplateText)
 							{
-								// text
-								sw.WriteLine(""+item.Text+"");
+                                // text
+                                sbAIML.AppendLine("" + item.Text + "");
+
+                                //sw.WriteLine(""+item.Text+"");
 								if (item.ButtonPostbacks != null && item.ButtonPostbacks.Count() != 0)
 								{
 									var lstButtonPostbacks = item.ButtonPostbacks;
 									foreach(var itemBtnPostback in lstButtonPostbacks)
 									{
-										sw.WriteLine("<button>");
-										sw.WriteLine("<text>"+itemBtnPostback.Title+"</text>");
-										sw.WriteLine("<menu>" + itemBtnPostback.Payload + "</menu>");
-										sw.WriteLine("</button>");
-									}
+										//sw.WriteLine("<button>");
+										//sw.WriteLine("<text>"+itemBtnPostback.Title+"</text>");
+										//sw.WriteLine("<menu>" + itemBtnPostback.Payload + "</menu>");
+										//sw.WriteLine("</button>");
+
+                                        sbAIML.AppendLine("<button>");
+                                        sbAIML.AppendLine("<text>" + itemBtnPostback.Title + "</text>");
+                                        sbAIML.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
+                                        sbAIML.AppendLine("</button>");
+                                    }
 								}
 								if (item.ButtonLinks != null && item.ButtonLinks.Count() != 0)
 								{
 									var lstButtonLinks = item.ButtonLinks;
 									foreach (var itemBtnLink in lstButtonLinks)
 									{
-										sw.WriteLine("<button>");
-										sw.WriteLine("<text>" + itemBtnLink.Title + "</text>");
-										sw.WriteLine("<url>" + itemBtnLink.Url + "</url>");
-										sw.WriteLine("</button>");
-									}
+										//sw.WriteLine("<button>");
+										//sw.WriteLine("<text>" + itemBtnLink.Title + "</text>");
+										//sw.WriteLine("<url>" + itemBtnLink.Url + "</url>");
+										//sw.WriteLine("</button>");
+
+                                        sbAIML.AppendLine("<button>");
+                                        sbAIML.AppendLine("<text>" + itemBtnLink.Title + "</text>");
+                                        sbAIML.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                        sbAIML.AppendLine("</button>");
+                                    }
 								}
                                 if (item.ButtonModules != null && item.ButtonModules.Count() != 0)
                                 {
                                     var lstButtonModules = item.ButtonModules;
                                     foreach (var itemBtnModule in lstButtonModules)
                                     {
-                                        sw.WriteLine("<button>");
-                                        sw.WriteLine("<text>" + itemBtnModule.Title + "</text>");
-                                        if(itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
+                                        //sw.WriteLine("<button>");
+                                        //sw.WriteLine("<text>" + itemBtnModule.Title + "</text>");
+
+                                        sbAIML.AppendLine("<button>");
+                                        sbAIML.AppendLine("<text>" + itemBtnModule.Title + "</text>");
+                                        if (itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
                                         {
-                                            sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                            sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                            //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
                                         }                                   
                                         else if (itemBtnModule.MdSearchID != null && itemBtnModule.MdSearchID != 0)
                                         {
-                                            sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                            sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                            //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
                                         }
                                         else
                                         {
-                                            sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
+                                            sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "</module>");
+                                            //sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
                                         }
-                                        sw.WriteLine("</button>");
+                                        //sw.WriteLine("</button>");
+                                        sbAIML.AppendLine("</button>");
                                     }
                                 }
                             }
@@ -514,11 +541,14 @@ namespace BotProject.Web.API
                                 {
                                     var lstTemGnrItem = item.TemplateGenericItems;
                                     StringBuilder sb = new StringBuilder();
-                                    foreach(var itemGnr in lstTemGnrItem)
+                                    StringBuilder sbAIMLChild = new StringBuilder();
+                                    foreach (var itemGnr in lstTemGnrItem)
                                     {
+                                        sbAIMLChild.AppendLine("<card>");
                                         sb.AppendLine("<card>");
                                         if (!String.IsNullOrEmpty(itemGnr.Image))
                                         {
+                                            sbAIMLChild.AppendLine("<image>" + itemGnr.Image + "</image>");
                                             sb.AppendLine("<image>" + itemGnr.Image + "</image>");
                                         }
                                         sb.AppendLine("<title>"+itemGnr.Title+"</title>");
@@ -527,7 +557,14 @@ namespace BotProject.Web.API
                                         sb.AppendLine("<text>"+ itemGnr.Url+"</text>");
                                         sb.AppendLine("<url>" + itemGnr.Url + "</url>");
                                         sb.AppendLine("</link>");
-                                        if(itemGnr.ButtonPostbacks != null && itemGnr.ButtonPostbacks.Count() != 0)
+
+                                        sbAIMLChild.AppendLine("<title>" + itemGnr.Title + "</title>");
+                                        sbAIMLChild.AppendLine("<subtitle>" + itemGnr.SubTitle + "</subtitle>");
+                                        sbAIMLChild.AppendLine("<link>");
+                                        sbAIMLChild.AppendLine("<text>" + itemGnr.Url + "</text>");
+                                        sbAIMLChild.AppendLine("<url>" + itemGnr.Url + "</url>");
+                                        sbAIMLChild.AppendLine("</link>");
+                                        if (itemGnr.ButtonPostbacks != null && itemGnr.ButtonPostbacks.Count() != 0)
                                         {
                                             var lstButtonPostbacks = itemGnr.ButtonPostbacks;
                                             foreach (var itemBtnPostback in lstButtonPostbacks)
@@ -536,6 +573,11 @@ namespace BotProject.Web.API
                                                 sb.AppendLine("<text>" + itemBtnPostback.Title + "</text>");
                                                 sb.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
                                                 sb.AppendLine("</button>");
+
+                                                sbAIMLChild.AppendLine("<button>");
+                                                sbAIMLChild.AppendLine("<text>" + itemBtnPostback.Title + "</text>");
+                                                sbAIMLChild.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
+                                                sbAIMLChild.AppendLine("</button>");
                                             }
                                         }
                                         if (itemGnr.ButtonLinks != null && itemGnr.ButtonLinks.Count() != 0)
@@ -547,6 +589,11 @@ namespace BotProject.Web.API
                                                 sb.AppendLine("<text>" + itemBtnLink.Title + "</text>");
                                                 sb.AppendLine("<url>" + itemBtnLink.Url + "</url>");
                                                 sb.AppendLine("</button>");
+
+                                                sbAIMLChild.AppendLine("<button>");
+                                                sbAIMLChild.AppendLine("<text>" + itemBtnLink.Title + "</text>");
+                                                sbAIMLChild.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                                sbAIMLChild.AppendLine("</button>");
                                             }
                                         }
                                         if (itemGnr.ButtonModules != null && itemGnr.ButtonModules.Count() != 0)
@@ -554,36 +601,50 @@ namespace BotProject.Web.API
                                             var lstButtonModules = itemGnr.ButtonModules;
                                             foreach (var itemBtnModule in lstButtonModules)
                                             {
+                                                sbAIMLChild.AppendLine("<button>");
+                                                sbAIMLChild.AppendLine("<text>" + itemBtnModule.Title + "</text>");
+
                                                 sb.AppendLine("<button>");
                                                 sb.AppendLine("<text>" + itemBtnModule.Title + "</text>");
                                                 if (itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
                                                 {
-                                                    sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                                    sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                                    //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
                                                 }   
                                                 else if (itemBtnModule.MdSearchID != null && itemBtnModule.MdSearchID != 0)
                                                 {
-                                                    sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                                    sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                                    //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
                                                 }
                                                 else
                                                 {
-                                                    sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
+                                                    sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "</module>");
+                                                    //sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
                                                 }
                                                 sb.AppendLine("</button>");
+                                                sbAIMLChild.AppendLine("</button>");
                                             }
                                         }
                                         sb.AppendLine("</card>");
+                                        sbAIMLChild.AppendLine("</card>");
                                     }
 
                                     if (lstTemGnrItem.Count() > 1)
                                     {
                                         //carousel
-                                        sw.WriteLine("<carousel>");
-                                        sw.WriteLine(sb.ToString());
-                                        sw.WriteLine("</carousel>");
-                                    }else
+                                        //sw.WriteLine("<carousel>");
+                                        //sw.WriteLine(sb.ToString());
+                                        //sw.WriteLine("</carousel>");
+
+                                        sbAIML.AppendLine("<carousel>");
+                                        sbAIML.AppendLine(sbAIMLChild.ToString());
+                                        sbAIML.AppendLine("</carousel>");
+                                    }
+                                    else
                                     {
                                         //card
-                                        sw.WriteLine(sb.ToString());
+                                        //sw.WriteLine(sb.ToString());
+                                        sbAIML.AppendLine(sbAIMLChild.ToString());
                                     }
                                 }
                             }
@@ -592,7 +653,8 @@ namespace BotProject.Web.API
                         {
                             foreach(var itemImg in card.Images)
                             {
-                                sw.WriteLine("<image>"+itemImg.Url+"</image>");
+                                sbAIML.AppendLine("<image>" + itemImg.Url + "</image>");
+                                //sw.WriteLine("<image>"+itemImg.Url+"</image>");
                             }
                         }
                         if (card.ModuleFollowCards != null && card.ModuleFollowCards.Count() != 0)
@@ -608,7 +670,8 @@ namespace BotProject.Web.API
                                 {
                                     patternText = patternText + "_" + itemMdFollowCards.MdSearchID;
                                 }
-                                sw.WriteLine(patternText);
+                                sbAIML.AppendLine(patternText);
+                                //sw.WriteLine(patternText);
                             }
                         }
                         if (card.QuickReplys != null && card.QuickReplys.Count() != 0)
@@ -616,14 +679,22 @@ namespace BotProject.Web.API
                             var lstQuickReply = card.QuickReplys;
                             foreach(var itemQ in lstQuickReply)
                             {
-                                sw.WriteLine("<button>");
-                                sw.WriteLine("<text>" + itemQ.Title + "</text>");
-                                sw.WriteLine("<postback>" + itemQ.Payload + "</postback>");
-                                sw.WriteLine("</button>");
+                                //sw.WriteLine("<button>");
+                                //sw.WriteLine("<text>" + itemQ.Title + "</text>");
+                                //sw.WriteLine("<postback>" + itemQ.Payload + "</postback>");
+                                //sw.WriteLine("</button>");
+
+                                sbAIML.AppendLine("<button>");
+                                sbAIML.AppendLine("<text>" + itemQ.Title + "</text>");
+                                sbAIML.AppendLine("<postback>" + itemQ.Payload + "</postback>");
+                                sbAIML.AppendLine("</button>");
                             }
                         }
-						sw.WriteLine("</template>");
-						sw.WriteLine("</category>");
+						//sw.WriteLine("</template>");
+						//sw.WriteLine("</category>");
+
+                        sbAIML.AppendLine("</template>");
+                        sbAIML.AppendLine("</category>");
 
                         if (card.ModuleFollowCards != null && card.ModuleFollowCards.Count() != 0)
                         {
@@ -634,12 +705,19 @@ namespace BotProject.Web.API
                                     var mdGetInfoPatientDb = _mdKnowledgeService.GetByMdMedInfoPatientID(itemMdFollowCards.ModuleInfoPatientID ?? default(int));
                                     if (!String.IsNullOrEmpty(mdGetInfoPatientDb.Payload))
                                     {
-                                        sw.WriteLine("<category>");
-                                        sw.WriteLine("<pattern>module_patient_" + mdGetInfoPatientDb.Payload + "</pattern>");
-                                        sw.WriteLine("<template>");
-                                        sw.WriteLine("<srai>" + mdGetInfoPatientDb.Payload + "</srai>");
-                                        sw.WriteLine("</template>");
-                                        sw.WriteLine("</category>");
+                                        //sw.WriteLine("<category>");
+                                        //sw.WriteLine("<pattern>module_patient_" + mdGetInfoPatientDb.Payload + "</pattern>");
+                                        //sw.WriteLine("<template>");
+                                        //sw.WriteLine("<srai>" + mdGetInfoPatientDb.Payload + "</srai>");
+                                        //sw.WriteLine("</template>");
+                                        //sw.WriteLine("</category>");
+
+                                        sbAIML.AppendLine("<category>");
+                                        sbAIML.AppendLine("<pattern>module_patient_" + mdGetInfoPatientDb.Payload + "</pattern>");
+                                        sbAIML.AppendLine("<template>");
+                                        sbAIML.AppendLine("<srai>" + mdGetInfoPatientDb.Payload + "</srai>");
+                                        sbAIML.AppendLine("</template>");
+                                        sbAIML.AppendLine("</category>");
                                     }
                                 }
                                 if (itemMdFollowCards.MdSearchID != null && itemMdFollowCards.MdSearchID != 0)
@@ -647,20 +725,46 @@ namespace BotProject.Web.API
                                     var mdSearchDb = _mdSearchService.GetByID(itemMdFollowCards.MdSearchID ?? default(int));
                                     if (!String.IsNullOrEmpty(mdSearchDb.Payload))
                                     {
-                                        sw.WriteLine("<category>");
-                                        sw.WriteLine("<pattern>module_api_search" + mdSearchDb.Payload + "</pattern>");
-                                        sw.WriteLine("<template>");
-                                        sw.WriteLine("<srai>" + mdSearchDb.Payload + "</srai>");
-                                        sw.WriteLine("</template>");
-                                        sw.WriteLine("</category>");
+                                        //sw.WriteLine("<category>");
+                                        //sw.WriteLine("<pattern>module_api_search" + mdSearchDb.Payload + "</pattern>");
+                                        //sw.WriteLine("<template>");
+                                        //sw.WriteLine("<srai>" + mdSearchDb.Payload + "</srai>");
+                                        //sw.WriteLine("</template>");
+                                        //sw.WriteLine("</category>");
+
+                                        sbAIML.AppendLine("<category>");
+                                        sbAIML.AppendLine("<pattern>module_api_search" + mdSearchDb.Payload + "</pattern>");
+                                        sbAIML.AppendLine("<template>");
+                                        sbAIML.AppendLine("<srai>" + mdSearchDb.Payload + "</srai>");
+                                        sbAIML.AppendLine("</template>");
+                                        sbAIML.AppendLine("</category>");
                                     }
                                 }
                             }
                         }
+                        sbAIML.AppendLine("</aiml>");
+                        //sw.WriteLine("</aiml>");
+						//sw.Close();
 
-                        sw.WriteLine("</aiml>");
-						sw.Close();
-					}
+                        if (aimlDb == null)
+                        {
+                            AIMLFile aimlFileDb = new AIMLFile();
+                            aimlFileDb.CardID = card.ID;
+                            aimlFileDb.UserID = userId;
+                            aimlFileDb.BotID = card.BotID;
+                            aimlFileDb.Src = nameFolderAIML;
+                            aimlFileDb.Extension = "aiml";
+                            aimlFileDb.Name = card.Name;
+                            aimlFileDb.Content = sbAIML.ToString();
+                            _aimlService.Create(aimlFileDb);
+                            _aimlService.Save();
+                        }else
+                        {
+                            aimlDb.Content = sbAIML.ToString();
+                            _aimlService.Update(aimlDb);
+                            _aimlService.Save();
+                        }
+                    }
 					catch (Exception e)
 					{
 
@@ -670,7 +774,7 @@ namespace BotProject.Web.API
 
 					}
 
-				}
+				//}
 				response = request.CreateResponse(HttpStatusCode.OK, card);
 				return response;
 			});

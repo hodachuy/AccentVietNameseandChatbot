@@ -21,11 +21,12 @@ namespace BotProject.Web.API
     public class FormQnAController : ApiControllerBase
     {
 		private IQnAService _qnaService;
-		public FormQnAController(IErrorService errorService, IQnAService qnaService) : base(errorService)
+		public FormQnAController(IErrorService errorService,
+                                IQnAService qnaService
+                                ) : base(errorService)
         {
 			_qnaService = qnaService;
-
-		}
+        }
 
 		[Route("create")]
 		[HttpPost]
@@ -44,7 +45,8 @@ namespace BotProject.Web.API
                     string pathFolderAIML = PathServer.PathAIML + "User_" + formQnAVm.UserID + "_BotID_" + formQnAVm.BotID;
                     string nameFolderAIML = "formQnA_ID_" + formQnADb.ID + "_" + formQnADb.Alias + ".aiml";
 					string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
-					if (!System.IO.File.Exists(pathString))
+
+                    if (!System.IO.File.Exists(pathString))
 					{
                         try
                         {

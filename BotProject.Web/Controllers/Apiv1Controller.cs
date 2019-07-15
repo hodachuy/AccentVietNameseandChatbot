@@ -1,6 +1,7 @@
 ﻿using AIMLbot;
 using AutoMapper;
 using BotProject.Common;
+using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Models;
@@ -37,7 +38,7 @@ namespace BotProject.Web.Controllers
         private IModuleKnowledegeService _mdKnowledgeService;
         private IMdSearchService _mdSearchService;
         private IErrorService _errorService;
-
+        private IAIMLFileService _aimlFileService;
         //private Bot _bot;
         private User _user;
 
@@ -47,7 +48,8 @@ namespace BotProject.Web.Controllers
                                 IHandleModuleServiceService handleMdService,
                                 IModuleService mdService,
                                 IMdSearchService mdSearchService,
-                                IModuleKnowledegeService mdKnowledgeService)
+                                IModuleKnowledegeService mdKnowledgeService,
+                                IAIMLFileService aimlFileService)
         {
             _errorService = errorService;
             _elastic = new ElasticSearch();
@@ -58,6 +60,7 @@ namespace BotProject.Web.Controllers
             _mdService = mdService;
             _mdKnowledgeService = mdKnowledgeService;
             _mdSearchService = mdSearchService;
+            _aimlFileService = aimlFileService;
             _botService = BotService.BotInstance;
         }
 
@@ -74,6 +77,14 @@ namespace BotProject.Web.Controllers
             var botDb = _botDbService.GetByID(botID);
             var settingDb = _settingService.GetSettingByBotID(botID);
             var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
+
+            //string nameBotAIML = "User_" + token + "_BotID_" + botId;
+            //string fullPathAIML = pathAIML + nameBotAIML;
+            //_botService.loadAIMLFromFiles(fullPathAIML);
+
+            var lstAIML = _aimlFileService.GetByBotId(botID);
+            var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+            _botService.loadAIMLFromDatabase(lstAIMLVm);
 
             UserBotViewModel userBot = new UserBotViewModel();
             userBot.ID = Guid.NewGuid().ToString();
@@ -153,12 +164,12 @@ namespace BotProject.Web.Controllers
 
         public JsonResult chatbot(string text, string group, string token, string botId, bool isMdSearch)
         {
-            string nameBotAIML = "User_" + token + "_BotID_" + botId;
-            string fullPathAIML = pathAIML + nameBotAIML;
+            //string nameBotAIML = "User_" + token + "_BotID_" + botId;
+            //string fullPathAIML = pathAIML + nameBotAIML;
+            //_botService.loadAIMLFromFiles(fullPathAIML);
             int valBotID = Int32.Parse(botId);
             try
             {
-                _botService.loadAIMLFromFiles(fullPathAIML);
                 if (!String.IsNullOrEmpty(text))
                 {
                     text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
@@ -576,7 +587,7 @@ namespace BotProject.Web.Controllers
                 totalRow = lstData[0].Total;
             }
 
-            var paginationSet = new PaginationSet<Question>()
+            var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
             {
                 Items = lstData,
                 Page = page,
@@ -600,7 +611,7 @@ namespace BotProject.Web.Controllers
 
             var lstData = _elastic.Search(text);
 
-            var paginationSet = new PaginationSet<Question>()
+            var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
             {
                 Items = lstData,
                 Page = 1,

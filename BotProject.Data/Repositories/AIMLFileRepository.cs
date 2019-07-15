@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace BotProject.Data.Repositories
 {
-    public interface IAIMLRepository : IRepository<AIML>
+    public interface IAIMLFileRepository : IRepository<AIMLFile>
     {
     }
 
-    public class AIMLRepository : RepositoryBase<AIML>, IAIMLRepository
+    public class AIMLFileRepository : RepositoryBase<AIMLFile>, IAIMLFileRepository
     {
-        public AIMLRepository(IDbFactory dbFactory) : base(dbFactory)
+        public AIMLFileRepository(IDbFactory dbFactory) : base(dbFactory)
         {
         }
     }

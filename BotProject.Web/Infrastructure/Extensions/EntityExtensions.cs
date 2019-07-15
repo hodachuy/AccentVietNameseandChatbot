@@ -22,14 +22,14 @@ namespace BotProject.Web.Infrastructure.Extensions
             bot.UserID = botVm.UserID;
             bot.Status = botVm.Status;
         }
-		public static void UpdateFormQnA(this FormQuestionAnswer formQnA, FormQuestionAnswerViewModel formQnAVm)
-		{
+        public static void UpdateFormQnA(this FormQuestionAnswer formQnA, FormQuestionAnswerViewModel formQnAVm)
+        {
             formQnA.ID = formQnAVm.ID;
             formQnA.Name = formQnAVm.Name;
             formQnA.Alias = formQnAVm.Alias;
             formQnA.BotID = formQnAVm.BotID;
             formQnA.Status = formQnAVm.Status;
-		}
+        }
 
         #region Question-Answer-Group
         public static void UpdateQuestionGroup(this QuestionGroup qGroup, QuestionGroupViewModel qGroupVm)
@@ -39,14 +39,14 @@ namespace BotProject.Web.Infrastructure.Extensions
             qGroup.IsKeyword = qGroupVm.IsKeyWord;
             qGroup.FormQuestionAnswerID = qGroupVm.FormQuestionAnswerID;
             qGroup.BotID = qGroupVm.BotID;
-			qGroup.CreatedDate = DateTime.Now;
+            qGroup.CreatedDate = DateTime.Now;
         }
 
         public static void UpdateQuestion(this Question ques, QuestionViewModel quesVm)
         {
             ques.ID = quesVm.ID;
             ques.Index = quesVm.Index;
-			ques.QuestionGroupID = quesVm.QuestionGroupID;
+            ques.QuestionGroupID = quesVm.QuestionGroupID;
             ques.IsThatStar = false;
             ques.ContentText = quesVm.ContentText.Trim();
         }
@@ -55,8 +55,8 @@ namespace BotProject.Web.Infrastructure.Extensions
         {
             ques.ID = quesVm.ID;
             ques.Index = quesVm.Index;
-			ques.QuestionGroupID = quesVm.QuestionGroupID;
-			ques.IsThatStar = quesVm.IsThatStar;
+            ques.QuestionGroupID = quesVm.QuestionGroupID;
+            ques.IsThatStar = quesVm.IsThatStar;
             ques.ContentText = quesVm.ContentText.Trim() + " *";
         }
 
@@ -66,7 +66,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             ques.Index = quesVm.Index;
             ques.QuestionGroupID = quesVm.QuestionGroupID;
             ques.IsThatStar = quesVm.IsThatStar;
-            ques.ContentText ="* " + quesVm.ContentText.Trim() + " *";
+            ques.ContentText = "* " + quesVm.ContentText.Trim() + " *";
         }
 
         public static void UpdateQuestionIsStar3(this Question ques, QuestionViewModel quesVm)
@@ -83,8 +83,8 @@ namespace BotProject.Web.Infrastructure.Extensions
             answer.ID = answerVm.ID;
             answer.Index = answerVm.Index;
             answer.CardPayload = answerVm.CardPayload;
-			answer.QuestionGroupID = answerVm.QuestionGroupID;
-			answer.CardID = answerVm.CardID;
+            answer.QuestionGroupID = answerVm.QuestionGroupID;
+            answer.CardID = answerVm.CardID;
             answer.ContentText = String.IsNullOrEmpty(answerVm.ContentText) == true ? "" : HttpUtility.HtmlDecode(answerVm.ContentText.Trim());
         }
         #endregion
@@ -162,7 +162,8 @@ namespace BotProject.Web.Infrastructure.Extensions
             if (quickReply.CardPayloadID != null)
             {
                 quickReply.Payload = CommonConstants.PostBackCard + quickReply.CardPayloadID;
-            }else
+            }
+            else
             {
                 quickReply.Payload = "";
             }
@@ -214,7 +215,7 @@ namespace BotProject.Web.Infrastructure.Extensions
         }
         #endregion
 
-        #region
+        #region Module
         public static void UpdateModule(this Module module, ModuleViewModel moduleVm)
         {
             module.BotID = moduleVm.BotID;
@@ -224,6 +225,21 @@ namespace BotProject.Web.Infrastructure.Extensions
             module.Type = moduleVm.Type;
             module.Name = moduleVm.Name;
             module.Payload = moduleVm.Payload;
+        }
+        #endregion
+
+        #region AIML
+        public static void UpdateAIML(this AIMLFile aiml, AIMLViewModel aimlVm)
+        {
+            aiml.BotID = aimlVm.BotID;
+            aiml.FormQnAnswerID = aimlVm.FormQnAnswerID;
+            aiml.CardID = aimlVm.CardID;
+            aiml.ID = aimlVm.ID;
+            aiml.Name = aimlVm.Name;
+            aiml.Src = aimlVm.Src;
+            aiml.Extension = aimlVm.Extension;
+            aiml.Content = aimlVm.Content;
+            aiml.UserID = aimlVm.UserID;
         }
         #endregion
     }

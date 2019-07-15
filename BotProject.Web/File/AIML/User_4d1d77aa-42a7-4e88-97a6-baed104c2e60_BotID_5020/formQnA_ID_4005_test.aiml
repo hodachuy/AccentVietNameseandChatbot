@@ -13,6 +13,19 @@
 </random>
 </template>
 </category>
+
+  <category>
+    <pattern>TÔI TÊN *</pattern>
+    <template>
+      BẠN TÊN <set name="attribute"><star/></set>
+    </template>
+  </category>
+  <category>
+    <pattern>BIẾT CHƯA</pattern>
+    <template>
+      BIET ROI BẠN TÊN <get name="attribute"/>
+    </template>
+  </category>
 <category>
 <pattern>ĐĂNG KÝ LOGO</pattern>
 <template><srai>postback_card_6045</srai></template>

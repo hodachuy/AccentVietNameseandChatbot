@@ -332,9 +332,13 @@
     <Compile Include="Migrations\201907120935018_UpdateAIML.Designer.cs">
       <DependentUpon>201907120935018_UpdateAIML.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907150314327_UpdateAIML1.cs" />
+    <Compile Include="Migrations\201907150314327_UpdateAIML1.Designer.cs">
+      <DependentUpon>201907150314327_UpdateAIML1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\AIMLRepository.cs" />
+    <Compile Include="Repositories\AIMLFileRepository.cs" />
     <Compile Include="Repositories\AnswerRepository.cs" />
     <Compile Include="Repositories\ApplicationGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationRoleGroupRepository.cs" />
@@ -576,6 +580,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907120935018_UpdateAIML.resx">
       <DependentUpon>201907120935018_UpdateAIML.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907150314327_UpdateAIML1.resx">
+      <DependentUpon>201907150314327_UpdateAIML1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

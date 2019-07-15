@@ -28,7 +28,7 @@ namespace BotProject.Data
         public DbSet<ButtonPostback> ButtonPostbacks { set; get; }
         public DbSet<ButtonModule> ButtonModules { set; get; }
         public DbSet<ButtonCheck> ButtonChecks { set; get; }
-        public DbSet<AIML> AIMLs { set; get; }
+        public DbSet<AIMLFile> AIMLFiles { set; get; }
         public DbSet<SystemConfig> SystemConfigs { set; get; }
         public DbSet<VisitorStatistic> VisitorStatistics { set; get; }
         public DbSet<Error> Errors { set; get; }
