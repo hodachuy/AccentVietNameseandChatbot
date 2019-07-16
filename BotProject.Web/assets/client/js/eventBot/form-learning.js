@@ -615,7 +615,7 @@ $(document).ready(function () {
                 } else {
                     swal({
                         title: "Error",
-                        text: "Lỗi quy trình đọc dữ liệu ra file AIML!",
+                        text: "Lỗi lưu dữ liệu.",
                         confirmButtonColor: "#ed4956",
                         type: "error"
                     });
