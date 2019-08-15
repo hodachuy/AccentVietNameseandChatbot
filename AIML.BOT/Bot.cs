@@ -1034,7 +1034,7 @@ namespace AIMLbot
 							if(childNode.InnerText != ".")
 							{
 								//html = childNode.InnerText;
-								sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); font-family: Segoe UI Light;\">");
+								sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); font-family: Segoe UI Light;\">");
 								sb.AppendLine("     <span>");
 								sb.AppendLine("         <span>" + childNode.InnerText + "</span>");
 								sb.AppendLine("     </span>");
@@ -1064,7 +1064,7 @@ namespace AIMLbot
                                 case "br":
                                     break;
                                 default:
-									sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240);font-family: Segoe UI Light; \">");
+									sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240);font-family: Segoe UI Light; \">");
 									sb.AppendLine(tagHtml.Body);
 									sb.AppendLine("</div>");
 									break;

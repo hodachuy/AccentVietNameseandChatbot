@@ -254,12 +254,13 @@
   <ItemGroup>
     <Compile Include="API\GroupCardController.cs" />
     <Compile Include="API\ModuleCategoryController.cs" />
+    <Compile Include="API\ModuleSearchEngineController.cs" />
     <Compile Include="API\ModuleController.cs" />
     <Compile Include="API\SettingController.cs" />
     <Compile Include="API\WebhookController.cs" />
+    <Compile Include="API_Mobile\MessageController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />
-    <Compile Include="Controllers\ModuleCategoryController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
     <Compile Include="API\FormQnAController.cs" />
@@ -309,6 +310,7 @@
     <Compile Include="Models\GroupCardViewModel.cs" />
     <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
+    <Compile Include="Models\MdAreaViewModel.cs" />
     <Compile Include="Models\MdSearchViewModel.cs" />
     <Compile Include="Models\ModuleFollowCardViewModel.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatientViewModel.cs" />
@@ -354,7 +356,7 @@
     <Content Include="assets\client\js\common.js" />
     <Content Include="assets\client\js\helper\callServiceHelper.js" />
     <Content Include="assets\client\js\moduleBot\lstModuleBot.js" />
-    <Content Include="assets\client\js\moduleCategory\search.js" />
+    <Content Include="assets\client\js\moduleSearchEngine\search.js" />
     <Content Include="assets\client\js\searchEngineQnA.js" />
     <Content Include="assets\client\js\setting.js" />
     <Content Include="assets\client\libs\ace\ace.js" />
@@ -931,10 +933,10 @@
     <Content Include="Views\SearchEngine\Index.cshtml" />
     <Content Include="Views\AccentVN\Index.cshtml" />
     <Content Include="Views\Bot\Setting.cshtml" />
-    <Content Include="Views\ModuleCategory\Search.cshtml" />
     <Content Include="Views\Bot\FormChatSetting.cshtml" />
     <Content Include="Views\Bot\Module.cshtml" />
     <Content Include="Views\Bot\QnA.cshtml" />
+    <Content Include="Views\Bot\BotSearchEngine.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

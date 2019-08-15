@@ -21,13 +21,42 @@ var common = {
         common.registerEvents();
         common.createBot();
         common.createFormBotQnA();
+        common.eventNavbar();
+    },
+    eventNavbar: function () {
+        $(document).ready(function () {
+            $('#' + sessionStorage.getItem("nav-active")).attr('aria-expanded', 'true');
+            $('#' + sessionStorage.getItem("nav-active")).next().addClass('show');
+            $('#' + sessionStorage.getItem("nav-active")).css('color','white')
+        })
+        $('body').on('click', 'li.nav-item-bot', function (e) {
+            $('.nav-item-bot').each(function (index) {
+                $(this).children().eq(0).next().removeClass('show');
+                $(this).children().eq(0).removeClass('collapsed');
+                $(this).children().eq(0).attr('aria-expanded', 'false');
+                $(this).children().eq(0).css('color', '#7a80b4')
+            })
+            var navBotID = $(this).children().eq(0).attr('id');
+            sessionStorage.setItem("nav-active", navBotID);
+            $(this).children().eq(0).css('color', 'white');
+        })
+        $('body').on('click', 'li.nav-item-cog', function (e) {
+            sessionStorage.setItem("nav-active", "");
+            $('.nav-item-bot').each(function (index) {
+                $(this).children().eq(0).next().removeClass('show');
+                $(this).children().eq(0).removeClass('collapsed');
+                $(this).children().eq(0).attr('aria-expanded', 'false');
+                $(this).children().eq(0).css('color', '#7a80b4')
+            })
+        })
     },
     registerEvents: function () {
         $('#btnLogout').off('click').on('click', function (e) {
             e.preventDefault();
             $('#frmLogout').submit();
         });
-        $('body').on('click', '.btn-form-deploy', function () {
+        $('body').on('click', '.btn-form-deploy', function (e) {
+            e.stopPropagation();
             var urlApp = _Host + "static/js/app.js";
             var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
             var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
@@ -128,20 +157,20 @@ var common = {
     createBot: function () {
         var temp = function (data) {
             var html = '';
-            html += '<li class="nav-item">';
-            html += '<a class="nav-link" id="dialog-bot" data-id="'+data.ID+'" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-' + data.ID + '" aria-controls="submenu-' + data.ID + '">';
+            html += '<li class="nav-item nav-item-bot">';
+            html += '<a class="nav-link collapsed" id="nav-bot-id-' + data.ID + '" data-id="' + data.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-' + data.ID + '" aria-controls="submenu-' + data.ID + '">';
             html += '<i class="fa fa fa-robot" aria-hidden="true"></i> ' + data.Name.toUpperCase() + '';
             html += '</a>';
             html += '<div id="submenu-' + data.ID + '" class="collapse submenu" style="">';
             html += '<ul class="nav flex-column">';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="'+_Host+'bot/' + data.Alias + '/' + data.ID + '/cardcategory"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
+            html += '<a class="nav-link" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/cardcategory?botName=' + data.Name + '"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
+            html += '<a class="nav-link" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module?botName=' + data.Name + '"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '"><i class="fa fa-recycle"></i>Huấn luyện bot';
+            html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-recycle"></i>Huấn luyện bot';
             html +=                '<span style="float: right;color: lightgray;cursor: pointer;">';
             html +=                    '<i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>';
             html +=                '</span>';
@@ -150,6 +179,9 @@ var common = {
             html +=                '<ul class="nav flex-column" id="form-bot-qna-' + data.ID + '">';
             html +=                '</ul>';
             html +=             '</div>';
+            html += '</li>';
+            html += '<li class="nav-item">';
+            html += '<a class="nav-link" href="' + _Host + 'bot/searchengine/' + data.Alias + '/' + data.ID + '?botName=' + data.Name + '"><i class="fa fa-search" aria-hidden="true"></i>Search Engineer</a>';
             html += '</li>';
             html += '<li class="nav-item">';
             html += '<a class="nav-link" href="' + _Host + 'bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
@@ -187,18 +219,20 @@ var common = {
         })
     },
     createFormBotQnA: function () {
-        var temp = function (data,botId) {
+        var temp = function (data,botId,botName) {
             var html = '';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link bot-qna-link" href="' + _Host + 'bot/qna?formQnAId=' + data.ID + '&botId=' + botId + '"><i class="fa fa-file" aria-hidden="true"></i>' + data.Name + '</a>';
+            html += '<a class="nav-link bot-qna-link" href="' + _Host + 'bot/qna?formQnAId=' + data.ID + '&botId=' + botId + '&botName='+botName+'"><i class="fa fa-file" aria-hidden="true" style="display:unset"></i>' + data.Name + '</a>';
             html += '</li>';
             return html;
         }
         $('body').on('click', '#btnCreateBotQnAnswer', function () {
             var botID = $(this).attr('data-botId');
+            var botName = $(this).attr('data-botName');
             $('#txtBotQnAnswerName').val('');
             $('#modalCreateBotQnAnswer').modal('show');
             $("#bot-botQnA-id").val(botID);
+            $("#bot-botQnA-name").val(botName);
         })
         $('body').on('click', '#btnSaveBotQnA', function () {
             var formName = $('#txtBotQnAnswerName').val();
@@ -212,7 +246,7 @@ var common = {
             console.log(formQnA)
             var svr = new AjaxCall(urlCreateFormQnA, JSON.stringify(formQnA));
             svr.callServicePOST(function (data) {
-                var tempHtml = temp(data, formQnA.BotID);
+                var tempHtml = temp(data, formQnA.BotID, $("#bot-botQnA-name").val());
                 $('#form-bot-qna-'+formQnA.BotID).append(tempHtml);
                 $('#modalCreateBotQnAnswer').modal('hide');
             });

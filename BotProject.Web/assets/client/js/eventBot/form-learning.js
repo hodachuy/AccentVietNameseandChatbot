@@ -135,7 +135,7 @@ $(document).ready(function () {
                         '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>' +
                     '</div>' +
                     '<div class="row">' +
-                        '<div class="col-lg-6 userSay">' +
+                        '<div class="col-lg-5 userSay">' +
                             '<label>Người dùng nói</label>' +
                             '<div class="input-group">' +
                                 '<ul class="tags checkvalid">' +
@@ -149,7 +149,7 @@ $(document).ready(function () {
                                 '</span>' +
                             '</div>' +
                         '</div>' +
-                        '<div class="col-lg-6 botReply">' +
+                        '<div class="col-lg-5 botReply">' +
                             '<label>Bot trả lời với&nbsp;</label>' +
                             '<label class="learn_switchbot">' +
                                 '<input type="checkbox" class="learn_switchinput" checked="">' +
@@ -171,6 +171,12 @@ $(document).ready(function () {
                             '</div>' +
                             '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden"><i class="icon-plus22"></i> ' + txtbt + '</button>' +
                         '</div>' +
+                        '<div class="col-lg-2 metaTarget">'+
+                            '<label>Target</label>'+
+                            '<div class="input-group">'+
+                                '<input type="text" class="target-field" data-target-id="">'+
+                            '</div>'+
+                        '</div>'+
                     '</div>' +
                 '</div>' +
             '</div>';
@@ -228,31 +234,31 @@ $(document).ready(function () {
 
     $('body').on('click', '.randomText', function (event) {
         if ($(this).is(':checked')) {
-            var size = $(this).parents('.col-lg-6').find('.bt').length;
+            var size = $(this).parents('.col-lg-5').find('.bt').length;
             if (size < 5) {
-                $(this).parents('.col-lg-6').find('.btn').removeClass('hidden');
+                $(this).parents('.col-lg-5').find('.btn').removeClass('hidden');
             }
             if (size == 1) {
-                $(this).parents('.col-lg-6').find('.rmText').hide();
+                $(this).parents('.col-lg-5').find('.rmText').hide();
             }
             else {
-                $(this).parents('.col-lg-6').find('.rmText').show();
+                $(this).parents('.col-lg-5').find('.rmText').show();
             }
-            $(this).parents('.col-lg-6').find('.bt').show();
-            $(this).parents('.col-lg-6').find('.wrbutton').attr('indexbt', size);
+            $(this).parents('.col-lg-5').find('.bt').show();
+            $(this).parents('.col-lg-5').find('.wrbutton').attr('indexbt', size);
         } else {
-            $(this).parents('.col-lg-6').find('.btn').addClass('hidden');
-            $(this).parents('.col-lg-6').find('.bt').hide();
-            $(this).parents('.col-lg-6').find('.bt').eq(0).show();
-            $(this).parents('.col-lg-6').find('.wrbutton').attr('indexbt', 1);
-            $(this).parents('.col-lg-6').find('.rmText').hide();
+            $(this).parents('.col-lg-5').find('.btn').addClass('hidden');
+            $(this).parents('.col-lg-5').find('.bt').hide();
+            $(this).parents('.col-lg-5').find('.bt').eq(0).show();
+            $(this).parents('.col-lg-5').find('.wrbutton').attr('indexbt', 1);
+            $(this).parents('.col-lg-5').find('.rmText').hide();
         }
     });
 
     $('body').on('click', '.btn-rounded', function (event) {
         var panel = $(this).parents('.panel-flat').attr('indexpanel');
         var bt = $(this).siblings('.wrbutton').attr('indexbt');
-        $(this).parents('.col-lg-6').find('.rmText').show();
+        $(this).parents('.col-lg-5').find('.rmText').show();
         if (bt <= 4) {
             var str = '<div class="bt" data-answer-id="">' +
                     '<label class="mt6">Hoặc </label>' +
@@ -277,7 +283,7 @@ $(document).ready(function () {
             $(this).parents('.wrbutton').find('.rmText').hide();
         }
         $(this).parents('.wrbutton').attr('indexbt', parseInt(si) - 1);
-        $(this).parents('.col-lg-6').find('.btn').removeClass('hidden');
+        $(this).parents('.col-lg-5').find('.btn').removeClass('hidden');
         // nếu xóa phần tử đầu tiên
         if ($(this).parents('.bt').index() == 0) {
             var $labelSwitchIdx1Clone = $(this).parents('.wrbutton').find('.bt').eq(1).find('.learn_switchbot').eq(0).clone();
@@ -297,7 +303,7 @@ $(document).ready(function () {
         if ($(this).parents('.wrbutton').length > 0) {
             elParent = $(this).parents('.bt');
         } else {
-            elParent = $(this).parents('.col-lg-6').find('.wrbutton .bt').eq(0);
+            elParent = $(this).parents('.col-lg-5').find('.wrbutton .bt').eq(0);
         }
         if ($(this).is(':checked')) {
             vt = $(this).parents('.panel-flat').attr('indexpanel');
@@ -539,6 +545,9 @@ $(document).ready(function () {
                 var quesGroupId = $(this).attr('data-quesgroup-id');
                 var userSays = [];
                 var userExactly = $(this).find('.userSay .styled').is(':checked');
+                var targetText = $(this).find('.metaTarget').eq(0).find('input').val();
+                console.log(targetText)
+                console.log($(this).find('.metaTarget'))
                 //userExactly = userExactly ? 1 : 0;
                 $(this).find('.tags .addedTag').each(function (index1, el1) {
                     var question = {
@@ -547,7 +556,8 @@ $(document).ready(function () {
                         'QuestionGroupID': quesGroupId,
                         'CodeSymbol': $(el1).children('input').attr('data-ques-symbol'),
                         'ID': $(el1).children('input').attr('data-ques-id'),
-                        'Index': index1
+                        'Index': index1,
+                        'Target': targetText
                     }
                     userSays.push(question);
                 })
@@ -666,6 +676,7 @@ ActionFormQnA = function () {
             var itemGroupQnA = data[i];
             var grQnAnswerID = itemGroupQnA.ID;
             var index = i + 1;
+            var targetText = "";
 
             html += '<div class="panel panel-flat" indexpanel="' + index + '"  data-quesgroup-id="' + grQnAnswerID + '">';
             html += '<div class="panel-body">';
@@ -675,7 +686,7 @@ ActionFormQnA = function () {
             html += '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>';
             html += '</div>';
             html += '<div class="row">';
-            html += '<div class="col-lg-6 userSay">';
+            html += '<div class="col-lg-5 userSay">';
             html += '<label>Người dùng nói</label>';
             html += '<div class="input-group">';
             html += '<ul class="tags checkvalid">';
@@ -683,6 +694,7 @@ ActionFormQnA = function () {
                 var lstQuestion = itemGroupQnA.Questions;
                 $.each(lstQuestion, function (index, value) {
                     html += '<li class="addedTag">' + value.ContentText + '<span class="tagRemove">x</span><input type="hidden" value="' + value.ContentText + '" data-ques-id="' + value.ID + '" data-ques-symbol="' + value.CodeSymbol + '"></li>';
+                    targetText = value.Target;
                 })
             }
             html += '<li class="tagAdd taglist">';
@@ -698,7 +710,7 @@ ActionFormQnA = function () {
             html += '</span>';
             html += '</div>';
             html += '</div>';
-            html += '<div class="col-lg-6 botReply">';
+            html += '<div class="col-lg-5 botReply">';
             html += '<label>Bot trả lời với&nbsp;</label>';
             if (itemGroupQnA.Answers.length != 0 && itemGroupQnA.Answers.length == 1) {
                 var itemAnswer = itemGroupQnA.Answers[0];
@@ -834,11 +846,17 @@ ActionFormQnA = function () {
                     html += '</button>';
                 }
             }
+            html += '</div>';
 
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
+            html +='<div class="col-lg-2 metaTarget">';
+            html +='    <label>Target</label>';
+            html +='    <div class="input-group">';
+            html += '               <input type="text" class="target-field" data-target-id="" value="' + (targetText == null ? "" : targetText) + '">';
+            html +='    </div>';
+            html +='</div>';
+            html +='</div>';
+            html +='</div>';
+            html +='</div>';
         }
         html += '</div>';
         return html;

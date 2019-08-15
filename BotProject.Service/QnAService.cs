@@ -1,4 +1,5 @@
-﻿using BotProject.Data.Infrastructure;
+﻿using BotProject.Common.ViewModels;
+using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
 using BotProject.Model.Models;
 using System;
@@ -34,6 +35,8 @@ namespace BotProject.Service
 		IEnumerable<FormQuestionAnswer> GetListFormByBotID(int botID);
 
 		IEnumerable<Question> GetListQuesCodeSymbol(string symbol);
+
+        QuesTargetViewModel GetQuesByTarget(string target, int botID);
 
 		FormQuestionAnswer GetFormQnAnswerById(int id);
 
@@ -83,8 +86,8 @@ namespace BotProject.Service
             {
                 foreach(var item in lstQuesGroup)
                 {
-                    item.Questions = _questionRepository.GetMulti(x => x.QuestionGroupID == item.ID && x.IsThatStar == false).ToList();//hiển thị lên giao diện k lấy dấu *
-                    item.Answers = _answerRepository.GetMulti(x => x.QuestionGroupID == item.ID).ToList();
+                    item.Questions = _questionRepository.GetMulti(x => x.QuestionGroupID == item.ID && x.IsThatStar == false);
+                    item.Answers = _answerRepository.GetMulti(x => x.QuestionGroupID == item.ID);
                 }
             }
             return lstQuesGroup;
@@ -183,6 +186,11 @@ namespace BotProject.Service
         public void DeleteMultiQuestionGroupByFormID(int formId)
         {
             _quesGroupRepository.DeleteMulti(x => x.FormQuestionAnswerID == formId);
+        }
+
+        public QuesTargetViewModel GetQuesByTarget(string target, int botID)
+        {
+            return _questionRepository.GetQuesByTarget(target, botID);
         }
     }
 }

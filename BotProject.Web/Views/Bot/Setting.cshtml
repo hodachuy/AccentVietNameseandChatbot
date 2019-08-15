@@ -40,6 +40,9 @@
         content: attr(data-ph);
         color: #c3c3c3;
     }
+    .breadcrumb{
+        padding: .75rem 1rem;
+    }
 </style>
 <input type="hidden" id="userID" value="@ViewBag.UserID"/>
 <input type="hidden" id="settingID" value="@Model.ID"/>
@@ -51,22 +54,25 @@
 
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
     <div class="card">
-        <div class="d-flex">
-            <h5 class="card-header pageheader-title">Thiết lập bot @botName </h5>
+        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@botName</i></li>
+                <li class="breadcrumb-item active">Cài đặt</li>
+            </ol>
             <div class="toolbar ml-auto p-r-10 p-t-10">
-                <a href="javascript:void(0);" class="btn btn-default btn-sm" id="btnSaveSettings"><i class="fas fa-sync-alt"></i> Save</a>
+                <button href="javascript:void(0);" class="btn btn-success btn-sm" id="btnSaveSettings"><i class="fas fa-save"></i> Lưu</button>
             </div>
         </div>
         <div class="card-body">
             <form id="validationform" data-parsley-validate="" novalidate="" class="col-md-7" style="float:left">
                 <div class="form-group row">
-                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Tên bot</label>
+                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Tên bot</label>
                     <div class="col-12 col-sm-8">
                         <input type="text" placeholder="Tên bot..." class="form-control" id="formName" value="@Model.FormName" onchange="getFormName(this)">
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Hình ảnh bot</label>
+                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Hình ảnh bot</label>
                     <div class="col-12 col-sm-8">
                         <div class="input-file" name="Fichier1">
                             <input type="file" id="formLogo" accept="image/png, image/jpeg" class="form-control" placeholder='Choose a file...' />
@@ -91,14 +97,14 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-12 col-sm-3 col-form-label text-sm-right">Màu nền bot</label>
+                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Màu nền bot</label>
                     <div class="col-12 col-sm-8">
                         <input type="text" id="formColor" class="form-control demo" data-format="rgb" value="@Model.Color">
                     </div>
 
                 </div>
                 <div class="form-group row">
-                    <div class="col-lg-3 col-sm-3 text-right">
+                    <div class="col-lg-3 col-sm-3 text-sm-left">
                         <label class="learn_switchbot text-left mb0">
                             <input type="checkbox" class="learn_switchinput" id="startedButton">
                             <div class="learn_sliderbot learn_roundbot"></div>
@@ -119,7 +125,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <div class="col-lg-3 col-sm-3 text-right">
+                    <div class="col-lg-3 col-sm-3 text-sm-left">
                         <label class="text-bold mb0">Tùy chọn module</label>
                     </div>
                     <div class="col-lg-9 col-sm-9">

@@ -30,6 +30,7 @@
     <link href="~/assets/client/css/lvbot-chat-dialog/c16_NBmlZsJMwcg.css" rel="stylesheet" />
     <link href="~/assets/client/css/lvbot-chat-dialog/c17_Y8U2p4FZgyH.css" rel="stylesheet" />
     <link href="~/assets/client/css/lvbot-chat-dialog/c18_Iq_mLA6uRtL.css" rel="stylesheet" />
+   
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     @*<script src="~/Scripts/jquery-2.1.4.min.js"></script>*@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -47,7 +48,7 @@
 </head>
 <body dir="ltr" class="plugin chrome webkit win x1 Locale_vi_VN">
     <input type="hidden" id="botColor" value="@Model.Color"/>
-    <input type="hidden" id="botLogo" value="@Model.Logo" />
+    <input type="hidden" id="botLogo" value="@(Model.Logo.Contains("tiengviet") == true ? Model.Logo.Replace("tiengviet/","") : Model.Logo)" />
     <input type="hidden" id="userID" value="@Model.UserID" />
     <input type="hidden" id="botID" value="@Model.BotID" />
     <input type="hidden" id="botTextIntro" value="@Model.TextIntroductory"/>

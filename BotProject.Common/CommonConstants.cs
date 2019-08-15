@@ -30,6 +30,11 @@ namespace BotProject.Common
         public const string MethodeHTTP_POST = "POST";
         public const string MethodeHTTP_GET = "GET";
 
+        public const string UserSay_IsStartDefault = "StartDefault";
+        public const string UserSay_IsStartFirst = "StartFirst";
+        public const string UserSay_IsStartLast = "StartLast";
+        public const string UserSay_IsStartDouble = "StartDouble";
+
     }
 
 

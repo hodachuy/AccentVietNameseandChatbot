@@ -47,5 +47,7 @@ namespace BotProject.Web.Models
 		public string ContentText { set; get; }
 		public bool IsThatStar { set; get; }
 		public int QuestionGroupID { set; get; }
+        public string Target { set; get; }
+        public bool IsSendAPI { set; get; }
 	}
 }

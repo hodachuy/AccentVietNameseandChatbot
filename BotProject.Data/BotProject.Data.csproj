@@ -336,6 +336,22 @@
     <Compile Include="Migrations\201907150314327_UpdateAIML1.Designer.cs">
       <DependentUpon>201907150314327_UpdateAIML1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201908120809497_UpdateKnowledgeQuestion.cs" />
+    <Compile Include="Migrations\201908120809497_UpdateKnowledgeQuestion.Designer.cs">
+      <DependentUpon>201908120809497_UpdateKnowledgeQuestion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908140752140_UpdateMdQues.cs" />
+    <Compile Include="Migrations\201908140752140_UpdateMdQues.Designer.cs">
+      <DependentUpon>201908140752140_UpdateMdQues.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908150230451_UpdateMdQuesBotID.cs" />
+    <Compile Include="Migrations\201908150230451_UpdateMdQuesBotID.Designer.cs">
+      <DependentUpon>201908150230451_UpdateMdQuesBotID.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201908150243336_UpdateMdAreas.cs" />
+    <Compile Include="Migrations\201908150243336_UpdateMdAreas.Designer.cs">
+      <DependentUpon>201908150243336_UpdateMdAreas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -583,6 +599,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907150314327_UpdateAIML1.resx">
       <DependentUpon>201907150314327_UpdateAIML1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908120809497_UpdateKnowledgeQuestion.resx">
+      <DependentUpon>201908120809497_UpdateKnowledgeQuestion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908140752140_UpdateMdQues.resx">
+      <DependentUpon>201908140752140_UpdateMdQues.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908150230451_UpdateMdQuesBotID.resx">
+      <DependentUpon>201908150230451_UpdateMdQuesBotID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908150243336_UpdateMdAreas.resx">
+      <DependentUpon>201908150243336_UpdateMdAreas.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -99,6 +99,7 @@
     <Compile Include="ModuleCategoryService.cs" />
     <Compile Include="ModuleFollowCardService.cs" />
     <Compile Include="ModuleKnowledegeService.cs" />
+    <Compile Include="ModuleSearchEngineService.cs" />
     <Compile Include="ModuleService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QnAService.cs" />

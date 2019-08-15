@@ -191,12 +191,12 @@ namespace BotProject.Service
             sb.AppendLine("<div class=\"messages\">");
             sb.AppendLine("<div class=\"_21c3\">");
             sb.AppendLine("<div class=\"clearfix _2a0-\">");
-            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light;\">");
+            sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light;\">");
             sb.AppendLine("<span>");
             sb.AppendLine("<span>" + title + "</span>");
             sb.AppendLine("</span>");
             sb.AppendLine("</div>");
-            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light; width:100%\">");
+            sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light; width:100%\">");
             sb.AppendLine("<ul>");
             foreach (var item in arrOpt)
             {
@@ -284,7 +284,7 @@ namespace BotProject.Service
             sb.AppendLine("         <div class=\"_21c3\">");
             sb.AppendLine("             <div class=\"clearfix _2a0-\">");
 
-            sb.AppendLine("<div class=\"_4xko _4xkr\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); font-family: Segoe UI Light\">");
+            sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); font-family: Segoe UI Light\">");
             sb.AppendLine("     <span>");
             sb.AppendLine("         <span>" + text + "</span>");
             sb.AppendLine("     </span>");

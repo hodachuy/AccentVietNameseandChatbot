@@ -28,6 +28,10 @@ namespace BotProject.Model.Models
 
         public int QuestionGroupID { set; get; }
 
+        public string Target { set; get; }
+
+        public bool? IsSendAPI { set; get; }
+
         //[ForeignKey("QuestionGroupID")]
         //public virtual QuestionGroup QuestionGroup { set; get; }
     }

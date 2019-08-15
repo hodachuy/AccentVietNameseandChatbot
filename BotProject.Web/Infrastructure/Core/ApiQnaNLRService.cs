@@ -20,6 +20,12 @@ namespace BotProject.Web.Infrastructure.Core
         private string apiDetailQA = "/api/pair_get";
         private string apiRelateQA = "/api/get_related_pairs";
 
+        /// <summary>
+        /// API KNOWLEDGE BASE CHATBOT
+        /// </summary>
+        private string apiKnowledgeBaseAddQA = "/api/chatbot/bot_add";
+        private string apiKnowledgeBaseDeleteQA = "/api/chatbot/bot_delete_formqnaid";
+        private string apiKnowledgeBasePrecidictTextClass = "/api/chatbot/text_class";
 
         /// <summary>
         /// Gọi api chung
@@ -53,8 +59,12 @@ namespace BotProject.Web.Infrastructure.Core
                             response = client.PutAsJsonAsync(NameFuncAPI, httpContent).Result;
                             break;
                         case "Get":
-                            string requestUri = NameFuncAPI + "?" + httpContent;
+                            string requestUri = NameFuncAPI;
                             response = client.GetAsync(requestUri).Result;
+                            break;
+                        case "Delete":
+                            string requestUriDelete = NameFuncAPI;
+                            response = client.DeleteAsync(requestUriDelete).Result;
                             break;
                     }
                 }
@@ -70,6 +80,7 @@ namespace BotProject.Web.Infrastructure.Core
             }
             return result;
         }
+
         public string AddQues(string QuesID, string QuestionContent, string AnswerContent, string AreaTitle, string AnswerHtml, string GroupQues = "leg")
         {
             var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaTitle, html = AnswerHtml, type = GroupQues };
@@ -79,6 +90,33 @@ namespace BotProject.Web.Infrastructure.Core
         {
             var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaTitle, html = AnswerHtml, type = GroupQues };
             return ApiAddUpdateQA(apiUpdateQA, param, "Put");
-        }   
+        }
+
+        // Function ADD KNOWLEDGE BASE
+        public string AddKnowledgeQuestion(int botId, int formQnaId, int quesId, string question, string target)
+        {
+            var param = new {
+                botid = botId,
+                formQnAid = formQnaId,
+                id = quesId,
+                feature = question,
+                target = target,
+            };
+            return ApiAddUpdateQA(apiKnowledgeBaseAddQA, param, "Post");
+        }
+        public string DeleteAllKnowledgeByFormId(int formQnaId)
+        {
+            string urlDelete = apiKnowledgeBaseDeleteQA + "?formQnAid=" + formQnaId;
+            return ApiAddUpdateQA(urlDelete, null, "Delete");
+        }
+        public string GetPrecidictTextClass(string text, int botId)
+        {
+            var param = new
+            {
+                input = text,
+                botid = botId
+            };
+            return ApiAddUpdateQA(apiKnowledgeBaseDeleteQA, param, "Post");
+        }
     }
 }

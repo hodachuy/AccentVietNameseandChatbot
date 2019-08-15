@@ -125,15 +125,15 @@ var lacviet = {
         html += '<iframe name="f12691cd05677d"width="288"height="378"frameborder="0"allowtransparency="true"allowfullscreen="true"scrolling="no"';
         html += 'allow="encrypted-media"title=""src="' + url + '"';
         html += 'style="border: none;visibility: visible;width: 288pt;height: 378pt;border-radius: 9pt;bottom: 63pt;padding: 0px;';
-        html += 'position: fixed;right: 9pt;top: auto;z-index: 2147483647;max-height:0px;"';
+        html += 'position: fixed;right: 9pt;top: auto;z-index: 2147483646;max-height:0px;"';
         html += 'class="fb_customer_chat_bounce_out_v2"';
         html += 'id="dialog_iframe"></iframe>';
         html += '</span>';
-        html += '<div class="fb_dialog fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: none; border-radius: 50%; bottom: 18pt; display: inline; height: 45pt; padding: 0px; position: fixed; right: 18pt; top: auto; width: 45pt; z-index: 2147483646;">';
+        html += '<div class="fb_dialog fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: none; border-radius: 50%; bottom: 18pt; display: inline; height: 45pt; padding: 0px; position: fixed; right: 18pt; top: auto; width: 45pt; z-index: 99999;">';
         html += '<div class="fb_dialog_content" style="background: none;">';
         html += '<div tabindex="0" role="button" style="cursor: pointer; outline: none;">';
         html += '<svg width="60px" height="60px" viewBox="0 0 60 60">';
-        html += '<svg x="0" y="0" width="60px" height="60px"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><circle fill="#5969ff" style="fill:'+color+'" cx="30" cy="30" r="30"></circle><svg x="10" y="10"><g transform="translate(0.000000, -10.000000)" fill="#FFFFFF"><g id="logo" transform="translate(0.000000, 10.000000)"><path d="M20,0 C31.2666,0 40,8.2528 40,19.4 C40,30.5472 31.2666,38.8 20,38.8 C17.9763,38.8 16.0348,38.5327 14.2106,38.0311 C13.856,37.9335 13.4789,37.9612 13.1424,38.1098 L9.1727,39.8621 C8.1343,40.3205 6.9621,39.5819 6.9273,38.4474 L6.8184,34.8894 C6.805,34.4513 6.6078,34.0414 6.2811,33.7492 C2.3896,30.2691 0,25.2307 0,19.4 C0,8.2528 8.7334,0 20,0 Z M7.99009,25.07344 C7.42629,25.96794 8.52579,26.97594 9.36809,26.33674 L15.67879,21.54734 C16.10569,21.22334 16.69559,21.22164 17.12429,21.54314 L21.79709,25.04774 C23.19919,26.09944 25.20039,25.73014 26.13499,24.24744 L32.00999,14.92654 C32.57369,14.03204 31.47419,13.02404 30.63189,13.66324 L24.32119,18.45264 C23.89429,18.77664 23.30439,18.77834 22.87569,18.45674 L18.20299,14.95224 C16.80079,13.90064 14.79959,14.26984 13.86509,15.75264 L7.99009,25.07344 Z"></path></g></g></svg></g></g></svg>';
+        html += '<svg x="0" y="0" width="60px" height="60px"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g><circle fill="#5969ff" style="fill:' + color + '" cx="30" cy="30" r="30"></circle><svg x="10" y="10"><g transform="translate(0.000000, -10.000000)" fill="#FFFFFF"><g id="logo" transform="translate(0.000000, 10.000000)"><path d="M20,0 C31.2666,0 40,8.2528 40,19.4 C40,30.5472 31.2666,38.8 20,38.8 C17.9763,38.8 16.0348,38.5327 14.2106,38.0311 C13.856,37.9335 13.4789,37.9612 13.1424,38.1098 L9.1727,39.8621 C8.1343,40.3205 6.9621,39.5819 6.9273,38.4474 L6.8184,34.8894 C6.805,34.4513 6.6078,34.0414 6.2811,33.7492 C2.3896,30.2691 0,25.2307 0,19.4 C0,8.2528 8.7334,0 20,0 Z M7.99009,25.07344 C7.42629,25.96794 8.52579,26.97594 9.36809,26.33674 L15.67879,21.54734 C16.10569,21.22334 16.69559,21.22164 17.12429,21.54314 L21.79709,25.04774 C23.19919,26.09944 25.20039,25.73014 26.13499,24.24744 L32.00999,14.92654 C32.57369,14.03204 31.47419,13.02404 30.63189,13.66324 L24.32119,18.45264 C23.89429,18.77664 23.30439,18.77834 22.87569,18.45674 L18.20299,14.95224 C16.80079,13.90064 14.79959,14.26984 13.86509,15.75264 L7.99009,25.07344 Z"></path></g></g></svg></g></g></svg>';
         html += '</svg>';
         html += '</div>';
         html += '</div>';
@@ -152,37 +152,37 @@ var lacviet = {
     tempPopupQnA: function () {
         $('<div class="modal fade" id="cb-ques-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;z-index:999999999999"></div>').appendTo("body");
         var html = '';
-        html +=' <div class="modal-dialog modal-question-answer modal-sm modal-lg modal-md" role="document">';
-        html +='    <div class="modal-content">';
-        html +='        <div class="modal-header">';
-        html +='            <button type="button" class="close" data-dismiss="modal">&times;</button>';
-        html +='            <h5 class="modal-title" id="exampleModalLabel">Chi tiết câu hỏi</h5>';
-        html +='        </div>';
-        html +='        <div class="modal-body">';
-        html +='            <form>';
-        html +='                <div class="form-group">';
-        html +='                    <i style="margin-right:14px" class="fa fa-question-circle icon-question-detail"></i>';
-        html +='                    <label for="exampleFormControlTextarea1">CÂU HỎI</label>';
-        html +='                    <div class="question-detail" id="cb-question">';
-        html +='                    </div>';
-        html +='                </div>';
-        html +='                <div class="form-group">';
-        html +='                    <i style="margin-right:10px" class="fa fa-comments icon-question-detail"></i>';
-        html +='                    <label for="exampleFormControlTextarea1">TRẢ LỜI</label>';
-        html +='                    <div class="answer-detail" id="cb-answer">';
-        html +='                    </div>';
-        html +='                </div>';
-        html +='                <div class="form-group" id="cb-lst-article">';
-        html +='                    <i style="margin-right:12px" class="fa fa-book icon-question-detail"></i>';
-        html +='                    <label for="exampleFormControlTextarea1">ĐIỀU LUẬT LIÊN QUAN THAM KHẢO</label>';
-        html +='                    <div class="text-question-detail">';
-        html +='                        <div id="cb-msg"></div>';
-        html +='                        <div id="cb-info-article"></div>';
-        html +='                    </div>';
-        html +='                </div>';
-        html +='            </form>';
-        html +='        </div>';
-        html +='    </div>';
+        html += ' <div class="modal-dialog modal-question-answer modal-sm modal-lg modal-md" role="document">';
+        html += '    <div class="modal-content">';
+        html += '        <div class="modal-header">';
+        html += '            <button type="button" class="close" data-dismiss="modal">&times;</button>';
+        html += '            <h5 class="modal-title" id="exampleModalLabel">Chi tiết câu hỏi</h5>';
+        html += '        </div>';
+        html += '        <div class="modal-body">';
+        html += '            <form>';
+        html += '                <div class="form-group">';
+        html += '                    <i style="margin-right:14px" class="fa fa-question-circle icon-question-detail"></i>';
+        html += '                    <label for="exampleFormControlTextarea1">CÂU HỎI</label>';
+        html += '                    <div class="question-detail" id="cb-question">';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '                <div class="form-group">';
+        html += '                    <i style="margin-right:10px" class="fa fa-comments icon-question-detail"></i>';
+        html += '                    <label for="exampleFormControlTextarea1">TRẢ LỜI</label>';
+        html += '                    <div class="answer-detail" id="cb-answer">';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '                <div class="form-group" id="cb-lst-article">';
+        html += '                    <i style="margin-right:12px" class="fa fa-book icon-question-detail"></i>';
+        html += '                    <label for="exampleFormControlTextarea1">ĐIỀU LUẬT LIÊN QUAN THAM KHẢO</label>';
+        html += '                    <div class="text-question-detail">';
+        html += '                        <div id="cb-msg"></div>';
+        html += '                        <div id="cb-info-article"></div>';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '            </form>';
+        html += '        </div>';
+        html += '    </div>';
         html += '</div>';
         $("#cb-ques-popup").empty().append(html);
     }
@@ -190,10 +190,21 @@ var lacviet = {
 $('body').on('click', '.fb_dialog', function (e) {
     if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_out_v2")) {
         $("#dialog_iframe").removeClass('fb_customer_chat_bounce_out_v2').addClass('fb_customer_chat_bounce_in_v2');
+        $("#dialog_iframe").removeClass('fb_customer_chat_bounce_out_v2').addClass('fb_customer_chat_bounce_in_v2');
+        if ($(parent.window).width() <= 425) {
+            $('#dialog_iframe').css('max-height', '100%');
+            $('#dialog_iframe').css('width', '100%');
+            $('#dialog_iframe').css('height', '100%');
+            $('#dialog_iframe').css('max-height', '100%');
+            $('#dialog_iframe').css('right', '0');
+            $('#dialog_iframe').css('max-height', '100%');
+            $('#dialog_iframe').css('top', '0');
+            $('#dialog_iframe').css('bottom', '0');
+        }
         setTimeout(function () {
             $('#dialog_iframe').css('max-height', '100%');
             // init message
-            var frame = document.getElementById('dialog_iframe'); 
+            var frame = document.getElementById('dialog_iframe');
             frame.contentWindow.postMessage('init', domainApp);
         }, 200)
     }
@@ -220,7 +231,7 @@ eventer(messageEvent, function (e) {
         // có tín hiệu đóng
         $('.fb_dialog').click();
     }
-    if (e.origin === domainApp.replace("/tiengviet","")) {
+    if (e.origin === domainApp.replace("/tiengviet", "")) {
         if (e.data != 'close') {
             //call function page QnA
             window.GetQuesDetailPopup(event.data)

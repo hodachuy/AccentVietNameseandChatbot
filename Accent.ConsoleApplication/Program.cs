@@ -32,6 +32,12 @@ namespace Accent.ConsoleApplication
             //quickSort(x, left, right);
             //printArray(x);
 
+            string t1 = "Added LegalPair id=ad.";
+            string r  = Regex.Match(t1, @"\d+").Value;
+
+
+
+
             string url = "ques=haha toi biet ma&number=10&groupques=abc";
             url = Uri.UnescapeDataString(url);
 

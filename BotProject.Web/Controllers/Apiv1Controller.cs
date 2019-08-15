@@ -1,6 +1,7 @@
 ﻿using AIMLbot;
 using AutoMapper;
 using BotProject.Common;
+using BotProject.Common.ViewModels;
 using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
@@ -39,6 +40,8 @@ namespace BotProject.Web.Controllers
         private IMdSearchService _mdSearchService;
         private IErrorService _errorService;
         private IAIMLFileService _aimlFileService;
+        private IQnAService _qnaService;
+        private ApiQnaNLRService _apiNLR;
         //private Bot _bot;
         private User _user;
 
@@ -49,7 +52,8 @@ namespace BotProject.Web.Controllers
                                 IModuleService mdService,
                                 IMdSearchService mdSearchService,
                                 IModuleKnowledegeService mdKnowledgeService,
-                                IAIMLFileService aimlFileService)
+                                IAIMLFileService aimlFileService,
+                                IQnAService qnaService)
         {
             _errorService = errorService;
             _elastic = new ElasticSearch();
@@ -58,9 +62,11 @@ namespace BotProject.Web.Controllers
             _settingService = settingService;
             _handleMdService = handleMdService;
             _mdService = mdService;
+            _apiNLR = new ApiQnaNLRService();
             _mdKnowledgeService = mdKnowledgeService;
             _mdSearchService = mdSearchService;
             _aimlFileService = aimlFileService;
+            _qnaService = qnaService;
             _botService = BotService.BotInstance;
         }
 
@@ -427,6 +433,24 @@ namespace BotProject.Web.Controllers
                     }, JsonRequestBehavior.AllowGet);
                 }
                 #endregion
+
+
+                // Lấy target from knowledge base QnA trained
+                if(text.Contains("postback") == false || text.Contains("module") == false)
+                {
+                    string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
+                    if (!String.IsNullOrEmpty(target))
+                    {
+                        target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                        quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
+                        if(quesTarget != null)
+                        {
+                            text = quesTarget.ContentText;
+                        }
+                    }
+                }
+
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
                 bool isMatch = true;
@@ -448,7 +472,12 @@ namespace BotProject.Web.Controllers
                         result = GetRelatedQuestion(text, group);
                         if (!String.IsNullOrEmpty(result))
                         {
-                            var lstQnaAPI = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<List<ObjQnaAPI>>(result);
+                            var lstQnaAPI = new JavaScriptSerializer
+                            {
+                                MaxJsonLength = Int32.MaxValue,
+                                RecursionLimit = 100
+                            }
+                            .Deserialize<List<ObjQnaAPI>>(result);
                         }
                         else
                         {

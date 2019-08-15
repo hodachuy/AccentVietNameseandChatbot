@@ -196,7 +196,15 @@ $("#chk-stt-popup").click(function () {
 });
 
 window.addEventListener('message', function (event) {
-    //console.log('message received:  ' + event.data, event);
+    var widthParent = parseInt(event.data);
+    if (widthParent <= 425) {
+        $("._3-8j").css('margin', '0px 0px 0px');
+        $("._6atl").css('height', '100%');
+        $("._6atl").css('width', event.data);
+        $("._6ati").css('height', '100%');
+        $("._6ati").css('width', event.data);
+    }
+
     startMessageBotIntroduct();
     //if (event.origin === 'http://localhost:47887') {
     //    console.log(event.origin)
@@ -427,7 +435,7 @@ function tempTextBot(text) {
 '                <div class="messages">' +
                       '<div class="_21c3">' +
 '                          <div class="clearfix _2a0-">' +
-'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="background-color: rgb(241, 240, 240); font-family: Segoe UI Light;">' +
+'                               <div class="_4xko _4xkr _tmpB" tabindex="0" role="button" style="background-color: rgb(241, 240, 240); font-family: Segoe UI Light;">' +
 '                                   <span>' +
 '                                       <span>' + text + '</span>' +
 '                                   </span>' +
@@ -450,7 +458,7 @@ function tempDidYouMeanBot(text) {
 '                <div class="messages">' +
                       '<div class="_21c3">' +
 '                          <div class="clearfix _2a0-">' +
-'                               <div class="_4xko _4xkr" tabindex="0" role="button" style="font-style:italic;font-family: Segoe UI Light">' +
+'                               <div class="_4xko _4xkr _tmpB" tabindex="0" role="button" style="font-style:italic;font-family: Segoe UI Light">' +
 '                                   <span>' +
 '                                       <span> Ý bạn là: ' + text + '</span>' +
 '                                   </span>' +

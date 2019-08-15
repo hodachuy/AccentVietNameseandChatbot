@@ -73,32 +73,52 @@
     .ml10 {
         margin-left: 10px;
     }
+    .target-field{
+        border: 1px solid #ddd;
+        padding: 10px 0px 3px 5px;
+    }
+        .breadcrumb{
+        padding: .75rem 1rem;
+    }
 </style>
 <input type="hidden" id="botId" value="@Model.BotID" />
 <input type="hidden" id="formQnaID" value="@Model.ID" />
 <input type="hidden" id="formAlias" value="@Model.Alias" />
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 p-b-10">
-        <p>
-            <span class="text-semibold">Hướng dẫn:</span><br>
-            <span>- Sử dụng<input type="checkbox" checked="" disabled="">là từ khóa. Ví dụ: Nếu [người dùng nói] là “chào” thì khi người dùng nhập mà trong câu có từ “chào”(Chào bạn), bot sẽ trả về kết quả tương ứng trong phần [Bot trả lời].</span><br>
-            @*- Sử dụng <input type="checkbox" disabled="">  là cụm từ. Ví dụ: Nếu [người dùng nói] là “tên của bạn là gì” thì khi người dùng nhập có nội dung tương tự “tên của cậu là gì?”, bot sẽ trả về kết quả tương ứng trong phần [Bot trả lời].<br>*@
-            <span>- Sử dụng &lt;get name=&quot;{{attribute}}&quot; /&gt;   trả ra thông tin.</span><br />
-            <span>- Sử dụng &lt;set name=&quot;{{attribute}}&quot; /&gt;&lt;star /&gt;&lt;/set&gt;  để lấy thông tin khi sử dụng<input type="checkbox" checked="" disabled=""> là từ khóa.</span><br />
-            <span>- Sử dụng tạo thẻ để thiếp lập luồng đi trả lời.</span>
-        </p>
-    </div>
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
-        <div class="d-flex">
-            <h5 class="pageheader-title">@Model.Name.ToUpper() </h5>
-            <div class="toolbar ml-auto p-r-10">
+        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@ViewBag.BotName</i></li>
+                <li class="breadcrumb-item">Huấn luyện bot</li>
+                <li class="breadcrumb-item active">@Model.Name</li>
+            </ol>
+            <div class="toolbar ml-auto p-r-10 p-t-10">
                 <a href="#" class="btn btn-success btn-sm saveKeyword"><i class="fas fa-sync-alt"></i> Save and retrain</a>
                 <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>
             </div>
         </div>
         <div class="d-flex">
+            <p style="padding:15px">
+                <span class="text-semibold">Hướng dẫn:</span><br>
+                <span>- Sử dụng<input type="checkbox" checked="" disabled="">là từ khóa. Ví dụ: Nếu [người dùng nói] là “chào” thì khi người dùng nhập mà trong câu có từ “chào”(Chào bạn), bot sẽ trả về kết quả tương ứng trong phần [Bot trả lời].</span><br>
+                @*- Sử dụng <input type="checkbox" disabled="">  là cụm từ. Ví dụ: Nếu [người dùng nói] là “tên của bạn là gì” thì khi người dùng nhập có nội dung tương tự “tên của cậu là gì?”, bot sẽ trả về kết quả tương ứng trong phần [Bot trả lời].<br>*@
+                <span>- Sử dụng &lt;get name=&quot;{{attribute}}&quot; /&gt;   trả ra thông tin.</span><br />
+                <span>- Sử dụng &lt;set name=&quot;{{attribute}}&quot; /&gt;&lt;star /&gt;&lt;/set&gt;  để lấy thông tin khi sử dụng<input type="checkbox" checked="" disabled=""> là từ khóa.</span><br />
+                <span>- Sử dụng tạo thẻ để thiếp lập luồng đi trả lời.</span>
+            </p>
+        </div>    
+    </div>
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title">
+        @*<div class="d-flex">
+            <h5 class="pageheader-title">@Model.Name.ToUpper() </h5>
+            <div class="toolbar ml-auto p-r-10">
+                <a href="#" class="btn btn-success btn-sm saveKeyword"><i class="fas fa-sync-alt"></i> Save and retrain</a>
+                <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>
+            </div>
+        </div>*@
+        <div class="d-flex">
             <p style="font-size:13pt;padding-left:20px;color:darkblue;text-decoration:underline" id="search-label" for="search-terms" class="addCt"><i class="fas fa-plus-circle"></i> Add rule</p>
-            <div class="ml-auto" style="font-size:13px;padding-right:100px">Retrained 2 phút trước</div>
+            @*<div class="ml-auto" style="font-size:13px;padding-right:100px">Retrained 2 phút trước</div>*@
         </div>
     </div>
 </div>
@@ -132,7 +152,7 @@
                         <i class="fa fa-arrow-down moveBot" style="display: inline;"></i>
                     </div>
                     <div class="row">
-                        <div class="col-lg-6 userSay">
+                        <div class="col-lg-5 userSay">
                             <label>Người dùng nói</label>
                             <div class="input-group">
                                 <ul class="tags checkvalid">
@@ -145,7 +165,7 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="col-lg-6 botReply">
+                        <div class="col-lg-5 botReply">
                             <label>Bot trả lời với&nbsp;</label>
                             <label class="learn_switchbot">
                                 <input type="checkbox" name="data[Bot][Status]" class="learn_switchinput" checked="">
@@ -169,6 +189,12 @@
                             <button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">
                                 <i class="icon-plus22"></i> Thêm câu trả lời
                             </button>
+                        </div>
+                        <div class="col-lg-2 metaTarget">
+                            <label>Target</label>
+                            <div class="input-group">
+                                <input type="text" class="target-field" data-target-id="">
+                            </div>
                         </div>
                     </div>
                 </div>

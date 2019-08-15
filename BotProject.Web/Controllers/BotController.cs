@@ -19,12 +19,14 @@ namespace BotProject.Web.Controllers
         private ISettingService _settingService;
         private IGroupCardService _groupCardService;
         private IModuleService _moduleService;
+        private IModuleSearchEngineService _mdSearchEngineService;
         public BotController(IErrorService errorService,
             ICardService cardService,
             IQnAService qnaService,
             ISettingService settingService,
             IGroupCardService groupCardService,
-            IModuleService moduleService
+            IModuleService moduleService,
+            IModuleSearchEngineService mdSearchEngineService
            ) : base(errorService)
         {
             _cardService = cardService;
@@ -32,6 +34,7 @@ namespace BotProject.Web.Controllers
             _settingService = settingService;
             _groupCardService = groupCardService;
             _moduleService = moduleService;
+            _mdSearchEngineService = mdSearchEngineService;
 
         }
 
@@ -41,10 +44,11 @@ namespace BotProject.Web.Controllers
             return View();
         }     
 
-		public ActionResult QnA(int formQnAId, int botId)
+		public ActionResult QnA(int formQnAId, int botId, string botName)
 		{
             ViewBag.BotQnAnswerID = formQnAId;
-			var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
+            ViewBag.BotName = botName;
+            var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
             var formQnAVm = Mapper.Map<FormQuestionAnswer, FormQuestionAnswerViewModel>(formQnA);
             var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botId);
             var lstGroupCardVm = Mapper.Map<IEnumerable<GroupCard>, IEnumerable<GroupCardViewModel>>(lstGroupCard);
@@ -60,15 +64,17 @@ namespace BotProject.Web.Controllers
             return View(formQnAVm);
 		}
 
-        public ActionResult Module(int id)
+        public ActionResult Module(int id, string botName)
         {
             ViewBag.BotID = id;
+            ViewBag.BotName = botName;
             return View();
         }
 
-        public ActionResult CardCategory(int id) {
+        public ActionResult CardCategory(int id, string botName) {
 
             ViewBag.BotID = id;
+            ViewBag.BotName = botName;
             var lstModule = _moduleService.GetAllModuleByBotID(id);
             var lstModuleVm = Mapper.Map<IEnumerable<Module>, IEnumerable<ModuleViewModel>>(lstModule);
             return View(lstModuleVm);
@@ -94,6 +100,15 @@ namespace BotProject.Web.Controllers
         public ActionResult FormChatSetting(string botName)
         {
             ViewBag.BotName = botName;
+            return View();
+        }
+
+        public ActionResult BotSearchEngine(int botId, string botName)
+        {
+            ViewBag.BotName = botName;
+            ViewBag.BotID = botId;
+            var lstMdArea = _mdSearchEngineService.GetListMdArea(botId).ToList();
+            ViewBag.MdArea = lstMdArea;
             return View();
         }
     }

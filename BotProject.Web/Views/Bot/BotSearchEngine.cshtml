@@ -1,7 +1,7 @@
 ﻿@{
-    ViewBag.Title = "Search Engineer";
+    ViewBag.Title = "Bot Search Engineer";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var area = (IEnumerable<BotProject.Model.Models.MdArea>) ViewBag.MdArea;
+    var area = (IEnumerable<BotProject.Model.Models.MdArea>)ViewBag.MdArea;
 }
 <link href="~/assets/client/libs/KendoUI/styles/kendo.common.min.css" rel="stylesheet" />
 <link href="~/assets/client/libs/KendoUI/styles/kendo.metro.min.css" rel="stylesheet" />
@@ -9,29 +9,40 @@
 <style>
     @@media (min-width: 576px) {
         .modal-dialog {
-            max-width: 780px;
+            max-width: 800px;
             margin: 1.75rem auto;
         }
     }
-        .k-table {
-    width: 100%;
-    border-spacing: 0;
-    margin: 0 0 0em;
-}
-            .k-table, .k-table td, .k-table th {
-    outline: 0;
-    border: 1px solid #555;
-}
+    .k-table {
+        width: 100%;
+        border-spacing: 0;
+        margin: 0 0 0em;
+    }
 
+        .k-table, .k-table td, .k-table th {
+            outline: 0;
+            border: 1px solid #555;
+        }
+        .w60{
+            width:60%;
+        }
+        .action-area{
+            margin-right: 10px;
+            font-size: 10px;
+        }
 </style>
 <!-- ============================================================== -->
 <!-- pageheader -->
 <!-- ============================================================== -->
+<input type="hidden" id="botId" value="@ViewBag.BotID"/>
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
         <div class="d-flex">
-            <h5 class="pageheader-title">Search QnA</h5>
-
+            @*<h5 class="pageheader-title">Search QnA</h5>*@
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@ViewBag.BotName</i></li>
+                <li class="breadcrumb-item active">Search Engine</li>
+            </ol>
             <div class="toolbar ml-auto p-r-10">
                 <a href="#" class="btn btn-success btn-sm "><i class="fas fa-sync-alt"></i> Save and retrain</a>
                 <a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>
@@ -82,14 +93,14 @@
         <div class="card-header" style="background-color:lightgray">
             <div class="row">
                 <div class="col-lg-6">
-                    <p>KNOWLEDGE BASE | 2 QnA pairs</p>
+                    <p>KNOWLEDGE BASE | QnA pairs</p>
                 </div>
                 <div class="col-lg-6">
                     <a href="#" style="float:right;" data-toggle="modal" data-target="#excelQnAModal"><i class="fa fa-upload"></i>Import Excel</a>
                     <a href="javascript:void(0);" style="float:right;margin-right:10px" id="openQnaModel"><i class="fa fa-plus-circle"></i>Add new QnA pair</a>
                 </div>
                 <div class="modal fade" id="addQnAModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;">
-                    <div class="modal-dialog" role="document">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">Add QnA Marker</h5>
@@ -100,22 +111,23 @@
                             <div class="modal-body">
                                 <form>
                                     <div class="form-group">
-                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Lĩnh vực</label>
-                                        @Html.DropDownList("AreaID", new SelectList(area, "ID", "Name"), "----- Tất cả -----")
+                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Lĩnh vực: </label>
+                                        @*@Html.DropDownList("AreaID", new SelectList(area, "ID", "Name"), "----- Tất cả -----")*@
+                                        <div class="w60" id="cboArea"></div>
+                                        <span style="padding-left:10px; cursor:pointer" id="btn-open-form-area"><i class="fa fa-plus-circle"></i>Thêm lĩnh vực</span>
                                     </div>
-                                    <input type="hidden" id="quesID" value=""/>
+                                    <input type="hidden" id="quesID" value="" />
                                     <input type="hidden" id="ansID" value="" />
                                     <div class="form-group">
-                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Câu hỏi</label>
+                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Câu hỏi:</label>
                                         <span class="placeholderkd opacity05" style="z-index:1000;position: absolute"></span>
                                         <div id="txtQuestion" style="height:200px" class="EditorArticles"></div>
                                         @*<textarea class="form-control" id="txtQuestion" rows="3"></textarea>*@
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Trả lời</label>
+                                        <label for="exampleFormControlTextarea1" class="font-medium-v2">Trả lời:</label>
                                         <span class="placeholderkd opacity05" style="z-index:1000;position: absolute"></span>
-                                        <div id="txtAnswer" style="height:250px" class=""></div>
-                                        #Ký tự: <span id="count"></span>
+                                        <div id="txtAnswer" style="height:230px" class=""></div>
                                         @*<textarea class="form-control" id="txtAnswer" rows="3"></textarea>*@
                                     </div>
                                 </form>
@@ -185,9 +197,49 @@
     </div>
 </div>
 
+<div class="modal fade" id="modalCreateArea" tabindex="-3" role="dialog" aria-labelledby="exampleModalLabel14" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm lĩnh vực</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close" id="close-model-area">
+                    <span aria-hidden="true">×</span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Tên lĩnh vực: </label>
+                        <input style="display: inline;" type="text" class="form-control w60" id="txtAreaName" />
+                        <a href="#" class="btn btn-success" id="btnSaveArea" style="float:right">Thêm</a>
+                    </div>           
+                </form>
+                <hr />
+                <div class="table-responsive" id="table-qna">
+                    <table class="table table-striped table-bordered table-sm" id="table-data">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width:1%"></th>
+                                <th scope="col" style="width:41%">Danh sách lĩnh vực</th>
+                                <th scope="col" style="width:10%">Tiện ích</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-data-area">
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-success" id="btnCloseArea">Đóng</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section footerJS{
-<script src="~/assets/client/libs/KendoUI/js/kendo.all.min.js"></script>
-<script src="~/assets/client/libs/KendoUI/js/cultures/kendo.culture.vi-VN.min.js"></script>
-<script src="~/assets/client/libs/KendoUI/custom-kendo.js"></script>
-<script src="~/assets/client/js/moduleCategory/search.js"></script>
+    <script src="~/assets/client/libs/KendoUI/js/kendo.all.min.js"></script>
+    <script src="~/assets/client/libs/KendoUI/js/cultures/kendo.culture.vi-VN.min.js"></script>
+    <script src="~/assets/client/libs/KendoUI/custom-kendo.js"></script>
+    <script src="~/assets/client/js/moduleSearchEngine/search.js"></script>
 }

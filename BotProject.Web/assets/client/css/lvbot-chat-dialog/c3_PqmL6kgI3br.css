@@ -121,7 +121,7 @@
 }
 
 ._6atl {
-    height: 480px !important;
+    height: 480px;/*!important*/
     width: 360px;
 }
 
@@ -741,7 +741,7 @@
     border-radius: 3pt;
     clear: both;
     display: block;
-    font-size: 12pt;
+    font-size: 11pt;
     line-height: 15pt;
     margin: 1pt 0;
     max-width: 88%;
@@ -754,6 +754,7 @@
     border-top-right-radius: 1.3em;
     color: rgba(0, 0, 0, 1);
     float: left;
+	    max-width: 240px;
 }
 
     ._4xkr a, ._4xkr a:visited {
@@ -817,7 +818,8 @@
     }
 
 ._4xko._2k7w {
-    background: none;
+    background:#fafafa;
+    /*background: none;*/
     max-width: 97%;
     padding: 0;
 }
@@ -1210,7 +1212,8 @@
         }
 
 ._6ir5 {
-    border-top: 1px solid rgba(0, 0, 0, .10);
+    /*border-top: 1px solid rgba(0, 0, 0, .10);*/
+    border-top: 1px solid #ebebeb;
 }
 
 ._6isd {
@@ -1399,12 +1402,13 @@
 
     ._4fwe ._58ak {
         border-style: none;
-        padding: 12pt 0 12pt 9pt;
+        padding: 10pt 0 12pt 9pt;
         width: 100%;
     }
 
     ._4fwe ._58al {
-        font-size: 12pt;
+        font-size: 13pt;
+        font-family: Segoe UI;
     }
 
         ._4fwe ._58al::-webkit-input-placeholder {
@@ -1742,4 +1746,7 @@
 
 .bootloader_g9r0R {
     display: block !important;
+}
+._tmpB{
+	background-color: rgb(228, 239, 255) !important;
 }

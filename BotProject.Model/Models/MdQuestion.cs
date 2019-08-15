@@ -28,5 +28,7 @@ namespace BotProject.Model.Models
         public DateTime? CreatedDate { set; get; }
 
         public int? AreaID { set; get; }
+
+        public int? BotID { set; get; }
     }
 }

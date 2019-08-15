@@ -31,6 +31,9 @@
         padding-top: 6px;
         cursor: pointer;
     }
+    .breadcrumb{
+        padding: .75rem 1rem;
+    }
 </style>
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
 <div id="sidenav-module" class="sidenav">
@@ -86,7 +89,11 @@
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
             <div class="card">
                 <div class="d-flex">
-                    <h5 class="pageheader-title p-l-10 p-t-10">Thiết lập thẻ</h5>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@ViewBag.BotName</i></li>
+                        <li class="breadcrumb-item active">Tạo thẻ</li>
+                    </ol>
+                    @*<h5 class="pageheader-title p-l-10 p-t-10">Thiết lập thẻ</h5>*@
                 </div>
                 <div>
                     <div class="card-body">

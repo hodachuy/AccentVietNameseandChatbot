@@ -20,5 +20,7 @@ namespace BotProject.Web.Models
 
         public int? AreaID { set; get; }
 
+        public int? BotID { set; get; }
+
     }
 }

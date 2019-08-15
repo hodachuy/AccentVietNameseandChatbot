@@ -4,12 +4,13 @@
     foreach (var item in Model)
     {
         //var urlQnA = "/bot/" + item.Alias + "/" + item.ID + "/qna";
-        var urlCard = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/cardcategory";
+        var urlCard = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/cardcategory?botName=" + item.Name;
         var urlAIML = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/aiml";
-        var urlModule = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/module";
+        var urlModule = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/module?botName=" + item.Name;
         var urlSetting = Url.Content("~") + "bot/setting/" + item.Alias + "/" + item.ID +"?name="+item.Name;
-        <li class="nav-item">
-            <a class="nav-link" id="dialog-bot" data-id="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-@item.ID">
+        var urlBotSearchEngine = Url.Content("~") + "bot/searchengine/" + item.Alias + "/" + item.ID + "?botName=" + item.Name;
+        <li class="nav-item nav-item-bot">
+            <a class="nav-link collapsed" id="nav-bot-id-@item.ID" data-id="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-@item.ID">
                 <i class="fa fa fa-robot" aria-hidden="true"></i> @item.Name.ToUpper()
             </a>
             <div id="submenu-@item.ID" class="collapse submenu" style="">
@@ -21,7 +22,7 @@
                         <a class="nav-link" href="@urlModule"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="@item.ID"><i class="fa fa-recycle"></i>Huấn luyện bot
+                        <a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="@item.ID" data-botName="@item.Name"><i class="fa fa-recycle"></i>Huấn luyện bot
                             <span style="float: right;color: lightgray;cursor: pointer;">
                                 <i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>
                             </span>
@@ -35,12 +36,15 @@
                                     {
                                         var urlQna = Url.Content("~") +  "bot/qna/" + form.Alias + "/"+ form.ID;
                                         <li class="nav-item">
-                                            <a class="nav-link bot-qna-link" href="@Url.Action("QnA","Bot", new {formQnAId = form.ID, botId = item.ID })"><i class="fa fa-file" aria-hidden="true"></i>@form.Name</a>
+                                            <a class="nav-link bot-qna-link" href="@Url.Action("QnA","Bot", new {formQnAId = form.ID, botId = item.ID, botName = item.Name})"><i class="fa fa-file" aria-hidden="true" style="display:unset"></i>@form.Name</a>
                                         </li>
                                     }
                                 }
                             </ul>
                         </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="@urlBotSearchEngine"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="@urlSetting"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>

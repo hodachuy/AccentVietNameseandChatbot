@@ -21,12 +21,21 @@ namespace BotProject.Web.API
     {
         private IQnAService _qnaService;
         private IAIMLFileService _aimlService;
+        private ApiQnaNLRService _apiNLR;
+        private string[] _userSayStart = new string[]
+        {
+            CommonConstants.UserSay_IsStartDefault,
+            CommonConstants.UserSay_IsStartFirst,
+            CommonConstants.UserSay_IsStartLast,
+            CommonConstants.UserSay_IsStartDouble
+        };
         public QnAController(IErrorService errorService,
                             IQnAService qnaService,
                             IAIMLFileService aimlService) : base(errorService)
         {
             _qnaService = qnaService;
             _aimlService = aimlService;
+            _apiNLR = new ApiQnaNLRService();
         }
 
         [Route("create")]
@@ -46,15 +55,18 @@ namespace BotProject.Web.API
                     {
                         //lstQuesGroupVm = formQnAVm.QuestionGroupViewModels.Where(x => x.ID == 0);
                         var lstQuesGroupDb = _qnaService.GetListQuestionGroupByFormQnAnswerID(formQnAVm.FormQuestionAnswerID).ToList();
-                        if(lstQuesGroupDb != null && lstQuesGroupDb.Count() != 0)
+                        if (lstQuesGroupDb != null && lstQuesGroupDb.Count() != 0)
                         {
-                            foreach(var quesGroup in lstQuesGroupDb)
+                            foreach (var quesGroup in lstQuesGroupDb)
                             {
                                 _qnaService.DeleteQuesByQuestionGroup(quesGroup.ID);
-                                _qnaService.DeleteAnswerByQuestionGroup(quesGroup.ID);                              
+                                _qnaService.DeleteAnswerByQuestionGroup(quesGroup.ID);
                             }
                             _qnaService.DeleteMultiQuestionGroupByFormID(formQnAVm.FormQuestionAnswerID);
                             _qnaService.Save();
+
+                            // delete all knowledge base qna mongoDb
+                            _apiNLR.DeleteAllKnowledgeByFormId(formQnAVm.FormQuestionAnswerID);
                         }
                     }
                     if (lstQuesGroupVm != null && lstQuesGroupVm.Count() != 0)
@@ -74,14 +86,23 @@ namespace BotProject.Web.API
                                     foreach (var itemQues in lstQuestion)
                                     {
                                         string code = qGroupDb.ID + Guid.NewGuid().ToString();
-                                        if(itemQues.IsThatStar == false)
+                                        if (itemQues.IsThatStar == false)
                                         {
                                             Question quesDb = new Question();
                                             quesDb.UpdateQuestion(itemQues);
                                             quesDb.CodeSymbol = code;
                                             quesDb.QuestionGroupID = qGroupDb.ID;
                                             _qnaService.AddQuestion(quesDb);
-                                        }else
+                                            _qnaService.Save();
+                                            string resultAPI = _apiNLR.AddKnowledgeQuestion(formQnAVm.BotID, formQnAVm.FormQuestionAnswerID, quesDb.ID, itemQues.ContentText, itemQues.Target);
+                                            if (!String.IsNullOrEmpty(resultAPI))
+                                            {
+                                                quesDb.IsSendAPI = true;
+                                                _qnaService.UpdateQuestion(quesDb);
+                                                _qnaService.Save();
+                                            }
+                                        }
+                                        else
                                         {
                                             //content
                                             Question quesDb = new Question();
@@ -89,28 +110,39 @@ namespace BotProject.Web.API
                                             quesDb.CodeSymbol = code;
                                             quesDb.QuestionGroupID = qGroupDb.ID;
                                             _qnaService.AddQuestion(quesDb);
+                                            _qnaService.Save();
+                                            string resultAPI = _apiNLR.AddKnowledgeQuestion(formQnAVm.BotID, formQnAVm.FormQuestionAnswerID, quesDb.ID, itemQues.ContentText, itemQues.Target);
+                                            if (!String.IsNullOrEmpty(resultAPI))
+                                            {
+                                                quesDb.IsSendAPI = true;
+                                                _qnaService.UpdateQuestion(quesDb);
+                                                _qnaService.Save();
+                                            }
 
-                                            // is that star
-                                            // content *
-                                            Question quesDbStar = new Question();
-                                            quesDbStar.UpdateQuestionIsStar(itemQues);
-                                            quesDbStar.CodeSymbol = code;
-                                            quesDbStar.QuestionGroupID = qGroupDb.ID;
-                                            _qnaService.AddQuestion(quesDbStar);
+                                            //// is that star
+                                            //// content *
+                                            //Question quesDbStar = new Question();
+                                            //quesDbStar.UpdateQuestionIsStar(itemQues);
+                                            //quesDbStar.CodeSymbol = code;
+                                            //quesDbStar.QuestionGroupID = qGroupDb.ID;
+                                            //_qnaService.AddQuestion(quesDbStar);
 
-                                            //* content *
-                                            Question quesDbStar2 = new Question();
-                                            quesDbStar2.UpdateQuestionIsStar2(itemQues);
-                                            quesDbStar2.CodeSymbol = code;
-                                            quesDbStar2.QuestionGroupID = qGroupDb.ID;
-                                            _qnaService.AddQuestion(quesDbStar2);
 
-                                            // * content
-                                            Question quesDbStar3 = new Question();
-                                            quesDbStar3.UpdateQuestionIsStar3(itemQues);
-                                            quesDbStar3.CodeSymbol = code;
-                                            quesDbStar3.QuestionGroupID = qGroupDb.ID;
-                                            _qnaService.AddQuestion(quesDbStar3);
+                                            ////* content *
+                                            //Question quesDbStar2 = new Question();
+                                            //quesDbStar2.UpdateQuestionIsStar2(itemQues);
+                                            //quesDbStar2.CodeSymbol = code;
+                                            //quesDbStar2.QuestionGroupID = qGroupDb.ID;
+                                            //_qnaService.AddQuestion(quesDbStar2);
+
+                                            //// * content
+                                            //Question quesDbStar3 = new Question();
+                                            //quesDbStar3.UpdateQuestionIsStar3(itemQues);
+                                            //quesDbStar3.CodeSymbol = code;
+                                            //quesDbStar3.QuestionGroupID = qGroupDb.ID;
+                                            //_qnaService.AddQuestion(quesDbStar3);
+
+                                            //_qnaService.Save();
                                         }
                                     }
                                     _qnaService.Save();
@@ -162,156 +194,168 @@ namespace BotProject.Web.API
                 StringBuilder sbFormDb = new StringBuilder();
                 //if (System.IO.File.Exists(pathString))
                 //{
-                    //File.WriteAllText(pathString, String.Empty);
-                    try
+                //File.WriteAllText(pathString, String.Empty);
+                try
+                {
+                    //StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
+                    //////sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    ////sw.WriteLine("<aiml>");
+                    //sw.WriteLine("<category>");
+                    //sw.WriteLine("<pattern>*</pattern>");
+                    //sw.WriteLine("<template>");
+                    //sw.WriteLine("<random>");
+                    //sw.WriteLine("<li> NOT_MATCH_01 </li>");
+                    //sw.WriteLine("<li> NOT_MATCH_02 </li>");
+                    //sw.WriteLine("<li> NOT_MATCH_03 </li>");
+                    //sw.WriteLine("<li> NOT_MATCH_04 </li>");
+                    //sw.WriteLine("<li> NOT_MATCH_05 </li>");
+                    //sw.WriteLine("<li> NOT_MATCH_06 </li>");
+                    //sw.WriteLine("</random>");
+                    //sw.WriteLine("</template>");
+                    //sw.WriteLine("</category>");
+
+                    sbFormDb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                    sbFormDb.AppendLine("<aiml>");
+                    sbFormDb.AppendLine("<category>");
+                    sbFormDb.AppendLine("<pattern>*</pattern>");
+                    sbFormDb.AppendLine("<template>");
+                    sbFormDb.AppendLine("<random>");
+                    sbFormDb.AppendLine("<li> NOT_MATCH_01 </li>");
+                    sbFormDb.AppendLine("<li> NOT_MATCH_02 </li>");
+                    sbFormDb.AppendLine("<li> NOT_MATCH_03 </li>");
+                    sbFormDb.AppendLine("<li> NOT_MATCH_04 </li>");
+                    sbFormDb.AppendLine("<li> NOT_MATCH_05 </li>");
+                    sbFormDb.AppendLine("<li> NOT_MATCH_06 </li>");
+                    sbFormDb.AppendLine("</random>");
+                    sbFormDb.AppendLine("</template>");
+                    sbFormDb.AppendLine("</category>");
+                    if (lstQnaGroup != null && lstQnaGroup.Count() != 0)
                     {
-                        //StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
-                        //////sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                        ////sw.WriteLine("<aiml>");
-                        //sw.WriteLine("<category>");
-                        //sw.WriteLine("<pattern>*</pattern>");
-                        //sw.WriteLine("<template>");
-                        //sw.WriteLine("<random>");
-                        //sw.WriteLine("<li> NOT_MATCH_01 </li>");
-                        //sw.WriteLine("<li> NOT_MATCH_02 </li>");
-                        //sw.WriteLine("<li> NOT_MATCH_03 </li>");
-                        //sw.WriteLine("<li> NOT_MATCH_04 </li>");
-                        //sw.WriteLine("<li> NOT_MATCH_05 </li>");
-                        //sw.WriteLine("<li> NOT_MATCH_06 </li>");
-                        //sw.WriteLine("</random>");
-                        //sw.WriteLine("</template>");
-                        //sw.WriteLine("</category>");
-
-                        sbFormDb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-                        sbFormDb.AppendLine("<aiml>");
-                        sbFormDb.AppendLine("<category>");
-                        sbFormDb.AppendLine("<pattern>*</pattern>");
-                        sbFormDb.AppendLine("<template>");
-                        sbFormDb.AppendLine("<random>");
-                        sbFormDb.AppendLine("<li> NOT_MATCH_01 </li>");
-                        sbFormDb.AppendLine("<li> NOT_MATCH_02 </li>");
-                        sbFormDb.AppendLine("<li> NOT_MATCH_03 </li>");
-                        sbFormDb.AppendLine("<li> NOT_MATCH_04 </li>");
-                        sbFormDb.AppendLine("<li> NOT_MATCH_05 </li>");
-                        sbFormDb.AppendLine("<li> NOT_MATCH_06 </li>");
-                        sbFormDb.AppendLine("</random>");
-                        sbFormDb.AppendLine("</template>");
-                        sbFormDb.AppendLine("</category>");
-                        if (lstQnaGroup != null && lstQnaGroup.Count() != 0)
+                        int total = lstQnaGroup.Count();
+                        for (int indexQGroup = 0; indexQGroup < total; indexQGroup++)
                         {
-                            int total = lstQnaGroup.Count();
-                            for (int indexQGroup = 0; indexQGroup < total; indexQGroup++)
+                            var itemQGroup = lstQnaGroup[indexQGroup];
+                            var lstAnswer = itemQGroup.Answers.ToList();
+                            var lstQuestion = itemQGroup.Questions.ToList();
+                            string postbackAnswer = String.Empty;
+                            if (lstAnswer.Count() != 0 && lstAnswer.Count() > 1)
                             {
-                                var itemQGroup = lstQnaGroup[indexQGroup];
-                                var lstAnswer = itemQGroup.Answers.ToList();
-                                var lstQuestion = itemQGroup.Questions.ToList();
-                                string postbackAnswer = String.Empty;
-                                if (lstAnswer.Count() != 0 && lstAnswer.Count() > 1)
-                                {
-                                    StringBuilder sb = new StringBuilder();
+                                StringBuilder sb = new StringBuilder();
 
-                                    int totalAnswer = lstAnswer.Count();
-                                    postbackAnswer = "postback_answer_" + itemQGroup.ID;
-                                    sb.AppendLine("<category>");
-                                    sb.AppendLine("<pattern>"+ postbackAnswer + "</pattern>");
-                                    sb.AppendLine("<template>");
-                                    sb.AppendLine("<random>");
-                                    for (int indexA = 0; indexA < totalAnswer; indexA++)
+                                int totalAnswer = lstAnswer.Count();
+                                postbackAnswer = "postback_answer_" + itemQGroup.ID;
+                                sb.AppendLine("<category>");
+                                sb.AppendLine("<pattern>" + postbackAnswer + "</pattern>");
+                                sb.AppendLine("<template>");
+                                sb.AppendLine("<random>");
+                                for (int indexA = 0; indexA < totalAnswer; indexA++)
+                                {
+                                    var itemAnswer = lstAnswer[indexA];
+                                    if (!String.IsNullOrEmpty(itemAnswer.ContentText))
                                     {
-                                        var itemAnswer = lstAnswer[indexA];
-                                        if (!String.IsNullOrEmpty(itemAnswer.ContentText))
-                                        {
-                                            sb.AppendLine("<li>" + itemAnswer.ContentText + "</li>");
-                                        }
-                                        else
-                                        {
-                                            sb.AppendLine("<li>" + itemAnswer.CardPayload + "</li>");
-                                        }
-                                    }
-                                    sb.AppendLine("</random>");
-                                    sb.AppendLine("</template>");
-                                    sb.AppendLine("</category>");
-                                    //sw.WriteLine(sb.ToString());
-                                    sbFormDb.AppendLine(sb.ToString());
-                                }
-                                else
-                                {                                    
-                                    if (!String.IsNullOrEmpty(lstAnswer[0].ContentText))
-                                    {
-                                        postbackAnswer = lstAnswer[0].ContentText;
+                                        sb.AppendLine("<li>" + itemAnswer.ContentText + "</li>");
                                     }
                                     else
                                     {
-                                        postbackAnswer = lstAnswer[0].CardPayload;
+                                        sb.AppendLine("<li>" + itemAnswer.CardPayload + "</li>");
                                     }
                                 }
-                                if(lstQuestion.Count != 0)
+                                sb.AppendLine("</random>");
+                                sb.AppendLine("</template>");
+                                sb.AppendLine("</category>");
+                                //sw.WriteLine(sb.ToString());
+                                sbFormDb.AppendLine(sb.ToString());
+                            }
+                            else
+                            {
+                                if (!String.IsNullOrEmpty(lstAnswer[0].ContentText))
                                 {
-                                    for(int indexQ = 0; indexQ < lstQuestion.Count; indexQ++)
+                                    postbackAnswer = lstAnswer[0].ContentText;
+                                }
+                                else
+                                {
+                                    postbackAnswer = lstAnswer[0].CardPayload;
+                                }
+                            }
+                            if (lstQuestion.Count != 0)
+                            {
+                                for (int indexQ = 0; indexQ < _userSayStart.Length; indexQ++)
+                                {
+                                    var itemQ = lstQuestion[0];
+                                    string patternText = "";
+                                    string tempAnswer = postbackAnswer;
+                                    if (postbackAnswer.Contains("postback"))
                                     {
-                                        var itemQ = lstQuestion[indexQ];
-                                        string tempAnswer = "";
-                                        if (postbackAnswer.Contains("postback"))
-                                        {
-                                             tempAnswer = "<srai>"+ postbackAnswer+"</srai>";
-                                        }else
-                                        {
-                                            tempAnswer = postbackAnswer;
-                                        }
-                                        //sw.WriteLine("<category>");
-                                        //sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
-                                        //sw.WriteLine("<template>"+ tempAnswer + "</template>");
-                                        //sw.WriteLine("</category>");
-
-                                        sbFormDb.AppendLine("<category>");
-                                        sbFormDb.AppendLine("<pattern>" + itemQ.ContentText.ToUpper() + "</pattern>");
-                                        sbFormDb.AppendLine("<template>" + tempAnswer + "</template>");
-                                        sbFormDb.AppendLine("</category>");
+                                        tempAnswer = "<srai>" + postbackAnswer + "</srai>";
                                     }
+                                    //sw.WriteLine("<category>");
+                                    //sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
+                                    //sw.WriteLine("<template>"+ tempAnswer + "</template>");
+                                    //sw.WriteLine("</category>");
+                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDefault)
+                                    {
+                                        patternText = itemQ.ContentText.ToUpper();
+                                    }
+                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartFirst)
+                                    {
+                                        patternText = "* " + itemQ.ContentText.ToUpper();
+                                    }
+                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartLast)
+                                    {
+                                        patternText = itemQ.ContentText.ToUpper() + " *";
+                                    }
+                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDouble)
+                                    {
+                                        patternText = "* " + itemQ.ContentText.ToUpper() + " *";
+                                    }
+                                    sbFormDb.AppendLine("<category>");
+                                    sbFormDb.AppendLine("<pattern>" + patternText + "</pattern>");
+                                    sbFormDb.AppendLine("<template>" + tempAnswer + "</template>");
+                                    sbFormDb.AppendLine("</category>");
                                 }
                             }
                         }
-                        //sw.WriteLine("</aiml>");
-                        sbFormDb.AppendLine("</aiml>");
-                        //sw.Close();
-                        IsAiml = true;
+                    }
+                    //sw.WriteLine("</aiml>");
+                    sbFormDb.AppendLine("</aiml>");
+                    //sw.Close();
+                    IsAiml = true;
 
-                        if (aimlDb == null)
-                        {
-                            AIMLFile aimlFileDb = new AIMLFile();
-                            aimlFileDb.UserID = userID;
-                            aimlFileDb.BotID = botID;
-                            aimlFileDb.Src = nameFolderAIML;
-                            aimlFileDb.FormQnAnswerID = formQnaID;
-                            aimlFileDb.Extension = "aiml";
-                            aimlFileDb.Name = "Form-"+ formAlias;
-                            aimlFileDb.Content = sbFormDb.ToString();
-                            _aimlService.Create(aimlFileDb);
-                            _aimlService.Save();
-                        }
-                        else
-                        {
-                            aimlDb.Content = sbFormDb.ToString();
-                            _aimlService.Update(aimlDb);
-                            _aimlService.Save();
-                        }
-                    }
-                    catch (Exception ex)
+                    if (aimlDb == null)
                     {
-                        IsAiml = false;
-                        response = request.CreateResponse(HttpStatusCode.OK, IsAiml);
-                        return response;
+                        AIMLFile aimlFileDb = new AIMLFile();
+                        aimlFileDb.UserID = userID;
+                        aimlFileDb.BotID = botID;
+                        aimlFileDb.Src = nameFolderAIML;
+                        aimlFileDb.FormQnAnswerID = formQnaID;
+                        aimlFileDb.Extension = "aiml";
+                        aimlFileDb.Name = "Form-" + formAlias;
+                        aimlFileDb.Content = sbFormDb.ToString();
+                        _aimlService.Create(aimlFileDb);
+                        _aimlService.Save();
                     }
-                    finally
+                    else
                     {
+                        aimlDb.Content = sbFormDb.ToString();
+                        _aimlService.Update(aimlDb);
+                        _aimlService.Save();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    IsAiml = false;
+                    response = request.CreateResponse(HttpStatusCode.OK, IsAiml);
+                    return response;
+                }
+                finally
+                {
 
-                    }
+                }
                 //}
                 response = request.CreateResponse(HttpStatusCode.OK, IsAiml);
                 return response;
             });
         }
-
 
         [Route("getqnabyformid")]
         [HttpGet]

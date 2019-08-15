@@ -9,7 +9,8 @@ var qnaVm = {
     QuesContent: "",
     AnsContent: "",
     AreaName: "",
-    AreaID:""
+    AreaID:"",
+    BotID:""
 }
 $(document).ready(function () {
     // init data
@@ -35,31 +36,70 @@ $(document).ready(function () {
             show: true
         });
     })
+
+    // action form modal area
+    $("#btn-open-form-area").off().on('click', function () {
+        $("#modalCreateArea").modal({
+            backdrop: 'static',
+            keyboard: true,
+            show: true
+        });
+        $("#addQnAModal").modal('hide');
+        getListArea();
+       
+    })
+    $("#btnSaveArea").off().on('click', function () {
+        var areaName = $("#txtAreaName").val();
+        if (areaName.trim() == "")
+            return false;
+        var param = {
+            Name: areaName,
+            BotID: $("#botId").val()
+        }
+        var svr = new AjaxCall("api/modulesearchengine/createupdatearea", JSON.stringify(param));
+        svr.callServicePOST(function (data) {
+            console.log(data)
+            getListArea();
+        });
+    })
+    $("#btnCloseArea").off().on('click', function () {
+        $("#addQnAModal").modal('show');
+        $("#modalCreateArea").modal('hide');
+    })
+    $("#close-model-area").off().on('click', function () {
+        $("#addQnAModal").modal('show');
+        $("#modalCreateArea").modal('hide');
+    })
+
+
     // writing show suggest
     $("#search-terms").keyup(function (e) {
         if (e.keyCode == 40 || e.keyCode == 38) {
             $(this).focusToEnd();
             return false;
         }
-
         clearTimeout(debounceTimeout);
-
         debounceTimeout = setTimeout(getSuggest($(this).val()), 500);
-
-
     })
-
     // select number show table
     $("select#results-pp").change(function () {
         pageSize = $(this).children("option:selected").val();
         getDataTable(1, pageSize);
     });
-
     if (typeof (Storage) !== "undefined") {
         sessionStorage.setItem("_search", "");
     } else {
         console.log("Sorry, your browser does not support Web Storage...");
     }
+
+    //load area
+    var param = {
+        botId:$("#botId").val()
+    }
+    //param = JSON.stringify(param);
+    var urlArea = "api/modulesearchengine/getareabybotid";
+    var element = "#cboArea";
+    LoadComboBoxWithServices(element, urlArea, param, "ID", "Name", null, "--- Lĩnh vực ---", false, null, function () { }, null);
 })
 
 loadToolEditor = function () {
@@ -70,11 +110,12 @@ loadToolEditor = function () {
 function getDataTable(page, pageSize) {
     var param = {
         page: page,
-        pageSize: pageSize
+        pageSize: pageSize,
+        botId: $("#botId").val()
     }
     //param = JSON.stringify(param)
     $.ajax({
-        url: _Host + 'api/modulecategory/getallqna',
+        url: _Host + 'api/modulesearchengine/getallqna',
         contentType: 'application/json; charset=utf-8',
         data: param,
         type: 'GET',
@@ -128,11 +169,34 @@ function search(content) {
     });
 }
 
+function getListArea() {
+    var param = {
+        BotID: $("#botId").val()
+    }
+    var svr = new AjaxCall("api/modulesearchengine/getareabybotid", param);
+    svr.callServiceGET(function (data) {
+        console.log(data)
+        if (data.length != 0) {
+            var html = '';
+            $.each(data, function (index, value) {
+                index = index + 1;
+                html += '<tr>';
+                html += '<td>' + index + '</td>';
+                html += '<td>' + value.Name + '</td>';
+                html += '<td><a href="#" class="btn btn-primary action-area"><i class="fa fa-edit"></i></a><a href="#" class="btn btn-primary action-area"><i class="fa fa-trash"></i></a></td>';
+                html += '<tr/>';
+            })
+            $("#table-data-area").empty().append(html)
+        }
+    });
+}
+
 function addQnA() {
     var questionContent = $("#txtQuestion").data("kendoEditor").value();//$("#txtQuestion").val();
     var answerContent = $("#txtAnswer").data("kendoEditor").value();//$("#txtAnswer").val(); 
     var areaName = $("#AreaID option:selected").text().replace("----- Tất cả -----", "");
     var areaID = $("#AreaID").val();
+    var botID = $("#botId").val();
     
     if (questionContent == "") return;
     if (questionContent == "" && answerContent == "") return;
@@ -142,7 +206,8 @@ function addQnA() {
     qnaVm.AreaName = areaName;
     qnaVm.QuesID = $("#quesID").val();
     qnaVm.AnsID = $("#ansID").val();
-    var svr = new AjaxCall("api/modulecategory/createupdateqna", JSON.stringify(qnaVm));
+    qnaVm.BotID = botID;
+    var svr = new AjaxCall("api/modulesearchengine/createupdateqna", JSON.stringify(qnaVm));
     svr.callServicePOST(function (data) {
         if (data) {
             $("#addQnAModal").modal('hide');
@@ -170,7 +235,7 @@ function viewQnA(quesId, ansId) {
     var params = {
         quesId: quesId
     }
-    var svr = new AjaxCall("api/modulecategory/getqnabyquesid", params);
+    var svr = new AjaxCall("api/modulesearchengine/getqnabyquesid", params);
     svr.callServiceGET(function (data) {
         $("#quesID").val(data.QuesID);
         $("#ansID").val(data.AnsID);

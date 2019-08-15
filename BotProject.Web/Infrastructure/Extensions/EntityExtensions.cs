@@ -49,6 +49,8 @@ namespace BotProject.Web.Infrastructure.Extensions
             ques.QuestionGroupID = quesVm.QuestionGroupID;
             ques.IsThatStar = false;
             ques.ContentText = quesVm.ContentText.Trim();
+            //ques.IsSendAPI = true;
+            ques.Target = quesVm.Target;
         }
 
         public static void UpdateQuestionIsStar(this Question ques, QuestionViewModel quesVm)
@@ -58,6 +60,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             ques.QuestionGroupID = quesVm.QuestionGroupID;
             ques.IsThatStar = quesVm.IsThatStar;
             ques.ContentText = quesVm.ContentText.Trim() + " *";
+            ques.Target = quesVm.Target;
         }
 
         public static void UpdateQuestionIsStar2(this Question ques, QuestionViewModel quesVm)
@@ -67,6 +70,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             ques.QuestionGroupID = quesVm.QuestionGroupID;
             ques.IsThatStar = quesVm.IsThatStar;
             ques.ContentText = "* " + quesVm.ContentText.Trim() + " *";
+            ques.Target = quesVm.Target;
         }
 
         public static void UpdateQuestionIsStar3(this Question ques, QuestionViewModel quesVm)
@@ -76,6 +80,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             ques.QuestionGroupID = quesVm.QuestionGroupID;
             ques.IsThatStar = quesVm.IsThatStar;
             ques.ContentText = "* " + quesVm.ContentText.Trim();
+            ques.Target = quesVm.Target;
         }
 
         public static void UpdateAnswer(this Answer answer, AnswerViewModel answerVm)
@@ -205,6 +210,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             mdQuesDb.ContentText = Regex.Replace(HttpUtility.HtmlDecode(mdQnA.QuesContent), @"<(.|\n)*?>", "");
             mdQuesDb.AreaID = mdQnA.AreaID;
             mdQuesDb.CreatedDate = DateTime.Now;
+            mdQuesDb.BotID = mdQnA.BotID;
         }
         public static void UpdateModuleAnswer(this MdAnswer mdAnsDb, ModuleQnAViewModel mdQnA)
         {
@@ -240,6 +246,15 @@ namespace BotProject.Web.Infrastructure.Extensions
             aiml.Extension = aimlVm.Extension;
             aiml.Content = aimlVm.Content;
             aiml.UserID = aimlVm.UserID;
+        }
+        #endregion
+
+        #region MdArea
+        public static void UpdateMdArea(this MdArea mdArea, MdAreaViewModel mdAreaVm)
+        {
+            mdArea.Name = mdAreaVm.Name;
+            mdArea.Alias = Common.HelperMethods.ToUnsignString(mdAreaVm.Name);
+            mdArea.BotID = mdAreaVm.BotID;
         }
         #endregion
     }

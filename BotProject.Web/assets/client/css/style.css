@@ -8678,3 +8678,17 @@ label.switchery-xs {
     margin-top: -5px;
     margin-bottom: -3px;
 }
+
+.breadcrumb{
+    padding: unset;
+}
+.breadcrumb-item{
+    font-size:13pt;
+}
+.breadcrumb-item .fa-home{
+    color:darkblue;
+}
+.breadcrumb-item .fa-home:before{
+    margin-right:10px;
+    color:darkblue;
+}

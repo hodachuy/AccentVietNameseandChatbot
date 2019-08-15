@@ -31,11 +31,58 @@ namespace BotProject.Web
             config.SuppressDefaultHostAuthentication();
             config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
 
+            //handle session
+
+            var httpControllerRouteHandler = typeof(HttpControllerRouteHandler).GetField("_instance",
+                                            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+
+            if (httpControllerRouteHandler != null)
+            {
+                httpControllerRouteHandler.SetValue(null,
+                                                    new Lazy<HttpControllerRouteHandler>(() => new SessionHttpControllerRouteHandler(), true));
+            }
+
+
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+
+            //RouteTable.Routes.MapHttpRoute(
+            //    name: "DefaultApi",
+            //    routeTemplate: "api/{controller}/{id}",
+            //    defaults: new { id = RouteParameter.Optional }
+            //).RouteHandler = new SessionStateRouteHandler();
+        }
+
+        //public class SessionableControllerHandler : HttpControllerHandler, IRequiresSessionState
+        //{
+        //    public SessionableControllerHandler(RouteData routeData)
+        //        : base(routeData)
+        //    { }
+        //}
+
+        //public class SessionStateRouteHandler : IRouteHandler
+        //{
+        //    IHttpHandler IRouteHandler.GetHttpHandler(RequestContext requestContext)
+        //    {
+        //        return new SessionableControllerHandler(requestContext.RouteData);
+        //    }
+        //}
+        public class SessionControllerHandler : HttpControllerHandler, IRequiresSessionState
+        {
+            public SessionControllerHandler(RouteData routeData)
+                : base(routeData)
+            { }
+        }
+
+        public class SessionHttpControllerRouteHandler : HttpControllerRouteHandler
+        {
+            protected override IHttpHandler GetHttpHandler(RequestContext requestContext)
+            {
+                return new SessionControllerHandler(requestContext.RouteData);
+            }
         }
     }
 }

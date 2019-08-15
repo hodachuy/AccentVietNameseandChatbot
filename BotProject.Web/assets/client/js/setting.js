@@ -97,6 +97,13 @@ $(document).ready(function () {
         parent.$("#frame_chat_setting").contents().find("path").css('fill', $("#formColor").val());
         parent.$("#frame_chat_setting").contents().find("g").css('fill', $("#formColor").val());
         parent.$("#frame_chat_setting").contents().find("._4fsj").css('color', $("#formColor").val());
+
+
+        parent.$("#frame_chat_setting").contents().find("._1qd1_close_form circle").css('stroke', 'null');
+        parent.$("#frame_chat_setting").contents().find("._1qd1_close_form g").css('fill', 'null');
+
+        parent.$("#frame_chat_setting").contents().find("._1qd1_close_form g.g-bg-close").css('fill', 'rgba(0, 0, 0, .1)');
+        parent.$("#frame_chat_setting").contents().find("._1qd1_close_form g.g-close").css('fill', '#333');
     },1500)
 })
 
