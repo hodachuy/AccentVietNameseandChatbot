@@ -34,5 +34,7 @@ namespace BotProject.Model.Models
         public int BotID { set; get; }
 
         public string UserID { set; get; }
+
+        public string StopWord { set; get; }
     }
 }

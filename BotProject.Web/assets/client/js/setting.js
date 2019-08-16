@@ -1,4 +1,7 @@
-﻿var BotSetting = {
+﻿var checkAlert = false;
+var txtError = 'Lỗi',
+	txtAlert = 'Bạn có những từ khóa giống nhau!';
+var BotSetting = {
     ID: $("#settingID").val(),
     FormName: $("#formName").val(),
     BotID: $("#botID").val(),
@@ -9,6 +12,7 @@
     IsActiveIntroductory: "",
     IsMDSearch: $('#IsMdSearch').val(),
     UserID: $('#userID').val(),
+    StopWord:$('#stopWord').val(),
 }
 $('.demo').each(function () {
     $(this).minicolors({
@@ -78,6 +82,16 @@ $(document).ready(function () {
         $('#card-introduction').empty().append(card());
         $("#sltCard").val(BotSetting.CardID)
     }
+    if (BotSetting.StopWord != "") {
+        var arrStopWord = BotSetting.StopWord.split(",");
+        console.log(arrStopWord)
+        var html = '';
+        $.each(arrStopWord, function (index,value) {
+            html += '<li class="addedTag ">' + value + '<span class="tagRemove">x</span><input type="hidden" value="' + value + '"></li>';
+        })
+        $("#ulTags").prepend(html);
+    }
+
 
     parent.$("#frame_chat_setting").contents().find("#formSettingName").html(BotSetting.FormName);
 
@@ -104,10 +118,24 @@ $(document).ready(function () {
 
         parent.$("#frame_chat_setting").contents().find("._1qd1_close_form g.g-bg-close").css('fill', 'rgba(0, 0, 0, .1)');
         parent.$("#frame_chat_setting").contents().find("._1qd1_close_form g.g-close").css('fill', '#333');
-    },1500)
+    }, 1500)
+
+    // stop word
+    initEventInputStopWord();
 })
 
 $("#btnSaveSettings").on('click', function () {
+    var strTag = "";
+    if ($("ul#ulTags li"). length > 1) {
+        $(".addedTag").each(function (index) {
+            var valTag = decodeEntities($(this).children('input').val());
+            strTag += valTag.trim() + ",";
+        })
+        if (strTag.length > 0) {
+            strTag = strTag.replace(/(^,)|(,$)/g, "");
+        }
+    }
+    BotSetting.StopWord = strTag;
     BotSetting.TextIntroductory = $("#txtIntro").html();
     BotSetting.IsMDSearch = $("#statusSearch").val();
     BotSetting.Logo = $(".file-preview-image").attr('src').replace("" + _Host + "", "");
@@ -144,3 +172,134 @@ $("#startedButton").change(function () {
         $('#card-introduction').empty().append(card());
     }
 });
+
+
+function initEventInputStopWord() {
+    $('.wrap-content .addedTag').each(function (index, el) {
+        if (!$(this).hasClass('error-tag')) {
+            if ($('.wrap-content input[type="hidden"][value="' + $(this).children('input').val() + '"]').length > 1) {
+                $(this).addClass('error-tag');
+            }
+        }
+    });
+
+    $('.wrap-content').on('click', '.tagRemove', function (event) {
+        event.preventDefault();
+        if ($(this).parent().hasClass('error-tag')) {
+            var val = $(this).siblings('input').val();
+            if ($('.wrap-content input[type="hidden"][value="' + val + '"]').length <= 2) {
+                $('.wrap-content input[type="hidden"][value="' + val + '"]').parent('.addedTag').removeClass('error-tag');
+            }
+        }
+
+        $(this).parent().remove();
+    });
+
+    $('.wrap-content').on('click', 'ul.tags', function (event) {
+        $(this).find('.search-field').show();
+        $(this).find('.search-field').focus();
+    });
+
+    $('.wrap-content').on('keypress', '.search-field', function (event) {
+        var elParent = $(this).parents('.tags');
+        if (event.which == '13') {
+            if (($(this).val().trim() != '') && ($(".tags .addedTag input[value=\"" + $(this).val().trim() + "\"]").length == 0)) {
+                $("<li class=\"addedTag\">" + $(this).val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).val().toLowerCase().trim() + "\"></li>").insertBefore($(this).parents('.tagAdd'));
+
+                var attr = $(this).attr('attr-data');
+                if (typeof attr !== typeof undefined && attr !== false) {
+                    if ($('.wrap-content input[value="' + attr + '"]').length <= 1) {
+                        $('.wrap-content input[value="' + attr + '"]').parent('.addedTag').removeClass('error-tag');
+                    }
+                    $(this).removeAttr('attr-data');
+                }
+
+                $(this).val('');
+                $(this).parents('.tags').append($(this).parent().clone());
+                $(this).parent().remove();
+                elParent.find('.search-field').focus();
+            } else if ($(".tags .addedTag input[value=\"" + $(this).val().trim() + "\"]").length > 0) {
+                if (!checkAlert) {
+                    checkAlert = true;
+                    bootbox.alert({
+                        message: txtAlert,
+                        callback: function () {
+                            checkAlert = false;
+                        }
+                    });
+                }
+            } else {
+                $(this).val('');
+            }
+        }
+    });
+
+    $('.wrap-content').on('click', '.addedTag', function (event) {
+        event.preventDefault();
+        var elParent = $(this).parents('.tags');
+        var elSearch = $(this).parents('.tags').find('.tagAdd.taglist .search-field').val();
+
+        if (typeof elSearch != 'undefined') {
+            if ($(this).parents('.tags').find('.tagAdd.taglist .search-field').val().trim() == '') {
+                $(this).parents('.tags').find('.tagAdd.taglist').remove();
+            } else {
+                var html1 = "<li class=\"addedTag\">" + $(this).parents('.tags').find('.tagAdd.taglist .search-field').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).parents('.tags').find('.tagAdd.taglist .search-field').val().toLowerCase().trim() + "\" data-ques-id=\"\" data-ques-symbol=\"\"></li>";
+                $(this).parents('.tags').find('.tagAdd.taglist').replaceWith(html1);
+            }
+
+            var val = $(this).children('input').val().trim();
+            var html = '<li class="tagAdd taglist"><input type="text" autocomplete="off" attr-data="' + val + '" class="search-field" value="" style="display: inline-block;"></li>';
+            $(this).replaceWith(html);
+            elParent.find('.search-field').focus().val(val);
+        }
+
+    });
+
+    $('.wrap-content').on('focusout', '.tagAdd.taglist', function (event) {
+        var elParent = $(this).parents('.tags');
+        if ($(this).children('input').val().trim() != '') {
+            var classTag = '';
+            if ($(".tags .addedTag input[value=\"" + $(this).children('input').val().trim() + "\"]").length > 0) {
+                if (!checkAlert) {
+                    checkAlert = true;
+                    bootbox.alert({
+                        message: txtAlert,
+                        callback: function () {
+                            checkAlert = false;
+                        }
+                    });
+                }
+                classTag = 'error-tag';
+            }
+            $("<li class=\"addedTag " + classTag + "\">" + $(this).children('input').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).children('input').val().toLowerCase().trim() + "\"></li>").insertBefore($(this));
+            $(this).children('input').removeAttr('attr-data');
+            $(this).children('input').val('');
+            $(this).parents('.tags').append($(this).clone());
+            $(this).remove();
+            elParent.find('.search-field').focus();
+        } else {
+            $(this).children('input').val('');
+        }
+    })
+}
+
+var decodeEntities = (function () {
+    // this prevents any overhead from creating the object each time
+    var element = document.createElement('div');
+    function decodeHTMLEntities(str) {
+        if (str && typeof str === 'string') {
+            // strip script/html tags
+            str = str.replace(/<script[^>]*>([\S\s]*?)<\/script>/gmi, '');
+            str = str.replace(/<\/?\w(?:[^"'>]|"[^"]*"|'[^']*')*>/gmi, '');
+            // replace special character in string
+            str = str.replace(/[&\/\\#,+()$~%.'":?<>!]/g, ' ');///[&\/\\#,+()$~%.'":*?<>!]/g
+            str = str.replace(/  +/g, ' ');
+            //console.log(str)
+            element.innerHTML = str;
+            str = element.textContent;
+            element.textContent = '';
+        }
+        return str;
+    }
+    return decodeHTMLEntities;
+})();

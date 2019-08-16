@@ -93,6 +93,7 @@ namespace BotProject.Web.Controllers
             _botService.loadAIMLFromDatabase(lstAIMLVm);
 
             UserBotViewModel userBot = new UserBotViewModel();
+            userBot.StopWord = settingVm.StopWord;
             userBot.ID = Guid.NewGuid().ToString();
             userBot.BotID = botId;
             _user = _botService.loadUserBot(userBot.ID);
@@ -197,6 +198,19 @@ namespace BotProject.Web.Controllers
                 _user.Predicates.SettingNames = userBot.SettingDicstionary.SettingNames;
                 _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
                 _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
+
+                // Lọc từ cấm
+                if (!String.IsNullOrEmpty(userBot.StopWord))
+                {
+                    string[] arrStopWord = userBot.StopWord.Split(',');
+                    if(arrStopWord.Length != 0)
+                    {
+                        foreach(var w in arrStopWord)
+                        {
+                            text = Regex.Replace(text, w, String.Empty).Trim();
+                        }
+                    }
+                }
 
                 // Module lấy thông tin bệnh
                 #region Module lấy thông tin bệnh
@@ -435,7 +449,7 @@ namespace BotProject.Web.Controllers
                 #endregion
 
 
-                // Lấy target from knowledge base QnA trained
+                // Lấy target from knowledge base QnA trained mongodb
                 if(text.Contains("postback") == false || text.Contains("module") == false)
                 {
                     string target = _apiNLR.GetPrecidictTextClass(text, valBotID);

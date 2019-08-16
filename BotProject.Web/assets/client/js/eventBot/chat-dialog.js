@@ -103,24 +103,20 @@ $(document).ready(function () {
         $("._4bqf_btn_submit").show();
         if (e.which == 13) {
             e.preventDefault(e);
-            if (text !== "") {
+            if (text.trim() !== "") {
                 $("._4bqf_btn_submit").hide();
-                $(this).val('');
-                
-                submitMessage(text, '');
-                
+                $(this).val('');                
+                submitMessage(text, '');              
             }
         }
     })
     $('body').on('click', '._4bqf_btn_submit', function (e) {
         var text = $("#58al-input-text").val();
-        if (text !== "") {
+        if (text.trim() !== "") {
             submitMessage(text, '');
         }
         $('#58al-input-text').val('');
     })
-
-
     $('body').click(function (e) {
         if (!$(e.target).closest('._4xko').length) {
             $('.datebreak').removeClass('hide').addClass('hide');

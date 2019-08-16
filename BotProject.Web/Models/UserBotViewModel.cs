@@ -11,6 +11,7 @@ namespace BotProject.Web.Models
     {
         public string ID { set; get; }
         public string BotID { set; get; }
+        public string StopWord { set; get;}
         public SettingsDictionaryViewModel SettingDicstionary { set; get; }
     }
     [Serializable]

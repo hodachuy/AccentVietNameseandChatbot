@@ -43,6 +43,87 @@
     .breadcrumb{
         padding: .75rem 1rem;
     }
+     #pageSetting .tags {
+        background: none repeat scroll 0 0 #fff;
+        border: 1px solid #ddd;
+        display: table;
+        padding: 3px 0 0 0;
+        width: 100%;
+        list-style: none;
+        margin-bottom: 0;
+        min-height: 35px;
+        border-radius: 3px 0 0 3px;
+    }
+
+    #pageSetting .input-group.has-error .tags {
+        border-color: #ed4956;
+    }
+
+    #pageSetting .tags li.tagAdd,
+    #pageSetting .tags li.addedTag {
+        float: left;
+        margin-left: 1.5px;
+        margin-right: 1.5px;
+        margin-bottom: 3px;
+    }
+
+    #pageSetting .tags li.addedTag {
+        border-radius: 2px;
+        color: #333;
+        padding: 0.25em;
+        text-transform: lowercase;
+        border: 1px solid cornflowerblue;
+    }
+
+        #pageSetting .tags li.addedTag.error-tag {
+            background-color: #ffb9b4;
+            color: #242729;
+        }
+
+    #pageSetting .tags input,
+    #pageSetting li.addedTag {
+        border: 1px solid transparent;
+        border-radius: 2px;
+        box-shadow: none;
+        display: block;
+        padding: 0.5em;
+        cursor: pointer;
+    }
+
+    #pageSetting .tags input {
+        text-transform: lowercase;
+    }
+
+        #pageSetting .tags input:hover {
+            border: 1px solid #000;
+        }
+
+    #pageSetting span.tagRemove {
+        cursor: pointer;
+        display: inline-block;
+        padding-left: 0.5em;
+    }
+
+        #pageSetting span.tagRemove:hover {
+            color: cornflowerblue;
+        }
+
+    #pageSetting .tags input.search-field {
+        outline: none;
+        border: none;
+        text-transform: lowercase;
+    }
+
+    #pageSetting .tags input.search-field {
+        padding: 0.25em 0.5em;
+    }
+
+    #pageSetting .input-group-addon {
+        border-radius: 0 3px 3px 0;
+    }
+    .wrap-content {
+        background-color: unset;
+}
 </style>
 <input type="hidden" id="userID" value="@ViewBag.UserID"/>
 <input type="hidden" id="settingID" value="@Model.ID"/>
@@ -51,8 +132,9 @@
 <input type="hidden" id="cardID" value="@Model.CardID"/>
 <input type="hidden" id="isMdSearch" value="@Model.IsMDSearch"/>
 <input type="hidden" id="isActiveIntroduct" value="@Model.IsActiveIntroductory"/>
+<input type="hidden" id="stopWord" value="@Model.StopWord"/>
 
-<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="pageSetting">
     <div class="card">
         <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
             <ol class="breadcrumb">
@@ -60,7 +142,7 @@
                 <li class="breadcrumb-item active">Cài đặt</li>
             </ol>
             <div class="toolbar ml-auto p-r-10 p-t-10">
-                <button href="javascript:void(0);" class="btn btn-success btn-sm" id="btnSaveSettings"><i class="fas fa-save"></i> Lưu</button>
+                <button href="javascript:void(0);" class="btn btn-primary btn-sm" id="btnSaveSettings" style="background-color:darkblue;border-color:darkblue"><i class="fas fa-save"></i> Lưu</button>
             </div>
         </div>
         <div class="card-body">
@@ -146,6 +228,18 @@
                         <span class="text-bold mb0" style="display: inline-block;margin-left: 10px;">
                             Sử dụng module tìm kiếm khi không tìm thấy cặp hỏi đáp trong rule
                         </span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Lọc từ cấm</label>
+                    <div class="col-12 col-sm-8 wrap-content">
+                        <div class="input-group">
+                            <ul class="tags checkvalid" id="ulTags">
+                                <li class="tagAdd taglist">
+                                    <input type="text" class="search-field">
+                                </li>
+                            </ul>
+                        </div>            
                     </div>
                 </div>
             </form>

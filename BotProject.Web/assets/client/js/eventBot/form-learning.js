@@ -46,6 +46,15 @@ $(document).ready(function () {
         $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
     });
 
+    $('body').on('change','.target-field',function(e){
+        if($(this).val().trim().length > 1){
+            var target = stringToSlug($(this).val());
+            $(this).val(target);
+        }else{
+            $(this).val('');
+        }
+    })
+
     //init event form Qna
     var checkAlert = false;
     $('body').on('click', '.moveTop', function (event) {
@@ -508,7 +517,7 @@ $(document).ready(function () {
                     if ($(this).find('select.selectKeyword').length > 0) {
                         cardID = $(this).find('select.selectKeyword').val();
                         console.log(cardID)
-                        if (cardID == '' || cardID == undefined) {
+                        if (cardID == '' || cardID == undefined || cardID == null) {
                             $(this).addClass('has-error');
                             checkvalid = false;
                         } else {
@@ -532,11 +541,11 @@ $(document).ready(function () {
             $('.titleLearning').parent().removeClass('has-error');
         }
 
-        $('.wrap-content .panel-flat').each(function (index, el) {
-            if (!$(this).find('.randomText').is(':checked')) {
-                $(this).find('.wrbutton .bt').not(":eq(0)").remove();
-            }
-        });
+        //$('.wrap-content .panel-flat').each(function (index, el) {
+        //    if (!$(this).find('.randomText').is(':checked')) {
+        //        $(this).find('.wrbutton .bt').not(":eq(0)").remove();
+        //    }
+        //});
         // End Validate Form
         if (checkvalid) {
             var arData = [];
@@ -546,8 +555,8 @@ $(document).ready(function () {
                 var userSays = [];
                 var userExactly = $(this).find('.userSay .styled').is(':checked');
                 var targetText = $(this).find('.metaTarget').eq(0).find('input').val();
-                console.log(targetText)
-                console.log($(this).find('.metaTarget'))
+                //console.log(targetText)
+                //console.log($(this).find('.metaTarget'))
                 //userExactly = userExactly ? 1 : 0;
                 $(this).find('.tags .addedTag').each(function (index1, el1) {
                     var question = {
@@ -573,6 +582,7 @@ $(document).ready(function () {
                     } else {
                         reply = $(this).find('input[type=text]').val();
                     }
+                    console.log(reply)
                     var answer = {
                         'ContentText': reply,
                         'CardID': cardID,
@@ -610,7 +620,7 @@ $(document).ready(function () {
 
             var svr = new AjaxCall(urlQnACreate, JSON.stringify(formQnAVm));
             svr.callServicePOST(function (data) {
-                console.log(data)
+                //console.log(data)
                 if (data == true) {
                     // refresh load new data updated
                     new ActionFormQnA().GetQnAnswerById();
@@ -652,7 +662,7 @@ ActionFormQnA = function () {
         };
         var svr = new AjaxCall(urlQnAGet, param);
         svr.callServiceGET(function (data) {
-            console.log(data)
+            //console.log(data)
             if (data.length != 0) {
                 TypeAction = "Update";
                 var templateData = templateFormQnA(data);
@@ -1067,7 +1077,7 @@ var decodeEntities = (function () {
             // replace special character in string
             str = str.replace(/[&\/\\#,+()$~%.'":?<>!]/g, ' ');///[&\/\\#,+()$~%.'":*?<>!]/g
             str = str.replace(/  +/g, ' ');
-            console.log(str)
+            //console.log(str)
             element.innerHTML = str;
             str = element.textContent;
             element.textContent = '';
@@ -1079,6 +1089,20 @@ var decodeEntities = (function () {
     return decodeHTMLEntities;
 })();
 
+function stringToSlug(str) {
+    // remove accents
+    var from = "àáãảạăằắẳẵặâầấẩẫậèéẻẽẹêềếểễệđùúủũụưừứửữựòóỏõọôồốổỗộơờớởỡợìíỉĩịäëïîöüûñç",
+        to = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeduuuuuuuuuuuoooooooooooooooooiiiiiaeiiouunc";
+    for (var i = 0, l = from.length; i < l; i++) {
+        str = str.replace(RegExp(from[i], "gi"), to[i]);
+    }
+
+    str = str.toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\-]/g, '-')
+        .replace(/-+/g, '-');
+    return str;
+}
 
 (function (window) {
     window.htmlentities = {

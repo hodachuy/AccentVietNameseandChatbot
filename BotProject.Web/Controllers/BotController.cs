@@ -91,6 +91,10 @@ namespace BotProject.Web.Controllers
             var settingDb = _settingService.GetSettingByBotID(id);
             var lstCard = _cardService.GetListCardByBotID(id);
             var settingVm = Mapper.Map<Setting, BotSettingViewModel>(settingDb);
+            if (String.IsNullOrEmpty(settingVm.StopWord))
+            {
+                settingVm.StopWord = "bị,bởi,cả,các,cái,cần,càng,chỉ,chiếc,cho,chứ,chưa,chuyện,có,có thể,cứ,của,cùng,cũng,đã,đang,đây,để,đến nỗi,đều,điều,này,nên,nếu,ngay,nhiều,như,những,nhưng,nơi,nữa,phải,qua,ra,rằng,rất,rồi,sau,sẽ,so,sự,tại,theo,thì,trên,trước,từ,từng,và,vẫn,vào,vậy,vì,việc,với,vừa";
+            }
             ViewBag.Cards = lstCard;
             ViewBag.BotName = name;
             ViewBag.UserID = UserInfo.Id;
