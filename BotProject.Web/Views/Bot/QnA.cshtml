@@ -74,8 +74,16 @@
         margin-left: 10px;
     }
     .target-field{
-        border: 1px solid #ddd;
-        padding: 10px 0px 3px 5px;
+        display: block;
+        width: 100%;
+        font-size: 14px;
+        line-height: 1.42857143;
+        color: #71748d;
+        background-color: #fff;
+        background-image: none;
+        border: 1px solid #d2d2e4;
+        border-radius: 2px;
+        padding: 5px 0px 5px 10px;
     }
         .breadcrumb{
         padding: .75rem 1rem;
@@ -186,12 +194,12 @@
                                     <i class="fa fa-remove icon-bin rmText"></i>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">
-                                <i class="icon-plus22"></i> Thêm câu trả lời
+                            <button type="button" class="btn btn-rounded mt20 w100 hidden">
+                                <i class="fa fa-plus"></i> Thêm câu trả lời
                             </button>
                         </div>
                         <div class="col-lg-2 metaTarget">
-                            <label>Target</label>
+                            <label>Ý định</label>
                             <div class="input-group">
                                 <input type="text" class="target-field" data-target-id="">
                             </div>
@@ -256,6 +264,6 @@
             var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>'; return htmlListModule;
         }
     </script>
-    <script src="~/assets/client/js/eventBot/form-learning.js"></script>
+    <script src="~/assets/client/js/eventBot/form-learning-qna.js"></script>
 }
 

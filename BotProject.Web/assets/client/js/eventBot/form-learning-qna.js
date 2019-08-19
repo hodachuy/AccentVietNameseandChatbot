@@ -178,10 +178,10 @@ $(document).ready(function () {
                                     '<i class="fa fa-remove icon-bin rmText"></i>' +
                                 '</div>' +
                             '</div>' +
-                            '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden"><i class="icon-plus22"></i> ' + txtbt + '</button>' +
+                            '<button type="button" class="btn btn-rounded mt20 w100 hidden"><i class="fa fa-plus"></i> ' + txtbt + '</button>' +
                         '</div>' +
                         '<div class="col-lg-2 metaTarget">'+
-                            '<label>Target</label>'+
+                            '<label>Ý định</label>' +
                             '<div class="input-group">'+
                                 '<input type="text" class="target-field" data-target-id="">'+
                             '</div>'+
@@ -529,8 +529,6 @@ $(document).ready(function () {
                 if ($(this).find('.tags .addedTag').length == 0) {
                     checkvalid = false;
                 }
-
-
             }
         });
 
@@ -744,8 +742,8 @@ ActionFormQnA = function () {
                     html += '<i class="fa fa-remove icon-bin rmText"></i>';
                     html += '</div>';
                     html += '</div>';
-                    html += '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
-                    html += '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
+                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời';
                     html += '</button>';
                 } else { //card
                     html += '<label class="learn_switchbot">';
@@ -769,8 +767,8 @@ ActionFormQnA = function () {
                     html += '<i class="fa fa-remove icon-bin rmText"></i>';
                     html += '</div>';
                     html += '</div>';
-                    html += '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
-                    html += '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
+                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời';
                     html += '</button>';
                     var itemCard = {
                         answerID: itemAnswer.ID,
@@ -847,19 +845,19 @@ ActionFormQnA = function () {
                 }
                 html += '</div>';
                 if (totalAnswer >= 5) {
-                    html += '<button type="button" class="btn btn-success btn-rounded mt20 w100 hidden">';
-                    html += '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
+                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời';
                     html += '</button>';
                 } else {
-                    html += '<button type="button" class="btn btn-success btn-rounded mt20 w100">';
-                    html += '<i class="icon-plus22"></i> Thêm câu trả lời';
+                    html += '<button type="button" class="btn btn-rounded mt20 w100">';
+                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời';
                     html += '</button>';
                 }
             }
             html += '</div>';
 
             html +='<div class="col-lg-2 metaTarget">';
-            html +='    <label>Target</label>';
+            html += '    <label>Ý định</label>';
             html +='    <div class="input-group">';
             html += '               <input type="text" class="target-field" data-target-id="" value="' + (targetText == null ? "" : targetText) + '">';
             html +='    </div>';
@@ -945,7 +943,6 @@ function fn_htmlPaging(countData, limitpage) {
     return htmlPag;
 }
 function initEventQnA() {
-
     $('.wrap-content .addedTag').each(function (index, el) {
         if (!$(this).hasClass('error-tag')) {
             if ($('.wrap-content input[type="hidden"][value="' + $(this).children('input').val() + '"]').length > 1) {
@@ -953,7 +950,6 @@ function initEventQnA() {
             }
         }
     });
-
     $('.wrap-content').on('click', '.tagRemove', function (event) {
         event.preventDefault();
         if ($(this).parent().hasClass('error-tag')) {
@@ -962,10 +958,8 @@ function initEventQnA() {
                 $('.wrap-content input[type="hidden"][value="' + val + '"]').parent('.addedTag').removeClass('error-tag');
             }
         }
-
         $(this).parent().remove();
     });
-
     $('.wrap-content').on('click', 'ul.tags', function (event) {
         $(this).find('.search-field').show();
         $(this).find('.search-field').focus();
@@ -984,7 +978,6 @@ function initEventQnA() {
                     }
                     $(this).removeAttr('attr-data');
                 }
-
                 $(this).val('');
                 $(this).parents('.tags').append($(this).parent().clone());
                 $(this).parent().remove();
@@ -1009,7 +1002,6 @@ function initEventQnA() {
         event.preventDefault();
         var elParent = $(this).parents('.tags');
         var elSearch = $(this).parents('.tags').find('.tagAdd.taglist .search-field').val();
-
         if (typeof elSearch != 'undefined') {
             if ($(this).parents('.tags').find('.tagAdd.taglist .search-field').val().trim() == '') {
                 $(this).parents('.tags').find('.tagAdd.taglist').remove();
@@ -1017,13 +1009,11 @@ function initEventQnA() {
                 var html1 = "<li class=\"addedTag\">" + $(this).parents('.tags').find('.tagAdd.taglist .search-field').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).parents('.tags').find('.tagAdd.taglist .search-field').val().toLowerCase().trim() + "\" data-ques-id=\"\" data-ques-symbol=\"\"></li>";
                 $(this).parents('.tags').find('.tagAdd.taglist').replaceWith(html1);
             }
-
             var val = $(this).children('input').val().trim();
             var html = '<li class="tagAdd taglist"><input type="text" autocomplete="off" attr-data="' + val + '" class="search-field" value="" style="display: inline-block;"></li>';
             $(this).replaceWith(html);
             elParent.find('.search-field').focus().val(val);
         }
-
     });
 
     $('.wrap-content').on('focusout', '.tagAdd.taglist', function (event) {
@@ -1040,12 +1030,9 @@ function initEventQnA() {
                         }
                     });
                 }
-
                 classTag = 'error-tag';
             }
-
             $("<li class=\"addedTag " + classTag + "\">" + $(this).children('input').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).children('input').val().toLowerCase().trim() + "\"></li>").insertBefore($(this));
-
             // var attr = $(this).children('input').attr('attr-data');
             // if (typeof attr !== typeof undefined && attr !== false) {
             // 	if($('input[value=\""+attr+"\"]').size() <= 1){
@@ -1062,13 +1049,11 @@ function initEventQnA() {
             $(this).children('input').val('');
         }
     })
-
 }
 
 var decodeEntities = (function () {
     // this prevents any overhead from creating the object each time
     var element = document.createElement('div');
-
     function decodeHTMLEntities(str) {
         if (str && typeof str === 'string') {
             // strip script/html tags
@@ -1082,10 +1067,8 @@ var decodeEntities = (function () {
             str = element.textContent;
             element.textContent = '';
         }
-
         return str;
     }
-
     return decodeHTMLEntities;
 })();
 
@@ -1096,7 +1079,6 @@ function stringToSlug(str) {
     for (var i = 0, l = from.length; i < l; i++) {
         str = str.replace(RegExp(from[i], "gi"), to[i]);
     }
-
     str = str.toLowerCase()
         .trim()
         .replace(/[^a-z0-9\-]/g, '-')
@@ -1117,7 +1099,6 @@ function stringToSlug(str) {
             for (var i = str.length - 1; i >= 0; i--) {
                 buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''));
             }
-
             return buf.join('');
         },
         /**

@@ -24,20 +24,37 @@ var common = {
         common.eventNavbar();
     },
     eventNavbar: function () {
-        $(document).ready(function () {
-            $('#' + sessionStorage.getItem("nav-active")).attr('aria-expanded', 'true');
-            $('#' + sessionStorage.getItem("nav-active")).next().addClass('show');
-            $('#' + sessionStorage.getItem("nav-active")).css('color','white')
-        })
+        //hightlight bot name
+        $('#' + sessionStorage.getItem("nav-active")).attr('aria-expanded', 'true');
+        $('#' + sessionStorage.getItem("nav-active")).next().addClass('show');
+        $('#' + sessionStorage.getItem("nav-active")).css('color', 'white');
+        //hightlight bot name - sub
+        $('#' + sessionStorage.getItem("nav-active-sub")).css('color', 'white');
+        $('#' + sessionStorage.getItem("nav-active-sub")).addClass('active');
+        $('#' + sessionStorage.getItem("nav-active-sub")).children().css('color', 'white');
+
         $('body').on('click', 'li.nav-item-bot', function (e) {
-            $('.nav-item-bot').each(function (index) {
-                $(this).children().eq(0).next().removeClass('show');
-                $(this).children().eq(0).removeClass('collapsed');
-                $(this).children().eq(0).attr('aria-expanded', 'false');
-                $(this).children().eq(0).css('color', '#7a80b4')
-            })
+            //if ($(this).children().eq(0).attr('id') !== sessionStorage.getItem("nav-active")) {
+                $('.nav-item-bot').each(function (index) {
+                    $(this).children().eq(0).next().removeClass('show');
+                    $(this).children().eq(0).removeClass('collapsed');
+                    $(this).children().eq(0).attr('aria-expanded', 'false');
+                    $(this).children().eq(0).css('color', '#7a80b4')
+                })
+            //}
             var navBotID = $(this).children().eq(0).attr('id');
-            sessionStorage.setItem("nav-active", navBotID);
+            //var attrBotID = $(this).children().eq(0).attr('data-id');
+            if (sessionStorage.getItem("nav-active") === null) {
+                sessionStorage.setItem("nav-active", navBotID);
+            } else {
+                if (sessionStorage.getItem("bot-id") === null) {
+                    sessionStorage.setItem("nav-active", navBotID);
+                }
+                else if (sessionStorage.getItem("bot-id") !== null && (sessionStorage.getItem("bot-id") === $(this).children().eq(0).attr('data-id'))) {
+                    sessionStorage.setItem("nav-active", navBotID);
+                } 
+            }
+            //sessionStorage.setItem("attrBotID", attrBotID);
             $(this).children().eq(0).css('color', 'white');
         })
         $('body').on('click', 'li.nav-item-cog', function (e) {
@@ -48,6 +65,20 @@ var common = {
                 $(this).children().eq(0).attr('aria-expanded', 'false');
                 $(this).children().eq(0).css('color', '#7a80b4')
             })
+        })
+        $('body').on('click','li.nav-item-bot-sub',function(e){
+            e.stopPropagation();
+            $('.nav-item-bot-sub').each(function (index) {
+                $(this).children().eq(0).css('color', '#7a80b4')
+                $(this).children().eq(0).children().css('color', '#7a80b4')
+                $(this).children().eq(0).removeClass('active');
+            })
+            var elmId = $(this).children().eq(0).attr('id');
+            var botId = $(this).children().eq(0).attr('data-id');
+            sessionStorage.setItem("nav-active-sub", elmId);
+            sessionStorage.setItem("bot-id", botId);
+            $(this).children().eq(0).css('color', 'white');
+            $(this).children().eq(0).children().css('color', 'white');
         })
     },
     registerEvents: function () {
@@ -164,10 +195,10 @@ var common = {
             html += '<div id="submenu-' + data.ID + '" class="collapse submenu" style="">';
             html += '<ul class="nav flex-column">';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/cardcategory?botName=' + data.Name + '"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
+            html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/cardcategory?botName=' + data.Name + '" id="bot-card-' + data.ID + '"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module?botName=' + data.Name + '"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
+            html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module?botName=' + data.Name + '" id="bot-module-' + data.ID + '"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
             html += '</li>';
             html += '<li class="nav-item">';
             html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-recycle"></i>Huấn luyện bot';
@@ -181,10 +212,10 @@ var common = {
             html +=             '</div>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="' + _Host + 'bot/searchengine/' + data.Alias + '/' + data.ID + '?botName=' + data.Name + '"><i class="fa fa-search" aria-hidden="true"></i>Search Engineer</a>';
+            html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/searchengine/' + data.Alias + '/' + data.ID + '?botName=' + data.Name + '" id="bot-search-' + data.ID + '"><i class="fa fa-search" aria-hidden="true"></i>Search Engineer</a>';
             html += '</li>';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link" href="' + _Host + 'bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
+            html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '" id="bot-setting-' + data.ID + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
             html += '</li>';
             html += '<li class="nav-item">';
             html += '<a class="nav-link btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
@@ -222,11 +253,12 @@ var common = {
         var temp = function (data,botId,botName) {
             var html = '';
             html += '<li class="nav-item">';
-            html += '<a class="nav-link bot-qna-link" href="' + _Host + 'bot/qna?formQnAId=' + data.ID + '&botId=' + botId + '&botName='+botName+'"><i class="fa fa-file" aria-hidden="true" style="display:unset"></i>' + data.Name + '</a>';
+            html += '<a class="nav-link bot-qna-link" data-id="' + botId + '" href="' + _Host + 'bot/qna?formQnAId=' + data.ID + '&botId=' + botId + '&botName=' + botName + '" id="bot-scenarios-' + botId + '-' + data.ID + '"><i class="fa fa-file" aria-hidden="true" style="display:unset"></i>' + data.Name + '</a>';
             html += '</li>';
             return html;
         }
-        $('body').on('click', '#btnCreateBotQnAnswer', function () {
+        $('body').on('click', '#btnCreateBotQnAnswer', function (e) {
+            e.stopPropagation();
             var botID = $(this).attr('data-botId');
             var botName = $(this).attr('data-botName');
             $('#txtBotQnAnswerName').val('');
@@ -238,7 +270,6 @@ var common = {
             var formName = $('#txtBotQnAnswerName').val();
             if (formName == '' || formName == undefined)
                 return false;
-
             formQnA.Name = formName;
             formQnA.Alias = common.getSeoTitle(formName);
             formQnA.BotID = $("#bot-botQnA-id").val();
@@ -249,6 +280,7 @@ var common = {
                 var tempHtml = temp(data, formQnA.BotID, $("#bot-botQnA-name").val());
                 $('#form-bot-qna-'+formQnA.BotID).append(tempHtml);
                 $('#modalCreateBotQnAnswer').modal('hide');
+                window.location.href = _Host + 'bot/qna?formQnAId=' + data.ID + "&botId=" + formQnA.BotID + "&botName=" + $("#bot-botQnA-name").val();
             });
         })
     }

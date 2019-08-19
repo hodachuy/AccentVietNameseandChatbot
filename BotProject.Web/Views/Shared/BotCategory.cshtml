@@ -15,19 +15,18 @@
             </a>
             <div id="submenu-@item.ID" class="collapse submenu" style="">
                 <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="@urlCard"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>
+                    <li class="nav-item nav-item-bot-sub">
+                        <a class="nav-link" href="@urlCard" id="bot-card-@item.ID" data-id="@item.ID"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>
+                    </li>
+                    <li class="nav-item nav-item-bot-sub">
+                        <a class="nav-link" href="@urlModule" id="bot-module-@item.ID" data-id="@item.ID"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="@urlModule"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="@item.ID" data-botName="@item.Name"><i class="fa fa-recycle"></i>Huấn luyện bot
+                        <a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="@item.ID" data-botName="@item.Name"><i class="fa fa-recycle"></i>Kịch bản
                             <span style="float: right;color: lightgray;cursor: pointer;">
                                 <i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>
                             </span>
                         </a>
-
                         <div class="submenu" style="">
                             <ul class="nav flex-column" id="form-bot-qna-@item.ID">
                                 @if (item.FormQuestionAnswers != null && item.FormQuestionAnswers.Count() != 0)
@@ -35,19 +34,19 @@
                                     foreach (var form in item.FormQuestionAnswers)
                                     {
                                         var urlQna = Url.Content("~") +  "bot/qna/" + form.Alias + "/"+ form.ID;
-                                        <li class="nav-item">
-                                            <a class="nav-link bot-qna-link" href="@Url.Action("QnA","Bot", new {formQnAId = form.ID, botId = item.ID, botName = item.Name})"><i class="fa fa-file" aria-hidden="true" style="display:unset"></i>@form.Name</a>
+                                        <li class="nav-item nav-item-bot-sub">
+                                            <a class="nav-link bot-qna-link" data-id="@item.ID" id="bot-scenarios-@item.ID-@form.ID" href="@Url.Action("QnA","Bot", new {formQnAId = form.ID, botId = item.ID, botName = item.Name})"><i class="fa fa-file" aria-hidden="true" style="display:unset"></i>@form.Name</a>
                                         </li>
                                     }
                                 }
                             </ul>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@urlBotSearchEngine"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>
+                    <li class="nav-item nav-item-bot-sub">
+                        <a class="nav-link" href="@urlBotSearchEngine" data-id="@item.ID" id="bot-search-@item.ID"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@urlSetting"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>
+                    <li class="nav-item nav-item-bot-sub">
+                        <a class="nav-link" href="@urlSetting" data-id="@item.ID" id="bot-setting-@item.ID"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link btn-form-deploy"  href="javascript:void(0);" data-botID="@item.ID"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy Bot</a>

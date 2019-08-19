@@ -350,7 +350,7 @@
     <Content Include="assets\client\img\TL-H3CXYU4Nleft.png" />
     <Content Include="assets\client\js\accentVN.js" />
     <Content Include="assets\client\js\aiml.js" />
-    <Content Include="assets\client\js\eventBot\form-learning.js" />
+    <Content Include="assets\client\js\eventBot\form-learning-qna.js" />
     <Content Include="assets\client\js\eventBot\form-card.js" />
     <Content Include="assets\client\js\eventBot\chat-dialog.js" />
     <Content Include="assets\client\js\common.js" />
