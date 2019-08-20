@@ -16,7 +16,7 @@ var countData = $('.wrap-content .panel.panel-flat').length,
 		txtAlert1 = 'Bạn có chắc chắn muốn xóa nhóm này?',
 		txtAlert2 = 'Bạn có chắc chắn muốn xóa?',
 		txtplholder = 'Nhập câu trả lời của bạn',
-		txtbt = 'Thêm câu trả lời';
+		txtbt = 'Thêm câu trả lời ngẫu nhiên';
 txtbt1 = 'Đồng ý';
 txtbt2 = 'Hủy';var lstCardSelected;
 var TypeAction = "Create";
@@ -743,7 +743,7 @@ ActionFormQnA = function () {
                     html += '</div>';
                     html += '</div>';
                     html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
-                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời';
+                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời ngẫu nhiên';
                     html += '</button>';
                 } else { //card
                     html += '<label class="learn_switchbot">';
@@ -768,7 +768,7 @@ ActionFormQnA = function () {
                     html += '</div>';
                     html += '</div>';
                     html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
-                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời';
+                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời ngẫu nhiên';
                     html += '</button>';
                     var itemCard = {
                         answerID: itemAnswer.ID,
@@ -846,11 +846,11 @@ ActionFormQnA = function () {
                 html += '</div>';
                 if (totalAnswer >= 5) {
                     html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
-                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời';
+                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời ngẫu nhiên';
                     html += '</button>';
                 } else {
                     html += '<button type="button" class="btn btn-rounded mt20 w100">';
-                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời';
+                    html += '<i class="fa fa-plus"></i> Thêm câu trả lời ngẫu nhiên';
                     html += '</button>';
                 }
             }

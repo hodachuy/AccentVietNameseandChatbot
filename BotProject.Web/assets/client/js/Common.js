@@ -77,6 +77,8 @@ var common = {
             var botId = $(this).children().eq(0).attr('data-id');
             sessionStorage.setItem("nav-active-sub", elmId);
             sessionStorage.setItem("bot-id", botId);
+            var navActive = "nav-bot-id-"+botId;
+            sessionStorage.setItem("nav-active", navActive);
             $(this).children().eq(0).css('color', 'white');
             $(this).children().eq(0).children().css('color', 'white');
         })
@@ -217,9 +219,9 @@ var common = {
             html += '<li class="nav-item">';
             html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '" id="bot-setting-' + data.ID + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
             html += '</li>';
-            html += '<li class="nav-item">';
-            html += '<a class="nav-link btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
-            html += '</li>';
+            //html += '<li class="nav-item">';
+            //html += '<a class="nav-link btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
+            //html += '</li>';
             html += '<li class="nav-item">';
             html += '<a class="nav-link btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Delete</a>';
             html += '</li>';

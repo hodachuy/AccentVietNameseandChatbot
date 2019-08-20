@@ -8685,10 +8685,10 @@ label.switchery-xs {
 .breadcrumb-item{
     font-size:13pt;
 }
-.breadcrumb-item .fa-home{
+.breadcrumb-item .fa{
     color:darkblue;
 }
-.breadcrumb-item .fa-home:before{
+.breadcrumb-item .fa:before{
     margin-right:10px;
     color:darkblue;
 }

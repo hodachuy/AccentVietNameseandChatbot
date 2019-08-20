@@ -10,7 +10,7 @@ var BotSetting = {
     CardID: $("#cardID").val(),
     TextIntroductory: $("#txtIntroduct").val(),
     IsActiveIntroductory: "",
-    IsMDSearch: $('#IsMdSearch').val(),
+    IsMDSearch: $('#statusSearch').val(),
     UserID: $('#userID').val(),
     StopWord:$('#stopWord').val(),
 }
@@ -92,12 +92,7 @@ $(document).ready(function () {
         $("#ulTags").prepend(html);
     }
 
-
     parent.$("#frame_chat_setting").contents().find("#formSettingName").html(BotSetting.FormName);
-
-    if (BotSetting.IsMDSearch == true) {
-        $('#statusSearch').prop('checked', true);
-    }
 
     $('body').on('click', '.fileinput-remove', function () {
         $("#preview-logo").empty().append('<img src="/assets/images/user_bot.jpg" class="file-preview-image" alt="" />');
@@ -119,12 +114,14 @@ $(document).ready(function () {
         parent.$("#frame_chat_setting").contents().find("._1qd1_close_form g.g-bg-close").css('fill', 'rgba(0, 0, 0, .1)');
         parent.$("#frame_chat_setting").contents().find("._1qd1_close_form g.g-close").css('fill', '#333');
     }, 1500)
-
     // stop word
     initEventInputStopWord();
+    // load code script deploy setting chatbot
+    loadCodeScriptDeployBot();
 })
 
 $("#btnSaveSettings").on('click', function () {
+    console.log($("#statusSearch").val())
     var strTag = "";
     if ($("ul#ulTags li"). length > 1) {
         $(".addedTag").each(function (index) {
@@ -156,7 +153,23 @@ $("#btnSaveSettings").on('click', function () {
         }
     });
 })
+$('body').on('click', '.switchery', function () {
+    var tempNonChecked = '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;background-color: #ddd;"></small></span>';
+    var tempChecked = '<span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>';
+    $(this).next().remove();
+    if ($(this).prop('checked')) {
+        $(this).next().remove();
+        $(tempChecked).insertAfter($(this))
+        $($(this).parent().parent().next().next()).removeClass("hidden");
+    } else {
+        $(this).next().remove();
+        $(tempNonChecked).insertAfter($(this))
+        $($(this).parent().parent().next().next()).addClass("hidden");
+    }
+})
+$('body').on('click', '.btn-add-condition', function () {
 
+})
 $('#statusSearch').change(function () {
     if ($(this).is(":checked")) {
         $(this).val('true');
@@ -164,7 +177,6 @@ $('#statusSearch').change(function () {
         $(this).val('false');
     }
 });
-
 $("#startedButton").change(function () {
     if (this.checked) {
         $('#card-introduction').empty().append('<div id="txtIntro" class="txtStartButton form-control" maxlength="640" contenteditable="true" data-ph="Nhập văn bản (Ví dụ: Chào bạn, tôi là chat bot. Tôi có thể giúp bạn khám phá thời tiết hiện tại nơi bạn đang sống. Hãy chia sẻ vị trí của bạn cho tôi nhé!)"></div>');
@@ -174,6 +186,32 @@ $("#startedButton").change(function () {
 });
 
 
+function loadCodeScriptDeployBot() {
+    var urlApp = _Host + "static/js/app.js";
+    var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
+    var encryptedUserID = CryptoJS.AES.encrypt($("#userID").val(), "Secret Passphrase").toString();
+    var encryptedBotID = CryptoJS.AES.encrypt($("#botID").val(), "Secret Passphrase").toString();
+    var encryptedColor = CryptoJS.AES.encrypt($("#formColor").val(), "Secret Passphrase").toString();
+    var html = '';
+    html += "   ---Thêm đoạn mã vào trang HTML - trong thẻ body---\n";
+    html += "   <!--Lacviet-->\n";
+    html += "    <script>\n";
+    html += "       (function (l, a, c, v, i, e, t){\n";
+    html += "         a[v] = a[v] || function (){\n";
+    html += "         a[v].t =+ new Date();\n";
+    html += "         (a[v].q = a[v].q || []).push(arguments);};\n";
+    html += "         i = l.createElement('script');\n";
+    html += "         var ii = l.getElementsByTagName('script')[0];\n";
+    html += "         i.async = 1;\n";
+    html += "         i.src = c;\n";
+    html += "         i.id = 'lacviet-script';\n";
+    html += "         ii.parentNode.insertBefore(i, ii);\n";
+    html += "       })(document, window, '" + urlApp + "', 'lacviet');\n";
+    html += "       setTimeout(function(){lacviet.load('" + encryptedUrl + "','" + encryptedUserID + "','" + encryptedBotID + "','" + encryptedColor + "');},1500);\n";
+    html += "   </script>\n";  
+    html += "   <!-- End Lacviet -->"
+    $('#deploy-bot').empty().text(html);
+}
 function initEventInputStopWord() {
     $('.wrap-content .addedTag').each(function (index, el) {
         if (!$(this).hasClass('error-tag')) {
@@ -282,7 +320,6 @@ function initEventInputStopWord() {
         }
     })
 }
-
 var decodeEntities = (function () {
     // this prevents any overhead from creating the object each time
     var element = document.createElement('div');

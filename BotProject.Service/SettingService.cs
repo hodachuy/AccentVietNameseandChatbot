@@ -14,16 +14,21 @@ namespace BotProject.Service
         Setting Create(Setting Setting);
         void Update(Setting Setting);
         Setting GetSettingByBotID(int botId);
-
+        SystemConfig CreateKeyConfig(SystemConfig system);
+        void UpdateKeyConfig(SystemConfig system);
         void Save();
     }
     public class SettingService : ISettingService
     {
         ISettingRepository _settingRepository;
+        ISystemConfigRepository _systemConfigRepository;
         IUnitOfWork unitOfWork;
-        public SettingService(ISettingRepository settingRepository, IUnitOfWork unitOfWork)
+        public SettingService(ISettingRepository settingRepository,
+                              IUnitOfWork unitOfWork,
+                              ISystemConfigRepository systemConfigRepository)
         {
             _settingRepository = settingRepository;
+            _systemConfigRepository = systemConfigRepository;
             this.unitOfWork = unitOfWork;
         }
         public Setting Create(Setting Setting)
@@ -44,6 +49,16 @@ namespace BotProject.Service
         public void Update(Setting Setting)
         {
             _settingRepository.Update(Setting);
+        }
+
+        public SystemConfig CreateKeyConfig(SystemConfig system)
+        {
+            return _systemConfigRepository.Add(system);
+        }
+
+        public void UpdateKeyConfig(SystemConfig system)
+        {
+            _systemConfigRepository.Update(system);
         }
     }
 }

@@ -326,6 +326,7 @@
     <Content Include="assets\client\css\chatbot-dialog.css" />
     <Content Include="assets\client\css\common-bot.css" />
     <Content Include="assets\client\css\components.css" />
+    <Content Include="assets\client\css\jquery.selectBoxIt.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c10_Ft5ovaKZZ_s.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c11_hZOCwdDXbub.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c12_lg5y1PL83FJ.css" />
@@ -344,7 +345,10 @@
     <Content Include="assets\client\css\lvbot-chat-dialog\c7_BQWrbCxwKTG.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c8_D4caviXZRzb.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c9_qa0aCGHSAgX.css" />
+    <Content Include="assets\client\css\select2.min.css" />
     <Content Include="assets\client\css\style.css" />
+    <Content Include="assets\client\css\sweetalert.css" />
+    <Content Include="assets\client\css\sweetalert.min.css" />
     <Content Include="assets\client\img\faq_tyJQplIright.png" />
     <Content Include="assets\client\img\module.png" />
     <Content Include="assets\client\img\TL-H3CXYU4Nleft.png" />
@@ -762,6 +766,7 @@
     <Content Include="File\Datasets_Training_Accent\AccentInfo.txt" />
     <Content Include="File\Datasets_Training_Accent\test.txt" />
     <Content Include="File\Images\Card\07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg" />
+    <Content Include="File\NLR\StopWord.txt" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
@@ -881,6 +886,7 @@
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5020\Card_ID_6048_buoc-3-dk-logo.aiml" />
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5020\Card_ID_6049_buoc-4-dk-logo.aiml" />
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5020\Card_ID_6050_le-phi-dk-logo.aiml" />
+    <Content Include="assets\client\css\sweetalert.min.css.map" />
     <None Include="Properties\PublishProfiles\BotProject_Publish.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

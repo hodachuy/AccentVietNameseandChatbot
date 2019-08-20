@@ -94,6 +94,15 @@ namespace BotProject.Web.Controllers
 
             UserBotViewModel userBot = new UserBotViewModel();
             userBot.StopWord = settingVm.StopWord;
+
+            // load file stopword default
+            string pathStopWord = System.IO.Path.Combine(PathServer.PathNLR, "StopWord.txt");
+            if (System.IO.File.Exists(pathStopWord))
+            {
+                string[] stopWordDefault = System.IO.File.ReadAllLines(pathStopWord);
+                userBot.StopWord += string.Join(",", stopWordDefault);
+            }
+
             userBot.ID = Guid.NewGuid().ToString();
             userBot.BotID = botId;
             _user = _botService.loadUserBot(userBot.ID);

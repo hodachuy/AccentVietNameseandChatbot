@@ -24,7 +24,7 @@ namespace BotProject.Web.Models
 
         public bool IsActiveIntroductory { set; get; }
 
-        public bool IsMDSearch { set; get; }
+        public bool IsMDSearch { set; get; }        
         
         public string StopWord { set; get; }
     }

@@ -356,6 +356,10 @@
     <Compile Include="Migrations\201908160615010_UpdateSettings.Designer.cs">
       <DependentUpon>201908160615010_UpdateSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201908200953511_UpdateSystemConfig.cs" />
+    <Compile Include="Migrations\201908200953511_UpdateSystemConfig.Designer.cs">
+      <DependentUpon>201908200953511_UpdateSystemConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -618,6 +622,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908160615010_UpdateSettings.resx">
       <DependentUpon>201908160615010_UpdateSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908200953511_UpdateSystemConfig.resx">
+      <DependentUpon>201908200953511_UpdateSystemConfig.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

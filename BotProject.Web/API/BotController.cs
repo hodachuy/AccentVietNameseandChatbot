@@ -93,7 +93,7 @@ namespace BotProject.Web.API
 				}
                 Setting settingDb = new Setting();
                 settingDb.BotID = botDb.ID;
-                settingDb.Color = "rgb(234, 82, 105);";
+                settingDb.Color = "rgb(75, 90, 148);";
                 settingDb.UserID = botVm.UserID;
                 settingDb.Logo = "assets/images/user_bot.jpg";
                 _settingService.Create(settingDb);

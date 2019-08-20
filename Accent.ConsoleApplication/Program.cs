@@ -35,7 +35,7 @@ namespace Accent.ConsoleApplication
             string t1 = "Added LegalPair id=ad.";
             string r  = Regex.Match(t1, @"\d+").Value;
 
-
+            //string txt = "<p>Giải c&aacute;c phương tr&igrave;nh:</p>a) $2x^{4}-7x^{2}-4=0$<br />b)&nbsp;$ \sqrt{ 4 x^{2}-4 x+1}$";
 
 
             string url = "ques=haha toi biet ma&number=10&groupques=abc";

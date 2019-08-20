@@ -18,5 +18,7 @@ namespace BotProject.Model.Models
         public string ValueString { set; get; }
 
         public int? ValueInt { set; get; }
+
+        public int BotID { set; get; }
     }
 }

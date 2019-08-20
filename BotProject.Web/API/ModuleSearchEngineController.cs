@@ -155,6 +155,8 @@ namespace BotProject.Web.API
                 string nlrAnsContentText = mdAnsDb.ContentText;
                 string nlrAnsContentHTML = mdAnsDb.ContentHTML;
                 string nlrAreaName = mdQnA.AreaName;
+                string nlrAreaID = (String.IsNullOrEmpty(mdQnA.AreaID.ToString()) == true ? "" : mdQnA.AreaID.ToString());
+                string nlrBotID = mdQnA.BotID.ToString();
                 //apiNLR.AddQues(nlrQuesID, nlrQuesContentText, nlrAnsContentText, nlrAreaName, nlrAnsContentHTML);
 
                 response = request.CreateResponse(HttpStatusCode.OK, result);
