@@ -8,12 +8,13 @@ var BotSetting = {
     Color: $("#formColor").val(),
     Logo: $(".file-preview-image").attr('src'),
     CardID: $("#cardID").val(),
-    TextIntroductory: $("#txtIntroduct").val(),
-    IsActiveIntroductory: "",
+    TextIntroductory: ($("#txtIntroduct").val() == null ? "" : $("#txtIntroduct").val()),
+    IsActiveIntroductory: $("#isActiveIntroduct").val(),
     IsMDSearch: $('#statusSearch').val(),
     UserID: $('#userID').val(),
-    StopWord:$('#stopWord').val(),
+    StopWord: $('#stopWord').val(),
 }
+
 $('.demo').each(function () {
     $(this).minicolors({
         control: $(this).attr('data-control') || 'hue',
@@ -84,7 +85,6 @@ $(document).ready(function () {
     }
     if (BotSetting.StopWord != "") {
         var arrStopWord = BotSetting.StopWord.split(",");
-        console.log(arrStopWord)
         var html = '';
         $.each(arrStopWord, function (index,value) {
             html += '<li class="addedTag ">' + value + '<span class="tagRemove">x</span><input type="hidden" value="' + value + '"></li>';
@@ -118,10 +118,52 @@ $(document).ready(function () {
     initEventInputStopWord();
     // load code script deploy setting chatbot
     loadCodeScriptDeployBot();
+
+    system();
+
+    $('.selectKeyword').selectpicker();
+    $('#BotCategoryID').on('hidden.bs.select', function (e) {
+        var valBotID = $(this).selectpicker('val');
+        console.log(valBotID)
+        getAreaByBotId(valBotID)
+    });
+    function getAreaByBotId(botId) {
+        var html = "";
+        if (botId == "") {
+            html = '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option></select>';
+            $("#TempAreaID").empty().append(html);
+            return;
+        }
+        var param = {
+            botId: botId,
+        };
+        var url = "api/modulesearchengine/getareabybotid";
+        var svr = new AjaxCall(url, param);
+        svr.callServiceGET(function (data) {
+            if (data.length != 0) {
+                html += '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option>';
+                $.each(data, function (index, value) {
+                    html += '<option value="' + value.ID + '">' + value.Name + '</option>';
+                })
+                html += '</select>';
+                $("#TempAreaID").empty().append(html);
+                $('.selectKeyword').selectpicker();
+                $('#AreaID').on('hidden.bs.select', function (e) {
+                    var val = $(this).selectpicker('val');
+                    console.log(val)
+                });
+                return;
+            } else {
+                html = '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option></select>';
+                $("#TempAreaID").empty().append(html);
+            }
+        });
+    }
+
+
 })
 
 $("#btnSaveSettings").on('click', function () {
-    console.log($("#statusSearch").val())
     var strTag = "";
     if ($("ul#ulTags li"). length > 1) {
         $(".addedTag").each(function (index) {
@@ -137,20 +179,75 @@ $("#btnSaveSettings").on('click', function () {
     BotSetting.IsMDSearch = $("#statusSearch").val();
     BotSetting.Logo = $(".file-preview-image").attr('src').replace("" + _Host + "", "");
     BotSetting.CardID = $("#sltCard").val();
-    console.log(BotSetting)
-    var urlSetting = "api/setting/createupdate";
-    var svr = new AjaxCall(urlSetting, JSON.stringify(BotSetting));
-    svr.callServicePOST(function (data) {
-        console.log(data)
-        if (data) {
-            $("#model-notify").modal('hide');
+    if (BotSetting.IsMDSearch == "true") {
+        if ($("#BotCategoryID").val() == "") {
             swal({
                 title: "Thông báo",
-                text: "Đã lưu",
+                text: "Vui lòng chọn điều kiện tìm kiếm theo thể loại",
                 confirmButtonColor: "#EF5350",
-                type: "success"
+                type: "error"
             }, function () { $("#model-notify").modal('show'); });
+            return false;
         }
+    }
+    console.log(BotSetting)
+
+    var lstBotSystemConfig = [];
+    console.log($("#BotCategoryID").val())
+    if ($("#BotCategoryID").val() != "") {
+        var BotSystemConfig = {};
+        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.Code = "ParamBotID";
+        BotSystemConfig.ValueString = "";
+        BotSystemConfig.ValueInt = $("#BotCategoryID").val();
+        lstBotSystemConfig.push(BotSystemConfig);
+    }
+    if ($("#AreaID").val() != "") {
+        var BotSystemConfig = {};
+        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.Code = "ParamAreaID";
+        BotSystemConfig.ValueString = "";
+        BotSystemConfig.ValueInt = $("#AreaID").val();
+        lstBotSystemConfig.push(BotSystemConfig);
+    }
+    if ($("#NumberReponse").val() != "") {
+        var BotSystemConfig = {};
+        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.Code = "ParamNumberResponse";
+        BotSystemConfig.ValueString = "";
+        BotSystemConfig.ValueInt = $("#NumberReponse").val();
+        lstBotSystemConfig.push(BotSystemConfig);
+    }  
+    var formData = new FormData();
+    formData.append('bot-setting', JSON.stringify(BotSetting));
+    formData.append('bot-systemconfig', JSON.stringify(lstBotSystemConfig));
+
+    $.ajax({
+        url: _Host + "api/setting/createupdate",
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function (result) {
+            if (result) {
+                $("#model-notify").modal('hide');
+                swal({
+                    title: "Thông báo",
+                    text: "Đã lưu",
+                    confirmButtonColor: "#EF5350",
+                    type: "success"
+                }, function () { $("#model-notify").modal('show'); });
+            } else {
+                $("#model-notify").modal('hide');
+                swal({
+                    title: "Thông báo",
+                    text: "Lỗi dữ liệu",
+                    confirmButtonColor: "#EF5350",
+                    type: "error"
+                }, function () { $("#model-notify").modal('show'); });
+            }
+        },
     });
 })
 $('body').on('click', '.switchery', function () {

@@ -15,7 +15,8 @@ namespace BotProject.Service
         void Update(Setting Setting);
         Setting GetSettingByBotID(int botId);
         SystemConfig CreateKeyConfig(SystemConfig system);
-        void UpdateKeyConfig(SystemConfig system);
+        void DeleteConfigByBotID(int botId);
+        IEnumerable<SystemConfig> GetListSystemConfigByBotId(int botId);
         void Save();
     }
     public class SettingService : ISettingService
@@ -56,9 +57,14 @@ namespace BotProject.Service
             return _systemConfigRepository.Add(system);
         }
 
-        public void UpdateKeyConfig(SystemConfig system)
+        public void DeleteConfigByBotID(int botId)
         {
-            _systemConfigRepository.Update(system);
+            _systemConfigRepository.DeleteMulti(x=>x.BotID == botId);
+        }
+
+        public IEnumerable<SystemConfig> GetListSystemConfigByBotId(int botId)
+        {
+            return _systemConfigRepository.GetMulti(x => x.BotID == botId);
         }
     }
 }

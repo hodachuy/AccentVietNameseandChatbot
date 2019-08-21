@@ -40,15 +40,49 @@ namespace BotProject.Web.API
 
         [Route("createupdate")]
         [HttpPost]
-        public HttpResponseMessage CreateUpdate(HttpRequestMessage request, BotSettingViewModel settingVm)
+        public HttpResponseMessage CreateUpdate(HttpRequestMessage request)
         {
             return CreateHttpResponse(request, () => {
                 HttpResponseMessage response = null;
                 bool result = true;
+                var botSetting = System.Web.HttpContext.Current.Request.Unvalidated.Form["bot-setting"];
+                if(botSetting == null)
+                {
+                    result = false;
+                    response = request.CreateResponse(HttpStatusCode.NoContent, result);
+                    return response;
+                }
+                var botSettingVm = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<BotSettingViewModel>(botSetting);
+
+                var botSystem = System.Web.HttpContext.Current.Request.Unvalidated.Form["bot-systemconfig"];
+                if (botSystem == null)
+                {
+                    result = false;
+                    response = request.CreateResponse(HttpStatusCode.NoContent, result);
+                    return response;
+                }
+                var botSystemVm = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<List<SystemConfig>>(botSystem);
+
                 Setting settingDb = new Setting();
-                settingDb.UpdateSetting(settingVm);
+                settingDb.UpdateSetting(botSettingVm);
                 _settingService.Update(settingDb);
                 _settingService.Save();
+
+                if(botSystemVm.Count() != 0)
+                {
+                    _settingService.DeleteConfigByBotID(settingDb.BotID);
+                    foreach (var item in botSystemVm)
+                    {
+                        SystemConfig sys = new SystemConfig();
+                        sys.BotID = item.BotID;
+                        sys.Code = item.Code;
+                        sys.ValueString = item.ValueString;
+                        sys.ValueInt = item.ValueInt;
+                        _settingService.CreateKeyConfig(sys);
+                    }
+                    _settingService.Save();
+                }
+
                 response = request.CreateResponse(HttpStatusCode.OK, result);
                 return response;
             });

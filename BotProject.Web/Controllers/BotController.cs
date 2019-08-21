@@ -20,12 +20,14 @@ namespace BotProject.Web.Controllers
         private IGroupCardService _groupCardService;
         private IModuleService _moduleService;
         private IModuleSearchEngineService _mdSearchEngineService;
+        private IBotService _botService;
         public BotController(IErrorService errorService,
             ICardService cardService,
             IQnAService qnaService,
             ISettingService settingService,
             IGroupCardService groupCardService,
             IModuleService moduleService,
+            IBotService botService,
             IModuleSearchEngineService mdSearchEngineService
            ) : base(errorService)
         {
@@ -35,6 +37,7 @@ namespace BotProject.Web.Controllers
             _groupCardService = groupCardService;
             _moduleService = moduleService;
             _mdSearchEngineService = mdSearchEngineService;
+            _botService = botService;
 
         }
 
@@ -91,9 +94,14 @@ namespace BotProject.Web.Controllers
             var settingDb = _settingService.GetSettingByBotID(id);
             var lstCard = _cardService.GetListCardByBotID(id);
             var settingVm = Mapper.Map<Setting, BotSettingViewModel>(settingDb);
+            var lstBot = _botService.GetListBotByUserID(UserInfo.Id);
+            var lstBotVm = Mapper.Map<IEnumerable<Bot>,IEnumerable<BotViewModel>>(lstBot);
+            var lstSystemConfig = _settingService.GetListSystemConfigByBotId(id);
             ViewBag.Cards = lstCard;
             ViewBag.BotName = name;
             ViewBag.UserID = UserInfo.Id;
+            ViewBag.Bots = lstBotVm;
+            ViewBag.SystemConfigs = lstSystemConfig;
             return View(settingVm);
         }
 
