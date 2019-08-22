@@ -119,7 +119,6 @@ $(document).ready(function () {
     // load code script deploy setting chatbot
     loadCodeScriptDeployBot();
 
-    system();
 
     $('.selectKeyword').selectpicker();
     $('#BotCategoryID').on('hidden.bs.select', function (e) {
@@ -127,40 +126,6 @@ $(document).ready(function () {
         console.log(valBotID)
         getAreaByBotId(valBotID)
     });
-    function getAreaByBotId(botId) {
-        var html = "";
-        if (botId == "") {
-            html = '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option></select>';
-            $("#TempAreaID").empty().append(html);
-            return;
-        }
-        var param = {
-            botId: botId,
-        };
-        var url = "api/modulesearchengine/getareabybotid";
-        var svr = new AjaxCall(url, param);
-        svr.callServiceGET(function (data) {
-            if (data.length != 0) {
-                html += '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option>';
-                $.each(data, function (index, value) {
-                    html += '<option value="' + value.ID + '">' + value.Name + '</option>';
-                })
-                html += '</select>';
-                $("#TempAreaID").empty().append(html);
-                $('.selectKeyword').selectpicker();
-                $('#AreaID').on('hidden.bs.select', function (e) {
-                    var val = $(this).selectpicker('val');
-                    console.log(val)
-                });
-                return;
-            } else {
-                html = '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option></select>';
-                $("#TempAreaID").empty().append(html);
-            }
-        });
-    }
-
-
 })
 
 $("#btnSaveSettings").on('click', function () {
@@ -194,11 +159,19 @@ $("#btnSaveSettings").on('click', function () {
 
     var lstBotSystemConfig = [];
     console.log($("#BotCategoryID").val())
+    if ($("#UrlAPI").val() != "") {
+        var BotSystemConfig = {};
+        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.Code = "UrlAPI";
+        BotSystemConfig.ValueString = $("#UrlAPI").val();
+        BotSystemConfig.ValueInt = "";
+        lstBotSystemConfig.push(BotSystemConfig);
+    }
     if ($("#BotCategoryID").val() != "") {
         var BotSystemConfig = {};
         BotSystemConfig.BotID = $("#botID").val();
         BotSystemConfig.Code = "ParamBotID";
-        BotSystemConfig.ValueString = "";
+        BotSystemConfig.ValueString = ($("#BotCategoryID").val() == "3019" ? "med" : "leg");
         BotSystemConfig.ValueInt = $("#BotCategoryID").val();
         lstBotSystemConfig.push(BotSystemConfig);
     }
@@ -214,7 +187,7 @@ $("#btnSaveSettings").on('click', function () {
         var BotSystemConfig = {};
         BotSystemConfig.BotID = $("#botID").val();
         BotSystemConfig.Code = "ParamNumberResponse";
-        BotSystemConfig.ValueString = "";
+        BotSystemConfig.ValueString = $("#NumberReponse").val();
         BotSystemConfig.ValueInt = $("#NumberReponse").val();
         lstBotSystemConfig.push(BotSystemConfig);
     }  
@@ -417,6 +390,38 @@ function initEventInputStopWord() {
         }
     })
 }
+
+function getAreaByBotId(botId) {
+    var html = "";
+    if (botId == "") {
+        html = '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Tất cả---</option></select>';
+        $("#TempAreaID").empty().append(html);
+        return;
+    }
+    var param = {
+        botId: botId,
+    };
+    var url = "api/modulesearchengine/getareabybotid";
+    var svr = new AjaxCall(url, param);
+    svr.callServiceGET(function (data) {
+        if (data.length != 0) {
+            html += '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Tất cả---</option>';
+                $.each(data, function (index, value) {
+                    html += '<option value="' + value.ID + '">' + value.Name + '</option>';
+                })
+            html += '</select>';
+            $("#TempAreaID").empty().append(html);
+        } else {
+            html = '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Tất cả---</option></select>';
+            $("#TempAreaID").empty().append(html);
+        }
+        $("#AreaID").selectpicker();
+        $('#AreaID').on('hidden.bs.select', function (e) {
+            var val = $(this).selectpicker('val');
+        });
+    });
+}
+
 var decodeEntities = (function () {
     // this prevents any overhead from creating the object each time
     var element = document.createElement('div');

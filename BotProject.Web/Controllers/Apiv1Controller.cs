@@ -83,7 +83,8 @@ namespace BotProject.Web.Controllers
             var botDb = _botDbService.GetByID(botID);
             var settingDb = _settingService.GetSettingByBotID(botID);
             var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
-
+            var systemConfig = _settingService.GetListSystemConfigByBotId(botID);
+            var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>,IEnumerable<SystemConfigViewModel>>(systemConfig);
             //string nameBotAIML = "User_" + token + "_BotID_" + botId;
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
@@ -94,6 +95,7 @@ namespace BotProject.Web.Controllers
 
             UserBotViewModel userBot = new UserBotViewModel();
             userBot.StopWord = settingVm.StopWord;
+            userBot.SystemConfigViewModel = systemConfigVm;
 
             // load file stopword default
             string pathStopWord = System.IO.Path.Combine(PathServer.PathNLR, "StopWord.txt");
@@ -457,7 +459,6 @@ namespace BotProject.Web.Controllers
                 }
                 #endregion
 
-
                 // Lấy target from knowledge base QnA trained mongodb
                 if(text.Contains("postback") == false || text.Contains("module") == false)
                 {
@@ -492,7 +493,30 @@ namespace BotProject.Web.Controllers
                     isMatch = false;
                     if (isMdSearch)
                     {
-                        result = GetRelatedQuestion(text, group);
+                        if(userBot.SystemConfigViewModel.Count() != 0)
+                        {
+                            string nameFuncAPI = "";
+                            string type = "leg";
+                            string number = "10";
+                            string field = "";
+                            foreach(var item in userBot.SystemConfigViewModel)
+                            {
+                                if (item.Code == "UrlAPI")
+                                    nameFuncAPI = item.ValueString;
+                                if (item.Code == "ParamBotID")
+                                    type = item.ValueString;
+                                if (item.Code == "ParamAreaID")
+                                    field = item.ValueString;
+                                if (item.Code == "ParamNumberResponse")
+                                    number = item.ValueString;
+                            }
+                            result = GetRelatedQuestion(nameFuncAPI, text, field, number, type);
+                        }
+                        else
+                        {
+                            result = GetRelatedQuestion("",text,"","10", group);
+                        }
+
                         if (!String.IsNullOrEmpty(result))
                         {
                             var lstQnaAPI = new JavaScriptSerializer
@@ -831,15 +855,23 @@ namespace BotProject.Web.Controllers
             }
             return result;
         }
-        public string GetRelatedQuestion(string QuestionContent, string GroupQues = "leg")
+        public string GetRelatedQuestion(string nameFuncAPI,string question, string field,string number, string group = "leg")
         {
+            if (String.IsNullOrEmpty(nameFuncAPI))
+            {
+                nameFuncAPI = apiRelateQA;
+            }else
+            {
+                nameFuncAPI = nameFuncAPI.Replace("http://172.16.7.71:80", "").Trim();
+            }
             var param = new
             {
-                question = QuestionContent,
-                type = GroupQues,
-                number = "10"
+                question = question,
+                type = group,
+                field= field,
+                number = number
             };
-            string responseString = ApiAddUpdateQA(apiRelateQA, param, "Post");
+            string responseString = ApiAddUpdateQA(nameFuncAPI, param, "Post");
             if (responseString != null)
             {
                 var lstQues = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<List<dynamic>>(responseString);

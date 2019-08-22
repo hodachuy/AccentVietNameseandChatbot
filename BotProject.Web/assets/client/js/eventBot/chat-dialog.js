@@ -480,9 +480,9 @@ function tempModuleSearchAPI(lstData) {
         itemHtml += '<div class="_6j2g">';
         itemHtml += '<div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">' + (value.question != null ? add3Dots(value.question, 120) : "") + '</div>';
         itemHtml += '<div class="_6j0v">';
-        itemHtml += '<div class="_6j0u _6j0w">' + (value.field != null ? value.field : "Sở hữu trí tuệ") + '</div>';
+        itemHtml += '<div class="_6j0u _6j0w">' + (value.field != null ? value.field : "") + '</div>';
         itemHtml += '<div class="_6j0u _6j0x _4ik4 _4ik5" style="-webkit-line-clamp: 2;">';
-        itemHtml += '<div>' + (value.field != null ? value.field : "Sở hữu trí tuệ") + '</div>';
+        itemHtml += '<div>' + (value.field != null ? value.field : "") + '</div>';
         itemHtml += '</div>';
         itemHtml += '</div>';
         itemHtml += '</div>';
@@ -532,7 +532,6 @@ function tempModuleSearchAPI(lstData) {
         tempModuleHtml += '</div>';
         tempModuleHtml += '</div>';
         tempModuleHtml += '</a>';
-
         tempModuleHtml += '<a class="_32rk _32rh _1cy6 gl_next_carousel" href="#">';
         tempModuleHtml += '<div direction="forward" class="_10sf _5x5_">';
         tempModuleHtml += '<div class="_5x6d">';
@@ -547,8 +546,6 @@ function tempModuleSearchAPI(lstData) {
         tempModuleHtml += '</div>';
         tempModuleHtml += '</a>';
     }
-
-
     tempModuleHtml += '</div>';
     tempModuleHtml += '</div>';
     tempModuleHtml += '</div>';
@@ -579,7 +576,6 @@ function getMessageWriting() {
     '                      </div>' +
     '                </div>' +
     '          </div>';
-
     return html;
 }
 

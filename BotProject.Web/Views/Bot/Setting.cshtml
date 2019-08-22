@@ -301,12 +301,12 @@
                 <div class="col-lg-3">
                     <p class="m-b-10">Phương thức:</p>
                     <select class="form-control">
-                        <option>GET</option>
+                        <option>POST</option>
                     </select>
                 </div>
                 <div class="col-lg-8">
                     <p class="m-b-10">URL</p>
-                    <input type="text" class="form-control" value="http://172.16.7.71:80/api/get_related_pairs" disabled>
+                    <input type="text" class="form-control" placeholder="http://172.16.7.71:80/api/get_related_pairs" value="http://172.16.7.71:80/api/get_related_pairs" id="UrlAPI">
                 </div>
                 <div class="col-lg-12">
                     <p data-current-language="vi" class="m-b-10-importan">Headers:</p>
@@ -369,7 +369,7 @@
                     </div>
                     <div class="col-lg-5" id="TempAreaID">
                         <select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid" disabled>
-                            <option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option>
+                            <option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Tất cả---</option>
                         </select>
                     </div> <div class="col-lg-1" style="padding: 0px;">
                         <a href="javascript:void(0)" title="Xóa điều kiện" class="icon-btn"><i class="fa fa-trash"></i></a>
@@ -377,7 +377,7 @@
                 </div>
                 <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
                     <div class="col-lg-3">
-                        <input placeholder="Giá trị" title="" class="form-control" value="number" disabled>
+                        <input placeholder="Giá trị" title="" class="form-control" value="Trả về" disabled>
                     </div>
                     <div class="col-lg-3">
                         <select title="=" class="form-control">
@@ -467,12 +467,18 @@
     function system() {
         if (lstSystemConfig.length != 0) {
             $.each(lstSystemConfig, function (index, value) {
+                if (value.Code == "UrlAPI") {
+                    $("#UrlAPI").val(value.ValueString);
+                }
                 if (value.Code == "ParamBotID") {
                     $("#BotCategoryID").val(value.ValueInt);
-                    //getAreaByBotId(value.ValueInt);
+                    getAreaByBotId(value.ValueInt);
                 }
                 if (value.Code == "ParamAreaID") {
-                    $("#AreaID").val(value.ValueInt);
+                    setTimeout(function(){
+                        $("#AreaID").selectpicker('val', value.ValueInt);
+                    },2000)
+
                 }
                 if (value.Code == "ParamNumberResponse") {
                     $("#NumberReponse").val(value.ValueInt);
@@ -480,5 +486,6 @@
             })
         }
     };
+    system();
 </script>
 }
