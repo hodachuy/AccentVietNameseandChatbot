@@ -336,9 +336,9 @@ function getMessageBot(text) {
                         submitMessageBot(tempTextBot('Tôi tìm thấy ' + data.count + ' câu hỏi liên quan đến câu hỏi của bạn.'), 0)
                         resolve();
                     })
-                    .then(() => {
-                        submitMessageBot(tempTextBot('Có đúng câu hỏi bạn quan tâm ?'), 1000)
-                    })
+                    //.then(() => {
+                    //    submitMessageBot(tempTextBot('Có đúng câu hỏi bạn quan tâm ?'), 1000)
+                    //})
                     .then(() => {
                         submitMessageBot(data.dataHtml, 1500);
                         setTimeout(function () {
