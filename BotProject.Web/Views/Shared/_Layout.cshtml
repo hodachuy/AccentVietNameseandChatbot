@@ -30,6 +30,12 @@
     <script>
         var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
     </script>
+
+    <style>
+        .bg-blue{
+            background-color:#3f51b5;
+        }
+    </style>
 </head>
 <body>
     <!-- ============================================================== -->
@@ -58,11 +64,11 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav flex-column">
                             <li class="nav-divider">
-                                <a class="pb-fixed-side__link" style="float: left;padding: 10px 0 15px 0px;color:white">
+                                <a class="pb-fixed-side__link" style="float:left;padding: 10px 0 15px 0px;color: rgba(117,117,117,.9);vertical-align: middle;font-size: 16px;">
                                     <i class="fa fa-comments fa-icons-right"></i>
-                                    <span class="pb-upper">Thêm bot</span>
+                                    <span class="pb-upper">Tạo bot</span>
                                 </a>
-                                <a id="btnCreateBot" class="pb-fixed-side__create-button pb-fixed-side__action-icon" title="" data-toggle="tooltip" data-original-title="Thêm mới" style="padding: 10px;float: right;color: lightgray;cursor: pointer;">
+                                <a id="btnCreateBot" class="pb-fixed-side__create-button pb-fixed-side__action-icon" title="" data-toggle="tooltip" data-original-title="Thêm mới" style="padding: 10px;float: right;color: rgba(117,117,117,.9);cursor: pointer;font-size:16px;">
                                     <i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>
                                 </a>
                             </li>
