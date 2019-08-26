@@ -360,6 +360,10 @@
     <Compile Include="Migrations\201908200953511_UpdateSystemConfig.Designer.cs">
       <DependentUpon>201908200953511_UpdateSystemConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201908260725426_UpdateMdAnswer.cs" />
+    <Compile Include="Migrations\201908260725426_UpdateMdAnswer.Designer.cs">
+      <DependentUpon>201908260725426_UpdateMdAnswer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -625,6 +629,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908200953511_UpdateSystemConfig.resx">
       <DependentUpon>201908200953511_UpdateSystemConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201908260725426_UpdateMdAnswer.resx">
+      <DependentUpon>201908260725426_UpdateMdAnswer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

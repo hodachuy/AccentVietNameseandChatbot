@@ -125,6 +125,8 @@ namespace BotProject.Web.API
                 }
                 MdQuestion mdQuesDb = new MdQuestion();
                 MdAnswer mdAnsDb = new MdAnswer();
+                mdQuesDb.BotID = mdQnA.BotID;
+                mdAnsDb.BotID = mdQnA.BotID;
                 ApiQnaNLRService apiNLR = new ApiQnaNLRService();
                 if (mdQnA.QuesID == null)
                 {

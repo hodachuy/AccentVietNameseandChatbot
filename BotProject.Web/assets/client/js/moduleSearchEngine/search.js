@@ -483,12 +483,11 @@ importExcelQnA = function () {
             for (var i = 0; i < files.length; i++) {
                 fileData.append(files[i].name, files[i]);
             }
-
+            fileData.append("botId",$("#botId").val())
             // Adding one more key to FormData object  
             //fileData.append('username', 'QALaw');
-
             $.ajax({
-                url: _Host + 'api/ImportExcelQnA',
+                url: _Host + 'apiv1/ImportExcelQnA',
                 type: "POST",
                 contentType: false,
                 processData: false,
@@ -502,13 +501,23 @@ importExcelQnA = function () {
                 },
                 success: function (result) {
                     console.log(result);
-                    //if (result.listques != null) {
-                    //listQues = result.listques;
-                    //AlertDialog("Thông báo", result.status, function () { });
-
-                    //} else {
-                    //AlertDialog("Thông báo", result, function () { });
-                    //}
+                    $("#excelQnAModal").hide();
+                    if (result) {
+                        swal({
+                            title: "Thông báo",
+                            text: "Thành công",
+                            confirmButtonColor: "#EF5350",
+                            type: "success"
+                        }, function () { $("#model-notify").modal('show'); });
+                        location.reload();
+                    } else {
+                        swal({
+                            title: "Thông báo",
+                            text: result.msg,
+                            confirmButtonColor: "#EF5350",
+                            type: "error"
+                        }, function () { $("#model-notify").modal('show'); });
+                    }
                 },
                 error: function (err) {
                 }

@@ -15,16 +15,132 @@
         border-spacing: 0;
         margin: 0 0 0em;
     }
-
         .k-table, .k-table td, .k-table th {
             outline: 0;
             border: 1px solid #555;
         }
+    .thumbnail {
+        display: block;
+        padding: 3px;
+        margin-bottom: 20px;
+        line-height: 1.5384616;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        -webkit-transition: border .2s ease-in-out;
+        -o-transition: border .2s ease-in-out;
+        transition: border .2s ease-in-out;
+    }
+    .thumb {
+        position: relative;
+        display: block;
+    }
+        .thumb img:not(.media-preview) {
+            display: inline-block;
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+
+    .thumbnail > img, .thumbnail a > img {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @@media (min-width: 1200px) {
+        .thumbnail .caption {
+            height: 160px;
+        }
+    }
+
+    .thumbnail .caption {
+        padding: 17px;
+        padding-top: 20px;
+    }
+
+    .clearfix_hkt {
+    clear: both;
+    min-height: 60px;
+}
+    .text-ellipsis {
+    text-overflow: ellipsis;
+    /*overflow: hidden;*/
+    white-space: nowrap;
+}
+    .no-padding-left {
+    padding-left: 0 !important;
+}
+    .no-margin-top {
+    margin-top: 0 !important;
+}
+    .text-semibold {
+    font-weight: 700;
+}
+    .content-wrapper .col-lg-2 {
+    float: right;
+}
+    .module_switchbot {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    min-width: 38px;
+    height: 15px;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+    .module_switchbot input {
+    display: none;
+}
+    .module_sliderbot.module_roundbot {
+    border-radius: 3px;
+}
+    .module_sliderbot {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+    .module_sliderbot:before {
+    position: absolute;
+    content: "";
+    height: 13px;
+    width: 13px;
+    left: 2px;
+    bottom: 1px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+    .module_sliderbot.module_roundbot:before {
+    border-radius: 3px;
+}
+    .module_switchbot input:checked + .module_sliderbot:after {
+    content: "Bật";
+    left: 5px;
+    /*right: auto;*/
+}
+    .module_switchbot input + .module_sliderbot:after {
+    content: "Tắt";
+    position: absolute;
+    font-size: 9px;
+    right: 3px;
+    top: 1px;
+    color: #fff;
+    line-height: 13px;
+}
+    input.module_switchinput:checked + .module_sliderbot {
+    background-color: #4492d8;
+}
 </style>
 <!-- ============================================================== -->
 <!-- pageheader -->
 <!-- ============================================================== -->
-<input type="hidden" id="botId" value="@ViewBag.BotID"/>
+<input type="hidden" id="botId" value="@ViewBag.BotID" />
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
         <div class="d-flex">
@@ -50,32 +166,112 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="table-responsive" id="table-qna">
-                <table class="table table-striped table-bordered table-sm" id="table-data">
-                    <thead>
-                        <tr>
-                            <th scope="col" style="width:1%"></th>
-                            <th scope="col" style="width:50%">Module</th>
-                            <th scope="col" style="width:49%">Chọn</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-data-training"></tbody>
-                </table>
-            </div>
-            <nav class="pagination pagination_type1">
-                <ol class="pagination__list" id="pagination-list"></ol>
-                <div class="pagination__list m-l-20">
-                    <select id="results-pp">
-                        <option value="5">5</option>
-                        <option value="10" selected>10</option>
-                        <option value="20">20</option>
-                        <option value="100">100</option>
-                        <option value="All">Tất cả</option>
-                    </select>
-                    <span class="m-l-10">Số lượng hiển thị</span>
+
+            @*<div class="table-responsive" id="table-qna">
+                    <table class="table table-striped table-bordered table-sm" id="table-data">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width:1%"></th>
+                                <th scope="col" style="width:50%">Module</th>
+                                <th scope="col" style="width:49%">Chọn</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-data-training"></tbody>
+                    </table>
                 </div>
-                <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
-            </nav>
+                <nav class="pagination pagination_type1">
+                    <ol class="pagination__list" id="pagination-list"></ol>
+                    <div class="pagination__list m-l-20">
+                        <select id="results-pp">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="100">100</option>
+                            <option value="All">Tất cả</option>
+                        </select>
+                        <span class="m-l-10">Số lượng hiển thị</span>
+                    </div>
+                    <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
+                </nav>*@
+        </div>
+    </div>
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="moduleItem col-lg-2 col-sm-4" id-submodule="emailchecker" id-module="5a9caea25796906827fd373d" attr-template="true">
+                <div class="thumbnail">
+                    <div class="thumb">
+                        <a href="#" class="text-default openPopup">
+                            <img src="~/assets/images/email.png" alt="">
+                        </a>
+                    </div>
+                    <div class="caption">
+                        <h6 class="text-ellipsis no-padding-left no-margin-top text-semibold col-lg-10 col-sm-10">
+                            <a href="#" class="text-default openPopup">
+                                Xử lý Email
+                            </a>
+                        </h6>
+                        <div class="wrSwitch col-lg-2 col-sm-2 text-right no-padding-right no-padding-left">
+                            <label class="module_switchbot">
+                                <input type="checkbox" name="" class="module_switchinput">
+                                <div class="module_sliderbot module_roundbot"></div>
+                            </label>
+                        </div>
+                        <p class="clearfix_hkt">
+                            Nếu người dùng của bạn đã đăng ký email cá nhân với Facebook ...
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="moduleItem col-lg-2 col-sm-4" id-submodule="phonechecker" id-module="5a9cae875796906827fd3739" attr-template="true">
+                <div class="thumbnail">
+                    <div class="thumb">
+                        <a href="#" class="text-default openPopup">
+                            <img src="~/assets/images/phone.png" />
+                        </a>
+                    </div>
+                    <div class="caption">
+                        <h6 class="text-ellipsis no-padding-left no-margin-top text-semibold col-lg-10 col-sm-10">
+                            <a href="#" class="text-default openPopup">
+                                Xử lý số điện thoại
+                            </a>
+                        </h6>
+                        <div class="wrSwitch col-lg-2 col-sm-2 text-right no-padding-right no-padding-left">
+                            <label class="module_switchbot">
+                                <input type="checkbox" name="" class="module_switchinput" checked="">
+                                <div class="module_sliderbot module_roundbot"></div>
+                            </label>
+                        </div>
+                        <p class="clearfix_hkt">
+                            Nếu người dùng của bạn đã đăng ký số điện thoại cá nhân ...
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="moduleItem col-lg-2 col-sm-4" id-submodule="survey" id-module="5ad800ae8832710b07b84f61" attr-template="true">
+                <div class="thumbnail">
+                    <div class="thumb">
+                        <a href="#" class="text-default openPopup">
+                            <img src="~/assets/images/thuthap.png" alt="">
+                        </a>
+                    </div>
+                    <div class="caption">
+                        <h6 class="text-ellipsis no-padding-left no-margin-top text-semibold col-lg-10 col-sm-10">
+                            <a href="#" class="text-default openPopup">
+                                Thu thập thông tin
+                            </a>
+                        </h6>
+                        <div class="wrSwitch col-lg-2 col-sm-2 text-right no-padding-right no-padding-left">
+                            <label class="module_switchbot">
+                                <input type="checkbox" name="" class="module_switchinput">
+                                <div class="module_sliderbot module_roundbot"></div>
+                            </label>
+                        </div>
+                        <p class="clearfix_hkt">
+                            Mô-đun này giúp chatbot của bạn có thể thu thập các thông tin...
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

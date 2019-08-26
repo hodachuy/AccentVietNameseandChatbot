@@ -24,5 +24,7 @@ namespace BotProject.Model.Models
         public DateTime? CreatedDate { set; get; }
 
         public int? MQuestionID { set; get; }
+
+        public int? BotID { set; get; }
     }
 }

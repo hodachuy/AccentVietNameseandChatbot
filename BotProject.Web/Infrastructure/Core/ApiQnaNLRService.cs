@@ -15,15 +15,15 @@ namespace BotProject.Web.Infrastructure.Core
         private readonly string UrlAPI = Helper.ReadString("UrlAPI");
         private readonly string KeyAPI = Helper.ReadString("KeyAPI");
 
-        private string apiAddQA = "/api/pair_add";
-        private string apiUpdateQA = "/api/pair_update";
-        private string apiDetailQA = "/api/pair_get";
-        private string apiRelateQA = "/api/get_related_pairs";
+        private string apiAddQA = "/api/qa_for_all/pair_add";
+        private string apiUpdateQA = "/api/qa_for_all/pair_update";
+        private string apiDetailQA = "/api/qa_for_all/pair_get";
+        private string apiRelateQA = "/api/qa_for_all/get_related_pairs";
 
         /// <summary>
         /// API KNOWLEDGE BASE CHATBOT
         /// </summary>
-        private string apiKnowledgeBaseAddQA = "/api/chatbot/bot_add";
+        private string apiKnowledgeBaseAddQA = "/api/chatbot/pair_add";
         private string apiKnowledgeBaseDeleteQA = "/api/chatbot/bot_delete_formqnaid";
         private string apiKnowledgeBasePrecidictTextClass = "/api/chatbot/text_class";
 
@@ -81,18 +81,18 @@ namespace BotProject.Web.Infrastructure.Core
             return result;
         }
 
-        public string AddQues(string QuesID, string QuestionContent, string AnswerContent, string AreaTitle, string AnswerHtml, string GroupQues = "leg")
+        public string AddQues(string QuesID, string QuestionContent, string AnswerContent, string AreaId,string QuestionHtml, string AnswerHtml,string BotId)
         {
-            var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaTitle, html = AnswerHtml, type = GroupQues };
+            var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaId, botid = BotId, question_html = QuestionHtml , answer_html = AnswerHtml };
             return ApiAddUpdateQA(apiAddQA, param, "Post");
         }
-        public string UpdateQues(string QuesID, string QuestionContent, string AnswerContent, string AreaTitle, string AnswerHtml, string GroupQues = "leg")
+        public string UpdateQues(string QuesID, string QuestionContent, string AnswerContent, string AreaId, string QuestionHtml, string AnswerHtml, string BotId)
         {
-            var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaTitle, html = AnswerHtml, type = GroupQues };
+            var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaId, botid = BotId, question_html = QuestionHtml, answer_html = AnswerHtml };
             return ApiAddUpdateQA(apiUpdateQA, param, "Put");
         }
 
-        // Function ADD KNOWLEDGE BASE
+        // Function ADD KNOWLEDGE BASE - TEXT CLASSIFICATION
         public string AddKnowledgeQuestion(int botId, int formQnaId, int quesId, string question, string target)
         {
             var param = new {
