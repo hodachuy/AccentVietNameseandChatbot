@@ -27,11 +27,11 @@ var common = {
         //hightlight bot name
         $('#' + sessionStorage.getItem("nav-active")).attr('aria-expanded', 'true');
         $('#' + sessionStorage.getItem("nav-active")).next().addClass('show');
-        $('#' + sessionStorage.getItem("nav-active")).css('color', 'white');
+        $('#' + sessionStorage.getItem("nav-active")).addClass('active');
         //hightlight bot name - sub
-        $('#' + sessionStorage.getItem("nav-active-sub")).css('color', 'white');
+        //$('#' + sessionStorage.getItem("nav-active-sub")).css('color', 'white');
         $('#' + sessionStorage.getItem("nav-active-sub")).addClass('active');
-        $('#' + sessionStorage.getItem("nav-active-sub")).children().css('color', 'white');
+        //$('#' + sessionStorage.getItem("nav-active-sub")).children().css('color', 'white');
 
         $('body').on('click', 'li.nav-item-bot', function (e) {
             //if ($(this).children().eq(0).attr('id') !== sessionStorage.getItem("nav-active")) {
@@ -39,7 +39,8 @@ var common = {
                     $(this).children().eq(0).next().removeClass('show');
                     $(this).children().eq(0).removeClass('collapsed');
                     $(this).children().eq(0).attr('aria-expanded', 'false');
-                    $(this).children().eq(0).css('color', '#7a80b4')
+                    $(this).children().eq(0).removeClass('active');
+                    //$(this).children().eq(0).css('color', '#7a80b4')
                 })
             //}
             var navBotID = $(this).children().eq(0).attr('id');
@@ -50,12 +51,13 @@ var common = {
                 if (sessionStorage.getItem("bot-id") === null) {
                     sessionStorage.setItem("nav-active", navBotID);
                 }
-                else if (sessionStorage.getItem("bot-id") !== null && (sessionStorage.getItem("bot-id") === $(this).children().eq(0).attr('data-id'))) {
+                else if (sessionStorage.getItem("bot-id") !== null &&
+                        (sessionStorage.getItem("bot-id") === $(this).children().eq(0).attr('data-id'))) {
                     sessionStorage.setItem("nav-active", navBotID);
                 } 
             }
             //sessionStorage.setItem("attrBotID", attrBotID);
-            $(this).children().eq(0).css('color', 'white');
+            $(this).children().eq(0).addClass('active');
         })
         $('body').on('click', 'li.nav-item-cog', function (e) {
             sessionStorage.setItem("nav-active", "");
@@ -79,8 +81,9 @@ var common = {
             sessionStorage.setItem("bot-id", botId);
             var navActive = "nav-bot-id-"+botId;
             sessionStorage.setItem("nav-active", navActive);
-            $(this).children().eq(0).css('color', 'white');
-            $(this).children().eq(0).children().css('color', 'white');
+            $(this).children().eq(0).addClass('active');
+            //$(this).children().eq(0).css('color', 'white');
+            //$(this).children().eq(0).children().css('color', 'white');
         })
     },
     registerEvents: function () {
@@ -196,13 +199,13 @@ var common = {
             html += '</a>';
             html += '<div id="submenu-' + data.ID + '" class="collapse submenu" style="">';
             html += '<ul class="nav flex-column">';
-            html += '<li class="nav-item">';
+            html += '<li class="nav-item nav-item-bot-sub">';
             html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/cardcategory?botName=' + data.Name + '" id="bot-card-' + data.ID + '"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
             html += '</li>';
-            html += '<li class="nav-item">';
+            html += '<li class="nav-item nav-item-bot-sub">';
             html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module?botName=' + data.Name + '" id="bot-module-' + data.ID + '"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
             html += '</li>';
-            html += '<li class="nav-item">';
+            html += '<li class="nav-item nav-item-bot-sub">';
             html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-recycle"></i>Huấn luyện bot';
             html +=                '<span style="float: right;color: lightgray;cursor: pointer;">';
             html +=                    '<i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>';
@@ -213,16 +216,16 @@ var common = {
             html +=                '</ul>';
             html +=             '</div>';
             html += '</li>';
-            html += '<li class="nav-item">';
+            html += '<li class="nav-item nav-item-bot-sub">';
             html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/searchengine/' + data.Alias + '/' + data.ID + '?botName=' + data.Name + '" id="bot-search-' + data.ID + '"><i class="fa fa-search" aria-hidden="true"></i>Search Engineer</a>';
             html += '</li>';
-            html += '<li class="nav-item">';
+            html += '<li class="nav-item nav-item-bot-sub">';
             html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '" id="bot-setting-' + data.ID + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
             html += '</li>';
             //html += '<li class="nav-item">';
             //html += '<a class="nav-link btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
             //html += '</li>';
-            html += '<li class="nav-item">';
+            html += '<li class="nav-item nav-item-bot-sub">';
             html += '<a class="nav-link btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Xóa bot</a>';
             html += '</li>';
             html += '</ul>';

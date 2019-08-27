@@ -157,7 +157,7 @@
 
 body {
     /*font-family: 'Circular Std Book';*/
-    font-family:'Segoe UI';
+    font-family: 'Segoe UI';
     font-style: normal;
     font-weight: normal;
     font-size: 14px;
@@ -176,7 +176,7 @@ h5,
 h6 {
     color: #3d405c;
     margin: 0px 0px 15px 0px;
-    font-family:'Segoe UI';
+    font-family: 'Segoe UI';
     /*font-family: 'Circular Std Medium';*/
 }
 
@@ -771,6 +771,7 @@ html body .font-light {
 html body .font-medium {
     font-weight: 600;
 }
+
 html body .font-medium-v2 {
     font-weight: 700;
 }
@@ -1244,7 +1245,7 @@ Top Header
 
     .dashboard-header .navbar {
         padding: 0px;
-        border-bottom:1px solid #36459b; /*1px solid #e6e6f2;*/
+        border-bottom: 1px solid #36459b; /*1px solid #e6e6f2;*/
         -webkit-box-shadow: 0px 0px 28px 0px rgba(82, 63, 105, 0.13);
         box-shadow: 0px 0px 28px 0px rgba(82, 63, 105, 0.13);
         -webkit-transition: all 0.3s ease;
@@ -1258,8 +1259,8 @@ Top Header
     margin-right: 1rem;
     line-height: inherit;
     white-space: nowrap;
-    padding: 11px 20px 0px 20px;
-    font-size: 30px;
+    padding: 0px 20px 0px 20px;
+    font-size: 25px;
     /*text-transform: uppercase;*/
     font-weight: 600;
     color: #fff; /*cornflowerblue;*/
@@ -1268,7 +1269,7 @@ Top Header
 }
 
     .navbar-brand:hover {
-        color: #fff;/*#007bff;*/
+        color: #fff; /*#007bff;*/
     }
 
 .navbar-right-top {
@@ -1286,7 +1287,7 @@ Top Header
             padding: 13px 20px;
             font-size: 16px;
             line-height: 2;
-            color: #fff;/*#82849f;*/
+            color: #fff; /*#82849f;*/
         }
 
 
@@ -1507,7 +1508,7 @@ Top Header
 }
 
 .nav-user-info {
-    background-color: #5969ff;
+    background-color: #3f51b5;
     line-height: 1.4;
     padding: 12px;
     color: #fff;
@@ -1722,10 +1723,16 @@ Left Navigation Sidebar
 
     .nav-left-sidebar .navbar {
         position: relative;
-        padding: 14px;
+        /*padding: 14px;*/
+        width: 100%;
+        padding: 0;
     }
 
     .nav-left-sidebar .navbar-nav .nav-item {
+    }
+
+    .nav-left-sidebar .navbar-nav .nav-item-bot-sub {
+        padding-left: 15px;
     }
 
     .nav-left-sidebar .navbar-nav .nav-link {
@@ -1745,7 +1752,7 @@ Left Navigation Sidebar
     }
 
 .nav-divider {
-    padding: 10px 14px;
+    padding: 10px 14px 0px 14px;
     line-height: 30px;
     font-weight: 600;
     text-transform: uppercase;
@@ -1756,12 +1763,12 @@ Left Navigation Sidebar
     padding-left: 12px;
     padding-right: 12px;
     /* margin-top: 5px; */
-    background: #24274a;
+    /*background: #24274a;*/
 }
 
     .nav-left-sidebar .submenu .nav .nav-item .nav-link {
         font-size: 14px;
-        padding: 6px 12px;
+        /*padding: 6px 12px;*/
         transition: 0.3s;
     }
 
@@ -1824,19 +1831,19 @@ Leftsidebar - Primary
         .sidebar-primary.nav-left-sidebar .navbar-nav .nav-link:hover {
             color: #fff;
             background-color: #5761c2;
-            border-radius: 2px;
+            /*border-radius: 2px;*/
         }
 
         .sidebar-primary.nav-left-sidebar .navbar-nav .nav-link:focus,
         .sidebar-primary.nav-left-sidebar .navbar-nav .nav-link.active {
             background-color: #5761c2;
             color: #fff;
-            border-radius: 2px;
+            /*border-radius: 2px;*/
         }
 
     .sidebar-primary.nav-left-sidebar .submenu .nav .nav-item .nav-link:hover {
         color: #fff;
-        border-radius: 2px;
+        /*border-radius: 2px;*/
         background-color: transparent;
     }
 
@@ -1856,37 +1863,63 @@ Leftsidebar - dark
         color: #a4aadb;
         font-size: 12px;
         letter-spacing: 1px;
+        border-bottom: 1px solid #ddd;
     }
 
-    .sidebar-dark.nav-left-sidebar .nav-link i {
-        color: #7a80b4;
+    /*.sidebar-dark.nav-left-sidebar .nav-link i {
+        color: #333;
+    }*/
+    .sidebar-dark.nav-left-sidebar .nav-link i:hover {
+        color: #3f51b5;
     }
 
-    .sidebar-dark.nav-left-sidebar .navbar-nav .nav-item {
+    .sidebar-dark.nav-left-sidebar .navbar-nav .nav-item-bot {
+        /*background-color: rgba(40,53,147,.08);*/
+        padding-bottom: 6px;
     }
 
     .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link {
-        color: #7a80b4;
+        color: #333;
     }
 
         .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link:focus,
         .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link:hover {
-            color: #fff;
-            background-color: #242849;
+            color: #3f51b5;
+            background-color: rgba(40,53,147,.08);
+            border-radius: 2px;
+        }
+
+        .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link active {
+            color: #3f51b5;
+            background-color: rgba(40,53,147,.08);
             border-radius: 2px;
         }
 
         .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link:focus,
         .sidebar-dark.nav-left-sidebar .navbar-nav .nav-link.active {
-            background-color: #242849;
+            /*background-color: #242849;
             color: #fff;
+            border-radius: 2px;*/
+            color: #3f51b5;
+            background-color: rgba(40,53,147,.08);
             border-radius: 2px;
         }
 
-    .sidebar-dark.nav-left-sidebar .submenu .nav .nav-item .nav-link:hover {
-        color: #fff;
+
+    .sidebar-dark.nav-left-sidebar .submenu .nav .nav-item .nav-link.active {
+        color: #3f51b5;
+        background-color: #fff;
         border-radius: 2px;
-        background-color: #242849;
+    }
+
+
+    .sidebar-dark.nav-left-sidebar .submenu .nav .nav-item .nav-link:hover {
+        /*color: #fff;
+        border-radius: 2px;
+        background-color: #242849;*/
+        color: #3f51b5;
+        /*background-color: rgba(40,53,147,.08);*/
+        border-radius: 2px;
     }
 
     .sidebar-dark.nav-left-sidebar .navbar-nav .nav-item .badge {
@@ -8680,16 +8713,36 @@ label.switchery-xs {
     margin-bottom: -3px;
 }
 
-.breadcrumb{
+.breadcrumb {
     padding: unset;
 }
-.breadcrumb-item{
-    font-size:13pt;
+
+.breadcrumb-item {
+    font-size: 13pt;
 }
-.breadcrumb-item .fa{
-    color:darkblue;
+
+    .breadcrumb-item .fa {
+        color: #3f51b5;
+    }
+
+        .breadcrumb-item .fa:before {
+            margin-right: 10px;
+            color: #3f51b5;
+        }
+
+         .breadcrumb-item .fab {
+        color: #3f51b5;
+    }
+
+        .breadcrumb-item .fab:before {
+            margin-right: 10px;
+            color: #3f51b5;
+        }
+
+.bg-blue {
+    background-color: #3f51b5;
 }
-.breadcrumb-item .fa:before{
-    margin-right:10px;
-    color:darkblue;
+
+.editor-file-aiml {
+    height: 550px;
 }

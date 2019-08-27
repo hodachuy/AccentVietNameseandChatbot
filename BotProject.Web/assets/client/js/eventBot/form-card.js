@@ -197,7 +197,7 @@ $(document).ready(function () {
                 var tempGnrItem = '';
                 tempGnrItem += '<div class="content" card="galery" data-index="' + value.Index + '">';
                 tempGnrItem += '<div class="bt_move_vertical" draggable="true">';
-                tempGnrItem += '<i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up"></i>';
+                tempGnrItem += '<i class="icon-x fa fa-times"></i><i class="icon-arrow-up13 fa fa-arrow-up"></i>';
                 tempGnrItem += '<i class="icon-arrow-down132 fa fa-arrow-down"></i>';
                 tempGnrItem += '</div>';
                 if (lstTempGnrItem.length != 0) {
@@ -221,9 +221,9 @@ $(document).ready(function () {
                         tempGnrItem += '<br>Tải ảnh lên';
                         tempGnrItem += '</div><span class="">';
                         tempGnrItem += '<a class="img-rp">';
-                        tempGnrItem += '<i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>Thay thế';
+                        tempGnrItem += '<i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>Thay thế';
                         tempGnrItem += '</a>';
-                        tempGnrItem += '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>Xóa</a>';
+                        tempGnrItem += '<a class="img-rm"><i class="icon-cross2 fa fa-times"></i><br>Xóa</a>';
                         tempGnrItem += '</span>';
                         tempGnrItem += '</div>';
                         tempGnrItem += '<div class="wr_title">';
@@ -348,7 +348,7 @@ $(document).ready(function () {
                 var tempImage = '';
                 tempImage += '<div class="content" card="image" data-index="' + value.Index + '">';
                 tempImage += '<div class="bt_move_vertical">';
-                tempImage += '<i class="icon-x fa fa-remove"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i>';
+                tempImage += '<i class="icon-x fa fa-times"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i>';
                 tempImage += '</div>';
                 tempImage += '<div class="layer tile">';
                 tempImage += '<div class="bt_move_horizontal">';
@@ -360,7 +360,7 @@ $(document).ready(function () {
                 tempImage += '<input class="inputfile" type="file" accept="image/*">';
                 tempImage += '<div class="clickinput" style="display: none;"><i class="icon-camera fa fa-camera"></i>';
                 tempImage += '<br>Tải ảnh lên</div>';
-                tempImage += '<span class=""><a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>Thay thế</a><a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>Xóa</a></span>';
+                tempImage += '<span class=""><a class="img-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>Thay thế</a><a class="img-rm"><i class="icon-cross2 fa fa-times"></i><br>Xóa</a></span>';
                 tempImage += '</div></div></div>';
 
                 var objCard = {
@@ -389,7 +389,7 @@ $(document).ready(function () {
                 var tempModuleFollowCard = '';
                 var tempModuleFollowCard = '<div class="content" card="module" data-index="' + value.Index + '">' +
                 '<div class="bt_move_vertical" draggable="true">' +
-                    '<i class="icon-x fa fa-remove"></i>' +
+                    '<i class="icon-x fa fa-times"></i>' +
                     '<i class="icon-arrow-up13 fa fa-arrow-up"></i>' +
                     '<i class="icon-arrow-down132 fa fa-arrow-down"></i>' +
                 '</div>' +
@@ -430,7 +430,7 @@ $(document).ready(function () {
         if (data.TemplateTexts.length != 0) {
             $.each(data.TemplateTexts, function (index, value) {
                 var tempText = '';
-                tempText += '<div class="content" card="text" data-index="' + value.Index + '"><div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="1040" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">' + value.Text + '</textarea><span>1040</span></div></div>';
+                tempText += '<div class="content" card="text" data-index="' + value.Index + '"><div class="bt_move_vertical"><i class="icon-x fa fa-times"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="1040" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">' + value.Text + '</textarea><span>1040</span></div></div>';
                 tempText += '<div class="wr_button">';
                 var arrBtn = [];
                 if (value.ButtonPostbacks.length != 0) {
@@ -632,7 +632,7 @@ $(document).ready(function () {
             .done(function (val) {
                 //val = JSON.parse(val);
                 el.css('background-image', 'url("' + _Host + val.Url + '")');
-                el.find('i.icon-camera').addClass('icon-cross3 fa fa-remove');
+                el.find('i.icon-camera').addClass('icon-cross3 fa fa-times');
                 el.find('i.icon-camera').removeClass('icon-camera fa fa-camera');
                 el.addClass('hasImg');
                 el.find('.img-loading').remove();
@@ -649,7 +649,7 @@ $(document).ready(function () {
             if ($(this).attr('type-button') != 'element_add') {
                 var str_bthv = '<div class="action_bt">' +
                                     '<span class="list_edBt"><i class="icon-pencil6 fa fa-edit"></i></span>' +
-                                    '<span class="list_rmBt"><i class="icon-bin fa fa-remove"></i></span>' +
+                                    '<span class="list_rmBt"><i class="icon-bin fa fa-times"></i></span>' +
                                 '</div>';
                 $(this).append(str_bthv);
             }
@@ -2055,7 +2055,7 @@ $(document).ready(function () {
     $('.card_galery').click(function (event) {
         var str_galery = '<div class="content" card="galery" data-index="">' +
             '<div class="bt_move_vertical">' +
-                '<i class="icon-x fa fa-remove"></i>' +
+                '<i class="icon-x fa fa-times"></i>' +
                 '<i class=" icon-arrow-up13 fa fa-arrow-up"></i>' +
                 '<i class="icon-arrow-down132 fa fa-arrow-down"></i>' +
             '</div>' +
@@ -2074,8 +2074,8 @@ $(document).ready(function () {
                     '<input class="inputfile" type="file" accept="image/*"/>' +
                     '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>' + txtCard14 + '</div>' +
                     '<span class="hide">' +
-                        '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
-                        '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>' + txtCard16 + '</a>' +
+                        '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>' + txtCard15 + '</a>' +
+                        '<a class="img-rm"><i class="icon-cross2 fa fa-times"></i><br>' + txtCard16 + '</a>' +
                     '</span>' +
                 '</div>' +
                 '<div class="wr_title">' +
@@ -2110,7 +2110,7 @@ $(document).ready(function () {
     $('.card_text').click(function (event) {
         var str_card_text = '<div class="content" card="text" data-index="">' +
             '<div class="bt_move_vertical">' +
-                '<i class="icon-x fa fa-remove"></i>' +
+                '<i class="icon-x fa fa-times"></i>' +
                 '<i class="icon-arrow-up13 fa fa-arrow-up "></i>' +
                 '<i class="icon-arrow-down132 fa fa-arrow-down "></i>' +
             '</div>' +
@@ -2144,7 +2144,7 @@ $(document).ready(function () {
     $('.card_image').click(function (event) {
         var str_image = '<div class="content" card="image" data-index="">' +
                 '<div class="bt_move_vertical">' +
-                    '<i class="icon-x fa fa-remove"></i>' +
+                    '<i class="icon-x fa fa-times"></i>' +
                     '<i class=" icon-arrow-up13 fa fa-arrow-up "></i>' +
                     '<i class="icon-arrow-down132 fa fa-arrow-down "></i>' +
                 '</div>' +
@@ -2158,8 +2158,8 @@ $(document).ready(function () {
                         '<input class="inputfile" type="file" accept="image/*"/>' +
                         '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>' + txtCard14 + '</div>' +
                         '<span class="hide">' +
-                            '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
-                            '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>' + txtCard16 + '</a>' +
+                            '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>' + txtCard15 + '</a>' +
+                            '<a class="img-rm"><i class="icon-cross2 fa fa-times"></i><br>' + txtCard16 + '</a>' +
                         '</span>' +
                     '</div>' +
                 '</div>' +
@@ -2183,8 +2183,8 @@ $(document).ready(function () {
                             '<i class="icon-volume-medium"></i><br>' +
                             '<span>' + txtCard11 + '</span></div>' +
                         '<span class="hide">' +
-                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
-                            '<a class="file-rm"><i class="icon-cross2 fa fa-remove"></i><br>' + txtCard16 + '</a>' +
+                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>' + txtCard15 + '</a>' +
+                            '<a class="file-rm"><i class="icon-cross2 fa fa-times"></i><br>' + txtCard16 + '</a>' +
                         '</span>' +
                     '</div>' +
                 '</div>' +
@@ -2208,8 +2208,8 @@ $(document).ready(function () {
                             '<i class="icon-film"></i><br>' +
                             '<span>' + txtCard12 + '</span></div>' +
                         '<span class="hide">' +
-                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
-                            '<a class="file-rm"><i class="icon-cross2 fa fa-remove"></i><br>' + txtCard16 + '</a>' +
+                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>' + txtCard15 + '</a>' +
+                            '<a class="file-rm"><i class="icon-cross2 fa fa-times"></i><br>' + txtCard16 + '</a>' +
                         '</span>' +
                     '</div>' +
                 '</div>' +
@@ -2222,7 +2222,7 @@ $(document).ready(function () {
     });
     $('.card_file').click(function (event) {
         var str_audio = '<div class="content" card="file" data-index="">' +
-                '<div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div>' +
+                '<div class="bt_move_vertical"><i class="icon-x fa fa-times"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div>' +
                 '<div class="layer tile">' +
                     '<div class="bt_move_horizontal">' +
                         '<div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div>' +
@@ -2233,8 +2233,8 @@ $(document).ready(function () {
                             '<i class="icon-attachment fa fa-paperclip"></i><br>' +
                             '<span>' + txtCard13 + '</span></div>' +
                         '<span class="hidden">' +
-                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
-                            '<a class="file-rm"><i class="icon-cross2 fa fa-remove"></i><br>' + txtCard16 + '</a>' +
+                            '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>' + txtCard15 + '</a>' +
+                            '<a class="file-rm"><i class="icon-cross2 fa fa-times"></i><br>' + txtCard16 + '</a>' +
                         '</span>' +
                     '</div>' +
                 '</div>' +
@@ -2248,7 +2248,7 @@ $(document).ready(function () {
     $('.card_module').click(function (event) {
         var str_module = '<div class="content" card="module" data-index="">' +
                 '<div class="bt_move_vertical" draggable="true">' +
-                    '<i class="icon-x fa fa-remove"></i>' +
+                    '<i class="icon-x fa fa-times"></i>' +
                     '<i class="icon-arrow-up13 fa fa-arrow-up"></i>' +
                     '<i class="icon-arrow-down132 fa fa-arrow-down"></i>' +
                 '</div>' +
@@ -2308,7 +2308,7 @@ $(document).ready(function () {
 
     $('.card_list').click(function (event) {
         var str_list = '<div class="content" card="list" data-index="">' +
-                '<div class="bt_move_vertical"><i class="icon-x fa fa-remove"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down"></i></div>' +
+                '<div class="bt_move_vertical"><i class="icon-x fa fa-times"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down"></i></div>' +
                 '<div class="layer tile">' +
                     '<div class="bt_move_horizontal">' +
                         '<div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div>' +
@@ -2316,7 +2316,7 @@ $(document).ready(function () {
                     '<div class="wr_image">' +
                         '<input class="inputfile" type="file" accept="image/*">' +
                         '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>' + txtCard14 + '</div>' +
-                        '<span class="hide"><a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a><a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>' + txtCard16 + '</a></span>' +
+                        '<span class="hide"><a class="img-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>' + txtCard15 + '</a><a class="img-rm"><i class="icon-cross2 fa fa-times"></i><br>' + txtCard16 + '</a></span>' +
                         '<div class="list-wrct list-wrct-top">' +
                             '<input type="text" class="list_title" placeholder="' + txtCard17 + '" readonly value="">' +
                             '<input type="text" class="list_subtitle" placeholder="' + txtCard18 + '" readonly value="">' +
@@ -2918,8 +2918,8 @@ $(document).ready(function () {
                     '<input class="inputfile" type="file" accept="image/*"/>' +
                     '<div class="clickinput"><i class="icon-camera fa fa-camera"></i><br>' + txtCard14 + '</div>' +
                     '<span class="hide">' +
-                        '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-rotate-right"></i><br>' + txtCard15 + '</a>' +
-                        '<a class="img-rm"><i class="icon-cross2 fa fa-remove"></i><br>' + txtCard16 + '</a>' +
+                        '<a class="img-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>' + txtCard15 + '</a>' +
+                        '<a class="img-rm"><i class="icon-cross2 fa fa-times"></i><br>' + txtCard16 + '</a>' +
                     '</span>' +
                 '</div>' +
                 '<div class="wr_title">' +
@@ -3607,7 +3607,7 @@ $(document).ready(function () {
             if ($(this).attr('type-button') != 'element_add') {
                 var str_bthv = '<div class="action_bt">' +
                                     '<span class="bt_ed"><i class="icon-pencil6 fa fa-edit"></i></span>' +
-                                    '<span class="bt_rm"><i class="icon-bin fa fa-remove"></i></span>' +
+                                    '<span class="bt_rm"><i class="icon-bin fa fa-times"></i></span>' +
                                 '</div>';
                 $(this).append(str_bthv);
             }

@@ -150,6 +150,7 @@
     #pageLearning .switchery-xs.checkbox-switchery.pd0 {
         padding-top: 0;
         min-height: 20px;
+        float:right;
     }
 
     #pageLearning .bt {

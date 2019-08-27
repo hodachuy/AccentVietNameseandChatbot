@@ -283,15 +283,22 @@ renderTemplate = function (data) {
                 html += '</tr>';
             })
 
+            // khoản cách mRangePage <--> " so page chọn" <--> mRangePage
+            var mRangePage;
+            if (data.MaxPage == 5) {
+                mRangePage = data.MaxPage / 2;
+            }else{
+                mRangePage = data.MaxPage / (data.MaxPage / 2);
+            }
             // render pagination : phân trang table
-            var startPageIndex = Math.max(1, (data.Page - data.MaxPage / 2));
-            var endPageIndex = Math.min(data.TotalPages, (data.Page + data.MaxPage / 2));
+            var startPageIndex = Math.max(1, (data.Page - mRangePage));
+            var endPageIndex = Math.min(data.TotalPages, (data.Page + mRangePage));
             var firstPage = 1;
             var lastPage = data.TotalPages;
             var previousPage = data.Page - 1;
             var nextPage = data.Page + 1;
-            paginationListHtml = '';
 
+            paginationListHtml = '';
             if (data.Page > firstPage) {
                 paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTable(' + (data.Page - 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
             }
