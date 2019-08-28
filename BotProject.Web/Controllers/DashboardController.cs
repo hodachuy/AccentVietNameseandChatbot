@@ -25,6 +25,10 @@ namespace BotProject.Web.Controllers
         [OutputCacheAttribute(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult Index()
         {
+            if(UserInfo == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 

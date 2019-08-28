@@ -18,6 +18,11 @@ var formQnA = {
 var e;
 var common = {
     init: function () {
+        if (window.location.pathname.includes("/bot") == false) {
+            sessionStorage.setItem("nav-active", "");
+            sessionStorage.setItem("bot-id", "");
+            sessionStorage.setItem("nav-active-sub", "");
+        }
         common.registerEvents();
         common.createBot();
         common.createFormBotQnA();

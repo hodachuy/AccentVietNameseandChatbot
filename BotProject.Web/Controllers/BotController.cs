@@ -49,8 +49,10 @@ namespace BotProject.Web.Controllers
 
 		public ActionResult QnA(int formQnAId, int botId, string botName)
 		{
-            ViewBag.BotQnAnswerID = formQnAId;
-            ViewBag.BotName = botName;
+            if (String.IsNullOrEmpty(botName))
+            {
+                return RedirectToAction("Index","Dashboard");
+            }
             var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
             var formQnAVm = Mapper.Map<FormQuestionAnswer, FormQuestionAnswerViewModel>(formQnA);
             var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botId);
@@ -63,19 +65,29 @@ namespace BotProject.Web.Controllers
                     item.Cards = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);
                 }
             }
+            ViewBag.BotQnAnswerID = formQnAId;
+            ViewBag.BotName = botName;
             ViewBag.Cards = lstGroupCardVm;
             return View(formQnAVm);
 		}
 
         public ActionResult Module(int id, string botName)
         {
+            if (String.IsNullOrEmpty(botName))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
             ViewBag.BotID = id;
             ViewBag.BotName = botName;
             return View();
         }
 
-        public ActionResult CardCategory(int id, string botName) {
-
+        public ActionResult CardCategory(int id, string botName)
+        {
+            if (String.IsNullOrEmpty(botName))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
             ViewBag.BotID = id;
             ViewBag.BotName = botName;
             var lstModule = _moduleService.GetAllModuleByBotID(id);
@@ -91,6 +103,10 @@ namespace BotProject.Web.Controllers
 
         public ActionResult Setting(int id, string name)
         {
+            if (String.IsNullOrEmpty(name))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
             var settingDb = _settingService.GetSettingByBotID(id);
             var lstCard = _cardService.GetListCardByBotID(id);
             var settingVm = Mapper.Map<Setting, BotSettingViewModel>(settingDb);
@@ -113,6 +129,10 @@ namespace BotProject.Web.Controllers
 
         public ActionResult BotSearchEngine(int botId, string botName)
         {
+            if (String.IsNullOrEmpty(botName))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
             ViewBag.BotName = botName;
             ViewBag.BotID = botId;
             var lstMdArea = _mdSearchEngineService.GetListMdArea(botId).ToList();
