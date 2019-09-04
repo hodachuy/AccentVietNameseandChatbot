@@ -9,6 +9,7 @@
         var urlModule = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/module?botName=" + item.Name;
         var urlSetting = Url.Content("~") + "bot/setting/" + item.Alias + "/" + item.ID +"?name="+item.Name;
         var urlBotSearchEngine = Url.Content("~") + "bot/searchengine/" + item.Alias + "/" + item.ID + "?botName=" + item.Name;
+        var urlHistory = Url.Content("~") + "bot/history/" + item.Alias + "/" + item.ID + "?botName=" + item.Name;
         <li class="nav-item nav-item-bot">
             <a class="nav-link collapsed" id="nav-bot-id-@item.ID" data-id="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-@item.ID">
                 <i class="fa fa fa-robot" aria-hidden="true"></i> @item.Name.ToUpper()
@@ -47,6 +48,9 @@
                     </li>
                     <li class="nav-item nav-item-bot-sub">
                         <a class="nav-link" href="@urlSetting" data-id="@item.ID" id="bot-setting-@item.ID"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>
+                    </li>
+                    <li class="nav-item nav-item-bot-sub">
+                        <a class="nav-link" href="@urlHistory" data-id="@item.ID" id="bot-history-@item.ID"><i class="fa fa-history" aria-hidden="true"></i>Lịch sử</a>
                     </li>
                     @*<li class="nav-item">
                         <a class="nav-link btn-form-deploy"  href="javascript:void(0);" data-botID="@item.ID"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy Bot</a>

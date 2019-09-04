@@ -364,6 +364,22 @@
     <Compile Include="Migrations\201908260725426_UpdateMdAnswer.Designer.cs">
       <DependentUpon>201908260725426_UpdateMdAnswer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909040335053_UpdateSystemConfig1.cs" />
+    <Compile Include="Migrations\201909040335053_UpdateSystemConfig1.Designer.cs">
+      <DependentUpon>201909040335053_UpdateSystemConfig1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909040756437_AddHistory.cs" />
+    <Compile Include="Migrations\201909040756437_AddHistory.Designer.cs">
+      <DependentUpon>201909040756437_AddHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909040759059_AddHistory_v1.cs" />
+    <Compile Include="Migrations\201909040759059_AddHistory_v1.Designer.cs">
+      <DependentUpon>201909040759059_AddHistory_v1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909040840113_AddMsgHistory.cs" />
+    <Compile Include="Migrations\201909040840113_AddMsgHistory.Designer.cs">
+      <DependentUpon>201909040840113_AddMsgHistory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -381,6 +397,7 @@
     <Compile Include="Repositories\ErrorRepository.cs" />
     <Compile Include="Repositories\FileCardRepository.cs" />
     <Compile Include="Repositories\GroupCardRepository.cs" />
+    <Compile Include="Repositories\HistoryRepository.cs" />
     <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\MdAgeRepository.cs" />
     <Compile Include="Repositories\MdAnswerRepository.cs" />
@@ -632,6 +649,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908260725426_UpdateMdAnswer.resx">
       <DependentUpon>201908260725426_UpdateMdAnswer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909040335053_UpdateSystemConfig1.resx">
+      <DependentUpon>201909040335053_UpdateSystemConfig1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909040756437_AddHistory.resx">
+      <DependentUpon>201909040756437_AddHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909040759059_AddHistory_v1.resx">
+      <DependentUpon>201909040759059_AddHistory_v1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909040840113_AddMsgHistory.resx">
+      <DependentUpon>201909040840113_AddMsgHistory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

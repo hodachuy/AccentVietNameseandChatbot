@@ -171,16 +171,8 @@ $("#btnSaveSettings").on('click', function () {
         var BotSystemConfig = {};
         BotSystemConfig.BotID = $("#botID").val();
         BotSystemConfig.Code = "ParamBotID";
-        BotSystemConfig.ValueString = ($("#BotCategoryID").val() == "3019" ? "med" : "leg");
+        BotSystemConfig.ValueString = $("#BotCategoryID").val();
         BotSystemConfig.ValueInt = $("#BotCategoryID").val();
-        lstBotSystemConfig.push(BotSystemConfig);
-    }
-    if ($("#AreaID").val() != "") {
-        var BotSystemConfig = {};
-        BotSystemConfig.BotID = $("#botID").val();
-        BotSystemConfig.Code = "ParamAreaID";
-        BotSystemConfig.ValueString = "";
-        BotSystemConfig.ValueInt = $("#AreaID").val();
         lstBotSystemConfig.push(BotSystemConfig);
     }
     if ($("#NumberReponse").val() != "") {
@@ -190,7 +182,25 @@ $("#btnSaveSettings").on('click', function () {
         BotSystemConfig.ValueString = $("#NumberReponse").val();
         BotSystemConfig.ValueInt = $("#NumberReponse").val();
         lstBotSystemConfig.push(BotSystemConfig);
-    }  
+    }
+
+    if ($("#AreaID").val() != "") {
+        var BotSystemConfig = {};
+        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.Code = "ParamAreaID";
+        BotSystemConfig.ValueString = $("#AreaID").val();
+        BotSystemConfig.ValueInt = $("#AreaID").val();
+        lstBotSystemConfig.push(BotSystemConfig);
+    } else {
+        var BotSystemConfig = {};
+        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.Code = "ParamAreaID";
+        BotSystemConfig.ValueString = "0";
+        BotSystemConfig.ValueInt = "0";
+        lstBotSystemConfig.push(BotSystemConfig);
+    }
+
+
     var formData = new FormData();
     formData.append('bot-setting', JSON.stringify(BotSetting));
     formData.append('bot-systemconfig', JSON.stringify(lstBotSystemConfig));

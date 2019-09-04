@@ -488,10 +488,60 @@ namespace BotProject.Web.Controllers
                 // nếu aiml bot có template trả thẳng ra module k thông qua button text module
                 if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
                 {
-                    if (!result.Contains("<module>"))// k phải button module trả về
+                    if (result.Contains("<module>") == false)// k phải button module trả về
                     {
-                        string txtModule = result.Replace("\r\n", "").Trim();
-                        return chatbot(txtModule, group, token, botId, isMdSearch);
+                        string txtModule = result.Replace("\r\n", "").Replace(".","").Trim();
+                        txtModule = Regex.Replace(txtModule, @"<(.|\n)*?>", "").Trim();
+                        int idxModule = txtModule.IndexOf("postback_module");
+                        if(idxModule != -1)
+                        {
+                            string strPostback = txtModule.Substring(idxModule, txtModule.Length - idxModule);
+                            var punctuation = strPostback.Where(Char.IsPunctuation).Distinct().ToArray();
+                            var words = strPostback.Split().Select(x => x.Trim(punctuation));
+                            var contains = words.SingleOrDefault(x => x.Contains("postback_module") == true);
+
+                            if (words.ToList().Count == 1 && (txtModule.Length == contains.Length))
+                            {
+                                return chatbot(contains, group, token, botId, isMdSearch);
+                            }
+
+                            List<string> msg = new List<string>();
+                            msg.Add(aimlBotResult.OutputHtmlMessage[0].Replace(contains, ""));
+                            if (contains == "postback_module_api_search")
+                            {
+                                return chatbot(txtModule, group, token, botId, isMdSearch);
+                            }
+                            if (contains == "postback_module_med_get_info_patient")
+                            {
+                                return chatbot(txtModule, group, token, botId, isMdSearch);
+                            }
+                            if (contains == "postback_module_age")
+                            {
+                                _user.Predicates.addSetting("agecheck", "true");
+                                var handleAge = _handleMdService.HandledIsAge(contains, valBotID);
+                                msg.Add(handleAge.Message);
+                            }
+                            if (contains == "postback_module_email")
+                            {
+                                _user.Predicates.addSetting("emailcheck", "true");
+                                var handleEmail = _handleMdService.HandledIsEmail(contains, valBotID);
+                                msg.Add(handleEmail.Message);
+                            }
+                            if (contains == "postback_module_phone")
+                            {
+                                _user.Predicates.addSetting("phonecheck", "true");
+                                var handlePhone = _handleMdService.HandleIsPhoneNumber(contains, valBotID);
+                                msg.Add(handlePhone.Message);
+                            }
+                            return Json(new
+                            {
+                                message = msg,
+                                postback = aimlBotResult.OutputHtmlPostback,
+                                messageai = result,
+                                isCheck = isMatch
+                            }, JsonRequestBehavior.AllowGet);
+                        }
+                        //return chatbot(txtModule, group, token, botId, isMdSearch);
                     }
                 }
                 // K tìm thấy trong Rule gọi tới module tri thức
@@ -503,25 +553,31 @@ namespace BotProject.Web.Controllers
                         if(userBot.SystemConfigViewModel.Count() != 0)
                         {
                             string nameFuncAPI = "";
-                            string type = "leg";
-                            string number = "10";
+                            string valueBotId = "";
+                            string number = "";
                             string field = "";
                             foreach(var item in userBot.SystemConfigViewModel)
                             {
                                 if (item.Code == "UrlAPI")
                                     nameFuncAPI = item.ValueString;
                                 if (item.Code == "ParamBotID")
-                                    type = item.ValueString;
+                                    valueBotId = item.ValueString;
                                 if (item.Code == "ParamAreaID")
                                     field = item.ValueString;
                                 if (item.Code == "ParamNumberResponse")
                                     number = item.ValueString;
                             }
-                            result = GetRelatedQuestion(nameFuncAPI, text, field, number, type);
+                            result = GetRelatedQuestion(nameFuncAPI, text, field, number, valueBotId);
                         }
                         else
                         {
-                            result = GetRelatedQuestion("",text,"","10", group);
+                            return Json(new
+                            {
+                                message = new List<string>() { "Not found API" },
+                                postback = new List<string>() { null },
+                                messageai = "",
+                                isCheck = true
+                            }, JsonRequestBehavior.AllowGet);
                         }
 
                         if (!String.IsNullOrEmpty(result))
@@ -865,7 +921,7 @@ namespace BotProject.Web.Controllers
 
         #region --DATA SOURCE API--
 
-        private string apiRelateQA = "/api/get_related_pairs";
+        private string apiRelateQA = "/api/qa_for_all/get_related_pair";
 
         protected string ApiAddUpdateQA(string NameFuncAPI, object T, string Type = "Post")
         {
@@ -903,7 +959,7 @@ namespace BotProject.Web.Controllers
             }
             return result;
         }
-        public string GetRelatedQuestion(string nameFuncAPI,string question, string field,string number, string group = "leg")
+        public string GetRelatedQuestion(string nameFuncAPI,string question, string field,string number, string botId)
         {
             if (String.IsNullOrEmpty(nameFuncAPI))
             {
@@ -915,9 +971,9 @@ namespace BotProject.Web.Controllers
             var param = new
             {
                 question = question,
-                type = group,
-                field= field,
-                number = number
+                number = number,
+                field = field,
+                botid = botId
             };
             string responseString = ApiAddUpdateQA(nameFuncAPI, param, "Post");
             if (responseString != null)

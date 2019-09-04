@@ -139,5 +139,12 @@ namespace BotProject.Web.Controllers
             ViewBag.MdArea = lstMdArea;
             return View();
         }
+
+        public ActionResult BotHistory(int botId, string botName)
+        {
+            ViewBag.BotName = botName;
+            ViewBag.BotID = botId;
+            return View();
+        }
     }
 }

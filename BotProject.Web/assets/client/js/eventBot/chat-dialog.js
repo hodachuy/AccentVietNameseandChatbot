@@ -323,7 +323,7 @@ function getMessageBot(text) {
         type: 'POST',
         success: function (result) {
             console.log(result)
-            var message = result.message[0];
+            var message = result.message;
             var postback = result.postback[0];
             var resultAPI = result.messageai.trim();
             var isMatch = result.isCheck;
@@ -379,9 +379,16 @@ function getMessageBot(text) {
                 }
             } else {
                 $("._4xkn_writing").remove();
-                message = message.replace(/{{color}}/g, _color);
-                message = message.replace(/{{image_logo}}/g, _srcLogo);
-                $(".conversationContainer").append(message);
+                if (message.length > 0)
+                {
+                    $.each(message, function (index, value) {
+                        let msg = "";
+                        msg = value.replace(/{{color}}/g, _color);
+                        msg = value.replace(/{{image_logo}}/g, _srcLogo);
+                        $(".conversationContainer").append(msg);
+                    })
+                }
+
             }
 
             if (postback !== null) {
@@ -480,9 +487,9 @@ function tempModuleSearchAPI(lstData) {
         itemHtml += '<div class="_6j2g">';
         itemHtml += '<div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">' + (value.question != null ? add3Dots(value.question, 120) : "") + '</div>';
         itemHtml += '<div class="_6j0v">';
-        itemHtml += '<div class="_6j0u _6j0w">' + (value.field != null ? value.field : "") + '</div>';
+        itemHtml += '<div class="_6j0u _6j0w">' + (value.field != null ? "" : "") + '</div>';
         itemHtml += '<div class="_6j0u _6j0x _4ik4 _4ik5" style="-webkit-line-clamp: 2;">';
-        itemHtml += '<div>' + (value.field != null ? value.field : "") + '</div>';
+        itemHtml += '<div>' + (value.field != null ? "" : "") + '</div>';
         itemHtml += '</div>';
         itemHtml += '</div>';
         itemHtml += '</div>';

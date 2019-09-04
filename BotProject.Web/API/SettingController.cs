@@ -80,8 +80,8 @@ namespace BotProject.Web.API
                         sys.ValueInt = item.ValueInt;
                         _settingService.CreateKeyConfig(sys);
                     }
-                    _settingService.Save();
                 }
+                _settingService.Save();
 
                 response = request.CreateResponse(HttpStatusCode.OK, result);
                 return response;

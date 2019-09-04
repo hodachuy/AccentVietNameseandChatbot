@@ -957,6 +957,7 @@
     <Content Include="Views\Bot\Module.cshtml" />
     <Content Include="Views\Bot\QnA.cshtml" />
     <Content Include="Views\Bot\BotSearchEngine.cshtml" />
+    <Content Include="Views\Bot\BotHistory.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

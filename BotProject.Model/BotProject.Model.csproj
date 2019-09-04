@@ -79,6 +79,7 @@
   <ItemGroup>
     <Compile Include="Abstract\Auditable.cs" />
     <Compile Include="Abstract\IAuditable.cs" />
+    <Compile Include="History.cs" />
     <Compile Include="Models\AIMLFile.cs" />
     <Compile Include="Models\Answer.cs" />
     <Compile Include="Models\ApplicationGroup.cs" />
