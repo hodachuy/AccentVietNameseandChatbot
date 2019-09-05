@@ -1,6 +1,7 @@
-﻿using BotProject.Data.Infrastructure;
+﻿using BotProject.Common.ViewModels;
+using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
-using BotProject.Model;
+using BotProject.Model.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace BotProject.Service
 {
     public interface IHistoryService
     {
-        IEnumerable<History> GetHistoryByBotId(int botId);
+        IEnumerable<StoreProcHistoryViewModel> GetHistoryByBotId(string filter, string sort, int pageNumber, int pageSize, long? selectedID);
         History Create(History history);
         History GetById(int id);
         void Update(History history);
@@ -27,6 +28,11 @@ namespace BotProject.Service
             _historyRepository = historyRepository;
         }
 
+        public IEnumerable<StoreProcHistoryViewModel> GetHistoryByBotId(string filter, string sort, int pageNumber, int pageSize, long? selectedID)
+        {
+            return _historyRepository.GetListHistory(filter, sort, pageNumber, pageSize, selectedID);
+        }
+
         public History Create(History history)
         {
             return _historyRepository.Add(history);
@@ -35,11 +41,6 @@ namespace BotProject.Service
         public History GetById(int id)
         {
             return _historyRepository.GetSingleById(id);
-        }
-
-        public IEnumerable<History> GetHistoryByBotId(int botId)
-        {
-            return _historyRepository.GetMulti(x => x.BotID == botId);
         }
 
         public void Save()

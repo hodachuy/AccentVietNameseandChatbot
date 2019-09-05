@@ -263,6 +263,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\GroupCardController.cs" />
+    <Compile Include="API\HistoryController.cs" />
     <Compile Include="API\ModuleCategoryController.cs" />
     <Compile Include="API\ModuleSearchEngineController.cs" />
     <Compile Include="API\ModuleController.cs" />
@@ -318,6 +319,7 @@
     <Compile Include="Models\CardViewModel.cs" />
     <Compile Include="Models\ExternalLoginListViewModel.cs" />
     <Compile Include="Models\GroupCardViewModel.cs" />
+    <Compile Include="Models\HistoryViewModel.cs" />
     <Compile Include="Models\ImageViewModel.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\MdAreaViewModel.cs" />
@@ -369,6 +371,7 @@
     <Content Include="assets\client\js\eventBot\chat-dialog.js" />
     <Content Include="assets\client\js\common.js" />
     <Content Include="assets\client\js\helper\callServiceHelper.js" />
+    <Content Include="assets\client\js\history.js" />
     <Content Include="assets\client\js\moduleBot\lstModuleBot.js" />
     <Content Include="assets\client\js\moduleSearchEngine\search.js" />
     <Content Include="assets\client\js\searchEngineQnA.js" />

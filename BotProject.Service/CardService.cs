@@ -16,6 +16,7 @@ namespace BotProject.Service
         IEnumerable<Card> GetListCardByBotID(int botId);
         IEnumerable<Card> GetListCardByGroupCardID(int grCardId);
         Card GetByID(int CardId);
+        Card GetSingleCondition(string pattern);
         void Save();
     }
     public class CardService : ICardService
@@ -52,6 +53,11 @@ namespace BotProject.Service
         public IEnumerable<Card> GetListCardByGroupCardID(int grCardId)
         {
             return _CardRepository.GetMulti(x => x.GroupCardID == grCardId);
+        }
+
+        public Card GetSingleCondition(string pattern)
+        {
+            return _CardRepository.GetSingleByCondition(x => x.PatternText.Contains(pattern));
         }
     }
 }

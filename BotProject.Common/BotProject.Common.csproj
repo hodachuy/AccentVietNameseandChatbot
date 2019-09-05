@@ -82,6 +82,7 @@
     <Compile Include="ViewModels\HandleResultBotViewModel.cs" />
     <Compile Include="ViewModels\MdQnAViewModel.cs" />
     <Compile Include="ViewModels\QuesTargetViewModel.cs" />
+    <Compile Include="ViewModels\StoreProcHistoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

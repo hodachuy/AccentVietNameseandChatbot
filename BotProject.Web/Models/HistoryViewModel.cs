@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 
-namespace BotProject.Model
+namespace BotProject.Web.Models
 {
-    [Table("Histories")]
-    public class History
+    public class HistoryViewModel
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { set; get; }
 
         public string UserName { set; get; }
@@ -26,6 +20,8 @@ namespace BotProject.Model
         public string MessageHistory { set; get; }
 
         public DateTime? CreatedDate { set; get; }
+
+        public string StrCreatedDate { set; get; }
 
         public int? BotID { set; get; }
     }

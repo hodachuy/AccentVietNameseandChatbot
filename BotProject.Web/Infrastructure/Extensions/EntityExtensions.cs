@@ -258,5 +258,19 @@ namespace BotProject.Web.Infrastructure.Extensions
             mdArea.BotID = mdAreaVm.BotID;
         }
         #endregion
+
+        #region History
+        public static void UpdateHistory(this History history, HistoryViewModel historyVm)
+        {
+            history.ID = historyVm.ID;
+            history.MessageHistory = historyVm.MessageHistory;
+            history.UserName = historyVm.UserName;
+            history.UserSay = historyVm.UserSay;
+            history.CreatedDate = DateTime.Now;
+            history.BotUnderStands = historyVm.BotUnderStands;
+            history.BotHandle = historyVm.BotHandle;
+            history.BotID = historyVm.BotID;
+        }
+        #endregion
     }
 }

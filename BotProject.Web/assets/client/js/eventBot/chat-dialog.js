@@ -382,13 +382,12 @@ function getMessageBot(text) {
                 if (message.length > 0)
                 {
                     $.each(message, function (index, value) {
-                        let msg = "";
-                        msg = value.replace(/{{color}}/g, _color);
-                        msg = value.replace(/{{image_logo}}/g, _srcLogo);
+                        let msg = value;
+                        msg = msg.replace(/{{color}}/g, _color);
+                        msg = msg.replace(/{{image_logo}}/g, _srcLogo);
                         $(".conversationContainer").append(msg);
                     })
                 }
-
             }
 
             if (postback !== null) {

@@ -47,6 +47,8 @@ namespace BotProject.Web.Controllers
         private IQnAService _qnaService;
         private ApiQnaNLRService _apiNLR;
         private IModuleSearchEngineService _moduleSearchEngineService;
+        private IHistoryService _historyService;
+        private ICardService _cardService;
         //private Bot _bot;
         private User _user;
 
@@ -59,7 +61,9 @@ namespace BotProject.Web.Controllers
                                 IModuleKnowledegeService mdKnowledgeService,
                                 IAIMLFileService aimlFileService,
                                 IQnAService qnaService,
-                                IModuleSearchEngineService moduleSearchEngineService)
+                                IModuleSearchEngineService moduleSearchEngineService,
+                                IHistoryService historyService,
+                                ICardService cardService)
         {
             _errorService = errorService;
             _elastic = new ElasticSearch();
@@ -75,6 +79,8 @@ namespace BotProject.Web.Controllers
             _qnaService = qnaService;
             _botService = BotService.BotInstance;
             _moduleSearchEngineService = moduleSearchEngineService;
+            _historyService = historyService;
+            _cardService = cardService;
         }
 
         // GET: Apiv1
@@ -192,12 +198,14 @@ namespace BotProject.Web.Controllers
             //string nameBotAIML = "User_" + token + "_BotID_" + botId;
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
+            string txtOriginal = "";
             int valBotID = Int32.Parse(botId);
             try
             {
                 if (!String.IsNullOrEmpty(text))
                 {
                     text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
+                    txtOriginal = text;
                 }
                 if (Session[CommonConstants.SessionUserBot] == null)
                 {
@@ -230,6 +238,12 @@ namespace BotProject.Web.Controllers
                     }
                 }
 
+                HistoryViewModel hisVm = new HistoryViewModel();
+                hisVm.BotID = Int32.Parse(botId);
+                hisVm.CreatedDate = DateTime.Now;
+                hisVm.UserSay = txtOriginal;
+                hisVm.UserName = userBot.ID;
+
                 // Module lấy thông tin bệnh
                 #region Module lấy thông tin bệnh
                 // nếu là true
@@ -243,12 +257,18 @@ namespace BotProject.Web.Controllers
 
                         _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
 
+                        //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                        //AddHistory(hisVm);
+
                         return chatbot(text, group, token, botId, isMdSearch);
                     }
                     else
                     {
                         string MdGetInfoPatientId = _user.Predicates.grabSetting("ThreadMdGetInfoPatientId");
                         var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient("postback_module_med_get_info_patient_" + MdGetInfoPatientId + "", valBotID, "Tôi không hiểu, vui lòng chọn lại thông tin bên dưới.");
+
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                        AddHistory(hisVm);
                         return Json(new
                         {
                             message = new List<string>() { handlePatient.Message },
@@ -268,6 +288,10 @@ namespace BotProject.Web.Controllers
                     _user.Predicates.addSetting("med_get_info_patient_check_" + MdGetInfoPatientId, "true");
 
                     _user.Predicates.addSetting("isChkMdGetInfoPatient", "true");
+
+                    hisVm.UserSay = "[Lấy thông tin]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
 
                     return Json(new
                     {
@@ -291,7 +315,11 @@ namespace BotProject.Web.Controllers
                     }
                     string mdSearchId = _user.Predicates.grabSetting("ThreadMdSearchID");
                     var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
-                    bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true ;                    
+                    bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true ;
+
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
+                    AddHistory(hisVm);
+
                     return Json(new
                     {
                         message = new List<string>() { handleMdSearch.Message },
@@ -308,6 +336,11 @@ namespace BotProject.Web.Controllers
                     _user.Predicates.addSetting("ThreadMdSearchID", mdSearchId);
                     _user.Predicates.addSetting("api_search_check_" + mdSearchId, "true");
                     _user.Predicates.addSetting("isChkMdSearch", "true");
+
+                    hisVm.UserSay = "[Tra cứu]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
+
                     return Json(new
                     {
                         message = new List<string>() { handleMdSearch.Message },
@@ -324,6 +357,9 @@ namespace BotProject.Web.Controllers
                 if (isCheckPhone)
                 {
                     var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
+
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                    AddHistory(hisVm);
                     if (handlePhone.Status)// đúng số dt
                     {
                         _user.Predicates.addSetting("phonecheck", "false");
@@ -346,6 +382,10 @@ namespace BotProject.Web.Controllers
                     string numberPhone = _user.Predicates.grabSetting("phone");
                     _user.Predicates.addSetting("phonecheck", "true");
                     var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
+
+                    hisVm.UserSay = "[Số điện thoại]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
                     if (!String.IsNullOrEmpty(numberPhone))// hiển thị số điện thoại nếu đã cung cấp trước đó
                     {
                         string sbPostback = tempNodeBtnModule(numberPhone);
@@ -374,6 +414,8 @@ namespace BotProject.Web.Controllers
                 if (isCheckMail)
                 {
                     var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                    AddHistory(hisVm);
                     if (handleEmail.Status)// đúng email
                     {
                         _user.Predicates.addSetting("emailcheck", "false");
@@ -396,6 +438,9 @@ namespace BotProject.Web.Controllers
                     string email = _user.Predicates.grabSetting("email");
                     _user.Predicates.addSetting("emailcheck", "true");
                     var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
+                    hisVm.UserSay = "[Email]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
                     if (!String.IsNullOrEmpty(email))// hiển thị email đã cung cấp trước đó
                     {
                         string sbPostback = tempNodeBtnModule(email);
@@ -423,6 +468,8 @@ namespace BotProject.Web.Controllers
                 if (isCheckAge)
                 {
                     var handleAge = _handleMdService.HandledIsAge(text, valBotID);
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                    AddHistory(hisVm);
                     if (handleAge.Status)// đúng age
                     {
                         _user.Predicates.addSetting("agecheck", "false");
@@ -445,6 +492,10 @@ namespace BotProject.Web.Controllers
                     string age = _user.Predicates.grabSetting("age");
                     _user.Predicates.addSetting("agecheck", "true");
                     var handleAge = _handleMdService.HandledIsAge(text, valBotID);
+
+                    hisVm.UserSay = "[Tuổi]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
                     if (!String.IsNullOrEmpty(age))// hiển thị age đã cung cấp trước đó
                     {
                         string sbPostback = tempNodeBtnModule(age);
@@ -479,12 +530,29 @@ namespace BotProject.Web.Controllers
                         {
                             text = quesTarget.ContentText;
                         }
+                        hisVm.BotUnderStands = target;
                     }
                 }
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
                 bool isMatch = true;
+                // lưu lịch sử
+                if (text.Contains("postback_card"))
+                {
+                    var cardDb = _cardService.GetSingleCondition(text);
+                    if (cardDb != null)
+                    {
+                        hisVm.UserSay = "["+ cardDb.Name+"]";
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_001;
+                        AddHistory(hisVm);
+                    }
+                }
+                else if (text.Contains("postback_module") == false && result.Contains("NOT_MATCH") == false)
+                {
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
+                }
                 // nếu aiml bot có template trả thẳng ra module k thông qua button text module
                 if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
                 {
@@ -567,7 +635,10 @@ namespace BotProject.Web.Controllers
                                 if (item.Code == "ParamNumberResponse")
                                     number = item.ValueString;
                             }
+                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+                            AddHistory(hisVm);
                             result = GetRelatedQuestion(nameFuncAPI, text, field, number, valueBotId);
+
                         }
                         else
                         {
@@ -593,6 +664,9 @@ namespace BotProject.Web.Controllers
                         {
                             //result = NOT_MATCH[res.OutputSentences[0]];
                             result = aimlBotResult.OutputSentences[0].ToString();
+
+                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
+                            AddHistory(hisVm);
                         }
                     }
                 }
@@ -604,6 +678,7 @@ namespace BotProject.Web.Controllers
                 settingDic.SettingNames = aimlBotResult.user.Predicates.SettingNames;
                 userBot.SettingDicstionary = settingDic;
                 Session[CommonConstants.SessionUserBot] = userBot;
+             
                 return Json(new
                 {
                     message = aimlBotResult.OutputHtmlMessage,
@@ -1036,6 +1111,14 @@ namespace BotProject.Web.Controllers
             catch
             {
             }
+        }
+
+        public void AddHistory(HistoryViewModel hisVm)
+        {
+            History hisDb = new History();
+            hisDb.UpdateHistory(hisVm);
+            _historyService.Create(hisDb);
+            _historyService.Save();
         }
     }
 }

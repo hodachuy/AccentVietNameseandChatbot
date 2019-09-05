@@ -72,4 +72,14 @@ namespace BotProject.Common
         /// </summary>
         public static string PathAppConfig = HttpContext.Current.Server.MapPath("~/AppSettings.config");
     }
+
+    public class MessageBot
+    {
+        public const string BOT_HISTORY_HANDLE_001 = "Nhấn nút";
+        public const string BOT_HISTORY_HANDLE_002 = "Bot không hiểu";
+        public const string BOT_HISTORY_HANDLE_003 = "Bot hiểu trả lời theo kịch bản";
+        public const string BOT_HISTORY_HANDLE_004 = "Điền thông tin";
+        public const string BOT_HISTORY_HANDLE_005 = "Gọi NLP API từ bên ngoài";
+        public const string BOT_HISTORY_HANDLE_006 = "Gọi NLP API trong cấu hình";
+    }
 }

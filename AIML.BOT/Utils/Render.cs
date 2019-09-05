@@ -35,7 +35,7 @@ namespace AIML.BOT.Utils
                         string dataPostback = new Regex("<postback>(.*)</postback>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
 						dataText = new Regex("<text>(.*)</text>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
 						sb.AppendLine(" <div class=\"_2zgz _2zgz_postback\">");
-						sb.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + dataPostback + "\" style=\"border-color: "+ _color + " color: "+ _color + "\">"+ dataText + "</div>");
+						sb.AppendLine("      <div class=\"_4bqf _6biq _6bir\" tabindex=\"0\" role=\"button\" data-postback =\"" + dataPostback + "\" style=\"border-color:"+ _color + " color:"+ _color + "\">"+ dataText + "</div>");
 						sb.AppendLine(" </div>");
                         _tagHtml.Body = "";
                         _tagHtml.ButtonPostback = sb.ToString();
@@ -46,7 +46,7 @@ namespace AIML.BOT.Utils
                         string dataUrl = new Regex("<url>(.*)</url>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
                         sb.AppendLine("<div class=\"_6ir5\">");
                         sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
-                        sb.AppendLine("          <a class=\"_6ir4 _6ir4_url\" target=\"_blank\" href=\"" + dataUrl + "\" style=\"color: " + _color + "\">" + dataText + "</a>");
+                        sb.AppendLine("          <a class=\"_6ir4 _6ir4_url\" target=\"_blank\" href=\"" + dataUrl + "\" style=\"color:" + _color + "\">" + dataText + "</a>");
                         sb.AppendLine("     </div>");
                         sb.AppendLine("</div>");
 
@@ -65,7 +65,7 @@ namespace AIML.BOT.Utils
 						//}
                         sb.AppendLine("<div class=\"_6ir5\">");
                         sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
-						sb.AppendLine("          <a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + dataMenu + "\" href=\"#\" style=\"color: " + _color + "\">"+ dataText + "</a>");
+						sb.AppendLine("          <a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + dataMenu + "\" href=\"#\" style=\"color:" + _color + "\">"+ dataText + "</a>");
 						sb.AppendLine("     </div>");
 						sb.AppendLine("</div>");
 						//_isFlag = false;
@@ -84,7 +84,7 @@ namespace AIML.BOT.Utils
                         //}
                         sb.AppendLine("<div class=\"_6ir5\">");
                         sb.AppendLine("     <div class=\"_4bqf _6ir3\">");
-                        sb.AppendLine("          <a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + dataModule + "\" href=\"#\" style=\"color: " + _color + "\">" + dataText + "</a>");
+                        sb.AppendLine("          <a class=\"_6ir4 _6ir4_menu\" data-postback =\"" + dataModule + "\" href=\"#\" style=\"color:" + _color + "\">" + dataText + "</a>");
                         sb.AppendLine("     </div>");
                         sb.AppendLine("</div>");
                         //_isFlag = false;
