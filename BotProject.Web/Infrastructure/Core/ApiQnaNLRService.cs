@@ -23,7 +23,7 @@ namespace BotProject.Web.Infrastructure.Core
         /// <summary>
         /// API KNOWLEDGE BASE CHATBOT
         /// </summary>
-        private string apiKnowledgeBaseAddQA = "/api/chatbot/pair_add";
+        private string apiKnowledgeBaseAddQA = "/api/chatbot/bot_add";
         private string apiKnowledgeBaseDeleteQA = "/api/chatbot/bot_delete_formqnaid";
         private string apiKnowledgeBasePrecidictTextClass = "/api/chatbot/text_class";
 
@@ -116,7 +116,7 @@ namespace BotProject.Web.Infrastructure.Core
                 input = text,
                 botid = botId
             };
-            return ApiAddUpdateQA(apiKnowledgeBaseDeleteQA, param, "Post");
+            return ApiAddUpdateQA(apiKnowledgeBasePrecidictTextClass, param, "Post");
         }
     }
 }

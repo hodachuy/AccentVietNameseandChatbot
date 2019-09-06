@@ -21,7 +21,7 @@ namespace BotProject.Web.API
     public class WebhookController : ApiController
     {
         string pageToken = Helper.ReadString("AccessToken");
-        string appSecret = "ff481f16cc0acde3e8e99afd555097f7";
+        string appSecret = Helper.ReadString("AppSecret");
         string verifytoken =  Helper.ReadString("VerifyTokenWebHook");
 
         public HttpResponseMessage Get()
@@ -85,7 +85,7 @@ namespace BotProject.Web.API
             return JObject.FromObject(new
             {
                 recipient = new { id = sender },
-                message = new { text = "Welcome to Chatbot2!" }
+                message = new { text = "Welcome to Chatbot Lacviet!" }
             });
         }
 
