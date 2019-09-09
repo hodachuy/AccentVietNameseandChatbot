@@ -279,40 +279,43 @@ namespace BotProject.Web.API
                             }
                             if (lstQuestion.Count != 0)
                             {
-                                for (int indexQ = 0; indexQ < _userSayStart.Length; indexQ++)
+                                foreach(var item in lstQuestion)
                                 {
-                                    var itemQ = lstQuestion[0];
-                                    string patternText = "";
-                                    string tempAnswer = postbackAnswer;
-                                    if (postbackAnswer.Contains("postback"))
+                                    for (int indexQ = 0; indexQ < _userSayStart.Length; indexQ++)
                                     {
-                                        tempAnswer = "<srai>" + postbackAnswer + "</srai>";
+                                        var itemQ = item;
+                                        string patternText = "";
+                                        string tempAnswer = postbackAnswer;
+                                        if (postbackAnswer.Contains("postback"))
+                                        {
+                                            tempAnswer = "<srai>" + postbackAnswer + "</srai>";
+                                        }
+                                        //sw.WriteLine("<category>");
+                                        //sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
+                                        //sw.WriteLine("<template>"+ tempAnswer + "</template>");
+                                        //sw.WriteLine("</category>");
+                                        if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDefault)
+                                        {
+                                            patternText = itemQ.ContentText.ToUpper();
+                                        }
+                                        if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartFirst)
+                                        {
+                                            patternText = "* " + itemQ.ContentText.ToUpper();
+                                        }
+                                        if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartLast)
+                                        {
+                                            patternText = itemQ.ContentText.ToUpper() + " *";
+                                        }
+                                        if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDouble)
+                                        {
+                                            patternText = "* " + itemQ.ContentText.ToUpper() + " *";
+                                        }
+                                        sbFormDb.AppendLine("<category>");
+                                        sbFormDb.AppendLine("<pattern>" + patternText + "</pattern>");
+                                        sbFormDb.AppendLine("<template>" + tempAnswer + "</template>");
+                                        sbFormDb.AppendLine("</category>");
                                     }
-                                    //sw.WriteLine("<category>");
-                                    //sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
-                                    //sw.WriteLine("<template>"+ tempAnswer + "</template>");
-                                    //sw.WriteLine("</category>");
-                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDefault)
-                                    {
-                                        patternText = itemQ.ContentText.ToUpper();
-                                    }
-                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartFirst)
-                                    {
-                                        patternText = "* " + itemQ.ContentText.ToUpper();
-                                    }
-                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartLast)
-                                    {
-                                        patternText = itemQ.ContentText.ToUpper() + " *";
-                                    }
-                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDouble)
-                                    {
-                                        patternText = "* " + itemQ.ContentText.ToUpper() + " *";
-                                    }
-                                    sbFormDb.AppendLine("<category>");
-                                    sbFormDb.AppendLine("<pattern>" + patternText + "</pattern>");
-                                    sbFormDb.AppendLine("<template>" + tempAnswer + "</template>");
-                                    sbFormDb.AppendLine("</category>");
-                                }
+                                }                               
                             }
                         }
                     }

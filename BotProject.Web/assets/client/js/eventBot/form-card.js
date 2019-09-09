@@ -4496,7 +4496,7 @@ function templateGroupCard(data) {
         $.each(data, function (index, value) {
             html += '<div class="wrBlock" data-gr-id="' + value.ID + '">';
             html += '<i class="icon-cube2 fa fa-cube"></i>';
-            html += '<input type="text" maxlength="20" class="text-semibold text-uppercase titleBlock" value="' + value.Name + '" data="' + value.Name + '">';
+            html += '<input type="text" maxlength="240" class="text-semibold text-uppercase titleBlock" value="' + value.Name + '" data="' + value.Name + '">';
             html += '<span class="pull-right rmBlock">';
             html += '<i class="icon-bin fa fa-trash"></i>';
             html += '</span>';
@@ -4573,7 +4573,7 @@ function addBlock() {
             var html = '';
             html += '<div class="wrBlock" data-gr-id="' + data.ID + '">';
             html += '<i class="icon-cube2 fa fa-cube"></i>';
-            html += '<input type="text" maxlength="20" class="text-semibold text-uppercase titleBlock" value="' + groupCardName + '" data="">';
+            html += '<input type="text" maxlength="240" class="text-semibold text-uppercase titleBlock" value="' + groupCardName + '" data="">';
             html += '<span class="pull-right rmBlock">';
             html += '<i class="icon-bin fa fa-trash"></i>';
             html += '</span>';

@@ -1187,7 +1187,7 @@ input.iconFileReply {
 
     .sortable.grid li {
         float: left;
-        width: 80px;
+        width: 100px;
         height: 80px;
         text-align: center;
         border-radius: 5px;
@@ -1244,7 +1244,7 @@ input.titleBlock {
     padding: 5px;
     border-radius: 3px;
     border: 1px solid #fff;
-    width: 215px;
+    width: 400px;
 }
 
     input.titleBlock:focus {
@@ -1817,6 +1817,7 @@ input[type="file"].list_inputfile {
     }
 
     #card-name {
+        width: 400px;
         resize: none;
         background: #fbfbfb;
         border: 1px solid #fbfbfb;
