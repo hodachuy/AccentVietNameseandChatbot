@@ -151,13 +151,12 @@ namespace BotProject.Web.API
         /// <returns>json</returns>
         private JObject GetMessageTemplate(string text, string sender)
         {
-
-
-            return JObject.FromObject(new
-            {
-                recipient = new { id = sender },
-                message = new { text = "Welcome to Chatbot Lacviet!" }
-            });
+            return JObject.FromObject(
+                new
+                {
+                    recipient = new { id = sender },
+                    message = new { text = "Welcome to Chatbot Lacviet!" },
+                });
         }
 
         /// <summary>

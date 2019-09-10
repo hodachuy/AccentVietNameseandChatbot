@@ -512,7 +512,7 @@ $(document).ready(function () {
                     })
                 }
 
-                if ((value.ButtonPostbacks.length + value.ButtonLinks.length) <= 1000) {
+                if ((value.ButtonPostbacks.length + value.ButtonLinks.length) <= 3) {
                     tempText += '<div class="bt" type-button="element_add"><div class="bt_add"><i class="icon-plus2 fa fa-plus"></i> Thêm nút</div></div></div></div></div>';
                 }
 
@@ -1979,7 +1979,7 @@ $(document).ready(function () {
             'Alias': common.getSeoTitle($('#card-name').val()),
             'CardContents': card_sql,
             'QuickReplyViewModels': ar_quickReply_sql,
-            'TemplateJSON': JSON.stringify(objectCard.cardContent[0]),
+            'TemplateJSON': JSON.stringify(objectCard.cardContent),
             'FileAttachs': listUpdate
         }
 
@@ -5498,7 +5498,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>';
             html += '            <div class="row" style="margin:unset;">';
-            if (data.KeyAPI != "") {
+            if (data.KeyAPI != "" && data.KeyAPI != null) {
                 keySecurAPI = data.KeyAPI.split(':');
                 html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
                 html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control" value="'+keySecurAPI[0]+'"/>';
