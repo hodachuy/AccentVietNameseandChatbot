@@ -98,17 +98,26 @@ namespace BotProject.Web.API
 
                 dynamic json = jsonData;
                 int groupCardId = json.groupCardId;
-
-                var lstCard = _cardService.GetListCardByGroupCardID(groupCardId);
-                if(lstCard != null && lstCard.Count() != 0)
+                if (groupCardId == 0)
                 {
-                    foreach(var item in lstCard)
-                    {
-                        _commonCardService.DeleteCard(item.ID);
-                    }
+                    return request.CreateResponse(HttpStatusCode.NoContent);
                 }
-                _groupCardService.Delete(groupCardId);
+
+                var groupCardDb = _groupCardService.GetById(groupCardId);
+                groupCardDb.IsDelete = true;
+                _groupCardService.Update(groupCardDb);
                 _groupCardService.Save();
+
+                //var lstCard = _cardService.GetListCardByGroupCardID(groupCardId);
+                //if(lstCard != null && lstCard.Count() != 0)
+                //{
+                //    foreach(var item in lstCard)
+                //    {
+                //        _commonCardService.DeleteCard(item.ID);
+                //    }
+                //}
+                //_groupCardService.Delete(groupCardId);
+                //_groupCardService.Save();
 
                 response = request.CreateResponse(HttpStatusCode.OK, true);
                 return response;

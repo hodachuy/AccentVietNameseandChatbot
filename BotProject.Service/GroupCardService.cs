@@ -15,6 +15,7 @@ namespace BotProject.Service
         void Update(GroupCard GroupCard);
         IEnumerable<GroupCard> GetListGroupCardByBotID(int botId);
         GroupCard Delete(int id);
+        GroupCard GetById(int id);
         void Save();
     }
     public class GroupCardService : IGroupCardService
@@ -33,7 +34,7 @@ namespace BotProject.Service
 
         public IEnumerable<GroupCard> GetListGroupCardByBotID(int botId)
         {
-            return _GroupCardRepository.GetMulti(x => x.BotID == botId);
+            return _GroupCardRepository.GetMulti(x => x.BotID == botId && x.IsDelete == false);
         }
 
         public void Save()
@@ -49,6 +50,11 @@ namespace BotProject.Service
         public GroupCard Delete(int id)
         {
             return _GroupCardRepository.Delete(id);
+        }
+
+        public GroupCard GetById(int id)
+        {
+            return _GroupCardRepository.GetSingleById(id);
         }
     }
 }

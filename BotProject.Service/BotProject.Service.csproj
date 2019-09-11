@@ -99,6 +99,7 @@
     <Compile Include="MdAgeService.cs" />
     <Compile Include="MdEmailService.cs" />
     <Compile Include="MdPhoneService.cs" />
+    <Compile Include="MdSearchCategoryService.cs" />
     <Compile Include="MdSearchService.cs" />
     <Compile Include="ModuleCategoryService.cs" />
     <Compile Include="ModuleFollowCardService.cs" />

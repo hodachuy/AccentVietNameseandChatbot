@@ -21,12 +21,14 @@ namespace BotProject.Web.API
         private IMdAgeService _mdAgeService;
         private IMdSearchService _mdSearchService;
         private IModuleKnowledegeService _mdKnowledegeService;
+        private IMdSearchCategoryService _mdSearchCategoryService;
         public ModuleController(IErrorService errorService,
             IModuleService moduleService,
             IMdPhoneService mdPhoneService,
             IMdEmailService mdEmailService,
             IMdSearchService mdSearchService,
             IModuleKnowledegeService mdKnowledegeService,
+            IMdSearchCategoryService mdSearchCategoryService,
             IMdAgeService mdAgeService) : base(errorService)
         {
             _moduleService = moduleService;
@@ -35,6 +37,7 @@ namespace BotProject.Web.API
             _mdAgeService = mdAgeService;
             _mdSearchService = mdSearchService;
             _mdKnowledegeService = mdKnowledegeService;
+            _mdSearchCategoryService = mdSearchCategoryService;
         }
         [Route("getbybotid")]
         [HttpGet]
@@ -337,6 +340,20 @@ namespace BotProject.Web.API
         #endregion
 
         #region MODULE SEARCH
+        [Route("getmdsearchcategory")]
+        [HttpGet]
+        public HttpResponseMessage GetModuleSearchCategory(HttpRequestMessage request)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var lstMdSearchCategory = _mdSearchCategoryService.GetListMdSearchCategory();
+                response = request.CreateResponse(HttpStatusCode.OK, lstMdSearchCategory);
+                return response;
+            });
+        }
+
+
         [Route("getmdsearch")]
         [HttpGet]
         public HttpResponseMessage GetModuleSearchByAPI(HttpRequestMessage request, int mdSearchID)
@@ -377,6 +394,7 @@ namespace BotProject.Web.API
                     mdSearchDb.MessageError = mdSearchVm.MessageError;
                     mdSearchDb.MessageEnd = mdSearchDb.MessageEnd;
                     mdSearchDb.ID = mdSearchVm.ID;
+                    mdSearchDb.MdSearchCategoryID = mdSearchVm.MdSearchCategoryID;
 
                     _mdSearchService.Create(mdSearchDb);
                     _mdSearchService.Save();
@@ -416,7 +434,7 @@ namespace BotProject.Web.API
                     mdSearchDb.MessageError = mdSearchVm.MessageError;
                     mdSearchDb.MessageEnd = mdSearchDb.MessageEnd;
                     mdSearchDb.ID = mdSearchVm.ID;
-
+                    mdSearchDb.MdSearchCategoryID = mdSearchVm.MdSearchCategoryID;
                     _mdSearchService.Update(mdSearchDb);
                     _mdSearchService.Save();
                     response = request.CreateResponse(HttpStatusCode.OK, mdSearchDb);

@@ -15,6 +15,7 @@ using System.Configuration;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json.Linq;
 
 namespace BotProject.Web.API
 {
@@ -62,6 +63,28 @@ namespace BotProject.Web.API
 				return response;
 			});
 		}
+
+        [Route("delete")]
+        [HttpPost]
+        public HttpResponseMessage Delete(HttpRequestMessage request, JObject jsonData)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                dynamic json = jsonData;
+                int cardId = json.cardId;
+                if (cardId == 0)
+                {
+                    return request.CreateResponse(HttpStatusCode.NoContent);
+                }
+                var card = _cardService.GetByID(cardId);
+                card.IsDelete = true;
+                _cardService.Update(card);
+                _cardService.Save();
+                response = request.CreateResponse(HttpStatusCode.OK, card);
+                return response;
+            });
+        }
 
         [Route("getbygroupcard")]
         [HttpGet]

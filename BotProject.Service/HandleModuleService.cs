@@ -1,4 +1,5 @@
-﻿using BotProject.Common.ViewModels;
+﻿using BotProject.Common;
+using BotProject.Common.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,18 +36,21 @@ namespace BotProject.Service
         private IMdAgeService _mdAgeService;
         private IModuleKnowledegeService _mdKnowledegeService;
         private IMdSearchService _mdSearchService;
+        private IMdSearchCategoryService _mdSearchCategoryService;
 
         public HandleModuleService(IMdPhoneService mdPhoneService,
                                     IMdEmailService mdEmailService,
                                     IMdAgeService mdAgeService,
                                     IModuleKnowledegeService mdKnowledegeService,
-                                    IMdSearchService mdSearchService)
+                                    IMdSearchService mdSearchService,
+                                    IMdSearchCategoryService mdSearchCategoryService)
         {
             _mdPhoneService = mdPhoneService;
             _mdEmailService = mdEmailService;
             _mdAgeService = mdAgeService;
             _mdKnowledegeService = mdKnowledegeService;
             _mdSearchService = mdSearchService;
+            _mdSearchCategoryService = mdSearchCategoryService;
         }
         public HandleResultBotViewModel HandleIsPhoneNumber(string number, int botID)
         {
@@ -243,17 +247,38 @@ namespace BotProject.Service
                     else
                     {
                         rsHandle.Status = false;
-                        rsHandle.ResultAPI = GetModuleSearchAPI(text, mdSearchDb.ParamAPI, mdSearchDb.UrlAPI, mdSearchDb.KeyAPI, mdSearchDb.MethodeAPI);
-                        if (String.IsNullOrEmpty(rsHandle.ResultAPI))
+                        var mdSearchCategory = _mdSearchCategoryService.GetById(mdSearchDb.MdSearchCategoryID);
+                        if(mdSearchCategory.Alias == Common.CommonConstants.MdSearch_Luat)
                         {
-                            rsHandle.Message = tempText(mdSearchDb.MessageError);
-                        }else
-                        {
-                            rsHandle.Message = "NOT_MATCH_01";
+                            rsHandle.ResultAPI = GetModuleSearchAPI(text, mdSearchDb.ParamAPI, mdSearchDb.UrlAPI, mdSearchDb.KeyAPI, mdSearchDb.MethodeAPI);
+                            if (String.IsNullOrEmpty(rsHandle.ResultAPI))
+                            {
+                                rsHandle.Message = tempText(mdSearchDb.MessageError);
+                            }
+                            else
+                            {
+                                rsHandle.Message = "Tôi không hiểu";
+                            }
+                            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
+                            {
+                                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                            }
                         }
-                        if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
+                        if (mdSearchCategory.Alias == Common.CommonConstants.MdSearch_Dell)
                         {
-                            rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                            var resultDell = DellServices.GetAssetHeader(text);
+                            if (resultDell != null)
+                            {
+                                rsHandle.Message = tempText(resultDell.TextWarranty);
+                            }
+                            else
+                            {
+                                rsHandle.Message = tempText(mdSearchDb.MessageError);
+                            }
+                            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
+                            {
+                                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                            }
                         }
                     }
                 }

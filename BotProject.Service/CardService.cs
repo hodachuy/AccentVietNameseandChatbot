@@ -34,7 +34,7 @@ namespace BotProject.Service
         }
         public IEnumerable<Card> GetListCardByBotID(int botId)
         {
-            return _CardRepository.GetMulti(x => x.BotID == botId);
+            return _CardRepository.GetMulti(x => x.BotID == botId && x.IsDelete == false);
         }
         public Card GetByID(int CardId)
         {
@@ -52,7 +52,7 @@ namespace BotProject.Service
         }
         public IEnumerable<Card> GetListCardByGroupCardID(int grCardId)
         {
-            return _CardRepository.GetMulti(x => x.GroupCardID == grCardId);
+            return _CardRepository.GetMulti(x => x.GroupCardID == grCardId && x.IsDelete == false);
         }
 
         public Card GetSingleCondition(string pattern)

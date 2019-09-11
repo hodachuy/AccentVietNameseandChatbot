@@ -11,6 +11,8 @@ namespace BotProject.Web.Models
 
         public int BotID { set; get; }
 
+        public bool IsDelete { set; get; }
+
         public string Name { set; get; }
 
         public virtual IEnumerable<CardViewModel> Cards { set; get; }

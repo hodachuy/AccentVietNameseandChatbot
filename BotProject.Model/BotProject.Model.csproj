@@ -105,6 +105,7 @@
     <Compile Include="Models\MdPhone.cs" />
     <Compile Include="Models\MdQuestion.cs" />
     <Compile Include="Models\MdSearch.cs" />
+    <Compile Include="Models\MdSearchCategory.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\ModuleFollowCard.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatient.cs" />

@@ -102,6 +102,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             card.GroupCardID = cardVm.GroupCardID;
             card.Alias = cardVm.Alias;
             card.TemplateJSON = cardVm.TemplateJSON;
+            card.IsDelete = false;
         }
 
         public static void UpdateTemplateGenericGroup(this TemplateGenericGroup temGnrGroup, TemplateGenericGroupViewModel temGnrGroupVm)

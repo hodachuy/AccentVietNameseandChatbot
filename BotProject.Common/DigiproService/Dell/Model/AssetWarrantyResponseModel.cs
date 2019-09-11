@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace BotProject.Web.Infrastructure.DigiproService.Dell.Model
+namespace BotProject.Common
 {
     public struct AssetWarrantyResponse
     {

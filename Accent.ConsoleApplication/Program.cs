@@ -21,6 +21,8 @@ namespace Accent.ConsoleApplication
     {
         static void Main(string[] args)
         {
+            DateTime da = DateTime.Now;
+            string XZ = da.ToString("dd MMMM yyyy");
 
             string t = "{\"recipient\":{\"id\":\"{{recipientId}}\"},{\"message\":{\"attachment\":{\"type\":\"template\",\"payload\":{\"template_type\":\"generic\",\"elements\":[{\"title\":\"Trung tâm chăm sóc khách hàng Digipro.vn\",\"item_url\":\"http://digipro.vn\",\"image_url\":\"https://bot.surelrn.vn/File/Images/Card/84e7cb6e-450f-4269-95ac-e1425de0c307-slide1.jpg\",\"subtitle\":\"Tư vấn bảo hành, sửa chửa máy tính\",\"buttons\":[{\"type\":\"postback\",\"title\":\"💻 Bảo hành dòng máy Dell\",\"payload\":\"postback_card_6070\"},{\"type\":\"postback\",\"title\":\"🔍 Tra cứu máy bảo hành\",\"payload\":\"postback_card_6081\"},{\"type\":\"postback\",\"title\":\"💬 Bảo hành dòng máy khác\",\"payload\":\"postback_card_6082\"},{\"type\":\"postback\",\"title\":\"🔧 Hổ trợ kỹ thuật\",\"payload\":\"postback_card_6083\"}]}]}}}}";
 

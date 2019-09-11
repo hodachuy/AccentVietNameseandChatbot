@@ -277,7 +277,7 @@ function get_message_bot_accent(text) {
         }
         if (response != "") {
             response = response.replace('\n', '.');
-            if (text != response) {
+            if (text.toLowerCase() != response) {
                 var messageDidYouMean = tempDidYouMeanBot(response);
                 $(".conversationContainer").append(messageDidYouMean);
             }
@@ -325,7 +325,10 @@ function getMessageBot(text) {
             console.log(result)
             var message = result.message;
             var postback = result.postback[0];
-            var resultAPI = result.messageai.trim();
+            var resultAPI = result.messageai;
+            if (resultAPI != null) {
+                resultAPI = resultAPI.trim();
+            }
             var isMatch = result.isCheck;
             var html = '';
             if (!isMatch) {

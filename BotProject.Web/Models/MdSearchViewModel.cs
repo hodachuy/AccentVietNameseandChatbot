@@ -37,6 +37,8 @@ namespace BotProject.Web.Models
 
         public int? ModuleFollowCardID { set; get; }
 
+        public int MdSearchCategoryID { set; get; }
+
         public int BotID { set; get; }
     }
 }

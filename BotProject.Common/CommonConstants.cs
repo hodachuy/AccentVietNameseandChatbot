@@ -35,6 +35,11 @@ namespace BotProject.Common
         public const string UserSay_IsStartLast = "StartLast";
         public const string UserSay_IsStartDouble = "StartDouble";
 
+        public const string MdSearch_Luat = "luat";
+        public const string MdSearch_Dell = "dell";
+        public const string MdSearch_Digipro = "digipro";
+        public const string MdSearch_Yte = "y-te";
+
     }
 
 

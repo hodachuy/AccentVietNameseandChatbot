@@ -1,15 +1,15 @@
-﻿using BotProject.Web.Infrastructure.DigiproService.Dell.Model;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using static BotProject.Web.Infrastructure.DigiproService.Dell.Model.AssetWarrantyResponse;
+using static BotProject.Common.AssetWarrantyResponse;
 
-namespace BotProject.Web.Infrastructure.DigiproService.Dell
+namespace BotProject.Common
 {
     public class DellServices
     {
@@ -31,7 +31,7 @@ namespace BotProject.Web.Infrastructure.DigiproService.Dell
                 if (!String.IsNullOrEmpty(jsonResult))
                 {
                     AssetWarrantyResponseModel assetWarrantyResponseModel = ConvertJsonToAssetWarrantyResponse(jsonResult);
-                    if (assetWarrantyResponseModel != null)
+                    if (assetWarrantyResponseModel.AssetHeader != null)
                     {
                         WarrantyResultModel warrantyResultModel = new WarrantyResultModel();
                         WarrantyDetailModel warrantyDetailModel = new WarrantyDetailModel();
@@ -39,21 +39,26 @@ namespace BotProject.Web.Infrastructure.DigiproService.Dell
                         warrantyResultModel.ServiceTag = assetWarrantyResponseModel.AssetHeader.ServiceTag;
                         warrantyResultModel.Country = assetWarrantyResponseModel.AssetHeader.CountryLookupCode;
                         warrantyResultModel.ShipDate = assetWarrantyResponseModel.AssetHeader.ShipDate;
-
-                        foreach (var item in assetWarrantyResponseModel.AssetEntitlement)
+                        if(assetWarrantyResponseModel.AssetEntitlement != null)
                         {
-                            warrantyDetailModel = new WarrantyDetailModel();
-                            warrantyDetailModel.Service = (item.ServiceLevelCode + " (" + item.ServiceLevelDescription + ")");
-                            warrantyDetailModel.EntitlementType = item.EntitlementType;
-                            warrantyDetailModel.StartDate = item.StartDate;
-                            warrantyDetailModel.ExpirationDate = item.EndDate;
-                            warrantyDetailList.Add(warrantyDetailModel);
+                            foreach (var item in assetWarrantyResponseModel.AssetEntitlement)
+                            {
+                                warrantyDetailModel = new WarrantyDetailModel();
+                                warrantyDetailModel.Service = (item.ServiceLevelCode + " (" + item.ServiceLevelDescription + ")");
+                                warrantyDetailModel.EntitlementType = item.EntitlementType;
+                                warrantyDetailModel.StartDate = item.StartDate;
+                                warrantyDetailModel.ExpirationDate = item.EndDate;
+                                warrantyDetailList.Add(warrantyDetailModel);                           
+                            }
+                            //Xử lý danh sách warrantyDetail
+                            var WarrantyDetailResult = GroupWarrantyDetail(warrantyDetailList);
+                            warrantyResultModel.WarrantyDetails = WarrantyDetailResult.OrderBy(x=>x.ExpirationDate).OrderBy(x => x.Priority).ToList();
+                            StringBuilder sb = new StringBuilder();
+                            sb.AppendLine("Service Tag: " + warrantyResultModel.ServiceTag + "<br/>");
+                            sb.AppendLine("Thời hạn bảo hành: " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd MMM yyyy") + "<br/>");
+                            warrantyResultModel.TextWarranty = sb.ToString();
+                            return warrantyResultModel;
                         }
-
-                        //Xử lý danh sách warrantyDetail
-                        var WarrantyDetailResult = GroupWarrantyDetail(warrantyDetailList);
-                        warrantyResultModel.WarrantyDetails = WarrantyDetailResult.OrderBy(x => x.ExpirationDate).ToList();
-                        return warrantyResultModel;
                     }
                 }
             }
@@ -97,7 +102,7 @@ namespace BotProject.Web.Infrastructure.DigiproService.Dell
             JToken jAssetHeader = jObject.SelectToken("AssetWarrantyResponse[0].AssetHeaderData");
             JToken jProductHeader = jObject.SelectToken("AssetWarrantyResponse[0].ProductHeaderData");
 
-            if (jAssetHeader.HasValues)
+            if (jAssetHeader != null && jAssetHeader.HasValues)
             {
                 assetHeader.BUILD = (string)jAssetHeader["BUID"];
                 assetHeader.ServiceTag = (string)jAssetHeader["ServiceTag"];
@@ -114,7 +119,7 @@ namespace BotProject.Web.Infrastructure.DigiproService.Dell
                 ResultModel.AssetHeader = assetHeader;
             }
 
-            if (jProductHeader.HasValues)
+            if (jAssetHeader != null && jProductHeader.HasValues)
             {
                 productHeader.SystemDescription = (string)jProductHeader["SystemDescription"];
                 productHeader.ProductId = (string)jProductHeader["ProductId"];
@@ -124,7 +129,7 @@ namespace BotProject.Web.Infrastructure.DigiproService.Dell
                 ResultModel.ProductHeader = productHeader;
             }
 
-            if (jAssetEntitlement.HasValues)
+            if (jAssetHeader != null && jAssetEntitlement.HasValues)
             {
                 for (int i = 0; i < jAssetEntitlement.Count(); i++)
                 {
@@ -155,6 +160,14 @@ namespace BotProject.Web.Infrastructure.DigiproService.Dell
             var ServicesList = GetServicesType(inputList);
             foreach (var item in ServicesList)
             {
+                int priorityDefault = 10;
+                foreach(var itemPrioritize in ServicePrioritize)
+                {
+                    if (item.Contains(itemPrioritize.Key))
+                    {
+                        priorityDefault = itemPrioritize.Value;
+                    }
+                }
                 warrantyDetailTemp = inputList.Where(x => x.Service == item).ToList();
                 DateTime _beginDate = DateTime.Now;
                 DateTime _expirationDate = DateTime.Now;
@@ -164,7 +177,8 @@ namespace BotProject.Web.Infrastructure.DigiproService.Dell
                     Service = item,
                     EntitlementType = "",
                     StartDate = _beginDate,
-                    ExpirationDate = _expirationDate
+                    ExpirationDate = _expirationDate,
+                    Priority = priorityDefault
                 };
                 warrantyDetailsResult.Add(inputModel);
             }
@@ -180,7 +194,7 @@ namespace BotProject.Web.Infrastructure.DigiproService.Dell
         private static void GetBeginAndExpirationDate(List<WarrantyDetailModel> inputList, out DateTime BeginDate, out DateTime ExpirationDate)
         {
             DateTime beginDate = inputList.Where(x => x.StartDate <= DateTime.Now).OrderByDescending(x => x.ExpirationDate).FirstOrDefault().StartDate;
-            DateTime expirationDate = inputList.Where(x => x.StartDate <= DateTime.Now).Max(x => x.ExpirationDate);
+            DateTime expirationDate = inputList.Max(x => x.ExpirationDate);
             BeginDate = beginDate;
             ExpirationDate = expirationDate;
         }

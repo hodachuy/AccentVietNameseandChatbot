@@ -8,21 +8,16 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-    [Table("GroupCards")]
-    public class GroupCard
+    [Table("MdSearchCategories")]
+    public class MdSearchCategory
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { set; get; }
 
-        public int BotID { set; get; }
-
-        public bool IsDelete { set; get; }
-
-        [Required]
-        [MaxLength(256)]
         public string Name { set; get; }
 
-        public virtual IEnumerable<Card> Cards { set; get; }
+        public string Alias { set; get; }
+
     }
 }

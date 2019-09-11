@@ -10,7 +10,6 @@ namespace BotProject.Data
         {
             this.Configuration.LazyLoadingEnabled = false;
         }
-
         public DbSet<Bot> Bots { set; get; }
         public DbSet<GroupCard> GroupCards { set; get; }
         public DbSet<FormQuestionAnswer> FormQuestionAnswers { set; get; }
@@ -46,6 +45,7 @@ namespace BotProject.Data
         public DbSet<MdEmail> MdEmails { set; get; }
         public DbSet<MdAge> MdAges { set; get; }
         public DbSet<History> Histories { set; get; }
+        public DbSet<MdSearchCategory> MdSearchCategories { set; get; }
         public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
         public DbSet<ApplicationRole> ApplicationRoles { set; get; }
         public DbSet<ApplicationRoleGroup> ApplicationRoleGroups { set; get; }

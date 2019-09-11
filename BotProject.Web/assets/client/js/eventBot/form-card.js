@@ -166,7 +166,6 @@ $(document).ready(function () {
     }
 
     function renderCard(data) {
-        console.log(data)
         $('#card-name').val(data.Name);
         var lstCard = function () {
             var temp = [];
@@ -947,6 +946,17 @@ $(document).ready(function () {
         return this.attr(name) !== undefined;
     };
     // End check has attribute
+
+    $('#delete_card').click(function (event) {
+        let cardId = $('#idCard').val();
+        var param = {
+            cardId: cardId
+        }
+        var svr = new AjaxCall("api/card/delete", JSON.stringify(param));
+        svr.callServicePOST(function (data) {
+            location.reload();
+        });
+    })
 
     $('#save_card').click(function (event) {
         var $str_er = '<div class="layer_error">' + txtCard9 + '</div>',
@@ -4716,6 +4726,36 @@ var card = function () {
     return html;
 };
 
+var mdSearchCategory = function () {
+    var html = null;
+    var param = {
+        botId: botId
+    };
+    var urlMdSearchCategory = "api/module/getmdsearchcategory";
+    $.ajax({
+        type: 'GET',
+        async: false,
+        global: false,
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        url: _Host + urlMdSearchCategory,
+        data: param,
+        success: function (data) {
+            var temp = '';
+            temp += '<optgroup label="Thể Loại API">';
+            if (data.length != 0) {
+                $.each(data, function (index, value) {               
+                    temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
+                })
+            } else {
+                temp += '<option value=""></option>';
+            }
+            temp += '</optgroup>';
+            html = temp;
+        }
+    });
+    return html;
+};
 
 //===================================================================//
 //============================= XỬ LÝ MODULE ========================//
@@ -5307,9 +5347,14 @@ $('body').on('click', '#saveMdSearch', function () {
         MethodeAPI = $('#mdSearchMethode').val(),
         PayLoadCard = "postback_card_" + CardPayloadID,
         MessageStart = $('#mdSearchMessageStart').val(),
-        TitlePayload = $('#mdSearchTitlePayload').val()
+        TitlePayload = $('#mdSearchTitlePayload').val(),
+        MdSearchCategoryID = $('#mdSearchCategory').val()
     var isSuscess = true;
-
+    if (MdSearchCategoryID == "") {
+        toastr.error('Vui lòng chọn thể loại API');
+        isSuscess = false;
+        return isSuscess;
+    }
     if (Title == "") {
         toastr.error('Vui lòng nhập tiêu đề');
         isSuscess = false;
@@ -5352,7 +5397,8 @@ $('body').on('click', '#saveMdSearch', function () {
             Payload: PayLoadCard,
             MessageError: MessageError,
             MessageStart: MessageStart,
-            TitlePayload: TitlePayload
+            TitlePayload: TitlePayload,
+            MdSearchCategoryID: MdSearchCategoryID
         };
         if (typeActionMdSearch) {
             var params = JSON.stringify(objMdSearch);
@@ -5413,6 +5459,12 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
         html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
         html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
         html += '                <input type="text" placeholder="" id="mdSearchTitle" class="form-control" />';
+        html += '            </div>';
+        html += '        </div>';
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Thể loại API</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdSearchCategory">' + mdSearchCategory() + '</select>';
         html += '            </div>';
         html += '        </div>';
         html += '        <div class="form-group">';
@@ -5490,6 +5542,12 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             html += '            </div>';
             html += '        </div>';
             html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Thể loại API</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdSearchCategory">' + mdSearchCategory() + '</select>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Đường dẫn API</label>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
             html += '                <input type="text" placeholder="http://" id="mdSearchUrl" class="form-control" value="' + data.UrlAPI + '"/>';
@@ -5559,6 +5617,9 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             setTimeout(function () {
                 if (data.CardPayloadID != "" || data.CardPayloadID != null) {
                     $('#mdCardSearch option[value="' + data.CardPayloadID + '"]').attr('selected', 'selected');
+                }
+                if (data.MdSearchCategoryID != "" || data.MdSearchCategoryID != null) {
+                    $('#mdSearchCategory option[value="' + data.MdSearchCategoryID + '"]').attr('selected', 'selected');
                 }
             }, 1000)
             loadEmojiPicker();
