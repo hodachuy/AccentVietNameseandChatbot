@@ -166,6 +166,13 @@ $('body').on('click', 'input.chkAddModule', function () {
             moduleVm.Payload = "postback_module_age";
             moduleVm.Type = "handle"
         }
+        if (moduleName == "voucher") {
+            moduleVm.Title = "Xử lý voucher";
+            moduleVm.Name = "voucher";
+            moduleVm.Text = "Voucher";
+            moduleVm.Payload = "postback_module_voucher";
+            moduleVm.Type = "handle"
+        }
         // tri thức hỏi đáp pháp luật
         if (moduleName == "qna_legal") {
             moduleVm.Title = "Tri thức hỏi đáp pháp luật";

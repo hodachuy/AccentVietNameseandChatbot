@@ -14,6 +14,9 @@ using System.ComponentModel;
 using System.Globalization;
 using Newtonsoft.Json;
 using System.Web;
+using System.Security.Cryptography;
+using Accent.ConsoleApplication.SmsService;
+using System.Xml;
 
 namespace Accent.ConsoleApplication
 {
@@ -21,99 +24,86 @@ namespace Accent.ConsoleApplication
     {
         static void Main(string[] args)
         {
-            DateTime da = DateTime.Now;
-            string XZ = da.ToString("dd MMMM yyyy");
-
-            string t = "{\"recipient\":{\"id\":\"{{recipientId}}\"},{\"message\":{\"attachment\":{\"type\":\"template\",\"payload\":{\"template_type\":\"generic\",\"elements\":[{\"title\":\"Trung tâm chăm sóc khách hàng Digipro.vn\",\"item_url\":\"http://digipro.vn\",\"image_url\":\"https://bot.surelrn.vn/File/Images/Card/84e7cb6e-450f-4269-95ac-e1425de0c307-slide1.jpg\",\"subtitle\":\"Tư vấn bảo hành, sửa chửa máy tính\",\"buttons\":[{\"type\":\"postback\",\"title\":\"💻 Bảo hành dòng máy Dell\",\"payload\":\"postback_card_6070\"},{\"type\":\"postback\",\"title\":\"🔍 Tra cứu máy bảo hành\",\"payload\":\"postback_card_6081\"},{\"type\":\"postback\",\"title\":\"💬 Bảo hành dòng máy khác\",\"payload\":\"postback_card_6082\"},{\"type\":\"postback\",\"title\":\"🔧 Hổ trợ kỹ thuật\",\"payload\":\"postback_card_6083\"}]}]}}}}";
-
-            string x1 = t.Replace("{{recipientId}}", "123");
-
-            //int[] x = { 6, 2, 3, 4, 5, 9, 1 };
-            //printArray(x);
-
-            //int left = 0;
-            //int right = x.Length - 1;
-
-            //var a = x[right];
-
-            //quickSort(x, left, right);
-            //printArray(x);
-
-            string t1 = "Added LegalPair id=ad.";
-            string r  = Regex.Match(t1, @"\d+").Value;
-
-            //string txt = "<p>Giải c&aacute;c phương tr&igrave;nh:</p>a) $2x^{4}-7x^{2}-4=0$<br />b)&nbsp;$ \sqrt{ 4 x^{2}-4 x+1}$";
-
-
-            string url = "ques=haha toi biet ma&number=10&groupques=abc";
-            url = Uri.UnescapeDataString(url);
-
-            throw new NameDuplicatedException("Tên không được trùng");
-
-            var dict = HttpUtility.ParseQueryString(url);
-            string json = JsonConvert.SerializeObject(dict.Cast<string>().ToDictionary(k => k, v => dict[v]));
-            dynamic respObj = JsonConvert.DeserializeObject<dynamic>(json);
-
-            Console.OutputEncoding = Encoding.UTF8;
-            string x = GetMessageTemplate("abc", "1").ToString();
-            Console.WriteLine(x);
-
-            //AccentPredictor accent = new AccentPredictor();
-
-            //string path1Gram = System.IO.Path.GetFullPath("news1gram");
-            //string path2Gram = System.IO.Path.GetFullPath("news2grams");
-            //accent.InitNgram(path1Gram, path2Gram);
-
-            //Console.OutputEncoding = Encoding.UTF8;
-
-            ////----- Test -----//
-            ////Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
-
-            //while (true)
-            //{
-            //    Console.InputEncoding = Encoding.Unicode;
-            //    Console.WriteLine("Nhap chuoi :");
-            //    string text = Console.ReadLine();
-            //    if (text == "exit")
-            //    {
-            //        break;
-            //    }
-            //    string results = accent.predictAccentsWithMultiMatches(text, 10);
-            //    Console.WriteLine("DS Ket qua : {0}", results);
-
-            //    Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
-            //}
-
-
-            // dynamic object
-
-            //MyClassBuilder MCB = new MyClassBuilder("Test");
-            //var myclass = MCB.CreateObject(new string[3] { "ID", "Name", "Address" }, new Type[3] { typeof(int), typeof(string), typeof(string) });
-            //Type TP = myclass.GetType();
-
-            //dynamic x = Activator.CreateInstance(TP);
-            //x.Name = "hehe";
-            //foreach (PropertyInfo PI in TP.GetProperties())
-            //{
-            //    Console.WriteLine(PI.Name);
-            //}
-            //Console.ReadLine();
+            SendSmsMsgServiceSoapClient sm = new SendSmsMsgServiceSoapClient();
+            string xmlParam = GenXmlParam("84","0375348328","Your Code : 58134");
+            dynamic rsMsg = sm.ExecuteFunc("SendSmsMsg", xmlParam);
+            string rsJson = ConvertXMLToJson(rsMsg);
+            Console.WriteLine("Rs: " + rsMsg);
 
         }
-        private static JObject GetMessageTemplate(string text, string sender)
+        //private static JObject GetMessageTemplate(string text, string sender)
+        //{
+        //    return JObject.FromObject(new
+        //    {
+        //        recipient = new { id = sender },
+        //        message = new {
+        //            text = "Welcome to Chatbot2!",
+        //            template = new
+        //            {
+        //                text = "abc"
+        //            }
+        //        }
+        //    });
+        //}
+
+        public static string ConvertXMLToJson(string xml)
         {
-            return JObject.FromObject(new
+            if (xml != "" && xml != null)
             {
-                recipient = new { id = sender },
-                message = new {
-                    text = "Welcome to Chatbot2!",
-                    template = new
-                    {
-                        text = "abc"
-                    }
+
+                XmlDocument _doc = new XmlDocument();
+                _doc.LoadXml(xml);
+                //return JsonConvert.SerializeXmlNode(doc);
+                string _returnJson;
+                var _rows = _doc.SelectNodes("//Table");
+                if (_rows.Count == 1)
+                {
+                    var contentNode = _doc.SelectSingleNode("//NewDataSet");
+                    contentNode.AppendChild(_doc.CreateNode("element", "Table", ""));
+                    //contentNode.AppendChild(doc.CreateNode("element", "Total", ""));
+
+                    // Convert to JSON and replace the empty element we created but keep the array declaration
+                    _returnJson = JsonConvert.SerializeXmlNode(_doc, Newtonsoft.Json.Formatting.None, true).Replace(",null]", "]");
                 }
-            });
+                else
+                {
+                    // Convert to JSON
+                    _returnJson = JsonConvert.SerializeXmlNode(_doc, Newtonsoft.Json.Formatting.None, true);
+                }
+                return _returnJson;
+                //return JsonConvert.SerializeObject(new { data = returnJson, total = rows[0]["Total"].ToString()});
+            }
+            {
+                object _table = null;
+                return JsonConvert.SerializeObject(new { Table = _table });
+            }
+
         }
+        public static string GenXmlParam(string strCountryCode, string strPhoneNumber, string strMessage)
+        {
+            try
+            {
+                string strAccessCode = "SureHis";
+                string strSecretKey = "Lv@HospitalMngt";
+                string strSecureExtension = "xJBrDX";
+
+                string strRandom = "316566353"; // Gia tri nay neu thay doi moi lan goi function thi tot, con khong thi gan co dinh cung duoc
+                string strFunctionName = "SendSmsMsg"; // Ten ham
+
+                string strXmlParam = (new SecureInfo()).GenXmlParam(strFunctionName,
+                        new string[] { "CountryCode", "PhoneNumber", "Message" },
+                        new string[] { strCountryCode, strPhoneNumber, strMessage },
+                        strAccessCode,
+                        strSecretKey,
+                        strRandom,
+                        strSecureExtension
+                       );
+                return strXmlParam;
+            }
+            catch (Exception ex) { }
+            return "";
+        }
+
         public static void quickSort(int[] arr, int left, int right)
         {
             if (arr == null || arr.Length == 0)
@@ -262,6 +252,115 @@ namespace Accent.ConsoleApplication
 
             propertyBuilder.SetGetMethod(getPropMthdBldr);
             propertyBuilder.SetSetMethod(setPropMthdBldr);
+        }
+    }
+
+    public class HMACSHA1Encrypt
+    {
+        public HMACSHA1Encrypt()
+        {
+        }
+
+        public static string Encrypt(string strKey, string strSrc)
+        {
+            if (string.IsNullOrEmpty(strKey) || string.IsNullOrEmpty(strSrc)) return "";
+
+            ASCIIEncoding ascEnc = new ASCIIEncoding();
+            HMACSHA1 hmacsha1 = new HMACSHA1(ascEnc.GetBytes(strKey));
+            byte[] hashValue = hmacsha1.ComputeHash(ascEnc.GetBytes(strSrc));
+            hmacsha1.Clear();
+            return Convert.ToBase64String(hashValue);
+        }
+    }
+
+
+
+    public class SecureInfo
+    {
+        private Random m_rand;
+
+        public string AccessCode = "SureHis";
+        public string SecretKey = "Lv@HospitalMngt";
+        public string SecureExtension = "xJBrDX";
+        public SecureInfo()
+        {
+            m_rand = new Random(time());
+        }
+
+        private int time()
+        {
+            DateTime dtStart = new DateTime(2010, 9, 1, 0, 0, 0);
+            return (int)(((DateTime.Now - dtStart).Ticks) % int.MaxValue);
+        }
+
+        public int RandomNum()
+        {
+            if (m_rand == null) m_rand = new Random(time());
+            //string strFileName = (m_rand.Next(int.MaxValue) % 16777216).ToString("X");
+            return m_rand.Next();
+        }
+
+        public int RandomNum(int iMinValue, int iMaxValue)
+        {
+            if (m_rand == null) m_rand = new Random(time());
+            //string strFileName = (m_rand.Next(int.MaxValue) % 16777216).ToString("X");
+            return m_rand.Next(iMinValue, iMaxValue);
+        }
+
+        public string RandomStr(int iStrLen)
+        {
+            int iRandom = RandomNum(0, 999999999);
+            string strRandom = iRandom.ToString().PadLeft(iStrLen, '0');
+            strRandom = ((strRandom.Length == iStrLen) ? strRandom : (strRandom.Substring(strRandom.Length - iStrLen, iStrLen)));
+            System.Diagnostics.Debug.Assert(strRandom.Length == iStrLen);
+            return strRandom;
+        }
+
+        //public string GenAccessCode(string strRandom)
+        //{
+        //    string strAccessCode = ConfigReader.readString("AccessCode");
+        //    return strAccessCode + strRandom;
+        //}
+
+        public string GenSignature(string strSecretKey, string strFunctionName, string strRandom, string strExtension)
+        {
+            return HMACSHA1Encrypt.Encrypt(strSecretKey, strFunctionName + strRandom + strExtension);
+        }
+
+        public string GenSignature(string strFunctionName, string strRandom)
+        {
+            string strSecretKey = SecretKey;// ConfigReader.readString("SecretKey");
+            string strExtension = SecureExtension;// ConfigReader.readString("SecureExtension");
+            //return HMACSHA1Encrypt.Encrypt(strSecretKey, strFunctionName + strRandom + strExtension);
+            return GenSignature(strSecretKey, strFunctionName, strRandom, strExtension);
+        }
+
+        public string GenXmlParam(string strFunctionName, string[] arrName, string[] arrValue, string strAccessCode, string strSecretKey, string strRandom, string strExtension)
+        {
+            if (arrName == null || arrName.Length == 0 || arrValue == null || arrValue.Length == 0 || arrName.Length != arrValue.Length) return "";
+
+            StringBuilder strXml = new StringBuilder();
+            strXml.Append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<params>\r\n");
+            for (int i = 0; i < arrName.Length; i++)
+                strXml.Append("<" + arrName[i] + ">" + arrValue[i] + "</" + arrName[i] + ">\r\n");
+
+            // signature
+            strXml.Append("<OTV>" + strRandom + "</OTV>\r\n");
+            strXml.Append("<AccessCode>" + strAccessCode + "</AccessCode>\r\n");
+            strXml.Append("<Signature>" + (new SecureInfo()).GenSignature(strSecretKey, strFunctionName, strRandom, strExtension) + "</Signature>\r\n");
+
+            strXml.Append("</params>");
+            return strXml.ToString();
+        }
+
+        public string GenXmlParam(string strFunctionName, string[] arrName, string[] arrValue)
+        {
+            int iRandomNumLen = 6;
+            string strAccessCode = "SureHis";// ConfigReader.readString("AccessCode");
+            string strSecretKey = "SureHis_SecretKey";//ConfigReader.readString(strAccessCode + "_SecretKey");
+            string strExtension = "xJBrDX";// ConfigReader.readString("SecureExtension");
+            string strRandom = RandomStr(iRandomNumLen);
+            return GenXmlParam(strFunctionName, arrName, arrValue, strAccessCode, strSecretKey, strRandom, strExtension);
         }
     }
 }

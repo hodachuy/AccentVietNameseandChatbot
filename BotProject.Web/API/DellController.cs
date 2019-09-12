@@ -1,4 +1,5 @@
 ﻿using BotProject.Common;
+using BotProject.Common.DigiproService.Digipro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,14 @@ namespace BotProject.Web.API
         {
             return Ok();
         }
+
+        //[Route("getdgpservice")]
+        //[HttpGet]
+        //public IHttpActionResult GetDgpService(string id)
+        //{
+        //    var Result = DigiproService.GetDetailServiceWarrantyDigipro(id);
+        //    return Ok(Result);
+        //}
 
         [Route("getwarranty")]
         [HttpGet]

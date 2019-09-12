@@ -106,6 +106,7 @@
     <Compile Include="Models\MdQuestion.cs" />
     <Compile Include="Models\MdSearch.cs" />
     <Compile Include="Models\MdSearchCategory.cs" />
+    <Compile Include="Models\MdVoucher.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\ModuleFollowCard.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatient.cs" />
@@ -119,6 +120,7 @@
     <Compile Include="Models\TemplateGenericItem.cs" />
     <Compile Include="Models\TemplateGenericGroup.cs" />
     <Compile Include="Models\TemplateText.cs" />
+    <Compile Include="Models\UserTelePhone.cs" />
     <Compile Include="Models\VisitorStatistic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

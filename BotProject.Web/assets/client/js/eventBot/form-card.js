@@ -4885,6 +4885,74 @@ function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoP
             $("#template-module").empty().append(html)
         });
     }
+    if (moduleName == "voucher") {
+        var params = {
+            botID: $("#botId").val(),
+        };
+        var urlTest = "api/module/getmdvoucher";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServiceGET(function (data) {
+            html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý thông tin voucher</a>';
+            html += '<div class="row">';
+            html += '<div class="col-md-12">';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<input type="text" id="mdVoucherTitle" class="form-control required" value="' + data.Title + '" placeholder="Vui lòng nhập mô tả"/>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdVoucherMsgStart" rows="3" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdVoucherMsgError" rows="3" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Xác nhận hình ảnh voucher</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '               <div class="input-file" name="Fichier1">';
+            html += '                   <input type="file" id="formLogo" accept="image/png, image/jpeg" class="form-control" placeholder="Chọn hình ảnh"/>';
+            html += '               </div>';
+            html += '               <div class="file-preview">';
+            html += '                   <div class="close fileinput-remove text-right">×</div>';
+            html += '                       <div class="file-preview-thumbnails">';
+            html += '                           <div class="file-preview-frame" id="preview-logo">';
+            html += '                           </div>';
+            html += '                       </div>';
+            html += '                   </div>';
+            html += '               </div>';
+            html += '            </div>';
+
+
+
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng thoát khỏi</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdVoucherTitlePayload" class="form-control" value="' + (data.TitlePayload == null ? "" : data.TitlePayload) + '"/>';
+            html += '            </div>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardVoucher">' + card() + '</select>';
+            html += '            </div>';
+            html += '        </div>';
+
+            html += '<div class="form-group">';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">'
+            html += '<button id="mdVoucherSave" data-id="' + data.ID + '" class="btn btn-primary">Lưu</button>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            $("#template-module").empty().append(html)
+            loadEmojiPicker();
+        });
+    }
     if (moduleName == "med_get_info_patient") {//lấy thông tin bệnh nhân
         getTemplateInfoPatient(mdGetInfoPatientID, typeActionClickModule);
     }

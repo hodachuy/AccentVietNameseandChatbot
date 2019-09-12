@@ -392,6 +392,30 @@
     <Compile Include="Migrations\201909110312419_UpdateMdSearchCat.Designer.cs">
       <DependentUpon>201909110312419_UpdateMdSearchCat.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909120732426_AddUserTelePhone.cs" />
+    <Compile Include="Migrations\201909120732426_AddUserTelePhone.Designer.cs">
+      <DependentUpon>201909120732426_AddUserTelePhone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909120808264_UpdateUserTelephone.cs" />
+    <Compile Include="Migrations\201909120808264_UpdateUserTelephone.Designer.cs">
+      <DependentUpon>201909120808264_UpdateUserTelephone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909120823461_UpdateMdVoucher.cs" />
+    <Compile Include="Migrations\201909120823461_UpdateMdVoucher.Designer.cs">
+      <DependentUpon>201909120823461_UpdateMdVoucher.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909120827539_UpdateUserPhone.cs" />
+    <Compile Include="Migrations\201909120827539_UpdateUserPhone.Designer.cs">
+      <DependentUpon>201909120827539_UpdateUserPhone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909120905423_UpdateMdVoucher3.cs" />
+    <Compile Include="Migrations\201909120905423_UpdateMdVoucher3.Designer.cs">
+      <DependentUpon>201909120905423_UpdateMdVoucher3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909121006380_UpdateMdVoucher5.cs" />
+    <Compile Include="Migrations\201909121006380_UpdateMdVoucher5.Designer.cs">
+      <DependentUpon>201909121006380_UpdateMdVoucher5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -418,6 +442,7 @@
     <Compile Include="Repositories\MdPhoneRepository.cs" />
     <Compile Include="Repositories\MdSearchCategoryRepository.cs" />
     <Compile Include="Repositories\MdSearchRepository.cs" />
+    <Compile Include="Repositories\MdVoucherRepository.cs" />
     <Compile Include="Repositories\ModuleCategoryRepository.cs" />
     <Compile Include="Repositories\MdQuestionRepository.cs" />
     <Compile Include="Repositories\ModuleFollowCardRepository.cs" />
@@ -432,6 +457,7 @@
     <Compile Include="Repositories\TemplateGenericGroupRepository.cs" />
     <Compile Include="Repositories\TemplateGenericItemRepository.cs" />
     <Compile Include="Repositories\TemplateTextRepository.cs" />
+    <Compile Include="Repositories\UserTelephoneRepository.cs" />
     <Compile Include="Repositories\VisitorStatisticRepository.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -683,6 +709,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909110312419_UpdateMdSearchCat.resx">
       <DependentUpon>201909110312419_UpdateMdSearchCat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909120732426_AddUserTelePhone.resx">
+      <DependentUpon>201909120732426_AddUserTelePhone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909120808264_UpdateUserTelephone.resx">
+      <DependentUpon>201909120808264_UpdateUserTelephone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909120823461_UpdateMdVoucher.resx">
+      <DependentUpon>201909120823461_UpdateMdVoucher.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909120827539_UpdateUserPhone.resx">
+      <DependentUpon>201909120827539_UpdateUserPhone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909120905423_UpdateMdVoucher3.resx">
+      <DependentUpon>201909120905423_UpdateMdVoucher3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909121006380_UpdateMdVoucher5.resx">
+      <DependentUpon>201909121006380_UpdateMdVoucher5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

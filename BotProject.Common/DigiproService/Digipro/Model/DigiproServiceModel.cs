@@ -11,6 +11,7 @@ namespace BotProject.Common.DigiproService.Digipro.Model
         public int rofnumber { set; get; }
         public string servicetag { set; get; }
         public string customername { set; get; }
+        public string phonenumber { set; get; }
         public string address { set; get; }
         public string email { set; get; }
         public DateTime? datereceive { set; get; }

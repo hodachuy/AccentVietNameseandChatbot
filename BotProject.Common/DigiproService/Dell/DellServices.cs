@@ -13,6 +13,8 @@ namespace BotProject.Common
 {
     public class DellServices
     {
+        private static string UrlDell = ConfigHelper.ReadString("UrlDell");
+
         private static Dictionary<string, int> ServicePrioritize = new Dictionary<string, int>() {
             {"2HR", 1},
             {"4HR", 2},
@@ -56,6 +58,13 @@ namespace BotProject.Common
                             StringBuilder sb = new StringBuilder();
                             sb.AppendLine("Service Tag: " + warrantyResultModel.ServiceTag + "<br/>");
                             sb.AppendLine("Thời hạn bảo hành: " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd MMM yyyy") + "<br/>");
+                            sb.AppendLine("Thông tin chi tiết: <br/>");
+                            foreach (var obj in warrantyResultModel.WarrantyDetails)
+                            {
+                                sb.AppendLine(obj.Service + "<br/>");
+                                sb.AppendLine("Sta: "+obj.StartDate.ToString("dd MMM yyyy") + " ,Exp: "+obj.ExpirationDate.ToString("dd MMM yyyy")+"<br/>");
+                            }
+
                             warrantyResultModel.TextWarranty = sb.ToString();
                             return warrantyResultModel;
                         }
@@ -69,7 +78,7 @@ namespace BotProject.Common
             try
             {
                 HttpClient httpClient = new HttpClient();
-                httpClient.BaseAddress = new Uri("https://api.dell.com/support/assetinfo/v4/");
+                httpClient.BaseAddress = new Uri(UrlDell);
                 httpClient.DefaultRequestHeaders.Accept.Clear();
                 httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -180,7 +189,10 @@ namespace BotProject.Common
                     ExpirationDate = _expirationDate,
                     Priority = priorityDefault
                 };
-                warrantyDetailsResult.Add(inputModel);
+                if(item.Contains("(Dell Digitial Delivery)") == false)
+                {
+                    warrantyDetailsResult.Add(inputModel);
+                }
             }
             return warrantyDetailsResult;
         }

@@ -66,7 +66,11 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -88,16 +92,57 @@
     <Compile Include="HelperMethods\HelperMethods.cs" />
     <Compile Include="MailHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SendSmsMsgService\HMACSHA1Encrypt.cs" />
+    <Compile Include="SendSmsMsgService\SecureInfo.cs" />
+    <Compile Include="SendSmsMsgService\SendSmsService.cs" />
+    <Compile Include="Service References\SendSmsMsgService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\HandleResultBotViewModel.cs" />
     <Compile Include="ViewModels\MdQnAViewModel.cs" />
     <Compile Include="ViewModels\QuesTargetViewModel.cs" />
     <Compile Include="ViewModels\StoreProcHistoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\BotProject.Web\AppSettings.config">
+      <Link>AppSettings.config</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Service References\SendSmsMsgService\BotProject.Common.SendSmsMsgService.ExecuteFuncResponse.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Service References\SendSmsMsgService\SendSmsMsgService.wsdl" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\SendSmsMsgService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SendSmsMsgService\SendSmsMsgService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SendSmsMsgService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SendSmsMsgService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\SendSmsMsgService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Accent.ConsoleApplication\Accent.ConsoleApplication.csproj">
+      <Project>{1AB7B571-A6E1-45F1-ACFC-A77A2CCE18E9}</Project>
+      <Name>Accent.ConsoleApplication</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

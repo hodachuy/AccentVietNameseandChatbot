@@ -1,4 +1,5 @@
 ﻿using BotProject.Common;
+using BotProject.Common.DigiproService.Digipro;
 using BotProject.Common.ViewModels;
 using Newtonsoft.Json;
 using System;
@@ -248,7 +249,7 @@ namespace BotProject.Service
                     {
                         rsHandle.Status = false;
                         var mdSearchCategory = _mdSearchCategoryService.GetById(mdSearchDb.MdSearchCategoryID);
-                        if(mdSearchCategory.Alias == Common.CommonConstants.MdSearch_Luat)
+                        if(mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Luat)
                         {
                             rsHandle.ResultAPI = GetModuleSearchAPI(text, mdSearchDb.ParamAPI, mdSearchDb.UrlAPI, mdSearchDb.KeyAPI, mdSearchDb.MethodeAPI);
                             if (String.IsNullOrEmpty(rsHandle.ResultAPI))
@@ -264,7 +265,7 @@ namespace BotProject.Service
                                 rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
                             }
                         }
-                        if (mdSearchCategory.Alias == Common.CommonConstants.MdSearch_Dell)
+                        if (mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Dell)
                         {
                             var resultDell = DellServices.GetAssetHeader(text);
                             if (resultDell != null)
@@ -280,12 +281,29 @@ namespace BotProject.Service
                                 rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
                             }
                         }
+                        if(mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Digipro)
+                        {
+                            var resultDigipro = DigiproService.GetDetailServiceDigiproByRofOrSvtag(mdSearchDb.UrlAPI.Trim(), text);
+                            if (resultDigipro != null)
+                            {
+                                rsHandle.Message = tempText(resultDigipro);
+                            }
+                            else
+                            {
+                                rsHandle.Message = tempText(mdSearchDb.MessageError);
+                            }
+                            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
+                            {
+                                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                            }
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.ToString());
+                rsHandle.Message = tempText(mdSearchDb.MessageError);
+                //throw new Exception(ex.ToString());
             }
             return rsHandle;
         }

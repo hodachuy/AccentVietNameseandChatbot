@@ -16,6 +16,7 @@ namespace BotProject.Web.API
     public class ModuleController : ApiControllerBase
     {
         private IModuleService _moduleService;
+        private IMdVoucherService _mdVoucherService;
         private IMdPhoneService _mdPhoneService;
         private IMdEmailService _mdEmailService;
         private IMdAgeService _mdAgeService;
@@ -23,6 +24,7 @@ namespace BotProject.Web.API
         private IModuleKnowledegeService _mdKnowledegeService;
         private IMdSearchCategoryService _mdSearchCategoryService;
         public ModuleController(IErrorService errorService,
+            IMdVoucherService mdVoucherService,
             IModuleService moduleService,
             IMdPhoneService mdPhoneService,
             IMdEmailService mdEmailService,
@@ -31,6 +33,7 @@ namespace BotProject.Web.API
             IMdSearchCategoryService mdSearchCategoryService,
             IMdAgeService mdAgeService) : base(errorService)
         {
+            _mdVoucherService = mdVoucherService;
             _moduleService = moduleService;
             _mdPhoneService = mdPhoneService;
             _mdEmailService = mdEmailService;
@@ -128,12 +131,73 @@ namespace BotProject.Web.API
                     _mdAgeService.Create(mdAge);
                     _mdAgeService.Save();
                 }
+                if (moduleVm.Payload == Common.CommonConstants.ModuleVoucher)
+                {
+                    MdVoucher mdVoucher = new MdVoucher();
+                    mdVoucher.BotID = moduleVm.BotID;
+                    mdVoucher.MessageStart = "Bạn vui lòng nhập số điện thoại để nhận voucher.";
+                    mdVoucher.MessageError = "Số điện thoại không đúng, bạn vui lòng nhập lại.";
+                    mdVoucher.MessageEnd = "Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!";
+                    mdVoucher.ModuleID = moduleDb.ID;
+                    //mdPhone.CardPayloadID = null;
+                    //mdPhone.Payload = "";
+                    mdVoucher.Title = "Xử lý voucher";
+                    mdVoucher.DictionaryKey = "voucher";
+                    mdVoucher.DictionaryValue = "false";
+
+                    _mdVoucherService.Create(mdVoucher);
+                    _mdVoucherService.Save();
+                }
 
                 response = request.CreateResponse(HttpStatusCode.OK, moduleDb);
                 return response;
             });
         }
 
+        #region MODULE VOUCHER
+        [Route("getmdvoucher")]
+        [HttpGet]
+        public HttpResponseMessage GetModuleVoucherByBotID(HttpRequestMessage request, int botID)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var module = _mdVoucherService.GetByBotID(botID);
+                response = request.CreateResponse(HttpStatusCode.OK, module);
+                return response;
+            });
+        }
+        [Route("updatemdvoucher")]
+        [HttpPost]
+        public HttpResponseMessage CreateModuleVoucher(HttpRequestMessage request, MdVoucher mdVoucher)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+
+                var module = _mdVoucherService.GetByBotID(mdVoucher.BotID);
+                module.MessageStart = mdVoucher.MessageStart;
+                module.MessageError = mdVoucher.MessageError;
+                module.StartDate = mdVoucher.StartDate;
+                module.ExpirationDate = mdVoucher.ExpirationDate;
+                module.MessageEnd = mdVoucher.MessageEnd;
+                module.CardPayloadID = mdVoucher.CardPayloadID;
+                if (mdVoucher.CardPayloadID != null && mdVoucher.CardPayloadID != 0)
+                {
+                    module.Payload = "postback_card_" + mdVoucher.CardPayloadID;
+                }
+                else
+                {
+                    module.Payload = "";
+                }
+
+                _mdVoucherService.Update(module);
+                _mdAgeService.Save();
+                response = request.CreateResponse(HttpStatusCode.OK, module);
+                return response;
+            });
+        }
+        #endregion
 
         #region MODULE PHONE
         [Route("getmdphone")]

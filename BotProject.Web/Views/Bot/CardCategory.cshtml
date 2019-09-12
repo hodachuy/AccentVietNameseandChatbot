@@ -34,6 +34,13 @@
     .breadcrumb{
         padding: .75rem 1rem;
     }
+    .file-preview {
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        width: 100%;
+        margin-bottom: 20px;
+        position: relative;
+    }
 </style>
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
 <div id="sidenav-module" class="sidenav">
@@ -287,34 +294,3 @@
         }
     </script>
 }
-
-
-@*<div class="col-md-12">
-        <div class="form-group">
-            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">
-                Tiêu đề:
-            </label>
-            <div class="col-md-12 col-sm-12 col-xs-12">
-                <input type="text" id="first-name" required="required" class="form-control col-md-12 col-xs-12">
-            </div>
-        </div>
-        <a href="javascript:void(0)" id="create-opt-module-medinfo"><i class="fa fa-plus"></i> Thêm </a>
-        <div id="template-module-med_get_info_patient">
-            <div class="temp-module-index">
-                <div class="attribute">
-                    <input type="text" placeholder="{Attribute}" value=""/>
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox">
-                    </label>
-                </div>
-                <div class="col-sm-9 col-md-9 col-xs-9 option">
-                    <input type="text" class="form-control">
-                </div>
-                <div class="col-sm-1 col-md-1 col-xs-1 rmAttribute">
-                    <span><i class="fas fa-trash"></i></span>
-                </div>
-            </div>
-        </div>
-    </div>*@

@@ -101,6 +101,7 @@
     <Compile Include="MdPhoneService.cs" />
     <Compile Include="MdSearchCategoryService.cs" />
     <Compile Include="MdSearchService.cs" />
+    <Compile Include="MdVoucherService.cs" />
     <Compile Include="ModuleCategoryService.cs" />
     <Compile Include="ModuleFollowCardService.cs" />
     <Compile Include="ModuleKnowledegeService.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="TemplateGenericGroupService.cs" />
     <Compile Include="TemplateGenericItemService.cs" />
     <Compile Include="TemplateTextService.cs" />
+    <Compile Include="UserTelephoneService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BotProject.Common\BotProject.Common.csproj">
@@ -128,6 +130,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\BotProject.Web\AppSettings.config">
+      <Link>AppSettings.config</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
