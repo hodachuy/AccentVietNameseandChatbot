@@ -15,6 +15,8 @@ namespace BotProject.Web.Models
 
         public int? MdSearchID { set; get; }
 
+        public int? MdVoucherID { set; get; }
+        
         public int Index { set; get; }
 
         public int? CardID { set; get; }

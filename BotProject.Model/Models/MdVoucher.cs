@@ -28,7 +28,8 @@ namespace BotProject.Model.Models
         public string MessageStart { set; get; }
         public string MessageError { set; get; }
         public string MessageEnd { set; get; }
-        public int ModuleID { set; get; }
+        public int? ButtonModuleID { set; get; }
+        public int? ModuleFollowCardID { set; get; }
         public int BotID { set; get; }
     }
 }

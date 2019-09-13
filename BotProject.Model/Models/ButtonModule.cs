@@ -35,6 +35,8 @@ namespace BotProject.Model.Models
 
         public int? MdSearchID { set; get; }
 
+        public int? MdVoucherID { set; get; }
+
         public string ModuleType { set; get; }
 
         public int? CardID { set; get; }

@@ -9,6 +9,10 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using BotProject.Web.Infrastructure.Extensions;
+using System.Web;
+using System.Web.Script.Serialization;
+using System.IO;
+using BotProject.Common;
 
 namespace BotProject.Web.API
 {
@@ -131,23 +135,23 @@ namespace BotProject.Web.API
                     _mdAgeService.Create(mdAge);
                     _mdAgeService.Save();
                 }
-                if (moduleVm.Payload == Common.CommonConstants.ModuleVoucher)
-                {
-                    MdVoucher mdVoucher = new MdVoucher();
-                    mdVoucher.BotID = moduleVm.BotID;
-                    mdVoucher.MessageStart = "Bạn vui lòng nhập số điện thoại để nhận voucher.";
-                    mdVoucher.MessageError = "Số điện thoại không đúng, bạn vui lòng nhập lại.";
-                    mdVoucher.MessageEnd = "Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!";
-                    mdVoucher.ModuleID = moduleDb.ID;
-                    //mdPhone.CardPayloadID = null;
-                    //mdPhone.Payload = "";
-                    mdVoucher.Title = "Xử lý voucher";
-                    mdVoucher.DictionaryKey = "voucher";
-                    mdVoucher.DictionaryValue = "false";
+                //if (moduleVm.Payload == Common.CommonConstants.ModuleVoucher)
+                //{
+                //    MdVoucher mdVoucher = new MdVoucher();
+                //    mdVoucher.BotID = moduleVm.BotID;
+                //    mdVoucher.MessageStart = "Bạn vui lòng nhập số điện thoại để nhận voucher.";
+                //    mdVoucher.MessageError = "Số điện thoại không đúng, bạn vui lòng nhập lại.";
+                //    mdVoucher.MessageEnd = "Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!";
+                //    mdVoucher.ModuleID = moduleDb.ID;
+                //    //mdPhone.CardPayloadID = null;
+                //    //mdPhone.Payload = "";
+                //    mdVoucher.Title = "Xử lý voucher";
+                //    mdVoucher.DictionaryKey = "voucher";
+                //    mdVoucher.DictionaryValue = "false";
 
-                    _mdVoucherService.Create(mdVoucher);
-                    _mdVoucherService.Save();
-                }
+                //    _mdVoucherService.Create(mdVoucher);
+                //    _mdVoucherService.Save();
+                //}
 
                 response = request.CreateResponse(HttpStatusCode.OK, moduleDb);
                 return response;
@@ -157,43 +161,115 @@ namespace BotProject.Web.API
         #region MODULE VOUCHER
         [Route("getmdvoucher")]
         [HttpGet]
-        public HttpResponseMessage GetModuleVoucherByBotID(HttpRequestMessage request, int botID)
+        public HttpResponseMessage GetModuleVoucherByBotID(HttpRequestMessage request, int mdVoucherID)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                var module = _mdVoucherService.GetByBotID(botID);
+                var module = _mdVoucherService.GetByID(mdVoucherID);
                 response = request.CreateResponse(HttpStatusCode.OK, module);
                 return response;
             });
         }
-        [Route("updatemdvoucher")]
+
+        [Route("addmdvoucher")]
         [HttpPost]
-        public HttpResponseMessage CreateModuleVoucher(HttpRequestMessage request, MdVoucher mdVoucher)
+        public HttpResponseMessage AddModuleVoucher(HttpRequestMessage request)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-
-                var module = _mdVoucherService.GetByBotID(mdVoucher.BotID);
-                module.MessageStart = mdVoucher.MessageStart;
-                module.MessageError = mdVoucher.MessageError;
-                module.StartDate = mdVoucher.StartDate;
-                module.ExpirationDate = mdVoucher.ExpirationDate;
-                module.MessageEnd = mdVoucher.MessageEnd;
-                module.CardPayloadID = mdVoucher.CardPayloadID;
-                if (mdVoucher.CardPayloadID != null && mdVoucher.CardPayloadID != 0)
+                var mdVoucherJson = HttpContext.Current.Request.Unvalidated.Form["mdVoucher"];
+                if (mdVoucherJson == null)
                 {
-                    module.Payload = "postback_card_" + mdVoucher.CardPayloadID;
+                    response = request.CreateErrorResponse(HttpStatusCode.BadRequest, "Vui lòng cung cấp dữ liệu.");
+                    return response;
                 }
-                else
+                var mdVoucherVm = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<MdVoucher>(mdVoucherJson);
+
+                MdVoucher mdVoucherDb = new MdVoucher();
+                mdVoucherDb.Title = mdVoucherVm.Title;
+                mdVoucherDb.MessageStart = mdVoucherVm.MessageStart;
+                mdVoucherDb.StartDate = mdVoucherVm.StartDate;
+                mdVoucherDb.ExpirationDate = mdVoucherVm.ExpirationDate;
+                mdVoucherDb.CardPayloadID = mdVoucherVm.CardPayloadID;
+                mdVoucherDb.TitlePayload = mdVoucherVm.TitlePayload;
+                mdVoucherDb.MessageError = "Số điện thoại không đúng, bạn vui lòng nhập lại.";
+                mdVoucherDb.MessageEnd = "Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!";
+                mdVoucherDb.Code = mdVoucherVm.Code;
+                mdVoucherDb.Payload = "";
+                if (mdVoucherVm.CardPayloadID != null && mdVoucherVm.CardPayloadID != 0)
                 {
-                    module.Payload = "";
+                    mdVoucherDb.Payload = "postback_card_" + mdVoucherVm.CardPayloadID;
                 }
 
-                _mdVoucherService.Update(module);
-                _mdAgeService.Save();
-                response = request.CreateResponse(HttpStatusCode.OK, module);
+                var files = System.Web.HttpContext.Current.Request.Files;
+                if (files.Count != 0)
+                {
+                    var file = files[0];
+                    Guid id = Guid.NewGuid();
+                    string extentsion = new FileInfo(file.FileName).Extension.ToLower();
+                    string fileName = id + "-" + new FileInfo(file.FileName).Name;
+
+                    file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
+                    + "Voucher" + "/" + fileName));
+
+                    mdVoucherDb.Image = "File/Images/Voucher/" + fileName;
+                }
+
+                _mdVoucherService.Create(mdVoucherDb);
+                _mdVoucherService.Save();
+                response = request.CreateResponse(HttpStatusCode.OK, mdVoucherDb);
+                return response;
+            });
+        }
+
+        [Route("updatemdvoucher")]
+        [HttpPost]
+        public HttpResponseMessage UpdateModuleVoucher(HttpRequestMessage request)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var mdVoucherJson = HttpContext.Current.Request.Unvalidated.Form["mdVoucher"];
+                if(mdVoucherJson == null)
+                {
+                    response = request.CreateErrorResponse(HttpStatusCode.BadRequest, "Vui lòng cung cấp dữ liệu.");
+                    return response;
+                }
+                var mdVoucherVm = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<MdVoucher>(mdVoucherJson);
+
+                var mdVoucherDb = _mdVoucherService.GetByBotID(mdVoucherVm.BotID);
+                mdVoucherDb.Title = mdVoucherVm.Title;
+                mdVoucherDb.MessageStart = mdVoucherVm.MessageStart;
+                mdVoucherDb.StartDate = mdVoucherVm.StartDate;
+                mdVoucherDb.ExpirationDate = mdVoucherVm.ExpirationDate;
+                mdVoucherDb.CardPayloadID = mdVoucherVm.CardPayloadID;
+                mdVoucherDb.TitlePayload = mdVoucherVm.TitlePayload;
+                mdVoucherDb.Code = mdVoucherVm.Code;
+                mdVoucherDb.Payload = "";
+                if (mdVoucherVm.CardPayloadID != null && mdVoucherVm.CardPayloadID != 0)
+                {
+                    mdVoucherDb.Payload = "postback_card_" + mdVoucherVm.CardPayloadID;
+                }
+
+                var files = System.Web.HttpContext.Current.Request.Files;
+                if (files.Count != 0)
+                {
+                    var file = files[0];
+                    Guid id = Guid.NewGuid();
+                    string extentsion = new FileInfo(file.FileName).Extension.ToLower();
+                    string fileName = id + "-" + new FileInfo(file.FileName).Name;
+
+                    file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
+                    + "Voucher" + "/" + fileName));
+
+                    mdVoucherDb.Image = "File/Images/Voucher/" + fileName;
+                }
+
+                _mdVoucherService.Update(mdVoucherDb);
+                _mdVoucherService.Save();
+                response = request.CreateResponse(HttpStatusCode.OK, mdVoucherDb);
                 return response;
             });
         }
@@ -459,7 +535,6 @@ namespace BotProject.Web.API
                     mdSearchDb.MessageEnd = mdSearchDb.MessageEnd;
                     mdSearchDb.ID = mdSearchVm.ID;
                     mdSearchDb.MdSearchCategoryID = mdSearchVm.MdSearchCategoryID;
-
                     _mdSearchService.Create(mdSearchDb);
                     _mdSearchService.Save();
                     response = request.CreateResponse(HttpStatusCode.OK, mdSearchDb);

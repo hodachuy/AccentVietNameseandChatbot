@@ -416,6 +416,18 @@
     <Compile Include="Migrations\201909121006380_UpdateMdVoucher5.Designer.cs">
       <DependentUpon>201909121006380_UpdateMdVoucher5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909130832461_UpdateCardV5.cs" />
+    <Compile Include="Migrations\201909130832461_UpdateCardV5.Designer.cs">
+      <DependentUpon>201909130832461_UpdateCardV5.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909131018221_UpdateDb04.cs" />
+    <Compile Include="Migrations\201909131018221_UpdateDb04.Designer.cs">
+      <DependentUpon>201909131018221_UpdateDb04.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909131048242_UpdateMdVoucher1.cs" />
+    <Compile Include="Migrations\201909131048242_UpdateMdVoucher1.Designer.cs">
+      <DependentUpon>201909131048242_UpdateMdVoucher1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -727,6 +739,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909121006380_UpdateMdVoucher5.resx">
       <DependentUpon>201909121006380_UpdateMdVoucher5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909130832461_UpdateCardV5.resx">
+      <DependentUpon>201909130832461_UpdateCardV5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909131018221_UpdateDb04.resx">
+      <DependentUpon>201909131018221_UpdateDb04.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909131048242_UpdateMdVoucher1.resx">
+      <DependentUpon>201909131048242_UpdateMdVoucher1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

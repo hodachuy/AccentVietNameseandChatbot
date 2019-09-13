@@ -11,10 +11,12 @@ namespace BotProject.Service
 {
     public interface IMdVoucherService
     {
+        MdVoucher GetByID(int id);
         MdVoucher GetByBotID(int botId);
         MdVoucher Create(MdVoucher module);
         void Update(MdVoucher module);
         void Save();
+        void Delete(int id);
     }
     public class MdVoucherService : IMdVoucherService
     {
@@ -30,10 +32,21 @@ namespace BotProject.Service
             return _mdVoucherRepository.Add(module);
         }
 
+        public void Delete(int id)
+        {
+            _mdVoucherRepository.Delete(id);
+        }
+
         public MdVoucher GetByBotID(int botId)
         {
             return _mdVoucherRepository.GetSingleByCondition(x => x.BotID == botId);
         }
+
+        public MdVoucher GetByID(int id)
+        {
+            return _mdVoucherRepository.GetSingleById(id);
+        }
+
         public void Save()
         {
             _unitOfWork.Commit();

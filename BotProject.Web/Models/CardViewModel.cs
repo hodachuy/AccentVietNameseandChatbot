@@ -14,6 +14,8 @@ namespace BotProject.Web.Models
 
         public string Alias { set; get; }
         public string TemplateJSON { set; get; }
+        public string TemplateJsonFacebook { set; get; }
+        public string TemplateJsonZalo { set; get; }
 
         public bool IsDelete { set; get; }
 
@@ -124,6 +126,8 @@ namespace BotProject.Web.Models
         public int? ModuleKnowledgeID { set; get; }
 
         public int? MdSearchID { set; get; }
+
+        public int? MdVoucherID { set; get; }
 
         public string ModuleType { set; get; }
 

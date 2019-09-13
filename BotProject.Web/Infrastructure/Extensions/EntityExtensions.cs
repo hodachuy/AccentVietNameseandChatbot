@@ -102,6 +102,8 @@ namespace BotProject.Web.Infrastructure.Extensions
             card.GroupCardID = cardVm.GroupCardID;
             card.Alias = cardVm.Alias;
             card.TemplateJSON = cardVm.TemplateJSON;
+            card.TemplateJsonFacebook = cardVm.TemplateJsonFacebook;
+            card.TemplateJsonZalo = cardVm.TemplateJsonZalo;
             card.IsDelete = false;
         }
 

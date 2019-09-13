@@ -125,6 +125,9 @@ namespace BotProject.Web.Controllers
             _user.Predicates.addSetting("phone", "");
             _user.Predicates.addSetting("phonecheck", "false");
 
+            _user.Predicates.addSetting("voucher", "");
+            _user.Predicates.addSetting("vouchercheck", "false");
+
             _user.Predicates.addSetting("email", "");
             _user.Predicates.addSetting("emailcheck", "false");
 
@@ -517,8 +520,50 @@ namespace BotProject.Web.Controllers
                 }
                 #endregion
 
+                // Xử lý Voucher
+                #region
+                bool isCheckVoucher = bool.Parse(_user.Predicates.grabSetting("vouchercheck"));
+                if (isCheckAge)
+                {
+                    var handleAge = _handleMdService.HandledIsAge(text, valBotID);
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                    AddHistory(hisVm);
+                    if (handleAge.Status)
+                    {
+                        _user.Predicates.addSetting("vouchercheck", "false");
+                        _user.Predicates.addSetting("voucher", text);
+                        if (!String.IsNullOrEmpty(handleAge.Postback))
+                        {
+                            return chatbot(handleAge.Postback, group, token, botId, isMdSearch);
+                        }
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleAge.Message },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                if (text.Contains("postback_module_voucher"))// nếu check đi từ đây trước
+                {
+                    _user.Predicates.addSetting("vouchercheck", "true");
+                    var handleAge = _handleMdService.HandledIsAge(text, valBotID);
+                    hisVm.UserSay = "[Voucher]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
+                    return Json(new
+                    {
+                        message = new List<string>() { handleAge.Message },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
+
                 // Lấy target from knowledge base QnA trained mongodb
-                if(text.Contains("postback") == false || text.Contains("module") == false)
+                if (text.Contains("postback") == false || text.Contains("module") == false)
                 {
                     string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
                     if (!String.IsNullOrEmpty(target))

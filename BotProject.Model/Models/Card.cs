@@ -29,6 +29,10 @@ namespace BotProject.Model.Models
 
         public string TemplateJSON { set; get; }
 
+        public string TemplateJsonFacebook { set; get; }
+
+        public string TemplateJsonZalo { set; get; }
+
         public int BotID { set; get; }
 
         public bool IsDelete { set; get; }

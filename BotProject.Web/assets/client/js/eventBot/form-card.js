@@ -274,11 +274,15 @@ $(document).ready(function () {
                             $.each(tempItem.ButtonModules, function (index, value) {
                                 var mdMedGetInfoPatientID = 0;
                                 var mdSearchID = 0;
+                                var mdVoucherID = 0;
                                 if (value.ModuleKnowledgeID != null && value.ModuleKnowledgeID != 0) {
                                     mdMedGetInfoPatientID = value.ModuleKnowledgeID;
                                 }
                                 if (value.MdSearchID != null && value.MdSearchID != 0) {
                                     mdSearchID = value.MdSearchID;
+                                }
+                                if (value.MdVoucherID != null && value.MdVoucherID != 0) {
+                                    mdVoucherID = value.MdVoucherID;
                                 }
                                 var nameModule = "";
                                 if (value.Payload == "postback_module_phone") {
@@ -302,9 +306,12 @@ $(document).ready(function () {
                                 if (value.Payload == "postback_module_api_search") {
                                     nameModule = "Tri thức tìm kiếm";
                                 }
+                                if (value.Payload == "postback_module_voucher") {
+                                    nameModule = "Xử lý voucher";
+                                }
 
                                 var payload = value.Payload.replace("postback_module_", "");
-                                var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '" data-md-info-patient-id="' + mdMedGetInfoPatientID + '" data-md-search-id = "' + mdSearchID + '">' + nameModule + '</span></p></div>';
+                                var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '" data-md-info-patient-id="' + mdMedGetInfoPatientID + '" data-md-search-id = "' + mdSearchID + '" data-md-voucher-id = "' + mdVoucherID + '">' + nameModule + '</span></p></div>';
                                 var objBtn = {
                                     "idx": value.Index,
                                     "contentHTML": contentBtn
@@ -375,6 +382,7 @@ $(document).ready(function () {
         var moduleName;
         var mdGetInfoPatientID = 0;
         var mdSearchID = 0;
+        var mdVoucherID = 0;
         if (data.ModuleFollowCards.length != 0) {
             $.each(data.ModuleFollowCards, function (index, value) {
                 moduleName = value.PartternText;
@@ -383,6 +391,9 @@ $(document).ready(function () {
                 }
                 if (value.MdSearchID != null && value.MdSearchID != undefined) {
                     mdSearchID = value.MdSearchID;
+                }
+                if (value.MdVoucherID != null && value.MdVoucherID != undefined) {
+                    mdVoucherID = value.mdVoucherID;
                 }
 
                 var tempModuleFollowCard = '';
@@ -407,7 +418,7 @@ $(document).ready(function () {
                                 '<i class="fa fa-eye bl_bt_view"></i>' +
                                 '<div class="bl_bt_input">' +
                                     '<div class="blSelectModule">' +
-                                        '<select data-md-info-patient-id="' + mdGetInfoPatientID + '" data-md-search-id="' + mdSearchID + '">' +
+                                        '<select data-md-info-patient-id="' + mdGetInfoPatientID + '" data-md-search-id="' + mdSearchID + '" data-md-voucher-id="' + mdVoucherID + '">' +
                                             module() +
                                         '</select>' +
                                     '</div>' +
@@ -463,11 +474,15 @@ $(document).ready(function () {
                     $.each(value.ButtonModules, function (index, value) {
                         var mdMedGetInfoPatientID = 0;
                         var mdSearchID = 0;
+                        var mdVoucherID = 0;
                         if (value.ModuleKnowledgeID != null && value.ModuleKnowledgeID != 0) {
                             mdMedGetInfoPatientID = value.ModuleKnowledgeID;
                         }
                         if (value.MdSearchID != null && value.MdSearchID != 0) {
                             mdSearchID = value.MdSearchID;
+                        }
+                        if (value.MdVoucherID != null && value.MdVoucherID != 0) {
+                            mdVoucherID = value.MdVoucherID;
                         }
                         var nameModule = "";
                         if (value.Payload == "postback_module_phone") {
@@ -492,7 +507,7 @@ $(document).ready(function () {
                             nameModule = "Tri thức tìm kiếm";
                         }
                         var payload = value.Payload.replace("postback_module_", "");
-                        var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '" data-md-info-patient-id="' + mdMedGetInfoPatientID + '" data-md-search-id="' + mdSearchID + '">' + nameModule + '</span></p></div>';
+                        var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="module" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span module-id="' + payload + '" data-md-info-patient-id="' + mdMedGetInfoPatientID + '" data-md-search-id="' + mdSearchID + '" data-md-voucher-id="' + mdVoucherID + '">' + nameModule + '</span></p></div>';
                         var objBtn = {
                             "idx": value.Index,
                             "contentHTML": contentBtn
@@ -566,9 +581,10 @@ $(document).ready(function () {
                         $(this).find('.blSelectModule>select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
                             var mdPatientID = mdGetInfoPatientID;
                             var mdSearchID = mdSearchID;
+                            var mdVoucherID = mdVoucherID;
                             var moduleName = $(this).select2("val");
                             var typeActionModule = "CLICK_FORM_CARD_MODULE";
-                            renderTemplateModuleByKey(moduleName, typeActionModule, mdPatientID, mdSearchID);
+                            renderTemplateModuleByKey(moduleName, typeActionModule, mdPatientID, mdSearchID, mdVoucherID);
                         });
                     }
                 });
@@ -1089,6 +1105,7 @@ $(document).ready(function () {
                                     var postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id');
                                     var module_medGetInfoPatient_ID = $(this).find('.bt_ct span').attr('data-md-info-patient-id');
                                     var module_mdSearchID = $(this).find('.bt_ct span').attr('data-md-search-id');
+                                    var module_mdVoucherID = $(this).find('.bt_ct span').attr('data-md-voucher-id');
                                     button_object = {
                                         "type": "postback",
                                         "title": $(this).find('.bt_title').text(),
@@ -1103,7 +1120,8 @@ $(document).ready(function () {
                                         "Payload": postback_module,
                                         "Index": $(this).attr('data-index'),
                                         "ModuleKnowledgeID": module_medGetInfoPatient_ID,
-                                        "MdSearchID": module_mdSearchID
+                                        "MdSearchID": module_mdSearchID,
+                                        "MdVoucherID": module_mdVoucherID
                                     }
                                     button_module_sql.push(btn_object_sql);
 
@@ -1303,6 +1321,7 @@ $(document).ready(function () {
                                     var postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id');
                                     var module_medGetInfoPatient_ID = $(this).find('.bt_ct span').attr('data-md-info-patient-id');
                                     var module_mdSearchID = $(this).find('.bt_ct span').attr('data-md-search-id');
+                                    var module_mdVoucherID = $(this).find('.bt_ct span').attr('data-md-voucher-id');
                                     console.log(module_medGetInfoPatient_ID)
                                     console.log(module_mdSearchID)
                                     button_object = {
@@ -1325,7 +1344,8 @@ $(document).ready(function () {
                                         "Payload": postback_module,
                                         "Index": $(this).attr('data-index'),
                                         "ModuleKnowledgeID": module_medGetInfoPatient_ID,
-                                        "MdSearchID": module_mdSearchID
+                                        "MdSearchID": module_mdSearchID,
+                                        "MdVoucherID": module_mdVoucherID
                                     }
                                     button_module_sql.push(btn_object_sql);
 
@@ -1584,6 +1604,7 @@ $(document).ready(function () {
                     var postback_module = $(this).find('.blSelectModule select').val();
                     var mdGetInfoPatientID = $(this).find('.blSelectModule select').attr('data-md-info-patient-id');
                     var module_mdSearchID = $(this).find('.blSelectModule select').attr('data-md-search-id');
+                    var module_mdVoucherID = $(this).find('.blSelectModule select').attr('data-md-voucher-id');
                     postback_module = "postback_module_" + postback_module;
                     var template_file = {
                         "module": $(this).find('.blSelectModule select').val() + moduleExt
@@ -1596,7 +1617,8 @@ $(document).ready(function () {
                             "ModuleFollowCardViewModel": {
                                 "PartternText": postback_module,
                                 "ModuleInfoPatientID": mdGetInfoPatientID,
-                                "MdSearchID":module_mdSearchID,
+                                "MdSearchID": module_mdSearchID,
+                                "MdVoucherID": module_mdVoucherID,
                                 "Index": $(this).attr('data-index')
                             }
                         }
@@ -1989,7 +2011,8 @@ $(document).ready(function () {
             'Alias': common.getSeoTitle($('#card-name').val()),
             'CardContents': card_sql,
             'QuickReplyViewModels': ar_quickReply_sql,
-            'TemplateJSON': JSON.stringify(objectCard.cardContent),
+            //'TemplateJSON': JSON.stringify(objectCard.cardContent),
+            'TemplateJsonFacebook': JSON.stringify(objectCard.cardContent),
             'FileAttachs': listUpdate
         }
 
@@ -2277,7 +2300,7 @@ $(document).ready(function () {
                                 '<i class="fa fa-eye bl_bt_view"></i>' +
                                 '<div class="bl_bt_input">' +
                                     '<div class="blSelectModule">' +
-                                        '<select data-md-info-patient-id="0" data-md-search-id="0">' +
+                                        '<select data-md-info-patient-id="0" data-md-search-id="0" data-md-voucher-id="0">' +
                                             module() +
                                         '</select>' +
                                     '</div>' +
@@ -2298,10 +2321,11 @@ $(document).ready(function () {
 
         $('#multi .blSelectModule>select').select2({ minimumResultsForSearch: "-1" }).on("change", function (e) {
             var mdSearchID = $(this).attr('data-md-search-id');
+            var mdVoucherID = $(this).attr('data-md-voucher-id');
             var mdGetInfoPatientID = $(this).attr('data-md-info-patient-id');
             var moduleName = $(this).select2("val");
             var typeActionModule = "CLICK_FORM_CARD_MODULE";
-            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
+            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID, mdVoucherID);
         });
         ReOderItemContentCard();
     });
@@ -2310,9 +2334,10 @@ $(document).ready(function () {
         var mdVal = $('#multi .blSelectModule>select').select2("val");
         var mdGetInfoPatientID = $('#multi .blSelectModule>select').attr('data-md-info-patient-id');
         var mdSearchID = $('#multi .blSelectModule>select').attr('data-md-search-id');
+        var mdVoucherID = $('#multi .blSelectModule>select').attr('data-md-voucher-id');
         var moduleName = $('#multi .blSelectModule>select').select2("val");
         var typeActionModule = "CLICK_FORM_CARD_MODULE";
-        renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
+        renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID, mdVoucherID);
     })
 
 
@@ -3200,13 +3225,16 @@ $(document).ready(function () {
             console.log(mdDetailName)
             console.log(mdDetailID)
             if (mdDetailName == 'MdGetInfoPatient') {
-                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="' + mdDetailID + '" data-md-search-id = "0">' + done_data[0].text + '</span>';
+                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="' + mdDetailID + '" data-md-search-id = "0" data-md-voucher-id = "0">' + done_data[0].text + '</span>';
             }
             else if (mdDetailName == 'ApiSEARCH') {
-                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="0" data-md-search-id = "' + mdDetailID + '">' + done_data[0].text + '</span>';
+                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="0" data-md-search-id = "' + mdDetailID + '" data-md-voucher-id = "0">' + done_data[0].text + '</span>';
+            }
+            else if (mdDetailName == 'Voucher') {
+                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id ="0" data-md-search-id = "0" data-md-voucher-id = "' + mdDetailID + '">' + done_data[0].text + '</span>';
             }
             else {
-                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id = "0" data-md-search-id = "0">' + done_data[0].text + '</span>';
+                str_btct = '<span module-id="' + done_data[0].id + '" data-md-info-patient-id = "0" data-md-search-id = "0" data-md-search-id = "0">' + done_data[0].text + '</span>';
             }
             // moduleExt + 
             type_button = 'module';
@@ -3685,8 +3713,9 @@ $(document).ready(function () {
             var typeActionModule = "CLICK_BUTTON_MODULE";
             var mdGetInfoPatientID = el.find('.bt_ct span').attr('data-md-info-patient-id');
             var mdSearchID = el.find('.bt_ct span').attr('data-md-search-id');
+            var mdVoucherID = el.find('.bt_ct span').attr('data-md-voucher-id');
             var moduleName = moduleId;
-            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
+            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID, mdVoucherID);
 
         } else if (el.attr('type-button') == 'buy') {
             str_popup = htmlPopup($(this));
@@ -3769,7 +3798,7 @@ function loadEmojiPicker() {
             emojiable_selector: '[data-emojiable=true]',
             //assetsPath: '../asset/emoji-picker/img',
             assetsPath: _Host + 'assets/client/libs/emoji-picker/img',
-            popupButtonClasses: 'fa fa-cogs'
+            popupButtonClasses: 'fa fa-cogs',
         });
         window.emojiPicker.discover();
     });
@@ -4016,7 +4045,7 @@ function actionTabPopup(el) {
         el.parents('.modal-content').find('.pr_bt_name .bt_name').hide();
         el.parents('.modal-content').find('.pr_bt_name').append('<p><i class="icon-lock2"></i> ' + txtCard37 + '</p>');
     } else if (el.hasClass('add_module')) {
-        var str_card = '<div class="blSelectModule"><select data-placeholder="' + txtCard47 + '" class="select" data-md-info-patient-id="0" data-md-search-id = "0"><option></option>' + module() + '</select></div>';
+        var str_card = '<div class="blSelectModule"><select data-placeholder="' + txtCard47 + '" class="select" data-md-info-patient-id="0" data-md-search-id = "0" data-md-voucher-id = "0"><option></option>' + module() + '</select></div>';
         el.parents('.bl_bt_content').find('.bl_bt_input').html(str_card);
         //$('.blSelectModule .select').select2({/*minimumResultsForSearch: "-1"*/ })
         //debugger;
@@ -4027,7 +4056,8 @@ function actionTabPopup(el) {
             var typeActionModule = "CLICK_BUTTON_MODULE";
             var mdGetInfoPatientID = $(this).attr('data-md-info-patient-id');
             var mdSearchID = $(this).attr('data-md-search-id');
-            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID);
+            var mdVoucherID = $(this).attr('data-md-voucher-id');
+            renderTemplateModuleByKey(moduleName, typeActionModule, mdGetInfoPatientID, mdSearchID, mdVoucherID);
             //$('#sidenav-module').css('width', '380');
         })
 
@@ -4744,7 +4774,7 @@ var mdSearchCategory = function () {
             var temp = '';
             temp += '<optgroup label="Thể Loại API">';
             if (data.length != 0) {
-                $.each(data, function (index, value) {               
+                $.each(data, function (index, value) {
                     temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
                 })
             } else {
@@ -4760,7 +4790,7 @@ var mdSearchCategory = function () {
 //===================================================================//
 //============================= XỬ LÝ MODULE ========================//
 //===================================================================//
-function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoPatientID, mdSearchID) {
+function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoPatientID, mdSearchID, mdVoucherID) {
     $("#template-module").empty();
     var html = '';
     if (moduleName == "phone") {
@@ -4886,72 +4916,7 @@ function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoP
         });
     }
     if (moduleName == "voucher") {
-        var params = {
-            botID: $("#botId").val(),
-        };
-        var urlTest = "api/module/getmdvoucher";
-        var svr = new AjaxCall(urlTest, params);
-        svr.callServiceGET(function (data) {
-            html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý thông tin voucher</a>';
-            html += '<div class="row">';
-            html += '<div class="col-md-12">';
-            html += '<div class="form-group">';
-            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>';
-            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '<input type="text" id="mdVoucherTitle" class="form-control required" value="' + data.Title + '" placeholder="Vui lòng nhập mô tả"/>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div class="form-group">';
-            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
-            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '<textarea id="mdVoucherMsgStart" rows="3" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div class="form-group">';
-            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng</label>';
-            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '<textarea id="mdVoucherMsgError" rows="3" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
-            html += '</div>';
-            html += '</div>';
-
-            html += '        <div class="form-group">';
-            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Xác nhận hình ảnh voucher</label>';
-            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '               <div class="input-file" name="Fichier1">';
-            html += '                   <input type="file" id="formLogo" accept="image/png, image/jpeg" class="form-control" placeholder="Chọn hình ảnh"/>';
-            html += '               </div>';
-            html += '               <div class="file-preview">';
-            html += '                   <div class="close fileinput-remove text-right">×</div>';
-            html += '                       <div class="file-preview-thumbnails">';
-            html += '                           <div class="file-preview-frame" id="preview-logo">';
-            html += '                           </div>';
-            html += '                       </div>';
-            html += '                   </div>';
-            html += '               </div>';
-            html += '            </div>';
-
-
-
-            html += '        <div class="form-group">';
-            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng thoát khỏi</label>';
-            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdVoucherTitlePayload" class="form-control" value="' + (data.TitlePayload == null ? "" : data.TitlePayload) + '"/>';
-            html += '            </div>';
-            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardVoucher">' + card() + '</select>';
-            html += '            </div>';
-            html += '        </div>';
-
-            html += '<div class="form-group">';
-            html += '<div class="col-md-12 col-sm-12 col-xs-12">'
-            html += '<button id="mdVoucherSave" data-id="' + data.ID + '" class="btn btn-primary">Lưu</button>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            html += '</div>';
-            $("#template-module").empty().append(html)
-            loadEmojiPicker();
-        });
+        getTemplateVoucher(mdVoucherID, typeActionClickModule);
     }
     if (moduleName == "med_get_info_patient") {//lấy thông tin bệnh nhân
         getTemplateInfoPatient(mdGetInfoPatientID, typeActionClickModule);
@@ -5082,6 +5047,8 @@ $('body').on('click', '#mdAgeChkSwitch', function (event) {
         $("#mdAgeMsgEnd").addClass('hide');
     }
 });
+
+
 // MDAGE - Save
 $('body').on('click', '#mdAgeSave', function (event) {
     var msgStart = $("#mdAgeMsgStart").val();
@@ -5578,7 +5545,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
         html += '        </div>';
         html += '        <div class="form-group">';
         html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
-        html += '            <div class="col-md-10 col-sm-10 col-xs-10">';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
         html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdSearchTitlePayload" class="form-control"/>';
         html += '            </div>';
         html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
@@ -5601,12 +5568,12 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
         svr.callServiceGET(function (data) {
             var keySecurAPI;
             html += '  <a href="#" style="text-decoration:underline" id="module-name">Tìm kiếm</a>';
-            html += ' <div class="row form-md-search" data-module-search-id="'+data.ID+'">';
+            html += ' <div class="row form-md-search" data-module-search-id="' + data.ID + '">';
             html += '    <div class="col-md-12">';
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '                <input type="text" placeholder="" id="mdSearchTitle" class="form-control" value="'+data.Title+'"/>';
+            html += '                <input type="text" placeholder="" id="mdSearchTitle" class="form-control" value="' + data.Title + '"/>';
             html += '            </div>';
             html += '        </div>';
             html += '        <div class="form-group">';
@@ -5627,12 +5594,12 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             if (data.KeyAPI != "" && data.KeyAPI != null) {
                 keySecurAPI = data.KeyAPI.split(':');
                 html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
-                html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control" value="'+keySecurAPI[0]+'"/>';
+                html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control" value="' + keySecurAPI[0] + '"/>';
                 html += '                </div>';
                 html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
                 html += '                    <input type="text" placeholder="2Zhldc3aq1" id="mdSearchKeyCode" class="form-control" value="' + keySecurAPI[1] + '"/>';
                 html += '                </div>';
-            }else{
+            } else {
                 html += '                <div class="col-md-6 col-sm-6 col-xs-6">';
                 html += '                    <input type="text" placeholder="x-api-key" id="mdSearchKeyName" class="form-control"/>';
                 html += '                </div>';
@@ -5668,7 +5635,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
             html += '        </div>';
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>';
-            html += '            <div class="col-md-10 col-sm-10 col-xs-10">';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
             html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdSearchTitlePayload" class="form-control" value="' + data.TitlePayload + '"/>';
             html += '            </div>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
@@ -5691,6 +5658,332 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
                 }
             }, 1000)
             loadEmojiPicker();
+        });
+
+    }
+}
+
+
+//MDVOUCHER
+var typeActionMdVoucher = true;
+var fileImgVoucher;
+$('body').on("click", '#mdVoucherImg', function (event) { event.target.value = null; });
+$('body').on('change', '#mdVoucherImg', function (event) {
+    var files = $(this)[0].files[0];
+    var maxSize = 5072; // 5MB
+    var reader = new FileReader();
+    if (files.type.indexOf("image") == 0) {
+        reader.onload = (function () {
+            return function (e) {
+                var fileSize = (e.total / 1024).toFixed(0);
+                if (fileSize > maxSize) {
+                    toastr.error('Kích thước ảnh lớn hơn 5MB', null, { timeOut: 5000 });
+                    return;
+                }
+                var fileSrc = e.target.result;
+                var fileName = e.target.fileName;
+                var temp = '';
+                temp += '                   <div class="close fileinput-remove text-right rmFileImage">×</div>';
+                temp += '                       <div class="file-preview-thumbnails">';
+                temp += '                           <div class="file-preview-frame">';
+                temp += '                               <img src="' + fileSrc + '" class="file-preview-image" alt="" width="100" height="50"/>';
+                temp += '                           </div>';
+                temp += '                       </div>';
+                temp += '                   </div>';
+
+                $("#preview-img").append(temp);
+                fileImgVoucher = files;
+                console.log(fileImgVoucher)
+            };
+        })();
+    } else {
+        toastr.error('Vui lòng chọn ảnh đúng định dạng (*.png | *.gif | *.jpg | *.jpeg)', null, { timeOut: 5000 });
+    }
+    reader.readAsDataURL(files);
+})
+$('body').on('click', '.rmFileImage', function () {
+    $(this).remove();
+    $(".file-preview-thumbnails").remove();
+    fileImgVoucher = "";
+    console.log(fileImgVoucher)
+});
+
+$('body').on('click', '#mdVoucherSave', function (event) {
+    var element = $(this);
+    var title = $("#mdVoucherTitle").val();
+    var msgStart = $("#mdVoucherMsgStart").val();
+    var msgError = $("#mdVoucherMsgError").val();
+    var msgEnd = $("#mdVoucherMsgEnd").val();
+    var titlePayload = $("#mdVoucherTitlePayload").val();
+    var cardPayloadID = $('#mdCardVoucher').val();
+    var payloadCard = "postback_card_" + cardPayloadID;
+    var code = $("#mdVoucherCode").val();
+    var startDate = kendo.toString($("#cboStartDate").data("kendoDatePicker").value());
+    var expirationDate = kendo.toString($("#cboExpirationDate").data("kendoDatePicker").value());
+
+    if (msgStart.trim() == '') {
+        toastr.error('Vui lòng nhập nội dung gợi ý');
+        return false;
+    }
+
+    if (titlePayload != "" && cardPayloadID == "") {
+        toastr.error('Vui lòng chọn thẻ thoát khỏi');
+        return false;
+    }
+    else if (titlePayload == "" && cardPayloadID != "") {
+        toastr.error('Vui lòng nhập tiêu đề cho thẻ');
+        return false;
+    }
+
+    if (cardPayloadID == "") {
+        payloadCard = "";
+    }
+
+    var params = {
+        ID: '0',
+        BotID: $("#botId").val(),
+        Title: title,
+        MessageStart: msgStart,
+        CardPayloadID: cardPayloadID,
+        PayloadCard: payloadCard,
+        Code: code,
+        StartDate: startDate,
+        ExpirationDate: expirationDate,
+        TitlePayload: titlePayload,
+    }
+    if (typeActionMdVoucher) {
+        var formData = new FormData();
+        formData.append("mdVoucher", JSON.stringify(params));
+        formData.append('file', fileImgVoucher);
+        $.ajax({
+            url: _Host + "api/module/addmdvoucher",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function (data) {
+                if (data != null) {
+                    toastr.success('Lưu thành công');
+                    var type = element.attr('data-action');//typeActionMd
+                    var mdDetailName = "Voucher";
+                    var mdDetailID = data.ID;
+                    console.log(type)
+                    if (type == "CLICK_BUTTON_MODULE") {
+                        $("#modal_button .bt_done").trigger('click', [mdDetailID, mdDetailName]);
+                    }
+                    if (type == "CLICK_FORM_CARD_MODULE") {
+
+                        if ($('#multi .content').length > 0) {
+                            $('#multi .content').each(function (index, el) {
+                                if ($(this).attr('card') == 'module') {
+                                    //set id trả về tới select
+                                    $(this).find('.blSelectModule select').attr('data-md-voucher-id', mdDetailID);
+                                }
+                            });
+                        }
+                    }
+                }
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+
+    } else {
+        var mdVoucherID = element.closest('.form-md-search').eq(0).attr('data-module-voucher-id');
+
+        params.ID = mdVoucherID;
+        var formData = new FormData();
+        formData.append("mdVoucher", JSON.stringify(params));
+        formData.append('file', fileImgVoucher);
+        $.ajax({
+            url: _Host + "api/module/updatemdvoucher",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: "json",
+            success: function (result) {
+                if (result != null) {
+                    toastr.success('Cập nhật thành công');
+                }
+            },
+            error: function (e) {
+                console.log(e)
+            }
+        });
+    }
+
+});
+function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
+    var html = '';
+    if (mdVoucherID == 0 || mdVoucherID == undefined) {
+        typeActionMdVoucher = true;
+        html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý thông tin voucher</a>';
+        html += '<div class="row form-md-voucher" data-module-voucher-id="0"">';
+        html += '<div class="col-md-12">';
+        html += '<div class="form-group">';
+        html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
+        html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '<input type="text" id="mdVoucherTitle" class="form-control required" value="" placeholder="Vui lòng nhập mô tả"/>';
+        html += '</div>';
+        html += '</div>';
+        html += '<div class="form-group">';
+        html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+        html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '<textarea id="mdVoucherMsgStart" rows="2" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn"></textarea>';
+        html += '</div>';
+        html += '</div>';
+
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Xác nhận hình ảnh voucher</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '               <div class="input-file" name="Fichier1">';
+        html += '                   <input type="file" id="mdVoucherImg" accept="image/png, image/jpeg" class="form-control" placeholder="Chọn hình ảnh"/>';
+        html += '               </div>';
+        html += '               <div class="file-preview" id="preview-img">';
+
+        html += '               </div>';
+        html += '            </div>';
+
+        html += '<div class="form-group">';
+        html += '   <label class="control-label col-md-12 col-sm-12 col-xs-12">Mã voucher</label>';
+        html += '   <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '<input type="text" id="mdVoucherCode" class="form-control required" value="" placeholder="Code"/>';
+        html += '   </div>';
+        html += '</div>';
+
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Thời hạn kết thúc</label>';
+        html += '           <div class="row" style="padding-left:15px;padding-right:25px;">'
+        html += '               <div class="col-md-6 col-sm-6 col-xs-6" style="display:inline">';
+        html += '                   <input class="w100" id="cboStartDate" />';
+        html += '               </div>';
+        html += '               <div class="col-md-6 col-sm-6 col-xs-6" style="display:inline">';
+        html += '                   <input class="w100" id="cboExpirationDate" />';
+        html += '                </div>';
+        html += '            </div>';
+        html += '        </div>';
+
+        html += '        <div class="form-group">';
+        html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng thoát khỏi</label>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdVoucherTitlePayload" class="form-control" value=""/>';
+        html += '            </div>';
+        html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardVoucher">' + card() + '</select>';
+        html += '            </div>';
+        html += '        </div>';
+
+        html += '<div class="form-group">';
+        html += '<div class="col-md-12 col-sm-12 col-xs-12">'
+        html += '<button id="mdVoucherSave" data-id="' + typeActionFormOrButton + '" class="btn btn-primary">Lưu</button>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '</div>';
+        $("#template-module").empty().append(html)
+        loadEmojiPicker();
+
+        LoadDatePicker("cboStartDate");
+        LoadDatePicker("cboExpirationDate");
+
+    } else {
+        typeActionMdVoucher = false;
+        var params = {
+            mdVoucherID: mdVoucherID,
+        };
+        var urlTest = "api/module/getmdvoucher";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServiceGET(function (data) {
+            html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý thông tin voucher</a>';
+            html += '<div class="row">';
+            html += '<div class="col-md-12">';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<input type="text" id="mdVoucherTitle" class="form-control required" value="' + data.Title + '" placeholder="Vui lòng nhập mô tả"/>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdVoucherMsgStart" rows="2" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Xác nhận hình ảnh voucher</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '               <div class="input-file" name="Fichier1">';
+            html += '                   <input type="file" id="mdVoucherImg" accept="image/png, image/jpeg" class="form-control" placeholder="Chọn hình ảnh"/>';
+            html += '               </div>';
+            html += '               <div class="file-preview" id="preview-img">';
+            if (data.Image != null && data.Image != "") {
+                var urlImgVoucher = _Host + data.Image;
+                html += '                   <div class="close fileinput-remove text-right rmFileImage">×</div>';
+                html += '                       <div class="file-preview-thumbnails">';
+                html += '                           <div class="file-preview-frame">';
+                html += '                               <img src="' + urlImgVoucher + '" class="file-preview-image" alt="" width="100" height="50"/>';
+                html += '                           </div>';
+                html += '                       </div>';
+                html += '                   </div>';
+            }
+
+            html += '               </div>';
+            html += '            </div>';
+
+            html += '<div class="form-group">';
+            html += '   <label class="control-label col-md-12 col-sm-12 col-xs-12">Mã voucher</label>';
+            html += '   <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<input type="text" id="mdVoucherCode" class="form-control required" value="' + (data.Code == null ? "" : data.Code) + '" placeholder="Code"/>';
+            html += '   </div>';
+            html += '</div>';
+
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Thời hạn kết thúc</label>';
+            html += '           <div class="row" style="padding-left:15px;padding-right:25px;">'
+            html += '               <div class="col-md-6 col-sm-6 col-xs-6" style="display:inline">';
+            html += '                   <input class="w100" id="cboStartDate" />';
+            html += '               </div>';
+            html += '               <div class="col-md-6 col-sm-6 col-xs-6" style="display:inline">';
+            html += '                   <input class="w100" id="cboExpirationDate" />';
+            html += '                </div>';
+            html += '            </div>';
+            html += '        </div>';
+
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng thoát khỏi</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdVoucherTitlePayload" class="form-control" value="' + (data.TitlePayload == null ? "" : data.TitlePayload) + '"/>';
+            html += '            </div>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardVoucher">' + card() + '</select>';
+            html += '            </div>';
+            html += '        </div>';
+
+            html += '<div class="form-group">';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">'
+            html += '<button id="mdVoucherSave" data-id="' + typeActionFormOrButton + '" class="btn btn-primary">Lưu</button>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            $("#template-module").empty().append(html)
+            loadEmojiPicker();
+
+
+            if (data.StartDate != null) {
+                LoadDatePicker("cboStartDate", data.StartDate);
+            } else {
+                LoadDatePicker("cboStartDate");
+            }
+            if (data.ExpirationDate != null) {
+                LoadDatePicker("cboExpirationDate", data.ExpirationDate);
+            } else {
+                LoadDatePicker("cboExpirationDate");
+            }
         });
 
     }

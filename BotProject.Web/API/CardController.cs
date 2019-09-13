@@ -28,6 +28,7 @@ namespace BotProject.Web.API
 		private ICommonCardService _commonCardService;
 		private IFileCardService _fileCardService;
         private IMdSearchService _mdSearchService;
+        private IMdVoucherService _mdVoucherService;
         private IModuleKnowledegeService _mdKnowledgeService;
         private IAIMLFileService _aimlService;
         public CardController(IErrorService errorService,
@@ -37,6 +38,7 @@ namespace BotProject.Web.API
                             IModuleKnowledegeService mdKnowledgeService,
                             IFileCardService fileCardService,
                             IAIMLFileService aimlService,
+                            IMdVoucherService mdVoucherService,
                             IMdSearchService mdSearchService) : base(errorService)
 		{
 			_cardService = cardService;
@@ -47,6 +49,7 @@ namespace BotProject.Web.API
             _fileCardService = fileCardService;
             _mdSearchService = mdSearchService;
             _aimlService = aimlService;
+            _mdVoucherService = mdVoucherService;
 
         }
 
@@ -261,6 +264,7 @@ namespace BotProject.Web.API
                                                 btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
                                                 btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
                                                 btnModuleDb.MdSearchID = btnModuleVm.MdSearchID;
+                                                btnModuleDb.MdVoucherID = btnModuleVm.MdVoucherID;
                                                 _commonCardService.AddButtonModule(btnModuleDb);
                                                 _commonCardService.Save();
 
@@ -278,6 +282,13 @@ namespace BotProject.Web.API
                                                     mdSearchDb.ButtonModuleID = btnModuleDb.ID;
                                                     _mdSearchService.Update(mdSearchDb);
                                                     _mdSearchService.Save();
+                                                }
+                                                if (btnModuleVm.MdVoucherID != null && btnModuleVm.MdVoucherID != 0)
+                                                {
+                                                    var mdVoucherDb = _mdVoucherService.GetByID(btnModuleVm.MdVoucherID ?? default(int));
+                                                    mdVoucherDb.ButtonModuleID = btnModuleDb.ID;
+                                                    _mdVoucherService.Update(mdVoucherDb);
+                                                    _mdVoucherService.Save();
                                                 }
 
                                                 _commonCardService.AddButtonModule(btnModuleDb);
@@ -333,6 +344,7 @@ namespace BotProject.Web.API
                                         btnModuleDb.TempTxtID = tempTextDb.ID;
                                         btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
                                         btnModuleDb.MdSearchID = btnModuleVm.MdSearchID;
+                                        btnModuleDb.MdVoucherID = btnModuleVm.MdVoucherID;
                                         btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
                                         _commonCardService.AddButtonModule(btnModuleDb);
                                         _commonCardService.Save();
@@ -351,6 +363,13 @@ namespace BotProject.Web.API
                                             mdSearchDb.ButtonModuleID = btnModuleDb.ID;
                                             _mdSearchService.Update(mdSearchDb);
                                             _mdSearchService.Save();
+                                        }
+                                        if (btnModuleVm.MdVoucherID != null && btnModuleVm.MdVoucherID != 0)
+                                        {
+                                            var mdVoucherDb = _mdVoucherService.GetByID(btnModuleVm.MdVoucherID ?? default(int));
+                                            mdVoucherDb.ButtonModuleID = btnModuleDb.ID;
+                                            _mdVoucherService.Update(mdVoucherDb);
+                                            _mdVoucherService.Save();
                                         }
 
                                     }
@@ -378,6 +397,7 @@ namespace BotProject.Web.API
                                 mdFCardDb.PartternText = mdFollowCardVm.PartternText;//postback_moudle_phone...//
                                 mdFCardDb.ModuleInfoPatientID = mdFollowCardVm.ModuleInfoPatientID == null ? 0 : mdFollowCardVm.ModuleInfoPatientID;
                                 mdFCardDb.MdSearchID = mdFollowCardVm.MdSearchID == null ? 0 : mdFollowCardVm.MdSearchID;
+                                mdFCardDb.MdVoucherID = mdFollowCardVm.MdVoucherID == null ? 0 : mdFollowCardVm.MdVoucherID;
                                 if (mdFollowCardVm.PartternText != "postback_module_med_get_info_patient")
                                 {
                                     if(mdFollowCardVm.ModuleInfoPatientID != null && mdFollowCardVm.ModuleInfoPatientID != 0)
@@ -392,6 +412,14 @@ namespace BotProject.Web.API
                                     {
                                         _mdSearchService.Delete(mdFollowCardVm.MdSearchID ?? default(int));
                                         mdFCardDb.MdSearchID = 0;
+                                    }
+                                }
+                                if (mdFollowCardVm.PartternText != "postback_module_voucher")
+                                {
+                                    if (mdFollowCardVm.MdVoucherID != null && mdFollowCardVm.MdVoucherID != 0)
+                                    {
+                                        _mdVoucherService.Delete(mdFollowCardVm.MdVoucherID ?? default(int));
+                                        mdFCardDb.MdVoucherID = 0;
                                     }
                                 }
 
@@ -413,6 +441,14 @@ namespace BotProject.Web.API
                                     mdSearchDb.ModuleFollowCardID = mdFCardDb.ID;
                                     _mdSearchService.Update(mdSearchDb);
                                     _mdSearchService.Save();
+                                }
+                                // update
+                                if (mdFollowCardVm.PartternText == "postback_module_voucher")
+                                {
+                                    var mdVoucherDb = _mdVoucherService.GetByID(mdFCardDb.MdSearchID ?? default(int));
+                                    mdVoucherDb.ModuleFollowCardID = mdFCardDb.ID;
+                                    _mdVoucherService.Update(mdVoucherDb);
+                                    _mdVoucherService.Save();
                                 }
                             }
 
@@ -544,6 +580,11 @@ namespace BotProject.Web.API
                                             sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
                                             //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
                                         }
+                                        else if (itemBtnModule.MdVoucherID != null && itemBtnModule.MdVoucherID != 0)
+                                        {
+                                            sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdVoucherID + "</module>");
+                                            //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                        }
                                         else
                                         {
                                             sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "</module>");
@@ -639,6 +680,11 @@ namespace BotProject.Web.API
                                                     sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
                                                     //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
                                                 }
+                                                else if (itemBtnModule.MdVoucherID != null && itemBtnModule.MdVoucherID != 0)
+                                                {
+                                                    sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdVoucherID + "</module>");
+                                                    //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                                }
                                                 else
                                                 {
                                                     sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "</module>");
@@ -692,6 +738,10 @@ namespace BotProject.Web.API
                                 if (itemMdFollowCards.MdSearchID != null && itemMdFollowCards.MdSearchID != 0)
                                 {
                                     patternText = patternText + "_" + itemMdFollowCards.MdSearchID;
+                                }
+                                if (itemMdFollowCards.MdVoucherID != null && itemMdFollowCards.MdVoucherID != 0)
+                                {
+                                    patternText = patternText + "_" + itemMdFollowCards.MdVoucherID;
                                 }
                                 sbAIML.AppendLine(patternText);
                                 //sw.WriteLine(patternText);
@@ -763,7 +813,27 @@ namespace BotProject.Web.API
                                         sbAIML.AppendLine("</category>");
                                     }
                                 }
-                            }
+                                if (itemMdFollowCards.MdVoucherID != null && itemMdFollowCards.MdVoucherID != 0)
+                                {
+                                    var mdVoucherDb = _mdVoucherService.GetByID(itemMdFollowCards.MdVoucherID ?? default(int));
+                                    if (!String.IsNullOrEmpty(mdVoucherDb.Payload))
+                                    {
+                                        //sw.WriteLine("<category>");
+                                        //sw.WriteLine("<pattern>module_api_search" + mdSearchDb.Payload + "</pattern>");
+                                        //sw.WriteLine("<template>");
+                                        //sw.WriteLine("<srai>" + mdSearchDb.Payload + "</srai>");
+                                        //sw.WriteLine("</template>");
+                                        //sw.WriteLine("</category>");
+
+                                        sbAIML.AppendLine("<category>");
+                                        sbAIML.AppendLine("<pattern>module_voucher" + mdVoucherDb.Payload + "</pattern>");
+                                        sbAIML.AppendLine("<template>");
+                                        sbAIML.AppendLine("<srai>" + mdVoucherDb.Payload + "</srai>");
+                                        sbAIML.AppendLine("</template>");
+                                        sbAIML.AppendLine("</category>");
+                                    }
+                                }
+                        }
                         }
                         sbAIML.AppendLine("</aiml>");
                         //sw.WriteLine("</aiml>");

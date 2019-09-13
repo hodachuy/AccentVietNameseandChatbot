@@ -23,6 +23,7 @@ namespace BotProject.Service
         HandleResultBotViewModel HandleIsName(string name, int botID);
         HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
         HandleResultBotViewModel HandleIsSearchAPI(string mdName, string mdSearchID, string notFound);
+        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, int botID);
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
@@ -38,13 +39,17 @@ namespace BotProject.Service
         private IModuleKnowledegeService _mdKnowledegeService;
         private IMdSearchService _mdSearchService;
         private IMdSearchCategoryService _mdSearchCategoryService;
+        private IMdVoucherService _mdVoucherService;
+        private IUserTelephoneService _userTelephoneService;
 
         public HandleModuleService(IMdPhoneService mdPhoneService,
                                     IMdEmailService mdEmailService,
                                     IMdAgeService mdAgeService,
                                     IModuleKnowledegeService mdKnowledegeService,
                                     IMdSearchService mdSearchService,
-                                    IMdSearchCategoryService mdSearchCategoryService)
+                                    IMdSearchCategoryService mdSearchCategoryService,
+                                    IMdVoucherService mdVoucherService,
+                                    IUserTelephoneService userTelephoneService)
         {
             _mdPhoneService = mdPhoneService;
             _mdEmailService = mdEmailService;
@@ -52,6 +57,8 @@ namespace BotProject.Service
             _mdKnowledegeService = mdKnowledegeService;
             _mdSearchService = mdSearchService;
             _mdSearchCategoryService = mdSearchCategoryService;
+            _mdVoucherService = mdVoucherService;
+            _userTelephoneService = userTelephoneService;
         }
         public HandleResultBotViewModel HandleIsPhoneNumber(string number, int botID)
         {
@@ -160,6 +167,13 @@ namespace BotProject.Service
             }
             rsHandle.Status = true;
             rsHandle.Message = tempText("Cảm ơn bạn đã cho biết tên!");
+            return rsHandle;
+        }
+
+        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, int botID)
+        {
+            HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
+
             return rsHandle;
         }
 
