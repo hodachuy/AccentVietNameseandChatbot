@@ -1,6 +1,8 @@
 ﻿using BotProject.Common;
 using BotProject.Common.DigiproService.Digipro;
+using BotProject.Common.SendSmsMsgService;
 using BotProject.Common.ViewModels;
+using BotProject.Model.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -23,7 +25,7 @@ namespace BotProject.Service
         HandleResultBotViewModel HandleIsName(string name, int botID);
         HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
         HandleResultBotViewModel HandleIsSearchAPI(string mdName, string mdSearchID, string notFound);
-        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, int botID);
+        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID);
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
@@ -170,11 +172,75 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, int botID)
+        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
+			var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
+			try
+			{
+				if(mdVoucherDb != null)
+				{
+					if (!String.IsNullOrEmpty(mdVoucherDb.TitlePayload))
+					{
+						rsHandle.Postback = tempNodeBtnModule(mdVoucherDb.Payload, mdVoucherDb.TitlePayload);
+					}
+					if (phoneNumber.Contains(Common.CommonConstants.ModuleVoucher))
+					{
+						rsHandle.Status = false;
+						rsHandle.Message = tempText(mdVoucherDb.MessageStart);
+					}
+					else
+					{
+						bool isNumber = ValidatePhoneNumber(phoneNumber, true);
+						if (isNumber == false)
+						{
+							rsHandle.Status = false;
+							rsHandle.Message = tempText(mdVoucherDb.MessageError);
+							return rsHandle;
+						}
+						UserTelePhone usTelephone = new UserTelePhone();
+						bool IsExistPhoneNumber = _userTelephoneService.CheckIsPhoneNumberExistByVourcher(phoneNumber, Int32.Parse(mdVoucherID));
+						if (IsExistPhoneNumber == false)
+						{
+							rsHandle.Status = false;
+							string codeOTP = "Your Digipro verification code is: " + RandomStr(5);
+							string rsSmsMsg = SendSmsService.SendSmsMsg(phoneNumber, codeOTP);
+							dynamic obj = JsonConvert.DeserializeObject(rsSmsMsg);
+							if (obj.Table != null)
+							{
+								dynamic ob = obj.Table[0];
+								if (ob.Status == "0")
+								{
+									rsHandle.Status = true;
+									rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
+								}
+								if (ob.Status == "1")
+								{
+									rsHandle.Status = true;
+									rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
+								}
+								if (ob.Status == "2")
+								{
+									rsHandle.Status = true;
+									rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
+								}
+							}
+								
+						}
+						else
+						{
 
-            return rsHandle;
+						}
+						rsHandle.Status = true;
+						rsHandle.Message = tempText(mdVoucherDb.MessageEnd);
+					}
+				}
+			}
+			catch(Exception ex)
+			{
+				rsHandle.Message = tempText(mdVoucherDb.MessageError);
+			}		
+			return rsHandle;
         }
 
         public HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound)
@@ -191,58 +257,6 @@ namespace BotProject.Service
                 }
             }
             return rsHandle;
-        }
-
-        private static string TemplateOptionBot(string[] arrOpt, string title, string postback, string mdInfoPatientID, string notFound)
-        {
-            if (!String.IsNullOrEmpty(notFound))
-            {
-                title = notFound;
-            }
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<div class=\"_4xkn clearfix\">");
-            sb.AppendLine("<div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
-            sb.AppendLine("<div class=\"_4cqr\">");
-            sb.AppendLine("<img class=\"profilePicture img\" src=\"{{image_logo}}\"/>");
-            sb.AppendLine("<div class=\"clearfix\"></div>");
-            sb.AppendLine("</div>");
-            sb.AppendLine("</div>");
-            sb.AppendLine("<div class=\"messages\">");
-            sb.AppendLine("<div class=\"_21c3\">");
-            sb.AppendLine("<div class=\"clearfix _2a0-\">");
-            sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light;\">");
-            sb.AppendLine("<span>");
-            sb.AppendLine("<span>" + title + "</span>");
-            sb.AppendLine("</span>");
-            sb.AppendLine("</div>");
-            sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light; width:100%\">");
-            sb.AppendLine("<ul>");
-            foreach (var item in arrOpt)
-            {
-                sb.AppendLine("<li><input type=\"checkbox\" value=\"" + item + "\" class=\"chk-opt-module-" + mdInfoPatientID + "\"/>" + item + "</li>");
-            }
-            sb.AppendLine("</ul>");
-            sb.AppendLine("</div>");
-            if (!String.IsNullOrEmpty(postback))
-            {
-                sb.AppendLine("<div class=\"_4xko _2k7w _4xkr\">");
-                sb.AppendLine("<div class=\"_2k7x\">");
-                sb.AppendLine("<div class=\"_6b7s\">");
-                sb.AppendLine("<div class=\"_6ir5\">");
-                sb.AppendLine("<div class=\"_4bqf _6ir3\">");
-                sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"module_patient_" + postback + "\" href=\"#\" style=\"color: {{color}}\">Tiếp tục</a>");
-                sb.AppendLine("</div>");
-                sb.AppendLine("</div>");
-                sb.AppendLine("</div>");
-                sb.AppendLine("</div>");
-                sb.AppendLine("</div>");
-            }
-            sb.AppendLine("</div>");
-            sb.AppendLine("</div>");
-            sb.AppendLine("</div>");
-            sb.AppendLine("</div>");
-
-            return sb.ToString();
         }
 
         public HandleResultBotViewModel HandleIsSearchAPI(string text, string mdSearchID, string notFound)
@@ -322,12 +336,64 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-        /// <summary>
-        /// Template text UI BOT
-        /// </summary>
-        /// <param name="text"></param>
-        /// <returns></returns>
-        private static string tempText(string text)
+		private static string TemplateOptionBot(string[] arrOpt, string title, string postback, string mdInfoPatientID, string notFound)
+		{
+			if (!String.IsNullOrEmpty(notFound))
+			{
+				title = notFound;
+			}
+			StringBuilder sb = new StringBuilder();
+			sb.AppendLine("<div class=\"_4xkn clearfix\">");
+			sb.AppendLine("<div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
+			sb.AppendLine("<div class=\"_4cqr\">");
+			sb.AppendLine("<img class=\"profilePicture img\" src=\"{{image_logo}}\"/>");
+			sb.AppendLine("<div class=\"clearfix\"></div>");
+			sb.AppendLine("</div>");
+			sb.AppendLine("</div>");
+			sb.AppendLine("<div class=\"messages\">");
+			sb.AppendLine("<div class=\"_21c3\">");
+			sb.AppendLine("<div class=\"clearfix _2a0-\">");
+			sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light;\">");
+			sb.AppendLine("<span>");
+			sb.AppendLine("<span>" + title + "</span>");
+			sb.AppendLine("</span>");
+			sb.AppendLine("</div>");
+			sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light; width:100%\">");
+			sb.AppendLine("<ul>");
+			foreach (var item in arrOpt)
+			{
+				sb.AppendLine("<li><input type=\"checkbox\" value=\"" + item + "\" class=\"chk-opt-module-" + mdInfoPatientID + "\"/>" + item + "</li>");
+			}
+			sb.AppendLine("</ul>");
+			sb.AppendLine("</div>");
+			if (!String.IsNullOrEmpty(postback))
+			{
+				sb.AppendLine("<div class=\"_4xko _2k7w _4xkr\">");
+				sb.AppendLine("<div class=\"_2k7x\">");
+				sb.AppendLine("<div class=\"_6b7s\">");
+				sb.AppendLine("<div class=\"_6ir5\">");
+				sb.AppendLine("<div class=\"_4bqf _6ir3\">");
+				sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"module_patient_" + postback + "\" href=\"#\" style=\"color: {{color}}\">Tiếp tục</a>");
+				sb.AppendLine("</div>");
+				sb.AppendLine("</div>");
+				sb.AppendLine("</div>");
+				sb.AppendLine("</div>");
+				sb.AppendLine("</div>");
+			}
+			sb.AppendLine("</div>");
+			sb.AppendLine("</div>");
+			sb.AppendLine("</div>");
+			sb.AppendLine("</div>");
+
+			return sb.ToString();
+		}
+
+		/// <summary>
+		/// Template text UI BOT
+		/// </summary>
+		/// <param name="text"></param>
+		/// <returns></returns>
+		private static string tempText(string text)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<div class=\"_4xkn clearfix\">");
@@ -407,8 +473,17 @@ namespace BotProject.Service
             return Regex.Replace(phone, @"[^0-9]+", "");
         }
 
-        #region --DATA SOURCE API--
-        private string apiRelateQA = "/api/get_related_pairs";
+		private static string RandomStr(int iStrLen)
+		{
+			Random m_rand = new Random();
+			int iRandom = m_rand.Next(0, 999999999);
+			string strRandom = iRandom.ToString().PadLeft(iStrLen, '0');
+			strRandom = ((strRandom.Length == iStrLen) ? strRandom : (strRandom.Substring(strRandom.Length - iStrLen, iStrLen)));
+			return strRandom;
+		}
+
+		#region --DATA SOURCE API--
+		private string apiRelateQA = "/api/get_related_pairs";
         private string ExcuteModuleSearchAPI(string NameFuncAPI, string param, string UrlAPI, string KeySecrectAPI, string Type = "Post")
         {
             string result = null;

@@ -89,5 +89,6 @@ namespace BotProject.Common
         public const string BOT_HISTORY_HANDLE_004 = "Điền thông tin";
         public const string BOT_HISTORY_HANDLE_005 = "Gọi NLP API từ bên ngoài";
         public const string BOT_HISTORY_HANDLE_006 = "Gọi NLP API trong cấu hình";
-    }
+		public const string BOT_HISTORY_HANDLE_007 = "Nhấn Voucher";
+	}
 }

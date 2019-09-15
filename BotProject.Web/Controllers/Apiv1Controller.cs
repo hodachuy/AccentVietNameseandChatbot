@@ -42,7 +42,8 @@ namespace BotProject.Web.Controllers
         private IModuleService _mdService;
         private IModuleKnowledegeService _mdKnowledgeService;
         private IMdSearchService _mdSearchService;
-        private IErrorService _errorService;
+		private IMdVoucherService _mdVoucherService;
+		private IErrorService _errorService;
         private IAIMLFileService _aimlFileService;
         private IQnAService _qnaService;
         private ApiQnaNLRService _apiNLR;
@@ -63,7 +64,8 @@ namespace BotProject.Web.Controllers
                                 IQnAService qnaService,
                                 IModuleSearchEngineService moduleSearchEngineService,
                                 IHistoryService historyService,
-                                ICardService cardService)
+                                ICardService cardService,
+								IMdVoucherService mdVoucherService)
         {
             _errorService = errorService;
             _elastic = new ElasticSearch();
@@ -81,7 +83,9 @@ namespace BotProject.Web.Controllers
             _moduleSearchEngineService = moduleSearchEngineService;
             _historyService = historyService;
             _cardService = cardService;
-        }
+			_mdVoucherService = mdVoucherService;
+
+		}
 
         // GET: Apiv1
         public ActionResult Index()
@@ -125,9 +129,6 @@ namespace BotProject.Web.Controllers
             _user.Predicates.addSetting("phone", "");
             _user.Predicates.addSetting("phonecheck", "false");
 
-            _user.Predicates.addSetting("voucher", "");
-            _user.Predicates.addSetting("vouchercheck", "false");
-
             _user.Predicates.addSetting("email", "");
             _user.Predicates.addSetting("emailcheck", "false");
 
@@ -169,23 +170,41 @@ namespace BotProject.Web.Controllers
                     }
                 }
             }
-            var lstMdSearchDb = _mdSearchService.GetByBotID(botID).ToList();
-            if (lstMdSearchDb.Count() != 0)
-            {
-                foreach (var item in lstMdSearchDb)
-                {                    
-                    if (!String.IsNullOrEmpty(item.Payload))
-                    {
-                        _user.Predicates.addSetting("api_search" + item.ID, "");//check bat mo truong hop nut' payload khi qua the moi
-                        _user.Predicates.addSetting("api_search_check_" + item.ID, "false");
-                    }
-                }
-            }
-            _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
-            _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
-            _user.Predicates.addSetting("isChkMdSearch","false");
-            _user.Predicates.addSetting("ThreadMdSearchID", "");
-            SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
+			_user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
+			_user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
+
+			//var lstMdSearchDb = _mdSearchService.GetByBotID(botID).ToList();
+   //         if (lstMdSearchDb.Count() != 0)
+   //         {
+   //             foreach (var item in lstMdSearchDb)
+   //             {                    
+   //                 if (!String.IsNullOrEmpty(item.Payload))
+   //                 {
+   //                     _user.Predicates.addSetting("api_search" + item.ID, "");//check bat mo truong hop nut' payload khi qua the moi
+   //                     _user.Predicates.addSetting("api_search_check_" + item.ID, "false");
+   //                 }
+   //             }
+   //         }
+			_user.Predicates.addSetting("isChkMdSearch", "false");
+			_user.Predicates.addSetting("ThreadMdSearchID", "");
+
+			//var lstMdVoucherDb = _mdVoucherService.GetByBotID(botID).ToList();
+			//if (lstMdVoucherDb.Count() != 0)
+			//{
+			//	foreach (var item in lstMdVoucherDb)
+			//	{
+			//		if (!String.IsNullOrEmpty(item.Payload))
+			//		{
+			//			_user.Predicates.addSetting("voucher" + item.ID, "");//check bat mo truong hop nut' payload khi qua the moi
+			//			_user.Predicates.addSetting("api_search_check_" + item.ID, "false");
+			//		}
+			//	}
+			//}
+
+			_user.Predicates.addSetting("isChkMdVoucher", "false");
+			_user.Predicates.addSetting("ThreadMdVoucherID", "");
+
+			SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = _user.Predicates.Count;
             settingDic.orderedKeys = _user.Predicates.orderedKeys;
             settingDic.settingsHash = _user.Predicates.settingsHash;
@@ -337,7 +356,7 @@ namespace BotProject.Web.Controllers
                     string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
                     var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
                     _user.Predicates.addSetting("ThreadMdSearchID", mdSearchId);
-                    _user.Predicates.addSetting("api_search_check_" + mdSearchId, "true");
+                    //_user.Predicates.addSetting("api_search_check_" + mdSearchId, "true");
                     _user.Predicates.addSetting("isChkMdSearch", "true");
 
                     hisVm.UserSay = "[Tra cứu]";
@@ -518,52 +537,57 @@ namespace BotProject.Web.Controllers
                         isCheck = true
                     }, JsonRequestBehavior.AllowGet);
                 }
-                #endregion
+				#endregion
 
-                // Xử lý Voucher
-                #region
-                bool isCheckVoucher = bool.Parse(_user.Predicates.grabSetting("vouchercheck"));
-                if (isCheckAge)
-                {
-                    var handleAge = _handleMdService.HandledIsAge(text, valBotID);
-                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-                    AddHistory(hisVm);
-                    if (handleAge.Status)
-                    {
-                        _user.Predicates.addSetting("vouchercheck", "false");
-                        _user.Predicates.addSetting("voucher", text);
-                        if (!String.IsNullOrEmpty(handleAge.Postback))
-                        {
-                            return chatbot(handleAge.Postback, group, token, botId, isMdSearch);
-                        }
-                    }
-                    return Json(new
-                    {
-                        message = new List<string>() { handleAge.Message },
-                        postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
-                    }, JsonRequestBehavior.AllowGet);
-                }
-                if (text.Contains("postback_module_voucher"))// nếu check đi từ đây trước
-                {
-                    _user.Predicates.addSetting("vouchercheck", "true");
-                    var handleAge = _handleMdService.HandledIsAge(text, valBotID);
-                    hisVm.UserSay = "[Voucher]";
-                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                    AddHistory(hisVm);
-                    return Json(new
-                    {
-                        message = new List<string>() { handleAge.Message },
-                        postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
-                    }, JsonRequestBehavior.AllowGet);
-                }
-                #endregion
+				// Xử lý Voucher
+				#region Module Voucher
+				if (bool.Parse(_user.Predicates.grabSetting("isChkMdVoucher")))
+				{
+					if (text.Contains("postback_card"))
+					{
+						_user.Predicates.addSetting("isChkMdVoucher", "false");
+						_user.Predicates.addSetting("ThreadMdVoucherID", "");
+						return chatbot(text, group, token, botId, isMdSearch);
+					}
+					string mdVoucherId = _user.Predicates.grabSetting("ThreadMdVoucherID");
+					var handleMdSearch = _handleMdService.HandleIsVoucher(text, mdVoucherId);
+					bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true;
 
-                // Lấy target from knowledge base QnA trained mongodb
-                if (text.Contains("postback") == false || text.Contains("module") == false)
+					hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
+					AddHistory(hisVm);
+
+					return Json(new
+					{
+						message = new List<string>() { handleMdSearch.Message },
+						postback = new List<string>() { handleMdSearch.Postback },
+						messageai = handleMdSearch.ResultAPI,
+						isCheck = chkAPI
+					}, JsonRequestBehavior.AllowGet);
+				}
+
+				if (text.Contains("postback_module_voucher"))
+				{
+					string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
+					var handleMdSearch = _handleMdService.HandleIsVoucher(text, mdVoucherId);
+					_user.Predicates.addSetting("ThreadMdVoucherID", mdVoucherId);
+					_user.Predicates.addSetting("isChkMdVoucher", "true");
+
+					hisVm.UserSay = "[Voucher]";
+					hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+					AddHistory(hisVm);
+
+					return Json(new
+					{
+						message = new List<string>() { handleMdSearch.Message },
+						postback = new List<string>() { null },
+						messageai = "",
+						isCheck = true
+					}, JsonRequestBehavior.AllowGet);
+				}
+				#endregion
+
+				// Lấy target from knowledge base QnA trained mongodb
+				if (text.Contains("postback") == false || text.Contains("module") == false)
                 {
                     string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
                     if (!String.IsNullOrEmpty(target))

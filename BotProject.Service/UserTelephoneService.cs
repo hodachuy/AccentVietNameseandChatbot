@@ -11,11 +11,11 @@ namespace BotProject.Service
 {
     public interface IUserTelephoneService
     {
-        UserTelePhone GetByID(int id);
+        UserTelePhone GetByPhoneAndMdVoucherId(string phoneNumber, int mdVoucherId);
         void Update(UserTelePhone userTelephone);
         UserTelePhone Create(UserTelePhone userTelephone);
-        bool CheckIsReceivedByVoucher(int mdVoucherId);
-        bool CheckIsPhoneNumberExistByVourcher(int mdVoucherId);
+        bool CheckIsReceivedVoucher(string phoneNumber, int mdVoucherId);
+        bool CheckIsPhoneNumberExistByVourcher(string phoneNumber, int mdVoucherId);
         void Save();
     }
     public class UserTelephoneService : IUserTelephoneService
@@ -29,34 +29,34 @@ namespace BotProject.Service
             _userTelephoneRepository = userTelephoneRepository;
         }
 
-        public UserTelePhone GetByID(int id)
+        public UserTelePhone GetByPhoneAndMdVoucherId(string phoneNumber, int mdVoucherId)
         {
-            throw new NotImplementedException();
-        }
+            return _userTelephoneRepository.GetSingleByCondition(x => x.TelephoneNumber.Contains(phoneNumber) && x.MdVoucherID == mdVoucherId);
+		}
 
         public void Update(UserTelePhone userTelephone)
         {
-            throw new NotImplementedException();
+			_userTelephoneRepository.Update(userTelephone);
         }
 
         public UserTelePhone Create(UserTelePhone userTelephone)
         {
-            throw new NotImplementedException();
+            return _userTelephoneRepository.Add(userTelephone);
+		}
+
+        public bool CheckIsReceivedVoucher(string phoneNumber, int mdVoucherId)
+        {
+			return _userTelephoneRepository.CheckContains(x => x.TelephoneNumber.Contains(phoneNumber) && x.MdVoucherID == mdVoucherId && x.IsReceive == true);
         }
 
-        public bool CheckIsReceivedByVoucher(int mdVoucherId)
+        public bool CheckIsPhoneNumberExistByVourcher(string phoneNumber, int mdVoucherId)
         {
-            throw new NotImplementedException();
-        }
-
-        public bool CheckIsPhoneNumberExistByVourcher(int mdVoucherId)
-        {
-            throw new NotImplementedException();
-        }
+			return _userTelephoneRepository.CheckContains(x => x.TelephoneNumber.Contains(phoneNumber) && x.MdVoucherID == mdVoucherId && x.IsReceive == false);
+		}
 
         public void Save()
         {
-            throw new NotImplementedException();
+			_unitOfWork.Commit();
         }
     }
 }

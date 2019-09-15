@@ -166,6 +166,7 @@ $(document).ready(function () {
     }
 
     function renderCard(data) {
+    console.log(data)
         $('#card-name').val(data.Name);
         var lstCard = function () {
             var temp = [];
@@ -393,7 +394,7 @@ $(document).ready(function () {
                     mdSearchID = value.MdSearchID;
                 }
                 if (value.MdVoucherID != null && value.MdVoucherID != undefined) {
-                    mdVoucherID = value.mdVoucherID;
+                    mdVoucherID = value.MdVoucherID;
                 }
 
                 var tempModuleFollowCard = '';
@@ -5721,6 +5722,11 @@ $('body').on('click', '#mdVoucherSave', function (event) {
     var startDate = kendo.toString($("#cboStartDate").data("kendoDatePicker").value());
     var expirationDate = kendo.toString($("#cboExpirationDate").data("kendoDatePicker").value());
 
+    if (title.trim() == '') {
+        toastr.error('Vui lòng nhập tiêu đề');
+        return false;
+    }
+
     if (msgStart.trim() == '') {
         toastr.error('Vui lòng nhập nội dung gợi ý');
         return false;
@@ -5764,6 +5770,7 @@ $('body').on('click', '#mdVoucherSave', function (event) {
             dataType: "json",
             success: function (data) {
                 if (data != null) {
+                    console.log(data)
                     toastr.success('Lưu thành công');
                     var type = element.attr('data-action');//typeActionMd
                     var mdDetailName = "Voucher";
@@ -5791,7 +5798,7 @@ $('body').on('click', '#mdVoucherSave', function (event) {
         });
 
     } else {
-        var mdVoucherID = element.closest('.form-md-search').eq(0).attr('data-module-voucher-id');
+        var mdVoucherID = element.closest('.form-md-voucher').eq(0).attr('data-module-voucher-id');
 
         params.ID = mdVoucherID;
         var formData = new FormData();
@@ -5821,7 +5828,7 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
     if (mdVoucherID == 0 || mdVoucherID == undefined) {
         typeActionMdVoucher = true;
         html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý thông tin voucher</a>';
-        html += '<div class="row form-md-voucher" data-module-voucher-id="0"">';
+        html += '<div class="row form-md-voucher" data-module-voucher-id="0">';
         html += '<div class="col-md-12">';
         html += '<div class="form-group">';
         html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
@@ -5878,7 +5885,7 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
 
         html += '<div class="form-group">';
         html += '<div class="col-md-12 col-sm-12 col-xs-12">'
-        html += '<button id="mdVoucherSave" data-id="' + typeActionFormOrButton + '" class="btn btn-primary">Lưu</button>';
+        html += '<button id="mdVoucherSave" data-id ="" data-action="' + typeActionFormOrButton + '" class="btn btn-primary">Lưu</button>';
         html += '</div>';
         html += '</div>';
         html += '</div>';
@@ -5898,7 +5905,7 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
         var svr = new AjaxCall(urlTest, params);
         svr.callServiceGET(function (data) {
             html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý thông tin voucher</a>';
-            html += '<div class="row">';
+            html += '<div class="row form-md-voucher" data-module-voucher-id="' + data.ID + '">';
             html += '<div class="col-md-12">';
             html += '<div class="form-group">';
             html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Tiêu đề</label>';
@@ -5965,7 +5972,7 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
 
             html += '<div class="form-group">';
             html += '<div class="col-md-12 col-sm-12 col-xs-12">'
-            html += '<button id="mdVoucherSave" data-id="' + typeActionFormOrButton + '" class="btn btn-primary">Lưu</button>';
+            html += '<button id="mdVoucherSave" data-id="" data-action="' + typeActionFormOrButton + '" class="btn btn-primary">Lưu</button>';
             html += '</div>';
             html += '</div>';
             html += '</div>';

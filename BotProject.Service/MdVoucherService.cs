@@ -12,7 +12,7 @@ namespace BotProject.Service
     public interface IMdVoucherService
     {
         MdVoucher GetByID(int id);
-        MdVoucher GetByBotID(int botId);
+        IEnumerable<MdVoucher> GetByBotID(int botId);
         MdVoucher Create(MdVoucher module);
         void Update(MdVoucher module);
         void Save();
@@ -37,9 +37,9 @@ namespace BotProject.Service
             _mdVoucherRepository.Delete(id);
         }
 
-        public MdVoucher GetByBotID(int botId)
+        public IEnumerable<MdVoucher> GetByBotID(int botId)
         {
-            return _mdVoucherRepository.GetSingleByCondition(x => x.BotID == botId);
+            return _mdVoucherRepository.GetMulti(x => x.BotID == botId);
         }
 
         public MdVoucher GetByID(int id)

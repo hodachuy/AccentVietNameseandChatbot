@@ -369,13 +369,7 @@
       <DependentUpon>201909040335053_UpdateSystemConfig1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201909040756437_AddHistory.cs" />
-    <Compile Include="Migrations\201909040756437_AddHistory.Designer.cs">
-      <DependentUpon>201909040756437_AddHistory.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201909040759059_AddHistory_v1.cs" />
-    <Compile Include="Migrations\201909040759059_AddHistory_v1.Designer.cs">
-      <DependentUpon>201909040759059_AddHistory_v1.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\201909040840113_AddMsgHistory.cs" />
     <Compile Include="Migrations\201909040840113_AddMsgHistory.Designer.cs">
       <DependentUpon>201909040840113_AddMsgHistory.cs</DependentUpon>
@@ -703,12 +697,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909040335053_UpdateSystemConfig1.resx">
       <DependentUpon>201909040335053_UpdateSystemConfig1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201909040756437_AddHistory.resx">
-      <DependentUpon>201909040756437_AddHistory.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201909040759059_AddHistory_v1.resx">
-      <DependentUpon>201909040759059_AddHistory_v1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909040840113_AddMsgHistory.resx">
       <DependentUpon>201909040840113_AddMsgHistory.cs</DependentUpon>

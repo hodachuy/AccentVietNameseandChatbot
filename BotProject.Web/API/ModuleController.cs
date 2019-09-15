@@ -124,7 +124,7 @@ namespace BotProject.Web.API
                     mdAge.BotID = moduleVm.BotID;
                     mdAge.MessageStart = "Bạn vui lòng cho tôi biết độ tuổi của bạn.";
                     mdAge.MessageError = "Tôi không nghĩ đó là số tuổi, bạn vui lòng nhập vào chữ số.";
-                    mdAge.MessageEnd = "Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!";
+                    mdAge.MessageEnd = "Cảm ơn bạn, chúng tôi đã tiếp nhận thông tin thành công!";
                     mdAge.ModuleID = moduleDb.ID;
                     //mdPhone.CardPayloadID = null;
                     //mdPhone.Payload = "";
@@ -195,7 +195,7 @@ namespace BotProject.Web.API
                 mdVoucherDb.CardPayloadID = mdVoucherVm.CardPayloadID;
                 mdVoucherDb.TitlePayload = mdVoucherVm.TitlePayload;
                 mdVoucherDb.MessageError = "Số điện thoại không đúng, bạn vui lòng nhập lại.";
-                mdVoucherDb.MessageEnd = "Cảm ơn bạn, chúng đã tiếp nhận thông tin thành công!";
+                mdVoucherDb.MessageEnd = "Cảm ơn bạn, chúng tôi đã tiếp nhận thông tin thành công!";
                 mdVoucherDb.Code = mdVoucherVm.Code;
                 mdVoucherDb.Payload = "";
                 if (mdVoucherVm.CardPayloadID != null && mdVoucherVm.CardPayloadID != 0)
@@ -239,7 +239,7 @@ namespace BotProject.Web.API
                 }
                 var mdVoucherVm = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<MdVoucher>(mdVoucherJson);
 
-                var mdVoucherDb = _mdVoucherService.GetByBotID(mdVoucherVm.BotID);
+                var mdVoucherDb = _mdVoucherService.GetByID(mdVoucherVm.ID);
                 mdVoucherDb.Title = mdVoucherVm.Title;
                 mdVoucherDb.MessageStart = mdVoucherVm.MessageStart;
                 mdVoucherDb.StartDate = mdVoucherVm.StartDate;

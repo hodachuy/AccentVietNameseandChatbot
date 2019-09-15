@@ -285,7 +285,7 @@ namespace BotProject.Web.API
                                                 }
                                                 if (btnModuleVm.MdVoucherID != null && btnModuleVm.MdVoucherID != 0)
                                                 {
-                                                    var mdVoucherDb = _mdVoucherService.GetByID(btnModuleVm.MdVoucherID ?? default(int));
+                                                    var mdVoucherDb = _mdVoucherService.GetByID(btnModuleVm.MdVoucherID  ?? default(int));
                                                     mdVoucherDb.ButtonModuleID = btnModuleDb.ID;
                                                     _mdVoucherService.Update(mdVoucherDb);
                                                     _mdVoucherService.Save();
@@ -445,7 +445,7 @@ namespace BotProject.Web.API
                                 // update
                                 if (mdFollowCardVm.PartternText == "postback_module_voucher")
                                 {
-                                    var mdVoucherDb = _mdVoucherService.GetByID(mdFCardDb.MdSearchID ?? default(int));
+                                    var mdVoucherDb = _mdVoucherService.GetByID(mdFCardDb.MdVoucherID ?? default(int));
                                     mdVoucherDb.ModuleFollowCardID = mdFCardDb.ID;
                                     _mdVoucherService.Update(mdVoucherDb);
                                     _mdVoucherService.Save();
