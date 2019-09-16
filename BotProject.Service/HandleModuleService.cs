@@ -2,6 +2,7 @@
 using BotProject.Common.DigiproService.Digipro;
 using BotProject.Common.SendSmsMsgService;
 using BotProject.Common.ViewModels;
+using BotProject.Data.Infrastructure;
 using BotProject.Model.Models;
 using Newtonsoft.Json;
 using System;
@@ -14,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Script.Serialization;
+using System.Xml;
 
 namespace BotProject.Service
 {
@@ -26,6 +28,8 @@ namespace BotProject.Service
         HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
         HandleResultBotViewModel HandleIsSearchAPI(string mdName, string mdSearchID, string notFound);
         HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID);
+        HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID);
+        void Save();
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
@@ -43,6 +47,7 @@ namespace BotProject.Service
         private IMdSearchCategoryService _mdSearchCategoryService;
         private IMdVoucherService _mdVoucherService;
         private IUserTelephoneService _userTelephoneService;
+        private IUnitOfWork _unitOfWork;
 
         public HandleModuleService(IMdPhoneService mdPhoneService,
                                     IMdEmailService mdEmailService,
@@ -51,7 +56,8 @@ namespace BotProject.Service
                                     IMdSearchService mdSearchService,
                                     IMdSearchCategoryService mdSearchCategoryService,
                                     IMdVoucherService mdVoucherService,
-                                    IUserTelephoneService userTelephoneService)
+                                    IUserTelephoneService userTelephoneService,
+                                    IUnitOfWork unitOfWork)
         {
             _mdPhoneService = mdPhoneService;
             _mdEmailService = mdEmailService;
@@ -61,6 +67,7 @@ namespace BotProject.Service
             _mdSearchCategoryService = mdSearchCategoryService;
             _mdVoucherService = mdVoucherService;
             _userTelephoneService = userTelephoneService;
+            _unitOfWork = unitOfWork;
         }
         public HandleResultBotViewModel HandleIsPhoneNumber(string number, int botID)
         {
@@ -175,73 +182,124 @@ namespace BotProject.Service
         public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
-			var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
-			try
-			{
-				if(mdVoucherDb != null)
-				{
-					if (!String.IsNullOrEmpty(mdVoucherDb.TitlePayload))
-					{
-						rsHandle.Postback = tempNodeBtnModule(mdVoucherDb.Payload, mdVoucherDb.TitlePayload);
-					}
-					if (phoneNumber.Contains(Common.CommonConstants.ModuleVoucher))
-					{
-						rsHandle.Status = false;
-						rsHandle.Message = tempText(mdVoucherDb.MessageStart);
-					}
-					else
-					{
-						bool isNumber = ValidatePhoneNumber(phoneNumber, true);
-						if (isNumber == false)
-						{
-							rsHandle.Status = false;
-							rsHandle.Message = tempText(mdVoucherDb.MessageError);
-							return rsHandle;
-						}
-						UserTelePhone usTelephone = new UserTelePhone();
-						bool IsExistPhoneNumber = _userTelephoneService.CheckIsPhoneNumberExistByVourcher(phoneNumber, Int32.Parse(mdVoucherID));
-						if (IsExistPhoneNumber == false)
-						{
-							rsHandle.Status = false;
-							string codeOTP = "Your Digipro verification code is: " + RandomStr(5);
-							string rsSmsMsg = SendSmsService.SendSmsMsg(phoneNumber, codeOTP);
-							dynamic obj = JsonConvert.DeserializeObject(rsSmsMsg);
-							if (obj.Table != null)
-							{
-								dynamic ob = obj.Table[0];
-								if (ob.Status == "0")
-								{
-									rsHandle.Status = true;
-									rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
-								}
-								if (ob.Status == "1")
-								{
-									rsHandle.Status = true;
-									rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
-								}
-								if (ob.Status == "2")
-								{
-									rsHandle.Status = true;
-									rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
-								}
-							}
-								
-						}
-						else
-						{
+            var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
+            try
+            {
+                UserTelePhone usTelephone = new UserTelePhone();
+                if (mdVoucherDb != null)
+                {
+                    if (!String.IsNullOrEmpty(mdVoucherDb.TitlePayload))
+                    {
+                        rsHandle.Postback = tempNodeBtnModule(mdVoucherDb.Payload, mdVoucherDb.TitlePayload);
+                    }
+                    if (phoneNumber.Contains(Common.CommonConstants.ModuleVoucher))
+                    {
+                        rsHandle.Status = false;
+                        rsHandle.Message = tempText(mdVoucherDb.MessageStart);
+                        return rsHandle;
+                    }
+                    else
+                    {
+                        bool isNumber = ValidatePhoneNumber(phoneNumber, true);
+                        if (isNumber == false)
+                        {
+                            rsHandle.Status = false;
+                            rsHandle.Message = tempText(mdVoucherDb.MessageError);
+                            return rsHandle;
+                        }
 
-						}
-						rsHandle.Status = true;
-						rsHandle.Message = tempText(mdVoucherDb.MessageEnd);
-					}
-				}
-			}
-			catch(Exception ex)
-			{
-				rsHandle.Message = tempText(mdVoucherDb.MessageError);
-			}		
-			return rsHandle;
+                        var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
+                        if (usTelephoneDb != null)
+                        {
+                            if (usTelephoneDb.IsReceive)
+                            {
+                                rsHandle.Status = false;
+                                rsHandle.Message = tempText("Số điện thoại của bạn đã được nhận voucher trước đó.");
+                                return rsHandle;
+                            }
+                        }
+
+                        string codeOTP = RandomStr(5);
+                        SendSmsService sm = new SendSmsService();
+                        string rsSmsMsg = sm.SendSmsMsg(phoneNumber, "Your Digipro verification code is: " + codeOTP);
+                        dynamic obj = JsonConvert.DeserializeObject(rsSmsMsg);
+                        if (obj.Table != null)
+                        {
+                            dynamic ob = obj.Table[0];
+                            if (ob.ReturnCode == "0")//thành công
+                            {
+                                rsHandle.Status = true;
+                                rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
+                                if (usTelephoneDb == null)
+                                {
+                                    usTelephone.Code = codeOTP;
+                                    usTelephone.IsReceive = false;
+                                    usTelephone.TelephoneNumber = phoneNumber;
+                                    usTelephone.TypeService = "Voucher";
+                                    usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
+                                    usTelephone.NumberReceive = 1;
+                                    _userTelephoneService.Create(usTelephone);
+                                    _unitOfWork.Commit();
+                                }
+                                else
+                                {
+                                    var usT = _userTelephoneService.GetById(usTelephoneDb.ID);
+                                    usT.IsReceive = false;
+                                    usT.Code = codeOTP;
+                                    _userTelephoneService.Update(usT);
+                                    _unitOfWork.Commit();
+                                }
+                                return rsHandle;
+                            }
+                            if (ob.ReturnCode == "2")
+                            {
+                                rsHandle.Status = false;
+                                rsHandle.Message = tempText("Số điện thoại không đúng");
+                                return rsHandle;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                rsHandle.Message = tempText(mdVoucherDb.MessageError);
+            }
+            return rsHandle;
         }
+
+        public HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID)
+        {
+            HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
+            var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
+            bool isContainOTP = _userTelephoneService.CheckContainOTP(OTP, phoneNumber, Int32.Parse(mdVoucherID));
+            if (isContainOTP)
+            {
+                rsHandle.Status = true;
+                rsHandle.Message = tempImage(mdVoucherDb.Image);
+                var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
+                if (usTelephoneDb != null)
+                {
+                    var usT = _userTelephoneService.GetById(usTelephoneDb.ID);
+                    usT.IsReceive = true;
+                    _userTelephoneService.Update(usT);
+                    _unitOfWork.Commit();
+                }
+
+                return rsHandle;
+            }
+            else
+            {
+                if (!String.IsNullOrEmpty(mdVoucherDb.TitlePayload))
+                {
+                    rsHandle.Postback = tempNodeBtnModule(mdVoucherDb.Payload, mdVoucherDb.TitlePayload);
+                }
+                rsHandle.Status = false;
+                rsHandle.Message = tempText("Mã OTP không đúng");
+            }
+            return rsHandle;
+        }
+
 
         public HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound)
         {
@@ -277,7 +335,7 @@ namespace BotProject.Service
                     {
                         rsHandle.Status = false;
                         var mdSearchCategory = _mdSearchCategoryService.GetById(mdSearchDb.MdSearchCategoryID);
-                        if(mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Luat)
+                        if (mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Luat)
                         {
                             rsHandle.ResultAPI = GetModuleSearchAPI(text, mdSearchDb.ParamAPI, mdSearchDb.UrlAPI, mdSearchDb.KeyAPI, mdSearchDb.MethodeAPI);
                             if (String.IsNullOrEmpty(rsHandle.ResultAPI))
@@ -309,7 +367,7 @@ namespace BotProject.Service
                                 rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
                             }
                         }
-                        if(mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Digipro)
+                        if (mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Digipro)
                         {
                             var resultDigipro = DigiproService.GetDetailServiceDigiproByRofOrSvtag(mdSearchDb.UrlAPI.Trim(), text);
                             if (resultDigipro != null)
@@ -336,64 +394,64 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-		private static string TemplateOptionBot(string[] arrOpt, string title, string postback, string mdInfoPatientID, string notFound)
-		{
-			if (!String.IsNullOrEmpty(notFound))
-			{
-				title = notFound;
-			}
-			StringBuilder sb = new StringBuilder();
-			sb.AppendLine("<div class=\"_4xkn clearfix\">");
-			sb.AppendLine("<div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
-			sb.AppendLine("<div class=\"_4cqr\">");
-			sb.AppendLine("<img class=\"profilePicture img\" src=\"{{image_logo}}\"/>");
-			sb.AppendLine("<div class=\"clearfix\"></div>");
-			sb.AppendLine("</div>");
-			sb.AppendLine("</div>");
-			sb.AppendLine("<div class=\"messages\">");
-			sb.AppendLine("<div class=\"_21c3\">");
-			sb.AppendLine("<div class=\"clearfix _2a0-\">");
-			sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light;\">");
-			sb.AppendLine("<span>");
-			sb.AppendLine("<span>" + title + "</span>");
-			sb.AppendLine("</span>");
-			sb.AppendLine("</div>");
-			sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light; width:100%\">");
-			sb.AppendLine("<ul>");
-			foreach (var item in arrOpt)
-			{
-				sb.AppendLine("<li><input type=\"checkbox\" value=\"" + item + "\" class=\"chk-opt-module-" + mdInfoPatientID + "\"/>" + item + "</li>");
-			}
-			sb.AppendLine("</ul>");
-			sb.AppendLine("</div>");
-			if (!String.IsNullOrEmpty(postback))
-			{
-				sb.AppendLine("<div class=\"_4xko _2k7w _4xkr\">");
-				sb.AppendLine("<div class=\"_2k7x\">");
-				sb.AppendLine("<div class=\"_6b7s\">");
-				sb.AppendLine("<div class=\"_6ir5\">");
-				sb.AppendLine("<div class=\"_4bqf _6ir3\">");
-				sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"module_patient_" + postback + "\" href=\"#\" style=\"color: {{color}}\">Tiếp tục</a>");
-				sb.AppendLine("</div>");
-				sb.AppendLine("</div>");
-				sb.AppendLine("</div>");
-				sb.AppendLine("</div>");
-				sb.AppendLine("</div>");
-			}
-			sb.AppendLine("</div>");
-			sb.AppendLine("</div>");
-			sb.AppendLine("</div>");
-			sb.AppendLine("</div>");
+        private static string TemplateOptionBot(string[] arrOpt, string title, string postback, string mdInfoPatientID, string notFound)
+        {
+            if (!String.IsNullOrEmpty(notFound))
+            {
+                title = notFound;
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<div class=\"_4xkn clearfix\">");
+            sb.AppendLine("<div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
+            sb.AppendLine("<div class=\"_4cqr\">");
+            sb.AppendLine("<img class=\"profilePicture img\" src=\"{{image_logo}}\"/>");
+            sb.AppendLine("<div class=\"clearfix\"></div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("<div class=\"messages\">");
+            sb.AppendLine("<div class=\"_21c3\">");
+            sb.AppendLine("<div class=\"clearfix _2a0-\">");
+            sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light;\">");
+            sb.AppendLine("<span>");
+            sb.AppendLine("<span>" + title + "</span>");
+            sb.AppendLine("</span>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color: rgb(241, 240, 240);font-family: Segoe UI Light; width:100%\">");
+            sb.AppendLine("<ul>");
+            foreach (var item in arrOpt)
+            {
+                sb.AppendLine("<li><input type=\"checkbox\" value=\"" + item + "\" class=\"chk-opt-module-" + mdInfoPatientID + "\"/>" + item + "</li>");
+            }
+            sb.AppendLine("</ul>");
+            sb.AppendLine("</div>");
+            if (!String.IsNullOrEmpty(postback))
+            {
+                sb.AppendLine("<div class=\"_4xko _2k7w _4xkr\">");
+                sb.AppendLine("<div class=\"_2k7x\">");
+                sb.AppendLine("<div class=\"_6b7s\">");
+                sb.AppendLine("<div class=\"_6ir5\">");
+                sb.AppendLine("<div class=\"_4bqf _6ir3\">");
+                sb.AppendLine("<a class=\"_6ir4 _6ir4_module\" data-id=\"" + mdInfoPatientID + "\" data-postback =\"module_patient_" + postback + "\" href=\"#\" style=\"color: {{color}}\">Tiếp tục</a>");
+                sb.AppendLine("</div>");
+                sb.AppendLine("</div>");
+                sb.AppendLine("</div>");
+                sb.AppendLine("</div>");
+                sb.AppendLine("</div>");
+            }
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
 
-			return sb.ToString();
-		}
+            return sb.ToString();
+        }
 
-		/// <summary>
-		/// Template text UI BOT
-		/// </summary>
-		/// <param name="text"></param>
-		/// <returns></returns>
-		private static string tempText(string text)
+        /// <summary>
+        /// Template text UI BOT
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private static string tempText(string text)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<div class=\"_4xkn clearfix\">");
@@ -412,6 +470,27 @@ namespace BotProject.Service
             sb.AppendLine("         <span>" + text + "</span>");
             sb.AppendLine("     </span>");
             sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            return sb.ToString();
+        }
+
+        private static string tempImage(string urlImage)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<div class=\"_4xkn clearfix\">");
+            sb.AppendLine("     <div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
+            sb.AppendLine("         <div class=\"_4cqr\">");
+            sb.AppendLine("             <img class=\"profilePicture img\" src=\"{{image_logo}}\" alt=\"\">");
+            sb.AppendLine("             <div class=\"clearfix\"></div>");
+            sb.AppendLine("         </div>");
+            sb.AppendLine("     </div>");
+            sb.AppendLine("     <div class=\"messages\">");
+            sb.AppendLine("         <div class=\"_21c3\">");
+            sb.AppendLine(" <div class=\"clearfix _2a0-\">");
+            sb.AppendLine("     <div class=\"_6j0s\" style=\"background-image:url(&quot;" + ConfigHelper.ReadString("Domain") + urlImage + "&quot;); background-position: center center; height: 150px; width: 100%;\"></div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
@@ -473,17 +552,17 @@ namespace BotProject.Service
             return Regex.Replace(phone, @"[^0-9]+", "");
         }
 
-		private static string RandomStr(int iStrLen)
-		{
-			Random m_rand = new Random();
-			int iRandom = m_rand.Next(0, 999999999);
-			string strRandom = iRandom.ToString().PadLeft(iStrLen, '0');
-			strRandom = ((strRandom.Length == iStrLen) ? strRandom : (strRandom.Substring(strRandom.Length - iStrLen, iStrLen)));
-			return strRandom;
-		}
+        private static string RandomStr(int iStrLen)
+        {
+            Random m_rand = new Random();
+            int iRandom = m_rand.Next(0, 999999999);
+            string strRandom = iRandom.ToString().PadLeft(iStrLen, '0');
+            strRandom = ((strRandom.Length == iStrLen) ? strRandom : (strRandom.Substring(strRandom.Length - iStrLen, iStrLen)));
+            return strRandom;
+        }
 
-		#region --DATA SOURCE API--
-		private string apiRelateQA = "/api/get_related_pairs";
+        #region --DATA SOURCE API--
+        private string apiRelateQA = "/api/get_related_pairs";
         private string ExcuteModuleSearchAPI(string NameFuncAPI, string param, string UrlAPI, string KeySecrectAPI, string Type = "Post")
         {
             string result = null;
@@ -522,7 +601,8 @@ namespace BotProject.Service
                 if (response.IsSuccessStatusCode)
                 {
                     result = response.Content.ReadAsStringAsync().Result;
-                }else
+                }
+                else
                 {
                     result = String.Empty;
                 }
@@ -538,7 +618,7 @@ namespace BotProject.Service
             }
             else
             {
-                param = "question=" + contentText + "&type=leg&number=10&field="+param;
+                param = "question=" + contentText + "&type=leg&number=10&field=" + param;
             }
             responseString = ExcuteModuleSearchAPI(apiRelateQA, param, urlAPI, keyAPI, methodeHttp);
             if (responseString != null)
@@ -553,6 +633,10 @@ namespace BotProject.Service
             return responseString;
         }
 
+        public void Save()
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

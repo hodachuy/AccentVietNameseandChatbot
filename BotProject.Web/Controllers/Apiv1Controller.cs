@@ -188,20 +188,21 @@ namespace BotProject.Web.Controllers
 			_user.Predicates.addSetting("isChkMdSearch", "false");
 			_user.Predicates.addSetting("ThreadMdSearchID", "");
 
-			//var lstMdVoucherDb = _mdVoucherService.GetByBotID(botID).ToList();
-			//if (lstMdVoucherDb.Count() != 0)
-			//{
-			//	foreach (var item in lstMdVoucherDb)
-			//	{
-			//		if (!String.IsNullOrEmpty(item.Payload))
-			//		{
-			//			_user.Predicates.addSetting("voucher" + item.ID, "");//check bat mo truong hop nut' payload khi qua the moi
-			//			_user.Predicates.addSetting("api_search_check_" + item.ID, "false");
-			//		}
-			//	}
-			//}
+            //var lstMdVoucherDb = _mdVoucherService.GetByBotID(botID).ToList();
+            //if (lstMdVoucherDb.Count() != 0)
+            //{
+            //	foreach (var item in lstMdVoucherDb)
+            //	{
+            //		if (!String.IsNullOrEmpty(item.Payload))
+            //		{
+            //			_user.Predicates.addSetting("voucher" + item.ID, "");//check bat mo truong hop nut' payload khi qua the moi
+            //			_user.Predicates.addSetting("api_search_check_" + item.ID, "false");
+            //		}
+            //	}
+            //}
 
-			_user.Predicates.addSetting("isChkMdVoucher", "false");
+            _user.Predicates.addSetting("isChkOTP", "false");
+            _user.Predicates.addSetting("isChkMdVoucher", "false");
 			_user.Predicates.addSetting("ThreadMdVoucherID", "");
 
 			SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
@@ -251,9 +252,9 @@ namespace BotProject.Web.Controllers
                 if (!String.IsNullOrEmpty(userBot.StopWord))
                 {
                     string[] arrStopWord = userBot.StopWord.Split(',');
-                    if(arrStopWord.Length != 0)
+                    if (arrStopWord.Length != 0)
                     {
-                        foreach(var w in arrStopWord)
+                        foreach (var w in arrStopWord)
                         {
                             text = Regex.Replace(text, w, String.Empty).Trim();
                         }
@@ -337,7 +338,7 @@ namespace BotProject.Web.Controllers
                     }
                     string mdSearchId = _user.Predicates.grabSetting("ThreadMdSearchID");
                     var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
-                    bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true ;
+                    bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true;
 
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
                     AddHistory(hisVm);
@@ -537,54 +538,87 @@ namespace BotProject.Web.Controllers
                         isCheck = true
                     }, JsonRequestBehavior.AllowGet);
                 }
-				#endregion
+                #endregion
 
-				// Xử lý Voucher
-				#region Module Voucher
-				if (bool.Parse(_user.Predicates.grabSetting("isChkMdVoucher")))
-				{
-					if (text.Contains("postback_card"))
-					{
-						_user.Predicates.addSetting("isChkMdVoucher", "false");
-						_user.Predicates.addSetting("ThreadMdVoucherID", "");
-						return chatbot(text, group, token, botId, isMdSearch);
-					}
-					string mdVoucherId = _user.Predicates.grabSetting("ThreadMdVoucherID");
-					var handleMdSearch = _handleMdService.HandleIsVoucher(text, mdVoucherId);
-					bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true;
+                // Xử lý Voucher
+                #region Module Voucher
+                if (bool.Parse(_user.Predicates.grabSetting("isChkMdVoucher")))
+                {
+                    string mdVoucherId = _user.Predicates.grabSetting("ThreadMdVoucherID");
+                    if (text.Contains("postback_card"))
+                    {
+                        _user.Predicates.addSetting("isChkMdVoucher", "false");
+                        _user.Predicates.addSetting("ThreadMdVoucherID", "");
+                        return chatbot(text, group, token, botId, isMdSearch);
+                    }
 
-					hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
-					AddHistory(hisVm);
+                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId);
 
-					return Json(new
-					{
-						message = new List<string>() { handleMdSearch.Message },
-						postback = new List<string>() { handleMdSearch.Postback },
-						messageai = handleMdSearch.ResultAPI,
-						isCheck = chkAPI
-					}, JsonRequestBehavior.AllowGet);
-				}
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
+                    AddHistory(hisVm);
+                    if (handleMdVoucher.Status)
+                    {
+                        _user.Predicates.addSetting("phone", text);
+                        _user.Predicates.addSetting("isChkOTP", "true");
+                        _user.Predicates.addSetting("isChkMdVoucher", "false");
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleMdVoucher.Message },
+                        postback = new List<string>() { handleMdVoucher.Postback },
+                        messageai = handleMdVoucher.ResultAPI,
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
-				if (text.Contains("postback_module_voucher"))
-				{
-					string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-					var handleMdSearch = _handleMdService.HandleIsVoucher(text, mdVoucherId);
-					_user.Predicates.addSetting("ThreadMdVoucherID", mdVoucherId);
-					_user.Predicates.addSetting("isChkMdVoucher", "true");
+                if (text.Contains("postback_module_voucher"))
+                {
+                    string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
+                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId);
+                    _user.Predicates.addSetting("ThreadMdVoucherID", mdVoucherId);
+                    _user.Predicates.addSetting("isChkMdVoucher", "true");
 
-					hisVm.UserSay = "[Voucher]";
-					hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-					AddHistory(hisVm);
+                    hisVm.UserSay = "[Voucher]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
 
-					return Json(new
-					{
-						message = new List<string>() { handleMdSearch.Message },
-						postback = new List<string>() { null },
-						messageai = "",
-						isCheck = true
-					}, JsonRequestBehavior.AllowGet);
-				}
-				#endregion
+                    return Json(new
+                    {
+                        message = new List<string>() { handleMdVoucher.Message },
+                        postback = new List<string>() { null },
+                        messageai = "",
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
+
+                // Xử lý OTP từ Voucher
+                if (bool.Parse(_user.Predicates.grabSetting("isChkOTP")))
+                {
+                    string mdVoucherId = _user.Predicates.grabSetting("ThreadMdVoucherID");
+                    string numberPhone = _user.Predicates.grabSetting("phone");
+                    if (text.Contains("postback_card"))
+                    {
+                        _user.Predicates.addSetting("isChkOTP", "false");
+                        _user.Predicates.addSetting("isChkMdVoucher", "false");
+                        _user.Predicates.addSetting("ThreadMdVoucherID", "");
+                        return chatbot(text, group, token, botId, isMdSearch);
+                    }
+                    var handleOTP = _handleMdService.HandleIsCheckOTP(text, numberPhone, mdVoucherId);
+                    if (handleOTP.Status)
+                    {
+                        _user.Predicates.addSetting("isChkOTP", "false");
+                        _user.Predicates.addSetting("isChkMdVoucher", "false");
+                        _user.Predicates.addSetting("ThreadMdVoucherID", "");
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleOTP.Message },
+                        postback = new List<string>() { handleOTP.Postback },
+                        messageai = handleOTP.ResultAPI,
+                        isCheck = true
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
 				// Lấy target from knowledge base QnA trained mongodb
 				if (text.Contains("postback") == false || text.Contains("module") == false)

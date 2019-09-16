@@ -22,24 +22,13 @@ namespace Accent.ConsoleApplication
 {
     class Program
     {
-		public static string RandomStr(int iStrLen)
-		{
-			Random m_rand = new Random();
-			int iRandom = m_rand.Next(0, 999999999);
-			string strRandom = iRandom.ToString().PadLeft(iStrLen, '0');
-			strRandom = ((strRandom.Length == iStrLen) ? strRandom : (strRandom.Substring(strRandom.Length - iStrLen, iStrLen)));
-			System.Diagnostics.Debug.Assert(strRandom.Length == iStrLen);
-			return strRandom;
-		}
 		static void Main(string[] args)
         {
-			string C = RandomStr(5);
-
 			SendSmsMsgServiceSoapClient sm = new SendSmsMsgServiceSoapClient();
-   //         string xmlParam = GenXmlParam("84","0375348328","Your Code : 58134");
-   //         dynamic rsMsg = sm.ExecuteFunc("SendSmsMsg", xmlParam);
-   //         string rsJson = ConvertXMLToJson(rsMsg);
-   //         Console.WriteLine("Rs: " + rsMsg);
+            string xmlParam = GenXmlParam("84", "0375348328", "Your Code : 58134");
+            dynamic rsMsg = sm.ExecuteFunc("SendSmsMsg", xmlParam);
+            string rsJson = ConvertXMLToJson(rsMsg);
+            Console.WriteLine("Rs: " + rsMsg);
 
         }
         //private static JObject GetMessageTemplate(string text, string sender)

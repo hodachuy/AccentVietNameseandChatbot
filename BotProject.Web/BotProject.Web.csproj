@@ -270,6 +270,7 @@
     <Compile Include="API\ModuleController.cs" />
     <Compile Include="API\SettingController.cs" />
     <Compile Include="API\WebhookController.cs" />
+    <Compile Include="API\ZaloWebhookController.cs" />
     <Compile Include="API_Mobile\MessageController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />

@@ -17,6 +17,7 @@ namespace BotProject.Service
         MdQuestion CreateQuestion(MdQuestion ques);
         MdAnswer CreateAnswer(MdAnswer ans);
         MdArea CreateArea(MdArea area);
+        MdArea GetByAreaId(int id);
         void UpdateQuestion(MdQuestion ques);
         void UpdateAnswer(MdAnswer ans);
         void UpdateArea(MdArea area);
@@ -89,6 +90,11 @@ namespace BotProject.Service
         public void DeleteArea(int areaId)
         {
             _mdAreaRepository.Delete(areaId);
+        }
+
+        public MdArea GetByAreaId(int id)
+        {
+            return _mdAreaRepository.GetSingleById(id);
         }
     }
 }

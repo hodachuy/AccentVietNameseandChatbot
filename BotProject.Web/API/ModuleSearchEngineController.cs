@@ -88,9 +88,11 @@ namespace BotProject.Web.API
                 }
                 else
                 {
-                    mdArea.UpdateMdArea(mdAreaVm);
-                    _moduleSearchEngineService.UpdateArea(mdArea);
+                    var mdAreaDb = _moduleSearchEngineService.GetByAreaId(mdAreaVm.ID ?? default(int));
+                    mdAreaDb.UpdateMdArea(mdAreaVm);
+                    _moduleSearchEngineService.UpdateArea(mdAreaDb);
                 }
+                _moduleSearchEngineService.Save();
                 response = request.CreateResponse(HttpStatusCode.OK, mdArea);
                 return response;
             });

@@ -189,6 +189,7 @@ namespace BotProject.Web.API
 
                 MdVoucher mdVoucherDb = new MdVoucher();
                 mdVoucherDb.Title = mdVoucherVm.Title;
+                mdVoucherDb.BotID = mdVoucherVm.BotID;
                 mdVoucherDb.MessageStart = mdVoucherVm.MessageStart;
                 mdVoucherDb.StartDate = mdVoucherVm.StartDate;
                 mdVoucherDb.ExpirationDate = mdVoucherVm.ExpirationDate;
@@ -241,6 +242,7 @@ namespace BotProject.Web.API
 
                 var mdVoucherDb = _mdVoucherService.GetByID(mdVoucherVm.ID);
                 mdVoucherDb.Title = mdVoucherVm.Title;
+                mdVoucherDb.BotID = mdVoucherVm.BotID;
                 mdVoucherDb.MessageStart = mdVoucherVm.MessageStart;
                 mdVoucherDb.StartDate = mdVoucherVm.StartDate;
                 mdVoucherDb.ExpirationDate = mdVoucherVm.ExpirationDate;

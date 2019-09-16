@@ -16,6 +16,8 @@ namespace BotProject.Service
         UserTelePhone Create(UserTelePhone userTelephone);
         bool CheckIsReceivedVoucher(string phoneNumber, int mdVoucherId);
         bool CheckIsPhoneNumberExistByVourcher(string phoneNumber, int mdVoucherId);
+        bool CheckContainOTP(string OTP, string phoneNumber, int mdVoucherId);
+        UserTelePhone GetById(int id);
         void Save();
     }
     public class UserTelephoneService : IUserTelephoneService
@@ -57,6 +59,17 @@ namespace BotProject.Service
         public void Save()
         {
 			_unitOfWork.Commit();
+        }
+
+        public bool CheckContainOTP(string OTP, string phoneNumber, int mdVoucherId)
+        {
+            return _userTelephoneRepository.CheckContains(x => x.TelephoneNumber.Contains(phoneNumber) && x.MdVoucherID == mdVoucherId && x.Code.Contains(OTP));
+
+        }
+
+        public UserTelePhone GetById(int id)
+        {
+            return _userTelephoneRepository.GetSingleById(id);
         }
     }
 }

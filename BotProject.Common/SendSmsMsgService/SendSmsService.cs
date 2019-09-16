@@ -10,11 +10,15 @@ namespace BotProject.Common.SendSmsMsgService
 {
     public class SendSmsService
     {
-        public static string SendSmsMsg(string strPhoneNumber, string strMessage)
+        private SendSmsMsgServiceSoapClient _sm;
+        public SendSmsService()
         {
-            SendSmsMsgServiceSoapClient sm = new SendSmsMsgServiceSoapClient();
+            _sm = new SendSmsMsgServiceSoapClient();
+        }
+        public string SendSmsMsg(string strPhoneNumber, string strMessage)
+        {
             string xmlParam = GenXmlParam("84", strPhoneNumber, strMessage);//"Your Digipro verification code is: 58134"
-            string rsMsg = sm.ExecuteFunc("SendSmsMsg", xmlParam);
+            string rsMsg = _sm.ExecuteFunc("SendSmsMsg", xmlParam);
             return ConvertXMLToJson(rsMsg);
         }
 
