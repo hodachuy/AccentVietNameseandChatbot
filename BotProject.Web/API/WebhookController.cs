@@ -36,7 +36,6 @@ namespace BotProject.Web.API
         private readonly string KeyAPI = Helper.ReadString("KeyAPI");
         private string pathAIML = PathServer.PathAIML;
         private string pathSetting = PathServer.PathAIML + "config";
-        private AccentService _accentService;
         private BotService _botService;
         private IBotService _botDbService;
         private ISettingService _settingService;
@@ -106,7 +105,7 @@ namespace BotProject.Web.API
             if (!VerifySignature(signature, body))
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-            var value = JsonConvert.DeserializeObject<BotRequest>(body);
+            var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
 
             //Test
             var botRequest = new JavaScriptSerializer().Serialize(value);

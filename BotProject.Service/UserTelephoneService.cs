@@ -1,4 +1,5 @@
-﻿using BotProject.Data.Infrastructure;
+﻿using BotProject.Common.ViewModels;
+using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
 using BotProject.Model.Models;
 using System;
@@ -11,6 +12,7 @@ namespace BotProject.Service
 {
     public interface IUserTelephoneService
     {
+        IEnumerable<StoreProcUserTelephoneByVoucherViewModel> GetUserTelephoneByVoucher(string filter, string sort, int pageNumber, int pageSize, long? selectedID);
         UserTelePhone GetByPhoneAndMdVoucherId(string phoneNumber, int mdVoucherId);
         void Update(UserTelePhone userTelephone);
         UserTelePhone Create(UserTelePhone userTelephone);
@@ -45,6 +47,11 @@ namespace BotProject.Service
         {
             return _userTelephoneRepository.Add(userTelephone);
 		}
+
+        public IEnumerable<StoreProcUserTelephoneByVoucherViewModel> GetUserTelephoneByVoucher(string filter, string sort, int pageNumber, int pageSize, long? selectedID)
+        {
+            return _userTelephoneRepository.GetUserTelephoneByVoucher(filter, sort, pageNumber, pageSize, selectedID);
+        }
 
         public bool CheckIsReceivedVoucher(string phoneNumber, int mdVoucherId)
         {

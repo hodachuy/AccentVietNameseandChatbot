@@ -43,6 +43,11 @@ namespace BotProject.Common
 
     }
 
+    public class ZaloConstans
+    {
+        public const string EVENT_USER_SEND_TEXT = "user_send_text";
+    }
+
 
     public class PathServer
     {

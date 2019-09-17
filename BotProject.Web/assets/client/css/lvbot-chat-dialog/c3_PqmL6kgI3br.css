@@ -1231,6 +1231,9 @@
     padding-bottom: 6pt;
     padding-top: 6pt;
     width: 100%;
+    text-align: left;
+    padding-left: calc(100% - 84%);
+
 }
 
 ._6j2i {

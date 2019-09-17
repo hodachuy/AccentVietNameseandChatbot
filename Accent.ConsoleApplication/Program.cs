@@ -24,12 +24,24 @@ namespace Accent.ConsoleApplication
     {
 		static void Main(string[] args)
         {
-			SendSmsMsgServiceSoapClient sm = new SendSmsMsgServiceSoapClient();
-            string xmlParam = GenXmlParam("84", "0375348328", "Your Code : 58134");
-            dynamic rsMsg = sm.ExecuteFunc("SendSmsMsg", xmlParam);
-            string rsJson = ConvertXMLToJson(rsMsg);
-            Console.WriteLine("Rs: " + rsMsg);
+            var obj = GetMessageTemplate("abc", "4354354353");
+            string abc = obj.ToString();
+            //SendSmsMsgServiceSoapClient sm = new SendSmsMsgServiceSoapClient();
+            //         string xmlParam = GenXmlParam("84", "0375348328", "Your Code : 58134");
+            //         dynamic rsMsg = sm.ExecuteFunc("SendSmsMsg", xmlParam);
+            //         string rsJson = ConvertXMLToJson(rsMsg);
+            Console.WriteLine("Rs: ");
 
+        }
+
+        private static JObject GetMessageTemplate(string text, string sender)
+        {
+            return JObject.FromObject(
+                new
+                {
+                    recipient = new { id = sender },
+                    message = new { text = "Welcome to Chatbot Lacviet!" },
+                });
         }
         //private static JObject GetMessageTemplate(string text, string sender)
         //{

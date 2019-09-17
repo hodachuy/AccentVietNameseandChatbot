@@ -43,7 +43,7 @@ namespace BotProject.Web.Controllers
 
         [ActionName("Receive")]
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult ReceivePost(BotRequest data)
+        public ActionResult ReceivePost(FacebookBotRequest data)
         {
             Task.Factory.StartNew(() =>
             {

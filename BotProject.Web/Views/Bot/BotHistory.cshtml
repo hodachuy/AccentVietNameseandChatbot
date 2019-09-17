@@ -2,9 +2,6 @@
     ViewBag.Title = "Bot History Response";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/assets/client/libs/KendoUI/styles/kendo.common.min.css" rel="stylesheet" />
-<link href="~/assets/client/libs/KendoUI/styles/kendo.metro.min.css" rel="stylesheet" />
-<link href="~/assets/client/libs/KendoUI/kendo.custom.css" rel="stylesheet" />
 <style>
     @@media (min-width: 576px) {
         .modal-dialog {
@@ -46,14 +43,43 @@
     .colorbot_understands{
         color:brown;
     }
+
+</style>
+<style>
+
+    .breadcrumb {
+        padding: .75rem 1rem;
+    }
+    .tab-content{
+        border-top: 1px solid #e6e6f2;
+    }
+    .nav-pills li {
+        font-size: 15px;
+        padding: 10px;
+        width: 15%;
+        text-align: center;
+        background-color:#eee;
+    }
+
+        .nav-pills li a {
+            color: #3f51b5;
+        }
+
+        .nav-pills li.active {
+            background-color: #3f51b5;
+        }
+
+            .nav-pills li.active a {
+                color: white;
+            }
 </style>
 <!-- ============================================================== -->
 <!-- pageheader -->
 <!-- ============================================================== -->
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
 <div class="row">
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
-        <div class="d-flex">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-b-10">
+        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
             @*<h5 class="pageheader-title">Search QnA</h5>*@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@ViewBag.BotName</i></li>
@@ -63,49 +89,100 @@
     </div>
 </div>
 
-<!-- ============================================================== -->
-<!-- form search -->
-<!-- ============================================================== -->
 <div class="row">
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-t-20">
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive" id="table-qna">
-                    <table class="table table-striped table-bordered table-sm" id="table-data">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width:10%">Thời gian</th>
-                                <th scope="col" style="width:15%">UserName</th>
-                                <th scope="col" style="width:25%">Người dùng nói</th>
-                                <th scope="col" style="width:25%">Bot nhận diện</th>
-                                <th scope="col" style="width:25%">Bot xử lý</th>
-                            </tr>
-                        </thead>
-                        <tbody id="table-data-training">
-                           
-                        </tbody>
-                    </table>
-                </div>
-                <nav class="pagination pagination_type1">
-                    <ol class="pagination__list" id="pagination-list"></ol>
-                    <div class="pagination__list m-l-20">
-                        <select id="results-pp">
-                            <option value="5">5</option>
-                            <option value="10" selected>10</option>
-                            <option value="20">20</option>
-                            <option value="100">100</option>
-                            <option value="All">Tất cả</option>
-                        </select>
-                        <span class="m-l-10">Số lượng hiển thị</span>
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title">
+        <div id="exTab1" class="container">
+            <ul class="nav nav-pills">
+                <li class="active">
+                    <a href="#bot-history" data-toggle="tab">Lịch sử thao tác</a>
+                </li>
+                <li>
+                    <a href="#bot-voucher" data-toggle="tab">Voucher</a>
+                </li>
+            </ul>
+            <div class="tab-content clearfix">
+                <div class="tab-pane active" id="bot-history">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive" id="table-qna">
+                                <table class="table table-striped table-bordered table-sm" id="table-data">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="width:10%">Thời gian</th>
+                                            <th scope="col" style="width:15%">UserName</th>
+                                            <th scope="col" style="width:25%">Người dùng nói</th>
+                                            <th scope="col" style="width:25%">Bot nhận diện</th>
+                                            <th scope="col" style="width:25%">Bot xử lý</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-data-training"></tbody>
+                                </table>
+                            </div>
+                            <nav class="pagination pagination_type1">
+                                <ol class="pagination__list" id="pagination-list"></ol>
+                                <div class="pagination__list m-l-20">
+                                    <select id="results-pp">
+                                        <option value="5">5</option>
+                                        <option value="10" selected>10</option>
+                                        <option value="20">20</option>
+                                        <option value="100">100</option>
+                                        <option value="All">Tất cả</option>
+                                    </select>
+                                    <span class="m-l-10">Số lượng hiển thị</span>
+                                </div>
+                                <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
+                            </nav>
+                        </div>
                     </div>
-                    <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
-                </nav>
+                </div>
+                <div class="tab-pane" id="bot-voucher">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive" id="table-voucher">
+                                <table class="table table-striped table-bordered table-sm" id="table-data-voucher">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="width:5%">STT</th>
+                                            <th scope="col" style="width:10%">Trạng thái</th>
+                                            <th scope="col" style="width:15%">Số điện thoại</th>
+                                            <th scope="col" style="width:20%">Voucher</th>
+                                            <th scope="col" style="width:15%">Hình ảnh</th>
+                                            <th scope="col" style="width:15%">Bắt đầu</th>
+                                            <th scope="col" style="width:15%">Kết thúc</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-data-item-voucher"></tbody>
+                                </table>
+                            </div>
+                            <nav class="pagination pagination_type1">
+                                <ol class="pagination__list" id="pagination-list-voucher"></ol>
+                                <div class="pagination__list m-l-20">
+                                    <select id="results-pp-voucher">
+                                        <option value="5">5</option>
+                                        <option value="10" selected>10</option>
+                                        <option value="20">20</option>
+                                        <option value="100">100</option>
+                                        <option value="All">Tất cả</option>
+                                    </select>
+                                    <span class="m-l-10">Số lượng hiển thị</span>
+                                </div>
+                                <span id="pagination-text-number-show-voucher" style="margin:10px 10px 0 auto"></span>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
 </div>
 
 @section footerJS{
-<script src="~/assets/client/js/history.js"></script>
+    <script src="~/assets/client/js/history.js"></script>
+    <script>
+        $('.nav-pills li a').click(function (e) {
+            $('.nav-pills li').removeClass('active');
+            $(this).parent().addClass('active');
+
+        })
+    </script>
 }

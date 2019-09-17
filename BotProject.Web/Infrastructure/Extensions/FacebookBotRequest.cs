@@ -8,7 +8,7 @@ namespace BotProject.Web.Infrastructure.Extensions
     /// <summary>
     /// Facebook Bot data
     /// </summary>
-    public class BotRequest
+    public class FacebookBotRequest
     {
         public string @object { get; set; }
         public List<BotEntry> entry { get; set; }
