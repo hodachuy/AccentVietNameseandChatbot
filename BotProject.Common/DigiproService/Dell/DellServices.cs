@@ -47,6 +47,7 @@ namespace BotProject.Common
                             {
                                 warrantyDetailModel = new WarrantyDetailModel();
                                 warrantyDetailModel.Service = (item.ServiceLevelCode + " (" + item.ServiceLevelDescription + ")");
+                                warrantyDetailModel.ServiceLevelCode = item.ServiceLevelCode;
                                 warrantyDetailModel.EntitlementType = item.EntitlementType;
                                 warrantyDetailModel.StartDate = item.StartDate;
                                 warrantyDetailModel.ExpirationDate = item.EndDate;
@@ -56,14 +57,20 @@ namespace BotProject.Common
                             var WarrantyDetailResult = GroupWarrantyDetail(warrantyDetailList);
                             warrantyResultModel.WarrantyDetails = WarrantyDetailResult.OrderBy(x=>x.ExpirationDate).OrderBy(x => x.Priority).ToList();
                             StringBuilder sb = new StringBuilder();
-                            sb.AppendLine("Service Tag: " + warrantyResultModel.ServiceTag + "<br/>");
-                            sb.AppendLine("Thời hạn bảo hành: " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd MMM yyyy") + "<br/>");
-                            sb.AppendLine("Thông tin chi tiết: <br/>");
-                            foreach (var obj in warrantyResultModel.WarrantyDetails)
-                            {
-                                sb.AppendLine(obj.Service + "<br/>");
-                                sb.AppendLine("Sta: "+obj.StartDate.ToString("dd MMM yyyy") + " ,Exp: "+obj.ExpirationDate.ToString("dd MMM yyyy")+"<br/>");
-                            }
+                            sb.AppendLine("Thông tin bảo hành của máy có Service tag "+ warrantyResultModel.ServiceTag +":" +"<br/><br/>");
+                            sb.AppendLine("- Model: " + assetWarrantyResponseModel.AssetHeader.MachineDescription + "<br/>");
+                            sb.AppendLine("- Ngày ship: " + assetWarrantyResponseModel.AssetHeader.ShipDate.ToString("dd/MM/yyyy") + "<br/>");
+                            sb.AppendLine("- Quốc gia: " + assetWarrantyResponseModel.AssetHeader.CountryLookupCode + "<br/>");
+                            sb.AppendLine("- Ngày hết hạn BH ("+ warrantyResultModel.WarrantyDetails[0].ServiceLevelCode + "): " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd/MM/yyyy") + "<br/>");
+
+                            //sb.AppendLine("Service Tag: " + warrantyResultModel.ServiceTag + "<br/>");
+                            //sb.AppendLine("Thời hạn bảo hành: " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd MMM yyyy") + "<br/>");
+                            //sb.AppendLine("Thông tin chi tiết: <br/>");
+                            //foreach (var obj in warrantyResultModel.WarrantyDetails)
+                            //{
+                            //    sb.AppendLine(obj.Service + "<br/>");
+                            //    sb.AppendLine("Sta: "+obj.StartDate.ToString("dd MMM yyyy") + " ,Exp: "+obj.ExpirationDate.ToString("dd MMM yyyy")+"<br/>");
+                            //}
 
                             warrantyResultModel.TextWarranty = sb.ToString();
                             return warrantyResultModel;
@@ -184,6 +191,7 @@ namespace BotProject.Common
                 inputModel = new WarrantyDetailModel
                 {
                     Service = item,
+                    ServiceLevelCode = warrantyDetailTemp[0].ServiceLevelCode,
                     EntitlementType = "",
                     StartDate = _beginDate,
                     ExpirationDate = _expirationDate,

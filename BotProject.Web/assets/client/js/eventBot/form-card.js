@@ -5932,7 +5932,7 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
                 html += '                   <div class="close fileinput-remove text-right rmFileImage">×</div>';
                 html += '                       <div class="file-preview-thumbnails">';
                 html += '                           <div class="file-preview-frame">';
-                html += '                               <img src="' + urlImgVoucher + '" class="file-preview-image" alt="" width="100" height="50"/>';
+                html += '                               <img src="' + urlImgVoucher + '" class="file-preview-image" alt="" width="100" height="150"/>';
                 html += '                           </div>';
                 html += '                       </div>';
                 html += '                   </div>';

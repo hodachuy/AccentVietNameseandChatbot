@@ -19,6 +19,7 @@ namespace BotProject.Common
     public class WarrantyDetailModel
     {
         public string Service { get; set; }
+        public string ServiceLevelCode { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime ExpirationDate { get; set; }
         public string EntitlementType { get; set; }

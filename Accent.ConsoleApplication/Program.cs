@@ -22,10 +22,39 @@ namespace Accent.ConsoleApplication
 {
     class Program
     {
-		static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            var obj = GetMessageTemplate("abc", "4354354353");
-            string abc = obj.ToString();
+
+            string s = "hdhuy123";
+
+            string x1 = s.Substring(0,4);
+
+            string star = "*";
+            for (int i = 0; i < (8 - 4); i++)
+            {
+                star = star + "*";
+            }
+
+            string mailName = "";          
+            string mailDomain = "";
+            //Regex rPart = new Regex("([^@]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            //Match _partContent = rPart.Match(s);
+            //if (_partContent.Success)
+            //{
+            //    mailName = _partContent.Groups[0].Value;
+            //    //mailDomain = _partContent.Groups[2].Value; ;
+            //}
+
+            //Regex rPart1 = new Regex("@(.*)$", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            //Match _partContent1 = rPart1.Match(s);
+            //if (_partContent1.Success)
+            //{
+            //    mailDomain = _partContent1.Groups[0].Value;
+            //    //mailDomain = _partContent.Groups[2].Value; ;
+            //}
+
+            //var obj = GetMessageTemplate("abc", "4354354353");
+            //string abc = obj.ToString();
             //SendSmsMsgServiceSoapClient sm = new SendSmsMsgServiceSoapClient();
             //         string xmlParam = GenXmlParam("84", "0375348328", "Your Code : 58134");
             //         dynamic rsMsg = sm.ExecuteFunc("SendSmsMsg", xmlParam);
@@ -33,6 +62,7 @@ namespace Accent.ConsoleApplication
             Console.WriteLine("Rs: ");
 
         }
+
 
         private static JObject GetMessageTemplate(string text, string sender)
         {

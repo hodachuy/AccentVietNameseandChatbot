@@ -334,7 +334,11 @@ function getMessageBot(text) {
             if (!isMatch) {
                 if (resultAPI.includes("[{")) {
                     resultAPI = JSON.parse(resultAPI);
-                    var data = tempModuleSearchAPI(resultAPI);
+                    var data = tempModuleSearchAPI(resultAPI, text);
+                    if (data.count == 0) {
+                        submitMessageBot(tempTextBot('Tôi không tìm thấy'), 0)
+                        return;
+                    } 
                     new Promise((resolve, reject) => {
                         submitMessageBot(tempTextBot('Tôi tìm thấy ' + data.count + ' câu hỏi liên quan đến câu hỏi của bạn.'), 0)
                         resolve();
@@ -475,10 +479,15 @@ function tempDidYouMeanBot(text) {
     return htmlText;
 }
 
-function tempModuleSearchAPI(lstData) {
+function tempModuleSearchAPI(lstData,text) {
     var tempModuleHtml = '';
     var itemHtml = '';
-    var storageData = lstData.filter(function (x) { return x.answer != null; });
+    var storageData;
+    storageData = lstData.filter(function (x) { return x.answer != null; });
+    if (text.includes("thay pin")) {
+        storageData = lstData.filter(function (x) { return x._id != "5d7f36e556396249c66646aa"; });
+    }
+
     if (storageData.length > 0) {
         lstData = storageData;
     }

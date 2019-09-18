@@ -490,7 +490,7 @@ namespace BotProject.Service
             sb.AppendLine("     <div class=\"messages\">");
             sb.AppendLine("         <div class=\"_21c3\">");
             sb.AppendLine(" <div class=\"clearfix _2a0-\">");
-            sb.AppendLine("     <div class=\"_6j0s\" style=\"background-image:url(&quot;" + ConfigHelper.ReadString("Domain") + urlImage + "&quot;); background-position: center center; height: 150px; width: 100%;\"></div>");
+            sb.AppendLine("     <div class=\"_6j0s\" style=\"background-image:url(&quot;" + ConfigHelper.ReadString("Domain") + urlImage + "&quot;); background-position: center center; height: 250px; width: 100%;background-repeat: no-repeat;background-size: contain;\"></div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
             sb.AppendLine("</div>");
