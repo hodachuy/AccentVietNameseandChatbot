@@ -150,11 +150,63 @@ namespace BotProject.Web.API
         /// <returns>json</returns>
         private JObject GetMessageTemplate(string text, string sender)
         {
+            if(text.ToLower().Contains("menu") != true)
+            {
+                return JObject.FromObject(
+                    new
+                    {
+                        recipient = new { id = sender },
+                        message = new { text = "Chào mừng bạn đến với Trung tâm Digipro, A/C có vấn đề gì cần giải đáp ạ." },
+                    });
+            }
+
+
             return JObject.FromObject(
                 new
                 {
                     recipient = new { id = sender },
-                    message = new { text = "Welcome to Chatbot Lacviet!" },
+                    message = new
+                    {
+                        attachment = new
+                        {
+                            type = "template",
+                            payload = new
+                            {
+                                template_type = "generic",
+                                elements = new[]
+                                {
+                                    new
+                                    {
+                                        title = "Trung tâm chăm sóc khách hàng Digipro.vn",
+                                        item_url = "http://digipro.vn/",
+                                        image_url = "https://bot.surelrn.vn/File/Images/Card/134a16f1-7c56-4eca-a61b-1bbe5a23a42b-Logo_DGP_EN_1600-800_5.png",
+                                        subtitle = "Tư vấn bảo hành, sửa chữa máy tính",
+                                        buttons = new []
+                                        {
+                                            new
+                                            {
+                                                  type = "postback",
+                                                  title = "💻 Bảo hành dòng máy Dell",
+                                                  payload = "postback_card_6070"
+                                            },
+                                            new
+                                            {
+                                                  type = "postback",
+                                                  title = "🔍 Tra cứu máy bảo hành",
+                                                  payload = "postback_card_6071"
+                                            },
+                                            new
+                                            {
+                                                  type = "postback",
+                                                  title =  "📞 Thông tin hỗ trợ",
+                                                  payload = "postback_card_6072"
+                                            },
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
                 });
         }
 

@@ -1229,6 +1229,9 @@ $(document).ready(function () {
                         }
                     });
                     var generic = {
+                        "recipient": {
+                            "id": "{{senderId}}"
+                        },
                         "message": {
                             "attachment": {
                                 "type": "template",
@@ -1266,6 +1269,9 @@ $(document).ready(function () {
                     if (checkCard) {
                         if ($(this).find('.wr_button .bt').length <= 1) {
                             template_text = {
+                                "recipient": {
+                                    "id": "{{senderId}}"
+                                },
                                 "message": {
                                     "text": $(this).find('.wr_title .wr-content-text textarea').val()
                                 }
@@ -1408,6 +1414,9 @@ $(document).ready(function () {
                                 }
                             });
                             template_text = {
+                                "recipient": {
+                                    "id": "{{senderId}}"
+                                },
                                 "message": {
                                     "attachment": {
                                         "type": "template",
@@ -1467,6 +1476,9 @@ $(document).ready(function () {
                         listUpdate.push(arAt);
 
                         var template_image = {
+                            "recipient": {
+                                "id": "{{senderId}}"
+                            },
                             "message": {
                                 "attachment": {
                                     "type": "image",
@@ -1515,6 +1527,9 @@ $(document).ready(function () {
 
                         var srcVideo = $(this).find('.wr_file').find('.click_input_file1 span').text();
                         var template_file = {
+                            "recipient": {
+                                "id": "{{senderId}}"
+                            },
                             "message": {
                                 "attachment": {
                                     "type": type_card,
@@ -1823,6 +1838,9 @@ $(document).ready(function () {
                         });
 
                         var template_fn = {
+                            "recipient": {
+                                "id": "{{senderId}}"
+                            },
                             "message": {
                                 "attachment": {
                                     "type": "template",
@@ -1975,6 +1993,9 @@ $(document).ready(function () {
                 }
             });
             var objReply = {
+                "recipient": {
+                    "id": "{{senderId}}"
+                },
                 'message': {
                     'quick_replies': ar_quickReply
                 }
@@ -2016,7 +2037,8 @@ $(document).ready(function () {
             'TemplateJsonFacebook': JSON.stringify(objectCard.cardContent),
             'FileAttachs': listUpdate
         }
-
+        console.log(objectCard)
+            console.log(cardVm)
         if (checkCard) {
             var element = $(this);
 

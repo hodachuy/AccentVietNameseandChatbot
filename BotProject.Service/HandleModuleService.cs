@@ -321,6 +321,10 @@ namespace BotProject.Service
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdSearchDb = _mdSearchService.GetByID(Int32.Parse(mdSearchID));
+            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
+            {
+                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+            }
             try
             {
                 // Đối với module tìm kiếm , tắt mở check cho thẻ tiếp theo, khi có message error hoặc không.

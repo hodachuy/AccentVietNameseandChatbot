@@ -171,6 +171,17 @@ $(document).ready(function () {
         parent.postMessage(quesID, domain);
     })
 
+
+    // Bùa nhớ xóa
+    $('body').on('click', '._4fsj-menu1', function (e) {
+        e.preventDefault();
+        var dataText = $(this).text();
+        var dataPostback = $(this).attr('data-postback');
+        submitMessage(dataText, dataPostback);
+        // chặn ảnh hưởng tới thẻ a href next
+        e.stopPropagation();
+    })
+
     //setting accent vn
     chatbotSetting();
 })

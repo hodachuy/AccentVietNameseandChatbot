@@ -367,7 +367,7 @@ namespace BotProject.Web.Controllers
                     return Json(new
                     {
                         message = new List<string>() { handleMdSearch.Message },
-                        postback = new List<string>() { null },
+                        postback = new List<string>() { handleMdSearch.Postback },
                         messageai = "",
                         isCheck = true
                     }, JsonRequestBehavior.AllowGet);
@@ -584,8 +584,9 @@ namespace BotProject.Web.Controllers
 
                     return Json(new
                     {
+
                         message = new List<string>() { handleMdVoucher.Message },
-                        postback = new List<string>() { null },
+                        postback = new List<string>() { handleMdVoucher.Postback },
                         messageai = "",
                         isCheck = true
                     }, JsonRequestBehavior.AllowGet);

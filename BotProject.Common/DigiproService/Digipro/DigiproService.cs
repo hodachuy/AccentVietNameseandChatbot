@@ -176,17 +176,29 @@ namespace BotProject.Common.DigiproService.Digipro
             {
                 sb.AppendLine("+ Số phiếu: " + rofNumber + "<br/>");
             }
-
-            sb.AppendLine("+ Ngày nhận máy: " + dateReveive + "<br/>");
-            sb.AppendLine("+ Ngày kiểm tra: " + dateTest + "<br/>");
+            if (!String.IsNullOrEmpty(dateReveive) && dateReveive != "01/01/0001")
+            {
+                sb.AppendLine("+ Ngày nhận máy: " + dateReveive + "<br/>");
+            }
+            if (!String.IsNullOrEmpty(dateTest) && dateTest != "01/01/0001")
+            {
+                sb.AppendLine("+ Ngày kiểm tra: " + dateTest + "<br/>");
+            }
 
             if (!String.IsNullOrEmpty(dateeta) && dateeta != "01/01/0001")
             {
                 sb.AppendLine("+ Ngày nhận linh kiện: " + dateeta + "<br/>");
             }
 
-            sb.AppendLine("+ Ngày hoàn tất: " + dateComplete + "<br/>");
-            sb.AppendLine("+ Ngày trả máy: " + dateClose + "<br/>");
+            if (!String.IsNullOrEmpty(dateComplete) && dateComplete != "01/01/0001")
+            {
+                sb.AppendLine("+ Ngày hoàn tất: " + dateComplete + "<br/>");
+            }
+
+            if (!String.IsNullOrEmpty(dateClose) && dateClose != "01/01/0001")
+            {
+                sb.AppendLine("+ Ngày trả máy: " + dateClose + "<br/>");
+            }
 
             return sb.ToString();
         }
@@ -221,10 +233,7 @@ namespace BotProject.Common.DigiproService.Digipro
             {
                 mailDomain = _partDomain.Groups[0].Value;
             }
-
             return mailName + mailDomain;
-
-
         }
     }
 }

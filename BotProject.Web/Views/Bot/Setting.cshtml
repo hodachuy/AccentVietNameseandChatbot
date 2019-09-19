@@ -425,7 +425,7 @@
                     <div class="form-group row">
                         <div class="col-lg-12">
                             <p data-msgid="CallbackURL" data-current-language="vi" class="m-b-10">Webhook Callback URL</p>
-                            <input type="text" class="form-control" value="https://bot.surelrn.vn/webhook/get" disabled>
+                            <input type="text" class="form-control" value="https://bot.surelrn.vn/api/webhook" disabled>
                         </div>
                         <div class="col-lg-12">
                             <p data-msgid="Code" data-current-language="vi" class="m-b-10">Verify Token</p>
@@ -438,6 +438,38 @@
                         <div class="col-lg-12">
                             <p data-msgid="Code" data-current-language="vi" class="m-b-10">Secret Key</p>
                             <input type="text" class="form-control" value="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6 col-lg-12 col-md-12">
+            <!-- chatbot on zalo-->
+            <div class="card b-module-search">
+                <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><i class="fab fa-facebook" href="javascript:void(0)">CHATBOT TRÊN ZALO</i></li>
+                    </ol>
+                    <div class="toolbar ml-auto p-r-10 p-t-10">
+                        <a href="javascript:void(0)" title="Cách sử dụng" class="btn-zalo-guide"><i class="fa fa-question-circle-o"></i></a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="form-group row">
+                        <div class="col-lg-12 p-b-10">
+                            <p data-msgid="CallbackURL" data-current-language="vi" class="m-b-10">Zalo Webhook Callback URL</p>
+                            <input type="text" class="form-control" value="https://bot.surelrn.vn/api/zalowebhook" disabled>
+                        </div>
+                        <div class="col-lg-12 p-b-10">
+                            <p data-msgid="AccessToken" data-current-language="vi" class="m-b-10">Office Account AccessToken</p>
+                            <input type="text" class="form-control" value="OUQpPbeaQqbjuhvZLIjhJstikczICc8EDPBCEaCHQKStjV4gJ1fqPJEwnaeBPsSmOjhq7rL485CgnvKRSa97SYpW_bXRIMe04el3A2e9Rb9ca-C63ZKn9dcAbbeV0oDqMgos31yhEqLhhvfhD1HC45sWnKKR51GAUwEWHaS_0Xbvzhf94qu34LxQXKOVQI8gGwdxGpKILZjqrS1cAK5hAHA7oNvA3qzIVPpUA1quUtTTaDms2YflNsxgvNCMIZmDV8EVTZCa7ITJPWxmu1bSE657">
+                        </div>
+                        <div class="col-lg-12">
+                            <p data-msgid="AccessToken" data-current-language="vi" class="m-b-10">Office Account QR Code</p>
+                            <img class="img-shadow" id="qrcode" src="https://page-photo-qr.zdn.vn/1568857405/0294646d5028b976e039.jpg" alt="OA QRCode" style="max-width:200px !important">
+                            <div class="ctn-nd qrcode-alias" align="center">
+                                <span>zalo.me/1991768888787015631</span>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -33,11 +33,12 @@ namespace BotProject.Web.API
         public async Task<HttpResponseMessage> Post()
         {
             var body = await Request.Content.ReadAsStringAsync();
+            //LogError(body);
             if (body.Contains("user_send_text"))
             {
                 var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
                 LogError(body);
-                await SendMessage(GetMessageTemplate("", value.sender.id));
+                await SendMessage(GetMessageTemplate(value.message.text, value.sender.id));
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
            
@@ -45,6 +46,16 @@ namespace BotProject.Web.API
         }
         private JObject GetMessageTemplate(string text, string sender)
         {
+            if (text.ToLower().Contains("menu") != true)
+            {
+                return JObject.FromObject(
+                    new
+                    {
+                        recipient = new { user_id = sender },
+                        message = new { text = "Chào mừng bạn đến với Trung tâm Digipro, A/C có vấn đề gì cần giải đáp ạ." },
+                    });
+            }
+
             return JObject.FromObject(
                 new
                 {
@@ -61,7 +72,7 @@ namespace BotProject.Web.API
                                     new
                                     {
                                         title = "Trung tâm chăm sóc khách hàng Digipro.vn",
-                                        subtitle = "Zalo API cung cấp các công cụ để bạn có thể kết nối thanh chóng và hiệu quả",
+                                        subtitle = "Tư vấn bảo hành, sửa chữa máy tính",
                                         image_url = "https://bot.surelrn.vn/File/Images/Card/134a16f1-7c56-4eca-a61b-1bbe5a23a42b-Logo_DGP_EN_1600-800_5.png",
                                         default_action = new
                                         {
