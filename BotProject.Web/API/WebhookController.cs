@@ -1,9 +1,11 @@
 ﻿using AIMLbot;
+using AutoMapper;
 using BotProject.Common;
 using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Extensions;
+using BotProject.Web.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SearchEngine.Service;
@@ -100,48 +102,46 @@ namespace BotProject.Web.API
         [HttpPost]
         public async Task<HttpResponseMessage> Post()
         {
-            var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
+            //var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
-            if (!VerifySignature(signature, body))
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            //if (!VerifySignature(signature, body))
+                //return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
             var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
 
-            //Test
-            var botRequest = new JavaScriptSerializer().Serialize(value);
-            LogError(botRequest);
+            ////Test
+            //var botRequest = new JavaScriptSerializer().Serialize(value);
+            //LogError(botRequest);
 
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
+
+            var lstAIML = _aimlFileService.GetByBotId(5028);
+            var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+            _botService.loadAIMLFromDatabase(lstAIMLVm);
+            _user = _botService.loadUserBot(value.entry[0].messaging[0].sender.id);
+            _user.Predicates.addSetting("agecheck", "false");
             foreach (var item in value.entry[0].messaging)
             {
-                //Test
-                var json = new JavaScriptSerializer().Serialize(item);
-                LogError(json);
-
                 if (item.message == null && item.postback == null)
+                {
                     continue;
+                }
+                else if(item.message == null && item.postback != null)
+                {
+                    await SendMessage(GetMessageTemplate(item.postback.payload, item.sender.id));
+                }
                 else
-                    await SendMessage(GetMessageTemplate(item.message.text, item.sender.id));
+                {
+                    if(item.message.quick_reply == null)
+                        await SendMessage(GetMessageTemplate(item.message.text, item.sender.id));
+                    else
+                        await SendMessage(GetMessageTemplate(item.message.quick_reply.payload, item.sender.id));
+                }
             }
-
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
-
-        private bool VerifySignature(string signature, string body)
-        {
-            var hashString = new StringBuilder();
-            using (var crypto = new HMACSHA1(Encoding.UTF8.GetBytes(appSecret)))
-            {
-                var hash = crypto.ComputeHash(Encoding.UTF8.GetBytes(body));
-                foreach (var item in hash)
-                    hashString.Append(item.ToString("X2"));
-            }
-
-            return hashString.ToString().ToLower() == signature.ToLower();
-        }
-
         /// <summary>
         /// get text message template
         /// </summary>
@@ -150,7 +150,13 @@ namespace BotProject.Web.API
         /// <returns>json</returns>
         private JObject GetMessageTemplate(string text, string sender)
         {
-            if(text.ToLower().Contains("menu") != true)
+
+            AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
+            string result = aimlBotResult.OutputSentences[0].ToString();
+
+
+
+            if (text.ToLower().Contains("menu") != true)
             {
                 return JObject.FromObject(
                     new
@@ -222,6 +228,20 @@ namespace BotProject.Web.API
                 HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token={pageToken}", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
             }
         }
+
+        private bool VerifySignature(string signature, string body)
+        {
+            var hashString = new StringBuilder();
+            using (var crypto = new HMACSHA1(Encoding.UTF8.GetBytes(appSecret)))
+            {
+                var hash = crypto.ComputeHash(Encoding.UTF8.GetBytes(body));
+                foreach (var item in hash)
+                    hashString.Append(item.ToString("X2"));
+            }
+
+            return hashString.ToString().ToLower() == signature.ToLower();
+        }
+
 
         private void LogError(string message)
         {

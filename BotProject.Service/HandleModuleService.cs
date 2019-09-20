@@ -373,7 +373,25 @@ namespace BotProject.Service
                         }
                         if (mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Digipro)
                         {
-                            var resultDigipro = DigiproService.GetDetailServiceDigiproByRofOrSvtag(mdSearchDb.UrlAPI.Trim(), text);
+                            bool IsOOW = false;// lấy idsla != 4
+                            var resultDigipro = DigiproService.GetDetailServiceDigiproByRofOrSvtag(mdSearchDb.UrlAPI.Trim(), text, IsOOW);
+                            if (resultDigipro != null)
+                            {
+                                rsHandle.Message = tempText(resultDigipro);
+                            }
+                            else
+                            {
+                                rsHandle.Message = tempText(mdSearchDb.MessageError);
+                            }
+                            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
+                            {
+                                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                            }
+                        }
+                        if (mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Digipro_OOW)
+                        {
+                            bool IsOOW = true;// lấy idsla = 4
+                            var resultDigipro = DigiproService.GetDetailServiceDigiproByRofOrSvtag(mdSearchDb.UrlAPI.Trim(), text, IsOOW);
                             if (resultDigipro != null)
                             {
                                 rsHandle.Message = tempText(resultDigipro);

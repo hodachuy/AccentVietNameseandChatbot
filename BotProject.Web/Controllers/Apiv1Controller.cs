@@ -660,7 +660,7 @@ namespace BotProject.Web.Controllers
                 // nếu aiml bot có template trả thẳng ra module k thông qua button text module
                 if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
                 {
-                    if (result.Contains("<module>") == false)// k phải button module trả về
+                    if (result.Contains("<module>") != true)// k phải button module trả về
                     {
                         string txtModule = result.Replace("\r\n", "").Replace(".","").Trim();
                         txtModule = Regex.Replace(txtModule, @"<(.|\n)*?>", "").Trim();

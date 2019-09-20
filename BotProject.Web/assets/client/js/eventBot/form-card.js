@@ -1880,11 +1880,10 @@ $(document).ready(function () {
                     ar_quickReply.push(obj_quickReply);
                 } else if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'postback') {
                     if ($(this).find('.wr_reply_btcontent').children('i').length > 0) {
-
                         if (typeof $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id') !== typeof undefined
                                 && $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id') !== false
                                 && $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id') != ''
-                                ) {
+                                ){
                             var arAt = {
                                 attachment_id: $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id'),
                                 type: 'rm'
@@ -5581,6 +5580,7 @@ function getTemplateSearchAPI(mdSearchID, typeActionFormOrButton) {
         html += '    </div>';
         html += '</div>';
         $("#template-module").empty().append(html);
+        loadEmojiPicker();
     } else {
         typeActionMdSearch = false;
         var params = {

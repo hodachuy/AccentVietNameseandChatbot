@@ -39,6 +39,10 @@ namespace BotProject.Common
         public const string MdSearch_Luat = "luat";
         public const string MdSearch_Dell = "dell";
         public const string MdSearch_Digipro = "digipro";
+
+        //DỊCH VỤ NGOÀI SỬA CHỮA
+        public const string MdSearch_Digipro_OOW = "digipro-oow";
+
         public const string MdSearch_Yte = "y-te";
 
     }

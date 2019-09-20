@@ -20,10 +20,12 @@ namespace BotProject.Web.API
     public class ZaloWebhookController : ApiController
     {
         string pageToken = "OUQpPbeaQqbjuhvZLIjhJstikczICc8EDPBCEaCHQKStjV4gJ1fqPJEwnaeBPsSmOjhq7rL485CgnvKRSa97SYpW_bXRIMe04el3A2e9Rb9ca-C63ZKn9dcAbbeV0oDqMgos31yhEqLhhvfhD1HC45sWnKKR51GAUwEWHaS_0Xbvzhf94qu34LxQXKOVQI8gGwdxGpKILZjqrS1cAK5hAHA7oNvA3qzIVPpUA1quUtTTaDms2YflNsxgvNCMIZmDV8EVTZCa7ITJPWxmu1bSE657";
-        string appSecret = Helper.ReadString("AppSecret");
-        string verifytoken = Helper.ReadString("VerifyTokenWebHook");
+        //string appSecret = Helper.ReadString("AppSecret");
+        //string verifytoken = Helper.ReadString("VerifyTokenWebHook");
 
         private IErrorService _errorService;
+
+        private Dictionary<string, string> _testDic = new Dictionary<string, string>();
         public ZaloWebhookController(IErrorService errorService)
         {
             _errorService = errorService;
@@ -38,12 +40,13 @@ namespace BotProject.Web.API
             {
                 var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
                 LogError(body);
+
                 await SendMessage(GetMessageTemplate(value.message.text, value.sender.id));
                 return new HttpResponseMessage(HttpStatusCode.OK);
-            }
-           
+            }     
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
+
         private JObject GetMessageTemplate(string text, string sender)
         {
             if (text.ToLower().Contains("menu") != true)

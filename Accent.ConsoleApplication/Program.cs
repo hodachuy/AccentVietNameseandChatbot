@@ -24,16 +24,8 @@ namespace Accent.ConsoleApplication
     {
         public static void Main(string[] args)
         {
+            //var obj = GetMessageTemplate("Your Code Telephone: 80181", "0913452221");
 
-            string s = "hdhuy123";
-
-            string x1 = s.Substring(0,4);
-
-            string star = "*";
-            for (int i = 0; i < (8 - 4); i++)
-            {
-                star = star + "*";
-            }
 
             string mailName = "";          
             string mailDomain = "";

@@ -17,28 +17,31 @@ namespace BotProject.Common.DigiproService.Digipro
 
         private static string urlGetByServiceTag = "GetttingServicesByServicetag";
         private static string urlGetttingServicesByRofNumber = "GetttingServicesByRofNumber";
-
         private static string UrlDigipro = ConfigHelper.ReadString("UrlDigipro");
-        public static string GetDetailServiceDigiproByRofOrSvtag(string nameFunction, string rofNumberOrSvTag)
+
+        //IsOOW : Dịch vụ sửa chữa ngoài bảo hành
+        public static string GetDetailServiceDigiproByRofOrSvtag(string nameFunction, string rofNumberOrSvTag, bool IsOOW = true)
         {
             string jsonResult = null;
             DigiproServiceModel rsDgpModel = new DigiproServiceModel();
             bool isRof = Regex.Match(rofNumberOrSvTag, NumberPattern).Success;
             if (isRof)
-            {                
-                String urlGetByRof4 = String.Format("{0}?id={1}&idsla=4", urlGetttingServicesByRofNumber, rofNumberOrSvTag);
-                jsonResult = GetAsync(urlGetByRof4).Result;
-                if(jsonResult == "null")
+            {
+                if (IsOOW) // lấy theo 4
+                {
+                    String urlGetByRof4 = String.Format("{0}?id={1}&idsla=4", urlGetttingServicesByRofNumber, rofNumberOrSvTag);
+                    jsonResult = GetAsync(urlGetByRof4).Result;
+                }
+                else
                 {
                     String urlGetByRof1 = String.Format("{0}?id={1}&idsla=1", urlGetttingServicesByRofNumber, rofNumberOrSvTag);
                     jsonResult = GetAsync(urlGetByRof1).Result;
+                    if (jsonResult == "null")
+                    {
+                        String urlGetByRof5 = String.Format("{0}?id={1}&idsla=5", urlGetttingServicesByRofNumber, rofNumberOrSvTag);
+                        jsonResult = GetAsync(urlGetByRof5).Result;
+                    }
                 }
-                if (jsonResult == "null")
-                {
-                    String urlGetByRof5 = String.Format("{0}?id={1}&idsla=5", urlGetttingServicesByRofNumber, rofNumberOrSvTag);
-                    jsonResult = GetAsync(urlGetByRof5).Result;
-                }
-
                 if (jsonResult == "null")
                 {
                     return null;
@@ -50,33 +53,37 @@ namespace BotProject.Common.DigiproService.Digipro
             else
             {
                 List<DigiproServiceModel> lstDgp = new List<DigiproServiceModel>();
-
-                // ưu tiên lấy theo 4
-                String urlGetSTag4 = String.Format("{0}?id={1}&idsla=4", urlGetByServiceTag, rofNumberOrSvTag);
-                string jsonResult4 = GetAsync(urlGetSTag4).Result;
-                if(jsonResult4 != "null")
+                if (IsOOW)
                 {
-                    rsDgpModel = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.
-                                    Deserialize<DigiproServiceModel>(jsonResult4);
-                    lstDgp.Add(rsDgpModel);
+                    // ưu tiên lấy theo 4
+                    String urlGetSTag4 = String.Format("{0}?id={1}&idsla=4", urlGetByServiceTag, rofNumberOrSvTag);
+                    string jsonResult4 = GetAsync(urlGetSTag4).Result;
+                    if (jsonResult4 != "null")
+                    {
+                        rsDgpModel = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.
+                                        Deserialize<DigiproServiceModel>(jsonResult4);
+                        lstDgp.Add(rsDgpModel);
+                    }
                 }
-
-                String urlGetSTag1 = String.Format("{0}?id={1}&idsla=1", urlGetByServiceTag, rofNumberOrSvTag);
-                string jsonResult1 = GetAsync(urlGetSTag1).Result;
-                if (jsonResult1 != "null")
+                else
                 {
-                    rsDgpModel = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.
-                                    Deserialize<DigiproServiceModel>(jsonResult1);
-                    lstDgp.Add(rsDgpModel);
-                }
+                    String urlGetSTag1 = String.Format("{0}?id={1}&idsla=1", urlGetByServiceTag, rofNumberOrSvTag);
+                    string jsonResult1 = GetAsync(urlGetSTag1).Result;
+                    if (jsonResult1 != "null")
+                    {
+                        rsDgpModel = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.
+                                        Deserialize<DigiproServiceModel>(jsonResult1);
+                        lstDgp.Add(rsDgpModel);
+                    }
 
-                String urlGetSTag5 = String.Format("{0}?id={1}&idsla=5", urlGetByServiceTag, rofNumberOrSvTag);
-                string jsonResult5 = GetAsync(urlGetSTag5).Result;
-                if (jsonResult5 != "null")
-                {
-                    rsDgpModel = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.
-                                    Deserialize<DigiproServiceModel>(jsonResult5);
-                    lstDgp.Add(rsDgpModel);
+                    String urlGetSTag5 = String.Format("{0}?id={1}&idsla=5", urlGetByServiceTag, rofNumberOrSvTag);
+                    string jsonResult5 = GetAsync(urlGetSTag5).Result;
+                    if (jsonResult5 != "null")
+                    {
+                        rsDgpModel = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.
+                                        Deserialize<DigiproServiceModel>(jsonResult5);
+                        lstDgp.Add(rsDgpModel);
+                    }
                 }
 
                 if(lstDgp.Count == 0)
@@ -163,8 +170,41 @@ namespace BotProject.Common.DigiproService.Digipro
                                                             bool isRof)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Máy có Service tag "+ serviceTag + " được nhận " + type + "<br/><br/>");
-            sb.AppendLine("- Tình trạng: Máy đã trả vào ngày " + dateClose + "<br/>");
+            string status = "";
+            if (isRof)
+            {
+                sb.AppendLine("Máy có số phiếu " + rofNumber + " được nhận " + type + "<br/><br/>");
+            }
+            else
+            {
+                sb.AppendLine("Máy có Service tag " + serviceTag + " được nhận " + type + "<br/><br/>");
+            }
+
+            if (!String.IsNullOrEmpty(dateReveive) && dateReveive != "01/01/0001")
+            {
+                status = "Máy được nhận ngày " + dateReveive;
+            }
+            if (!String.IsNullOrEmpty(dateTest) && dateTest != "01/01/0001")
+            {
+                status = "Máy được kiểm tra ngày " + dateTest; 
+            }
+
+            if (!String.IsNullOrEmpty(dateeta) && dateeta != "01/01/0001")
+            {
+                status = "Máy được nhận linh kiên ngày " + dateeta;
+            }
+
+            if (!String.IsNullOrEmpty(dateComplete) && dateComplete != "01/01/0001")
+            {
+                status = "Máy đã hoàn tất ngày " + dateComplete;
+            }
+
+            if (!String.IsNullOrEmpty(dateClose) && dateClose != "01/01/0001")
+            {
+                status = "Máy đã trả vào ngày " + dateClose;
+            }
+
+            sb.AppendLine("- Tình trạng: " + status + "<br/>");
             sb.AppendLine("- Tên khách hàng: " + customerName.ToUpper() + "<br/>");
             sb.AppendLine("- Điện thoại: " + ReplaceAt(phoneNumber,6, 4, "****") + "<br/>");
             sb.AppendLine("- Email: " + ReplaceEmail(email) + "<br/><br/>");
