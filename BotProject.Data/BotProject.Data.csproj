@@ -422,6 +422,10 @@
     <Compile Include="Migrations\201909131048242_UpdateMdVoucher1.Designer.cs">
       <DependentUpon>201909131048242_UpdateMdVoucher1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909221616502_AddFBUsert.cs" />
+    <Compile Include="Migrations\201909221616502_AddFBUsert.Designer.cs">
+      <DependentUpon>201909221616502_AddFBUsert.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -736,6 +740,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909131048242_UpdateMdVoucher1.resx">
       <DependentUpon>201909131048242_UpdateMdVoucher1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909221616502_AddFBUsert.resx">
+      <DependentUpon>201909221616502_AddFBUsert.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

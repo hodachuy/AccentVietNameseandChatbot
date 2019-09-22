@@ -52,8 +52,9 @@ namespace BotProject.Data
         public DbSet<ApplicationRole> ApplicationRoles { set; get; }
         public DbSet<ApplicationRoleGroup> ApplicationRoleGroups { set; get; }
         public DbSet<ApplicationUserGroup> ApplicationUserGroups { set; get; }
+		public DbSet<AppFacebookUser> AppFacebookUsers { set; get; }
 
-        public static BotDbContext Create()
+		public static BotDbContext Create()
         {
             return new BotDbContext();
         }

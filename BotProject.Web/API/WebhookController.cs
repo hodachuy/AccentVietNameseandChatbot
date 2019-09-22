@@ -122,6 +122,7 @@ namespace BotProject.Web.API
             _botService.loadAIMLFromDatabase(lstAIMLVm);
             _user = _botService.loadUserBot(value.entry[0].messaging[0].sender.id);
             _user.Predicates.addSetting("agecheck", "false");
+
             foreach (var item in value.entry[0].messaging)
             {
                 if (item.message == null && item.postback == null)
@@ -135,27 +136,37 @@ namespace BotProject.Web.API
                 else
                 {
                     if(item.message.quick_reply == null)
-                        await SendMessage(GetMessageTemplate(item.message.text, item.sender.id));
-                    else
-                        await SendMessage(GetMessageTemplate(item.message.quick_reply.payload, item.sender.id));
-                }
+					{
+						await SendMessage(GetMessageTemplate(item.message.text, item.sender.id));
+					}
+					else
+					{
+						await SendMessage(GetMessageTemplate(item.message.quick_reply.payload, item.sender.id));
+					}
+				}
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
-        /// <summary>
-        /// get text message template
-        /// </summary>
-        /// <param name="text">text</param>
-        /// <param name="sender">sender id</param>
-        /// <returns>json</returns>
-        private JObject GetMessageTemplate(string text, string sender)
+
+
+		public async Task ExcuteMessage(string text, string sender)
+		{
+			// check user exist and add update user
+			// get predicate user from db
+
+			AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
+			string result = aimlBotResult.OutputSentences[0].ToString();
+
+		}
+
+		/// <summary>
+		/// get text message template
+		/// </summary>
+		/// <param name="text">text</param>
+		/// <param name="sender">sender id</param>
+		/// <returns>json</returns>
+		private JObject GetMessageTemplate(string text, string sender)
         {
-
-            AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
-            string result = aimlBotResult.OutputSentences[0].ToString();
-
-
-
             if (text.ToLower().Contains("menu") != true)
             {
                 return JObject.FromObject(
@@ -229,7 +240,21 @@ namespace BotProject.Web.API
             }
         }
 
-        private bool VerifySignature(string signature, string body)
+		/// <summary>
+		/// send message
+		/// </summary>
+		/// <param name="templateJson">templateJson</param>
+		private async Task SendMessage(string templateJson)
+		{
+			using (HttpClient client = new HttpClient())
+			{
+				client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token={pageToken}", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+			}
+		}
+
+
+		private bool VerifySignature(string signature, string body)
         {
             var hashString = new StringBuilder();
             using (var crypto = new HMACSHA1(Encoding.UTF8.GetBytes(appSecret)))
