@@ -314,6 +314,7 @@
     <Compile Include="Infrastructure\Log4Net\Log4NetDAL.cs" />
     <Compile Include="Mappings\AutoMapperConfiguration.cs" />
     <Compile Include="Models\AIMLViewModel.cs" />
+    <Compile Include="Models\ApplicationFacebookUserViewModel.cs" />
     <Compile Include="Models\ApplicationGroupViewModel.cs" />
     <Compile Include="Models\ApplicationRoleViewModel.cs" />
     <Compile Include="Models\ApplicationUserViewModel.cs" />

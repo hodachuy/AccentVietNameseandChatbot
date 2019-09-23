@@ -45,6 +45,12 @@ namespace BotProject.Common
 
         public const string MdSearch_Yte = "y-te";
 
+
+        public const string POSTBACK_MODULE = "postback_module";
+
+
+        public const string TYPE_FACEBOOK = "facebook";
+        public const string TYPE_ZALO = "zalo";
     }
 
     public class ZaloConstans

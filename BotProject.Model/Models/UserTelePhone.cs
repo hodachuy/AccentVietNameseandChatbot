@@ -19,6 +19,9 @@ namespace BotProject.Model.Models
         public string Code { set; get; }
         public int NumberReceive { set; get; }
         public bool IsReceive { set; get; }
+        public string Type { set; get; }
+        public string SerialNumber { set; get; }
+        public string NumberOrder { set; get; }
         public int? MdVoucherID { set; get; }
     }
 }

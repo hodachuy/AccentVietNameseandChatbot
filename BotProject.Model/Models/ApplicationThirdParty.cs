@@ -8,27 +8,18 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-    [Table("Histories")]
-    public class History
+    [Table("ApplicationThirdParties")]
+    public class ApplicationThirdParty
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { set; get; }
-
-        public string UserName { set; get; }
-
-        public string UserSay { set; get; }
-
-        public string BotHandle { set; get; }
-
-        public string BotUnderStands { set; get; }
-
-        public string MessageHistory { set; get; }
-
+        public string PageID { set; get; }
         public string Type { set; get; }
-
-        public DateTime? CreatedDate { set; get; }
-
-        public int? BotID { set; get; }
+        public string AccessToken { set; get; }
+        public string SecrectKey { set; get; }
+        public int BotID { set; get; }
+        public bool IsDelete { set; get; }
+        public bool IsActive { set; get; }
     }
 }

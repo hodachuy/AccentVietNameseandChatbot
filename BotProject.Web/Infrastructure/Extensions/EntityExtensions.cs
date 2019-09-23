@@ -273,6 +273,20 @@ namespace BotProject.Web.Infrastructure.Extensions
             history.BotUnderStands = historyVm.BotUnderStands;
             history.BotHandle = historyVm.BotHandle;
             history.BotID = historyVm.BotID;
+            history.Type = historyVm.Type;
+        }
+        #endregion
+
+        #region AppFacebookUser
+        public static void UpdateFacebookUser(this ApplicationFacebookUser fbUser, ApplicationFacebookUserViewModel fbUserVm)
+        {
+            fbUser.ID = fbUserVm.ID;
+            fbUser.UserId = fbUserVm.UserId;
+            fbUser.PredicateName = fbUserVm.PredicateName;
+            fbUser.PredicateValue = fbUserVm.PredicateValue;
+            fbUser.IsHavePredicate = fbUserVm.IsHavePredicate;
+            fbUser.IsProactiveMessage = fbUserVm.IsProactiveMessage;
+            fbUser.StartedOn = DateTime.Now;
         }
         #endregion
     }

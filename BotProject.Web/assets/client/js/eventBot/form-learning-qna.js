@@ -175,7 +175,7 @@ $(document).ready(function () {
                             '<div class="wrbutton" indexbt="1">' +
                                 '<div class="bt" data-answer-id="">' +
                                     '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
-                                    '<i class="fa fa-remove icon-bin rmText"></i>' +
+                                    '<i class="fa fa-times icon-bin rmText"></i>' +
                                 '</div>' +
                             '</div>' +
                             '<button type="button" class="btn btn-rounded mt20 w100 hidden"><i class="fa fa-plus"></i> ' + txtbt + '</button>' +
@@ -276,7 +276,7 @@ $(document).ready(function () {
                         '<div class="learn_sliderbot learn_roundbot"></div>' +
                     '</label>' +
                     '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
-                    '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>' +
+                    '<i class="fa fa-times icon-bin rmText" style="display: inline;"></i>' +
                 '</div>';
             $(this).siblings('.wrbutton').attr('indexbt', (parseInt(bt) + 1));
             $(this).siblings('.wrbutton').append(str);
@@ -739,7 +739,7 @@ ActionFormQnA = function () {
                     html += '<div class="wrbutton" indexbt="1">';
                     html += '<div class="bt" data-answer-id="' + itemAnswer.ID + '">';
                     html += '<input type="text" autocomplete="off" value="' + htmlentities.encode(itemAnswer.ContentText) + '" class="form-control checkvalid" maxlength="320">';
-                    html += '<i class="fa fa-remove icon-bin rmText"></i>';
+                    html += '<i class="fa fa-times icon-bin rmText"></i>';
                     html += '</div>';
                     html += '</div>';
                     html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
@@ -764,7 +764,7 @@ ActionFormQnA = function () {
                     html += '<select id="select-card-' + itemAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
                     html += card();
                     html += '</select>';
-                    html += '<i class="fa fa-remove icon-bin rmText"></i>';
+                    html += '<i class="fa fa-times icon-bin rmText"></i>';
                     html += '</div>';
                     html += '</div>';
                     html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
@@ -801,14 +801,14 @@ ActionFormQnA = function () {
                 if (lstAnswer[0].ContentText != '') {
                     html += '<div class="bt" data-answer-id="' + lstAnswer[0].ID + '">';
                     html += '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320" value="' + lstAnswer[0].ContentText + '">';
-                    html += '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>';
+                    html += '<i class="fa fa-times icon-bin rmText" style="display: inline;"></i>';
                     html += '</div>';
                 } else {
                     html += '<div class="bt" id="answer-' + lstAnswer[0].ID + '" data-answer-id="' + lstAnswer[0].ID + '">';
                     html += '<select id="select-card-' + lstAnswer[0].ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
                     html += card();
                     html += '</select>';
-                    html += '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>';
+                    html += '<i class="fa fa-times icon-bin rmText" style="display: inline;"></i>';
                     html += '</div>';
 
                     var itemCard = {
@@ -825,7 +825,7 @@ ActionFormQnA = function () {
                         html += '<label class="mt6">Hoặc </label>';
                         html += '<label class="learn_switchbot"><input type="checkbox" class="learn_switchinput" checked=""><div class="learn_sliderbot learn_roundbot"></div></label>';
                         html += '<input type="text" data-answer-id="' + iAnswer.ID + '" autocomplete="off" class="form-control checkvalid" maxlength="320" value="' + iAnswer.ContentText + '">';
-                        html += '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>';
+                        html += '<i class="fa fa-times icon-bin rmText" style="display: inline;"></i>';
                         html += '</div>';
                     } else {
                         html += '<div class="bt" id="answer-' + iAnswer.ID + '" data-answer-id="' + iAnswer.ID + '">';
@@ -834,7 +834,7 @@ ActionFormQnA = function () {
                         html += '<select id="select-card-' + iAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
                         html += card();
                         html += '</select>';
-                        html += '<i class="fa fa-remove icon-bin rmText" style="display: inline;"></i>';
+                        html += '<i class="fa fa-times icon-bin rmText" style="display: inline;"></i>';
                         html += '</div>';
                         var itemCard = {
                             answerID: iAnswer.ID,

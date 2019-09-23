@@ -23,6 +23,8 @@ namespace BotProject.Web.Models
 
         public string StrCreatedDate { set; get; }
 
+        public string Type { set; get; }
+
         public int? BotID { set; get; }
     }
 }

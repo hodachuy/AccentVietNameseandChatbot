@@ -96,6 +96,7 @@ renderTemplate = function (data) {
                 } else {
                     html += '<td>' + (item.BotHandle == null ? '' : item.BotHandle) + '</td>';
                 }
+                html += '<td>' + (item.Type == null ? "" : item.Type) + '</td>';
                 html += '</tr>';
             })
 
@@ -194,10 +195,12 @@ renderTemplateVoucher = function (data) {
                 html += '<td>' + index + '</td>';
                 html += '<td>' + (item.IsReceived == true ? "Đã nhận" : "Chưa nhận") + '</td>';
                 html += '<td>' + item.TelephoneNumber + '</td>';
+                html += '<td>' + (item.SerialNumber == null ? "" : item.SerialNumber) + '</td>';
                 html += '<td>' + item.Title + '</td>';
                 html += '<td><img src="' + _Host + item.Image +'" alt="" width="100" height="50"></td>';
                 html += '<td>' + DateVoucher(item.StartDate) + '</td>';
                 html += '<td>' + DateVoucher(item.ExpirationDate) + '</td>';
+                html += '<td>' + (item.Type == null ? "" : item.Type) + '</td>';
                 html += '</tr>';
             })
 

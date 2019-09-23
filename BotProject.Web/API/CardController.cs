@@ -260,7 +260,7 @@ namespace BotProject.Web.API
                                                 ButtonModule btnModuleDb = new ButtonModule();
                                                 btnModuleDb.UpdateButtonModule(btnModuleVm);
                                                 btnModuleDb.CardID = cardDb.ID;
-                                                btnModuleDb.TempGnrItemID = tempGnrItemVm.ID;
+                                                btnModuleDb.TempGnrItemID = tempGnrItemDb.ID;
                                                 btnModuleDb.ModuleKnowledgeID = btnModuleVm.ModuleKnowledgeID;
                                                 btnModuleDb.Payload = btnModuleVm.Payload;// + "_" + btnModuleVm.ModuleKnowledgeID
                                                 btnModuleDb.MdSearchID = btnModuleVm.MdSearchID;
@@ -290,9 +290,6 @@ namespace BotProject.Web.API
                                                     _mdVoucherService.Update(mdVoucherDb);
                                                     _mdVoucherService.Save();
                                                 }
-
-                                                _commonCardService.AddButtonModule(btnModuleDb);
-                                                _commonCardService.Save();
                                             }
                                         }
                                     }

@@ -46,12 +46,14 @@ namespace BotProject.Data
         public DbSet<MdAge> MdAges { set; get; }
         public DbSet<MdVoucher> MdVouchers { set; get; }
         public DbSet<History> Histories { set; get; }
+        public DbSet<ApplicationFacebookUser> ApplicationFacebookUsers { set; get; }
         public DbSet<UserTelePhone> UserTelePhones { set; get; }
         public DbSet<MdSearchCategory> MdSearchCategories { set; get; }
         public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
         public DbSet<ApplicationRole> ApplicationRoles { set; get; }
         public DbSet<ApplicationRoleGroup> ApplicationRoleGroups { set; get; }
         public DbSet<ApplicationUserGroup> ApplicationUserGroups { set; get; }
+        public DbSet<ApplicationThirdParty> ApplicationThirdParties { set; get; }
 
         public static BotDbContext Create()
         {

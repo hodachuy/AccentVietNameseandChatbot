@@ -85,6 +85,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AIMLFileService.cs" />
+    <Compile Include="ApplicationFacebookUserService.cs" />
     <Compile Include="ApplicationGroupService.cs" />
     <Compile Include="ApplicationRoleService.cs" />
     <Compile Include="BotService.cs" />

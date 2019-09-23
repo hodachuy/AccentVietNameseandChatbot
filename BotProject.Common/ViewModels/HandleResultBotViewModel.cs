@@ -12,5 +12,7 @@ namespace BotProject.Common.ViewModels
         public bool Status { set; get; }
         public string Postback { set; get; }
         public string ResultAPI { set; get; }
+        public string TemplateJsonFacebook { set; get; }
+        public string TemplateJsonZalo { set; get; }
     }
 }

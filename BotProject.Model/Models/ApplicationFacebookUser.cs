@@ -8,27 +8,19 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-    [Table("Histories")]
-    public class History
+    [Table("ApplicationFacebookUsers")]
+    public class ApplicationFacebookUser
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { set; get; }
-
+        public string UserId { set; get; }
         public string UserName { set; get; }
-
-        public string UserSay { set; get; }
-
-        public string BotHandle { set; get; }
-
-        public string BotUnderStands { set; get; }
-
-        public string MessageHistory { set; get; }
-
-        public string Type { set; get; }
-
-        public DateTime? CreatedDate { set; get; }
-
-        public int? BotID { set; get; }
+        public string PredicateName { set; get; }
+        public string PredicateValue { set; get; }
+        public string PhoneNumber { set; get; }
+        public bool IsHavePredicate { set; get; }
+        public bool IsProactiveMessage { set; get; }
+        public DateTime StartedOn { set; get; }
     }
 }
