@@ -111,10 +111,10 @@ namespace BotProject.Web.API
         [HttpPost]
         public async Task<HttpResponseMessage> Post()
         {
-            //var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
+            var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
-            //if (!VerifySignature(signature, body))
-            //    return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            if (!VerifySignature(signature, body))
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
             var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
 
