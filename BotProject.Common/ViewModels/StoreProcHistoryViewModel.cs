@@ -24,6 +24,8 @@ namespace BotProject.Common.ViewModels
 
         public string StrCreatedDate { set; get; }
 
+        public string Type { set; get; }
+
         public int? BotID { set; get; }
 
         public int Total { set; get; }

@@ -1,10 +1,12 @@
 ﻿using BotProject.Common;
+using BotProject.Common.AppThird3PartyTemplate;
 using BotProject.Common.DigiproService.Digipro;
 using BotProject.Common.SendSmsMsgService;
 using BotProject.Common.ViewModels;
 using BotProject.Data.Infrastructure;
 using BotProject.Model.Models;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +29,7 @@ namespace BotProject.Service
         HandleResultBotViewModel HandleIsName(string name, int botID);
         HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
         HandleResultBotViewModel HandleIsSearchAPI(string mdName, string mdSearchID, string notFound);
-        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID);
+        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string Type = "");
         HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID);
         void Save();
     }
@@ -73,11 +75,15 @@ namespace BotProject.Service
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdPhoneDb = _mdPhoneService.GetByBotID(botID);
+            string rsMessage = "";
             rsHandle.Postback = mdPhoneDb.Payload;
             if (number.Contains(Common.CommonConstants.ModulePhone))
             {
                 rsHandle.Status = false;
                 rsHandle.Message = tempText(mdPhoneDb.MessageStart);// sau này phát triển thêm random nhiều message, tạo aiml random li(thẻ error phone)
+                rsMessage = mdPhoneDb.MessageStart;
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
                 return rsHandle;
             }
             bool isNumber = ValidatePhoneNumber(number, true);
@@ -85,10 +91,15 @@ namespace BotProject.Service
             {
                 rsHandle.Status = false;
                 rsHandle.Message = tempText(mdPhoneDb.MessageError);
+                rsMessage = mdPhoneDb.MessageError;
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
                 return rsHandle;
             }
             rsHandle.Status = true;
             rsHandle.Message = tempText(mdPhoneDb.MessageEnd);
+            rsMessage = mdPhoneDb.MessageEnd;
+            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
             return rsHandle;
         }
 
@@ -97,12 +108,14 @@ namespace BotProject.Service
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdEmailDb = _mdEmailService.GetByBotID(botID);
             rsHandle.Postback = mdEmailDb.Payload;
-
+            string rsMessage = "";
             rsHandle.Status = true;
             if (email.Contains(Common.CommonConstants.ModuleEmail))
             {
                 rsHandle.Status = false;
                 rsHandle.Message = tempText(mdEmailDb.MessageStart);
+                rsMessage = mdEmailDb.MessageStart;
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
                 return rsHandle;
             }
             bool isEmail = Regex.Match(email, EmailPattern).Success;
@@ -110,10 +123,14 @@ namespace BotProject.Service
             {
                 rsHandle.Status = false;
                 rsHandle.Message = tempText(mdEmailDb.MessageError);
+                rsMessage = mdEmailDb.MessageError;
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
                 return rsHandle;
             }
             rsHandle.Status = true;
             rsHandle.Message = tempText(mdEmailDb.MessageEnd);// nếu call tới follow thẻ khác trả về postback id card
+            rsMessage = mdEmailDb.MessageEnd;
+            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
             return rsHandle;
         }
 
@@ -121,13 +138,15 @@ namespace BotProject.Service
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdAgeDb = _mdAgeService.GetByBotID(botID);
-
+            string rsMessage = "";
             rsHandle.Postback = mdAgeDb.Payload;
             rsHandle.Status = true;
             if (age.Contains(Common.CommonConstants.ModuleAge))
             {
                 rsHandle.Status = false;
                 rsHandle.Message = tempText(mdAgeDb.MessageStart);
+                rsMessage = mdAgeDb.MessageStart;
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
                 return rsHandle;
             }
             bool isAge = Regex.Match(age, NumberPattern).Success;
@@ -135,6 +154,8 @@ namespace BotProject.Service
             {
                 rsHandle.Status = false;
                 rsHandle.Message = tempText(mdAgeDb.MessageError);
+                rsMessage = mdAgeDb.MessageError;
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
                 return rsHandle;
             }
             else
@@ -143,17 +164,23 @@ namespace BotProject.Service
                 {
                     rsHandle.Status = false;
                     rsHandle.Message = tempText("Bạn còn quá nhỏ để tôi đưa ra tư vấn.");
+                    rsMessage = "Bạn còn quá nhỏ để tôi đưa ra tư vấn.";
+                    rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
                     return rsHandle;
                 }
                 if (Int32.Parse(age) > 110)
                 {
                     rsHandle.Status = false;
                     rsHandle.Message = tempText("Xin lỗi tôi không thể đưa ra tư vấn hợp lý với độ tuổi này.");
+                    rsMessage = "Xin lỗi tôi không thể đưa ra tư vấn hợp lý với độ tuổi này.";
+                    rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
                     return rsHandle;
                 }
             }
             rsHandle.Status = true;
             rsHandle.Message = tempText(mdAgeDb.MessageEnd);// nếu call tới follow thẻ khác trả về postback id card
+            rsMessage = mdAgeDb.MessageEnd;
+            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
             return rsHandle;
         }
 
@@ -179,10 +206,11 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID)
+        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string Type ="")
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
+            string rsMessage = "";
             try
             {
                 UserTelePhone usTelephone = new UserTelePhone();
@@ -196,6 +224,8 @@ namespace BotProject.Service
                     {
                         rsHandle.Status = false;
                         rsHandle.Message = tempText(mdVoucherDb.MessageStart);
+                        rsMessage = mdVoucherDb.MessageStart;
+                        rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
                         return rsHandle;
                     }
                     else
@@ -205,6 +235,9 @@ namespace BotProject.Service
                         {
                             rsHandle.Status = false;
                             rsHandle.Message = tempText(mdVoucherDb.MessageError);
+                            rsMessage = mdVoucherDb.MessageError;
+                            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
                             return rsHandle;
                         }
 
@@ -215,6 +248,9 @@ namespace BotProject.Service
                             {
                                 rsHandle.Status = false;
                                 rsHandle.Message = tempText("Số điện thoại của bạn đã được nhận voucher trước đó.");
+                                rsMessage = "Số điện thoại của bạn đã được nhận voucher trước đó.";
+                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
                                 return rsHandle;
                             }
                         }
@@ -230,6 +266,9 @@ namespace BotProject.Service
                             {
                                 rsHandle.Status = true;
                                 rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
+                                rsMessage = "Vui lòng nhập mã OTP được gửi tới số điện thoại";
+                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
                                 if (usTelephoneDb == null)
                                 {
                                     usTelephone.Code = codeOTP;
@@ -238,6 +277,7 @@ namespace BotProject.Service
                                     usTelephone.TypeService = "Voucher";
                                     usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
                                     usTelephone.NumberReceive = 1;
+                                    usTelephone.Type = Type;
                                     _userTelephoneService.Create(usTelephone);
                                     _unitOfWork.Commit();
                                 }
@@ -255,6 +295,8 @@ namespace BotProject.Service
                             {
                                 rsHandle.Status = false;
                                 rsHandle.Message = tempText("Số điện thoại không đúng");
+                                rsMessage = "Số điện thoại không đúng";
+                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
                                 return rsHandle;
                             }
                         }
@@ -264,7 +306,11 @@ namespace BotProject.Service
             catch (Exception ex)
             {
                 rsHandle.Message = tempText(mdVoucherDb.MessageError);
+                rsMessage = "Not found";
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
             }
+            rsMessage = "Not found";
+            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
             return rsHandle;
         }
 
@@ -272,11 +318,13 @@ namespace BotProject.Service
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
+            string rsMessage = "";
             bool isContainOTP = _userTelephoneService.CheckContainOTP(OTP, phoneNumber, Int32.Parse(mdVoucherID));
             if (isContainOTP)
             {
                 rsHandle.Status = true;
                 rsHandle.Message = tempImage(mdVoucherDb.Image);
+                rsMessage = mdVoucherDb.Image;
                 var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
                 if (usTelephoneDb != null)
                 {
@@ -285,8 +333,7 @@ namespace BotProject.Service
                     _userTelephoneService.Update(usT);
                     _unitOfWork.Commit();
                 }
-
-                return rsHandle;
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString();
             }
             else
             {
@@ -296,7 +343,10 @@ namespace BotProject.Service
                 }
                 rsHandle.Status = false;
                 rsHandle.Message = tempText("Mã OTP không đúng");
+                rsMessage = "Mã OTP không đúng";
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
             }
+
             return rsHandle;
         }
 
@@ -321,6 +371,7 @@ namespace BotProject.Service
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdSearchDb = _mdSearchService.GetByID(Int32.Parse(mdSearchID));
+            string rsMessage = "";
             if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
             {
                 rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
@@ -334,6 +385,7 @@ namespace BotProject.Service
                     {
                         rsHandle.Status = false;
                         rsHandle.Message = tempText(mdSearchDb.MessageStart);
+                        rsMessage = mdSearchDb.MessageStart;
                     }
                     else
                     {
@@ -345,14 +397,12 @@ namespace BotProject.Service
                             if (String.IsNullOrEmpty(rsHandle.ResultAPI))
                             {
                                 rsHandle.Message = tempText(mdSearchDb.MessageError);
+                                rsMessage = mdSearchDb.MessageError;
                             }
                             else
                             {
-                                rsHandle.Message = "Tôi không hiểu";
-                            }
-                            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
-                            {
-                                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                                rsHandle.Message = tempText("Tôi không hiểu");
+                                rsMessage = "Tôi không hiểu";
                             }
                         }
                         if (mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Dell)
@@ -361,14 +411,12 @@ namespace BotProject.Service
                             if (resultDell != null)
                             {
                                 rsHandle.Message = tempText(resultDell.TextWarranty);
+                                rsMessage = resultDell.TextWarranty;
                             }
                             else
                             {
                                 rsHandle.Message = tempText(mdSearchDb.MessageError);
-                            }
-                            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
-                            {
-                                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                                rsMessage = mdSearchDb.MessageError;
                             }
                         }
                         if (mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Digipro)
@@ -378,14 +426,12 @@ namespace BotProject.Service
                             if (resultDigipro != null)
                             {
                                 rsHandle.Message = tempText(resultDigipro);
+                                rsMessage = resultDigipro;
                             }
                             else
                             {
                                 rsHandle.Message = tempText(mdSearchDb.MessageError);
-                            }
-                            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
-                            {
-                                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                                rsMessage = mdSearchDb.MessageError;
                             }
                         }
                         if (mdSearchCategory.Alias.ToLower() == Common.CommonConstants.MdSearch_Digipro_OOW)
@@ -395,14 +441,12 @@ namespace BotProject.Service
                             if (resultDigipro != null)
                             {
                                 rsHandle.Message = tempText(resultDigipro);
+                                rsMessage = resultDigipro;
                             }
                             else
                             {
                                 rsHandle.Message = tempText(mdSearchDb.MessageError);
-                            }
-                            if (!String.IsNullOrEmpty(mdSearchDb.TitlePayload))
-                            {
-                                rsHandle.Postback = tempNodeBtnModule(mdSearchDb.Payload, mdSearchDb.TitlePayload);
+                                rsMessage = mdSearchDb.MessageError;
                             }
                         }
                     }
@@ -411,8 +455,10 @@ namespace BotProject.Service
             catch (Exception ex)
             {
                 rsHandle.Message = tempText(mdSearchDb.MessageError);
+                rsMessage = mdSearchDb.MessageError;
                 //throw new Exception(ex.ToString());
             }
+            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdSearchDb.Payload, mdSearchDb.TitlePayload).ToString();
             return rsHandle;
         }
 
@@ -582,6 +628,7 @@ namespace BotProject.Service
             strRandom = ((strRandom.Length == iStrLen) ? strRandom : (strRandom.Substring(strRandom.Length - iStrLen, iStrLen)));
             return strRandom;
         }
+
 
         #region --DATA SOURCE API--
         private string apiRelateQA = "/api/get_related_pairs";

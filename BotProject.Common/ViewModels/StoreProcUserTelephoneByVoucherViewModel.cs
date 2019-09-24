@@ -18,6 +18,9 @@ namespace BotProject.Common.ViewModels
         public string Image { set; get; }
         public string Code { set; get; }
         public int? BotID { set; get; }
+        public string Type { set; get; }
+        public string SerialNumber { set; get; }
+        public string NumberOrder { set; get; }
         public int Total { set; get; }
     }
 }

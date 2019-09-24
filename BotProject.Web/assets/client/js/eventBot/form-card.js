@@ -2021,6 +2021,16 @@ $(document).ready(function () {
             'cardContent': card
         }
 
+        var tempJsonFB = '';
+        if (objectCard.cardContent.length != 0)
+        {
+            $.each(objectCard.cardContent, function (index, value) {
+                //console.log(JSON.stringify(value))
+                tempJsonFB += JSON.stringify(value) + "split"
+            })
+            console.log(tempJsonFB)
+        }
+
         var cardVm = {
             'ID': $('#idCard').val(),
             'GroupCardID': grCardId,
@@ -2033,7 +2043,7 @@ $(document).ready(function () {
             'CardContents': card_sql,
             'QuickReplyViewModels': ar_quickReply_sql,
             //'TemplateJSON': JSON.stringify(objectCard.cardContent),
-            'TemplateJsonFacebook': JSON.stringify(objectCard.cardContent),
+            'TemplateJsonFacebook': tempJsonFB,
             'FileAttachs': listUpdate
         }
         console.log(objectCard)

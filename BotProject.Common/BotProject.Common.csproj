@@ -79,6 +79,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppThird3PartyTemplate\FacebookTemplate.cs" />
+    <Compile Include="AppThird3PartyTemplate\ZaloTemplate.cs" />
     <Compile Include="CommonConstants.cs" />
     <Compile Include="ConfigHelper.cs" />
     <Compile Include="Convert\ConvertData.cs" />

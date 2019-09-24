@@ -22,12 +22,70 @@ namespace Accent.ConsoleApplication
 {
     class Program
     {
+        public class SearchNlpQnAViewModel
+        {
+            public string _id { set; get; }
+            public string question { set; get; }
+            public string answer { set; get; }
+            public string html { set; get; }
+            public string field { set; get; }
+            public int id { set; get; }
+        }
         public static void Main(string[] args)
         {
             //var obj = GetMessageTemplate("Your Code Telephone: 80181", "0913452221");
+            List<SearchNlpQnAViewModel> lstS = new List<SearchNlpQnAViewModel>();
+
+            for(int i = 1; i<=4; i++)
+            {
+                SearchNlpQnAViewModel sq = new SearchNlpQnAViewModel();
+                sq._id = i.ToString();
+                sq.html = i + " html";
+                sq.question = i + " question";
+                sq.answer = i + " answer";
+                sq.field = i + " field";
+                sq.id = i;
+                lstS.Add(sq);
+            }
+
+            string x1 = JObject.FromObject(
+                         new
+                         {
+                             recipient = new { id = "123123131313" },
+                             message = new
+                             {
+                                 attachment = new
+                                 {
+                                     type = "template",
+                                     payload = new
+                                     {
+                                         template_type = "generic",
+                                         elements = from p in lstS
+                                                    select new
+                                                    {
+                                                        title = p.html,
+                                                        item_url = p.field,
+                                                        image_url = p.question,
+                                                        subtitle = p.answer,
+                                                        buttons = new[]
+                                                        {
+                                                             new
+                                                                {
+                                                                   type = "web_url",
+                                                                   url = "https://petersfancybrownhats.com",
+                                                                   title = "View Website"
+                                                                },
+                                                        }
+                                                    }
+                                     }
+                                 }
+                             },
+                         }).ToString();
 
 
-            string mailName = "";          
+
+
+            string mailName = x1;          
             string mailDomain = "";
             //Regex rPart = new Regex("([^@]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase);
             //Match _partContent = rPart.Match(s);
