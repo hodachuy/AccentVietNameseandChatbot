@@ -83,8 +83,9 @@ namespace BotProject.Service
                 rsHandle.Message = tempText(mdPhoneDb.MessageStart);// sau này phát triển thêm random nhiều message, tạo aiml random li(thẻ error phone)
                 rsMessage = mdPhoneDb.MessageStart;
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
 
-                return rsHandle;
+				return rsHandle;
             }
             bool isNumber = ValidatePhoneNumber(number, true);
             if (!isNumber)
@@ -93,14 +94,17 @@ namespace BotProject.Service
                 rsHandle.Message = tempText(mdPhoneDb.MessageError);
                 rsMessage = mdPhoneDb.MessageError;
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
 
-                return rsHandle;
+				return rsHandle;
             }
             rsHandle.Status = true;
             rsHandle.Message = tempText(mdPhoneDb.MessageEnd);
             rsMessage = mdPhoneDb.MessageEnd;
             rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-            return rsHandle;
+			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
+			return rsHandle;
         }
 
         public HandleResultBotViewModel HandledIsEmail(string email, int botID)
@@ -116,7 +120,9 @@ namespace BotProject.Service
                 rsHandle.Message = tempText(mdEmailDb.MessageStart);
                 rsMessage = mdEmailDb.MessageStart;
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-                return rsHandle;
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
+				return rsHandle;
             }
             bool isEmail = Regex.Match(email, EmailPattern).Success;
             if (!isEmail)
@@ -125,13 +131,17 @@ namespace BotProject.Service
                 rsHandle.Message = tempText(mdEmailDb.MessageError);
                 rsMessage = mdEmailDb.MessageError;
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-                return rsHandle;
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
+				return rsHandle;
             }
             rsHandle.Status = true;
             rsHandle.Message = tempText(mdEmailDb.MessageEnd);// nếu call tới follow thẻ khác trả về postback id card
             rsMessage = mdEmailDb.MessageEnd;
             rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-            return rsHandle;
+			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
+			return rsHandle;
         }
 
         public HandleResultBotViewModel HandledIsAge(string age, int botID)
@@ -147,7 +157,9 @@ namespace BotProject.Service
                 rsHandle.Message = tempText(mdAgeDb.MessageStart);
                 rsMessage = mdAgeDb.MessageStart;
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-                return rsHandle;
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
+				return rsHandle;
             }
             bool isAge = Regex.Match(age, NumberPattern).Success;
             if (!isAge)
@@ -156,7 +168,8 @@ namespace BotProject.Service
                 rsHandle.Message = tempText(mdAgeDb.MessageError);
                 rsMessage = mdAgeDb.MessageError;
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-                return rsHandle;
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+				return rsHandle;
             }
             else
             {
@@ -166,7 +179,9 @@ namespace BotProject.Service
                     rsHandle.Message = tempText("Bạn còn quá nhỏ để tôi đưa ra tư vấn.");
                     rsMessage = "Bạn còn quá nhỏ để tôi đưa ra tư vấn.";
                     rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-                    return rsHandle;
+					rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
+					return rsHandle;
                 }
                 if (Int32.Parse(age) > 110)
                 {
@@ -174,14 +189,17 @@ namespace BotProject.Service
                     rsHandle.Message = tempText("Xin lỗi tôi không thể đưa ra tư vấn hợp lý với độ tuổi này.");
                     rsMessage = "Xin lỗi tôi không thể đưa ra tư vấn hợp lý với độ tuổi này.";
                     rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-                    return rsHandle;
+					rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+					return rsHandle;
                 }
             }
             rsHandle.Status = true;
             rsHandle.Message = tempText(mdAgeDb.MessageEnd);// nếu call tới follow thẻ khác trả về postback id card
             rsMessage = mdAgeDb.MessageEnd;
             rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-            return rsHandle;
+			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
+			return rsHandle;
         }
 
         public HandleResultBotViewModel HandleIsName(string name, int botID)
@@ -226,7 +244,9 @@ namespace BotProject.Service
                         rsHandle.Message = tempText(mdVoucherDb.MessageStart);
                         rsMessage = mdVoucherDb.MessageStart;
                         rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-                        return rsHandle;
+						rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
+						return rsHandle;
                     }
                     else
                     {
@@ -237,8 +257,9 @@ namespace BotProject.Service
                             rsHandle.Message = tempText(mdVoucherDb.MessageError);
                             rsMessage = mdVoucherDb.MessageError;
                             rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+							rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
-                            return rsHandle;
+							return rsHandle;
                         }
 
                         var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
@@ -250,8 +271,9 @@ namespace BotProject.Service
                                 rsHandle.Message = tempText("Số điện thoại của bạn đã được nhận voucher trước đó.");
                                 rsMessage = "Số điện thoại của bạn đã được nhận voucher trước đó.";
                                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+								rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
-                                return rsHandle;
+								return rsHandle;
                             }
                         }
 
@@ -268,8 +290,9 @@ namespace BotProject.Service
                                 rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
                                 rsMessage = "Vui lòng nhập mã OTP được gửi tới số điện thoại";
                                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+								rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
-                                if (usTelephoneDb == null)
+								if (usTelephoneDb == null)
                                 {
                                     usTelephone.Code = codeOTP;
                                     usTelephone.IsReceive = false;
@@ -297,7 +320,9 @@ namespace BotProject.Service
                                 rsHandle.Message = tempText("Số điện thoại không đúng");
                                 rsMessage = "Số điện thoại không đúng";
                                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-                                return rsHandle;
+								rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
+								return rsHandle;
                             }
                         }
                     }
@@ -308,10 +333,14 @@ namespace BotProject.Service
                 rsHandle.Message = tempText(mdVoucherDb.MessageError);
                 rsMessage = "Not found";
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-            }
-            rsMessage = "Not found";
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
+			}
+			rsMessage = "Not found";
             rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-            return rsHandle;
+			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
+			return rsHandle;
         }
 
         public HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID)
@@ -334,8 +363,10 @@ namespace BotProject.Service
                     _unitOfWork.Commit();
                 }
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString();
-            }
-            else
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString();
+
+			}
+			else
             {
                 if (!String.IsNullOrEmpty(mdVoucherDb.TitlePayload))
                 {
@@ -345,9 +376,11 @@ namespace BotProject.Service
                 rsHandle.Message = tempText("Mã OTP không đúng");
                 rsMessage = "Mã OTP không đúng";
                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-            }
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
-            return rsHandle;
+			}
+
+			return rsHandle;
         }
 
 
@@ -459,7 +492,9 @@ namespace BotProject.Service
                 //throw new Exception(ex.ToString());
             }
             rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdSearchDb.Payload, mdSearchDb.TitlePayload).ToString();
-            return rsHandle;
+			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdSearchDb.Payload, mdSearchDb.TitlePayload).ToString();
+
+			return rsHandle;
         }
 
         private static string TemplateOptionBot(string[] arrOpt, string title, string postback, string mdInfoPatientID, string notFound)

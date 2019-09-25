@@ -23,16 +23,24 @@ namespace BotProject.Common.AppThird3PartyTemplate
             return JObject.FromObject(
                  new
                  {
-                     recipient = new { id = sender },
+                     recipient = new { user_id = sender },
                      message = new
                      {
-                         attachment = new
+						 text = "Hình ảnh",
+						 attachment = new
                          {
-                             type = "image",
+                             type = "template",
                              payload = new
                              {
-                                 url = urlImage,
-                                 is_reusable = true
+								 template_type = "media",
+								 elements = new[]
+								 {
+									 new
+									 {
+										media_type = "image",
+										url = urlImage
+									 }
+								 }
                              }
                          }
                      },
@@ -50,16 +58,24 @@ namespace BotProject.Common.AppThird3PartyTemplate
                          message = new
                          {
                              text = text,
-                             quick_replies = new[]
-                             {
-                                 new
-                                 {
-                                      content_type = "text",
-                                      title = titleQuickReply,
-                                      payload = patternQuickReply
-                                 }
-                             }
-                         },
+							 attachment = new
+							 {
+								 type = "template",
+								 payload = new
+								 {
+									 template_type = "button",
+									 buttons = new[] 
+									 {
+										 new
+										 {
+											type = "oa.query.hide",
+											title = titleQuickReply,
+											payload = patternQuickReply
+										 }
+									 }
+								 }
+							 }
+						 },
                      });
             }
             return JObject.FromObject(
