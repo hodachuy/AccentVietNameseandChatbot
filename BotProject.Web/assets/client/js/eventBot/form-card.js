@@ -166,7 +166,7 @@ $(document).ready(function () {
     }
 
     function renderCard(data) {
-    console.log(data)
+        console.log(data)
         $('#card-name').val(data.Name);
         var lstCard = function () {
             var temp = [];
@@ -984,6 +984,8 @@ $(document).ready(function () {
 
         var card_sql = [];
 
+        var card_zalo = [];
+
         arLink = [];
         $('#wr_multi').removeClass('error');
 
@@ -1007,6 +1009,7 @@ $(document).ready(function () {
                 if ($(this).attr('card') == 'galery') {
                     var ar_galery = [];
                     var ar_galery_sql = [];
+                    var zalo_list = [];
                     $(this).children('.layer').each(function (index, el) {
                         if ($(this).find('.wr_title .head textarea').val().trim() == '') {
                             $(this).find('.wr_title .head textarea').addClass('error');
@@ -1071,6 +1074,19 @@ $(document).ready(function () {
                             var button_links_sql = [];
                             var button_postbacks_sql = [];
                             var button_module_sql = [];
+
+                            // zalo template list
+                            var zalo_list_element = {
+                                "title": title,
+                                "subtitle": subtitle,
+                                "image_url": image_url,
+                                "default_action": {
+                                    "type": "oa.open.url",
+                                    "url": (item_url == "" ? "https://digipro.vn" : item_url),
+                                }
+                            }
+                            zalo_list.push(zalo_list_element);
+
                             $(this).find('.wr_button .bt').each(function (index, el) {
                                 var button_object = {};
                                 var btn_object_sql = {};
@@ -1092,6 +1108,18 @@ $(document).ready(function () {
                                     }
                                     buttons.push(button_object);
 
+                                    //zalo
+                                    var zalo_list_element = {
+                                        "title": $(this).find('.bt_title').text(),
+                                        "subtitle": $(this).find('.bt_title').text(),
+                                        "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                        "default_action": {
+                                            "type": "oa.query.show",
+                                            "payload": postback_card,
+                                        }
+                                    }
+                                    zalo_list.push(zalo_list_element);
+
                                     //database_sql
                                     btn_object_sql = {
                                         "Type": "postback",
@@ -1107,12 +1135,34 @@ $(document).ready(function () {
                                     var module_medGetInfoPatient_ID = $(this).find('.bt_ct span').attr('data-md-info-patient-id');
                                     var module_mdSearchID = $(this).find('.bt_ct span').attr('data-md-search-id');
                                     var module_mdVoucherID = $(this).find('.bt_ct span').attr('data-md-voucher-id');
+                                    if (module_medGetInfoPatient_ID != 0) {
+                                        postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id') + "_" + module_medGetInfoPatient_ID;
+                                    }
+                                    if (module_mdSearchID != 0) {
+                                        postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id') + "_" + module_mdSearchID;
+                                    }
+                                    if (module_mdVoucherID != 0) {
+                                        postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id') + "_" + module_mdVoucherID;
+                                    }
                                     button_object = {
                                         "type": "postback",
                                         "title": $(this).find('.bt_title').text(),
                                         "payload": postback_module
                                     }
                                     buttons.push(button_object);
+
+                                    //zalo
+                                    var zalo_list_element = {
+                                        "title": $(this).find('.bt_title').text(),
+                                        "subtitle": $(this).find('.bt_title').text(),
+                                        "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                        "default_action": {
+                                            "type": "oa.query.show",
+                                            "payload": postback_module,
+                                        }
+                                    }
+                                    zalo_list.push(zalo_list_element);
+
 
                                     //database_sql
                                     btn_object_sql = {
@@ -1156,6 +1206,19 @@ $(document).ready(function () {
                                         "webview_height_ratio": attrwebview
                                     }
                                     buttons.push(button_object);
+
+                                    //zalo
+                                    var zalo_list_element = {
+                                        "title": $(this).find('.bt_title').text(),
+                                        "subtitle": $(this).find('.bt_title').text(),
+                                        "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                        "default_action": {
+                                            "type": "oa.open.url",
+                                            "url": (wbLink == "" ? "https://digipro.vn" : wbLink),
+                                        }
+                                    }
+                                    zalo_list.push(zalo_list_element);
+
 
                                     //database_sql
                                     btn_object_sql = {
@@ -1204,6 +1267,7 @@ $(document).ready(function () {
                                     return;
                                 }
                             });
+
                             var galery_element = {
                                 "title": title,
                                 "item_url": item_url,
@@ -1226,6 +1290,57 @@ $(document).ready(function () {
                                 "Index": $(this).attr('data-index')
                             };
                             ar_galery_sql.push(galery_element_sql);
+
+                            //ZALO Thêm quickreply từ facebook qua zalo cho template list
+                            $('#wr_reply #blReply li.reply').each(function (index, el) {
+                                if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'postback') {
+                                    if ($(this).find('.wr_reply_btcontent').children('i').length > 0) {
+                                    } else {
+                                        var payload = '';
+                                        var payload_id = '';
+                                        if ($(this).find('.reply_btcontent span').length > 0) {
+                                            payload += 'postback_card_';
+                                            $(this).find('.reply_btcontent span').each(function (index, el) {
+                                                if (index == 0) {
+                                                    payload += $(this).attr('postback-id');
+                                                } else {
+                                                    payload += '&' + $(this).attr('postback-id');
+                                                }
+                                                payload_id = $(this).attr('postback-id');
+                                            });
+                                        }
+                                        var zalo_list_element = {
+                                            "title": $(this).find('.wr_reply_btcontent .name-button').text(),
+                                            "subtitle": $(this).find('.wr_reply_btcontent .name-button').text(),
+                                            "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                            "default_action": {
+                                                "type": "oa.query.show",
+                                                "payload": payload,
+                                            }
+                                        }
+                                        zalo_list.push(zalo_list_element);
+
+                                    }
+                                } else if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'module') {
+                                    if ($(this).find('.wr_reply_btcontent').children('i').length > 0) {
+                                    } else {
+                                        var payload = '';
+                                        if ($(this).find('.reply_btcontent span').length > 0) {
+                                            payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
+                                        }
+                                        var zalo_list_element = {
+                                            "title": $(this).find('.wr_reply_btcontent .name-button').text(),
+                                            "subtitle": $(this).find('.wr_reply_btcontent .name-button').text(),
+                                            "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                            "default_action": {
+                                                "type": "oa.query.show",
+                                                "payload": payload,
+                                            }
+                                        }
+                                        zalo_list.push(zalo_list_element);
+                                    }
+                                }
+                            });
                         }
                     });
                     var generic = {
@@ -1243,6 +1358,22 @@ $(document).ready(function () {
                         }
                     };
                     card.push(generic);
+                    //zalo
+                    var zalo_ar_list = {
+                        "recipient": {
+                            "user_id": "{{senderId}}"
+                        },
+                        "message": {
+                            "attachment": {
+                                "type": "template",
+                                "payload": {
+                                    "template_type": "list",
+                                    "elements": zalo_list
+                                }
+                            }
+                        }
+                    }
+                    card_zalo.push(zalo_ar_list);
 
                     //database_sql
                     var genenic_sql = {
@@ -1259,6 +1390,7 @@ $(document).ready(function () {
                 } else if ($(this).attr('card') == 'text') {
                     var template_text = {};
                     var template_text_sql = {};
+                    var zalo_template_text = {};
                     if ($(this).find('.content-text').val().trim() == '') {
                         $(this).find('.content-text').addClass('error');
                         checkCard = false;
@@ -1274,6 +1406,73 @@ $(document).ready(function () {
                                 },
                                 "message": {
                                     "text": $(this).find('.wr_title .wr-content-text textarea').val()
+                                }
+                            }
+                            zalo_template_text = {
+                                "recipient": {
+                                    "user_id": "{{senderId}}"
+                                },
+                                "message": {
+                                    "text": $(this).find('.wr_title .wr-content-text textarea').val()
+                                }
+                            }
+                            var zalo_arr_quick = [];
+                            //ZALO Thêm quickreply từ facebook qua zalo cho template list
+                            $('#wr_reply #blReply li.reply').each(function (index, el) {
+                                if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'postback') {
+                                    if ($(this).find('.wr_reply_btcontent').children('i').length > 0) {
+                                    } else {
+                                        var payload = '';
+                                        var payload_id = '';
+                                        if ($(this).find('.reply_btcontent span').length > 0) {
+                                            payload += 'postback_card_';
+                                            $(this).find('.reply_btcontent span').each(function (index, el) {
+                                                if (index == 0) {
+                                                    payload += $(this).attr('postback-id');
+                                                } else {
+                                                    payload += '&' + $(this).attr('postback-id');
+                                                }
+                                                payload_id = $(this).attr('postback-id');
+                                            });
+                                        }
+                                        var zalo_button_object = {
+                                            "type": "oa.query.show",
+                                            "title": $(this).find('.wr_reply_btcontent .name-button').text(),
+                                            "payload": payload
+                                        }
+                                        zalo_arr_quick.push(zalo_button_object);
+                                    }
+                                } else if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'module') {
+                                    if ($(this).find('.wr_reply_btcontent').children('i').length > 0) {
+                                    } else {
+                                        var payload = '';
+                                        if ($(this).find('.reply_btcontent span').length > 0) {
+                                            payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
+                                        }
+                                        var zalo_button_object = {
+                                            "type": "oa.query.show",
+                                            "title": $(this).find('.wr_reply_btcontent .name-button').text(),
+                                            "payload": payload
+                                        }
+                                        zalo_arr_quick.push(zalo_button_object);
+                                    }
+                                }
+                            });
+                            if (zalo_arr_quick.length != 0) {
+                                zalo_template_text = {
+                                    "recipient": {
+                                        "user_id": "{{senderId}}"
+                                    },
+                                    "message": {
+                                        "text": $(this).find('.wr_title .wr-content-text textarea').val(),
+                                        "attachment": {
+                                            "type": "template",
+                                            "payload": {
+                                                "template_type": "button",
+                                                "buttons": zalo_arr_quick.reverse()
+                                            }
+                                        }
+                                    }
                                 }
                             }
 
@@ -1294,9 +1493,13 @@ $(document).ready(function () {
                             var button_links_sql = [];
                             var button_postbacks_sql = [];
                             var button_module_sql = [];
+                            // zalo button
+                            var zalo_buttons = [];
+
                             $(this).find('.wr_button .bt').each(function (index, el) {
                                 var button_object = {};
                                 var btn_object_sql = {};
+                                var zalo_button_object = {};
                                 if ($(this).attr('type-button') == 'postback') {
                                     var postback_card = 'postback_card_';
                                     var payload_id = '';
@@ -1315,6 +1518,13 @@ $(document).ready(function () {
                                     }
                                     buttons.push(button_object);
 
+                                    zalo_button_object = {
+                                        "type": "oa.query.show",
+                                        "title": $(this).find('.bt_title').text(),
+                                        "payload": postback_card
+                                    }
+                                    zalo_buttons.push(zalo_button_object);
+
                                     btn_object_sql = {
                                         "Type": "postback",
                                         "Title": $(this).find('.bt_title').text(),
@@ -1329,8 +1539,18 @@ $(document).ready(function () {
                                     var module_medGetInfoPatient_ID = $(this).find('.bt_ct span').attr('data-md-info-patient-id');
                                     var module_mdSearchID = $(this).find('.bt_ct span').attr('data-md-search-id');
                                     var module_mdVoucherID = $(this).find('.bt_ct span').attr('data-md-voucher-id');
+                                    if (module_medGetInfoPatient_ID != 0) {
+                                        postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id') + "_" + module_medGetInfoPatient_ID;
+                                    }
+                                    if (module_mdSearchID != 0) {
+                                        postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id') + "_" + module_mdSearchID;
+                                    }
+                                    if (module_mdVoucherID != 0) {
+                                        postback_module = 'postback_module_' + $(this).find('.bt_ct span').attr('module-id') + "_" + module_mdVoucherID;
+                                    }
                                     console.log(module_medGetInfoPatient_ID)
                                     console.log(module_mdSearchID)
+
                                     button_object = {
                                         "type": "postback",
                                         "title": $(this).find('.bt_title').text(),
@@ -1338,12 +1558,18 @@ $(document).ready(function () {
                                     }
                                     buttons.push(button_object);
 
+                                    zalo_button_object = {
+                                        "type": "oa.query.show",
+                                        "title": $(this).find('.bt_title').text(),
+                                        "payload": postback_module
+                                    }
+                                    zalo_buttons.push(zalo_button_object);
+
                                     btn_object_sql = {
                                         "type": "postback",
                                         "title": $(this).find('.bt_title').text(),
                                         "payload": postback_module
                                     }
-
                                     //database_sql
                                     btn_object_sql = {
                                         "Type": "postback",
@@ -1388,6 +1614,16 @@ $(document).ready(function () {
                                     }
                                     buttons.push(button_object);
 
+                                    zalo_button_object = {
+                                        "title": $(this).find('.bt_title').text(),
+                                        "payload": {
+                                            "url": (wbLink == "" ? "https://digipro.vn" : wbLink),
+                                        },
+                                        "type": "oa.open.url"
+                                    }
+                                    zalo_buttons.push(zalo_button_object);
+
+
                                     btn_object_sql = {
                                         "Type": "web_url",
                                         "Title": $(this).find('.bt_title').text(),
@@ -1413,6 +1649,49 @@ $(document).ready(function () {
                                     return;
                                 }
                             });
+
+                            //ZALO Thêm quickreply từ facebook qua zalo cho template list
+                            $('#wr_reply #blReply li.reply').each(function (index, el) {
+                                if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'postback') {
+                                    if ($(this).find('.wr_reply_btcontent').children('i').length > 0) {
+                                    } else {
+                                        var payload = '';
+                                        var payload_id = '';
+                                        if ($(this).find('.reply_btcontent span').length > 0) {
+                                            payload += 'postback_card_';
+                                            $(this).find('.reply_btcontent span').each(function (index, el) {
+                                                if (index == 0) {
+                                                    payload += $(this).attr('postback-id');
+                                                } else {
+                                                    payload += '&' + $(this).attr('postback-id');
+                                                }
+                                                payload_id = $(this).attr('postback-id');
+                                            });
+                                        }
+                                        var zalo_button_object = {
+                                            "type": "oa.query.show",
+                                            "title": $(this).find('.wr_reply_btcontent .name-button').text(),
+                                            "payload": payload
+                                        }
+                                        zalo_buttons.push(zalo_button_object);
+                                    }
+                                } else if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'module') {
+                                    if ($(this).find('.wr_reply_btcontent').children('i').length > 0) {
+                                    } else {
+                                        var payload = '';
+                                        if ($(this).find('.reply_btcontent span').length > 0) {
+                                            payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
+                                        }
+                                        var zalo_button_object = {
+                                            "type": "oa.query.show",
+                                            "title": $(this).find('.wr_reply_btcontent .name-button').text(),
+                                            "payload": payload
+                                        }
+                                        zalo_buttons.push(zalo_button_object);
+                                    }
+                                }
+                            });
+
                             template_text = {
                                 "recipient": {
                                     "id": "{{senderId}}"
@@ -1424,6 +1703,22 @@ $(document).ready(function () {
                                             "template_type": "button",
                                             "text": $(this).find('.wr_title .wr-content-text textarea').val(),
                                             "buttons": buttons
+                                        }
+                                    }
+                                }
+                            }
+
+                            zalo_template_text = {
+                                "recipient": {
+                                    "user_id": "{{senderId}}"
+                                },
+                                "message": {
+                                    "text": $(this).find('.wr_title .wr-content-text textarea').val(),
+                                    "attachment": {
+                                        "type": "template",
+                                        "payload": {
+                                            "template_type": "button",
+                                            "buttons": zalo_buttons
                                         }
                                     }
                                 }
@@ -1442,6 +1737,7 @@ $(document).ready(function () {
                                 }
                             };
                         }
+                        card_zalo.push(zalo_template_text);
                         card.push(template_text);
                         card_sql.push(template_text_sql);
                     }
@@ -1487,6 +1783,28 @@ $(document).ready(function () {
                             }
                         };
                         card.push(template_image);
+
+                        //zalo
+                        var zalo_template_image = {
+                            "recipient": {
+                                "user_id": "{{senderId}}"
+                            },
+                            "message": {
+                                "text": "Hình ảnh",
+                                "attachment": {
+                                    "type": "template",
+                                    "payload": {
+                                        "template_type": "media",
+                                        "elements": [{
+                                            "media_type": "image",
+                                            "url": payload
+                                        }]
+                                    }
+                                }
+                            }
+                        }
+                        card_zalo.push(zalo_template_image);
+
 
                         var template_image_sql = {
                             "Message": {
@@ -1883,7 +2201,7 @@ $(document).ready(function () {
                         if (typeof $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id') !== typeof undefined
                                 && $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id') !== false
                                 && $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id') != ''
-                                ){
+                                ) {
                             var arAt = {
                                 attachment_id: $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id'),
                                 type: 'rm'
@@ -2010,6 +2328,9 @@ $(document).ready(function () {
                 $.extend(true, card[card.length - 2], objReply);
             }
         }
+        //console.log(card)
+        console.log(card_zalo)
+
         var objectCard = {
             '_id': $('#idCard').val(),
             'userId': $('#userId').val(),
@@ -2018,17 +2339,28 @@ $(document).ready(function () {
             'blockId': $('#blockId').val(),
             'nameCard': $('#card-name').val(),
             'arProduct': arProduct,
-            'cardContent': card
+            'cardContent': card,//facebook
+            'cardContentZalo': card_zalo
         }
 
+        //facebook
         var tempJsonFB = '';
-        if (objectCard.cardContent.length != 0)
-        {
+        if (objectCard.cardContent.length != 0) {
             $.each(objectCard.cardContent, function (index, value) {
                 //console.log(JSON.stringify(value))
                 tempJsonFB += JSON.stringify(value) + "split"
             })
-            console.log(tempJsonFB)
+            //console.log(tempJsonFB)
+        }
+
+        //zalo
+        var tempJsonZalo = '';
+        if (objectCard.cardContentZalo.length != 0) {
+            $.each(objectCard.cardContentZalo, function (index, value) {
+                //console.log(JSON.stringify(value))
+                tempJsonZalo += JSON.stringify(value) + "split"
+            })
+            //console.log(tempJsonZalo)
         }
 
         var cardVm = {
@@ -2044,10 +2376,11 @@ $(document).ready(function () {
             'QuickReplyViewModels': ar_quickReply_sql,
             //'TemplateJSON': JSON.stringify(objectCard.cardContent),
             'TemplateJsonFacebook': tempJsonFB,
+            'TemplateJsonZalo': tempJsonZalo,
             'FileAttachs': listUpdate
         }
-        console.log(objectCard)
-            console.log(cardVm)
+        //console.log(objectCard)
+        //console.log(cardVm)
         if (checkCard) {
             var element = $(this);
 

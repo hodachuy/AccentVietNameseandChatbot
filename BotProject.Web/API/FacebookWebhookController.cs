@@ -30,11 +30,12 @@ namespace BotProject.Web.API
     /// Webhook
     /// Receive request from Facebook when user trigger to message
     /// </summary>
-    public class WebhookController : ApiController
+    /// 
+    public class FacebookWebhookController : ApiController
     {
         string pageToken = Helper.ReadString("AccessToken");
         string appSecret = Helper.ReadString("AppSecret");
-        string verifytoken =  Helper.ReadString("VerifyTokenWebHook");
+        string verifytoken = Helper.ReadString("VerifyTokenWebHook");
 
         private readonly string Domain = Helper.ReadString("Domain");
         private readonly string UrlAPI = Helper.ReadString("UrlAPI");
@@ -63,7 +64,7 @@ namespace BotProject.Web.API
         private User _user;
 
 
-        public WebhookController(IErrorService errorService,
+        public FacebookWebhookController(IErrorService errorService,
                               IBotService botDbService,
                               ISettingService settingService,
                               IHandleModuleServiceService handleMdService,
@@ -98,13 +99,19 @@ namespace BotProject.Web.API
         public HttpResponseMessage Get()
         {
             var querystrings = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
-            if (querystrings["hub.verify_token"] == "lacviet_bot_chat")
+            foreach(var item in querystrings)
             {
-                return new HttpResponseMessage(HttpStatusCode.OK)
+                //LogError(item.Key + " " + item.Value);
+                if (item.Key == "hub.verify_token")
                 {
-                    Content = new StringContent(querystrings["hub.challenge"], Encoding.UTF8, "text/plain")
-                };
+                    if (item.Value == "lacviet_bot_chat")
+                        return new HttpResponseMessage(HttpStatusCode.OK)
+                        {
+                            Content = new StringContent(querystrings["hub.challenge"], Encoding.UTF8, "text/plain")
+                        };
+                }
             }
+
             return new HttpResponseMessage(HttpStatusCode.Unauthorized);
         }
 
@@ -138,13 +145,13 @@ namespace BotProject.Web.API
                 {
                     continue;
                 }
-                else if(item.message == null && item.postback != null)
+                else if (item.message == null && item.postback != null)
                 {
                     await ExcuteMessage(item.postback.payload, item.sender.id, botId);
                 }
                 else
                 {
-                    if(item.message.quick_reply != null)
+                    if (item.message.quick_reply != null)
                     {
                         await ExcuteMessage(item.message.quick_reply.payload, item.sender.id, botId);
                     }
@@ -157,7 +164,7 @@ namespace BotProject.Web.API
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        public async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
+        private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
         {
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
 
@@ -608,83 +615,14 @@ namespace BotProject.Web.API
                         }
                     }
                 }
-
                 return await SendMessage(FacebookTemplate.GetMessageTemplateText(result, sender));
 
             }
             catch (Exception ex)
             {
+                LogError(ex.Message);
                 return new HttpResponseMessage(HttpStatusCode.OK);
-            }          
-        }
-
-        /// <summary>
-        /// get text message template
-        /// </summary>
-        /// <param name="text">text</param>
-        /// <param name="sender">sender id</param>
-        /// <returns>json</returns>
-        private JObject GetMessageTemplate(string text, string sender,int botId)
-        {
-
-            if (text.ToLower().Contains("menu") != true)
-            {
-                return JObject.FromObject(
-                    new
-                    {
-                        recipient = new { id = sender },
-                        message = new { text = "Chào mừng bạn đến với Trung tâm Digipro, A/C có vấn đề gì cần giải đáp ạ." },
-                    });
             }
-
-
-            return JObject.FromObject(
-                new
-                {
-                    recipient = new { id = sender },
-                    message = new
-                    {
-                        attachment = new
-                        {
-                            type = "template",
-                            payload = new
-                            {
-                                template_type = "generic",
-                                elements = new[]
-                                {
-                                    new
-                                    {
-                                        title = "Trung tâm chăm sóc khách hàng Digipro.vn",
-                                        item_url = "http://digipro.vn/",
-                                        image_url = "https://bot.surelrn.vn/File/Images/Card/134a16f1-7c56-4eca-a61b-1bbe5a23a42b-Logo_DGP_EN_1600-800_5.png",
-                                        subtitle = "Tư vấn bảo hành, sửa chữa máy tính",
-                                        buttons = new []
-                                        {
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title = "💻 Bảo hành dòng máy Dell",
-                                                  payload = "postback_card_6070"
-                                            },
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title = "🔍 Tra cứu máy bảo hành",
-                                                  payload = "postback_card_6071"
-                                            },
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title =  "📞 Thông tin hỗ trợ",
-                                                  payload = "postback_card_6072"
-                                            },
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                });
         }
 
         /// <summary>
@@ -697,7 +635,7 @@ namespace BotProject.Web.API
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token={pageToken}", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
@@ -716,10 +654,11 @@ namespace BotProject.Web.API
                 templateJson = Regex.Replace(templateJson, "<br />", "\\n");
                 templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
                 templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token={pageToken}", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                    res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
                 }
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
@@ -735,10 +674,11 @@ namespace BotProject.Web.API
                 templateJson = Regex.Replace(templateJson, "<br />", "\\n");
                 templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
                 templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token={pageToken}", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                    HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
                 }
             }
         }

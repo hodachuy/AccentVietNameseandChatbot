@@ -47,6 +47,7 @@ namespace BotProject.Data
         public DbSet<MdVoucher> MdVouchers { set; get; }
         public DbSet<History> Histories { set; get; }
         public DbSet<ApplicationFacebookUser> ApplicationFacebookUsers { set; get; }
+        public DbSet<ApplicationZaloUser> ApplicationZaloUsers { set; get; }
         public DbSet<UserTelePhone> UserTelePhones { set; get; }
         public DbSet<MdSearchCategory> MdSearchCategories { set; get; }
         public DbSet<ApplicationGroup> ApplicationGroups { set; get; }

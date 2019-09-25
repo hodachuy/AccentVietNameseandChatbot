@@ -289,5 +289,18 @@ namespace BotProject.Web.Infrastructure.Extensions
             fbUser.StartedOn = DateTime.Now;
         }
         #endregion
+
+        #region AppZaloUser
+        public static void UpdateZaloUser(this ApplicationZaloUser zlUser, ApplicationZaloUserViewModel zlUserVm)
+        {
+            zlUser.ID = zlUserVm.ID;
+            zlUser.UserId = zlUserVm.UserId;
+            zlUser.PredicateName = zlUserVm.PredicateName;
+            zlUser.PredicateValue = zlUserVm.PredicateValue;
+            zlUser.IsHavePredicate = zlUserVm.IsHavePredicate;
+            zlUser.IsProactiveMessage = zlUserVm.IsProactiveMessage;
+            zlUser.StartedOn = DateTime.Now;
+        }
+        #endregion
     }
 }

@@ -270,7 +270,7 @@
     <Compile Include="API\ModuleController.cs" />
     <Compile Include="API\SettingController.cs" />
     <Compile Include="API\VoucherController.cs" />
-    <Compile Include="API\WebhookController.cs" />
+    <Compile Include="API\FacebookWebhookController.cs" />
     <Compile Include="API\ZaloWebhookController.cs" />
     <Compile Include="API_Mobile\MessageController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
@@ -318,6 +318,7 @@
     <Compile Include="Models\ApplicationGroupViewModel.cs" />
     <Compile Include="Models\ApplicationRoleViewModel.cs" />
     <Compile Include="Models\ApplicationUserViewModel.cs" />
+    <Compile Include="Models\ApplicationZaloUserViewModel.cs" />
     <Compile Include="Models\FormQuestionAnswerViewModel.cs" />
     <Compile Include="Models\BotSettingViewModel.cs" />
     <Compile Include="Models\BotViewModel.cs" />
@@ -1017,6 +1018,9 @@
       <Project>{e57606dd-4d4b-4b21-ac22-a9398cb8810c}</Project>
       <Name>SearchEngine.Service</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

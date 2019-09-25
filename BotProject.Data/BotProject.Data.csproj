@@ -442,6 +442,10 @@
     <Compile Include="Migrations\201909230614433_UpdateAppFacebookUserv1.Designer.cs">
       <DependentUpon>201909230614433_UpdateAppFacebookUserv1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909250339230_AddAppZaloUser.cs" />
+    <Compile Include="Migrations\201909250339230_AddAppZaloUser.Designer.cs">
+      <DependentUpon>201909250339230_AddAppZaloUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -451,6 +455,7 @@
     <Compile Include="Repositories\ApplicationRoleGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationRoleRepository.cs" />
     <Compile Include="Repositories\ApplicationUserGroupRepository.cs" />
+    <Compile Include="Repositories\ApplicationZaloUserRepository.cs" />
     <Compile Include="Repositories\ButtonModuleRepository.cs" />
     <Compile Include="Repositories\FormQuestionAnswerRepository.cs" />
     <Compile Include="Repositories\BotRepository.cs" />
@@ -772,6 +777,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909230614433_UpdateAppFacebookUserv1.resx">
       <DependentUpon>201909230614433_UpdateAppFacebookUserv1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909250339230_AddAppZaloUser.resx">
+      <DependentUpon>201909250339230_AddAppZaloUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
