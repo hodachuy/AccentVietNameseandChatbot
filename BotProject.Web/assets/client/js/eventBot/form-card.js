@@ -1114,7 +1114,7 @@ $(document).ready(function () {
                                         "subtitle": $(this).find('.bt_title').text(),
                                         "image_url": "https://developers.zalo.me/web/static/zalo.png",
                                         "default_action": {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "payload": postback_card,
                                         }
                                     }
@@ -1157,7 +1157,7 @@ $(document).ready(function () {
                                         "subtitle": $(this).find('.bt_title').text(),
                                         "image_url": "https://developers.zalo.me/web/static/zalo.png",
                                         "default_action": {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "payload": postback_module,
                                         }
                                     }
@@ -1314,7 +1314,7 @@ $(document).ready(function () {
                                             "subtitle": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "image_url": "https://developers.zalo.me/web/static/zalo.png",
                                             "default_action": {
-                                                "type": "oa.query.show",
+                                                "type": "oa.query.hide",
                                                 "payload": payload,
                                             }
                                         }
@@ -1333,7 +1333,7 @@ $(document).ready(function () {
                                             "subtitle": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "image_url": "https://developers.zalo.me/web/static/zalo.png",
                                             "default_action": {
-                                                "type": "oa.query.show",
+                                                "type": "oa.query.hide",
                                                 "payload": payload,
                                             }
                                         }
@@ -1436,7 +1436,7 @@ $(document).ready(function () {
                                             });
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "payload": payload
                                         }
@@ -1450,7 +1450,7 @@ $(document).ready(function () {
                                             payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "payload": payload
                                         }
@@ -1519,7 +1519,7 @@ $(document).ready(function () {
                                     buttons.push(button_object);
 
                                     zalo_button_object = {
-                                        "type": "oa.query.show",
+                                        "type": "oa.query.hide",
                                         "title": $(this).find('.bt_title').text(),
                                         "payload": postback_card
                                     }
@@ -1559,7 +1559,7 @@ $(document).ready(function () {
                                     buttons.push(button_object);
 
                                     zalo_button_object = {
-                                        "type": "oa.query.show",
+                                        "type": "oa.query.hide",
                                         "title": $(this).find('.bt_title').text(),
                                         "payload": postback_module
                                     }
@@ -1669,7 +1669,7 @@ $(document).ready(function () {
                                             });
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "payload": payload
                                         }
@@ -1683,7 +1683,7 @@ $(document).ready(function () {
                                             payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "payload": payload
                                         }
