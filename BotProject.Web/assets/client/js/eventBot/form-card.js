@@ -1,4 +1,8 @@
-﻿var botId = $("#botId").val();
+﻿//###### DIGIPRO ######//
+var url_image_generic_default = "File/Images/Card/134a16f1-7c56-4eca-a61b-1bbe5a23a42b-Logo_DGP_EN_1600-800_5.png";
+
+
+var botId = $("#botId").val();
 var srcFolderImg = "https://platform.messnow.com/",
         srcAddImg = "api/file/create",
         srcRmImg = "api/file/delete",
@@ -1078,7 +1082,7 @@ $(document).ready(function () {
                             // zalo template list
                             var zalo_list_element = {
                                 "title": title,
-                                "subtitle": subtitle,
+                                "subtitle": (subtitle == "" ? title : subtitle),
                                 "image_url": image_url,
                                 "default_action": {
                                     "type": "oa.open.url",
@@ -1112,10 +1116,10 @@ $(document).ready(function () {
                                     var zalo_list_element = {
                                         "title": $(this).find('.bt_title').text(),
                                         "subtitle": $(this).find('.bt_title').text(),
-                                        "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                        "image_url": url_image_generic_default,
                                         "default_action": {
-                                            "type": "oa.query.hide",
-                                            "payload": postback_card,
+                                            "type": "oa.query.show",
+                                            "payload": $(this).find('.bt_title').text(),//"#"+postback_card,
                                         }
                                     }
                                     zalo_list.push(zalo_list_element);
@@ -1155,10 +1159,10 @@ $(document).ready(function () {
                                     var zalo_list_element = {
                                         "title": $(this).find('.bt_title').text(),
                                         "subtitle": $(this).find('.bt_title').text(),
-                                        "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                        "image_url": url_image_generic_default,
                                         "default_action": {
-                                            "type": "oa.query.hide",
-                                            "payload": postback_module,
+                                            "type": "oa.query.show",
+                                            "payload": $(this).find('.bt_title').text(),//"#" + postback_module,
                                         }
                                     }
                                     zalo_list.push(zalo_list_element);
@@ -1211,7 +1215,7 @@ $(document).ready(function () {
                                     var zalo_list_element = {
                                         "title": $(this).find('.bt_title').text(),
                                         "subtitle": $(this).find('.bt_title').text(),
-                                        "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                        "image_url": url_image_generic_default,
                                         "default_action": {
                                             "type": "oa.open.url",
                                             "url": (wbLink == "" ? "https://digipro.vn" : wbLink),
@@ -1312,10 +1316,10 @@ $(document).ready(function () {
                                         var zalo_list_element = {
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "subtitle": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                            "image_url": url_image_generic_default,
                                             "default_action": {
-                                                "type": "oa.query.hide",
-                                                "payload": payload,
+                                                "type": "oa.query.show",
+                                                "payload": $(this).find('.wr_reply_btcontent .name-button').text(),//"#"+payload,
                                             }
                                         }
                                         zalo_list.push(zalo_list_element);
@@ -1331,10 +1335,10 @@ $(document).ready(function () {
                                         var zalo_list_element = {
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "subtitle": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "image_url": "https://developers.zalo.me/web/static/zalo.png",
+                                            "image_url": url_image_generic_default,
                                             "default_action": {
-                                                "type": "oa.query.hide",
-                                                "payload": payload,
+                                                "type": "oa.query.show",
+                                                "payload": $(this).find('.wr_reply_btcontent .name-button').text(),//"#"+payload,
                                             }
                                         }
                                         zalo_list.push(zalo_list_element);
@@ -1436,9 +1440,9 @@ $(document).ready(function () {
                                             });
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.hide",
+                                            "type": "oa.query.show",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": payload
+                                            "payload": $(this).find('.wr_reply_btcontent .name-button').text(),//"#" + payload
                                         }
                                         zalo_arr_quick.push(zalo_button_object);
                                     }
@@ -1450,9 +1454,9 @@ $(document).ready(function () {
                                             payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.hide",
+                                            "type": "oa.query.show",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": payload
+                                            "payload": $(this).find('.wr_reply_btcontent .name-button').text()//"#"+payload
                                         }
                                         zalo_arr_quick.push(zalo_button_object);
                                     }
@@ -1519,9 +1523,9 @@ $(document).ready(function () {
                                     buttons.push(button_object);
 
                                     zalo_button_object = {
-                                        "type": "oa.query.hide",
+                                        "type": "oa.query.show",
                                         "title": $(this).find('.bt_title').text(),
-                                        "payload": postback_card
+                                        "payload": $(this).find('.bt_title').text(), //postback_card
                                     }
                                     zalo_buttons.push(zalo_button_object);
 
@@ -1559,9 +1563,9 @@ $(document).ready(function () {
                                     buttons.push(button_object);
 
                                     zalo_button_object = {
-                                        "type": "oa.query.hide",
+                                        "type": "oa.query.show",
                                         "title": $(this).find('.bt_title').text(),
-                                        "payload": postback_module
+                                        "payload": $(this).find('.bt_title').text(), //postback_module
                                     }
                                     zalo_buttons.push(zalo_button_object);
 
@@ -1669,9 +1673,9 @@ $(document).ready(function () {
                                             });
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.hide",
+                                            "type": "oa.query.show",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": payload
+                                            "payload": $(this).find('.wr_reply_btcontent .name-button').text(), //payload
                                         }
                                         zalo_buttons.push(zalo_button_object);
                                     }
@@ -1683,9 +1687,9 @@ $(document).ready(function () {
                                             payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.hide",
+                                            "type": "oa.query.show",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": payload
+                                            "payload": $(this).find('.wr_reply_btcontent .name-button').text(), //payload
                                         }
                                         zalo_buttons.push(zalo_button_object);
                                     }

@@ -17,6 +17,9 @@ using System.Web;
 using System.Security.Cryptography;
 using Accent.ConsoleApplication.SmsService;
 using System.Xml;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net;
 
 namespace Accent.ConsoleApplication
 {
@@ -33,6 +36,52 @@ namespace Accent.ConsoleApplication
         }
         public static void Main(string[] args)
         {
+
+            string tempImage = JObject.FromObject(
+                         new
+                         {
+                             recipient = new { user_id = "501004450355249305" },
+                             message = new
+                             {
+                                 text = "Hình ảnh",
+                                 attachment = new
+                                 {
+                                     type = "template",
+                                     payload = new
+                                     {
+                                         template_type = "media",
+                                         elements = new[]
+                                         {
+                                                         new
+                                                         {
+                                                            media_type = "image",
+                                                            url = "File/Images/Voucher/5e77c950-154f-4a0e-a963-b1db464bfcd2-7f080aec146bf335aa7a.jpg"
+                                                         }
+                                         }
+                                     }
+                                 }
+                             },
+                         }).ToString();
+
+            string tem2 = JObject.FromObject(
+                 new
+                 {
+                     recipient = new { user_id = "501004450355249305" },
+                     message = new { text = "abc" },
+                 }).ToString();
+
+            var x = SendMessage(tem2, "501004450355249305");
+
+
+
+
+
+            string text = "💻 Bảo hành dòng máy Dell và 📞 Thông tin hỗ trợ postback_card";
+
+            string x54564 = Regex.Replace(text, @"\p{Cs}", "").Trim();
+
+
+
             //var obj = GetMessageTemplate("Your Code Telephone: 80181", "0913452221");
             List<SearchNlpQnAViewModel> lstS = new List<SearchNlpQnAViewModel>();
 
@@ -113,6 +162,28 @@ namespace Accent.ConsoleApplication
 
         }
 
+        private static async Task<HttpResponseMessage> SendMessage(string templateJson, string sender)
+        {
+            string pageToken = "OUQpPbeaQqbjuhvZLIjhJstikczICc8EDPBCEaCHQKStjV4gJ1fqPJEwnaeBPsSmOjhq7rL485CgnvKRSa97SYpW_bXRIMe04el3A2e9Rb9ca-C63ZKn9dcAbbeV0oDqMgos31yhEqLhhvfhD1HC45sWnKKR51GAUwEWHaS_0Xbvzhf94qu34LxQXKOVQI8gGwdxGpKILZjqrS1cAK5hAHA7oNvA3qzIVPpUA1quUtTTaDms2YflNsxgvNCMIZmDV8EVTZCa7ITJPWxmu1bSE657";
+            HttpResponseMessage res;
+            if (!String.IsNullOrEmpty(templateJson))
+            {
+                string Domain = "https://bot.surelrn.vn/";
+                templateJson = templateJson.Replace("{{senderId}}", sender);
+                templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
+                templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                }
+            }
+            return new HttpResponseMessage(HttpStatusCode.OK);
+
+        }
 
         private static JObject GetMessageTemplate(string text, string sender)
         {

@@ -122,6 +122,8 @@ namespace BotProject.Web.API
         private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
         {
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
+            text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
+            text = Regex.Replace(text, @"#", "").Trim();
 
             HistoryViewModel hisVm = new HistoryViewModel();
             hisVm.BotID = botId;
@@ -481,7 +483,7 @@ namespace BotProject.Web.API
                     var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
                     if (systemConfigVm.Count() == 0)
                     {
-                        return await SendMessage(ZaloTemplate.GetMessageTemplateText("Vui lòng kích hoạt tìm kiếm API", sender));// not match
+                        return await SendMessage(ZaloTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
                     }
                     string nameFunctionAPI = "";
                     string number = "";
@@ -506,7 +508,11 @@ namespace BotProject.Web.API
                             RecursionLimit = 100
                         }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
                         // render template json generic
-
+                        int totalQnA = lstQnaAPI.Count();
+                        string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                        await SendMessageTask(ZaloTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
+                        string strTemplateGenericRelatedQuestion = ZaloTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                        return await SendMessage(strTemplateGenericRelatedQuestion, sender);
                     }
                     else
                     {
@@ -579,88 +585,6 @@ namespace BotProject.Web.API
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
         }
-
-        private JObject GetMessageTemplate(string text, string sender)
-        {
-            if (text.ToLower().Contains("menu") != true)
-            {
-                return JObject.FromObject(
-                    new
-                    {
-                        recipient = new { user_id = sender },
-                        message = new { text = "Chào mừng bạn đến với Trung tâm Digipro, A/C có vấn đề gì cần giải đáp ạ." },
-                    });
-            }
-
-            return JObject.FromObject(
-                new
-                {
-                    recipient = new { user_id = sender },
-                    message = new {
-                        attachment = new
-                        {
-                            type = "template",
-                            payload = new
-                            {
-                                template_type = "list",
-                                elements = new[]
-                                {
-                                    new
-                                    {
-                                        title = "Trung tâm chăm sóc khách hàng Digipro.vn",
-                                        subtitle = "Tư vấn bảo hành, sửa chữa máy tính",
-                                        image_url = "https://bot.surelrn.vn/File/Images/Card/134a16f1-7c56-4eca-a61b-1bbe5a23a42b-Logo_DGP_EN_1600-800_5.png",
-                                        default_action = new
-                                        {
-                                            type = "oa.open.url",
-                                            payload = "abc",
-                                            url = "https://digipro.vn/"
-                                        }
-                                    },
-                                    new
-                                    {
-                                        title = "💻 Bảo hành dòng máy Dell",
-                                        subtitle = "Bảo hành dòng máy Dell",
-                                        image_url =  "https://developers.zalo.me/web/static/zalo.png",
-                                        default_action = new
-                                        {
-                                            type = "oa.query.hide",
-                                            payload = "abc878",
-                                            url = "https://digipro.vn/"
-                                        }
-                                    },
-                                    new
-                                    {
-                                        title = "🔍 Tra cứu máy bảo hành",
-                                        subtitle = "Tra cứu máy bảo hành",
-                                        image_url =  "https://developers.zalo.me/web/static/zalo.png",
-                                        default_action = new
-                                        {
-                                            type = "oa.query.hide",
-                                            payload = "abc123",
-                                            url = "https://digipro.vn/"
-                                        }
-                                    },
-                                    new
-                                    {
-                                        title = "📞 Thông tin hỗ trợ",
-                                        subtitle = "Thông tin hỗ trợ",
-                                        image_url =  "https://developers.zalo.me/web/static/zalo.png",
-                                        default_action = new
-                                        {
-                                            type = "oa.query.hide",
-                                            payload = "abc12543",
-                                            url = "https://digipro.vn/"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                });
-        }
-
-
 
         /// <summary>
         /// send message

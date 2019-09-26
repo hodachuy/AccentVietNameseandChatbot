@@ -167,7 +167,7 @@ namespace BotProject.Web.API
         private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
         {
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
-
+            text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
             HistoryViewModel hisVm = new HistoryViewModel();
             hisVm.BotID = botId;
             hisVm.CreatedDate = DateTime.Now;
@@ -526,7 +526,7 @@ namespace BotProject.Web.API
                     var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
                     if (systemConfigVm.Count() == 0)
                     {
-                        return await SendMessage(FacebookTemplate.GetMessageTemplateText("Vui lòng kích hoạt tìm kiếm API", sender));// not match
+                        return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
                     }
                     string nameFunctionAPI = "";
                     string number = "";
@@ -542,7 +542,7 @@ namespace BotProject.Web.API
                     }
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
                     AddHistory(hisVm);
-                    string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, number, botId.ToString());
+                    string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", botId.ToString());
                     if (!String.IsNullOrEmpty(resultAPI))
                     {
                         var lstQnaAPI = new JavaScriptSerializer
@@ -551,7 +551,11 @@ namespace BotProject.Web.API
                             RecursionLimit = 100
                         }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
                         // render template json generic
-
+                        int totalQnA = lstQnaAPI.Count();
+                        string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn"; 
+                        await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(),sender);
+                        string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                        return await SendMessage(strTemplateGenericRelatedQuestion,sender);
                     }
                     else
                     {

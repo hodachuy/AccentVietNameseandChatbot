@@ -344,6 +344,8 @@
     <Content Include="assets\client\css\chatbot-dialog.css" />
     <Content Include="assets\client\css\common-bot.css" />
     <Content Include="assets\client\css\components.css" />
+    <Content Include="assets\client\css\faq\faq-reponsive.css" />
+    <Content Include="assets\client\css\faq\style.css" />
     <Content Include="assets\client\css\jquery.selectBoxIt.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c10_Ft5ovaKZZ_s.css" />
     <Content Include="assets\client\css\lvbot-chat-dialog\c11_hZOCwdDXbub.css" />
@@ -459,6 +461,8 @@
     <Content Include="assets\client\libs\sortable\jquery.sortable.js" />
     <Content Include="assets\client\libs\toastr\toastr.min.css" />
     <Content Include="assets\client\libs\toastr\toastr.min.js" />
+    <Content Include="assets\client\vendor\boostrap-v3\bootstrap.min.css" />
+    <Content Include="assets\client\vendor\boostrap-v3\bootstrap.min.js" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.css" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.min.js" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.png" />
@@ -762,7 +766,9 @@
     <Content Include="assets\images\eco-slider-img-3.png" />
     <Content Include="assets\images\email.png" />
     <Content Include="assets\images\error-img.png" />
+    <Content Include="assets\images\faq.png" />
     <Content Include="assets\images\github.png" />
+    <Content Include="assets\images\images_question.jpg" />
     <Content Include="assets\images\loader.svg" />
     <Content Include="assets\images\loads.gif" />
     <Content Include="assets\images\logo.png" />
@@ -967,6 +973,7 @@
     <Content Include="Views\Bot\QnA.cshtml" />
     <Content Include="Views\Bot\BotSearchEngine.cshtml" />
     <Content Include="Views\Bot\BotHistory.cshtml" />
+    <Content Include="Views\Home\FAQ.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -975,7 +982,6 @@
     <Folder Include="File\AIML\User_a596de6b-5055-4aa0-a4bf-056d0cc8ed8f_BotID_5021\" />
     <Folder Include="File\Images\Voucher\" />
     <Folder Include="Views\FacebookBot\" />
-    <Folder Include="Views\Home\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

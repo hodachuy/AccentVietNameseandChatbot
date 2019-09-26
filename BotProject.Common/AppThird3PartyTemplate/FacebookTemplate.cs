@@ -75,10 +75,6 @@ namespace BotProject.Common.AppThird3PartyTemplate
 
         public static Object GetMessageTemplateGenericByList(string sender, List<SearchNlpQnAViewModel> lstSearchNLP)
         {
-            JObject jb = new JObject();
-            jb.Add("recipient", sender);
-
-
             return JObject.FromObject(
               new
               {
@@ -91,38 +87,23 @@ namespace BotProject.Common.AppThird3PartyTemplate
                           payload = new
                           {
                               template_type = "generic",
-                              elements = new[]
-                              {
-
-                                    new
-                                    {
-                                        title = "Trung tâm chăm sóc khách hàng Digipro.vn",
-                                        item_url = "http://digipro.vn/",
-                                        image_url = "https://bot.surelrn.vn/File/Images/Card/134a16f1-7c56-4eca-a61b-1bbe5a23a42b-Logo_DGP_EN_1600-800_5.png",
-                                        subtitle = "Tư vấn bảo hành, sửa chữa máy tính",
-                                        buttons = new []
-                                        {
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title = "💻 Bảo hành dòng máy Dell",
-                                                  payload = "postback_card_6070"
-                                            },
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title = "🔍 Tra cứu máy bảo hành",
-                                                  payload = "postback_card_6071"
-                                            },
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title =  "📞 Thông tin hỗ trợ",
-                                                  payload = "postback_card_6072"
-                                            },
-                                        }
-                                    }
-                              }
+                              elements = from q in lstSearchNLP
+                                         select new
+                                         {
+                                             title = q.question.Substring(0,60)+"...",
+                                             item_url = "",
+                                             image_url = ConfigHelper.ReadString("Domain")+ "assets/images/faq.png",
+                                             subtitle = "FAQs",
+                                             buttons = new[]
+                                             {
+                                                             new
+                                                                {
+                                                                   type = "web_url",
+                                                                   url = ConfigHelper.ReadString("Domain")+"home/faq/"+q.id+"",
+                                                                   title = "Xem chi tiết"
+                                                                },
+                                                        }
+                                         }
                           }
                       }
                   },

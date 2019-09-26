@@ -1,0 +1,45 @@
+﻿@model BotProject.Common.ViewModels.MdQnAViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>QnA</title>
+    <link href="~/assets/client/vendor/boostrap-v3/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/assets/client/vendor/boostrap-v3/bootstrap.min.js"></script>
+    <link href="~/assets/client/css/faq/style.css" rel="stylesheet" />
+    <link href="~/assets/client/css/faq/faq-reponsive.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container">
+        <h1>FAQs</h1>
+        <div class="row">
+            <article class="question question-type-normal question_author_yes sticky post-2110 type-question status-publish hentry question-category-analytics question_tags-analytics question_tags-programs" id="post-2110" itemscope="" itemtype="https://schema.org/Question">
+                <h2>
+                    <a itemprop="url" href="#" title="" rel="bookmark">
+                        <i class="icon-pushpin tooltip-n question-sticky" original-title="Sticky"></i>
+                        <span itemprop="name">@Html.Raw(Model.QuesContentHTML)</span>
+                    </a>
+                </h2>              
+                <div class="question-author" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
+                    <a href="#" original-title="Ahmed Hassan" class="question-author-img tooltip-n">
+                        <span></span>
+                        <img itemprop="image" class="avatar avatar-65 photo" alt="" width="65" height="65" src="~/assets/images/images_question.jpg">
+                    </a>
+                </div>
+                <div class="question-inner">
+                    <div class="clearfix"></div>
+                    <div class="question-desc">
+                        <div itemprop="text">@Html.Raw(Model.AnsContentHTML)</div>
+                        <div class="no_vote_more"></div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </article>
+        </div>
+    </div>
+</body>
+</html>

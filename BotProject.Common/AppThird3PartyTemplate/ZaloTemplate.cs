@@ -26,21 +26,21 @@ namespace BotProject.Common.AppThird3PartyTemplate
                      recipient = new { user_id = sender },
                      message = new
                      {
-						 text = "Hình ảnh",
-						 attachment = new
+                         text = "Hình ảnh",
+                         attachment = new
                          {
                              type = "template",
                              payload = new
                              {
-								 template_type = "media",
-								 elements = new[]
-								 {
-									 new
-									 {
-										media_type = "image",
-										url = urlImage
-									 }
-								 }
+                                 template_type = "media",
+                                 elements = new[]
+                                 {
+                                     new
+                                     {
+                                        media_type = "image",
+                                        url = urlImage
+                                     }
+                                 }
                              }
                          }
                      },
@@ -58,24 +58,24 @@ namespace BotProject.Common.AppThird3PartyTemplate
                          message = new
                          {
                              text = text,
-							 attachment = new
-							 {
-								 type = "template",
-								 payload = new
-								 {
-									 template_type = "button",
-									 buttons = new[] 
-									 {
-										 new
-										 {
-											type = "oa.query.hide",
-											title = titleQuickReply,
-											payload = patternQuickReply
-										 }
-									 }
-								 }
-							 }
-						 },
+                             attachment = new
+                             {
+                                 type = "template",
+                                 payload = new
+                                 {
+                                     template_type = "button",
+                                     buttons = new[]
+                                     {
+                                         new
+                                         {
+                                            type = "oa.query.hide",
+                                            title = titleQuickReply,
+                                            payload = patternQuickReply
+                                         }
+                                     }
+                                 }
+                             }
+                         },
                      });
             }
             return JObject.FromObject(
@@ -92,14 +92,10 @@ namespace BotProject.Common.AppThird3PartyTemplate
 
         public static Object GetMessageTemplateGenericByList(string sender, List<SearchNlpQnAViewModel> lstSearchNLP)
         {
-            JObject jb = new JObject();
-            jb.Add("recipient", sender);
-
-
             return JObject.FromObject(
               new
               {
-                  recipient = new { id = sender },
+                  recipient = new { user_id = sender },
                   message = new
                   {
                       attachment = new
@@ -107,39 +103,19 @@ namespace BotProject.Common.AppThird3PartyTemplate
                           type = "template",
                           payload = new
                           {
-                              template_type = "generic",
-                              elements = new[]
-                              {
-
-                                    new
-                                    {
-                                        title = "Trung tâm chăm sóc khách hàng Digipro.vn",
-                                        item_url = "http://digipro.vn/",
-                                        image_url = "https://bot.surelrn.vn/File/Images/Card/134a16f1-7c56-4eca-a61b-1bbe5a23a42b-Logo_DGP_EN_1600-800_5.png",
-                                        subtitle = "Tư vấn bảo hành, sửa chữa máy tính",
-                                        buttons = new []
-                                        {
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title = "💻 Bảo hành dòng máy Dell",
-                                                  payload = "postback_card_6070"
-                                            },
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title = "🔍 Tra cứu máy bảo hành",
-                                                  payload = "postback_card_6071"
-                                            },
-                                            new
-                                            {
-                                                  type = "postback",
-                                                  title =  "📞 Thông tin hỗ trợ",
-                                                  payload = "postback_card_6072"
-                                            },
-                                        }
-                                    }
-                              }
+                              template_type = "list",
+                              elements = from q in lstSearchNLP
+                                         select new
+                                         {
+                                             title = q.question.Substring(0, 60) + "...",
+                                             subtitle = "FAQs",
+                                             image_url = ConfigHelper.ReadString("Domain") + "assets/images/faq.png",
+                                             default_action = new
+                                             {
+                                                 type = "oa.open.url",
+                                                 url = ConfigHelper.ReadString("Domain") + "home/faq/" + q.id + "",
+                                             }
+                                         }
                           }
                       }
                   },

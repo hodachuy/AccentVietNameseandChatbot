@@ -224,10 +224,11 @@ namespace BotProject.Web.Controllers
             string txtOriginal = "";
             int valBotID = Int32.Parse(botId);
             try
-            {
+            {               
                 if (!String.IsNullOrEmpty(text))
                 {
                     text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
+                    text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
                     txtOriginal = text;
                 }
                 if (Session[CommonConstants.SessionUserBot] == null)
