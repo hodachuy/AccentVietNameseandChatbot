@@ -257,13 +257,29 @@ namespace BotProject.Web.API
                             AddHistory(hisVm);
                             if (handleMdVoucher.Status)
                             {
-                                zlUserDb.IsHavePredicate = true;
+								string telePhoneNumber = text;
+								string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
+								//check phonenumber có kèm theo serialnumber không
+								foreach (var item in strArrSpecial)
+								{
+									if (text.Contains(item))
+									{
+										var arrStrPhone = Regex.Split(text, item);
+										telePhoneNumber = arrStrPhone[0];
+										break;
+									}
+								}
+
+								zlUserDb.IsHavePredicate = true;
                                 zlUserDb.PredicateName = "IsVoucherOTP";
                                 zlUserDb.PredicateValue = mdVoucherId;// voucherId
-                                zlUserDb.PhoneNumber = text;
+                                zlUserDb.PhoneNumber = telePhoneNumber;
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
-                            }
+								// send otp
+								await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
+								return await SendMessage("Mã OTP đang được gửi, bạn chờ tí nhé...", sender);
+							}
                             return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
                         }
                         if (predicateName == "IsVoucherOTP")
@@ -287,7 +303,16 @@ namespace BotProject.Web.API
                                 zlUserDb.PredicateValue = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
-                            }
+
+								// trả về image voucher + text message end
+								string[] arrMsgHandleOTP = Regex.Split(handleOTP.TemplateJsonZalo, "split");
+								foreach (var itemMessageJson in arrMsgHandleOTP)
+								{
+									await SendMessageTask(itemMessageJson, sender);
+								}
+								return new HttpResponseMessage(HttpStatusCode.OK);
+
+							}
                             return await SendMessage(handleOTP.TemplateJsonZalo, sender);
                         }
                     }

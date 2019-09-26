@@ -36,22 +36,32 @@ namespace Accent.ConsoleApplication
         }
         public static void Main(string[] args)
         {
+			SearchNlpQnAViewModel s = new SearchNlpQnAViewModel();
+			var ic = s.id.ToString();
+			s.id = 1;
+			int numberOrder = 10000 + (s.id.ToString() == "0" ? 1 : s.id + 1);
 
-            string phoneNumber = "0657-345345";
-            string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
+			string telephone = "0657";
+			string serialNumber = "";
+			string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
 
-            bool bol = Array.Exists(strArrSpecial, E => E == phoneNumber);
-            //check phonenumber có kèm theo serialnumber không
-            if (strArrSpecial.All(phoneNumber.Contains))
-            {
-                string vcx = "";
-            }
+			//check phonenumber có kèm theo serialnumber không
+			foreach (var item in strArrSpecial)
+			{
+				if (telephone.Contains(item))
+				{
+					var arrStrPhone = Regex.Split(telephone, item);
+					telephone = arrStrPhone[0];
+					serialNumber = arrStrPhone[1];
+					break;
+				}
+			}
 
 
 
 
 
-            string tempImage = JObject.FromObject(
+			string tempImage = JObject.FromObject(
                          new
                          {
                              recipient = new { user_id = "501004450355249305" },

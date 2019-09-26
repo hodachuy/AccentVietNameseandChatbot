@@ -25,13 +25,14 @@ namespace BotProject.Service
     public class UserTelephoneService : IUserTelephoneService
     {
         IUserTelephoneRepository _userTelephoneRepository;
-        IUnitOfWork _unitOfWork;
+		IUnitOfWork _unitOfWork;
 
         public UserTelephoneService(IUnitOfWork unitOfWork, IUserTelephoneRepository userTelephoneRepository)
         {
             _unitOfWork = unitOfWork;
             _userTelephoneRepository = userTelephoneRepository;
-        }
+
+		}
 
         public UserTelePhone GetByPhoneAndMdVoucherId(string phoneNumber, int mdVoucherId)
         {

@@ -249,7 +249,8 @@ namespace BotProject.Web.API
                 mdVoucherDb.CardPayloadID = mdVoucherVm.CardPayloadID;
                 mdVoucherDb.TitlePayload = mdVoucherVm.TitlePayload;
                 mdVoucherDb.Code = mdVoucherVm.Code;
-                mdVoucherDb.Payload = "";
+				mdVoucherDb.MessageEnd = mdVoucherVm.MessageEnd;
+				mdVoucherDb.Payload = "";
                 if (mdVoucherVm.CardPayloadID != null && mdVoucherVm.CardPayloadID != 0)
                 {
                     mdVoucherDb.Payload = "postback_card_" + mdVoucherVm.CardPayloadID;

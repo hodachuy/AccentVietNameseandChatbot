@@ -300,13 +300,30 @@ namespace BotProject.Web.API
                             AddHistory(hisVm);
                             if (handleMdVoucher.Status)
                             {
-                                fbUserDb.IsHavePredicate = true;
+								string telePhoneNumber = text;
+								string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
+								//check phonenumber có kèm theo serialnumber không
+								foreach (var item in strArrSpecial)
+								{
+									if (text.Contains(item))
+									{
+										var arrStrPhone = Regex.Split(text, item);
+										telePhoneNumber = arrStrPhone[0];
+										break;
+									}
+								}
+
+								fbUserDb.IsHavePredicate = true;
                                 fbUserDb.PredicateName = "IsVoucherOTP";
                                 fbUserDb.PredicateValue = mdVoucherId;// voucherId
-                                fbUserDb.PhoneNumber = text;
+                                fbUserDb.PhoneNumber = telePhoneNumber;
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
-                            }
+
+								// send otp
+								await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
+								return await SendMessage("Mã OTP đang được gửi, bạn chờ tí nhé...", sender);
+							}
                             return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                         }
                         if (predicateName == "IsVoucherOTP")
@@ -330,8 +347,17 @@ namespace BotProject.Web.API
                                 fbUserDb.PredicateValue = "";
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
-                            }
-                            return await SendMessage(handleOTP.TemplateJsonFacebook, sender);
+
+								// trả về image voucher + text message end
+								string[] arrMsgHandleOTP = Regex.Split(handleOTP.TemplateJsonFacebook, "split");
+								foreach(var itemMessageJson in arrMsgHandleOTP)
+								{
+									await SendMessageTask(itemMessageJson, sender);
+								}
+								return new HttpResponseMessage(HttpStatusCode.OK);
+
+							}
+							return await SendMessage(handleOTP.TemplateJsonFacebook, sender);
                         }
                     }
                     else // Input: Khởi tạo module được chọn

@@ -252,7 +252,7 @@ namespace BotProject.Service
                     {
                         //Tạo mã code đồng nhất cho 2 voucher nếu có
 
-                        string telephone = phoneNumber;
+                        string telePhoneNumber = phoneNumber;
                         string serialNumber = "";
                         string[] strArrSpecial = new string[] { "+", "-", " ",",",":"};
 
@@ -262,13 +262,13 @@ namespace BotProject.Service
                             if (phoneNumber.Contains(item))
                             {
                                 var arrStrPhone = Regex.Split(phoneNumber, item);
-                                telephone = arrStrPhone[0];
+								telePhoneNumber = arrStrPhone[0];
                                 serialNumber = arrStrPhone[1];
                                 break;
                             }
                         }
 
-                        bool isNumber = ValidatePhoneNumber(phoneNumber, true);
+                        bool isNumber = ValidatePhoneNumber(telePhoneNumber, true);
                         if (isNumber == false)
                         {
                             rsHandle.Status = false;
@@ -287,8 +287,8 @@ namespace BotProject.Service
                             if(isSerialNumber == false)
                             {
                                 rsHandle.Status = false;
-                                rsHandle.Message = tempText(mdVoucherDb.MessageError);
-                                rsMessage = mdVoucherDb.MessageError;
+                                rsHandle.Message = tempText("Số SerialNumber không đúng");
+                                rsMessage = "Số SerialNumber không đúng";
                                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
                                 rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
@@ -297,10 +297,16 @@ namespace BotProject.Service
 
                         }
 
-                        var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
-                        if (usTelephoneDb != null)
+						string codeVoucher = mdVoucherDb.Code;
+						string filter2 = "BotID = " + mdVoucherDb.BotID + " and m.Code Like N'" + codeVoucher + "' and u.TelephoneNumber = "+ telePhoneNumber + "";
+						StoreProcUserTelephoneByVoucherViewModel strProcUserTelephoneDb = new StoreProcUserTelephoneByVoucherViewModel();
+						strProcUserTelephoneDb = _userTelephoneService.GetUserTelephoneByVoucher(filter2, "", 1, 1, null).SingleOrDefault();
+
+						//var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(telePhoneNumber, Int32.Parse(mdVoucherID));
+
+                        if (strProcUserTelephoneDb != null)
                         {
-                            if (usTelephoneDb.IsReceive)
+                            if (strProcUserTelephoneDb.IsReceived)
                             {
                                 rsHandle.Status = false;
                                 rsHandle.Message = tempText("Số điện thoại của bạn đã được nhận voucher trước đó.");
@@ -314,7 +320,7 @@ namespace BotProject.Service
 
                         string codeOTP = RandomStr(5);
                         SendSmsService sm = new SendSmsService();
-                        string rsSmsMsg = sm.SendSmsMsg(phoneNumber, "Your Digipro verification code is: " + codeOTP);
+                        string rsSmsMsg = sm.SendSmsMsg(telePhoneNumber, "Your Digipro verification code is: " + codeOTP);
                         dynamic obj = JsonConvert.DeserializeObject(rsSmsMsg);
                         if (obj.Table != null)
                         {
@@ -327,26 +333,38 @@ namespace BotProject.Service
                                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 								rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
-								if (usTelephoneDb == null)
+								if (strProcUserTelephoneDb == null)
                                 {
                                     usTelephone.Code = codeOTP;
                                     usTelephone.IsReceive = false;
-                                    usTelephone.TelephoneNumber = phoneNumber;
+                                    usTelephone.TelephoneNumber = telePhoneNumber;
                                     usTelephone.TypeService = "Voucher";
                                     usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
                                     usTelephone.NumberReceive = 1;
                                     usTelephone.Type = Type;
                                     usTelephone.SerialNumber = serialNumber;
 
-                                    // Xem Type là zalo hay facebook và sau đó load toàn bộ zalo and facebook và lấy stt cuối cùng và + thêm
-                                    //usTelephone.NumberOrder = "";
+									if (!String.IsNullOrEmpty(Type)){
 
-                                    _userTelephoneService.Create(usTelephone);
+										string filter = "BotID = " + mdVoucherDb.BotID + " and Type Like N'" + Type + "'";
+										StoreProcUserTelephoneByVoucherViewModel userTelePhoneDb = new StoreProcUserTelephoneByVoucherViewModel();
+										userTelePhoneDb = _userTelephoneService.GetUserTelephoneByVoucher(filter, "", 1, 1, null).SingleOrDefault();
+										int numberOrder = 10000 + (userTelePhoneDb.Total.ToString() == "0" ? 1 : userTelePhoneDb.Total + 1);
+										if (Type == "facebook") {
+											usTelephone.NumberOrder = "F"+numberOrder.ToString();
+										}
+										if (Type == "zalo")
+										{
+											usTelephone.NumberOrder = "Z" + numberOrder.ToString();
+										}
+									}
+									
+									_userTelephoneService.Create(usTelephone);
                                     _unitOfWork.Commit();
                                 }
                                 else
                                 {
-                                    var usT = _userTelephoneService.GetById(usTelephoneDb.ID);
+                                    var usT = _userTelephoneService.GetById(strProcUserTelephoneDb.ID);
                                     usT.IsReceive = false;
                                     usT.Code = codeOTP;
                                     _userTelephoneService.Update(usT);
@@ -402,9 +420,20 @@ namespace BotProject.Service
                     _userTelephoneService.Update(usT);
                     _unitOfWork.Commit();
                 }
-                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString();
-				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString();
 
+				//Trả về kèm theo messageEnd
+				//Mai làm client thêm messageEnd
+				if (String.IsNullOrEmpty(mdVoucherDb.MessageEnd))
+				{
+					rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split";
+					rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split"; ;
+				}else
+				{
+					string messageEnd = Regex.Replace(mdVoucherDb.MessageEnd, "{{stt}}", usTelephoneDb.NumberOrder);
+
+					rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split"+ FacebookTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
+					rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split"+ ZaloTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
+				}
 			}
 			else
             {
