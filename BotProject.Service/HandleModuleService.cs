@@ -250,6 +250,24 @@ namespace BotProject.Service
                     }
                     else
                     {
+                        //Tạo mã code đồng nhất cho 2 voucher nếu có
+
+                        string telephone = phoneNumber;
+                        string serialNumber = "";
+                        string[] strArrSpecial = new string[] { "+", "-", " ",",",":"};
+
+                        //check phonenumber có kèm theo serialnumber không
+                        foreach(var item in strArrSpecial)
+                        {
+                            if (phoneNumber.Contains(item))
+                            {
+                                var arrStrPhone = Regex.Split(phoneNumber, item);
+                                telephone = arrStrPhone[0];
+                                serialNumber = arrStrPhone[1];
+                                break;
+                            }
+                        }
+
                         bool isNumber = ValidatePhoneNumber(phoneNumber, true);
                         if (isNumber == false)
                         {
@@ -260,6 +278,23 @@ namespace BotProject.Service
 							rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
 							return rsHandle;
+                        }
+
+
+                        if (!String.IsNullOrEmpty(serialNumber))
+                        {
+                            bool isSerialNumber = true;// check serial number gọi api
+                            if(isSerialNumber == false)
+                            {
+                                rsHandle.Status = false;
+                                rsHandle.Message = tempText(mdVoucherDb.MessageError);
+                                rsMessage = mdVoucherDb.MessageError;
+                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                                rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
+                                return rsHandle;
+                            }
+
                         }
 
                         var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
@@ -301,6 +336,11 @@ namespace BotProject.Service
                                     usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
                                     usTelephone.NumberReceive = 1;
                                     usTelephone.Type = Type;
+                                    usTelephone.SerialNumber = serialNumber;
+
+                                    // Xem Type là zalo hay facebook và sau đó load toàn bộ zalo and facebook và lấy stt cuối cùng và + thêm
+                                    //usTelephone.NumberOrder = "";
+
                                     _userTelephoneService.Create(usTelephone);
                                     _unitOfWork.Commit();
                                 }

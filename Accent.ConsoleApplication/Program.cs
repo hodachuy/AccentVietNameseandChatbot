@@ -37,6 +37,20 @@ namespace Accent.ConsoleApplication
         public static void Main(string[] args)
         {
 
+            string phoneNumber = "0657-345345";
+            string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
+
+            bool bol = Array.Exists(strArrSpecial, E => E == phoneNumber);
+            //check phonenumber có kèm theo serialnumber không
+            if (strArrSpecial.All(phoneNumber.Contains))
+            {
+                string vcx = "";
+            }
+
+
+
+
+
             string tempImage = JObject.FromObject(
                          new
                          {
