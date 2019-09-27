@@ -559,7 +559,20 @@ namespace BotProject.Web.Controllers
                     AddHistory(hisVm);
                     if (handleMdVoucher.Status)
                     {
-                        _user.Predicates.addSetting("phone", text);
+                        string telePhoneNumber = text;
+                        string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
+                        //check phonenumber có kèm theo serialnumber không
+                        foreach (var item in strArrSpecial)
+                        {
+                            if (text.Contains(item))
+                            {
+                                var arrStrPhone = Regex.Split(text, item);
+                                telePhoneNumber = arrStrPhone[0];
+                                break;
+                            }
+                        }
+
+                        _user.Predicates.addSetting("phone", telePhoneNumber);
                         _user.Predicates.addSetting("isChkOTP", "true");
                         _user.Predicates.addSetting("isChkMdVoucher", "false");
                     }

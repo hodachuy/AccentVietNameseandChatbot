@@ -114,7 +114,27 @@ namespace BotProject.Web.API
                 await ExcuteMessage(value.message.text, value.sender.id, botId);
 
                 return new HttpResponseMessage(HttpStatusCode.OK);
-            }     
+            }
+
+            // sự kiện người dùng quan tâm
+            if(body.Contains("follower"))
+            {
+                int botId = 5028;
+                var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
+                var settingDb = _settingService.GetSettingByBotID(botId);
+                var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
+                if (settingVm.CardID.HasValue)
+                {
+                    var lstAIML = _aimlFileService.GetByBotId(botId);
+                    var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+                    _botService.loadAIMLFromDatabase(lstAIMLVm);
+                    _user = _botService.loadUserBot(value.follower.id);
+                    string getStartCardPayload = "postback_card_" + settingVm.CardID;
+                    await ExcuteMessage(getStartCardPayload, value.follower.id, botId);
+
+                    return new HttpResponseMessage(HttpStatusCode.OK);
+                }
+            }
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
@@ -258,7 +278,7 @@ namespace BotProject.Web.API
                             if (handleMdVoucher.Status)
                             {
 								string telePhoneNumber = text;
-								string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
+								string[] strArrSpecial = new string[] { "-", " ", ",", ":" };
 								//check phonenumber có kèm theo serialnumber không
 								foreach (var item in strArrSpecial)
 								{
@@ -278,8 +298,8 @@ namespace BotProject.Web.API
                                 _appZaloUser.Save();
 								// send otp
 								await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
-								return await SendMessage("Mã OTP đang được gửi, bạn chờ tí nhé...", sender);
-							}
+                                return await SendMessage(ZaloTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
+                            }
                             return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
                         }
                         if (predicateName == "IsVoucherOTP")
@@ -495,6 +515,9 @@ namespace BotProject.Web.API
                 }
                 if (result.Contains("NOT_MATCH"))
                 {
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
+                    AddHistory(hisVm);
+
                     _dicNotMatch = new Dictionary<string, string>() {
                         {"NOT_MATCH_01", "Xin lỗi, Tôi không hiểu"},
                         {"NOT_MATCH_02", "Bạn có thể giải thích thêm được không?"},
@@ -541,6 +564,8 @@ namespace BotProject.Web.API
                     }
                     else
                     {
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
+                        AddHistory(hisVm);
                         string strDefaultNotMatch = "Xin lỗi! Tôi không hiểu";
                         foreach (var item in _dicNotMatch)
                         {

@@ -118,10 +118,10 @@ namespace BotProject.Web.API
         [HttpPost]
         public async Task<HttpResponseMessage> Post()
         {
-            var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
+            //var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
-            if (!VerifySignature(signature, body))
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            //if (!VerifySignature(signature, body))
+                //return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
             var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
 
@@ -301,9 +301,9 @@ namespace BotProject.Web.API
                             if (handleMdVoucher.Status)
                             {
 								string telePhoneNumber = text;
-								string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
-								//check phonenumber có kèm theo serialnumber không
-								foreach (var item in strArrSpecial)
+                                string[] strArrSpecial = new string[] { "-", " ", ",", ":" };
+                                //check phonenumber có kèm theo serialnumber không
+                                foreach (var item in strArrSpecial)
 								{
 									if (text.Contains(item))
 									{
@@ -322,7 +322,7 @@ namespace BotProject.Web.API
 
 								// send otp
 								await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
-								return await SendMessage("Mã OTP đang được gửi, bạn chờ tí nhé...", sender);
+								return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
 							}
                             return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                         }
@@ -539,6 +539,9 @@ namespace BotProject.Web.API
                 }
                 if (result.Contains("NOT_MATCH"))
                 {
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
+                    AddHistory(hisVm);
+
                     _dicNotMatch = new Dictionary<string, string>() {
                         {"NOT_MATCH_01", "Xin lỗi, Tôi không hiểu"},
                         {"NOT_MATCH_02", "Bạn có thể giải thích thêm được không?"},
@@ -585,6 +588,9 @@ namespace BotProject.Web.API
                     }
                     else
                     {
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
+                        AddHistory(hisVm);
+
                         string strDefaultNotMatch = "Xin lỗi! Tôi không hiểu";
                         foreach (var item in _dicNotMatch)
                         {

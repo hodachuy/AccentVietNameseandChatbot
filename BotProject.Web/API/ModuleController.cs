@@ -196,7 +196,7 @@ namespace BotProject.Web.API
                 mdVoucherDb.CardPayloadID = mdVoucherVm.CardPayloadID;
                 mdVoucherDb.TitlePayload = mdVoucherVm.TitlePayload;
                 mdVoucherDb.MessageError = "Số điện thoại không đúng, bạn vui lòng nhập lại.";
-                mdVoucherDb.MessageEnd = "Cảm ơn bạn, chúng tôi đã tiếp nhận thông tin thành công!";
+                mdVoucherDb.MessageEnd = mdVoucherVm.MessageEnd;
                 mdVoucherDb.Code = mdVoucherVm.Code;
                 mdVoucherDb.Payload = "";
                 if (mdVoucherVm.CardPayloadID != null && mdVoucherVm.CardPayloadID != 0)

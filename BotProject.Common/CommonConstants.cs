@@ -99,11 +99,12 @@ namespace BotProject.Common
     public class MessageBot
     {
         public const string BOT_HISTORY_HANDLE_001 = "Nhấn nút";
-        public const string BOT_HISTORY_HANDLE_002 = "Bot không hiểu";
+        public const string BOT_HISTORY_HANDLE_002 = "Không tìm thấy trong kịch bản";
         public const string BOT_HISTORY_HANDLE_003 = "Bot hiểu trả lời theo kịch bản";
         public const string BOT_HISTORY_HANDLE_004 = "Điền thông tin";
         public const string BOT_HISTORY_HANDLE_005 = "Gọi NLP API từ bên ngoài";
-        public const string BOT_HISTORY_HANDLE_006 = "Gọi NLP API trong cấu hình";
+        public const string BOT_HISTORY_HANDLE_006 = "Gọi Search NLP trong cấu hình";
 		public const string BOT_HISTORY_HANDLE_007 = "Nhấn Voucher";
-	}
+        public const string BOT_HISTORY_HANDLE_008 = "Bot không hiểu và Search NLP không tìm thấy";
+    }
 }

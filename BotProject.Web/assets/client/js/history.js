@@ -193,6 +193,7 @@ renderTemplateVoucher = function (data) {
                 index = index + 1;
                 html += '<tr>';
                 html += '<td>' + index + '</td>';
+                html += '<td>' + (item.NumberOrder == null ? "" : item.NumberOrder) + '</td>';
                 html += '<td>' + (item.IsReceived == true ? "Đã nhận" : "Chưa nhận") + '</td>';
                 html += '<td>' + item.TelephoneNumber + '</td>';
                 html += '<td>' + (item.SerialNumber == null ? "" : item.SerialNumber) + '</td>';

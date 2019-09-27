@@ -1,5 +1,5 @@
 ﻿//###### DIGIPRO ######//
-var url_image_generic_default = "File/Images/Card/134a16f1-7c56-4eca-a61b-1bbe5a23a42b-Logo_DGP_EN_1600-800_5.png";
+var url_image_generic_default = "File/Images/Card/dad45d0d-09a9-4299-92f0-86dad36f1310-logo-digipro-v2.png";
 
 
 var botId = $("#botId").val();
@@ -6096,6 +6096,11 @@ $('body').on('click', '#mdVoucherSave', function (event) {
         return false;
     }
 
+    if (code.trim() == '') {
+        toastr.error('Vui lòng nhập mã code voucher');
+        return false;
+    }
+
     if (msgStart.trim() == '') {
         toastr.error('Vui lòng nhập nội dung gợi ý');
         return false;
@@ -6125,6 +6130,7 @@ $('body').on('click', '#mdVoucherSave', function (event) {
         StartDate: startDate,
         ExpirationDate: expirationDate,
         TitlePayload: titlePayload,
+        MessageEnd : msgEnd
     }
     if (typeActionMdVoucher) {
         var formData = new FormData();
@@ -6206,9 +6212,16 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
         html += '</div>';
         html += '</div>';
         html += '<div class="form-group">';
-        html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+        html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung lời chào</label>';
         html += '<div class="col-md-12 col-sm-12 col-xs-12">';
-        html += '<textarea id="mdVoucherMsgStart" rows="2" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn"></textarea>';
+        html += '<textarea id="mdVoucherMsgStart" rows="1" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn"></textarea>';
+        html += '</div>';
+        html += '</div>';
+
+        html += '<div class="form-group">';
+        html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung trả về thành công</label>';
+        html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '<textarea id="mdVoucherMsgEnd" rows="1" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">Cảm ơn bạn, chúng tôi đã tiếp nhận thông tin thành công!</textarea>';
         html += '</div>';
         html += '</div>';
 
@@ -6283,9 +6296,16 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
             html += '</div>';
             html += '</div>';
             html += '<div class="form-group">';
-            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung lời chào</label>';
             html += '<div class="col-md-12 col-sm-12 col-xs-12">';
             html += '<textarea id="mdVoucherMsgStart" rows="2" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung trả về thành công</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdVoucherMsgEnd" rows="1" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageEnd + '</textarea>';
             html += '</div>';
             html += '</div>';
 

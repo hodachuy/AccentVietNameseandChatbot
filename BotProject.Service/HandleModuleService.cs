@@ -50,6 +50,7 @@ namespace BotProject.Service
         private IMdVoucherService _mdVoucherService;
         private IUserTelephoneService _userTelephoneService;
         private IUnitOfWork _unitOfWork;
+        private IErrorService _errorService;
 
         public HandleModuleService(IMdPhoneService mdPhoneService,
                                     IMdEmailService mdEmailService,
@@ -59,6 +60,7 @@ namespace BotProject.Service
                                     IMdSearchCategoryService mdSearchCategoryService,
                                     IMdVoucherService mdVoucherService,
                                     IUserTelephoneService userTelephoneService,
+                                    IErrorService errorService,
                                     IUnitOfWork unitOfWork)
         {
             _mdPhoneService = mdPhoneService;
@@ -70,6 +72,7 @@ namespace BotProject.Service
             _mdVoucherService = mdVoucherService;
             _userTelephoneService = userTelephoneService;
             _unitOfWork = unitOfWork;
+            _errorService = errorService;
         }
         public HandleResultBotViewModel HandleIsPhoneNumber(string number, int botID)
         {
@@ -227,10 +230,10 @@ namespace BotProject.Service
         public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string Type ="")
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
-            var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
             string rsMessage = "";
             try
             {
+                var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
                 UserTelePhone usTelephone = new UserTelePhone();
                 if (mdVoucherDb != null)
                 {
@@ -254,7 +257,7 @@ namespace BotProject.Service
 
                         string telePhoneNumber = phoneNumber;
                         string serialNumber = "";
-                        string[] strArrSpecial = new string[] { "+", "-", " ",",",":"};
+                        string[] strArrSpecial = new string[] {"-", " ",",",":"};
 
                         //check phonenumber có kèm theo serialnumber không
                         foreach(var item in strArrSpecial)
@@ -346,11 +349,18 @@ namespace BotProject.Service
 
 									if (!String.IsNullOrEmpty(Type)){
 
-										string filter = "BotID = " + mdVoucherDb.BotID + " and Type Like N'" + Type + "'";
+                                        int numberOrder = 10000;
+                                        string filter = "m.BotID = " + mdVoucherDb.BotID + " and u.Type Like N'" + Type + "'";
 										StoreProcUserTelephoneByVoucherViewModel userTelePhoneDb = new StoreProcUserTelephoneByVoucherViewModel();
 										userTelePhoneDb = _userTelephoneService.GetUserTelephoneByVoucher(filter, "", 1, 1, null).SingleOrDefault();
-										int numberOrder = 10000 + (userTelePhoneDb.Total.ToString() == "0" ? 1 : userTelePhoneDb.Total + 1);
-										if (Type == "facebook") {
+                                        if(userTelePhoneDb == null)
+                                        {
+                                            numberOrder = 10001;
+                                        }else
+                                        {
+                                            numberOrder = 10000 + userTelePhoneDb.Total + 1;
+                                        }
+                                        if (Type == "facebook") {
 											usTelephone.NumberOrder = "F"+numberOrder.ToString();
 										}
 										if (Type == "zalo")
@@ -388,68 +398,84 @@ namespace BotProject.Service
             }
             catch (Exception ex)
             {
-                rsHandle.Message = tempText(mdVoucherDb.MessageError);
+                LogError(ex.Message);
+                rsHandle.Message = tempText("Not found");
                 rsMessage = "Not found";
-                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-
-			}
-			rsMessage = "Not found";
-            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-
-			return rsHandle;
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", "", "").ToString();
+                rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", "", "").ToString();
+            }
+            rsMessage = "Not found";
+            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", "", "").ToString();
+            rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", "", "").ToString();
+            return rsHandle;
         }
 
         public HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
-            var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
-            string rsMessage = "";
-            bool isContainOTP = _userTelephoneService.CheckContainOTP(OTP, phoneNumber, Int32.Parse(mdVoucherID));
-            if (isContainOTP)
+            try
             {
-                rsHandle.Status = true;
-                rsHandle.Message = tempImage(mdVoucherDb.Image);
-                rsMessage = mdVoucherDb.Image;
-                var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
-                if (usTelephoneDb != null)
+                var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
+                string rsMessage = "";
+                bool isContainOTP = _userTelephoneService.CheckContainOTP(OTP, phoneNumber, Int32.Parse(mdVoucherID));
+                if (isContainOTP)
                 {
-                    var usT = _userTelephoneService.GetById(usTelephoneDb.ID);
-                    usT.IsReceive = true;
-                    _userTelephoneService.Update(usT);
-                    _unitOfWork.Commit();
+                    rsHandle.Status = true;
+                    rsHandle.Message = tempImage(mdVoucherDb.Image);
+                    rsMessage = mdVoucherDb.Image;
+                    var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
+                    if (usTelephoneDb != null)
+                    {
+                        var usT = _userTelephoneService.GetById(usTelephoneDb.ID);
+                        usT.IsReceive = true;
+                        _userTelephoneService.Update(usT);
+                        _unitOfWork.Commit();
+                    }
+                    if (String.IsNullOrEmpty(mdVoucherDb.MessageEnd))
+                    {
+                        rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split";
+                        rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split"; ;
+                    }
+                    else
+                    {
+                        if (String.IsNullOrEmpty(usTelephoneDb.NumberOrder))
+                        {
+                            int num = 1000 + usTelephoneDb.ID;
+                            usTelephoneDb.NumberOrder = num.ToString();
+                        }
+                        string messageEnd = Regex.Replace(mdVoucherDb.MessageEnd, "{{stt}}", usTelephoneDb.NumberOrder);
+
+                        rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split" + FacebookTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
+                        rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split" + ZaloTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
+                    }
                 }
+                else
+                {
+                    if (!String.IsNullOrEmpty(mdVoucherDb.TitlePayload))
+                    {
+                        rsHandle.Postback = tempNodeBtnModule(mdVoucherDb.Payload, mdVoucherDb.TitlePayload);
+                    }
+                    rsHandle.Status = false;
+                    rsHandle.Message = tempText("Mã OTP không đúng");
+                    rsMessage = "Mã OTP không đúng";
+                    rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                    rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
-				//Trả về kèm theo messageEnd
-				//Mai làm client thêm messageEnd
-				if (String.IsNullOrEmpty(mdVoucherDb.MessageEnd))
-				{
-					rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split";
-					rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split"; ;
-				}else
-				{
-					string messageEnd = Regex.Replace(mdVoucherDb.MessageEnd, "{{stt}}", usTelephoneDb.NumberOrder);
-
-					rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split"+ FacebookTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
-					rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split"+ ZaloTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
-				}
-			}
-			else
+                }
+                return rsHandle;
+            }
+            catch(Exception ex)
             {
-                if (!String.IsNullOrEmpty(mdVoucherDb.TitlePayload))
-                {
-                    rsHandle.Postback = tempNodeBtnModule(mdVoucherDb.Payload, mdVoucherDb.TitlePayload);
-                }
-                rsHandle.Status = false;
-                rsHandle.Message = tempText("Mã OTP không đúng");
-                rsMessage = "Mã OTP không đúng";
-                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-
-			}
-
-			return rsHandle;
+                LogError(ex.Message);
+                rsHandle.Message = tempText("Not found");
+                string rsMessage = "Not found";
+                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", "", "").ToString();
+                rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", "", "").ToString();
+            }
+            string msg = "Not found";
+            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(msg, "{{senderId}}", "", "").ToString();
+            rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(msg, "{{senderId}}", "", "").ToString();
+            return rsHandle;
         }
 
 
@@ -809,6 +835,22 @@ namespace BotProject.Service
         public void Save()
         {
             throw new NotImplementedException();
+        }
+
+
+        private void LogError(string message)
+        {
+            try
+            {
+                Error error = new Error();
+                error.CreatedDate = DateTime.Now;
+                error.Message = message;
+                _errorService.Create(error);
+                _unitOfWork.Commit();
+            }
+            catch
+            {
+            }
         }
         #endregion
     }

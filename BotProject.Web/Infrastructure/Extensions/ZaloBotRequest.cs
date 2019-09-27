@@ -9,11 +9,14 @@ namespace BotProject.Web.Infrastructure.Extensions
     {
         public string event_name { set; get; }
         public string app_id { set; get; }
+        public string oa_id { set; get; }
         public UserRequest sender { set; get; }
         public UserRequest recipient { set; get; }
         public MessageReceivedRequest message { set; get; }
         public string timestamp { set; get; }
         public string user_id_by_app { set; get; }
+        public string source { set; get; }
+        public UserRequest follower { set; get; }
     }
     public class UserRequest
     {
