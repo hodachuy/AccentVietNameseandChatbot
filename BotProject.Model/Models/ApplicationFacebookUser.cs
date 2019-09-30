@@ -19,8 +19,10 @@ namespace BotProject.Model.Models
         public string PredicateName { set; get; }
         public string PredicateValue { set; get; }
         public string PhoneNumber { set; get; }
+		public string EngineerName { set; get; }
         public bool IsHavePredicate { set; get; }
         public bool IsProactiveMessage { set; get; }
         public DateTime StartedOn { set; get; }
+		public DateTime? TimeOut { set; get; }
     }
 }

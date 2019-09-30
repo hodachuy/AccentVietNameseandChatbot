@@ -27,9 +27,10 @@ namespace BotProject.Service
         HandleResultBotViewModel HandledIsEmail(string email, int botID);
         HandleResultBotViewModel HandledIsAge(string age, int botID);
         HandleResultBotViewModel HandleIsName(string name, int botID);
+		HandleResultBotViewModel HandleIsEngineerName(string name, int botID);
         HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
         HandleResultBotViewModel HandleIsSearchAPI(string mdName, string mdSearchID, string notFound);
-        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string Type = "");
+        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string engineerName, string Type = "");
         HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID);
         void Save();
     }
@@ -47,7 +48,8 @@ namespace BotProject.Service
         private IModuleKnowledegeService _mdKnowledegeService;
         private IMdSearchService _mdSearchService;
         private IMdSearchCategoryService _mdSearchCategoryService;
-        private IMdVoucherService _mdVoucherService;
+		private IMdEngineerNameService _mdEngineerNameService;
+		private IMdVoucherService _mdVoucherService;
         private IUserTelephoneService _userTelephoneService;
         private IUnitOfWork _unitOfWork;
         private IErrorService _errorService;
@@ -61,7 +63,8 @@ namespace BotProject.Service
                                     IMdVoucherService mdVoucherService,
                                     IUserTelephoneService userTelephoneService,
                                     IErrorService errorService,
-                                    IUnitOfWork unitOfWork)
+									IMdEngineerNameService mdEngineerNameService,
+									IUnitOfWork unitOfWork)
         {
             _mdPhoneService = mdPhoneService;
             _mdEmailService = mdEmailService;
@@ -71,7 +74,8 @@ namespace BotProject.Service
             _mdSearchCategoryService = mdSearchCategoryService;
             _mdVoucherService = mdVoucherService;
             _userTelephoneService = userTelephoneService;
-            _unitOfWork = unitOfWork;
+			_mdEngineerNameService = mdEngineerNameService;
+			_unitOfWork = unitOfWork;
             _errorService = errorService;
         }
         public HandleResultBotViewModel HandleIsPhoneNumber(string number, int botID)
@@ -205,7 +209,32 @@ namespace BotProject.Service
 			return rsHandle;
         }
 
-        public HandleResultBotViewModel HandleIsName(string name, int botID)
+		public HandleResultBotViewModel HandleIsEngineerName(string name, int botID)
+		{
+			HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
+			var mdEngineerNameDb = _mdEngineerNameService.GetByBotID(botID);
+			rsHandle.Postback = mdEngineerNameDb.Payload;
+			string rsMessage = "";
+			if (name.Contains(Common.CommonConstants.ModuleEngineerName))
+			{
+				rsHandle.Status = false;
+				rsHandle.Message = tempText(mdEngineerNameDb.MessageStart);
+				rsMessage = mdEngineerNameDb.MessageStart;
+				rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+
+				return rsHandle;
+			}
+			rsHandle.Status = true;
+			rsHandle.Message = tempText(mdEngineerNameDb.MessageEnd);// nếu call tới follow thẻ khác trả về postback id card
+			rsMessage = mdEngineerNameDb.MessageEnd;
+			rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdEngineerNameDb.Payload, mdEngineerNameDb.TitlePayload).ToString();
+			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdEngineerNameDb.Payload, mdEngineerNameDb.TitlePayload).ToString();
+
+			return rsHandle;
+		}
+
+		public HandleResultBotViewModel HandleIsName(string name, int botID)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             //rsHandle.Postback = postbackCard;
@@ -227,7 +256,7 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string Type ="")
+        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID,  string engineerName, string Type = "")
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             string rsMessage = "";
@@ -256,7 +285,7 @@ namespace BotProject.Service
                         //Tạo mã code đồng nhất cho 2 voucher nếu có
 
                         string telePhoneNumber = phoneNumber;
-                        string serialNumber = "";
+                        string serialNumber = engineerName;//""
                         string[] strArrSpecial = new string[] {"-", " ",",",":"};
 
                         //check phonenumber có kèm theo serialnumber không
@@ -323,7 +352,7 @@ namespace BotProject.Service
 
                         string codeOTP = RandomStr(5);
                         SendSmsService sm = new SendSmsService();
-                        string rsSmsMsg = sm.SendSmsMsg(telePhoneNumber,codeOTP + " là mã OTP của bạn từ Digipro");
+                        string rsSmsMsg = sm.SendSmsMsg(telePhoneNumber,codeOTP + " là mã OTP của bạn từ DIGIPRO");
                         dynamic obj = JsonConvert.DeserializeObject(rsSmsMsg);
                         if (obj.Table != null)
                         {
@@ -385,8 +414,8 @@ namespace BotProject.Service
                             if (ob.ReturnCode == "2")
                             {
                                 rsHandle.Status = false;
-                                rsHandle.Message = tempText("Số điện thoại không đúng");
-                                rsMessage = "Số điện thoại không đúng";
+                                rsHandle.Message = tempText("Vui lòng nhập lại, số điện thoại không đúng");
+                                rsMessage = "Vui lòng nhập lại, số điện thoại không đúng";
                                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 								rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
@@ -852,6 +881,7 @@ namespace BotProject.Service
             {
             }
         }
-        #endregion
-    }
+
+		#endregion
+	}
 }

@@ -5202,6 +5202,54 @@ function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoP
             $("#template-module").empty().append(html)
         });
     }
+    if (moduleName == "engineer_name") {
+        var params = {
+            botID: $("#botId").val(),
+        };
+        var urlTest = "api/module/getmdengineername";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServiceGET(function (data) {
+            html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý tên kỹ sư</a>';
+            html += '<div class="row">';
+            html += '<div class="col-md-12">';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdEngineerNameMsgStart" rows="5" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi nhập sai định dạng (nếu có)</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdEngineerNameMsgError"  maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageError + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi hoàn thành (nếu có)</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <textarea id="mdEngineerNameMsgEnd" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageEnd + '</textarea>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng đi tiếp</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdEngineerNameTitlePayload" value="'+data.TitlePayload+'" class="form-control"/>';
+            html += '            </div>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdEngineerNameCard">' + card() + '</select>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '<div class="form-group">';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">'
+            html += '<button id="mdEngineerNameSave" data-id="' + data.ID + '" class="btn btn-primary">Lưu</button>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            $("#template-module").empty().append(html)
+            loadEmojiPicker();
+        });
+    }
     if (moduleName == "email") {
         var params = {
             botID: $("#botId").val(),
@@ -5352,6 +5400,48 @@ $('body').on('click', '#mdPhoneSave', function (event) {
         }
     });
 });
+
+
+// MDENGINEERNAME - Save
+$('body').on('click', '#mdEngineerNameSave', function (event) {
+    var msgStart = $("#mdEngineerNameMsgStart").val();
+    var msgError = $("#mdEngineerNameMsgError").val();
+    var msgEnd = $("#mdEngineerNameMsgEnd").val();
+    var msgCard = $("#mdEngineerNameCard").val();
+    var msgCardTitle = $("#mdEngineerNameTitlePayload").val();
+    if (msgStart.trim() == '') {
+        toastr.error('Vui lòng nhập nội dung');
+        return false;
+    }
+    if (msgCardTitle != "" && msgCard == "") {
+        toastr.error('Vui lòng chọn thẻ thoát khỏi');
+        return false;
+    }
+    else if (msgCardTitle == "" && msgCard != "") {
+        toastr.error('Vui lòng nhập tiêu đề cho thẻ');
+        return false;
+    }
+
+    
+    var params = {
+        BotID: $("#botId").val(),
+        MessageStart: msgStart,
+        MessageError: msgError,
+        MessageEnd: msgEnd,
+        CardPayloadID: msgCard,
+        TitlePayload: msgCardTitle
+    }
+    params = JSON.stringify(params);
+    var urlTest = "api/module/updateengineername";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        console.log(data)
+        if (data != null) {
+            toastr.success('Lưu thành công');
+        }
+    });
+});
+
 
 // MDEMAIL -Learn switch mdEmail
 $('body').on('click', '#mdEmailChkSwitch', function (event) {

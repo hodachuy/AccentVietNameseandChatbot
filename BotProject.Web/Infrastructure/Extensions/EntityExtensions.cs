@@ -295,7 +295,9 @@ namespace BotProject.Web.Infrastructure.Extensions
             fbUser.PredicateValue = fbUserVm.PredicateValue;
             fbUser.IsHavePredicate = fbUserVm.IsHavePredicate;
             fbUser.IsProactiveMessage = fbUserVm.IsProactiveMessage;
-            fbUser.StartedOn = DateTime.Now;
+			fbUser.EngineerName = fbUserVm.EngineerName;
+			fbUser.TimeOut = fbUserVm.TimeOut;
+			fbUser.StartedOn = DateTime.Now;
         }
         #endregion
 
@@ -308,7 +310,9 @@ namespace BotProject.Web.Infrastructure.Extensions
             zlUser.PredicateValue = zlUserVm.PredicateValue;
             zlUser.IsHavePredicate = zlUserVm.IsHavePredicate;
             zlUser.IsProactiveMessage = zlUserVm.IsProactiveMessage;
-            zlUser.StartedOn = DateTime.Now;
+			zlUser.EngineerName = zlUserVm.EngineerName;
+			zlUser.TimeOut = zlUserVm.TimeOut;
+			zlUser.StartedOn = DateTime.Now;
         }
         #endregion
     }

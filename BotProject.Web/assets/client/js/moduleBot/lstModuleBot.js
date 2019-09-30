@@ -152,6 +152,13 @@ $('body').on('click', 'input.chkAddModule', function () {
             moduleVm.Payload = "postback_module_phone";
             moduleVm.Type = "handle"
         }
+        if (moduleName == "engineer_name") {
+            moduleVm.Title = "Xử lý tên kỹ sư";
+            moduleVm.Text = "Tên";
+            moduleVm.Name = "engineer_name";
+            moduleVm.Payload = "postback_module_engineer_name";
+            moduleVm.Type = "handle"
+        }
         if (moduleName == "email") {
             moduleVm.Title = "Xử lý email";
             moduleVm.Text = "Email";

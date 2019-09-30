@@ -13,6 +13,9 @@ var BotSetting = {
     IsMDSearch: $('#statusSearch').val(),
     UserID: $('#userID').val(),
     StopWord: $('#stopWord').val(),
+    TimeOut:$('#TimeOut').val(),
+    ProactiveMessageText: ($("#ProactiveMessageText").val() == null ? "" : $("#ProactiveMessageText").val()),
+    IsProactiveMessage: $('#isProactiveMessage').val(),
 }
 
 $('.demo').each(function () {
@@ -139,6 +142,15 @@ $("#btnSaveSettings").on('click', function () {
             strTag = strTag.replace(/(^,)|(,$)/g, "");
         }
     }
+
+    BotSetting.FacebookPageToken = $("#txtFacebookPageToken").val();
+    BotSetting.FacebookAppSecrect = $("#txtFacebookSecretKey").val();
+    BotSetting.ZaloPageToken = $("#txtZaloPageToken").val();
+
+    BotSetting.TimeOut = $('#TimeOut').val();
+    BotSetting.ProactiveMessageText = $("#txtProactiveMessageText").val();
+    BotSetting.IsProactiveMessage = $('#isProactiveMessage').val();
+
     BotSetting.StopWord = strTag;
     BotSetting.TextIntroductory = $("#txtIntro").html();
     BotSetting.IsMDSearch = $("#statusSearch").val();
@@ -251,6 +263,13 @@ $('body').on('click', '.btn-add-condition', function () {
 
 })
 $('#statusSearch').change(function () {
+    if ($(this).is(":checked")) {
+        $(this).val('true');
+    } else {
+        $(this).val('false');
+    }
+});
+$('#isProactiveMessage').change(function () {
     if ($(this).is(":checked")) {
         $(this).val('true');
     } else {

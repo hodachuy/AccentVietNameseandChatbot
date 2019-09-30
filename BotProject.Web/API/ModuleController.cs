@@ -24,7 +24,8 @@ namespace BotProject.Web.API
         private IMdPhoneService _mdPhoneService;
         private IMdEmailService _mdEmailService;
         private IMdAgeService _mdAgeService;
-        private IMdSearchService _mdSearchService;
+		private IMdEngineerNameService _mdEngineerNameService;
+		private IMdSearchService _mdSearchService;
         private IModuleKnowledegeService _mdKnowledegeService;
         private IMdSearchCategoryService _mdSearchCategoryService;
         public ModuleController(IErrorService errorService,
@@ -35,7 +36,8 @@ namespace BotProject.Web.API
             IMdSearchService mdSearchService,
             IModuleKnowledegeService mdKnowledegeService,
             IMdSearchCategoryService mdSearchCategoryService,
-            IMdAgeService mdAgeService) : base(errorService)
+			IMdEngineerNameService mdEngineerNameService,
+			IMdAgeService mdAgeService) : base(errorService)
         {
             _mdVoucherService = mdVoucherService;
             _moduleService = moduleService;
@@ -45,7 +47,9 @@ namespace BotProject.Web.API
             _mdSearchService = mdSearchService;
             _mdKnowledegeService = mdKnowledegeService;
             _mdSearchCategoryService = mdSearchCategoryService;
-        }
+			_mdEngineerNameService = mdEngineerNameService;
+
+		}
         [Route("getbybotid")]
         [HttpGet]
         public HttpResponseMessage GetAllModuleByBotID(HttpRequestMessage request, int botId)
@@ -84,7 +88,26 @@ namespace BotProject.Web.API
                 _moduleService.Create(moduleDb);
                 _moduleService.Save();
 
-                if(moduleVm.Payload == Common.CommonConstants.ModulePhone)
+
+				if (moduleVm.Payload == Common.CommonConstants.ModuleEngineerName)
+				{
+					MdEngineerName mdEngineerName = new MdEngineerName();
+					mdEngineerName.BotID = moduleVm.BotID;
+					mdEngineerName.MessageStart = "Vui lòng nhập tên kỹ thuật viên nếu có.";
+					mdEngineerName.MessageError = "Không tìm thấy";
+					mdEngineerName.MessageEnd = "Đã nhận thông tin";
+					mdEngineerName.ModuleID = moduleDb.ID;
+					//mdPhone.CardPayloadID = null;
+					//mdPhone.Payload = "";
+					mdEngineerName.Title = "Xử lý tên kỹ sư";
+					mdEngineerName.DictionaryKey = "engineer_name";
+					mdEngineerName.DictionaryValue = "false";
+
+					_mdEngineerNameService.Create(mdEngineerName);
+					_mdEngineerNameService.Save();
+				}
+
+				if (moduleVm.Payload == Common.CommonConstants.ModulePhone)
                 {
                     MdPhone mdPhone = new MdPhone();
                     mdPhone.BotID = moduleVm.BotID;
@@ -408,10 +431,55 @@ namespace BotProject.Web.API
             });
         }
 
-        #endregion
+		#endregion
 
-        #region MDMEDGETINFOPATIENT
-        [Route("getmdmedgetinfopatient")]
+		#region MODULE EngineerName
+		[Route("getmdengineername")]
+		[HttpGet]
+		public HttpResponseMessage GetModuleEngineerNameByBotID(HttpRequestMessage request, int botID)
+		{
+			return CreateHttpResponse(request, () =>
+			{
+				HttpResponseMessage response = null;
+				var module = _mdEngineerNameService.GetByBotID(botID);
+				response = request.CreateResponse(HttpStatusCode.OK, module);
+				return response;
+			});
+		}
+		[Route("updateengineername")]
+		[HttpPost]
+		public HttpResponseMessage CreateModuleEngineerName(HttpRequestMessage request, MdEngineerName mdEngineerName)
+		{
+			return CreateHttpResponse(request, () =>
+			{
+				HttpResponseMessage response = null;
+
+				var module = _mdEngineerNameService.GetByBotID(mdEngineerName.BotID);
+				module.MessageStart = mdEngineerName.MessageStart;
+				module.MessageError = mdEngineerName.MessageError;
+				module.MessageEnd = mdEngineerName.MessageEnd;
+				module.CardPayloadID = mdEngineerName.CardPayloadID;
+				module.TitlePayload = mdEngineerName.TitlePayload;
+				if (mdEngineerName.CardPayloadID != null && mdEngineerName.CardPayloadID != 0)
+				{
+					module.Payload = "postback_card_" + mdEngineerName.CardPayloadID;
+				}
+				else
+				{
+					module.Payload = "";
+				}
+
+				_mdEngineerNameService.Update(module);
+				_mdEngineerNameService.Save();
+				response = request.CreateResponse(HttpStatusCode.OK, module);
+				return response;
+			});
+		}
+
+		#endregion
+
+		#region MDMEDGETINFOPATIENT
+		[Route("getmdmedgetinfopatient")]
         [HttpGet]
         public HttpResponseMessage GetMdMedGetInfoPatient(HttpRequestMessage request, int mdInfPatientID)
         {

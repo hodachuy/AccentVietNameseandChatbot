@@ -450,6 +450,10 @@
     <Compile Include="Migrations\201909301057593_UpdateSetting.Designer.cs">
       <DependentUpon>201909301057593_UpdateSetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.cs" />
+    <Compile Include="Migrations\201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.Designer.cs">
+      <DependentUpon>201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -475,6 +479,7 @@
     <Compile Include="Repositories\MdAnswerRepository.cs" />
     <Compile Include="Repositories\MdAreaRepository.cs" />
     <Compile Include="Repositories\MdEmailRepository.cs" />
+    <Compile Include="Repositories\MdEngineerNameRepository.cs" />
     <Compile Include="Repositories\MdPhoneRepository.cs" />
     <Compile Include="Repositories\MdSearchCategoryRepository.cs" />
     <Compile Include="Repositories\MdSearchRepository.cs" />
@@ -787,6 +792,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909301057593_UpdateSetting.resx">
       <DependentUpon>201909301057593_UpdateSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.resx">
+      <DependentUpon>201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

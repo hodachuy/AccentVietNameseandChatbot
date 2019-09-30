@@ -258,7 +258,32 @@ namespace BotProject.Web.API
                             }
                             return await SendMessage(handleEmail.TemplateJsonZalo, sender);
                         }
-                        if (predicateName == "Voucher")
+						if (predicateName == "Engineer_Name")
+						{
+							var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
+							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+							AddHistory(hisVm);
+							if (handleEngineerName.Status)
+							{
+								zlUserDb.IsHavePredicate = false;
+								zlUserDb.PredicateName = "";
+								zlUserDb.PredicateValue = "";
+								zlUserDb.EngineerName = text;
+								if (text.Contains("postback"))
+								{
+									zlUserDb.EngineerName = "";
+								}
+								_appZaloUser.Update(zlUserDb);
+								_appZaloUser.Save();
+
+								if (!String.IsNullOrEmpty(handleEngineerName.Postback))
+								{
+									return await ExcuteMessage(handleEngineerName.Postback, sender, botId);
+								}
+							}
+							return await SendMessage(handleEngineerName.TemplateJsonZalo, sender);
+						}
+						if (predicateName == "Voucher")
                         {
                             string mdVoucherId = zlUserDb.PredicateValue;
                             if (text.Contains("postback_card"))
@@ -271,7 +296,7 @@ namespace BotProject.Web.API
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, zlUserDb.EngineerName, hisVm.Type);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                             AddHistory(hisVm);
@@ -355,7 +380,22 @@ namespace BotProject.Web.API
                             return await SendMessage(handleMdSearch.TemplateJsonZalo, sender);
 
                         }
-                        if (text.Contains(CommonConstants.ModuleAge))
+						if (text.Contains(CommonConstants.ModuleEngineerName))
+						{
+							var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
+
+							zlUserDb.IsHavePredicate = true;
+							zlUserDb.PredicateName = "Engineer_Name";
+							_appZaloUser.Update(zlUserDb);
+							_appZaloUser.Save();
+
+							hisVm.UserSay = "[Tên hoặc mã kỹ sư]";
+							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+							AddHistory(hisVm);
+
+							return await SendMessage(handleEngineerName.TemplateJsonZalo, sender);
+						}
+						if (text.Contains(CommonConstants.ModuleAge))
                         {
                             var handleAge = _handleMdService.HandledIsAge(text, botId);
 
@@ -402,7 +442,7 @@ namespace BotProject.Web.API
                         if (text.Contains(CommonConstants.ModuleVoucher))
                         {
                             string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId,zlUserDb.EngineerName, hisVm.Type);
 
                             zlUserDb.IsHavePredicate = true;
                             zlUserDb.PredicateName = "Voucher";

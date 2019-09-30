@@ -137,9 +137,9 @@ namespace BotProject.Web.API
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
             _user = _botService.loadUserBot(value.entry[0].messaging[0].sender.id);
-            //_user.Predicates.addSetting("agecheck", "false");
+			//_user.Predicates.addSetting("agecheck", "false");
 
-            foreach (var item in value.entry[0].messaging)
+			foreach (var item in value.entry[0].messaging)
             {
                 if (item.message == null && item.postback == null)
                 {
@@ -175,7 +175,10 @@ namespace BotProject.Web.API
             hisVm.UserName = sender;
             hisVm.Type = CommonConstants.TYPE_FACEBOOK;
 
-            try
+
+			var settingDb = _settingService.GetSettingByBotID(botId);
+			DateTime dTimeOut = DateTime.Now.AddSeconds(settingDb.Timeout);
+			try
             {
                 ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
                 fbUserDb = _appFacebookUser.GetByUserId(sender);
@@ -186,15 +189,17 @@ namespace BotProject.Web.API
                     fbUserVm.UserId = sender;
                     fbUserVm.IsHavePredicate = false;
                     fbUserVm.IsProactiveMessage = false;
-                    fbUserDb.UpdateFacebookUser(fbUserVm);
+					fbUserVm.TimeOut = dTimeOut;
+					fbUserDb.UpdateFacebookUser(fbUserVm);
                     _appFacebookUser.Add(fbUserDb);
                     _appFacebookUser.Save();
                 }
                 else
                 {
                     fbUserDb.StartedOn = DateTime.Now;
-                    // Điều kiện xử lý module
-                    if (fbUserDb.IsHavePredicate)
+					fbUserDb.TimeOut = dTimeOut;
+					// Điều kiện xử lý module
+					if (fbUserDb.IsHavePredicate)
                     {
                         var predicateName = fbUserDb.PredicateName;
                         if (predicateName == "ApiSearch")
@@ -281,7 +286,32 @@ namespace BotProject.Web.API
                             }
                             return await SendMessage(handleEmail.TemplateJsonFacebook, sender);
                         }
-                        if (predicateName == "Voucher")
+						if (predicateName == "Engineer_Name")
+						{
+							var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
+							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+							AddHistory(hisVm);
+							if (handleEngineerName.Status)
+							{
+								fbUserDb.IsHavePredicate = false;
+								fbUserDb.PredicateName = "";
+								fbUserDb.PredicateValue = "";
+								fbUserDb.EngineerName = text;
+								if (text.Contains("postback"))
+								{
+									fbUserDb.EngineerName = "";
+								}
+								_appFacebookUser.Update(fbUserDb);
+								_appFacebookUser.Save();
+
+								if (!String.IsNullOrEmpty(handleEngineerName.Postback))
+								{
+									return await ExcuteMessage(handleEngineerName.Postback, sender, botId);
+								}
+							}
+							return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
+						}
+						if (predicateName == "Voucher")
                         {
                             string mdVoucherId = fbUserDb.PredicateValue;
                             if (text.Contains("postback_card"))
@@ -294,7 +324,7 @@ namespace BotProject.Web.API
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, hisVm.Type);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                             AddHistory(hisVm);
@@ -379,7 +409,23 @@ namespace BotProject.Web.API
                             return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
 
                         }
-                        if (text.Contains(CommonConstants.ModuleAge))
+						if (text.Contains(CommonConstants.ModuleEngineerName))
+						{
+							var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
+
+							fbUserDb.IsHavePredicate = true;
+							fbUserDb.PredicateName = "Engineer_Name";
+							_appFacebookUser.Update(fbUserDb);
+							_appFacebookUser.Save();
+
+							hisVm.UserSay = "[Tên hoặc mã kỹ sư]";
+							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+							AddHistory(hisVm);
+
+							return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
+						}
+
+						if (text.Contains(CommonConstants.ModuleAge))
                         {
                             var handleAge = _handleMdService.HandledIsAge(text, botId);
 
@@ -426,7 +472,7 @@ namespace BotProject.Web.API
                         if (text.Contains(CommonConstants.ModuleVoucher))
                         {
                             string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, hisVm.Type);
 
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Voucher";

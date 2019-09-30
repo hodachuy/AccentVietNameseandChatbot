@@ -102,6 +102,7 @@
     <Compile Include="ImageService.cs" />
     <Compile Include="MdAgeService.cs" />
     <Compile Include="MdEmailService.cs" />
+    <Compile Include="MdEngineerNameService.cs" />
     <Compile Include="MdPhoneService.cs" />
     <Compile Include="MdSearchCategoryService.cs" />
     <Compile Include="MdSearchService.cs" />
