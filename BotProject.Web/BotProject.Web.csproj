@@ -783,6 +783,7 @@
     <Content Include="assets\images\banner.jpg" />
     <Content Include="assets\images\thuthap.png" />
     <Content Include="assets\images\user_bot.jpg" />
+    <Content Include="assets\images\whatsaquestion.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="File\AIML\config\DefaultPredicates.xml" />
     <Content Include="File\AIML\config\GenderSubstitutions.xml" />

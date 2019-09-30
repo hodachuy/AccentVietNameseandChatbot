@@ -20,6 +20,22 @@ namespace BotProject.Web.Models
 
         public int? CardID { set; get; }
 
+        public bool IsProactiveMessage { set; get; }
+
+        public int Timeout { set; get; }
+
+        public string ProactiveMessageText { set; get; }
+
+        public string FacebookPageToken { set; get; }
+
+        public string FacebookAppSecrect { set; get; }
+
+        public string ZaloPageToken { set; get; }
+
+        public string ZaloAppSecrect { set; get; }
+
+        public string ZaloQRCode { set; get; }
+
         public string TextIntroductory { set; get; }
 
         public bool IsActiveIntroductory { set; get; }

@@ -20,6 +20,8 @@ using System.Xml;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net;
+using Quartz;
+using Quartz.Impl;
 
 namespace Accent.ConsoleApplication
 {
@@ -34,157 +36,111 @@ namespace Accent.ConsoleApplication
             public string field { set; get; }
             public int id { set; get; }
         }
+        public class ProactiveMessage
+        {
+            public string id { set; get; }
+            public string started { set; get; }
+            public string timeout { set; get; }
+        }
+        public static List<ProactiveMessage> _lstProac = new List<ProactiveMessage>();
+        public class HelloJob : IJob
+        {
+            public void Execute(IJobExecutionContext context)
+            {
+                JobKey key = context.JobDetail.Key;
+                //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
+                //string userId = dataMapDefault.GetString("userId");
+                //Console.WriteLine("HelloJob is executing. " + userId);
+                //if(userId == "0")
+                //{
+
+                //}
+                ProactiveMessage pr = new ProactiveMessage();
+
+                JobDataMap dataMap = context.MergedJobDataMap;
+                string userId2 = dataMap.GetString("userId");
+                string TimeStarted = dataMap.GetString("TimeStarted");
+                string TimeOut = dataMap.GetString("timeout");
+
+                pr.id = userId2;
+                pr.started = TimeStarted;
+                pr.timeout = TimeOut;
+
+                _lstProac.Add(pr);
+
+                var lstActive = _lstProac.OrderBy(x => x.timeout).GroupBy(x => x.id);
+
+
+                Console.WriteLine("HelloJob is executing. " + userId2 +" Started:" + TimeStarted + " TimeOut:" + TimeOut + " Count:" + _lstProac.Count() + " ItemCount:" + lstActive.Count());
+            }
+        }
+
         public static void Main(string[] args)
         {
-			SearchNlpQnAViewModel s = new SearchNlpQnAViewModel();
-			var ic = s.id.ToString();
-			s.id = 1;
-			int numberOrder = 10000 + (s.id.ToString() == "0" ? 1 : s.id + 1);
 
-			string telephone = "0657";
-			string serialNumber = "";
-			string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
+            // define the job and tie it to our HelloJob class
+            //IJobDetail job = JobBuilder.Create<HelloJob>()
+            //    .WithIdentity("s1", "group1") // name "myJob", group "group1"
+            //    .UsingJobData("userId", "0")
+            //    .Build();
 
-			//check phonenumber có kèm theo serialnumber không
-			foreach (var item in strArrSpecial)
-			{
-				if (telephone.Contains(item))
-				{
-					var arrStrPhone = Regex.Split(telephone, item);
-					telephone = arrStrPhone[0];
-					serialNumber = arrStrPhone[1];
-					break;
-				}
-			}
-
-
-
-
-
-			string tempImage = JObject.FromObject(
-                         new
-                         {
-                             recipient = new { user_id = "501004450355249305" },
-                             message = new
-                             {
-                                 text = "Hình ảnh",
-                                 attachment = new
-                                 {
-                                     type = "template",
-                                     payload = new
-                                     {
-                                         template_type = "media",
-                                         elements = new[]
-                                         {
-                                                         new
-                                                         {
-                                                            media_type = "image",
-                                                            url = "File/Images/Voucher/5e77c950-154f-4a0e-a963-b1db464bfcd2-7f080aec146bf335aa7a.jpg"
-                                                         }
-                                         }
-                                     }
-                                 }
-                             },
-                         }).ToString();
-
-            string tem2 = JObject.FromObject(
-                 new
-                 {
-                     recipient = new { user_id = "501004450355249305" },
-                     message = new { text = "abc" },
-                 }).ToString();
-
-            var x = SendMessage(tem2, "501004450355249305");
-
-
-
-
-
-            string text = "💻 Bảo hành dòng máy Dell và 📞 Thông tin hỗ trợ postback_card";
-
-            string x54564 = Regex.Replace(text, @"\p{Cs}", "").Trim();
-
-
-
-            //var obj = GetMessageTemplate("Your Code Telephone: 80181", "0913452221");
-            List<SearchNlpQnAViewModel> lstS = new List<SearchNlpQnAViewModel>();
-
-            for(int i = 1; i<=4; i++)
+            while (true)
             {
-                SearchNlpQnAViewModel sq = new SearchNlpQnAViewModel();
-                sq._id = i.ToString();
-                sq.html = i + " html";
-                sq.question = i + " question";
-                sq.answer = i + " answer";
-                sq.field = i + " field";
-                sq.id = i;
-                lstS.Add(sq);
+                Console.InputEncoding = Encoding.Unicode;
+                Console.WriteLine("Nhap chuoi :");
+                string text = Console.ReadLine();
+                if (text == "exit")
+                {
+                    break;
+                }
+
+                Schedule("groupUser1", text, "trigger1");
+
             }
 
-            string x1 = JObject.FromObject(
-                         new
-                         {
-                             recipient = new { id = "123123131313" },
-                             message = new
-                             {
-                                 attachment = new
-                                 {
-                                     type = "template",
-                                     payload = new
-                                     {
-                                         template_type = "generic",
-                                         elements = from p in lstS
-                                                    select new
-                                                    {
-                                                        title = p.html,
-                                                        item_url = p.field,
-                                                        image_url = p.question,
-                                                        subtitle = p.answer,
-                                                        buttons = new[]
-                                                        {
-                                                             new
-                                                                {
-                                                                   type = "web_url",
-                                                                   url = "https://petersfancybrownhats.com",
-                                                                   title = "View Website"
-                                                                },
-                                                        }
-                                                    }
-                                     }
-                                 }
-                             },
-                         }).ToString();
+            //Schedule("groupUser1","1235","trigger1");
+            //System.Threading.Thread.Sleep(5000);
+            //Schedule("groupUser1", "123875", "trigger1");
+
+            //System.Threading.Thread.Sleep(2000);
+            //Schedule("group2","6789");
+        }
+        public static void Schedule(string name, string UserId, string triggerName)
+        {
+            // construct a scheduler factory
+            ISchedulerFactory schedFact = new StdSchedulerFactory();
+
+            // get a scheduler
+            IScheduler sched = schedFact.GetScheduler();
+            sched.Start();
+
+
+            //define the job and tie it to our HelloJob class
+           IJobDetail job = JobBuilder.Create<HelloJob>()
+                //.WithIdentity("ProactiveMsgJob", "ProactiveMsgJob") 
+                //.UsingJobData("userId", "0")
+                .Build();
 
 
 
+            // Trigger the job to run now, and then every 40 seconds
+            ITrigger trigger = TriggerBuilder.Create()
+                    //.WithIdentity(triggerName, "ProactiveMsgJob")
+                    .UsingJobData("userId", UserId)
+                    .UsingJobData("TimeStarted", DateTime.Now.ToLocalTime().ToString())
+                    .UsingJobData("timeout", DateTime.Now.AddSeconds(5).ToLocalTime().ToString())
+                    .StartAt(DateTime.Now.AddSeconds(5).ToLocalTime())
+                    //.WithSimpleSchedule(x => x
+                    //    .WithIntervalInSeconds(5)
+                    //    .WithRepeatCount(0))
+                    //.ForJob("ProactiveMsgJob", group)
+                    .Build();
 
-            string mailName = x1;          
-            string mailDomain = "";
-            //Regex rPart = new Regex("([^@]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            //Match _partContent = rPart.Match(s);
-            //if (_partContent.Success)
-            //{
-            //    mailName = _partContent.Groups[0].Value;
-            //    //mailDomain = _partContent.Groups[2].Value; ;
-            //}
-
-            //Regex rPart1 = new Regex("@(.*)$", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            //Match _partContent1 = rPart1.Match(s);
-            //if (_partContent1.Success)
-            //{
-            //    mailDomain = _partContent1.Groups[0].Value;
-            //    //mailDomain = _partContent.Groups[2].Value; ;
-            //}
-
-            //var obj = GetMessageTemplate("abc", "4354354353");
-            //string abc = obj.ToString();
-            //SendSmsMsgServiceSoapClient sm = new SendSmsMsgServiceSoapClient();
-            //         string xmlParam = GenXmlParam("84", "0375348328", "Your Code : 58134");
-            //         dynamic rsMsg = sm.ExecuteFunc("SendSmsMsg", xmlParam);
-            //         string rsJson = ConvertXMLToJson(rsMsg);
-            Console.WriteLine("Rs: ");
+            sched.ScheduleJob(job, trigger);
 
         }
+
+       
 
         private static async Task<HttpResponseMessage> SendMessage(string templateJson, string sender)
         {

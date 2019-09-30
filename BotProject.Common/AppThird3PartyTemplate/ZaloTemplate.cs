@@ -109,7 +109,7 @@ namespace BotProject.Common.AppThird3PartyTemplate
                                          {
                                              title = q.question.Substring(0, 60) + "...",
                                              subtitle = "FAQs",
-                                             image_url = ConfigHelper.ReadString("Domain") + "assets/images/faq.png",
+                                             image_url = ConfigHelper.ReadString("Domain") + "assets/images/whatsaquestion.jpg",
                                              default_action = new
                                              {
                                                  type = "oa.open.url",

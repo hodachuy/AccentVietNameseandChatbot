@@ -322,7 +322,7 @@ namespace BotProject.Web.API
 
 								// send otp
 								await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
-								return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
+								//return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
 							}
                             return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                         }

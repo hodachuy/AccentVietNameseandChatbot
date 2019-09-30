@@ -323,7 +323,7 @@ namespace BotProject.Service
 
                         string codeOTP = RandomStr(5);
                         SendSmsService sm = new SendSmsService();
-                        string rsSmsMsg = sm.SendSmsMsg(telePhoneNumber, "Your Digipro verification code is: " + codeOTP);
+                        string rsSmsMsg = sm.SendSmsMsg(telePhoneNumber,codeOTP + " là mã OTP của bạn từ Digipro");
                         dynamic obj = JsonConvert.DeserializeObject(rsSmsMsg);
                         if (obj.Table != null)
                         {

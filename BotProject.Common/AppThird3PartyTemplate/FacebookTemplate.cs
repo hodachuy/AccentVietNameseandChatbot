@@ -92,7 +92,7 @@ namespace BotProject.Common.AppThird3PartyTemplate
                                          {
                                              title = q.question.Substring(0,60)+"...",
                                              item_url = "",
-                                             image_url = ConfigHelper.ReadString("Domain")+ "assets/images/faq.png",
+                                             image_url = ConfigHelper.ReadString("Domain")+ "assets/images/whatsaquestion.jpg",
                                              subtitle = "FAQs",
                                              buttons = new[]
                                              {

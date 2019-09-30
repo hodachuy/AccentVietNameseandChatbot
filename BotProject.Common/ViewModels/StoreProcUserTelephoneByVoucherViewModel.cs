@@ -21,6 +21,7 @@ namespace BotProject.Common.ViewModels
         public string Type { set; get; }
         public string SerialNumber { set; get; }
         public string NumberOrder { set; get; }
+        public string CodeOTP { set; get; }
         public int Total { set; get; }
     }
 }

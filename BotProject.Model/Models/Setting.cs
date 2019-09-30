@@ -31,6 +31,18 @@ namespace BotProject.Model.Models
 
         public bool IsMDSearch { set; get; }
 
+        public bool IsProactiveMessage { set; get; }
+
+        public int Timeout { set; get; }
+
+        public string ProactiveMessageText { set; get; }
+
+        public string FacebookPageToken { set; get; }
+        public string FacebookAppSecrect { set; get; }
+        public string ZaloPageToken { set; get; }
+        public string ZaloAppSecrect { set; get; }
+        public string ZaloQRCode { set; get; }
+
         public int BotID { set; get; }
 
         public string UserID { set; get; }

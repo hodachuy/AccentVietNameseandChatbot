@@ -203,6 +203,15 @@ namespace BotProject.Web.Infrastructure.Extensions
             {
                 settingDb.IsActiveIntroductory = true;
             }
+
+            settingDb.IsProactiveMessage = settingVm.IsProactiveMessage;
+            settingDb.ProactiveMessageText = settingVm.ProactiveMessageText;
+            settingDb.Timeout = settingVm.Timeout;
+            settingDb.FacebookAppSecrect = settingVm.FacebookAppSecrect;
+            settingDb.FacebookPageToken = settingVm.FacebookPageToken;
+            settingDb.ZaloAppSecrect = settingVm.ZaloAppSecrect;
+            settingDb.ZaloPageToken = settingVm.ZaloPageToken;
+            settingDb.ZaloQRCode = settingVm.ZaloQRCode;
         }
         #endregion
 

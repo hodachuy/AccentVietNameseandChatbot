@@ -298,7 +298,7 @@ namespace BotProject.Web.API
                                 _appZaloUser.Save();
 								// send otp
 								await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
-                                return await SendMessage(ZaloTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
+                                //return await SendMessage(ZaloTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
                             }
                             return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
                         }
@@ -781,5 +781,8 @@ namespace BotProject.Web.API
             _historyService.Create(hisDb);
             _historyService.Save();
         }
+
+
+
     }
 }
