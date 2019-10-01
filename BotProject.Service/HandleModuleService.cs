@@ -220,10 +220,10 @@ namespace BotProject.Service
 				rsHandle.Status = false;
 				rsHandle.Message = tempText(mdEngineerNameDb.MessageStart);
 				rsMessage = mdEngineerNameDb.MessageStart;
-				rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
-				rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateText(rsMessage, "{{senderId}}").ToString();
+				rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdEngineerNameDb.Payload, mdEngineerNameDb.TitlePayload).ToString();
+                rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdEngineerNameDb.Payload, mdEngineerNameDb.TitlePayload).ToString();
 
-				return rsHandle;
+                return rsHandle;
 			}
 			rsHandle.Status = true;
 			rsHandle.Message = tempText(mdEngineerNameDb.MessageEnd);// nếu call tới follow thẻ khác trả về postback id card

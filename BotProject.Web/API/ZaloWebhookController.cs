@@ -10,9 +10,12 @@ using BotProject.Web.Infrastructure.Extensions;
 using BotProject.Web.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Quartz;
+using Quartz.Impl;
 using SearchEngine.Service;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -31,6 +34,10 @@ namespace BotProject.Web.API
         string pageToken = "OUQpPbeaQqbjuhvZLIjhJstikczICc8EDPBCEaCHQKStjV4gJ1fqPJEwnaeBPsSmOjhq7rL485CgnvKRSa97SYpW_bXRIMe04el3A2e9Rb9ca-C63ZKn9dcAbbeV0oDqMgos31yhEqLhhvfhD1HC45sWnKKR51GAUwEWHaS_0Xbvzhf94qu34LxQXKOVQI8gGwdxGpKILZjqrS1cAK5hAHA7oNvA3qzIVPpUA1quUtTTaDms2YflNsxgvNCMIZmDV8EVTZCa7ITJPWxmu1bSE657";
         //string appSecret = Helper.ReadString("AppSecret");
         //string verifytoken = Helper.ReadString("VerifyTokenWebHook");
+
+        int _timeOut = 60;
+        bool _isHaveTimeOut = false;
+        string _messageProactive = "";
 
         private readonly string Domain = Helper.ReadString("Domain");
         private readonly string UrlAPI = Helper.ReadString("UrlAPI");
@@ -98,14 +105,22 @@ namespace BotProject.Web.API
         [HttpPost]
         public async Task<HttpResponseMessage> Post()
         {
+            int botId = 5028;
             var body = await Request.Content.ReadAsStringAsync();
             //LogError(body);
             if (body.Contains("user_send_text"))
             {
+                var settingDb = _settingService.GetSettingByBotID(botId);
+                pageToken = settingDb.ZaloPageToken;
+
+                _isHaveTimeOut = settingDb.IsProactiveMessage;
+                _timeOut = settingDb.Timeout;
+                _messageProactive = settingDb.ProactiveMessageText;
+
                 var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
                 //LogError(body);
 
-                int botId = 5028;
+
                 var lstAIML = _aimlFileService.GetByBotId(botId);
                 var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
                 _botService.loadAIMLFromDatabase(lstAIMLVm);
@@ -119,7 +134,6 @@ namespace BotProject.Web.API
             // sự kiện người dùng quan tâm
             if(body.Contains("follower"))
             {
-                int botId = 5028;
                 var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
                 var settingDb = _settingService.GetSettingByBotID(botId);
                 var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
@@ -152,10 +166,27 @@ namespace BotProject.Web.API
             hisVm.UserName = sender;
             hisVm.Type = CommonConstants.TYPE_ZALO;
 
+            DateTime dStartedTime = DateTime.Now;
+            DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
+
             try
             {
                 ApplicationZaloUser zlUserDb = new ApplicationZaloUser();
                 zlUserDb = _appZaloUser.GetByUserId(sender);
+
+                if (_isHaveTimeOut)
+                {
+                    if (zlUserDb != null)
+                    {
+                        zlUserDb.StartedOn = dStartedTime;
+                        zlUserDb.TimeOut = dTimeOut;
+                        _appZaloUser.Update(zlUserDb);
+                        _appZaloUser.Save();
+                    }
+                    Schedule(sender, ZaloTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
+                }
+
+
                 if (zlUserDb == null)
                 {
                     zlUserDb = new ApplicationZaloUser();
@@ -163,6 +194,8 @@ namespace BotProject.Web.API
                     zlUserVm.UserId = sender;
                     zlUserVm.IsHavePredicate = false;
                     zlUserVm.IsProactiveMessage = false;
+                    zlUserVm.TimeOut = dTimeOut;
+                    zlUserDb.StartedOn = dStartedTime;
                     zlUserDb.UpdateZaloUser(zlUserVm);
                     _appZaloUser.Add(zlUserDb);
                     _appZaloUser.Save();
@@ -170,6 +203,7 @@ namespace BotProject.Web.API
                 else
                 {
                     zlUserDb.StartedOn = DateTime.Now;
+                    zlUserDb.TimeOut = dTimeOut;
                     // Điều kiện xử lý module
                     if (zlUserDb.IsHavePredicate)
                     {
@@ -321,8 +355,10 @@ namespace BotProject.Web.API
                                 zlUserDb.PhoneNumber = telePhoneNumber;
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
-								// send otp
-								await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
+                                // send otp
+
+                                return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
+                                //await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
                                 //return await SendMessage(ZaloTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
                             }
                             return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
@@ -386,7 +422,8 @@ namespace BotProject.Web.API
 
 							zlUserDb.IsHavePredicate = true;
 							zlUserDb.PredicateName = "Engineer_Name";
-							_appZaloUser.Update(zlUserDb);
+                            zlUserDb.EngineerName = "";
+                            _appZaloUser.Update(zlUserDb);
 							_appZaloUser.Save();
 
 							hisVm.UserSay = "[Tên hoặc mã kỹ sư]";
@@ -822,7 +859,85 @@ namespace BotProject.Web.API
             _historyService.Save();
         }
 
+        public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut)
+        {
+            // construct a scheduler factory
+            ISchedulerFactory schedFact = new StdSchedulerFactory();
 
+            // get a scheduler
+            IScheduler scheduler = schedFact.GetScheduler();
+            scheduler.Start();
 
+            IJobDetail job = JobBuilder.Create<ProactiveMessageJob>()
+                 .Build();
+            ITrigger trigger = TriggerBuilder.Create()
+                    //.WithIdentity(triggerName, "ProactiveMsgJob")
+                    .UsingJobData("UserId", UserId)
+                    .UsingJobData("Message", strMessage)
+                    .UsingJobData("PageToken", pageToken)
+                    .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
+                    .StartAt(dTimeOut.ToLocalTime())
+                    .Build();
+
+            scheduler.ScheduleJob(job, trigger);
+        }
+        public class ProactiveMessageJob : IJob
+        {
+            private readonly string Domain = Helper.ReadString("Domain");
+            public void Execute(IJobExecutionContext context)
+            {
+                JobKey key = context.JobDetail.Key;
+                //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
+                JobDataMap dataMap = context.MergedJobDataMap;
+                string userId = dataMap.GetString("UserId");
+                string message = dataMap.GetString("Message");
+                string pageToken = dataMap.GetString("PageToken");
+                string TimeOut = dataMap.GetString("TimeOut");
+                DateTime dTimeOut = Convert.ToDateTime(TimeOut);
+
+                DateTime timeOutDb;
+                int resultTimeCompare = 3;
+                var sqlConnection = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+                sqlConnection.Open();
+
+                SqlCommand command = new SqlCommand("Select TimeOut from [ApplicationZaloUsers] where UserId=@userId", sqlConnection);
+                command.Parameters.AddWithValue("@userId", userId);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        timeOutDb = (DateTime)reader["TimeOut"];
+                        resultTimeCompare = DateTime.Compare(DateTime.Now, timeOutDb);
+                    }
+                }
+                command.ExecuteNonQuery();
+                sqlConnection.Close();
+
+                if (resultTimeCompare == 1)
+                {
+                    SendProactiveMessage(message, userId, pageToken, dTimeOut);
+                }
+            }
+            private async Task<HttpResponseMessage> SendProactiveMessage(string templateJson, string sender, string pageToken, DateTime dTimeOut)
+            {
+                HttpResponseMessage res;
+                if (!String.IsNullOrEmpty(templateJson))
+                {
+                    templateJson = templateJson.Replace("{{senderId}}", sender);
+                    templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
+                    templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                    templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                    templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                    templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                    }
+                }
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+        }
     }
 }

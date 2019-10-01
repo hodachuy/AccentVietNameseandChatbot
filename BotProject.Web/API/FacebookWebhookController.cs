@@ -8,11 +8,16 @@ using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Extensions;
 using BotProject.Web.Models;
+using Common.Logging.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Quartz;
+using Quartz.Impl;
 using SearchEngine.Service;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -36,6 +41,10 @@ namespace BotProject.Web.API
         string pageToken = Helper.ReadString("AccessToken");
         string appSecret = Helper.ReadString("AppSecret");
         string verifytoken = Helper.ReadString("VerifyTokenWebHook");
+
+        int _timeOut = 60;
+        bool _isHaveTimeOut = false;
+        string _messageProactive = "";
 
         private readonly string Domain = Helper.ReadString("Domain");
         private readonly string UrlAPI = Helper.ReadString("UrlAPI");
@@ -118,10 +127,17 @@ namespace BotProject.Web.API
         [HttpPost]
         public async Task<HttpResponseMessage> Post()
         {
-            //var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
+            int botId = 5028;
+
+            var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
-            //if (!VerifySignature(signature, body))
-                //return new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+            var settingDb = _settingService.GetSettingByBotID(botId);
+            pageToken = settingDb.FacebookPageToken;
+            appSecret = settingDb.FacebookAppSecrect;
+
+            if (!VerifySignature(signature, body))
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
             var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
 
@@ -132,7 +148,11 @@ namespace BotProject.Web.API
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
-            int botId = 5028;
+
+            _isHaveTimeOut = settingDb.IsProactiveMessage;
+            _timeOut = settingDb.Timeout;
+            _messageProactive = settingDb.ProactiveMessageText;
+
             var lstAIML = _aimlFileService.GetByBotId(botId);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
@@ -176,12 +196,24 @@ namespace BotProject.Web.API
             hisVm.Type = CommonConstants.TYPE_FACEBOOK;
 
 
-			var settingDb = _settingService.GetSettingByBotID(botId);
-			DateTime dTimeOut = DateTime.Now.AddSeconds(settingDb.Timeout);
+            DateTime dStartedTime= DateTime.Now;
+            DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
 			try
             {
                 ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
                 fbUserDb = _appFacebookUser.GetByUserId(sender);
+                if (_isHaveTimeOut)
+                {
+                    if(fbUserDb != null)
+                    {
+                        fbUserDb.StartedOn = dStartedTime;
+                        fbUserDb.TimeOut = dTimeOut;
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+                    }
+                    Schedule(sender, FacebookTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
+                }
+
                 if (fbUserDb == null)
                 {
                     fbUserDb = new ApplicationFacebookUser();
@@ -190,13 +222,14 @@ namespace BotProject.Web.API
                     fbUserVm.IsHavePredicate = false;
                     fbUserVm.IsProactiveMessage = false;
 					fbUserVm.TimeOut = dTimeOut;
-					fbUserDb.UpdateFacebookUser(fbUserVm);
+                    fbUserDb.StartedOn = dStartedTime;
+                    fbUserDb.UpdateFacebookUser(fbUserVm);
                     _appFacebookUser.Add(fbUserDb);
                     _appFacebookUser.Save();
                 }
                 else
                 {
-                    fbUserDb.StartedOn = DateTime.Now;
+                    fbUserDb.StartedOn = dStartedTime;
 					fbUserDb.TimeOut = dTimeOut;
 					// Điều kiện xử lý module
 					if (fbUserDb.IsHavePredicate)
@@ -351,7 +384,8 @@ namespace BotProject.Web.API
                                 _appFacebookUser.Save();
 
 								// send otp
-								await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
+                                return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
+                                //await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
 								//return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
 							}
                             return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
@@ -415,7 +449,8 @@ namespace BotProject.Web.API
 
 							fbUserDb.IsHavePredicate = true;
 							fbUserDb.PredicateName = "Engineer_Name";
-							_appFacebookUser.Update(fbUserDb);
+                            fbUserDb.EngineerName = "";
+                            _appFacebookUser.Update(fbUserDb);
 							_appFacebookUser.Save();
 
 							hisVm.UserSay = "[Tên hoặc mã kỹ sư]";
@@ -844,8 +879,6 @@ namespace BotProject.Web.API
 
             return hashString.ToString().ToLower() == signature.ToLower();
         }
-
-
         private void LogError(string message)
         {
             try
@@ -866,6 +899,100 @@ namespace BotProject.Web.API
             hisDb.UpdateHistory(hisVm);
             _historyService.Create(hisDb);
             _historyService.Save();
+        }
+
+
+        public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut)
+        {
+            // construct a scheduler factory
+            ISchedulerFactory schedFact = new StdSchedulerFactory();
+
+            // get a scheduler
+            IScheduler scheduler = schedFact.GetScheduler();
+            scheduler.Start();
+
+            IJobDetail job = JobBuilder.Create<ProactiveMessageJob>()
+                 //.WithIdentity("ProactiveMsgJob", "ProactiveMsgJob") 
+                 //.UsingJobData("userId", "0")
+                 .Build();
+            ITrigger trigger = TriggerBuilder.Create()
+                    //.WithIdentity(triggerName, "ProactiveMsgJob")
+                    .UsingJobData("UserId", UserId)
+                    .UsingJobData("Message", strMessage)
+                    .UsingJobData("PageToken", pageToken)
+                    .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
+                    .StartAt(dTimeOut.ToLocalTime())
+                    //.WithSimpleSchedule(x => x
+                    //    .WithIntervalInSeconds(5)
+                    //    .WithRepeatCount(0))
+                    //.ForJob("ProactiveMsgJob", group)
+                    .Build();
+
+            scheduler.ScheduleJob(job, trigger);
+
+            // some sleep to show what's happening
+            //await Task.Delay(TimeSpan.FromSeconds(60));
+
+            // and last shut down the scheduler when you are ready to close your program
+            //await scheduler.Shutdown();
+        }
+        public class ProactiveMessageJob : IJob
+        {
+            private readonly string Domain = Helper.ReadString("Domain");
+            public void Execute(IJobExecutionContext context)
+            {
+                JobKey key = context.JobDetail.Key;
+                //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
+                JobDataMap dataMap = context.MergedJobDataMap;
+                string userId = dataMap.GetString("UserId");
+                string message = dataMap.GetString("Message");
+                string pageToken = dataMap.GetString("PageToken");
+                string TimeOut = dataMap.GetString("TimeOut");
+                DateTime dTimeOut = Convert.ToDateTime(TimeOut);
+
+                DateTime timeOutDb;
+                int resultTimeCompare = 3;
+                var sqlConnection = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+                sqlConnection.Open();
+
+                SqlCommand command = new SqlCommand("Select TimeOut from [ApplicationFacebookUsers] where UserId=@userId", sqlConnection);
+                command.Parameters.AddWithValue("@userId", userId);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        timeOutDb = (DateTime)reader["TimeOut"];
+                        resultTimeCompare = DateTime.Compare(DateTime.Now, timeOutDb);
+                    }
+                }
+                command.ExecuteNonQuery();
+                sqlConnection.Close();
+
+                if(resultTimeCompare == 1)
+                {
+                    SendProactiveMessage(message, userId, pageToken, dTimeOut);
+                }
+            }
+            private async Task<HttpResponseMessage> SendProactiveMessage(string templateJson, string sender, string pageToken, DateTime dTimeOut)
+            {
+                HttpResponseMessage res;
+                if (!String.IsNullOrEmpty(templateJson))
+                {
+                    templateJson = templateJson.Replace("{{senderId}}", sender);
+                    templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
+                    templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                    templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                    templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                    templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                    using (HttpClient client = new HttpClient())
+                    {
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                    }
+                }
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
         }
 
     }

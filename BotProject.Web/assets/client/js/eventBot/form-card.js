@@ -5248,6 +5248,11 @@ function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoP
             html += '</div>';
             $("#template-module").empty().append(html)
             loadEmojiPicker();
+            setTimeout(function () {
+                if (data.CardPayloadID != "" || data.CardPayloadID != null) {
+                    $('#mdEngineerNameCard option[value="' + data.CardPayloadID + '"]').attr('selected', 'selected');
+                }
+            }, 1000)
         });
     }
     if (moduleName == "email") {
@@ -6368,6 +6373,7 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
         LoadDatePicker("cboStartDate");
         LoadDatePicker("cboExpirationDate");
 
+
     } else {
         typeActionMdVoucher = false;
         var params = {
@@ -6459,6 +6465,11 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
             $("#template-module").empty().append(html)
             loadEmojiPicker();
 
+            setTimeout(function () {
+                if (data.CardPayloadID != "" || data.CardPayloadID != null) {
+                    $('#mdCardVoucher option[value="' + data.CardPayloadID + '"]').attr('selected', 'selected');
+                }
+            }, 1000)
 
             if (data.StartDate != null) {
                 LoadDatePicker("cboStartDate", data.StartDate);

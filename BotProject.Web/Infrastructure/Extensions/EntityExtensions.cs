@@ -297,7 +297,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             fbUser.IsProactiveMessage = fbUserVm.IsProactiveMessage;
 			fbUser.EngineerName = fbUserVm.EngineerName;
 			fbUser.TimeOut = fbUserVm.TimeOut;
-			fbUser.StartedOn = DateTime.Now;
+			//fbUser.StartedOn = DateTime.Now;
         }
         #endregion
 
@@ -312,7 +312,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             zlUser.IsProactiveMessage = zlUserVm.IsProactiveMessage;
 			zlUser.EngineerName = zlUserVm.EngineerName;
 			zlUser.TimeOut = zlUserVm.TimeOut;
-			zlUser.StartedOn = DateTime.Now;
+			//zlUser.StartedOn = DateTime.Now;
         }
         #endregion
     }

@@ -70,7 +70,14 @@ namespace Accent.ConsoleApplication
 
                 var lstActive = _lstProac.OrderBy(x => x.timeout).GroupBy(x => x.id);
 
+                string abc = JObject.FromObject(
+                          new
+                          {
+                              recipient = new { id = "2666433486706739" },
+                              message = new { text = "Welcome to Chatbot Lacviet!" },
+                          }).ToString();
 
+                SendMessage(abc, "2666433486706739");
                 Console.WriteLine("HelloJob is executing. " + userId2 +" Started:" + TimeStarted + " TimeOut:" + TimeOut + " Count:" + _lstProac.Count() + " ItemCount:" + lstActive.Count());
             }
         }
@@ -95,7 +102,7 @@ namespace Accent.ConsoleApplication
                 }
 
                 Schedule("groupUser1", text, "trigger1");
-
+                Console.WriteLine("abc :");
             }
 
             //Schedule("groupUser1","1235","trigger1");
@@ -140,11 +147,11 @@ namespace Accent.ConsoleApplication
 
         }
 
-       
+
 
         private static async Task<HttpResponseMessage> SendMessage(string templateJson, string sender)
         {
-            string pageToken = "OUQpPbeaQqbjuhvZLIjhJstikczICc8EDPBCEaCHQKStjV4gJ1fqPJEwnaeBPsSmOjhq7rL485CgnvKRSa97SYpW_bXRIMe04el3A2e9Rb9ca-C63ZKn9dcAbbeV0oDqMgos31yhEqLhhvfhD1HC45sWnKKR51GAUwEWHaS_0Xbvzhf94qu34LxQXKOVQI8gGwdxGpKILZjqrS1cAK5hAHA7oNvA3qzIVPpUA1quUtTTaDms2YflNsxgvNCMIZmDV8EVTZCa7ITJPWxmu1bSE657";
+            string pageToken = "EAAhdfR3uJyYBAC3Af74l0eB92vGj4rom6PZAmIJg32cwwnmPoCmCnr6Hf1Y0ZAxyvbVuPjazIwWi1h4lppZAPbDSLBakjFdojM02Ipk2rOnjvfCTyzBTCwmUv4CZATIxLNflL7cmbkYeZAfuZBf9CgElNyFmKHLdb9gtb5ZAnI1owZDZD";
             HttpResponseMessage res;
             if (!String.IsNullOrEmpty(templateJson))
             {
@@ -158,7 +165,7 @@ namespace Accent.ConsoleApplication
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                    res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
                 }
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
