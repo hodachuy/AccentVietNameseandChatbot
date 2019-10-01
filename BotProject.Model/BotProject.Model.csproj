@@ -104,6 +104,7 @@
     <Compile Include="Models\MdAge.cs" />
     <Compile Include="Models\MdAnswer.cs" />
     <Compile Include="Models\MdArea.cs" />
+    <Compile Include="Models\MdAdminContact.cs" />
     <Compile Include="Models\MdEmail.cs" />
     <Compile Include="Models\MdEngineerName.cs" />
     <Compile Include="Models\MdPhone.cs" />

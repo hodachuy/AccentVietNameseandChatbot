@@ -454,6 +454,18 @@
     <Compile Include="Migrations\201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.Designer.cs">
       <DependentUpon>201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910011503304_UpdateSetting_10012019.cs" />
+    <Compile Include="Migrations\201910011503304_UpdateSetting_10012019.Designer.cs">
+      <DependentUpon>201910011503304_UpdateSetting_10012019.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910011536481_AddMdAdminContacts.cs" />
+    <Compile Include="Migrations\201910011536481_AddMdAdminContacts.Designer.cs">
+      <DependentUpon>201910011536481_AddMdAdminContacts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201910011559061_UpdateMdAdminContact.cs" />
+    <Compile Include="Migrations\201910011559061_UpdateMdAdminContact.Designer.cs">
+      <DependentUpon>201910011559061_UpdateMdAdminContact.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -475,6 +487,7 @@
     <Compile Include="Repositories\GroupCardRepository.cs" />
     <Compile Include="Repositories\HistoryRepository.cs" />
     <Compile Include="Repositories\ImageRepository.cs" />
+    <Compile Include="Repositories\MdAdminContactRepository.cs" />
     <Compile Include="Repositories\MdAgeRepository.cs" />
     <Compile Include="Repositories\MdAnswerRepository.cs" />
     <Compile Include="Repositories\MdAreaRepository.cs" />
@@ -795,6 +808,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.resx">
       <DependentUpon>201909301536395_AddMdEngineerNameAndUpdateZaloFacebook.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910011503304_UpdateSetting_10012019.resx">
+      <DependentUpon>201910011503304_UpdateSetting_10012019.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910011536481_AddMdAdminContacts.resx">
+      <DependentUpon>201910011536481_AddMdAdminContacts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910011559061_UpdateMdAdminContact.resx">
+      <DependentUpon>201910011559061_UpdateMdAdminContact.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

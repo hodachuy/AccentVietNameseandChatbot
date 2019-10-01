@@ -32,7 +32,8 @@ namespace BotProject.Service
         HandleResultBotViewModel HandleIsSearchAPI(string mdName, string mdSearchID, string notFound);
         HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string engineerName, string Type = "");
         HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID);
-        void Save();
+		HandleResultBotViewModel HandleIsAdminContact(string text, int botID, bool isFinishMessage = false);
+		void Save();
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
@@ -51,7 +52,8 @@ namespace BotProject.Service
 		private IMdEngineerNameService _mdEngineerNameService;
 		private IMdVoucherService _mdVoucherService;
         private IUserTelephoneService _userTelephoneService;
-        private IUnitOfWork _unitOfWork;
+		private IMdAdminContactService _mdAdminContactService;
+		private IUnitOfWork _unitOfWork;
         private IErrorService _errorService;
 
         public HandleModuleService(IMdPhoneService mdPhoneService,
@@ -64,6 +66,7 @@ namespace BotProject.Service
                                     IUserTelephoneService userTelephoneService,
                                     IErrorService errorService,
 									IMdEngineerNameService mdEngineerNameService,
+									IMdAdminContactService mdAdminContactService,
 									IUnitOfWork unitOfWork)
         {
             _mdPhoneService = mdPhoneService;
@@ -75,6 +78,7 @@ namespace BotProject.Service
             _mdVoucherService = mdVoucherService;
             _userTelephoneService = userTelephoneService;
 			_mdEngineerNameService = mdEngineerNameService;
+			_mdAdminContactService = mdAdminContactService;
 			_unitOfWork = unitOfWork;
             _errorService = errorService;
         }
@@ -114,7 +118,41 @@ namespace BotProject.Service
 			return rsHandle;
         }
 
-        public HandleResultBotViewModel HandledIsEmail(string email, int botID)
+		public HandleResultBotViewModel HandleIsAdminContact(string text, int botID, bool isFinishMessage = false)
+		{
+			HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
+			var mdAdminContactDb = _mdAdminContactService.GetByBotID(botID);
+			rsHandle.Postback = mdAdminContactDb.Payload;
+			string rsMessage = "";
+			if (text.Contains(Common.CommonConstants.ModuleAdminContact))
+			{
+				rsHandle.Status = false;
+				rsHandle.Message = tempText(mdAdminContactDb.MessageStart1);
+				if (String.IsNullOrEmpty(mdAdminContactDb.MessageStart1))
+				{
+					rsMessage = mdAdminContactDb.MessageStart2;
+					rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString() + "split";
+					rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString() + "split";
+				}
+				else
+				{
+					rsMessage = mdAdminContactDb.MessageStart1;
+					rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split" + FacebookTemplate.GetMessageTemplateTextAndQuickReply(mdAdminContactDb.MessageStart2, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString();
+					rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split" + ZaloTemplate.GetMessageTemplateTextAndQuickReply(mdAdminContactDb.MessageStart2, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString();
+				}
+
+				return rsHandle;
+			}
+			rsHandle.Status = true;
+			rsHandle.Message = tempText(mdAdminContactDb.MessageStart3);// nếu call tới follow thẻ khác trả về postback id card
+			rsMessage = mdAdminContactDb.MessageStart3;
+			rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString() + "split";
+			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString() + "split";
+
+			return rsHandle;
+		}
+
+		public HandleResultBotViewModel HandledIsEmail(string email, int botID)
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdEmailDb = _mdEmailService.GetByBotID(botID);

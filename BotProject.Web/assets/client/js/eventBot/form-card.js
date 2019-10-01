@@ -5233,7 +5233,7 @@ function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoP
             html += '        <div class="form-group">';
             html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng đi tiếp</label>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
-            html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdEngineerNameTitlePayload" value="'+data.TitlePayload+'" class="form-control"/>';
+            html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdEngineerNameTitlePayload" value="' + (data.TitlePayload == null ? "" : data.TitlePayload) + '" class="form-control"/>';
             html += '            </div>';
             html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
             html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdEngineerNameCard">' + card() + '</select>';
@@ -5251,6 +5251,59 @@ function renderTemplateModuleByKey(moduleName, typeActionClickModule, mdGetInfoP
             setTimeout(function () {
                 if (data.CardPayloadID != "" || data.CardPayloadID != null) {
                     $('#mdEngineerNameCard option[value="' + data.CardPayloadID + '"]').attr('selected', 'selected');
+                }
+            }, 1000)
+        });
+    }
+    if (moduleName == "admin_contact") {
+        var params = {
+            botID: $("#botId").val(),
+        };
+        var urlTest = "api/module/getmdadmincontact";
+        var svr = new AjaxCall(urlTest, params);
+        svr.callServiceGET(function (data) {
+            html += ' <a href="#" style="text-decoration:underline" id="module-name">Xử lý liên hệ admin</a>';
+            html += '<div class="row">';
+            html += '<div class="col-md-12">';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý 1</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdAdminContactMsgStart1" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart1 + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý 2</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdAdminContactMsgStart2"  maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageStart2 + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung gợi ý 3</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <textarea id="mdAdminContactMsgStart3" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">' + data.MessageStart3 + '</textarea>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '        <div class="form-group">';
+            html += '            <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng đi tiếp</label>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '               <input type="text" data-emojiable="true" data-emoji-input="unicode" placeholder="Tiêu đề" id="mdAdminContactTitlePayload" value="' + (data.TitlePayload == null ? "" : data.TitlePayload) + '" class="form-control"/>';
+            html += '            </div>';
+            html += '            <div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '                <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdAdminContactCard">' + card() + '</select>';
+            html += '            </div>';
+            html += '        </div>';
+            html += '<div class="form-group">';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">'
+            html += '<button id="mdAdminContactSave" data-id="' + data.ID + '" class="btn btn-primary">Lưu</button>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            $("#template-module").empty().append(html)
+            loadEmojiPicker();
+            setTimeout(function () {
+                if (data.CardPayloadID != "" || data.CardPayloadID != null) {
+                    $('#mdAdminContactCard option[value="' + data.CardPayloadID + '"]').attr('selected', 'selected');
                 }
             }, 1000)
         });
@@ -5446,6 +5499,47 @@ $('body').on('click', '#mdEngineerNameSave', function (event) {
         }
     });
 });
+
+// MDADMINCONTACT - Save
+$('body').on('click', '#mdAdminContactSave', function (event) {
+    var msgStart1 = $("#mdAdminContactMsgStart1").val();
+    var msgStart2 = $("#mdAdminContactMsgStart2").val();
+    var msgStart3 = $("#mdAdminContactMsgStart3").val();
+    var msgCard = $("#mdAdminContactCard").val();
+    var msgCardTitle = $("#mdAdminContactTitlePayload").val();
+    if (msgStart1.trim() == '') {
+        toastr.error('Vui lòng nhập nội dung');
+        return false;
+    }
+    if (msgCardTitle != "" && msgCard == "") {
+        toastr.error('Vui lòng chọn thẻ thoát khỏi');
+        return false;
+    }
+    else if (msgCardTitle == "" && msgCard != "") {
+        toastr.error('Vui lòng nhập tiêu đề cho thẻ');
+        return false;
+    }
+
+    var params = {
+        BotID: $("#botId").val(),
+        MessageStart1: msgStart1,
+        MessageStart2: msgStart2,
+        MessageStart3: msgStart3,
+        CardPayloadID: msgCard,
+        TitlePayload: msgCardTitle
+    }
+    params = JSON.stringify(params);
+    var urlTest = "api/module/updateadmincontact";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        console.log(data)
+        if (data != null) {
+            toastr.success('Lưu thành công');
+        }
+    });
+});
+
+
 
 
 // MDEMAIL -Learn switch mdEmail

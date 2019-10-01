@@ -21,6 +21,7 @@ namespace BotProject.Common
 
         public const string SessionUserBot = "UserBot";
 
+		public const string ModuleAdminContact = "postback_module_admin_contact";
 		public const string ModuleEngineerName = "postback_module_engineer_name";
 		public const string ModulePhone = "postback_module_phone";
         public const string ModuleVoucher = "postback_module_voucher";

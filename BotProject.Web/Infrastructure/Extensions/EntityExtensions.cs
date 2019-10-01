@@ -204,15 +204,18 @@ namespace BotProject.Web.Infrastructure.Extensions
                 settingDb.IsActiveIntroductory = true;
             }
 
-            settingDb.IsProactiveMessage = settingVm.IsProactiveMessage;
-            settingDb.ProactiveMessageText = settingVm.ProactiveMessageText;
+            settingDb.IsProactiveMessageZalo = settingVm.IsProactiveMessageZalo;
+			settingDb.IsProactiveMessageFacebook = settingVm.IsProactiveMessageFacebook;
+			settingDb.ProactiveMessageText = settingVm.ProactiveMessageText;
             settingDb.Timeout = settingVm.Timeout;
             settingDb.FacebookAppSecrect = settingVm.FacebookAppSecrect;
             settingDb.FacebookPageToken = settingVm.FacebookPageToken;
             settingDb.ZaloAppSecrect = settingVm.ZaloAppSecrect;
             settingDb.ZaloPageToken = settingVm.ZaloPageToken;
             settingDb.ZaloQRCode = settingVm.ZaloQRCode;
-        }
+			settingDb.IsHaveMaintenance = settingVm.IsHaveMaintenance;
+			settingDb.MessageMaintenance = settingVm.MessageMaintenance;
+		}
         #endregion
 
         #region Module QnA

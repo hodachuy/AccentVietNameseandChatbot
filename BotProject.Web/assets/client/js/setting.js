@@ -15,7 +15,7 @@ var BotSetting = {
     StopWord: $('#stopWord').val(),
     TimeOut:$('#TimeOut').val(),
     ProactiveMessageText: ($("#ProactiveMessageText").val() == null ? "" : $("#ProactiveMessageText").val()),
-    IsProactiveMessage: $('#isProactiveMessage').val(),
+    //IsProactiveMessage: $('#isProactiveMessage').val(),
 }
 
 $('.demo').each(function () {
@@ -149,7 +149,11 @@ $("#btnSaveSettings").on('click', function () {
 
     BotSetting.TimeOut = $('#TimeOut').val();
     BotSetting.ProactiveMessageText = $("#txtProactiveMessageText").val();
-    BotSetting.IsProactiveMessage = $('#isProactiveMessage').val();
+    BotSetting.IsProactiveMessageFacebook = $('#isProactiveMessageFacebook').val();
+    BotSetting.IsProactiveMessageZalo = $('#isProactiveMessageZalo').val();
+
+    BotSetting.IsHaveMaintenance = $('#isHaveMaintenance').val();
+    BotSetting.MessageMaintenance = $('#txtMessageMaintenance').val();
 
     BotSetting.StopWord = strTag;
     BotSetting.TextIntroductory = $("#txtIntro").html();
@@ -269,7 +273,21 @@ $('#statusSearch').change(function () {
         $(this).val('false');
     }
 });
-$('#isProactiveMessage').change(function () {
+$('#isProactiveMessageZalo').change(function () {
+    if ($(this).is(":checked")) {
+        $(this).val('true');
+    } else {
+        $(this).val('false');
+    }
+});
+$('#isProactiveMessageFacebook').change(function () {
+    if ($(this).is(":checked")) {
+        $(this).val('true');
+    } else {
+        $(this).val('false');
+    }
+});
+$('#isHaveMaintenance').change(function () {
     if ($(this).is(":checked")) {
         $(this).val('true');
     } else {

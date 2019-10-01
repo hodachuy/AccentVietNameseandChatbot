@@ -113,15 +113,22 @@ namespace BotProject.Web.API
                 var settingDb = _settingService.GetSettingByBotID(botId);
                 pageToken = settingDb.ZaloPageToken;
 
-                _isHaveTimeOut = settingDb.IsProactiveMessage;
+
+                _isHaveTimeOut = settingDb.IsProactiveMessageZalo;
                 _timeOut = settingDb.Timeout;
                 _messageProactive = settingDb.ProactiveMessageText;
 
                 var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
-                //LogError(body);
+				//LogError(body);
+
+				if (settingDb.IsHaveMaintenance)
+				{
+					await SendMessageTask(ZaloTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), value.sender.id);
+					return new HttpResponseMessage(HttpStatusCode.OK);
+				}
 
 
-                var lstAIML = _aimlFileService.GetByBotId(botId);
+				var lstAIML = _aimlFileService.GetByBotId(botId);
                 var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
                 _botService.loadAIMLFromDatabase(lstAIMLVm);
                 _user = _botService.loadUserBot(value.sender.id);
@@ -174,7 +181,27 @@ namespace BotProject.Web.API
                 ApplicationZaloUser zlUserDb = new ApplicationZaloUser();
                 zlUserDb = _appZaloUser.GetByUserId(sender);
 
-                if (_isHaveTimeOut)
+				if (zlUserDb != null)
+				{
+					if (zlUserDb.PredicateName == "Admin_Contact")
+					{
+						//var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+						AddHistory(hisVm);
+						if (text.Contains("postback"))
+						{
+							zlUserDb.IsHavePredicate = false;
+							zlUserDb.PredicateName = "";
+							zlUserDb.PredicateValue = "";
+							_appZaloUser.Update(zlUserDb);
+							_appZaloUser.Save();
+							return await ExcuteMessage(text, sender, botId);
+						}
+						return new HttpResponseMessage(HttpStatusCode.OK);
+					}
+				}
+
+				if (_isHaveTimeOut)
                 {
                     if (zlUserDb != null)
                     {
@@ -399,7 +426,37 @@ namespace BotProject.Web.API
                     }
                     else // Input: Khởi tạo module được chọn
                     {
-                        if (text.Contains(CommonConstants.ModuleSearchAPI))
+						if (text.Contains(CommonConstants.ModuleAdminContact))
+						{
+							var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+
+							zlUserDb.IsHavePredicate = true;
+							zlUserDb.PredicateName = "Admin_Contact";
+							zlUserDb.PredicateValue = "";
+							_appZaloUser.Update(zlUserDb);
+							_appZaloUser.Save();
+
+							hisVm.UserSay = "[Chat với Admin]";
+							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+							AddHistory(hisVm);
+
+							string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonZalo, "split");//nhớ thêm bên formcard xử lý lục trên face
+							if (strArrayJson.Length != 0)
+							{
+								var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+								foreach (var temp in strArray)
+								{
+									string tempJson = temp;
+									await SendMessageTask(tempJson, sender);
+								}
+
+								return new HttpResponseMessage(HttpStatusCode.OK);
+							}
+
+							return new HttpResponseMessage(HttpStatusCode.OK);
+						}
+
+						if (text.Contains(CommonConstants.ModuleSearchAPI))
                         {
                             string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
                             var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");

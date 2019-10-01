@@ -20,9 +20,11 @@ namespace BotProject.Web.Models
 
         public int? CardID { set; get; }
 
-        public bool IsProactiveMessage { set; get; }
+        public bool IsProactiveMessageZalo { set; get; }
 
-        public int Timeout { set; get; }
+		public bool IsProactiveMessageFacebook { set; get; }
+
+		public int Timeout { set; get; }
 
         public string ProactiveMessageText { set; get; }
 
@@ -43,5 +45,9 @@ namespace BotProject.Web.Models
         public bool IsMDSearch { set; get; }        
         
         public string StopWord { set; get; }
-    }
+
+		public bool IsHaveMaintenance { set; get; }
+
+		public string MessageMaintenance { set; get; }
+	}
 }

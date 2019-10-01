@@ -149,7 +149,7 @@ namespace BotProject.Web.API
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
 
-            _isHaveTimeOut = settingDb.IsProactiveMessage;
+            _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
             _timeOut = settingDb.Timeout;
             _messageProactive = settingDb.ProactiveMessageText;
 
@@ -161,7 +161,13 @@ namespace BotProject.Web.API
 
 			foreach (var item in value.entry[0].messaging)
             {
-                if (item.message == null && item.postback == null)
+				if (settingDb.IsHaveMaintenance)
+				{
+					await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
+					return new HttpResponseMessage(HttpStatusCode.OK);
+				}
+
+				if (item.message == null && item.postback == null)
                 {
                     continue;
                 }
@@ -202,7 +208,29 @@ namespace BotProject.Web.API
             {
                 ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
                 fbUserDb = _appFacebookUser.GetByUserId(sender);
-                if (_isHaveTimeOut)
+
+				if (fbUserDb != null)
+				{
+					if (fbUserDb.PredicateName == "Admin_Contact")
+					{
+						//var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+						AddHistory(hisVm);
+						if (text.Contains("postback"))
+						{
+							fbUserDb.IsHavePredicate = false;
+							fbUserDb.PredicateName = "";
+							fbUserDb.PredicateValue = "";
+							_appFacebookUser.Update(fbUserDb);
+							_appFacebookUser.Save();
+							return await ExcuteMessage(text, sender, botId);
+						}
+						return new HttpResponseMessage(HttpStatusCode.OK);
+					}
+				}
+
+
+				if (_isHaveTimeOut)
                 {
                     if(fbUserDb != null)
                     {
@@ -426,7 +454,37 @@ namespace BotProject.Web.API
                     }
                     else // Input: Khởi tạo module được chọn
                     {
-                        if (text.Contains(CommonConstants.ModuleSearchAPI))
+						if (text.Contains(CommonConstants.ModuleAdminContact))
+						{
+							var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+
+							fbUserDb.IsHavePredicate = true;
+							fbUserDb.PredicateName = "Admin_Contact";
+							fbUserDb.PredicateValue = "";
+							_appFacebookUser.Update(fbUserDb);
+							_appFacebookUser.Save();
+
+							hisVm.UserSay = "[Chat với Admin]";
+							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+							AddHistory(hisVm);
+
+							string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
+							if (strArrayJson.Length != 0)
+							{
+								var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+								foreach (var temp in strArray)
+								{
+									string tempJson = temp;
+									await SendMessageTask(tempJson, sender);
+								}
+
+								return new HttpResponseMessage(HttpStatusCode.OK);
+							}
+
+							return new HttpResponseMessage(HttpStatusCode.OK);
+						}
+
+						if (text.Contains(CommonConstants.ModuleSearchAPI))
                         {
                             string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
                             var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");

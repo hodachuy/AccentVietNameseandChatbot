@@ -28,6 +28,7 @@ namespace BotProject.Web.API
 		private IMdSearchService _mdSearchService;
         private IModuleKnowledegeService _mdKnowledegeService;
         private IMdSearchCategoryService _mdSearchCategoryService;
+		private IMdAdminContactService _mdAdminContactService;
         public ModuleController(IErrorService errorService,
             IMdVoucherService mdVoucherService,
             IModuleService moduleService,
@@ -37,6 +38,7 @@ namespace BotProject.Web.API
             IModuleKnowledegeService mdKnowledegeService,
             IMdSearchCategoryService mdSearchCategoryService,
 			IMdEngineerNameService mdEngineerNameService,
+			IMdAdminContactService mdAdminContactService,
 			IMdAgeService mdAgeService) : base(errorService)
         {
             _mdVoucherService = mdVoucherService;
@@ -48,6 +50,7 @@ namespace BotProject.Web.API
             _mdKnowledegeService = mdKnowledegeService;
             _mdSearchCategoryService = mdSearchCategoryService;
 			_mdEngineerNameService = mdEngineerNameService;
+			_mdAdminContactService = mdAdminContactService;
 
 		}
         [Route("getbybotid")]
@@ -88,6 +91,23 @@ namespace BotProject.Web.API
                 _moduleService.Create(moduleDb);
                 _moduleService.Save();
 
+				if (moduleVm.Payload == Common.CommonConstants.ModuleAdminContact)
+				{
+					MdAdminContact mdAdminContact = new MdAdminContact();
+					mdAdminContact.BotID = moduleVm.BotID;
+					mdAdminContact.MessageStart1 = "Đã thoát trả lời tự động";
+					mdAdminContact.MessageStart2 = "Anh/chị cần tư vấn hay hỗ trợ gì ạ";
+					mdAdminContact.MessageStart3 = "Anh/chị vui lòng chờ một chút, em sẽ chuyển cho chuyên viên hỗ trợ anh/chị ngay";
+					mdAdminContact.ModuleID = moduleDb.ID;
+					//mdPhone.CardPayloadID = null;
+					//mdPhone.Payload = "";
+					mdAdminContact.Title = "Xử lý liên hệ admin";
+					mdAdminContact.DictionaryKey = "admin_contact";
+					mdAdminContact.DictionaryValue = "false";
+
+					_mdAdminContactService.Create(mdAdminContact);
+					_mdAdminContactService.Save();
+				}
 
 				if (moduleVm.Payload == Common.CommonConstants.ModuleEngineerName)
 				{
@@ -471,6 +491,51 @@ namespace BotProject.Web.API
 
 				_mdEngineerNameService.Update(module);
 				_mdEngineerNameService.Save();
+				response = request.CreateResponse(HttpStatusCode.OK, module);
+				return response;
+			});
+		}
+
+		#endregion
+
+		#region MODULE ADMINCONTACT
+		[Route("getmdadmincontact")]
+		[HttpGet]
+		public HttpResponseMessage GetModuleAdminContactByBotID(HttpRequestMessage request, int botID)
+		{
+			return CreateHttpResponse(request, () =>
+			{
+				HttpResponseMessage response = null;
+				var module = _mdAdminContactService.GetByBotID(botID);
+				response = request.CreateResponse(HttpStatusCode.OK, module);
+				return response;
+			});
+		}
+		[Route("updateadmincontact")]
+		[HttpPost]
+		public HttpResponseMessage CreateModuleAdminContact(HttpRequestMessage request, MdAdminContact mdAdminContact)
+		{
+			return CreateHttpResponse(request, () =>
+			{
+				HttpResponseMessage response = null;
+
+				var module = _mdAdminContactService.GetByBotID(mdAdminContact.BotID);
+				module.MessageStart1 = mdAdminContact.MessageStart1;
+				module.MessageStart2 = mdAdminContact.MessageStart2;
+				module.MessageStart3 = mdAdminContact.MessageStart3;
+				module.CardPayloadID = mdAdminContact.CardPayloadID;
+				module.TitlePayload = mdAdminContact.TitlePayload;
+				if (mdAdminContact.CardPayloadID != null && mdAdminContact.CardPayloadID != 0)
+				{
+					module.Payload = "postback_card_" + mdAdminContact.CardPayloadID;
+				}
+				else
+				{
+					module.Payload = "";
+				}
+
+				_mdAdminContactService.Update(module);
+				_mdAdminContactService.Save();
 				response = request.CreateResponse(HttpStatusCode.OK, module);
 				return response;
 			});
