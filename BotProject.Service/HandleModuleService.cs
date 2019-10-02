@@ -124,7 +124,7 @@ namespace BotProject.Service
 			var mdAdminContactDb = _mdAdminContactService.GetByBotID(botID);
 			rsHandle.Postback = mdAdminContactDb.Payload;
 			string rsMessage = "";
-			if (text.Contains(Common.CommonConstants.ModuleAdminContact))
+            if (text.Contains(Common.CommonConstants.ModuleAdminContact))
 			{
 				rsHandle.Status = false;
 				rsHandle.Message = tempText(mdAdminContactDb.MessageStart1);
@@ -144,10 +144,10 @@ namespace BotProject.Service
 				return rsHandle;
 			}
 			rsHandle.Status = true;
-			rsHandle.Message = tempText(mdAdminContactDb.MessageStart3);// nếu call tới follow thẻ khác trả về postback id card
-			rsMessage = mdAdminContactDb.MessageStart3;
-			rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString() + "split";
-			rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString() + "split";
+			//rsHandle.Message = tempText(mdAdminContactDb.MessageStart3);// nếu call tới follow thẻ khác trả về postback id card
+			//rsMessage = mdAdminContactDb.MessageStart3;
+			//rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString() + "split";
+			//rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdAdminContactDb.Payload, mdAdminContactDb.TitlePayload).ToString() + "split";
 
 			return rsHandle;
 		}

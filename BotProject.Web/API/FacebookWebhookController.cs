@@ -108,7 +108,7 @@ namespace BotProject.Web.API
         public HttpResponseMessage Get()
         {
             var querystrings = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
-            foreach(var item in querystrings)
+            foreach (var item in querystrings)
             {
                 //LogError(item.Key + " " + item.Value);
                 if (item.Key == "hub.verify_token")
@@ -142,12 +142,21 @@ namespace BotProject.Web.API
             var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
 
             ////Test
-            //var botRequest = new JavaScriptSerializer().Serialize(value);
+            var botRequest = new JavaScriptSerializer().Serialize(value);
             //LogError(botRequest);
+
+            //if (body.Contains("get_started"))
+            //{
+            //    var senderId = value.entry[0].messaging[0].sender.id;
+            //    string getStartCardPayload = "postback_card_" + settingDb.CardID;
+            //    await ExcuteMessage(getStartCardPayload, senderId, botId);
+
+            //    return new HttpResponseMessage(HttpStatusCode.OK);
+            //}
+
 
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
-
 
             _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
             _timeOut = settingDb.Timeout;
@@ -157,17 +166,16 @@ namespace BotProject.Web.API
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
             _user = _botService.loadUserBot(value.entry[0].messaging[0].sender.id);
-			//_user.Predicates.addSetting("agecheck", "false");
 
-			foreach (var item in value.entry[0].messaging)
+            foreach (var item in value.entry[0].messaging)
             {
-				if (settingDb.IsHaveMaintenance)
-				{
-					await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
-					return new HttpResponseMessage(HttpStatusCode.OK);
-				}
+                if (settingDb.IsHaveMaintenance)
+                {
+                    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
+                    return new HttpResponseMessage(HttpStatusCode.OK);
+                }
 
-				if (item.message == null && item.postback == null)
+                if (item.message == null && item.postback == null)
                 {
                     continue;
                 }
@@ -202,37 +210,53 @@ namespace BotProject.Web.API
             hisVm.Type = CommonConstants.TYPE_FACEBOOK;
 
 
-            DateTime dStartedTime= DateTime.Now;
+            DateTime dStartedTime = DateTime.Now;
             DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
-			try
+            try
             {
                 ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
                 fbUserDb = _appFacebookUser.GetByUserId(sender);
 
-				if (fbUserDb != null)
-				{
-					if (fbUserDb.PredicateName == "Admin_Contact")
-					{
-						//var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
-						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-						AddHistory(hisVm);
-						if (text.Contains("postback"))
-						{
-							fbUserDb.IsHavePredicate = false;
-							fbUserDb.PredicateName = "";
-							fbUserDb.PredicateValue = "";
-							_appFacebookUser.Update(fbUserDb);
-							_appFacebookUser.Save();
-							return await ExcuteMessage(text, sender, botId);
-						}
-						return new HttpResponseMessage(HttpStatusCode.OK);
-					}
-				}
-
-
-				if (_isHaveTimeOut)
+                // chat với admin
+                if (fbUserDb != null)
                 {
-                    if(fbUserDb != null)
+                    if (fbUserDb.PredicateName == "Admin_Contact")
+                    {
+                        var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                        AddHistory(hisVm);
+                        if (handleAdminContact.Status == false)
+                        {
+                            string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");
+                            if (strArrayJson.Length != 0)
+                            {
+                                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                foreach (var temp in strArray)
+                                {
+                                    string tempJson = temp;
+                                    await SendMessageTask(tempJson, sender);
+                                }
+
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+                        if (text.Contains("postback"))
+                        {
+                            fbUserDb.IsHavePredicate = false;
+                            fbUserDb.PredicateName = "";
+                            fbUserDb.PredicateValue = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
+                            return await ExcuteMessage(text, sender, botId);
+                        }
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                }
+
+
+                if (_isHaveTimeOut)
+                {
+                    if (fbUserDb != null)
                     {
                         fbUserDb.StartedOn = dStartedTime;
                         fbUserDb.TimeOut = dTimeOut;
@@ -249,7 +273,7 @@ namespace BotProject.Web.API
                     fbUserVm.UserId = sender;
                     fbUserVm.IsHavePredicate = false;
                     fbUserVm.IsProactiveMessage = false;
-					fbUserVm.TimeOut = dTimeOut;
+                    fbUserVm.TimeOut = dTimeOut;
                     fbUserDb.StartedOn = dStartedTime;
                     fbUserDb.UpdateFacebookUser(fbUserVm);
                     _appFacebookUser.Add(fbUserDb);
@@ -258,9 +282,9 @@ namespace BotProject.Web.API
                 else
                 {
                     fbUserDb.StartedOn = dStartedTime;
-					fbUserDb.TimeOut = dTimeOut;
-					// Điều kiện xử lý module
-					if (fbUserDb.IsHavePredicate)
+                    fbUserDb.TimeOut = dTimeOut;
+                    // Điều kiện xử lý module
+                    if (fbUserDb.IsHavePredicate)
                     {
                         var predicateName = fbUserDb.PredicateName;
                         if (predicateName == "ApiSearch")
@@ -347,32 +371,32 @@ namespace BotProject.Web.API
                             }
                             return await SendMessage(handleEmail.TemplateJsonFacebook, sender);
                         }
-						if (predicateName == "Engineer_Name")
-						{
-							var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
-							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-							AddHistory(hisVm);
-							if (handleEngineerName.Status)
-							{
-								fbUserDb.IsHavePredicate = false;
-								fbUserDb.PredicateName = "";
-								fbUserDb.PredicateValue = "";
-								fbUserDb.EngineerName = text;
-								if (text.Contains("postback"))
-								{
-									fbUserDb.EngineerName = "";
-								}
-								_appFacebookUser.Update(fbUserDb);
-								_appFacebookUser.Save();
+                        if (predicateName == "Engineer_Name")
+                        {
+                            var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
+                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                            AddHistory(hisVm);
+                            if (handleEngineerName.Status)
+                            {
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.EngineerName = text;
+                                if (text.Contains("postback"))
+                                {
+                                    fbUserDb.EngineerName = "";
+                                }
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
 
-								if (!String.IsNullOrEmpty(handleEngineerName.Postback))
-								{
-									return await ExcuteMessage(handleEngineerName.Postback, sender, botId);
-								}
-							}
-							return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
-						}
-						if (predicateName == "Voucher")
+                                if (!String.IsNullOrEmpty(handleEngineerName.Postback))
+                                {
+                                    return await ExcuteMessage(handleEngineerName.Postback, sender, botId);
+                                }
+                            }
+                            return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
+                        }
+                        if (predicateName == "Voucher")
                         {
                             string mdVoucherId = fbUserDb.PredicateValue;
                             if (text.Contains("postback_card"))
@@ -391,31 +415,31 @@ namespace BotProject.Web.API
                             AddHistory(hisVm);
                             if (handleMdVoucher.Status)
                             {
-								string telePhoneNumber = text;
+                                string telePhoneNumber = text;
                                 string[] strArrSpecial = new string[] { "-", " ", ",", ":" };
                                 //check phonenumber có kèm theo serialnumber không
                                 foreach (var item in strArrSpecial)
-								{
-									if (text.Contains(item))
-									{
-										var arrStrPhone = Regex.Split(text, item);
-										telePhoneNumber = arrStrPhone[0];
-										break;
-									}
-								}
+                                {
+                                    if (text.Contains(item))
+                                    {
+                                        var arrStrPhone = Regex.Split(text, item);
+                                        telePhoneNumber = arrStrPhone[0];
+                                        break;
+                                    }
+                                }
 
-								fbUserDb.IsHavePredicate = true;
+                                fbUserDb.IsHavePredicate = true;
                                 fbUserDb.PredicateName = "IsVoucherOTP";
                                 fbUserDb.PredicateValue = mdVoucherId;// voucherId
                                 fbUserDb.PhoneNumber = telePhoneNumber;
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
 
-								// send otp
+                                // send otp
                                 return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                                 //await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
-								//return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
-							}
+                                //return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
+                            }
                             return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                         }
                         if (predicateName == "IsVoucherOTP")
@@ -440,51 +464,51 @@ namespace BotProject.Web.API
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
 
-								// trả về image voucher + text message end
-								string[] arrMsgHandleOTP = Regex.Split(handleOTP.TemplateJsonFacebook, "split");
-								foreach(var itemMessageJson in arrMsgHandleOTP)
-								{
-									await SendMessageTask(itemMessageJson, sender);
-								}
-								return new HttpResponseMessage(HttpStatusCode.OK);
+                                // trả về image voucher + text message end
+                                string[] arrMsgHandleOTP = Regex.Split(handleOTP.TemplateJsonFacebook, "split");
+                                foreach (var itemMessageJson in arrMsgHandleOTP)
+                                {
+                                    await SendMessageTask(itemMessageJson, sender);
+                                }
+                                return new HttpResponseMessage(HttpStatusCode.OK);
 
-							}
-							return await SendMessage(handleOTP.TemplateJsonFacebook, sender);
+                            }
+                            return await SendMessage(handleOTP.TemplateJsonFacebook, sender);
                         }
                     }
                     else // Input: Khởi tạo module được chọn
                     {
-						if (text.Contains(CommonConstants.ModuleAdminContact))
-						{
-							var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+                        if (text.Contains(CommonConstants.ModuleAdminContact))
+                        {
+                            var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
 
-							fbUserDb.IsHavePredicate = true;
-							fbUserDb.PredicateName = "Admin_Contact";
-							fbUserDb.PredicateValue = "";
-							_appFacebookUser.Update(fbUserDb);
-							_appFacebookUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "Admin_Contact";
+                            fbUserDb.PredicateValue = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
-							hisVm.UserSay = "[Chat với Admin]";
-							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-							AddHistory(hisVm);
+                            hisVm.UserSay = "[Chat với Admin]";
+                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                            AddHistory(hisVm);
 
-							string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
-							if (strArrayJson.Length != 0)
-							{
-								var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-								foreach (var temp in strArray)
-								{
-									string tempJson = temp;
-									await SendMessageTask(tempJson, sender);
-								}
+                            string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
+                            if (strArrayJson.Length != 0)
+                            {
+                                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                foreach (var temp in strArray)
+                                {
+                                    string tempJson = temp;
+                                    await SendMessageTask(tempJson, sender);
+                                }
 
-								return new HttpResponseMessage(HttpStatusCode.OK);
-							}
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
 
-							return new HttpResponseMessage(HttpStatusCode.OK);
-						}
+                            return new HttpResponseMessage(HttpStatusCode.OK);
+                        }
 
-						if (text.Contains(CommonConstants.ModuleSearchAPI))
+                        if (text.Contains(CommonConstants.ModuleSearchAPI))
                         {
                             string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
                             var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
@@ -501,24 +525,24 @@ namespace BotProject.Web.API
                             return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
 
                         }
-						if (text.Contains(CommonConstants.ModuleEngineerName))
-						{
-							var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
+                        if (text.Contains(CommonConstants.ModuleEngineerName))
+                        {
+                            var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
 
-							fbUserDb.IsHavePredicate = true;
-							fbUserDb.PredicateName = "Engineer_Name";
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "Engineer_Name";
                             fbUserDb.EngineerName = "";
                             _appFacebookUser.Update(fbUserDb);
-							_appFacebookUser.Save();
+                            _appFacebookUser.Save();
 
-							hisVm.UserSay = "[Tên hoặc mã kỹ sư]";
-							hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-							AddHistory(hisVm);
+                            hisVm.UserSay = "[Tên hoặc mã kỹ sư]";
+                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                            AddHistory(hisVm);
 
-							return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
-						}
+                            return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
+                        }
 
-						if (text.Contains(CommonConstants.ModuleAge))
+                        if (text.Contains(CommonConstants.ModuleAge))
                         {
                             var handleAge = _handleMdService.HandledIsAge(text, botId);
 
@@ -682,11 +706,11 @@ namespace BotProject.Web.API
                     AddHistory(hisVm);
 
                     _dicNotMatch = new Dictionary<string, string>() {
-                        {"NOT_MATCH_01", "Xin lỗi, Tôi không hiểu"},
-                        {"NOT_MATCH_02", "Bạn có thể giải thích thêm được không?"},
-                        {"NOT_MATCH_03", "Tôi không thể tìm thấy, bạn có thể nói rõ hơn?"},
-                        {"NOT_MATCH_04", "Xin lỗi, Bạn có thể giải thích thêm được không?"},
-                        {"NOT_MATCH_05", "Tôi không thể tìm thấy"}
+                        {"NOT_MATCH_01", "Xin lỗi, ý anh/chị em chưa hiểu ạ!"},
+                        {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
+                        {"NOT_MATCH_03", "Không thể tìm thấy, anh/chị có thể nói rõ hơn được không ạ?"},
+                        {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể giải thích thêm được không?"},
+                        {"NOT_MATCH_05", "Xin lỗi, không thể tìm thấy"}
                     };
 
                     // Chuyển tới tìm kiếm Search NLP
@@ -720,17 +744,17 @@ namespace BotProject.Web.API
                         }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
                         // render template json generic
                         int totalQnA = lstQnaAPI.Count();
-                        string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn"; 
-                        await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(),sender);
+                        string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                        await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
                         string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
-                        return await SendMessage(strTemplateGenericRelatedQuestion,sender);
+                        return await SendMessage(strTemplateGenericRelatedQuestion, sender);
                     }
                     else
                     {
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
                         AddHistory(hisVm);
 
-                        string strDefaultNotMatch = "Xin lỗi! Tôi không hiểu";
+                        string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
                         foreach (var item in _dicNotMatch)
                         {
                             string itemNotMatch = item.Key;
@@ -1027,9 +1051,20 @@ namespace BotProject.Web.API
                 command.ExecuteNonQuery();
                 sqlConnection.Close();
 
-                if(resultTimeCompare == 1)
+                if (resultTimeCompare == 1)
                 {
                     SendProactiveMessage(message, userId, pageToken, dTimeOut);
+
+                    var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+                    sqlConnection2.Open();
+
+                    SqlCommand command2 = new SqlCommand("UPDATE ApplicationFacebookUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
+                    command2.Parameters.AddWithValue("@userId", userId);
+                    command2.Parameters.AddWithValue("@predicateName", "");
+                    command2.Parameters.AddWithValue("@predicateValue", "");
+                    command2.Parameters.AddWithValue("@isHavePredicate", "0");
+                    command2.ExecuteNonQuery();
+                    sqlConnection2.Close();
                 }
             }
             private async Task<HttpResponseMessage> SendProactiveMessage(string templateJson, string sender, string pageToken, DateTime dTimeOut)

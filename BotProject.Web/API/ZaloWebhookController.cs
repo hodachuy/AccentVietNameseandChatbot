@@ -119,16 +119,16 @@ namespace BotProject.Web.API
                 _messageProactive = settingDb.ProactiveMessageText;
 
                 var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
-				//LogError(body);
+                //LogError(body);
 
-				if (settingDb.IsHaveMaintenance)
-				{
-					await SendMessageTask(ZaloTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), value.sender.id);
-					return new HttpResponseMessage(HttpStatusCode.OK);
-				}
+                if (settingDb.IsHaveMaintenance)
+                {
+                    await SendMessageTask(ZaloTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), value.sender.id);
+                    return new HttpResponseMessage(HttpStatusCode.OK);
+                }
 
 
-				var lstAIML = _aimlFileService.GetByBotId(botId);
+                var lstAIML = _aimlFileService.GetByBotId(botId);
                 var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
                 _botService.loadAIMLFromDatabase(lstAIMLVm);
                 _user = _botService.loadUserBot(value.sender.id);
@@ -181,27 +181,42 @@ namespace BotProject.Web.API
                 ApplicationZaloUser zlUserDb = new ApplicationZaloUser();
                 zlUserDb = _appZaloUser.GetByUserId(sender);
 
-				if (zlUserDb != null)
-				{
-					if (zlUserDb.PredicateName == "Admin_Contact")
-					{
-						//var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
-						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-						AddHistory(hisVm);
-						if (text.Contains("postback"))
-						{
-							zlUserDb.IsHavePredicate = false;
-							zlUserDb.PredicateName = "";
-							zlUserDb.PredicateValue = "";
-							_appZaloUser.Update(zlUserDb);
-							_appZaloUser.Save();
-							return await ExcuteMessage(text, sender, botId);
-						}
-						return new HttpResponseMessage(HttpStatusCode.OK);
-					}
-				}
+                if (zlUserDb != null)
+                {
+                    if (zlUserDb.PredicateName == "Admin_Contact")
+                    {
+                        var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                        AddHistory(hisVm);
+                        if (handleAdminContact.Status == false)
+                        {
+                            string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonZalo, "split");
+                            if (strArrayJson.Length != 0)
+                            {
+                                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                foreach (var temp in strArray)
+                                {
+                                    string tempJson = temp;
+                                    await SendMessageTask(tempJson, sender);
+                                }
 
-				if (_isHaveTimeOut)
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+                        if (text.Contains("postback"))
+                        {
+                            zlUserDb.IsHavePredicate = false;
+                            zlUserDb.PredicateName = "";
+                            zlUserDb.PredicateValue = "";
+                            _appZaloUser.Update(zlUserDb);
+                            _appZaloUser.Save();
+                            return await ExcuteMessage(text, sender, botId);
+                        }
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                }
+
+                if (_isHaveTimeOut)
                 {
                     if (zlUserDb != null)
                     {
@@ -653,11 +668,11 @@ namespace BotProject.Web.API
                     AddHistory(hisVm);
 
                     _dicNotMatch = new Dictionary<string, string>() {
-                        {"NOT_MATCH_01", "Xin lỗi, Tôi không hiểu"},
-                        {"NOT_MATCH_02", "Bạn có thể giải thích thêm được không?"},
-                        {"NOT_MATCH_03", "Tôi không thể tìm thấy, bạn có thể nói rõ hơn?"},
-                        {"NOT_MATCH_04", "Xin lỗi, Bạn có thể giải thích thêm được không?"},
-                        {"NOT_MATCH_05", "Tôi không thể tìm thấy"}
+                        {"NOT_MATCH_01", "Xin lỗi, ý anh/chị em chưa hiểu ạ!"},
+                        {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
+                        {"NOT_MATCH_03", "Không thể tìm thấy, anh/chị có thể nói rõ hơn được không ạ?"},
+                        {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể giải thích thêm được không?"},
+                        {"NOT_MATCH_05", "Xin lỗi, không thể tìm thấy"}
                     };
 
                     // Chuyển tới tìm kiếm Search NLP
@@ -700,7 +715,7 @@ namespace BotProject.Web.API
                     {
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
                         AddHistory(hisVm);
-                        string strDefaultNotMatch = "Xin lỗi! Tôi không hiểu";
+                        string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
                         foreach (var item in _dicNotMatch)
                         {
                             string itemNotMatch = item.Key;
@@ -974,6 +989,17 @@ namespace BotProject.Web.API
                 if (resultTimeCompare == 1)
                 {
                     SendProactiveMessage(message, userId, pageToken, dTimeOut);
+                    var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+                    sqlConnection2.Open();
+
+                    SqlCommand command2 = new SqlCommand("UPDATE ApplicationZaloUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
+                    command2.Parameters.AddWithValue("@userId", userId);
+                    command2.Parameters.AddWithValue("@predicateName", "");
+                    command2.Parameters.AddWithValue("@predicateValue", "");
+                    command2.Parameters.AddWithValue("@isHavePredicate", "0");
+                    command2.ExecuteNonQuery();
+                    sqlConnection2.Close();
+
                 }
             }
             private async Task<HttpResponseMessage> SendProactiveMessage(string templateJson, string sender, string pageToken, DateTime dTimeOut)
