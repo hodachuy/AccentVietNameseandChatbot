@@ -466,6 +466,10 @@
     <Compile Include="Migrations\201910011559061_UpdateMdAdminContact.Designer.cs">
       <DependentUpon>201910011559061_UpdateMdAdminContact.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910031013196_UpdateAIMLFILE.cs" />
+    <Compile Include="Migrations\201910031013196_UpdateAIMLFILE.Designer.cs">
+      <DependentUpon>201910031013196_UpdateAIMLFILE.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -817,6 +821,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910011559061_UpdateMdAdminContact.resx">
       <DependentUpon>201910011559061_UpdateMdAdminContact.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910031013196_UpdateAIMLFILE.resx">
+      <DependentUpon>201910031013196_UpdateAIMLFILE.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

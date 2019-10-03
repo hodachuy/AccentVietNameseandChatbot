@@ -41,10 +41,19 @@ namespace BotProject.Web.API
         string pageToken = Helper.ReadString("AccessToken");
         string appSecret = Helper.ReadString("AppSecret");
         string verifytoken = Helper.ReadString("VerifyTokenWebHook");
+        string _contactAdmin = Helper.ReadString("AdminContact");
+        string _titlePayloadContactAdmin = Helper.ReadString("TitlePayloadAdminContact");
 
         int _timeOut = 60;
         bool _isHaveTimeOut = false;
+        //tin nhắn phản hồi chờ
         string _messageProactive = "";
+
+        string _patternCardPayloadProactive = "";
+        string _titleCardPayloadProactive = "🔙 Quay về";
+
+        string _pathStopWord = System.IO.Path.Combine(PathServer.PathNLR, "StopWord.txt");
+        string _stopWord = "";
 
         private readonly string Domain = Helper.ReadString("Domain");
         private readonly string UrlAPI = Helper.ReadString("UrlAPI");
@@ -133,9 +142,20 @@ namespace BotProject.Web.API
             var body = await Request.Content.ReadAsStringAsync();
 
             var settingDb = _settingService.GetSettingByBotID(botId);
+            //get pagetoken
             pageToken = settingDb.FacebookPageToken;
             appSecret = settingDb.FacebookAppSecrect;
+            _patternCardPayloadProactive = "postback_card_" + settingDb.CardID.ToString();
 
+            //init stop word
+            _stopWord = settingDb.StopWord;
+            if (System.IO.File.Exists(_pathStopWord))
+            {
+                string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
+                _stopWord += string.Join(",", stopWordDefault);
+            }
+
+            // xác nhận app facebook
             if (!VerifySignature(signature, body))
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
@@ -144,16 +164,6 @@ namespace BotProject.Web.API
             ////Test
             var botRequest = new JavaScriptSerializer().Serialize(value);
             //LogError(botRequest);
-
-            //if (body.Contains("get_started"))
-            //{
-            //    var senderId = value.entry[0].messaging[0].sender.id;
-            //    string getStartCardPayload = "postback_card_" + settingDb.CardID;
-            //    await ExcuteMessage(getStartCardPayload, senderId, botId);
-
-            //    return new HttpResponseMessage(HttpStatusCode.OK);
-            //}
-
 
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
@@ -202,6 +212,27 @@ namespace BotProject.Web.API
         {
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
+
+            // Lọc từ cấm
+            if (!String.IsNullOrEmpty(_stopWord))
+            {
+                string[] arrStopWord = _stopWord.Split(',');
+                if (arrStopWord.Length != 0)
+                {
+                    foreach (var w in arrStopWord)
+                    {
+                        text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
+                    }
+                }
+            }
+
+            if (String.IsNullOrEmpty(text))
+            {
+                //string strDefaultNotMatch = "Anh/chị cho em biết thêm chi tiết được không ạ";
+                string strDefaultNotMatch = "Anh/chị vui lòng chọn Chat với Admin để được tư vấn chi tiết hơn ạ";
+                return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+            }
+
             HistoryViewModel hisVm = new HistoryViewModel();
             hisVm.BotID = botId;
             hisVm.CreatedDate = DateTime.Now;
@@ -225,6 +256,15 @@ namespace BotProject.Web.API
                         var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
                         AddHistory(hisVm);
+                        if (text.Contains("postback"))
+                        {
+                            fbUserDb.IsHavePredicate = false;
+                            fbUserDb.PredicateName = "";
+                            fbUserDb.PredicateValue = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
+                            return await ExcuteMessage(text, sender, botId);
+                        }
                         if (handleAdminContact.Status == false)
                         {
                             string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");
@@ -240,20 +280,10 @@ namespace BotProject.Web.API
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
                         }
-                        if (text.Contains("postback"))
-                        {
-                            fbUserDb.IsHavePredicate = false;
-                            fbUserDb.PredicateName = "";
-                            fbUserDb.PredicateValue = "";
-                            _appFacebookUser.Update(fbUserDb);
-                            _appFacebookUser.Save();
-                            return await ExcuteMessage(text, sender, botId);
-                        }
                         return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                 }
-
-
+                // TimeOut được bật
                 if (_isHaveTimeOut)
                 {
                     if (fbUserDb != null)
@@ -263,9 +293,9 @@ namespace BotProject.Web.API
                         _appFacebookUser.Update(fbUserDb);
                         _appFacebookUser.Save();
                     }
-                    Schedule(sender, FacebookTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
+                    Schedule(sender, FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageProactive, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), pageToken, dTimeOut, text);
+                   // Schedule(sender, FacebookTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
                 }
-
                 if (fbUserDb == null)
                 {
                     fbUserDb = new ApplicationFacebookUser();
@@ -608,21 +638,21 @@ namespace BotProject.Web.API
                 }
 
                 // Lấy target from knowledge base QnA trained mongodb
-                if (text.Contains("postback") == false || text.Contains("module") == false)
-                {
-                    string target = _apiNLR.GetPrecidictTextClass(text, botId);
-                    if (!String.IsNullOrEmpty(target))
-                    {
-                        target = Regex.Replace(target, "\n", "").Replace("\"", "");
-                        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-                        quesTarget = _qnaService.GetQuesByTarget(target, botId);
-                        if (quesTarget != null)
-                        {
-                            text = quesTarget.ContentText;
-                        }
-                        hisVm.BotUnderStands = target;
-                    }
-                }
+                //if (text.Contains("postback") == false || text.Contains("module") == false)
+                //{
+                //    string target = _apiNLR.GetPrecidictTextClass(text, botId);
+                //    if (!String.IsNullOrEmpty(target))
+                //    {
+                //        target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                //        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                //        quesTarget = _qnaService.GetQuesByTarget(target, botId);
+                //        if (quesTarget != null)
+                //        {
+                //            text = quesTarget.ContentText;
+                //        }
+                //        hisVm.BotUnderStands = target;
+                //    }
+                //}
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
@@ -708,63 +738,65 @@ namespace BotProject.Web.API
                     _dicNotMatch = new Dictionary<string, string>() {
                         {"NOT_MATCH_01", "Xin lỗi, ý anh/chị em chưa hiểu ạ!"},
                         {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
-                        {"NOT_MATCH_03", "Không thể tìm thấy, anh/chị có thể nói rõ hơn được không ạ?"},
+                        {"NOT_MATCH_03", "Chưa hiểu lắm ạ, anh/chị có thể nói rõ hơn được không ạ?"},
                         {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể giải thích thêm được không?"},
-                        {"NOT_MATCH_05", "Xin lỗi, không thể tìm thấy"}
+                        {"NOT_MATCH_05", "Xin lỗi, em chưa hiểu ạ"}
                     };
+                    string notmatch = "Anh/chị vui lòng chọn Chat với Admin để được tư vấn chi tiết hơn ạ";
+                    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
 
                     // Chuyển tới tìm kiếm Search NLP
-                    var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
-                    var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
-                    if (systemConfigVm.Count() == 0)
-                    {
-                        return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
-                    }
-                    string nameFunctionAPI = "";
-                    string number = "";
-                    string field = "";
-                    foreach (var item in systemConfigVm)
-                    {
-                        if (item.Code == "UrlAPI")
-                            nameFunctionAPI = item.ValueString;
-                        if (item.Code == "ParamAreaID")
-                            field = item.ValueString;
-                        if (item.Code == "ParamNumberResponse")
-                            number = item.ValueString;
-                    }
-                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-                    AddHistory(hisVm);
-                    string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", botId.ToString());
-                    if (!String.IsNullOrEmpty(resultAPI))
-                    {
-                        var lstQnaAPI = new JavaScriptSerializer
-                        {
-                            MaxJsonLength = Int32.MaxValue,
-                            RecursionLimit = 100
-                        }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
-                        // render template json generic
-                        int totalQnA = lstQnaAPI.Count();
-                        string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
-                        await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
-                        string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
-                        return await SendMessage(strTemplateGenericRelatedQuestion, sender);
-                    }
-                    else
-                    {
-                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
-                        AddHistory(hisVm);
+                    //var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
+                    //var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
+                    //if (systemConfigVm.Count() == 0)
+                    //{
+                    //    return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
+                    //}
+                    //string nameFunctionAPI = "";
+                    //string number = "";
+                    //string field = "";
+                    //foreach (var item in systemConfigVm)
+                    //{
+                    //    if (item.Code == "UrlAPI")
+                    //        nameFunctionAPI = item.ValueString;
+                    //    if (item.Code == "ParamAreaID")
+                    //        field = item.ValueString;
+                    //    if (item.Code == "ParamNumberResponse")
+                    //        number = item.ValueString;
+                    //}
+                    //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+                    //AddHistory(hisVm);
+                    //string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", botId.ToString());
+                    //if (!String.IsNullOrEmpty(resultAPI))
+                    //{
+                    //    var lstQnaAPI = new JavaScriptSerializer
+                    //    {
+                    //        MaxJsonLength = Int32.MaxValue,
+                    //        RecursionLimit = 100
+                    //    }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
+                    //    // render template json generic
+                    //    int totalQnA = lstQnaAPI.Count();
+                    //    string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                    //    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
+                    //    string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                    //    return await SendMessage(strTemplateGenericRelatedQuestion, sender);
+                    //}
+                    //else
+                    //{
+                    //    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
+                    //    AddHistory(hisVm);
 
-                        string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
-                        foreach (var item in _dicNotMatch)
-                        {
-                            string itemNotMatch = item.Key;
-                            if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
-                            {
-                                strDefaultNotMatch = item.Value;
-                            }
-                        }
-                        return await SendMessage(FacebookTemplate.GetMessageTemplateText(strDefaultNotMatch, sender));// not match
-                    }
+                    //    string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
+                    //    foreach (var item in _dicNotMatch)
+                    //    {
+                    //        string itemNotMatch = item.Key;
+                    //        if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
+                    //        {
+                    //            strDefaultNotMatch = item.Value;
+                    //        }
+                    //    }
+                    //    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    //}
                 }
                 // input là postback
                 if (text.Contains("postback_card"))
@@ -984,7 +1016,7 @@ namespace BotProject.Web.API
         }
 
 
-        public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut)
+        public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
         {
             // construct a scheduler factory
             ISchedulerFactory schedFact = new StdSchedulerFactory();
@@ -1002,6 +1034,7 @@ namespace BotProject.Web.API
                     .UsingJobData("UserId", UserId)
                     .UsingJobData("Message", strMessage)
                     .UsingJobData("PageToken", pageToken)
+                    .UsingJobData("Payload", modulePayload)
                     .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
                     .StartAt(dTimeOut.ToLocalTime())
                     //.WithSimpleSchedule(x => x
@@ -1030,6 +1063,7 @@ namespace BotProject.Web.API
                 string message = dataMap.GetString("Message");
                 string pageToken = dataMap.GetString("PageToken");
                 string TimeOut = dataMap.GetString("TimeOut");
+                string payLoad = dataMap.GetString("Payload");
                 DateTime dTimeOut = Convert.ToDateTime(TimeOut);
 
                 DateTime timeOutDb;
@@ -1053,18 +1087,21 @@ namespace BotProject.Web.API
 
                 if (resultTimeCompare == 1)
                 {
-                    SendProactiveMessage(message, userId, pageToken, dTimeOut);
+                    if(payLoad != CommonConstants.ModuleAdminContact)
+                    {
+                        SendProactiveMessage(message, userId, pageToken, dTimeOut);
 
-                    var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
-                    sqlConnection2.Open();
+                        var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+                        sqlConnection2.Open();
 
-                    SqlCommand command2 = new SqlCommand("UPDATE ApplicationFacebookUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
-                    command2.Parameters.AddWithValue("@userId", userId);
-                    command2.Parameters.AddWithValue("@predicateName", "");
-                    command2.Parameters.AddWithValue("@predicateValue", "");
-                    command2.Parameters.AddWithValue("@isHavePredicate", "0");
-                    command2.ExecuteNonQuery();
-                    sqlConnection2.Close();
+                        SqlCommand command2 = new SqlCommand("UPDATE ApplicationFacebookUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
+                        command2.Parameters.AddWithValue("@userId", userId);
+                        command2.Parameters.AddWithValue("@predicateName", "");
+                        command2.Parameters.AddWithValue("@predicateValue", "");
+                        command2.Parameters.AddWithValue("@isHavePredicate", "0");
+                        command2.ExecuteNonQuery();
+                        sqlConnection2.Close();
+                    }
                 }
             }
             private async Task<HttpResponseMessage> SendProactiveMessage(string templateJson, string sender, string pageToken, DateTime dTimeOut)

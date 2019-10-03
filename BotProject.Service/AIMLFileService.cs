@@ -36,7 +36,7 @@ namespace BotProject.Service
 
         public IEnumerable<AIMLFile> GetByBotId(int botId)
         {
-            return _aimlRepository.GetMulti(x => x.BotID == botId);
+            return _aimlRepository.GetMulti(x => x.BotID == botId && x.Status == true);
         }
 
         public AIMLFile GetByCardId(int cardId)

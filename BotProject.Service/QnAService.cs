@@ -20,6 +20,7 @@ namespace BotProject.Service
 
         void UpdateQuestion(Question question);
         void UpdateAnswer(Answer answer);
+        void UpdateFormQuestionAnswer(FormQuestionAnswer formQnAnswer);
 
         Question DeleteQuestion(int id);
         void DeleteQuesByQuestionGroup(int qGroupID);
@@ -191,6 +192,11 @@ namespace BotProject.Service
         public QuesTargetViewModel GetQuesByTarget(string target, int botID)
         {
             return _questionRepository.GetQuesByTarget(target, botID);
+        }
+
+        public void UpdateFormQuestionAnswer(FormQuestionAnswer formQnAnswer)
+        {
+            _formQuestionAnswerRepository.Update(formQnAnswer);
         }
     }
 }

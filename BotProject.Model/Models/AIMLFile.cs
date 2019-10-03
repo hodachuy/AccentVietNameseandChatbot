@@ -32,5 +32,6 @@ namespace BotProject.Model.Models
         public string Content { set; get; }
 
         public string UserID { set; get; }
+        public bool Status { set; get; }
     }
 }

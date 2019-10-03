@@ -84,6 +84,14 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
+            string text = "tôi cảm ơn bạn cả thôi hehee không";
+            string[] animals2 = new string[] { "cả", "moose", "boars","không" };
+            foreach(var item in animals2)
+            {
+                string pattern = @"\b"+ item + "\b";
+                text = Regex.Replace(text, "\\b" + Regex.Escape(item) + "\\b", "").Trim();
+            }
+            var v = text;
 
             // define the job and tie it to our HelloJob class
             //IJobDetail job = JobBuilder.Create<HelloJob>()
@@ -91,19 +99,19 @@ namespace Accent.ConsoleApplication
             //    .UsingJobData("userId", "0")
             //    .Build();
 
-            while (true)
-            {
-                Console.InputEncoding = Encoding.Unicode;
-                Console.WriteLine("Nhap chuoi :");
-                string text = Console.ReadLine();
-                if (text == "exit")
-                {
-                    break;
-                }
+            //while (true)
+            //{
+            //    Console.InputEncoding = Encoding.Unicode;
+            //    Console.WriteLine("Nhap chuoi :");
+            //    string text = Console.ReadLine();
+            //    if (text == "exit")
+            //    {
+            //        break;
+            //    }
 
-                Schedule("groupUser1", text, "trigger1");
-                Console.WriteLine("abc :");
-            }
+            //    //Schedule("groupUser1", text, "trigger1");
+            //    Console.WriteLine("abc :");
+            //}
 
             //Schedule("groupUser1","1235","trigger1");
             //System.Threading.Thread.Sleep(5000);
