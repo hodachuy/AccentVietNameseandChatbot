@@ -229,7 +229,7 @@ namespace BotProject.Web.API
             if (String.IsNullOrEmpty(text))
             {
                 //string strDefaultNotMatch = "Anh/chị cho em biết thêm chi tiết được không ạ";
-                string strDefaultNotMatch = "Anh/chị vui lòng chọn Chat với Admin để được tư vấn chi tiết hơn ạ";
+                string strDefaultNotMatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
                 return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
             }
 
@@ -518,7 +518,7 @@ namespace BotProject.Web.API
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
-                            hisVm.UserSay = "[Chat với Admin]";
+                            hisVm.UserSay = "[Chat với chuyên viên]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
 
@@ -742,7 +742,7 @@ namespace BotProject.Web.API
                         {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể giải thích thêm được không?"},
                         {"NOT_MATCH_05", "Xin lỗi, em chưa hiểu ạ"}
                     };
-                    string notmatch = "Anh/chị vui lòng chọn Chat với Admin để được tư vấn chi tiết hơn ạ";
+                    string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
                     return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
 
                     // Chuyển tới tìm kiếm Search NLP
@@ -1049,7 +1049,7 @@ namespace BotProject.Web.API
             //await Task.Delay(TimeSpan.FromSeconds(60));
 
             // and last shut down the scheduler when you are ready to close your program
-            //await scheduler.Shutdown();
+            //scheduler.Shutdown();
         }
         public class ProactiveMessageJob : IJob
         {

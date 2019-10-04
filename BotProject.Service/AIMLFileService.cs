@@ -13,6 +13,7 @@ namespace BotProject.Service
     {
         AIMLFile GetByCardId(int cardId);
         IEnumerable<AIMLFile> GetByBotId(int botId);
+        IEnumerable<AIMLFile> GetAllByBotId(int botId);
         IEnumerable<AIMLFile> GetByUserId(string userId);
         AIMLFile GetByFormId(int formId);
         AIMLFile GetByID(int id);
@@ -32,6 +33,11 @@ namespace BotProject.Service
         public AIMLFile Create(AIMLFile aiml)
         {
             return _aimlRepository.Add(aiml);
+        }
+
+        public IEnumerable<AIMLFile> GetAllByBotId(int botId)
+        {
+            return _aimlRepository.GetMulti(x => x.BotID == botId);
         }
 
         public IEnumerable<AIMLFile> GetByBotId(int botId)

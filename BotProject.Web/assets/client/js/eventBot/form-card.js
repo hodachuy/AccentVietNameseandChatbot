@@ -1,6 +1,5 @@
 ﻿//###### DIGIPRO ######//
-var url_image_generic_default = "File/Images/Card/dad45d0d-09a9-4299-92f0-86dad36f1310-logo-digipro-v2.png";
-
+var url_image_generic_default ="https://developers.zalo.me/web/static/zalo.png";//"File/Images/Card/dad45d0d-09a9-4299-92f0-86dad36f1310-logo-digipro-v2.png";
 
 var botId = $("#botId").val();
 var srcFolderImg = "https://platform.messnow.com/",
