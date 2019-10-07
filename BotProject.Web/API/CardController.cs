@@ -448,22 +448,21 @@ namespace BotProject.Web.API
                                     _mdVoucherService.Save();
                                 }
                             }
-
-                            // trả lời nhanh
-                            if (cardVm.QuickReplyViewModels != null && cardVm.QuickReplyViewModels.Count() != 0)
-							{
-								var lstQuickReplyVm = cardVm.QuickReplyViewModels;
-								foreach (var itemQuickReplyVm in lstQuickReplyVm)
-								{
-                                    BotProject.Model.Models.QuickReply quickReplyDb = new BotProject.Model.Models.QuickReply();
-									quickReplyDb.UpdateQuickReply(itemQuickReplyVm);
-									quickReplyDb.CardID = cardDb.ID;
-									_commonCardService.AddQuickReply(quickReplyDb);
-									_commonCardService.Save();
-								}
-							}
 						}
-					}
+                        // trả lời nhanh
+                        if (cardVm.QuickReplyViewModels != null && cardVm.QuickReplyViewModels.Count() != 0)
+                        {
+                            var lstQuickReplyVm = cardVm.QuickReplyViewModels;
+                            foreach (var itemQuickReplyVm in lstQuickReplyVm)
+                            {
+                                BotProject.Model.Models.QuickReply quickReplyDb = new BotProject.Model.Models.QuickReply();
+                                quickReplyDb.UpdateQuickReply(itemQuickReplyVm);
+                                quickReplyDb.CardID = cardDb.ID;
+                                _commonCardService.AddQuickReply(quickReplyDb);
+                                _commonCardService.Save();
+                            }
+                        }
+                    }
 
 					rs.Card = cardDb;
 					response = request.CreateResponse(HttpStatusCode.OK, rs);

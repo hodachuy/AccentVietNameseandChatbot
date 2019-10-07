@@ -88,6 +88,7 @@
     <Compile Include="ApplicationFacebookUserService.cs" />
     <Compile Include="ApplicationGroupService.cs" />
     <Compile Include="ApplicationRoleService.cs" />
+    <Compile Include="ApplicationThirdPartyService.cs" />
     <Compile Include="ApplicationZaloUserService.cs" />
     <Compile Include="BotService.cs" />
     <Compile Include="ButtonLinkService.cs" />

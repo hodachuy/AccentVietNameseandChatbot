@@ -78,6 +78,7 @@ namespace BotProject.Web.API
         private IModuleSearchEngineService _moduleSearchEngineService;
         private IHistoryService _historyService;
         private ICardService _cardService;
+        private IApplicationThirdPartyService _app3rd;
         //private Bot _bot;
         private User _user;
 
@@ -94,7 +95,8 @@ namespace BotProject.Web.API
                               IModuleSearchEngineService moduleSearchEngineService,
                               IHistoryService historyService,
                               ICardService cardService,
-                              IApplicationFacebookUserService appFacebookUser)
+                              IApplicationFacebookUserService appFacebookUser,
+                              IApplicationThirdPartyService app3rd)
         {
             _errorService = errorService;
             //_accentService = AccentService.AccentInstance;
@@ -112,6 +114,7 @@ namespace BotProject.Web.API
             _historyService = historyService;
             _cardService = cardService;
             _appFacebookUser = appFacebookUser;
+            _app3rd = app3rd;
         }
 
         public HttpResponseMessage Get()
@@ -140,8 +143,18 @@ namespace BotProject.Web.API
 
             var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
+            var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
+            //LogError(body);
+            var app3rd = _app3rd.GetByPageId(value.entry[0].id);
+            if(app3rd == null)
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
 
+            botId = app3rd.BotID;
             var settingDb = _settingService.GetSettingByBotID(botId);
+
+
             //get pagetoken
             pageToken = settingDb.FacebookPageToken;
             appSecret = settingDb.FacebookAppSecrect;
@@ -159,10 +172,8 @@ namespace BotProject.Web.API
             if (!VerifySignature(signature, body))
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-            var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
-
             ////Test
-            var botRequest = new JavaScriptSerializer().Serialize(value);
+            //var botRequest = new JavaScriptSerializer().Serialize(value);
             //LogError(botRequest);
 
             if (value.@object != "page")
