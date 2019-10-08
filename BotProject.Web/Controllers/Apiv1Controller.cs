@@ -257,7 +257,7 @@ namespace BotProject.Web.Controllers
                     {
                         foreach (var w in arrStopWord)
                         {
-                            text = Regex.Replace(text, w, String.Empty).Trim();
+                            text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
                         }
                     }
                 }

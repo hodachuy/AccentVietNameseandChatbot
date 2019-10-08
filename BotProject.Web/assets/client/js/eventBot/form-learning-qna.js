@@ -607,6 +607,7 @@ $(document).ready(function () {
             });
             var formQnAVm = {
                 'BotID': $("#botId").val(),
+                'Status': $("#statusFormQnA").val(),
                 'TypeAction': TypeAction,
                 'FormQuestionAnswerID': $("#formQnaID").val(),
                 'QuestionGroupViewModels': arrGrpQna
@@ -622,7 +623,7 @@ $(document).ready(function () {
                 if (data == true) {
                     // refresh load new data updated
                     new ActionFormQnA().GetQnAnswerById();
-                    new ActionFormQnA().RenderToAiml();
+                    new ActionFormQnA().RenderToAiml($("#statusFormQnA").val());
                     $("#model-notify").modal('hide');
                     swal({
                         title: "Thông báo",
@@ -895,12 +896,13 @@ ActionFormQnA = function () {
     }
 
     //render aiml form QnA
-    this.RenderToAiml = function () {
+    this.RenderToAiml = function (status) {
         var param = {
             botId: $("#botId").val(),
             formQnaID: $("#formQnaID").val(),
             formAlias: $("#formAlias").val(),
-            userID: $("#userId").val()
+            userID: $("#userId").val(),
+            status: status
         };
         var urlTest = "api/qna/getaimlqna";
         var svr = new AjaxCall(urlTest, param);

@@ -49,6 +49,11 @@ namespace BotProject.Web.API
                 if (formQnAVm != null && formQnAVm.QuestionGroupViewModels != null
                                     && formQnAVm.QuestionGroupViewModels.Count() != 0)
                 {
+                    var formQnaDb = _qnaService.GetFormQnAnswerById(formQnAVm.FormQuestionAnswerID);
+                    formQnaDb.Status = formQnAVm.Status;
+                    _qnaService.UpdateFormQuestionAnswer(formQnaDb);
+                    _qnaService.Save();
+
                     var lstQuesGroupVm = formQnAVm.QuestionGroupViewModels;
                     // nếu trường hợp cập nhật chỉ thêm các question group với id rỗng
                     if (formQnAVm.TypeAction == Common.CommonConstants.UpdateQnA)
@@ -177,7 +182,7 @@ namespace BotProject.Web.API
 
         [Route("getaimlqna")]
         [HttpGet]
-        public HttpResponseMessage GetAimlQnA(HttpRequestMessage request, int formQnaID, string formAlias, string userID, int botID)
+        public HttpResponseMessage GetAimlQnA(HttpRequestMessage request, int formQnaID, string formAlias, string userID, int botID, bool status = false)
         {
             return CreateHttpResponse(request, () =>
             {
@@ -333,6 +338,7 @@ namespace BotProject.Web.API
                         aimlFileDb.FormQnAnswerID = formQnaID;
                         aimlFileDb.Extension = "aiml";
                         aimlFileDb.Name = "Form-" + formAlias;
+                        aimlFileDb.Status = status;
                         aimlFileDb.Content = sbFormDb.ToString();
                         _aimlService.Create(aimlFileDb);
                         _aimlService.Save();
@@ -340,6 +346,7 @@ namespace BotProject.Web.API
                     else
                     {
                         aimlDb.Content = sbFormDb.ToString();
+                        aimlDb.Status = status;
                         _aimlService.Update(aimlDb);
                         _aimlService.Save();
                     }

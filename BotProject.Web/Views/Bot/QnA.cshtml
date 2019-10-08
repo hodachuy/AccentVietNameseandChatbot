@@ -93,6 +93,76 @@
 <input type="hidden" id="botId" value="@Model.BotID" />
 <input type="hidden" id="formQnaID" value="@Model.ID" />
 <input type="hidden" id="formAlias" value="@Model.Alias" />
+
+<style>
+    /* The container */
+    .containerChk {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        /*font-size: 22px;*/
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        /* Hide the browser's default checkbox */
+        .containerChk input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        /*left: 0;*/
+        height: 25px;
+        width: 25px;
+        background-color: #ccc;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .containerChk:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .containerChk input:checked ~ .checkmark {
+        background-color: #2196F3;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .containerChk input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .containerChk .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+</style>
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 p-b-10">
         <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
@@ -127,7 +197,24 @@
             </div>*@
         <div class="d-flex">
             <p style="font-size:13pt;padding-left:20px;color:darkblue;" id="search-label" for="search-terms" class="addCt"><i class="fas fa-plus-circle"></i> <span style="padding-left:5px;text-decoration:underline">Thêm kịch bản</span></p>
-            @*<div class="ml-auto" style="font-size:13px;padding-right:100px">Retrained 2 phút trước</div>*@
+            <div class="ml-auto" style="font-size:13px;padding-right:100px">
+            @if (Model.Status == true)
+            {
+                <label class="containerChk">
+                    <span style="margin-right:10px">Kích hoạt</span>
+                    <input type="checkbox" id="statusFormQnA" value="true" checked>
+                    <span class="checkmark"></span>
+                </label>
+            }
+            else
+            {
+                <label class="containerChk">
+                    <span style="margin-right:10px">Kích hoạt</span>
+                    <input type="checkbox" id="statusFormQnA" value="false">
+                    <span class="checkmark"></span>
+                </label>
+            }
+            </div>
         </div>
     </div>
 </div>
@@ -264,6 +351,14 @@
         function module() {
             var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>'; return htmlListModule;
         }
+
+        $('#statusFormQnA').change(function () {
+            if ($(this).is(":checked")) {
+                $(this).val('true');
+            } else {
+                $(this).val('false');
+            }
+        });
     </script>
     <script src="~/assets/client/js/eventBot/form-learning-qna.js"></script>
 }

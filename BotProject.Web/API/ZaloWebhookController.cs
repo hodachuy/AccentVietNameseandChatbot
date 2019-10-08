@@ -41,6 +41,7 @@ namespace BotProject.Web.API
         int _timeOut = 60;
         bool _isHaveTimeOut = false;
         string _messageProactive = "";
+        bool _isSearchAI = false;
 
         string _patternCardPayloadProactive = "";
         string _titleCardPayloadProactive = "🔙 Quay về";
@@ -125,7 +126,7 @@ namespace BotProject.Web.API
                 _isHaveTimeOut = settingDb.IsProactiveMessageZalo;
                 _timeOut = settingDb.Timeout;
                 _messageProactive = settingDb.ProactiveMessageText;
-
+                _isSearchAI = settingDb.IsMDSearch;
                 _patternCardPayloadProactive = "postback_card_" + settingDb.CardID.ToString();
 
                 // init stop word
@@ -199,8 +200,13 @@ namespace BotProject.Web.API
 
             if (String.IsNullOrEmpty(text))
             {
-                //string strDefaultNotMatch = "Anh/chị cho em biết thêm chi tiết được không ạ";
-                string strDefaultNotMatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
+                string strDefaultNotMatch = "Anh/chị cho em biết thêm chi tiết được không ạ";
+                if (_isSearchAI)
+                {
+                    return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                }
+
+                strDefaultNotMatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
                 return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
             }
 
@@ -263,7 +269,7 @@ namespace BotProject.Web.API
                         _appZaloUser.Update(zlUserDb);
                         _appZaloUser.Save();
                     }
-                    Schedule(sender, ZaloTemplate.GetMessageTemplateTextAndQuickReply(_messageProactive, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), pageToken, dTimeOut,text);
+                    await Schedule(sender, ZaloTemplate.GetMessageTemplateTextAndQuickReply(_messageProactive, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), pageToken, dTimeOut,text);
                     //Schedule(sender, ZaloTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
                 }
 
@@ -608,21 +614,25 @@ namespace BotProject.Web.API
                 }
 
                 // Lấy target from knowledge base QnA trained mongodb
-                //if (text.Contains("postback") == false || text.Contains("module") == false)
-                //{
-                //    string target = _apiNLR.GetPrecidictTextClass(text, botId);
-                //    if (!String.IsNullOrEmpty(target))
-                //    {
-                //        target = Regex.Replace(target, "\n", "").Replace("\"", "");
-                //        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-                //        quesTarget = _qnaService.GetQuesByTarget(target, botId);
-                //        if (quesTarget != null)
-                //        {
-                //            text = quesTarget.ContentText;
-                //        }
-                //        hisVm.BotUnderStands = target;
-                //    }
-                //}
+                if (_isSearchAI)
+                {
+                    if (text.Contains("postback") == false || text.Contains("module") == false)
+                    {
+                        string target = _apiNLR.GetPrecidictTextClass(text, botId);
+                        if (!String.IsNullOrEmpty(target))
+                        {
+                            target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                            QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                            quesTarget = _qnaService.GetQuesByTarget(target, botId);
+                            if (quesTarget != null)
+                            {
+                                text = quesTarget.ContentText;
+                            }
+                            hisVm.BotUnderStands = target;
+                        }
+                    }
+                }
+
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
@@ -713,61 +723,63 @@ namespace BotProject.Web.API
                         {"NOT_MATCH_05", "Xin lỗi, em chưa hiểu ạ"}
                     };
 
-                    string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                    return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-
+                    if (_isSearchAI == false)
+                    {
+                        string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
+                        return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    }
 
                     // Chuyển tới tìm kiếm Search NLP
-                    //var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
-                    //var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
-                    //if (systemConfigVm.Count() == 0)
-                    //{
-                    //    return await SendMessage(ZaloTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
-                    //}
-                    //string nameFunctionAPI = "";
-                    //string number = "";
-                    //string field = "";
-                    //foreach (var item in systemConfigVm)
-                    //{
-                    //    if (item.Code == "UrlAPI")
-                    //        nameFunctionAPI = item.ValueString;
-                    //    if (item.Code == "ParamAreaID")
-                    //        field = item.ValueString;
-                    //    if (item.Code == "ParamNumberResponse")
-                    //        number = item.ValueString;
-                    //}
-                    //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-                    //AddHistory(hisVm);
-                    //string resultAPI = GetRelatedQuestionToZalo(nameFunctionAPI, text, field, number, botId.ToString());
-                    //if (!String.IsNullOrEmpty(resultAPI))
-                    //{
-                    //    var lstQnaAPI = new JavaScriptSerializer
-                    //    {
-                    //        MaxJsonLength = Int32.MaxValue,
-                    //        RecursionLimit = 100
-                    //    }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
-                    //    // render template json generic
-                    //    int totalQnA = lstQnaAPI.Count();
-                    //    string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
-                    //    await SendMessageTask(ZaloTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
-                    //    string strTemplateGenericRelatedQuestion = ZaloTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
-                    //    return await SendMessage(strTemplateGenericRelatedQuestion, sender);
-                    //}
-                    //else
-                    //{
-                    //    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
-                    //    AddHistory(hisVm);
-                    //    string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
-                    //    foreach (var item in _dicNotMatch)
-                    //    {
-                    //        string itemNotMatch = item.Key;
-                    //        if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
-                    //        {
-                    //            strDefaultNotMatch = item.Value;
-                    //        }
-                    //    }
-                    //    return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-                    //}
+                    var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
+                    var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
+                    if (systemConfigVm.Count() == 0)
+                    {
+                        return await SendMessage(ZaloTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
+                    }
+                    string nameFunctionAPI = "";
+                    string number = "";
+                    string field = "";
+                    foreach (var item in systemConfigVm)
+                    {
+                        if (item.Code == "UrlAPI")
+                            nameFunctionAPI = item.ValueString;
+                        if (item.Code == "ParamAreaID")
+                            field = item.ValueString;
+                        if (item.Code == "ParamNumberResponse")
+                            number = item.ValueString;
+                    }
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+                    AddHistory(hisVm);
+                    string resultAPI = GetRelatedQuestionToZalo(nameFunctionAPI, text, field, number, botId.ToString());
+                    if (!String.IsNullOrEmpty(resultAPI))
+                    {
+                        var lstQnaAPI = new JavaScriptSerializer
+                        {
+                            MaxJsonLength = Int32.MaxValue,
+                            RecursionLimit = 100
+                        }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
+                        // render template json generic
+                        int totalQnA = lstQnaAPI.Count();
+                        string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                        await SendMessageTask(ZaloTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
+                        string strTemplateGenericRelatedQuestion = ZaloTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                        return await SendMessage(strTemplateGenericRelatedQuestion, sender);
+                    }
+                    else
+                    {
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
+                        AddHistory(hisVm);
+                        string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
+                        foreach (var item in _dicNotMatch)
+                        {
+                            string itemNotMatch = item.Key;
+                            if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
+                            {
+                                strDefaultNotMatch = item.Value;
+                            }
+                        }
+                        return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    }
                 }
                 // input là postback
                 if (text.Contains("postback_card"))
@@ -973,33 +985,53 @@ namespace BotProject.Web.API
             _historyService.Save();
         }
 
-        public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
+        private static async Task Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
         {
-            // construct a scheduler factory
-            ISchedulerFactory schedFact = new StdSchedulerFactory();
+            try
+            {
+                // Grab the Scheduler instance from the Factory
+                System.Collections.Specialized.NameValueCollection props = new System.Collections.Specialized.NameValueCollection
+                {
+                    { "quartz.serializer.type", "binary" }
+                };
+                StdSchedulerFactory factory = new StdSchedulerFactory(props);
+                IScheduler scheduler = await factory.GetScheduler();
+                // and start it off
+                await scheduler.Start();
 
-            // get a scheduler
-            IScheduler scheduler = schedFact.GetScheduler();
-            scheduler.Start();
+                IJobDetail job = JobBuilder.Create<ProactiveMessageJob>()
+                     //.WithIdentity("ProactiveMsgJob", "ProactiveMsgJob") 
+                     //.UsingJobData("userId", "0")
+                     .Build();
+                ITrigger trigger = TriggerBuilder.Create()
+                        //.WithIdentity(triggerName, "ProactiveMsgJob")
+                        .UsingJobData("UserId", UserId)
+                        .UsingJobData("Message", strMessage)
+                        .UsingJobData("PageToken", pageToken)
+                        .UsingJobData("Payload", modulePayload)
+                        .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
+                        .StartAt(dTimeOut.ToLocalTime())
+                        //.WithSimpleSchedule(x => x
+                        //    .WithIntervalInSeconds(5)
+                        //    .WithRepeatCount(0))
+                        //.ForJob("ProactiveMsgJob", group)
+                        .Build();
 
-            IJobDetail job = JobBuilder.Create<ProactiveMessageJob>()
-                 .Build();
-            ITrigger trigger = TriggerBuilder.Create()
-                    //.WithIdentity(triggerName, "ProactiveMsgJob")
-                    .UsingJobData("UserId", UserId)
-                    .UsingJobData("Message", strMessage)
-                    .UsingJobData("PageToken", pageToken)
-                    .UsingJobData("Payload", modulePayload)
-                    .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
-                    .StartAt(dTimeOut.ToLocalTime())
-                    .Build();
+                // Tell quartz to schedule the job using our trigger
+                await scheduler.ScheduleJob(job, trigger);
 
-            scheduler.ScheduleJob(job, trigger);
+                //await scheduler.Shutdown();
+            }
+            catch (SchedulerException se)
+            {
+
+            }
         }
+
         public class ProactiveMessageJob : IJob
         {
             private readonly string Domain = Helper.ReadString("Domain");
-            public void Execute(IJobExecutionContext context)
+            public async Task Execute(IJobExecutionContext context)
             {
                 JobKey key = context.JobDetail.Key;
                 //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
@@ -1034,7 +1066,8 @@ namespace BotProject.Web.API
                 {
                     if (payLoad != CommonConstants.ModuleAdminContact)
                     {
-                        SendProactiveMessage(message, userId, pageToken, dTimeOut);
+                        await SendProactiveMessage(message, userId, pageToken, dTimeOut);
+
                         var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
                         sqlConnection2.Open();
 
@@ -1068,5 +1101,102 @@ namespace BotProject.Web.API
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
         }
+
+
+        //public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
+        //{
+        //    // construct a scheduler factory
+        //    ISchedulerFactory schedFact = new StdSchedulerFactory();
+
+        //    // get a scheduler
+        //    IScheduler scheduler = schedFact.GetScheduler();
+        //    scheduler.Start();
+
+        //    IJobDetail job = JobBuilder.Create<ProactiveMessageJob>()
+        //         .Build();
+        //    ITrigger trigger = TriggerBuilder.Create()
+        //            //.WithIdentity(triggerName, "ProactiveMsgJob")
+        //            .UsingJobData("UserId", UserId)
+        //            .UsingJobData("Message", strMessage)
+        //            .UsingJobData("PageToken", pageToken)
+        //            .UsingJobData("Payload", modulePayload)
+        //            .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
+        //            .StartAt(dTimeOut.ToLocalTime())
+        //            .Build();
+
+        //    scheduler.ScheduleJob(job, trigger);
+        //}
+        //public class ProactiveMessageJob : IJob
+        //{
+        //    private readonly string Domain = Helper.ReadString("Domain");
+        //    public void Execute(IJobExecutionContext context)
+        //    {
+        //        JobKey key = context.JobDetail.Key;
+        //        //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
+        //        JobDataMap dataMap = context.MergedJobDataMap;
+        //        string userId = dataMap.GetString("UserId");
+        //        string message = dataMap.GetString("Message");
+        //        string pageToken = dataMap.GetString("PageToken");
+        //        string TimeOut = dataMap.GetString("TimeOut");
+        //        string payLoad = dataMap.GetString("Payload");
+        //        DateTime dTimeOut = Convert.ToDateTime(TimeOut);
+
+        //        DateTime timeOutDb;
+        //        int resultTimeCompare = 3;
+        //        var sqlConnection = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+        //        sqlConnection.Open();
+
+        //        SqlCommand command = new SqlCommand("Select TimeOut from [ApplicationZaloUsers] where UserId=@userId", sqlConnection);
+        //        command.Parameters.AddWithValue("@userId", userId);
+
+        //        using (SqlDataReader reader = command.ExecuteReader())
+        //        {
+        //            if (reader.Read())
+        //            {
+        //                timeOutDb = (DateTime)reader["TimeOut"];
+        //                resultTimeCompare = DateTime.Compare(DateTime.Now, timeOutDb);
+        //            }
+        //        }
+        //        command.ExecuteNonQuery();
+        //        sqlConnection.Close();
+
+        //        if (resultTimeCompare == 1)
+        //        {
+        //            if (payLoad != CommonConstants.ModuleAdminContact)
+        //            {
+        //                SendProactiveMessage(message, userId, pageToken, dTimeOut);
+        //                var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+        //                sqlConnection2.Open();
+
+        //                SqlCommand command2 = new SqlCommand("UPDATE ApplicationZaloUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
+        //                command2.Parameters.AddWithValue("@userId", userId);
+        //                command2.Parameters.AddWithValue("@predicateName", "");
+        //                command2.Parameters.AddWithValue("@predicateValue", "");
+        //                command2.Parameters.AddWithValue("@isHavePredicate", "0");
+        //                command2.ExecuteNonQuery();
+        //                sqlConnection2.Close();
+        //            }
+        //        }
+        //    }
+        //    private async Task<HttpResponseMessage> SendProactiveMessage(string templateJson, string sender, string pageToken, DateTime dTimeOut)
+        //    {
+        //        HttpResponseMessage res;
+        //        if (!String.IsNullOrEmpty(templateJson))
+        //        {
+        //            templateJson = templateJson.Replace("{{senderId}}", sender);
+        //            templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
+        //            templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+        //            templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+        //            templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+        //            templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+        //            using (HttpClient client = new HttpClient())
+        //            {
+        //                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        //                res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+        //            }
+        //        }
+        //        return new HttpResponseMessage(HttpStatusCode.OK);
+        //    }
+        //}
     }
 }

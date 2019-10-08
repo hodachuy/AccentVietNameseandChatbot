@@ -8,6 +8,9 @@ namespace BotProject.Web.Models
 	public class FormQnACommonViewModel
 	{
 		public int BotID { set; get; }
+
+        public bool Status { set; get; }
+
         public int FormQuestionAnswerID { set; get; }
         //Add - Update
         public string TypeAction { set; get; }
