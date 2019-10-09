@@ -716,7 +716,7 @@ namespace BotProject.Web.API
                     AddHistory(hisVm);
 
                     _dicNotMatch = new Dictionary<string, string>() {
-                        {"NOT_MATCH_01", "Xin lỗi, ý anh/chị em chưa hiểu ạ!"},
+                        {"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
                         {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
                         {"NOT_MATCH_03", "Chưa hiểu lắm ạ, anh/chị có thể nói rõ hơn được không ạ?"},
                         {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể nói rỏ hơn được không?"},

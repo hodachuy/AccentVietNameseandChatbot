@@ -2419,6 +2419,8 @@ $(document).ready(function () {
                 setTimeout(function () {
                     getAimlCard(card.ID);
                 }, 500)
+
+                loadListCardByGroup();
                 console.log(data)
             });
 
@@ -5082,6 +5084,32 @@ $('body').on('click', '.select-item-card', function () {
         $("#groupCardName").html(groupCardName)
     });
 })
+
+function loadListCardByGroup(){
+    $("#lst-card").empty();
+    var params = {
+        groupCardId: grCardId,
+    };
+    var urlTest = "api/card/getbygroupcard";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServiceGET(function (data) {
+        if (data.length != 0) {
+            var html = '';
+            $.each(data, function (index, value) {
+                html += '<li>';
+                html += '<a class="nav-link card-item" data-cardid="' + value.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + value.ID + '" aria-controls="setsmenu-' + value.ID + '">';
+                html += '<span class="icon">';
+                html += '<i class="fas fa-fw fa-copy"></i>';
+                html += '</span>' + value.Name + '';
+                html += '</a>';
+                html += '</li>';
+            })
+            $("#lst-card").empty().append(html)
+        }
+    });
+}
+
+
 
 $('body').on('click', '#groupCardName', function () {
     $("#block-card").show();

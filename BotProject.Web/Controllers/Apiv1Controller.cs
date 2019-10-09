@@ -6,6 +6,7 @@ using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Extensions;
+using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
 using ExcelDataReader;
 using Newtonsoft.Json;
@@ -221,6 +222,7 @@ namespace BotProject.Web.Controllers
             //string nameBotAIML = "User_" + token + "_BotID_" + botId;
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
+
             string txtOriginal = "";
             int valBotID = Int32.Parse(botId);
             try
