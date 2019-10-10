@@ -18,6 +18,8 @@ namespace BotProject.Web.Models
         public string TemplateJsonZalo { set; get; }
 
         public bool IsDelete { set; get; }
+        public bool Status { set; get; }
+        public bool IsHaveCondition { set; get; }
 
         public string UserID { set; get; }
         [Required]

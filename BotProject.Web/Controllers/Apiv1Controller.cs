@@ -139,6 +139,9 @@ namespace BotProject.Web.Controllers
             _user.Predicates.addSetting("name","");
             _user.Predicates.addSetting("namecheck", "false");
 
+            _user.Predicates.addSetting("cardConditionCheck", "false");
+            _user.Predicates.addSetting("cardConditionPattern", "");
+
             // load tất cả module của bot và thêm key vao predicate
             var mdBotDb = _mdService.GetAllModuleByBotID(botID).Where(x => x.Name != "med_get_info_patient").ToList();
             if (mdBotDb.Count() != 0)
@@ -269,6 +272,16 @@ namespace BotProject.Web.Controllers
                 hisVm.CreatedDate = DateTime.Now;
                 hisVm.UserSay = txtOriginal;
                 hisVm.UserName = userBot.ID;
+
+                if (bool.Parse(_user.Predicates.grabSetting("cardConditionCheck")))
+                {
+                    if(text.Contains("postback") == false)
+                    {
+                        string cardPayload = _user.Predicates.grabSetting("cardConditionPattern");
+                        return chatbot(cardPayload, group, token, botId, isMdSearch);
+                    }
+                }
+
 
                 // Module lấy thông tin bệnh
                 #region Module lấy thông tin bệnh
@@ -790,6 +803,40 @@ namespace BotProject.Web.Controllers
                         }
                     }
                 }
+
+                if (text.Contains("postback_card"))
+                {
+                    var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
+                    if (cardDb.IsHaveCondition)
+                    {
+                        _user.Predicates.addSetting("cardConditionCheck", "true");
+                        _user.Predicates.addSetting("cardConditionPattern", text.Replace(".", String.Empty));
+                    }
+                    else
+                    {
+                        _user.Predicates.addSetting("cardConditionCheck", "false");
+                        _user.Predicates.addSetting("cardConditionPattern", "");
+                    }
+                }
+                // nếu nhập text trả lời ra postback
+                string strTempPostback = aimlBotResult.SubQueries[0].Template;
+                bool isPostback = Regex.Match(strTempPostback, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
+                if (isPostback)
+                {
+                    strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
+                    var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
+                    if (cardDb.IsHaveCondition)
+                    {
+                        _user.Predicates.addSetting("cardConditionCheck", "true");
+                        _user.Predicates.addSetting("cardConditionPattern", strTempPostback.Replace(".", String.Empty));
+                    }
+                    else
+                    {
+                        _user.Predicates.addSetting("cardConditionCheck", "false");
+                        _user.Predicates.addSetting("cardConditionPattern", "");
+                    }
+                }
+
                 //set new predicate to session user bot request
                 SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
                 settingDic.Count = aimlBotResult.user.Predicates.Count;

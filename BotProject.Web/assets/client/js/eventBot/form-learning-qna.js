@@ -631,6 +631,9 @@ $(document).ready(function () {
                         confirmButtonColor: "#EF5350",
                         type: "success"
                     }, function () { $("#model-notify").modal('show'); });
+
+                    $('#dialog_iframe',window.parent.document).attr('src',$('#dialog_iframe',window.parent.document).attr('src'));
+
                 } else {
                     swal({
                         title: "Error",

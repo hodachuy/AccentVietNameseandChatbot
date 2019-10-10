@@ -105,6 +105,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             card.TemplateJsonFacebook = cardVm.TemplateJsonFacebook;
             card.TemplateJsonZalo = cardVm.TemplateJsonZalo;
             card.IsDelete = false;
+            card.IsHaveCondition = cardVm.IsHaveCondition;
         }
 
         public static void UpdateTemplateGenericGroup(this TemplateGenericGroup temGnrGroup, TemplateGenericGroupViewModel temGnrGroupVm)
@@ -300,6 +301,8 @@ namespace BotProject.Web.Infrastructure.Extensions
             fbUser.IsProactiveMessage = fbUserVm.IsProactiveMessage;
 			fbUser.EngineerName = fbUserVm.EngineerName;
 			fbUser.TimeOut = fbUserVm.TimeOut;
+            fbUser.IsHaveCardCondition = fbUserVm.IsHaveCardCondition;
+            fbUser.CardConditionPattern = fbUserVm.CardConditionPattern;
 			//fbUser.StartedOn = DateTime.Now;
         }
         #endregion
@@ -315,7 +318,9 @@ namespace BotProject.Web.Infrastructure.Extensions
             zlUser.IsProactiveMessage = zlUserVm.IsProactiveMessage;
 			zlUser.EngineerName = zlUserVm.EngineerName;
 			zlUser.TimeOut = zlUserVm.TimeOut;
-			//zlUser.StartedOn = DateTime.Now;
+            zlUser.IsHaveCardCondition = zlUserVm.IsHaveCardCondition;
+            zlUser.CardConditionPattern = zlUserVm.CardConditionPattern;
+            //zlUser.StartedOn = DateTime.Now;
         }
         #endregion
     }

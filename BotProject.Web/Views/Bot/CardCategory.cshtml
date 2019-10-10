@@ -42,6 +42,75 @@
         position: relative;
     }
 </style>
+<style>
+    /* The container */
+    .containerChk {
+        /*display: block;*/
+        position: relative;
+        /*padding-left: 35px;*/
+        /*margin-bottom: 12px;*/
+        cursor: pointer;
+        /*font-size: 22px;*/
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+
+        /* Hide the browser's default checkbox */
+        .containerChk input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+    /* Create a custom checkbox */
+    .checkmark {
+        position: absolute;
+        top: 0;
+        /*left: 0;*/
+        height: 18px;
+        width: 18px;
+        background-color: #ccc;
+    }
+
+    /* On mouse-over, add a grey background color */
+    .containerChk:hover input ~ .checkmark {
+        background-color: #ccc;
+    }
+
+    /* When the checkbox is checked, add a blue background */
+    .containerChk input:checked ~ .checkmark {
+        background-color: #3f51b5;
+    }
+
+    /* Create the checkmark/indicator (hidden when not checked) */
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+    }
+
+    /* Show the checkmark when checked */
+    .containerChk input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    /* Style the checkmark/indicator */
+    .containerChk .checkmark:after {
+        left: 8px;
+        top: 4px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+</style>
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
 <div id="sidenav-module" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="closeNavModule()">&times;</a>
@@ -142,15 +211,23 @@
             <div class="card-head-title">
                 <div class="title">
                     <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
-                    <span><input type="text" maxlength="240" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>
-                    <div></div>
-                    <div class="icons">
-                        <a href="#" class="icon" id="save_card">
-                            <i class="fas fa-save"></i>
-                        </a>
-                        <a href="#" class="icon" id="delete_card">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                    <span><input type="text" maxlength="240" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>                
+                </div>
+                <div class="row" style="padding-top:5px">
+                    <div class="col-md-6">
+                        <label class="containerChk" id="container-chk-condition">
+                          
+                        </label>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="icons" style="float:right">
+                            <a href="#" class="icon" id="save_card">
+                                <i class="fas fa-save"></i>
+                            </a>
+                            <a href="#" class="icon" id="delete_card">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

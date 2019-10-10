@@ -1758,7 +1758,8 @@ input[type="file"].list_inputfile {
     }
 
     .card-head-title {
-        padding: 25px 25px;
+        padding: 25px 25px 0px 25px;;
+
         border-bottom: 1px solid #e6e6f2;
     }
 

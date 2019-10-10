@@ -37,6 +37,10 @@ namespace BotProject.Model.Models
 
         public bool IsDelete { set; get; }
 
+        public bool Status { set; get; }
+
+        public bool IsHaveCondition { set; get; }
+
         [Required]
         public int GroupCardID { set; get; }
 

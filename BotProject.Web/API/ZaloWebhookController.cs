@@ -232,7 +232,7 @@ namespace BotProject.Web.API
                         var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
                         AddHistory(hisVm);
-                        if (text.Contains("postback"))
+                        if (text.Contains("postback") || text.Contains(_contactAdmin))
                         {
                             zlUserDb.IsHavePredicate = false;
                             zlUserDb.PredicateName = "";
@@ -296,7 +296,7 @@ namespace BotProject.Web.API
                         var predicateName = zlUserDb.PredicateName;
                         if (predicateName == "ApiSearch")
                         {
-                            if (text.Contains("postback_card"))// nều còn điều kiện search mà chọn postback
+                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))// nều còn điều kiện search mà chọn postback
                             {
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
@@ -389,7 +389,7 @@ namespace BotProject.Web.API
 								zlUserDb.PredicateName = "";
 								zlUserDb.PredicateValue = "";
 								zlUserDb.EngineerName = text;
-								if (text.Contains("postback"))
+								if (text.Contains("postback") || text.Contains(_contactAdmin))
 								{
 									zlUserDb.EngineerName = "";
 								}
@@ -406,7 +406,7 @@ namespace BotProject.Web.API
 						if (predicateName == "Voucher")
                         {
                             string mdVoucherId = zlUserDb.PredicateValue;
-                            if (text.Contains("postback_card"))
+                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))
                             {
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
@@ -453,7 +453,7 @@ namespace BotProject.Web.API
                         {
                             string mdVoucherId = zlUserDb.PredicateValue;
                             string phoneNumber = zlUserDb.PhoneNumber;
-                            if (text.Contains("postback_card"))
+                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))
                             {
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
@@ -800,6 +800,34 @@ namespace BotProject.Web.API
                             }
 
                             return new HttpResponseMessage(HttpStatusCode.OK);
+                        }
+                    }
+                }
+
+                if (text.Contains(_contactAdmin))
+                {
+                    string strTempPostbackContactAdmin = aimlBotResult.SubQueries[0].Template;
+                    bool isPostbackContactAdmin = Regex.Match(strTempPostbackContactAdmin, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
+                    if (isPostbackContactAdmin)
+                    {
+                        strTempPostbackContactAdmin = Regex.Replace(strTempPostbackContactAdmin, @"<(.|\n)*?>", "").Trim();
+                        var cardDb = _cardService.GetSingleCondition(strTempPostbackContactAdmin.Replace(".", String.Empty));
+                        string tempJsonZalo = cardDb.TemplateJsonZalo;
+                        if (!String.IsNullOrEmpty(tempJsonZalo))
+                        {
+                            tempJsonZalo = tempJsonZalo.Trim();
+                            string[] strArrayJson = Regex.Split(tempJsonZalo, "split");//nhớ thêm bên formcard xử lý lục trên face
+                            if (strArrayJson.Length != 0)
+                            {
+                                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                foreach (var temp in strArray)
+                                {
+                                    string tempJson = temp;
+                                    await SendMessageTask(tempJson, sender);
+                                }
+
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
                         }
                     }
                 }

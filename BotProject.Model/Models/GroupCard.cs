@@ -19,6 +19,8 @@ namespace BotProject.Model.Models
 
         public bool IsDelete { set; get; }
 
+        public bool Status { set; get; }
+
         [Required]
         [MaxLength(256)]
         public string Name { set; get; }

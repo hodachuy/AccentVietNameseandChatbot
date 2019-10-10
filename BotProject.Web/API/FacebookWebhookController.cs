@@ -274,7 +274,7 @@ namespace BotProject.Web.API
                         var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
                         AddHistory(hisVm);
-                        if (text.Contains("postback"))
+                        if (text.Contains("postback") || text.Contains(_contactAdmin))
                         {
                             fbUserDb.IsHavePredicate = false;
                             fbUserDb.PredicateName = "";
@@ -301,6 +301,7 @@ namespace BotProject.Web.API
                         return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                 }
+
                 // TimeOut được bật
                 if (_isHaveTimeOut)
                 {
@@ -322,6 +323,7 @@ namespace BotProject.Web.API
                     fbUserVm.IsHavePredicate = false;
                     fbUserVm.IsProactiveMessage = false;
                     fbUserVm.TimeOut = dTimeOut;
+                    fbUserDb.CreatedDate = DateTime.Now;
                     fbUserDb.StartedOn = dStartedTime;
                     fbUserDb.UpdateFacebookUser(fbUserVm);
                     _appFacebookUser.Add(fbUserDb);
@@ -331,17 +333,50 @@ namespace BotProject.Web.API
                 {
                     fbUserDb.StartedOn = dStartedTime;
                     fbUserDb.TimeOut = dTimeOut;
+
+                    // Nếu có yêu cầu click thẻ để đi theo luồng
+                    if (fbUserDb.IsHaveCardCondition)
+                    {
+                        if(text.Contains("postback") == false || text.Contains(_contactAdmin) == false)
+                        {
+                            var cardDb = _cardService.GetSingleCondition(fbUserDb.CardConditionPattern);
+                            if(cardDb == null)
+                            {
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                            string tempJsonFacebook = cardDb.TemplateJsonFacebook;
+                            if (!String.IsNullOrEmpty(tempJsonFacebook))
+                            {
+                                tempJsonFacebook = tempJsonFacebook.Trim();
+                                string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");
+                                if (strArrayJson.Length != 0)
+                                {
+                                    await SendMessageTask(FacebookTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới",sender).ToString(), sender);
+                                    var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                    foreach (var temp in strArray)
+                                    {
+                                        string tempJson = temp;
+                                        await SendMessageTask(tempJson, sender);
+                                    }
+                                    return new HttpResponseMessage(HttpStatusCode.OK);
+                                }
+                            }
+                        }
+                    }
+
                     // Điều kiện xử lý module
                     if (fbUserDb.IsHavePredicate)
                     {
                         var predicateName = fbUserDb.PredicateName;
                         if (predicateName == "ApiSearch")
                         {
-                            if (text.Contains("postback_card"))// nều còn điều kiện search mà chọn postback
+                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))// nều còn điều kiện search mà chọn postback
                             {
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -366,6 +401,8 @@ namespace BotProject.Web.API
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 fbUserDb.PhoneNumber = text;
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
@@ -387,6 +424,8 @@ namespace BotProject.Web.API
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 fbUserDb.PhoneNumber = text;
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
@@ -409,6 +448,8 @@ namespace BotProject.Web.API
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
 
@@ -429,8 +470,10 @@ namespace BotProject.Web.API
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 fbUserDb.EngineerName = text;
-                                if (text.Contains("postback"))
+                                if (text.Contains("postback") || text.Contains(_contactAdmin))
                                 {
                                     fbUserDb.EngineerName = "";
                                 }
@@ -447,11 +490,13 @@ namespace BotProject.Web.API
                         if (predicateName == "Voucher")
                         {
                             string mdVoucherId = fbUserDb.PredicateValue;
-                            if (text.Contains("postback_card"))
+                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))
                             {
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -480,6 +525,8 @@ namespace BotProject.Web.API
                                 fbUserDb.PredicateName = "IsVoucherOTP";
                                 fbUserDb.PredicateValue = mdVoucherId;// voucherId
                                 fbUserDb.PhoneNumber = telePhoneNumber;
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
 
@@ -494,11 +541,13 @@ namespace BotProject.Web.API
                         {
                             string mdVoucherId = fbUserDb.PredicateValue;
                             string phoneNumber = fbUserDb.PhoneNumber;
-                            if (text.Contains("postback_card"))
+                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))
                             {
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -509,6 +558,8 @@ namespace BotProject.Web.API
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
 
@@ -533,6 +584,8 @@ namespace BotProject.Web.API
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Admin_Contact";
                             fbUserDb.PredicateValue = "";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -563,6 +616,8 @@ namespace BotProject.Web.API
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "ApiSearch";
                             fbUserDb.PredicateValue = mdSearchId;
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -580,6 +635,8 @@ namespace BotProject.Web.API
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Engineer_Name";
                             fbUserDb.EngineerName = "";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -596,6 +653,8 @@ namespace BotProject.Web.API
 
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Age";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -610,6 +669,8 @@ namespace BotProject.Web.API
                             var handlePhone = _handleMdService.HandleIsPhoneNumber(text, botId);
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Phone";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -624,6 +685,8 @@ namespace BotProject.Web.API
                             var handleEmail = _handleMdService.HandledIsEmail(text, botId);
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Email";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -642,6 +705,8 @@ namespace BotProject.Web.API
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Voucher";
                             fbUserDb.PredicateValue = mdVoucherId;
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -746,6 +811,8 @@ namespace BotProject.Web.API
                             }
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateValue = "";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -757,6 +824,11 @@ namespace BotProject.Web.API
                 {
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
                     AddHistory(hisVm);
+
+                    fbUserDb.IsHaveCardCondition = false;
+                    fbUserDb.CardConditionPattern = "";
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
 
                     _dicNotMatch = new Dictionary<string, string>() {
                         {"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
@@ -830,6 +902,20 @@ namespace BotProject.Web.API
                 if (text.Contains("postback_card"))
                 {
                     var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
+                    if (cardDb.IsHaveCondition)
+                    {
+                        fbUserDb.IsHaveCardCondition = true;
+                        fbUserDb.CardConditionPattern = text.Replace(".", String.Empty);
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+                    }
+                    else
+                    {
+                        fbUserDb.IsHaveCardCondition = false;
+                        fbUserDb.CardConditionPattern = "";
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+                    }
                     string tempJsonFacebook = cardDb.TemplateJsonFacebook;
                     if (!String.IsNullOrEmpty(tempJsonFacebook))
                     {
@@ -849,13 +935,60 @@ namespace BotProject.Web.API
                     }
                 }
 
-                // output là postback
+                if (text.Contains(_contactAdmin))//chat admin
+                {
+                    fbUserDb.IsHaveCardCondition = false;
+                    fbUserDb.CardConditionPattern = "";
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
+
+                    string strTempPostbackContactAdmin = aimlBotResult.SubQueries[0].Template;
+                    bool isPostbackContactAdmin = Regex.Match(strTempPostbackContactAdmin, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
+                    if (isPostbackContactAdmin)
+                    {
+                        strTempPostbackContactAdmin = Regex.Replace(strTempPostbackContactAdmin, @"<(.|\n)*?>", "").Trim();
+                        var cardDb = _cardService.GetSingleCondition(strTempPostbackContactAdmin.Replace(".", String.Empty));
+                        string tempJsonFacebook = cardDb.TemplateJsonFacebook;
+                        if (!String.IsNullOrEmpty(tempJsonFacebook))
+                        {
+                            tempJsonFacebook = tempJsonFacebook.Trim();
+                            string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
+                            if (strArrayJson.Length != 0)
+                            {
+                                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                foreach (var temp in strArray)
+                                {
+                                    string tempJson = temp;
+                                    await SendMessageTask(tempJson, sender);
+                                }
+
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+                    }
+                }
+
+                // nếu nhập text output là postback
                 string strTempPostback = aimlBotResult.SubQueries[0].Template;
                 bool isPostback = Regex.Match(strTempPostback, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
                 if (isPostback)
                 {
                     strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
                     var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
+                    if (cardDb.IsHaveCondition)
+                    {
+                        fbUserDb.IsHaveCardCondition = true;
+                        fbUserDb.CardConditionPattern = strTempPostback.Replace(".", String.Empty);
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+                    }
+                    else
+                    {
+                        fbUserDb.IsHaveCardCondition = false;
+                        fbUserDb.CardConditionPattern = "";
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+                    }
                     string tempJsonFacebook = cardDb.TemplateJsonFacebook;
                     if (!String.IsNullOrEmpty(tempJsonFacebook))
                     {
@@ -874,6 +1007,8 @@ namespace BotProject.Web.API
                         }
                     }
                 }
+
+                // trả lời text bình thường
                 return await SendMessage(FacebookTemplate.GetMessageTemplateText(result, sender));
 
             }
@@ -1128,11 +1263,13 @@ namespace BotProject.Web.API
                         var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
                         sqlConnection2.Open();
 
-                        SqlCommand command2 = new SqlCommand("UPDATE ApplicationFacebookUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
+                        SqlCommand command2 = new SqlCommand("UPDATE ApplicationFacebookUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate,IsHaveCardCondition = @isHaveCardCondition,CardConditionPattern = @cardConditionPattern Where UserId=@userId", sqlConnection2);
                         command2.Parameters.AddWithValue("@userId", userId);
                         command2.Parameters.AddWithValue("@predicateName", "");
                         command2.Parameters.AddWithValue("@predicateValue", "");
                         command2.Parameters.AddWithValue("@isHavePredicate", "0");
+                        command2.Parameters.AddWithValue("@isHaveCardCondition", "0");
+                        command2.Parameters.AddWithValue("@cardConditionPattern", "");
                         command2.ExecuteNonQuery();
                         sqlConnection2.Close();
                     }

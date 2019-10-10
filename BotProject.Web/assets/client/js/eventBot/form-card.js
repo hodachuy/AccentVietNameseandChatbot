@@ -99,7 +99,7 @@ $(document).ready(function () {
         $('#idCard').val('');
         $('#card-name').val('');
         resetFormCard();
-
+        initConditionCard();
         //}
     })
 
@@ -128,6 +128,22 @@ $(document).ready(function () {
             );
         };
     }
+
+    function initConditionCard() {      
+        var html ='';
+        html += '<input type="checkbox" id="chk-card-condition" value="false">';
+        html +=  '<span class="checkmark"></span>';
+        html += '<span style="margin-left:30px;">Yêu cầu chọn nút "Button" để đi luồng tiếp theo</span>';
+        $('#container-chk-condition').empty().append(html);
+    }
+
+    $('body').on('click', '#chk-card-condition', function () {
+        if ($(this).is(":checked")) {
+            $(this).val('true');
+        } else {
+            $(this).val('false');
+        }
+    })
 
 
     // ====================================================================
@@ -170,6 +186,18 @@ $(document).ready(function () {
 
     function renderCard(data) {
         console.log(data)
+        var htmlCardCondition = '';
+        if (data.IsHaveCondition) {          
+            htmlCardCondition += '<input type="checkbox" id="chk-card-condition" value="true" checked>';
+            htmlCardCondition += '<span class="checkmark"></span>';
+            htmlCardCondition += '<span style="margin-left:30px;">Yêu cầu chọn nút "Button" để đi luồng tiếp theo</span>';
+            $('#container-chk-condition').empty().append(htmlCardCondition);
+        } else {
+            htmlCardCondition += '<input type="checkbox" id="chk-card-condition" value="false">';
+            htmlCardCondition += '<span class="checkmark"></span>';
+            htmlCardCondition += '<span style="margin-left:30px;">Yêu cầu chọn nút "Button" để đi luồng tiếp theo</span>';
+            $('#container-chk-condition').empty().append(htmlCardCondition);
+        }
         $('#card-name').val(data.Name);
         var lstCard = function () {
             var temp = [];
@@ -968,14 +996,32 @@ $(document).ready(function () {
     // End check has attribute
 
     $('#delete_card').click(function (event) {
-        let cardId = $('#idCard').val();
-        var param = {
-            cardId: cardId
-        }
-        var svr = new AjaxCall("api/card/delete", JSON.stringify(param));
-        svr.callServicePOST(function (data) {
-            location.reload();
-        });
+        bootbox.confirm({
+            message: "Bạn có chắc muốn xóa thẻ này?",
+            buttons: {
+                confirm: {
+                    label: "Xác nhận",
+                    className: 'btn-primary'
+                },
+                cancel: {
+                    label: "Không",
+                    className: 'btn-default'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    console.log(result)
+                        let cardId = $('#idCard').val();
+                        var param = {
+                            cardId: cardId
+                        }
+                        var svr = new AjaxCall("api/card/delete", JSON.stringify(param));
+                        svr.callServicePOST(function (data) {
+                            location.reload();
+                        });
+                }
+            }
+        })
     })
 
     $('#save_card').click(function (event) {
@@ -2372,6 +2418,7 @@ $(document).ready(function () {
             'UserID': $('#userId').val(),
             //'pageId'        : $('#pageId').val(),
             'BotID': $('#botId').val(),
+            'IsHaveCondition': $('#chk-card-condition').val(),
             //'blockId'       : $('#blockId').val(),
             'Name': $('#card-name').val(),
             'Alias': common.getSeoTitle($('#card-name').val()),
