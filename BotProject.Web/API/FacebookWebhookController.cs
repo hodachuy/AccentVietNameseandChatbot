@@ -279,6 +279,8 @@ namespace BotProject.Web.API
                             fbUserDb.IsHavePredicate = false;
                             fbUserDb.PredicateName = "";
                             fbUserDb.PredicateValue = "";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
                             return await ExcuteMessage(text, sender, botId);
@@ -337,10 +339,14 @@ namespace BotProject.Web.API
                     // Nếu có yêu cầu click thẻ để đi theo luồng
                     if (fbUserDb.IsHaveCardCondition)
                     {
-                        if(text.Contains("postback") == false || text.Contains(_contactAdmin) == false)
+                        if (text.Contains("postback_card") || text.Contains(_contactAdmin))
+                        {
+
+                        }
+                        else
                         {
                             var cardDb = _cardService.GetSingleCondition(fbUserDb.CardConditionPattern);
-                            if(cardDb == null)
+                            if (cardDb == null)
                             {
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
@@ -351,7 +357,7 @@ namespace BotProject.Web.API
                                 string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");
                                 if (strArrayJson.Length != 0)
                                 {
-                                    await SendMessageTask(FacebookTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới",sender).ToString(), sender);
+                                    await SendMessageTask(FacebookTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới", sender).ToString(), sender);
                                     var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
                                     foreach (var temp in strArray)
                                     {
@@ -361,7 +367,7 @@ namespace BotProject.Web.API
                                     return new HttpResponseMessage(HttpStatusCode.OK);
                                 }
                             }
-                        }
+                        }                    
                     }
 
                     // Điều kiện xử lý module
@@ -968,7 +974,7 @@ namespace BotProject.Web.API
                     }
                 }
 
-                // nếu nhập text output là postback
+                // nếu nhập text -> output là postback
                 string strTempPostback = aimlBotResult.SubQueries[0].Template;
                 bool isPostback = Regex.Match(strTempPostback, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
                 if (isPostback)
@@ -1007,6 +1013,48 @@ namespace BotProject.Web.API
                         }
                     }
                 }
+
+                //trường hợp trả về câu hỏi random chứa postpack
+                bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
+                if (isPostbackAnswer)
+                {
+                    if (result.Contains("postback_card"))
+                    {
+                        var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
+                        if (cardDb.IsHaveCondition)
+                        {
+                            fbUserDb.IsHaveCardCondition = true;
+                            fbUserDb.CardConditionPattern = text.Replace(".", String.Empty);
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
+                        }
+                        else
+                        {
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
+                        }
+                        string tempJsonFacebook = cardDb.TemplateJsonFacebook;
+                        if (!String.IsNullOrEmpty(tempJsonFacebook))
+                        {
+                            tempJsonFacebook = tempJsonFacebook.Trim();
+                            string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
+                            if (strArrayJson.Length != 0)
+                            {
+                                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                foreach (var temp in strArray)
+                                {
+                                    string tempJson = temp;
+                                    await SendMessageTask(tempJson, sender);
+                                }
+
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+                    }
+                }
+
 
                 // trả lời text bình thường
                 return await SendMessage(FacebookTemplate.GetMessageTemplateText(result, sender));

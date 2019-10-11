@@ -837,6 +837,26 @@ namespace BotProject.Web.Controllers
                     }
                 }
 
+                bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
+                if (isPostbackAnswer)
+                {
+                    if (result.Contains("postback"))
+                    {
+                        var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
+                        if (cardDb.IsHaveCondition)
+                        {
+                            _user.Predicates.addSetting("cardConditionCheck", "true");
+                            _user.Predicates.addSetting("cardConditionPattern", strTempPostback.Replace(".", String.Empty));
+                        }
+                        else
+                        {
+                            _user.Predicates.addSetting("cardConditionCheck", "false");
+                            _user.Predicates.addSetting("cardConditionPattern", "");
+                        }
+
+                        return chatbot(result.Replace(".", String.Empty), group, token, botId, isMdSearch);
+                    }
+                }
                 //set new predicate to session user bot request
                 SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
                 settingDic.Count = aimlBotResult.user.Predicates.Count;

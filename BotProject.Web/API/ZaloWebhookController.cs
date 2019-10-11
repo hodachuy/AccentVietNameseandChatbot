@@ -232,11 +232,13 @@ namespace BotProject.Web.API
                         var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
                         AddHistory(hisVm);
-                        if (text.Contains("postback") || text.Contains(_contactAdmin))
+                        if (text.Contains("postback") && text.Contains(_contactAdmin))
                         {
                             zlUserDb.IsHavePredicate = false;
                             zlUserDb.PredicateName = "";
                             zlUserDb.PredicateValue = "";
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
                             return await ExcuteMessage(text, sender, botId);
@@ -252,7 +254,6 @@ namespace BotProject.Web.API
                                     string tempJson = temp;
                                     await SendMessageTask(tempJson, sender);
                                 }
-
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
                         }
@@ -281,6 +282,7 @@ namespace BotProject.Web.API
                     zlUserVm.IsHavePredicate = false;
                     zlUserVm.IsProactiveMessage = false;
                     zlUserVm.TimeOut = dTimeOut;
+                    zlUserVm.CreatedDate = DateTime.Now;
                     zlUserDb.StartedOn = dStartedTime;
                     zlUserDb.UpdateZaloUser(zlUserVm);
                     _appZaloUser.Add(zlUserDb);
@@ -290,6 +292,41 @@ namespace BotProject.Web.API
                 {
                     zlUserDb.StartedOn = DateTime.Now;
                     zlUserDb.TimeOut = dTimeOut;
+
+                    // Nếu có yêu cầu click thẻ để đi theo luồng
+                    if (zlUserDb.IsHaveCardCondition)
+                    {
+                        if (text.Contains("postback_card") || text.Contains(_contactAdmin))
+                        {
+
+                        }
+                        else
+                        {
+                            var cardDb = _cardService.GetSingleCondition(zlUserDb.CardConditionPattern);
+                            if (cardDb == null)
+                            {
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                            string tempJsonZalo = cardDb.TemplateJsonZalo;
+                            if (!String.IsNullOrEmpty(tempJsonZalo))
+                            {
+                                tempJsonZalo = tempJsonZalo.Trim();
+                                string[] strArrayJson = Regex.Split(tempJsonZalo, "split");
+                                if (strArrayJson.Length != 0)
+                                {
+                                    await SendMessageTask(ZaloTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới", sender).ToString(), sender);
+                                    var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                    foreach (var temp in strArray)
+                                    {
+                                        string tempJson = temp;
+                                        await SendMessageTask(tempJson, sender);
+                                    }
+                                    return new HttpResponseMessage(HttpStatusCode.OK);
+                                }
+                            }
+                        }                     
+                    }
+
                     // Điều kiện xử lý module
                     if (zlUserDb.IsHavePredicate)
                     {
@@ -301,6 +338,8 @@ namespace BotProject.Web.API
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
                                 zlUserDb.PredicateValue = "";
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -325,6 +364,8 @@ namespace BotProject.Web.API
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
                                 zlUserDb.PredicateValue = "";
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
                                 zlUserDb.PhoneNumber = text;
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
@@ -346,6 +387,8 @@ namespace BotProject.Web.API
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
                                 zlUserDb.PredicateValue = "";
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
                                 zlUserDb.PhoneNumber = text;
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
@@ -368,6 +411,8 @@ namespace BotProject.Web.API
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
                                 zlUserDb.PredicateValue = "";
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
 
@@ -388,7 +433,9 @@ namespace BotProject.Web.API
 								zlUserDb.IsHavePredicate = false;
 								zlUserDb.PredicateName = "";
 								zlUserDb.PredicateValue = "";
-								zlUserDb.EngineerName = text;
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
+                                zlUserDb.EngineerName = text;
 								if (text.Contains("postback") || text.Contains(_contactAdmin))
 								{
 									zlUserDb.EngineerName = "";
@@ -411,6 +458,8 @@ namespace BotProject.Web.API
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
                                 zlUserDb.PredicateValue = "";
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -439,6 +488,8 @@ namespace BotProject.Web.API
                                 zlUserDb.PredicateName = "IsVoucherOTP";
                                 zlUserDb.PredicateValue = mdVoucherId;// voucherId
                                 zlUserDb.PhoneNumber = telePhoneNumber;
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
                                 // send otp
@@ -458,6 +509,8 @@ namespace BotProject.Web.API
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
                                 zlUserDb.PredicateValue = "";
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -468,6 +521,8 @@ namespace BotProject.Web.API
                                 zlUserDb.IsHavePredicate = false;
                                 zlUserDb.PredicateName = "";
                                 zlUserDb.PredicateValue = "";
+                                zlUserDb.IsHaveCardCondition = false;
+                                zlUserDb.CardConditionPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
 
@@ -492,7 +547,9 @@ namespace BotProject.Web.API
 							zlUserDb.IsHavePredicate = true;
 							zlUserDb.PredicateName = "Admin_Contact";
 							zlUserDb.PredicateValue = "";
-							_appZaloUser.Update(zlUserDb);
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
+                            _appZaloUser.Update(zlUserDb);
 							_appZaloUser.Save();
 
 							hisVm.UserSay = "[Chat với chuyên viên]";
@@ -522,6 +579,8 @@ namespace BotProject.Web.API
                             zlUserDb.IsHavePredicate = true;
                             zlUserDb.PredicateName = "ApiSearch";
                             zlUserDb.PredicateValue = mdSearchId;
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -539,6 +598,8 @@ namespace BotProject.Web.API
 							zlUserDb.IsHavePredicate = true;
 							zlUserDb.PredicateName = "Engineer_Name";
                             zlUserDb.EngineerName = "";
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
                             _appZaloUser.Update(zlUserDb);
 							_appZaloUser.Save();
 
@@ -554,6 +615,8 @@ namespace BotProject.Web.API
 
                             zlUserDb.IsHavePredicate = true;
                             zlUserDb.PredicateName = "Age";
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -568,6 +631,8 @@ namespace BotProject.Web.API
                             var handlePhone = _handleMdService.HandleIsPhoneNumber(text, botId);
                             zlUserDb.IsHavePredicate = true;
                             zlUserDb.PredicateName = "Phone";
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -582,6 +647,8 @@ namespace BotProject.Web.API
                             var handleEmail = _handleMdService.HandledIsEmail(text, botId);
                             zlUserDb.IsHavePredicate = true;
                             zlUserDb.PredicateName = "Email";
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -600,6 +667,8 @@ namespace BotProject.Web.API
                             zlUserDb.IsHavePredicate = true;
                             zlUserDb.PredicateName = "Voucher";
                             zlUserDb.PredicateValue = mdVoucherId;
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -715,6 +784,11 @@ namespace BotProject.Web.API
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
                     AddHistory(hisVm);
 
+                    zlUserDb.IsHaveCardCondition = false;
+                    zlUserDb.CardConditionPattern = "";
+                    _appZaloUser.Update(zlUserDb);
+                    _appZaloUser.Save();
+
                     _dicNotMatch = new Dictionary<string, string>() {
                         {"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
                         {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
@@ -785,6 +859,20 @@ namespace BotProject.Web.API
                 if (text.Contains("postback_card"))
                 {
                     var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
+                    if (cardDb.IsHaveCondition)
+                    {
+                        zlUserDb.IsHaveCardCondition = true;
+                        zlUserDb.CardConditionPattern = text.Replace(".", String.Empty);
+                        _appZaloUser.Update(zlUserDb);
+                        _appZaloUser.Save();
+                    }
+                    else
+                    {
+                        zlUserDb.IsHaveCardCondition = false;
+                        zlUserDb.CardConditionPattern = "";
+                        _appZaloUser.Update(zlUserDb);
+                        _appZaloUser.Save();
+                    }
                     string tempJsonZalo = cardDb.TemplateJsonZalo;
                     if (!String.IsNullOrEmpty(tempJsonZalo))
                     {
@@ -804,8 +892,14 @@ namespace BotProject.Web.API
                     }
                 }
 
+                //chat admin
                 if (text.Contains(_contactAdmin))
                 {
+                    zlUserDb.IsHaveCardCondition = false;
+                    zlUserDb.CardConditionPattern = "";
+                    _appZaloUser.Update(zlUserDb);
+                    _appZaloUser.Save();
+
                     string strTempPostbackContactAdmin = aimlBotResult.SubQueries[0].Template;
                     bool isPostbackContactAdmin = Regex.Match(strTempPostbackContactAdmin, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
                     if (isPostbackContactAdmin)
@@ -832,13 +926,27 @@ namespace BotProject.Web.API
                     }
                 }
 
-                // output là postback
+                // nếu nhập text -> output là postback
                 string strTempPostback = aimlBotResult.SubQueries[0].Template;
                 bool isPostback = Regex.Match(strTempPostback, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
                 if (isPostback)
                 {
                     strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
                     var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
+                    if (cardDb.IsHaveCondition)
+                    {
+                        zlUserDb.IsHaveCardCondition = true;
+                        zlUserDb.CardConditionPattern = strTempPostback.Replace(".", String.Empty);
+                        _appZaloUser.Update(zlUserDb);
+                        _appZaloUser.Save();
+                    }
+                    else
+                    {
+                        zlUserDb.IsHaveCardCondition = false;
+                        zlUserDb.CardConditionPattern = "";
+                        _appZaloUser.Update(zlUserDb);
+                        _appZaloUser.Save();
+                    }
                     string tempJsonZalo = cardDb.TemplateJsonZalo;
                     if (!String.IsNullOrEmpty(tempJsonZalo))
                     {
@@ -857,6 +965,48 @@ namespace BotProject.Web.API
                         }
                     }
                 }
+
+                //trường hợp trả về câu hỏi random chứa postpack
+                bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
+                if (isPostbackAnswer)
+                {
+                    if (result.Contains("postback_card"))
+                    {
+                        var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
+                        if (cardDb.IsHaveCondition)
+                        {
+                            zlUserDb.IsHaveCardCondition = true;
+                            zlUserDb.CardConditionPattern = text.Replace(".", String.Empty);
+                            _appZaloUser.Update(zlUserDb);
+                            _appZaloUser.Save();
+                        }
+                        else
+                        {
+                            zlUserDb.IsHaveCardCondition = false;
+                            zlUserDb.CardConditionPattern = "";
+                            _appZaloUser.Update(zlUserDb);
+                            _appZaloUser.Save();
+                        }
+                        string tempJsonZalo = cardDb.TemplateJsonZalo;
+                        if (!String.IsNullOrEmpty(tempJsonZalo))
+                        {
+                            tempJsonZalo = tempJsonZalo.Trim();
+                            string[] strArrayJson = Regex.Split(tempJsonZalo, "split");//nhớ thêm bên formcard xử lý lục trên face
+                            if (strArrayJson.Length != 0)
+                            {
+                                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                                foreach (var temp in strArray)
+                                {
+                                    string tempJson = temp;
+                                    await SendMessageTask(tempJson, sender);
+                                }
+
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+                    }
+                }
+
                 return await SendMessage(ZaloTemplate.GetMessageTemplateText(result, sender));
 
             }
@@ -1099,11 +1249,13 @@ namespace BotProject.Web.API
                         var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
                         sqlConnection2.Open();
 
-                        SqlCommand command2 = new SqlCommand("UPDATE ApplicationZaloUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
+                        SqlCommand command2 = new SqlCommand("UPDATE ApplicationZaloUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate,IsHaveCardCondition = @isHaveCardCondition,CardConditionPattern = @cardConditionPattern Where UserId=@userId", sqlConnection2);
                         command2.Parameters.AddWithValue("@userId", userId);
                         command2.Parameters.AddWithValue("@predicateName", "");
                         command2.Parameters.AddWithValue("@predicateValue", "");
                         command2.Parameters.AddWithValue("@isHavePredicate", "0");
+                        command2.Parameters.AddWithValue("@isHaveCardCondition", "0");
+                        command2.Parameters.AddWithValue("@cardConditionPattern", "");
                         command2.ExecuteNonQuery();
                         sqlConnection2.Close();
                     }

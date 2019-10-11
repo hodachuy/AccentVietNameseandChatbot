@@ -472,7 +472,7 @@ $(document).ready(function () {
         if (data.TemplateTexts.length != 0) {
             $.each(data.TemplateTexts, function (index, value) {
                 var tempText = '';
-                tempText += '<div class="content" card="text" data-index="' + value.Index + '"><div class="bt_move_vertical"><i class="icon-x fa fa-times"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="1040" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">' + value.Text + '</textarea><span>1040</span></div></div>';
+                tempText += '<div class="content" card="text" data-index="' + value.Index + '"><div class="bt_move_vertical"><i class="icon-x fa fa-times"></i><i class="icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div><div class="layer tile"><div class="bt_move_horizontal"><div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div></div><div class="wr_title wr_title_noborder"><div class="wr-content-text"><textarea class="content-text" placeholder="Nhập văn bản" maxlength="1040" style="overflow-x: hidden; overflow-wrap: break-word; height: 60px;">' + value.Text.replace(/<br \/>/gi,"\n") + '</textarea><span>1040</span></div></div>';
                 tempText += '<div class="wr_button">';
                 var arrBtn = [];
                 if (value.ButtonPostbacks.length != 0) {
@@ -2430,7 +2430,7 @@ $(document).ready(function () {
             'FileAttachs': listUpdate
         }
         //console.log(objectCard)
-        //console.log(cardVm)
+        console.log(cardVm)
         if (checkCard) {
             var element = $(this);
 

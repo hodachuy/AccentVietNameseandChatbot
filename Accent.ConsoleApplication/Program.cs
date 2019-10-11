@@ -84,8 +84,15 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
-            string text = "tôi cảm ơn bạn cả thôi hehee không";
-            string[] animals2 = new string[] { "cả", "moose", "boars","không" };
+            string text = "chat chuyên viên";
+
+            if (text.Contains("postback") || text.Contains("chat chuyên viên"))
+            {
+                var x123 = "s";
+            }
+
+
+           string[] animals2 = new string[] { "cả", "moose", "boars","không" };
             foreach(var item in animals2)
             {
                 string pattern = @"\b"+ item + "\b";
