@@ -9,6 +9,7 @@ using BotProject.Common;
 using BotProject.Web.Models;
 using BotProject.Service;
 using System.Xml;
+using BotProject.Web.Infrastructure.Log4Net;
 
 namespace BotProject.Web
 {
@@ -80,9 +81,17 @@ namespace BotProject.Web
             {
                 foreach(var item in lstAIML)
                 {
-                    XmlDocument doc = new XmlDocument();
-                    doc.LoadXml(item.Content);
-                    _bot.loadAIMLFromXML(doc, item.Src);
+                    try
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(item.Content);
+                        _bot.loadAIMLFromXML(doc, item.Src);
+
+                    }catch(Exception ex)
+                    {
+                        string msg = item.Content + ex.Message;
+                        BotLog.Info(msg);
+                    }
                 }
             }
         }

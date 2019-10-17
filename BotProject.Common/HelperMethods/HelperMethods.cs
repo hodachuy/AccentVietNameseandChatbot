@@ -124,5 +124,14 @@ namespace BotProject.Common
                 image.Save(filePath, ImageFormat.Jpeg);
             }
         }
+
+        public static string EscapeXml(string text)
+        {
+            if (!string.IsNullOrEmpty(text))
+            {
+                return text.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;");
+            }
+            return text;
+        }
 	}
 }

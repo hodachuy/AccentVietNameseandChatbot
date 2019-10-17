@@ -10,8 +10,8 @@ using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
 using ExcelDataReader;
 using Newtonsoft.Json;
-using SearchEngine.Data;
-using SearchEngine.Service;
+//using SearchEngine.Data;
+//using SearchEngine.Service;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,7 +36,7 @@ namespace BotProject.Web.Controllers
         private string pathSetting = PathServer.PathAIML + "config";
         private AccentService _accentService;
         private BotService _botService;
-        private ElasticSearch _elastic;
+        //private ElasticSearch _elastic;
         private IBotService _botDbService;
         private ISettingService _settingService;
         private IHandleModuleServiceService _handleMdService;
@@ -69,7 +69,7 @@ namespace BotProject.Web.Controllers
 								IMdVoucherService mdVoucherService)
         {
             _errorService = errorService;
-            _elastic = new ElasticSearch();
+            //_elastic = new ElasticSearch();
             _accentService = AccentService.AccentInstance;
             _botDbService = botDbService;
             _settingService = settingService;
@@ -107,7 +107,7 @@ namespace BotProject.Web.Controllers
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
 
-            var lstAIML = _aimlFileService.GetAllByBotId(botID);
+            var lstAIML = _aimlFileService.GetByBotId(botID);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
 
@@ -976,77 +976,77 @@ namespace BotProject.Web.Controllers
         #endregion
 
         #region --SEARCH ENGINE ELASTICSEARCH--
-        public JsonResult GetAll(int page = 1, int pageSize = 10)
-        {
-            int totalRow = 0;
-            int from = (page - 1) * pageSize;
+        //public JsonResult GetAll(int page = 1, int pageSize = 10)
+        //{
+        //    int totalRow = 0;
+        //    int from = (page - 1) * pageSize;
 
-            var lstData = _elastic.GetAll(from, pageSize);
+        //    var lstData = _elastic.GetAll(from, pageSize);
 
-            if (lstData.Count() != 0)
-            {
-                totalRow = lstData[0].Total;
-            }
+        //    if (lstData.Count() != 0)
+        //    {
+        //        totalRow = lstData[0].Total;
+        //    }
 
-            var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
-            {
-                Items = lstData,
-                Page = page,
-                TotalCount = totalRow,
-                MaxPage = pageSize,
-                TotalPages = (int)Math.Ceiling((decimal)totalRow / pageSize)
-            };
+        //    var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
+        //    {
+        //        Items = lstData,
+        //        Page = page,
+        //        TotalCount = totalRow,
+        //        MaxPage = pageSize,
+        //        TotalPages = (int)Math.Ceiling((decimal)totalRow / pageSize)
+        //    };
 
-            return Json(paginationSet, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(paginationSet, JsonRequestBehavior.AllowGet);
+        //}
 
-        public JsonResult Search(string text, bool isAccentVN = false)
-        {
-            if (!String.IsNullOrEmpty(text))
-                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
+        //public JsonResult Search(string text, bool isAccentVN = false)
+        //{
+        //    if (!String.IsNullOrEmpty(text))
+        //        text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
 
-            if (isAccentVN)
-            {
-                text = _accentService.GetAccentVN(text);
-            }
+        //    if (isAccentVN)
+        //    {
+        //        text = _accentService.GetAccentVN(text);
+        //    }
 
-            var lstData = _elastic.Search(text);
+        //    var lstData = _elastic.Search(text);
 
-            var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
-            {
-                Items = lstData,
-                Page = 1,
-                TotalCount = 1,
-                TotalPages = 1
-            };
+        //    var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
+        //    {
+        //        Items = lstData,
+        //        Page = 1,
+        //        TotalCount = 1,
+        //        TotalPages = 1
+        //    };
 
-            return Json(paginationSet, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(paginationSet, JsonRequestBehavior.AllowGet);
+        //}
 
-        public JsonResult Suggest(string text, bool isAccentVN = false)
-        {
-            if (!String.IsNullOrEmpty(text))
-                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
+        //public JsonResult Suggest(string text, bool isAccentVN = false)
+        //{
+        //    if (!String.IsNullOrEmpty(text))
+        //        text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
 
-            if (isAccentVN)
-            {
-                text = _accentService.GetAccentVN(text);
-            }
+        //    if (isAccentVN)
+        //    {
+        //        text = _accentService.GetAccentVN(text);
+        //    }
 
-            var lstSuggest = _elastic.AutoComplete(text);
-            return Json(lstSuggest, JsonRequestBehavior.AllowGet);
-        }
+        //    var lstSuggest = _elastic.AutoComplete(text);
+        //    return Json(lstSuggest, JsonRequestBehavior.AllowGet);
+        //}
 
-        public JsonResult AddQnA(string question, string answer)
-        {
-            string message = "";
-            if (!String.IsNullOrEmpty(question))
-            {
-                return Json(message, JsonRequestBehavior.AllowGet);
-            }
-            var result = _elastic.Create(question, answer);
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public JsonResult AddQnA(string question, string answer)
+        //{
+        //    string message = "";
+        //    if (!String.IsNullOrEmpty(question))
+        //    {
+        //        return Json(message, JsonRequestBehavior.AllowGet);
+        //    }
+        //    var result = _elastic.Create(question, answer);
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
 
         public JsonResult ImportExcelQnA()
         {

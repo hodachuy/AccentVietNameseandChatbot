@@ -12,7 +12,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quartz;
 using Quartz.Impl;
-using SearchEngine.Service;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -1209,6 +1208,7 @@ namespace BotProject.Web.API
         public class ProactiveMessageJob : IJob
         {
             private readonly string Domain = Helper.ReadString("Domain");
+            private readonly string _sqlConnection = Helper.ReadString("SqlConnection");
             public async Task Execute(IJobExecutionContext context)
             {
                 JobKey key = context.JobDetail.Key;
@@ -1223,7 +1223,7 @@ namespace BotProject.Web.API
 
                 DateTime timeOutDb;
                 int resultTimeCompare = 3;
-                var sqlConnection = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+                var sqlConnection = new SqlConnection(_sqlConnection);
                 sqlConnection.Open();
 
                 SqlCommand command = new SqlCommand("Select TimeOut from [ApplicationZaloUsers] where UserId=@userId", sqlConnection);
@@ -1246,7 +1246,7 @@ namespace BotProject.Web.API
                     {
                         await SendProactiveMessage(message, userId, pageToken, dTimeOut);
 
-                        var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
+                        var sqlConnection2 = new SqlConnection(_sqlConnection);
                         sqlConnection2.Open();
 
                         SqlCommand command2 = new SqlCommand("UPDATE ApplicationZaloUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate,IsHaveCardCondition = @isHaveCardCondition,CardConditionPattern = @cardConditionPattern Where UserId=@userId", sqlConnection2);

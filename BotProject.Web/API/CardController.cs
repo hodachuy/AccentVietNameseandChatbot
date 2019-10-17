@@ -535,7 +535,7 @@ namespace BotProject.Web.API
                                     //sw.WriteLine("</button>");
 
                                     sbAIML.AppendLine("<button>");
-                                    sbAIML.AppendLine("<text>" + itemBtnPostback.Title + "</text>");
+                                    sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnPostback.Title) + "</text>");
                                     sbAIML.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
                                     sbAIML.AppendLine("</button>");
                                 }
@@ -551,7 +551,7 @@ namespace BotProject.Web.API
                                     //sw.WriteLine("</button>");
 
                                     sbAIML.AppendLine("<button>");
-                                    sbAIML.AppendLine("<text>" + itemBtnLink.Title + "</text>");
+                                    sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
                                     sbAIML.AppendLine("<url>" + itemBtnLink.Url + "</url>");
                                     sbAIML.AppendLine("</button>");
                                 }
@@ -565,7 +565,7 @@ namespace BotProject.Web.API
                                     //sw.WriteLine("<text>" + itemBtnModule.Title + "</text>");
 
                                     sbAIML.AppendLine("<button>");
-                                    sbAIML.AppendLine("<text>" + itemBtnModule.Title + "</text>");
+                                    sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnModule.Title) + "</text>");
                                     if (itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
                                     {
                                         sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
@@ -611,15 +611,15 @@ namespace BotProject.Web.API
                                         sbAIMLChild.AppendLine("<image>" + itemGnr.Image + "</image>");
                                         sb.AppendLine("<image>" + itemGnr.Image + "</image>");
                                     }
-                                    sb.AppendLine("<title>" + itemGnr.Title + "</title>");
-                                    sb.AppendLine("<subtitle>" + itemGnr.SubTitle + "</subtitle>");
+                                    sb.AppendLine("<title>" + HelperMethods.EscapeXml(itemGnr.Title) + "</title>");
+                                    sb.AppendLine("<subtitle>" + HelperMethods.EscapeXml(itemGnr.SubTitle) + "</subtitle>");
                                     sb.AppendLine("<link>");
                                     sb.AppendLine("<text>" + itemGnr.Url + "</text>");
                                     sb.AppendLine("<url>" + itemGnr.Url + "</url>");
                                     sb.AppendLine("</link>");
 
-                                    sbAIMLChild.AppendLine("<title>" + itemGnr.Title + "</title>");
-                                    sbAIMLChild.AppendLine("<subtitle>" + itemGnr.SubTitle + "</subtitle>");
+                                    sbAIMLChild.AppendLine("<title>" + HelperMethods.EscapeXml(itemGnr.Title) + "</title>");
+                                    sbAIMLChild.AppendLine("<subtitle>" + HelperMethods.EscapeXml(itemGnr.SubTitle) + "</subtitle>");
                                     sbAIMLChild.AppendLine("<link>");
                                     sbAIMLChild.AppendLine("<text>" + itemGnr.Url + "</text>");
                                     sbAIMLChild.AppendLine("<url>" + itemGnr.Url + "</url>");
@@ -630,12 +630,12 @@ namespace BotProject.Web.API
                                         foreach (var itemBtnPostback in lstButtonPostbacks)
                                         {
                                             sb.AppendLine("<button>");
-                                            sb.AppendLine("<text>" + itemBtnPostback.Title + "</text>");
+                                            sb.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnPostback.Title) + "</text>");
                                             sb.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
                                             sb.AppendLine("</button>");
 
                                             sbAIMLChild.AppendLine("<button>");
-                                            sbAIMLChild.AppendLine("<text>" + itemBtnPostback.Title + "</text>");
+                                            sbAIMLChild.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnPostback.Title) + "</text>");
                                             sbAIMLChild.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
                                             sbAIMLChild.AppendLine("</button>");
                                         }
@@ -646,12 +646,12 @@ namespace BotProject.Web.API
                                         foreach (var itemBtnLink in lstButtonLinks)
                                         {
                                             sb.AppendLine("<button>");
-                                            sb.AppendLine("<text>" + itemBtnLink.Title + "</text>");
+                                            sb.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
                                             sb.AppendLine("<url>" + itemBtnLink.Url + "</url>");
                                             sb.AppendLine("</button>");
 
                                             sbAIMLChild.AppendLine("<button>");
-                                            sbAIMLChild.AppendLine("<text>" + itemBtnLink.Title + "</text>");
+                                            sbAIMLChild.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
                                             sbAIMLChild.AppendLine("<url>" + itemBtnLink.Url + "</url>");
                                             sbAIMLChild.AppendLine("</button>");
                                         }
@@ -662,10 +662,10 @@ namespace BotProject.Web.API
                                         foreach (var itemBtnModule in lstButtonModules)
                                         {
                                             sbAIMLChild.AppendLine("<button>");
-                                            sbAIMLChild.AppendLine("<text>" + itemBtnModule.Title + "</text>");
+                                            sbAIMLChild.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnModule.Title) + "</text>");
 
                                             sb.AppendLine("<button>");
-                                            sb.AppendLine("<text>" + itemBtnModule.Title + "</text>");
+                                            sb.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnModule.Title) + "</text>");
                                             if (itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
                                             {
                                                 sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
@@ -754,7 +754,7 @@ namespace BotProject.Web.API
                             //sw.WriteLine("</button>");
 
                             sbAIML.AppendLine("<button>");
-                            sbAIML.AppendLine("<text>" + itemQ.Title + "</text>");
+                            sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemQ.Title) + "</text>");
                             sbAIML.AppendLine("<postback>" + itemQ.Payload + "</postback>");
                             sbAIML.AppendLine("</button>");
                         }

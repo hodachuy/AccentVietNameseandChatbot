@@ -595,6 +595,12 @@ $(document).ready(function () {
             })
             tempQuickReply += '<li class="add_reply"><div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div></li>';
             $("#blReply").empty().append(tempQuickReply);
+
+            $('#blReply').sortable('destroy');
+            $('#blReply').sortable({
+                items: ':not(.add_reply)',
+                handle: '.reply_move'
+            });
         }
 
         $('.card_quickReply').removeClass('disable');
@@ -1485,9 +1491,9 @@ $(document).ready(function () {
                                             });
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": $(this).find('.wr_reply_btcontent .name-button').text(),//"#" + payload
+                                            "payload": payload,//$(this).find('.wr_reply_btcontent .name-button').text(),//"#" + payload
                                         }
                                         zalo_arr_quick.push(zalo_button_object);
                                     }
@@ -1499,9 +1505,9 @@ $(document).ready(function () {
                                             payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": $(this).find('.wr_reply_btcontent .name-button').text()//"#"+payload
+                                            "payload": payload,//$(this).find('.wr_reply_btcontent .name-button').text()//"#"+payload
                                         }
                                         zalo_arr_quick.push(zalo_button_object);
                                     }
@@ -1568,9 +1574,9 @@ $(document).ready(function () {
                                     buttons.push(button_object);
 
                                     zalo_button_object = {
-                                        "type": "oa.query.show",
+                                        "type": "oa.query.hide",
                                         "title": $(this).find('.bt_title').text(),
-                                        "payload": $(this).find('.bt_title').text(), //postback_card
+                                        "payload": postback_card,// $(this).find('.bt_title').text(), //postback_card
                                     }
                                     zalo_buttons.push(zalo_button_object);
 
@@ -1608,9 +1614,9 @@ $(document).ready(function () {
                                     buttons.push(button_object);
 
                                     zalo_button_object = {
-                                        "type": "oa.query.show",
+                                        "type": "oa.query.hide",
                                         "title": $(this).find('.bt_title').text(),
-                                        "payload": $(this).find('.bt_title').text(), //postback_module
+                                        "payload":postback_module// $(this).find('.bt_title').text(), //postback_module
                                     }
                                     zalo_buttons.push(zalo_button_object);
 
@@ -1718,9 +1724,9 @@ $(document).ready(function () {
                                             });
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": $(this).find('.wr_reply_btcontent .name-button').text(), //payload
+                                            "payload": payload//$(this).find('.wr_reply_btcontent .name-button').text(), //payload
                                         }
                                         zalo_buttons.push(zalo_button_object);
                                     }
@@ -1732,9 +1738,9 @@ $(document).ready(function () {
                                             payload += 'postback_module_' + $(this).find('.reply_btcontent span').attr('module-id');
                                         }
                                         var zalo_button_object = {
-                                            "type": "oa.query.show",
+                                            "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": $(this).find('.wr_reply_btcontent .name-button').text(), //payload
+                                            "payload": payload//$(this).find('.wr_reply_btcontent .name-button').text(), //payload
                                         }
                                         zalo_buttons.push(zalo_button_object);
                                     }
@@ -2434,10 +2440,10 @@ $(document).ready(function () {
         if (checkCard) {
             var element = $(this);
 
-            console.log(objectCard)
-            console.log(listUpdate)
+            //console.log(objectCard)
+            //console.log(listUpdate)
 
-            console.log(cardVm)
+            //console.log(cardVm)
 
             var urlTest = "api/card/addupdate";
             var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
@@ -2468,7 +2474,7 @@ $(document).ready(function () {
                 }, 500)
 
                 loadListCardByGroup();
-                console.log(data)
+                //console.log(data)
             });
 
         } else {
@@ -4965,7 +4971,7 @@ function templateGroupCard(data) {
             html += '</li>';
             if (value.Cards.length != 0) {
                 $.each(value.Cards, function (index, value) {
-                    html += '<li data-card-id="' + value.ID + '">';
+                    html += '<li data-card-id="' + value.ID + '" draggable="true">';
                     html += '<div>';
                     html += '<a href="#" class="select-item-card">' + value.Name + '</a>';
                     html += '</div>';
@@ -4978,7 +4984,16 @@ function templateGroupCard(data) {
     }
     $("#build").show();
     $("#build").empty().append(html);
+
+    // Sort Card
+    //$('.sortable').sortable({
+    //    connectWith: '.sortable',
+    //    items: ':not(.addItemCard)'
+    //});
 }
+
+
+
 $('body').on('click', '.rmBlock', function () {
     var $el = $(this).parent();
     var groupId = $(this).parent().attr('data-gr-id');
