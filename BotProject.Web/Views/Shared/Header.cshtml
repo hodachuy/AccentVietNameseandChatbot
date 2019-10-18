@@ -25,15 +25,99 @@
                         </h5>
                         <span class="status"></span><span class="ml-2">Available</span>
                     </div>
-                    <a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>
-                    <a class="dropdown-item" href="#"><i class="fas fa-cog mr-2"></i>Setting</a>
+                    @*<a class="dropdown-item" href="#"><i class="fas fa-user mr-2"></i>Account</a>*@
+                    <a class="dropdown-item" href="javascript:void(0);" id="formChangePassword"><i class="fas fa-cog mr-2"></i>Đổi mật khẩu</a>
                     @using (Html.BeginForm("LogOut", "Account", FormMethod.Post, new { @id = "frmLogout" }))
                     {
                         @Html.AntiForgeryToken()
-                        <a class="dropdown-item" href="#" id="btnLogout"><i class="fas fa-power-off mr-2"></i>Logout</a>
+                        <a class="dropdown-item" href="#" id="btnLogout"><i class="fas fa-power-off mr-2"></i>Đăng xuất</a>
                     }
                 </div>
             </li>
         </ul>
     </div>
 </nav>
+<div class="modal fade" id="ChangePasswordModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thông tin tài khoản</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form id="form8">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Tài khoản</label>
+                        <input type="text" class="form-control" id="UserName" value="@Model.UserName" disabled />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Mật khẩu hiện tại</label>
+                        <input type="password" class="form-control" id="txtPasswordCurent" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Mật khẩu mới</label>
+                        <input type="password" class="form-control" id="txtPasswordNew" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveChangePassword">Lưu thay đổi</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="closeChangePassword">Đóng</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    /* CHANGE PASSWORD*/
+    $('body').on('click', '#formChangePassword', function (e) {
+        $("#ChangePasswordModal").modal({
+            backdrop: 'static',
+            keyboard: true,
+            show: true
+        });
+    });
+    $('body').on('click', '#saveChangePassword', function (e) {
+        var passwordCurrent = $("#txtPasswordCurent").val();
+        var passwordNew = $("#txtPasswordNew").val();
+        if (passwordCurrent.trim() == "") {
+            toastr.error("", "Vui lòng nhập mật khẩu hiện tại", 3000);
+            return false;
+        }
+        if (passwordNew.trim() == "") {
+            toastr.error("", "Vui lòng nhập mật khẩu mới", 3000);
+            return false;
+        }
+        var params = {
+            userId: $("#userId").val(),
+            passwordCurrent: passwordCurrent,
+            passwordNew: passwordNew,
+        }
+        params = JSON.stringify(params);
+        $.ajax({
+            type: 'POST',
+            url: _Host + "Account/UpdatePassword",
+            data: params,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            //async: this._serviceAsync,
+            success: function (response) {
+                if (response.status) {
+                    toastr.success("", "Đổi mật khẩu thành công", 3000);
+                    $("#ChangePasswordModal").modal('hide');
+                } else {
+                    toastr.error("", response.message, 3000);
+                }
+            },
+            error: function (error) {
+                console.log(error)
+            }
+        });
+    });
+    $('body').on('click', '#closeChangePassword', function (e) {
+        $("#ChangePasswordModal").modal('hide');
+    });
+</script>

@@ -23,6 +23,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
 
@@ -150,7 +151,9 @@ namespace BotProject.Web.API
                 var lstAIML = _aimlFileService.GetByBotId(botId);
                 var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
                 _botService.loadAIMLFromDatabase(lstAIMLVm);
-                _user = _botService.loadUserBot(value.sender.id);
+                string _userId = Guid.NewGuid().ToString();
+                _user = _botService.loadUserBot(_userId);
+                //_user = _botService.loadUserBot(value.sender.id);
 
                 await ExcuteMessage(value.message.text, value.sender.id, botId);
 
@@ -181,6 +184,12 @@ namespace BotProject.Web.API
 
         private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
         {
+            if (String.IsNullOrEmpty(text))
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            text = HttpUtility.HtmlDecode(text);
+
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
             text = Regex.Replace(text, @"#", "").Trim();

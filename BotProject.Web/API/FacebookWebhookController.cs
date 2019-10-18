@@ -7,6 +7,7 @@ using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Extensions;
+using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
 using Common.Logging.Configuration;
 using Newtonsoft.Json;
@@ -26,6 +27,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
 
@@ -145,6 +147,7 @@ namespace BotProject.Web.API
             var body = await Request.Content.ReadAsStringAsync();
             var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
             //LogError(body);
+
             var app3rd = _app3rd.GetByPageId(value.entry[0].id);
             if(app3rd == null)
             {
@@ -179,6 +182,8 @@ namespace BotProject.Web.API
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
+            //BotLog.Info(body);
+
             _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
             _timeOut = settingDb.Timeout;
             _messageProactive = settingDb.ProactiveMessageText;
@@ -187,7 +192,8 @@ namespace BotProject.Web.API
             var lstAIML = _aimlFileService.GetByBotId(botId);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
-            _user = _botService.loadUserBot(value.entry[0].messaging[0].sender.id);
+            string _userId = Guid.NewGuid().ToString();
+            _user = _botService.loadUserBot(_userId);
 
             foreach (var item in value.entry[0].messaging)
             {
@@ -222,6 +228,11 @@ namespace BotProject.Web.API
 
         private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
         {
+            if (String.IsNullOrEmpty(text))
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            text = HttpUtility.HtmlDecode(text);
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
 

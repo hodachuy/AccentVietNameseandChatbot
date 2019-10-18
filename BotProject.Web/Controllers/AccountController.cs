@@ -170,6 +170,32 @@ namespace BotProject.Web.Controllers
             });
         }
 
+
+        [HttpPost]
+        public JsonResult UpdatePassword(string userId, string passwordCurrent, string passwordNew)
+        {
+            var userDb = _userManager.FindById(userId);
+            var checkUser = _userManager.Find(userDb.UserName, passwordCurrent);
+            if (checkUser != null)
+            {
+                _userManager.RemovePassword(userId);
+                _userManager.AddPassword(userId, passwordNew);
+            }
+            else
+            {
+                return Json(new
+                {
+                    message = "Mật khẩu cũ không đúng",
+                    status = false
+                });
+            }
+            return Json(new
+            {
+                message = "Chỉnh sửa thành công",
+                status = true
+            });
+        }
+
         //
         // POST: /Account/ExternalLogin
         [HttpPost]

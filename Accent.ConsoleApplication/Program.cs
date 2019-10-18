@@ -84,7 +84,10 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
-            string text = "chat chuyên viên";
+
+            string text = "t\u00f4i m\u1edbi mua b\u00e0n ph\u00edm h\u00f4m qua m\u00e0 nay b\u1ecb h\u01b0 r\u1ed3i";
+
+            text = HttpUtility.HtmlDecode(text);
 
             if (text.Contains("postback") || text.Contains("chat chuyên viên"))
             {
