@@ -58,7 +58,7 @@ namespace BotProject.Web.API
         private Dictionary<string, string> _dicNotMatch;
 
         private IApplicationZaloUserService _appZaloUser;
-        private BotService _botService;
+        private BotServiceDigipro _botService;
         private IBotService _botDbService;
         private ISettingService _settingService;
         private IHandleModuleServiceService _handleMdService;
@@ -100,7 +100,7 @@ namespace BotProject.Web.API
             _mdSearchService = mdSearchService;
             _aimlFileService = aimlFileService;
             _qnaService = qnaService;
-            _botService = BotService.BotInstance;
+            _botService = BotServiceDigipro.BotInstance;
             _moduleSearchEngineService = moduleSearchEngineService;
             _historyService = historyService;
             _cardService = cardService;

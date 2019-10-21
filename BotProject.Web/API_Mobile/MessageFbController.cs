@@ -31,14 +31,10 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
 
+
 namespace BotProject.Web.API_Mobile
 {
-    /// <summary>
-    /// Webhook
-    /// Receive request from Facebook when user trigger to message
-    /// </summary>
-    /// 
-    public class MessageController : ApiController
+    public class MessageFbController : ApiController
     {
         string pageToken = Helper.ReadString("AccessToken");
         string appSecret = Helper.ReadString("AppSecret");
@@ -85,7 +81,7 @@ namespace BotProject.Web.API_Mobile
         private User _user;
 
 
-        public MessageController(IErrorService errorService,
+        public MessageFbController(IErrorService errorService,
                               IBotService botDbService,
                               ISettingService settingService,
                               IHandleModuleServiceService handleMdService,
@@ -182,7 +178,7 @@ namespace BotProject.Web.API_Mobile
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
-             BotLog.Info(body);
+            //BotLog.Info(body);
 
             _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
             _timeOut = settingDb.Timeout;
@@ -205,21 +201,24 @@ namespace BotProject.Web.API_Mobile
 
                 if (item.message == null && item.postback == null)
                 {
-                    continue;
+                    return new HttpResponseMessage(HttpStatusCode.OK);
                 }
                 else if (item.message == null && item.postback != null)
                 {
                     await ExcuteMessage(item.postback.payload, item.sender.id, botId);
+                    return new HttpResponseMessage(HttpStatusCode.OK);
                 }
                 else
                 {
                     if (item.message.quick_reply != null)
                     {
                         await ExcuteMessage(item.message.quick_reply.payload, item.sender.id, botId);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                     else
                     {
                         await ExcuteMessage(item.message.text, item.sender.id, botId);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                 }
             }
@@ -254,11 +253,11 @@ namespace BotProject.Web.API_Mobile
                 string strDefaultNotMatch = "Anh/chị cho em biết thêm chi tiết được không ạ";
                 if (_isSearchAI)
                 {
-                    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin), sender);// not match
+                    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
                 }
                 //turn off AI
                 strDefaultNotMatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin), sender);// not match
+                return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
             }
 
             HistoryViewModel hisVm = new HistoryViewModel();
@@ -858,7 +857,7 @@ namespace BotProject.Web.API_Mobile
                     if (_isSearchAI == false)
                     {
                         string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                        return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin), sender);// not match
+                        return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
                     }
 
                     //Chuyển tới tìm kiếm Search NLP
@@ -866,7 +865,7 @@ namespace BotProject.Web.API_Mobile
                     var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
                     if (systemConfigVm.Count() == 0)
                     {
-                        return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender), sender);// not match
+                        return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
                     }
                     string nameFunctionAPI = "";
                     string number = "";
@@ -911,7 +910,7 @@ namespace BotProject.Web.API_Mobile
                                 strDefaultNotMatch = item.Value;
                             }
                         }
-                        return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin), sender);// not match
+                        return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
                     }
                 }
                 // input là postback
@@ -1067,7 +1066,7 @@ namespace BotProject.Web.API_Mobile
 
 
                 // trả lời text bình thường
-                return await SendMessage(FacebookTemplate.GetMessageTemplateText(result, sender), sender);
+                return await SendMessage(FacebookTemplate.GetMessageTemplateText(result, sender));
 
             }
             catch (Exception ex)
@@ -1081,14 +1080,12 @@ namespace BotProject.Web.API_Mobile
         /// send message
         /// </summary>
         /// <param name="json">json</param>
-        private async Task<HttpResponseMessage> SendMessage(JObject json, string senderId)
+        private async Task<HttpResponseMessage> SendMessage(JObject json)
         {
             HttpResponseMessage res;
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(FacebookTemplate.GetMessageTemplateText(json.ToString(), senderId).ToString(), Encoding.UTF8, "application/json"));
-
                 res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
@@ -1112,9 +1109,7 @@ namespace BotProject.Web.API_Mobile
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(FacebookTemplate.GetMessageTemplateText(templateJson, sender).ToString(), Encoding.UTF8, "application/json"));
                     res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
-
                 }
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
@@ -1134,9 +1129,7 @@ namespace BotProject.Web.API_Mobile
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(FacebookTemplate.GetMessageTemplateText(templateJson, sender).ToString(), Encoding.UTF8, "application/json"));
-                    res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
-
+                    HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
                 }
             }
         }

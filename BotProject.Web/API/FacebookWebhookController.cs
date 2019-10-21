@@ -66,7 +66,7 @@ namespace BotProject.Web.API
         private Dictionary<string, string> _dicNotMatch;
 
         private IApplicationFacebookUserService _appFacebookUser;
-        private BotService _botService;
+        private BotServiceDigipro _botService;
         private IBotService _botDbService;
         private ISettingService _settingService;
         private IHandleModuleServiceService _handleMdService;
@@ -111,7 +111,7 @@ namespace BotProject.Web.API
             _mdSearchService = mdSearchService;
             _aimlFileService = aimlFileService;
             _qnaService = qnaService;
-            _botService = BotService.BotInstance;
+            _botService = BotServiceDigipro.BotInstance;
             _moduleSearchEngineService = moduleSearchEngineService;
             _historyService = historyService;
             _cardService = cardService;
@@ -205,21 +205,24 @@ namespace BotProject.Web.API
 
                 if (item.message == null && item.postback == null)
                 {
-                    continue;
+                    return new HttpResponseMessage(HttpStatusCode.OK);
                 }
                 else if (item.message == null && item.postback != null)
                 {
                     await ExcuteMessage(item.postback.payload, item.sender.id, botId);
+                    return new HttpResponseMessage(HttpStatusCode.OK);
                 }
                 else
                 {
                     if (item.message.quick_reply != null)
                     {
                         await ExcuteMessage(item.message.quick_reply.payload, item.sender.id, botId);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                     else
                     {
                         await ExcuteMessage(item.message.text, item.sender.id, botId);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                 }
             }
