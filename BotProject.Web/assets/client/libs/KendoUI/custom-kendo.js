@@ -11,9 +11,13 @@ LoadComboBoxWithServices = function (element, url, param, valueField, textField,
             transport: {
                 read: function (options) {
                     var svr = new AjaxCall(url, param);
-                    svr.callServiceGET(function (data) {
+                    svr.callService(function (data) {
                         if (data != null && data.length > 0) {
-                            options.success(data);
+                            if (data.Table != null) {
+                                options.success(data.Table);
+                            } else {
+                                options.success(data);
+                            }
 
                         } else {
                             options.success("");
@@ -110,66 +114,66 @@ LoadComboBoxWithServices2 = function (element, url, param, valueField, textField
     if (valueDelete)
         DeleteDataComboBoxMultiSelection(id, valueField, valueDelete);
 }
-LoadComboBoxWithServices3 = function (element, url, param, valueField, textField, value, placeholder, template, isSearch, FuncChange, valueDelete,valueID) {
-	if (isSearch == undefined) isSearch = false;
-	if (FuncChange == undefined) FuncChange = null;
+LoadComboBoxWithServices3 = function (element, url, param, valueField, textField, value, placeholder, template, isSearch, FuncChange, valueDelete, valueID) {
+    if (isSearch == undefined) isSearch = false;
+    if (FuncChange == undefined) FuncChange = null;
 
-	var combobox = $(element).kendoComboBox({
-		dataTextField: textField,
-		dataValueField: valueField,
-		template: template,
-		dataSource: {
-			transport: {
-				read: function (options) {
-					var svr = new AjaxCall(url, param);
-					svr.callService(function (data) {
-						if (data != null && data.length > 0) {
-							if (data.Table != null) {
-								options.success(data.Table);
-							} else {
-								for (var i = data.length - 1; i >= 0; i--) {
-									if (data[i].BU_ID === valueID) {
-										data.splice(i, 1);
-									}
-									options.success(data);
-								}
-							}
-						} else {
-							options.success("");
-						}
-					});
+    var combobox = $(element).kendoComboBox({
+        dataTextField: textField,
+        dataValueField: valueField,
+        template: template,
+        dataSource: {
+            transport: {
+                read: function (options) {
+                    var svr = new AjaxCall(url, param);
+                    svr.callService(function (data) {
+                        if (data != null && data.length > 0) {
+                            if (data.Table != null) {
+                                options.success(data.Table);
+                            } else {
+                                for (var i = data.length - 1; i >= 0; i--) {
+                                    if (data[i].BU_ID === valueID) {
+                                        data.splice(i, 1);
+                                    }
+                                    options.success(data);
+                                }
+                            }
+                        } else {
+                            options.success("");
+                        }
+                    });
 
-				}
-			}
-		}
+                }
+            }
+        }
         ,
-		filter: "contains",
-		suggest: true,
-		change: FuncChange
-	});
+        filter: "contains",
+        suggest: true,
+        change: FuncChange
+    });
 
-	//if (!isSearch) {
-	//    combobox.data("kendoComboBox").input.attr("readonly", true)
-	//       .on("keydown", function (e) {
-	//           if (e.keyCode === 8) {
-	//               e.preventDefault();
-	//           }
-	//       });
-	//}
-	combobox.data("kendoComboBox").input.click(function () {
-		combobox.data("kendoComboBox").open();
-	});
+    //if (!isSearch) {
+    //    combobox.data("kendoComboBox").input.attr("readonly", true)
+    //       .on("keydown", function (e) {
+    //           if (e.keyCode === 8) {
+    //               e.preventDefault();
+    //           }
+    //       });
+    //}
+    combobox.data("kendoComboBox").input.click(function () {
+        combobox.data("kendoComboBox").open();
+    });
 
-	if (placeholder != undefined)
-		combobox.data("kendoComboBox").input.attr("placeholder", placeholder);
-	if (value != undefined) {
-		combobox.data("kendoComboBox").value(value);
-	} else {
-		combobox.data("kendoComboBox").value(null);
-	}
+    if (placeholder != undefined)
+        combobox.data("kendoComboBox").input.attr("placeholder", placeholder);
+    if (value != undefined) {
+        combobox.data("kendoComboBox").value(value);
+    } else {
+        combobox.data("kendoComboBox").value(null);
+    }
 
-	if (valueDelete)
-		DeleteDataComboBoxMultiSelection(id, valueField, valueDelete);
+    if (valueDelete)
+        DeleteDataComboBoxMultiSelection(id, valueField, valueDelete);
 }
 
 // Nhận dữ liệu trả về xml tới json từ Ajax.

@@ -51,6 +51,10 @@ namespace BotProject.Web.API
         string _messageProactive = "";
         bool _isSearchAI = false;
 
+        //tin nhắn vắng mặt
+        string _messageAbsent = "";
+        bool _isHaveMessageAbsent = false;
+
         string _patternCardPayloadProactive = "";
         string _titleCardPayloadProactive = "🔙 Quay về";
 
@@ -189,6 +193,10 @@ namespace BotProject.Web.API
             _messageProactive = settingDb.ProactiveMessageText;
             _isSearchAI = settingDb.IsMDSearch;
 
+            //tin vắng mặt
+            _messageAbsent = settingDb.MessageMaintenance;
+            _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+
             var lstAIML = _aimlFileService.GetByBotId(botId);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
@@ -197,11 +205,11 @@ namespace BotProject.Web.API
 
             foreach (var item in value.entry[0].messaging)
             {
-                if (settingDb.IsHaveMaintenance)
-                {
-                    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
-                    return new HttpResponseMessage(HttpStatusCode.OK);
-                }
+                //if (settingDb.IsHaveMaintenance)
+                //{
+                //    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
+                //    return new HttpResponseMessage(HttpStatusCode.OK);
+                //}
 
                 if (item.message == null && item.postback == null)
                 {
@@ -274,6 +282,8 @@ namespace BotProject.Web.API
 
             DateTime dStartedTime = DateTime.Now;
             DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
+
+
             try
             {
                 ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
@@ -298,6 +308,16 @@ namespace BotProject.Web.API
                             _appFacebookUser.Save();
                             return await ExcuteMessage(text, sender, botId);
                         }
+
+                        if (_isHaveMessageAbsent)
+                        {
+                            if (HelperMethods.IsTimeInWorks() == false)
+                            {
+                                //await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(),sender);
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+
                         if (handleAdminContact.Status == false)
                         {
                             string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");
@@ -486,16 +506,18 @@ namespace BotProject.Web.API
                             AddHistory(hisVm);
                             if (handleEngineerName.Status)
                             {
+                                if (text.Contains("postback") || text.Contains(_contactAdmin))
+                                {
+                                    fbUserDb.EngineerName = "";
+                                }
+
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
                                 fbUserDb.IsHaveCardCondition = false;
                                 fbUserDb.CardConditionPattern = "";
                                 fbUserDb.EngineerName = text;
-                                if (text.Contains("postback") || text.Contains(_contactAdmin))
-                                {
-                                    fbUserDb.EngineerName = "";
-                                }
+
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
 
@@ -611,6 +633,16 @@ namespace BotProject.Web.API
                             hisVm.UserSay = "[Chat với chuyên viên]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
+
+                            // Tin nhắn vắng mặt
+                            if (_isHaveMessageAbsent)
+                            {
+                                if (HelperMethods.IsTimeInWorks() == false)
+                                {
+                                    await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
+                                    return new HttpResponseMessage(HttpStatusCode.OK);
+                                }
+                            }
 
                             string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
                             if (strArrayJson.Length != 0)

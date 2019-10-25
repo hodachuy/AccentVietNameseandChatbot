@@ -53,8 +53,8 @@ namespace BotProject.Common
 
         public const string TYPE_FACEBOOK = "facebook";
         public const string TYPE_ZALO = "zalo";
-    }
 
+    }
     public class ZaloConstans
     {
         public const string EVENT_USER_SEND_TEXT = "user_send_text";

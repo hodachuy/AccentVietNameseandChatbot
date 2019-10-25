@@ -23,5 +23,6 @@ namespace BotProject.Model.Models
         public string SerialNumber { set; get; }
         public string NumberOrder { set; get; }
         public int? MdVoucherID { set; get; }
+        public DateTime? CreatedDate { set; get; }
     }
 }

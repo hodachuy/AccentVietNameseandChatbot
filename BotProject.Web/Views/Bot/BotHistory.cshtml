@@ -143,24 +143,28 @@
   transform: rotate(45deg);
 }
 </style>
+<style>
+.k-grid .k-grid-content {
+  height: 700px;
+}
+</style>
 <!-- ============================================================== -->
 <!-- pageheader -->
 <!-- ============================================================== -->
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
 <div class="row">
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title p-b-10">
-        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-            @*<h5 class="pageheader-title">Search QnA</h5>*@
+        <div class="d-flex col-lg-4 col-md-4 col-sm-4 p-b-10" style="border-bottom: 1px solid #e6e6f2;">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@ViewBag.BotName</i></li>
                 <li class="breadcrumb-item active">Lịch sử</li>
-            </ol>
+            </ol>             
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 pageheader-title">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
         <div id="exTab1" class="tab-menu">
             <ul class="nav nav-pills">
                 <li class="active">
@@ -174,7 +178,7 @@
                 <div class="tab-pane active" id="bot-history">
                     <div class="row">
                         <div class="col-md-12">
-                            <span>Truy vấn:</span>
+                            <span>Tìm kiếm:</span>
                             <span class="choice-details">
                                 <input type="radio" checked id="rAll" name="rr" style="display:inline-block !important" />
                                 <label for="r1"><span></span>Tất cả</label>
@@ -254,22 +258,32 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="bot-voucher">
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="padding-bottom:5px;padding-top:5px">
+                            <span class="choice-details" style="float:right">
+                                <a class="btn btn-success btn-sm" onclick="exportExcel()" style="display:inline-block !important">
+                                    <i class="ace-icon fa fa-file-excel-o bigger-120"></i>
+                                    Export
+                                </a>                               
+                            </span>                            
+                        </div>
+                        
+                    </div>
+                    <div style="clear: both;"></div>
                     <div class="card">
                         <div class="card-body">
-                            <div class="table-responsive" id="table-voucher">
+                            @*<div class="table-responsive" id="table-voucher">
                                 <table class="table table-striped table-bordered table-sm" id="table-data-voucher">
                                     <thead>
                                         <tr>
                                             <th scope="col" style="width:5%">STT</th>
                                             <th scope="col" style="width:5%">Mã Phiếu</th>
-                                            <th scope="col" style="width:10%">Trạng thái</th>
+                                            <th scope="col" style="width:15%">Trạng thái</th>
                                             <th scope="col" style="width:10%">Số điện thoại</th>
                                             <th scope="col" style="width:10%">Mã OTP</th>
                                             <th scope="col" style="width:15%">Kỹ thuật viên</th>
-                                            @*<th scope="col" style="width:15%">Voucher</th>*@
                                             <th scope="col" style="width:15%">Voucher</th>
-                                            <th scope="col" style="width:10%">Bắt đầu</th>
-                                            <th scope="col" style="width:10%">Kết thúc</th>
+                                            <th scope="col" style="width:15%">Ngày nhận</th>
                                             <th scope="col" style="width:10%">Ứng dụng</th>
                                         </tr>
                                     </thead>
@@ -289,7 +303,8 @@
                                     <span class="m-l-10">Số lượng hiển thị</span>
                                 </div>
                                 <span id="pagination-text-number-show-voucher" style="margin:10px 10px 0 auto"></span>
-                            </nav>
+                            </nav>*@
+                            <div id="grid"></div>
                         </div>
                     </div>
                 </div>

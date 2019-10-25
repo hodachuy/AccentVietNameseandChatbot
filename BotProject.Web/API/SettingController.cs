@@ -6,6 +6,7 @@ using BotProject.Web.Infrastructure.Extensions;
 using BotProject.Web.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -19,6 +20,8 @@ namespace BotProject.Web.API
     [RoutePrefix("api/setting")]
     public class SettingController : ApiControllerBase
     {
+        private string _pathRoot = ConfigurationManager.AppSettings["RootPath"].ToString();
+
         private ISettingService _settingService;
         public SettingController(IErrorService errorService,
                                 ISettingService settingService) : base(errorService)
@@ -103,8 +106,11 @@ namespace BotProject.Web.API
                     string extentsion = new FileInfo(file.FileName).Extension.ToLower();
                     string fileName = "logo-bot-"+ botId+ "-"+id + "-" + new FileInfo(file.FileName).Name;
 
-                    file.SaveAs(Path.Combine(PathServer.PathLogoSetting + fileName));
+                    //file.SaveAs(Path.Combine(PathServer.PathLogoSetting + fileName));
+                    file.SaveAs(Path.Combine(_pathRoot + "/assets/images/logo/" + fileName));
+
                     string url = "assets/images/logo/" + fileName;
+
                     response = request.CreateResponse(HttpStatusCode.OK, url);
                 }
                 else

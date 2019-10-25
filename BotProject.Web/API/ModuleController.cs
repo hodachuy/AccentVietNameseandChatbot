@@ -13,12 +13,15 @@ using System.Web;
 using System.Web.Script.Serialization;
 using System.IO;
 using BotProject.Common;
+using System.Configuration;
 
 namespace BotProject.Web.API
 {
     [RoutePrefix("api/module")]
     public class ModuleController : ApiControllerBase
     {
+        private string pathImage = ConfigurationManager.AppSettings["ImagePath"].ToString();
+
         private IModuleService _moduleService;
         private IMdVoucherService _mdVoucherService;
         private IMdPhoneService _mdPhoneService;
@@ -255,8 +258,12 @@ namespace BotProject.Web.API
                     string extentsion = new FileInfo(file.FileName).Extension.ToLower();
                     string fileName = id + "-" + new FileInfo(file.FileName).Name;
 
-                    file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
-                    + "Voucher" + "/" + fileName));
+                    //file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
+                    //+ "Voucher" + "/" + fileName));
+
+
+                    file.SaveAs(Path.Combine(pathImage + "Voucher" + "/" + fileName));
+              
 
                     mdVoucherDb.Image = "File/Images/Voucher/" + fileName;
                 }
@@ -307,8 +314,13 @@ namespace BotProject.Web.API
                     string extentsion = new FileInfo(file.FileName).Extension.ToLower();
                     string fileName = id + "-" + new FileInfo(file.FileName).Name;
 
-                    file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
-                    + "Voucher" + "/" + fileName));
+                    //file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
+                    //+ "Voucher" + "/" + fileName));
+
+
+                    file.SaveAs(Path.Combine(pathImage + "Voucher" + "/" + fileName));
+
+
 
                     mdVoucherDb.Image = "File/Images/Voucher/" + fileName;
                 }

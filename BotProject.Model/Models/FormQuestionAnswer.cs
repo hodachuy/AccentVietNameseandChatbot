@@ -21,7 +21,9 @@ namespace BotProject.Model.Models
 
 		public bool Status { set; get; }
 
-		public int BotID { set; get; }
+        public bool IsDelete { set; get; }
+
+        public int BotID { set; get; }
 
 		[ForeignKey("BotID")]
 		public virtual Bot Bot { set; get; }

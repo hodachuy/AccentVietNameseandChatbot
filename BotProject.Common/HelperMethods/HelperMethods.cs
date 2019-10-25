@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -132,6 +133,42 @@ namespace BotProject.Common
                 return text.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;").Replace("<", "&lt;").Replace(">", "&gt;");
             }
             return text;
+        }
+
+        public const int OnWeekDay = 1;
+        public const int OffWeekDay = 0;
+        /// <summary>
+        /// Thời gian làm việc trả lời khách hàng
+        /// T2-CN : 8h00 - 12h00, 13h00 - 17h30
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsTimeInWorks()
+        {
+            bool rs = false;
+            int T7CN = Int32.Parse(ConfigHelper.ReadString("T7CN"));
+            DateTime timeCurrent = DateTime.Now;
+            if(T7CN == OnWeekDay)
+            {
+                if ((timeCurrent.DayOfWeek == DayOfWeek.Saturday) || (timeCurrent.DayOfWeek == DayOfWeek.Sunday))
+                {
+                    rs = false;
+                    return rs;
+                }
+            }
+            if ((timeCurrent.Hour >= 8 && timeCurrent.Hour < 12))
+            {
+                rs = true;
+            }
+            else if (timeCurrent.Hour >= 13 && (timeCurrent.TimeOfDay < System.TimeSpan.Parse("17:30:00")))
+            {
+                rs = true;
+            }
+            else
+            {
+                rs = false;
+            }
+
+            return rs;
         }
 	}
 }

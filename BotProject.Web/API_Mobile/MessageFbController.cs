@@ -47,6 +47,10 @@ namespace BotProject.Web.API_Mobile
         string _messageProactive = "";
         bool _isSearchAI = false;
 
+        //tin nhắn vắng mặt
+        string _messageAbsent = "";
+        bool _isHaveMessageAbsent = false;
+
         string _patternCardPayloadProactive = "";
         string _titleCardPayloadProactive = "🔙 Quay về";
 
@@ -185,6 +189,10 @@ namespace BotProject.Web.API_Mobile
             _messageProactive = settingDb.ProactiveMessageText;
             _isSearchAI = settingDb.IsMDSearch;
 
+            //tin vắng mặt
+            _messageAbsent = settingDb.MessageMaintenance;
+            _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+
             var lstAIML = _aimlFileService.GetByBotId(botId);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
@@ -193,11 +201,11 @@ namespace BotProject.Web.API_Mobile
 
             foreach (var item in value.entry[0].messaging)
             {
-                if (settingDb.IsHaveMaintenance)
-                {
-                    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
-                    return new HttpResponseMessage(HttpStatusCode.OK);
-                }
+                //if (settingDb.IsHaveMaintenance)
+                //{
+                //    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
+                //    return new HttpResponseMessage(HttpStatusCode.OK);
+                //}
 
                 if (item.message == null && item.postback == null)
                 {
@@ -267,7 +275,6 @@ namespace BotProject.Web.API_Mobile
             hisVm.UserName = sender;
             hisVm.Type = CommonConstants.TYPE_FACEBOOK;
 
-
             DateTime dStartedTime = DateTime.Now;
             DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
             try
@@ -294,6 +301,15 @@ namespace BotProject.Web.API_Mobile
                             _appFacebookUser.Save();
                             return await ExcuteMessage(text, sender, botId);
                         }
+                        if (_isHaveMessageAbsent)
+                        {
+                            if (HelperMethods.IsTimeInWorks() == false)
+                            {
+                                //await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(),sender);
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+
                         if (handleAdminContact.Status == false)
                         {
                             string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");
@@ -608,6 +624,16 @@ namespace BotProject.Web.API_Mobile
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
 
+                            // Tin nhắn vắng mặt
+                            if (_isHaveMessageAbsent)
+                            {
+                                if (HelperMethods.IsTimeInWorks() == false)
+                                {
+                                    await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
+                                    return new HttpResponseMessage(HttpStatusCode.OK);
+                                }
+                            }
+
                             string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
                             if (strArrayJson.Length != 0)
                             {
@@ -617,7 +643,6 @@ namespace BotProject.Web.API_Mobile
                                     string tempJson = temp;
                                     await SendMessageTask(tempJson, sender);
                                 }
-
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
 

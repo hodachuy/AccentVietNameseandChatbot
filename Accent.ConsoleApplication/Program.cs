@@ -85,23 +85,36 @@ namespace Accent.ConsoleApplication
         public static void Main(string[] args)
         {
 
-            string text = "t\u00f4i m\u1edbi mua b\u00e0n ph\u00edm h\u00f4m qua m\u00e0 nay b\u1ecb h\u01b0 r\u1ed3i";
-
-            text = HttpUtility.HtmlDecode(text);
-
-            if (text.Contains("postback") || text.Contains("chat chuyên viên"))
+            while (true)
             {
-                var x123 = "s";
+                Console.InputEncoding = Encoding.Unicode;
+                Console.WriteLine("Nhap giờ :");
+                string text = Console.ReadLine();
+                if (text == "exit")
+                {
+                    break;
+                }
+                DateTime timeCurrent = DateTime.Now.AddHours(Convert.ToDouble(text));
+
+                if((timeCurrent.DayOfWeek == DayOfWeek.Saturday) || (timeCurrent.DayOfWeek == DayOfWeek.Sunday))
+                {
+
+                }
+
+                if ((timeCurrent.Hour >= 8 && timeCurrent.Hour < 12))
+                {
+                    Console.WriteLine("ok");
+                }else if (timeCurrent.Hour >= 13 && (timeCurrent.TimeOfDay < System.TimeSpan.Parse("17:30:00")))
+                {
+                    Console.WriteLine("ok");
+                }else
+                {
+                    Console.WriteLine("fail :");
+                }
             }
 
 
-           string[] animals2 = new string[] { "cả", "moose", "boars","không" };
-            foreach(var item in animals2)
-            {
-                string pattern = @"\b"+ item + "\b";
-                text = Regex.Replace(text, "\\b" + Regex.Escape(item) + "\\b", "").Trim();
-            }
-            var v = text;
+            
 
             // define the job and tie it to our HelloJob class
             //IJobDetail job = JobBuilder.Create<HelloJob>()

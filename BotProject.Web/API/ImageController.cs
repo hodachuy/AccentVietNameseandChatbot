@@ -20,6 +20,7 @@ namespace BotProject.Web.API
     public class ImageController : ApiControllerBase
     {
         private IImageService _imageService;
+        private string pathImage = ConfigurationManager.AppSettings["ImagePath"].ToString();
         public ImageController(IErrorService errorService, IImageService imageService) : base(errorService)
         {
             _imageService = imageService;
@@ -41,8 +42,10 @@ namespace BotProject.Web.API
                     string extentsion = new FileInfo(file.FileName).Extension.ToLower();
                     string fileName = id + "-" + new FileInfo(file.FileName).Name;
 
-                    file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
-                    + CommonConstants.PathImage + "/" + fileName));
+                    //file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
+                    //+ CommonConstants.PathImage + "/" + fileName));
+
+                    file.SaveAs(Path.Combine(pathImage + CommonConstants.PathImage + "/" + fileName));
 
                     var image = new Image()
                     {

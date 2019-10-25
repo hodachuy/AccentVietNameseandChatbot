@@ -23,6 +23,7 @@ namespace BotProject.Web.API
     public class FileCardController : ApiControllerBase
     {
         private IFileCardService _FileCardService;
+        private string pathImage = ConfigurationManager.AppSettings["ImagePath"].ToString();
         public FileCardController(IErrorService errorService, IFileCardService FileCardService) : base(errorService)
         {
             _FileCardService = FileCardService;
@@ -44,8 +45,10 @@ namespace BotProject.Web.API
                     string extentsion = new FileInfo(file.FileName).Extension.ToLower();
                     string fileName = id + "-" + new FileInfo(file.FileName).Name;
 
-                    file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
-                    + CommonConstants.PathImage + "/" + fileName));
+                    //file.SaveAs(Path.Combine(HttpContext.Current.Server.MapPath("~/File/Images/")
+                    //+ CommonConstants.PathImage + "/" + fileName));
+
+                    file.SaveAs(Path.Combine(pathImage + CommonConstants.PathImage + "/" + fileName));
 
                     var FileCard = new FileCard()
                     {

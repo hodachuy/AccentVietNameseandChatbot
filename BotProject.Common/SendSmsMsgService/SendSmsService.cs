@@ -15,6 +15,7 @@ namespace BotProject.Common.SendSmsMsgService
         {
             _sm = new SendSmsMsgServiceSoapClient();
         }
+
         public string SendSmsMsg(string strPhoneNumber, string strMessage)
         {
             string xmlParam = GenXmlParam("84", strPhoneNumber, strMessage);//"Your Digipro verification code is: 58134"

@@ -12,6 +12,7 @@ namespace BotProject.Service
     public interface IApplicationThirdPartyService
     {
         ApplicationThirdParty GetByPageId(string pageId);
+        ApplicationThirdParty GetByZaloPageId(string pageId);
     }
     public class ApplicationThirdPartyService : IApplicationThirdPartyService
     {
@@ -25,6 +26,11 @@ namespace BotProject.Service
         public ApplicationThirdParty GetByPageId(string pageId)
         {
             return _app3rd.GetSingleByCondition(x => x.PageID == pageId);
+        }
+
+        public ApplicationThirdParty GetByZaloPageId(string pageId)
+        {
+            return _app3rd.GetSingleByCondition(x => x.PageID == pageId && x.Type == "zalo");
         }
     }
 }

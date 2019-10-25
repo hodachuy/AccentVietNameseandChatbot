@@ -110,7 +110,7 @@ namespace BotProject.Service
 
 		public IEnumerable<FormQuestionAnswer> GetListFormByBotID(int botID)
 		{
-			return _formQuestionAnswerRepository.GetMulti(x => x.BotID == botID);
+			return _formQuestionAnswerRepository.GetMulti(x => x.BotID == botID && x.IsDelete == false);
 		}
 
 		public FormQuestionAnswer GetFormQnAnswerById(int id)

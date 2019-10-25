@@ -8,6 +8,11 @@ using BotProject.Service;
 using AutoMapper;
 using BotProject.Model.Models;
 using BotProject.Web.Models;
+using System.IO;
+using OfficeOpenXml;
+using System.Configuration;
+using BotProject.Common.ViewModels;
+using OfficeOpenXml.Style;
 
 namespace BotProject.Web.Controllers
 {
@@ -146,5 +151,104 @@ namespace BotProject.Web.Controllers
             ViewBag.BotID = botId;
             return View();
         }
+
+        [ValidateInput(false)]
+        public JsonResult ExcelVoucherView(UserTelephoneExport[] Data)
+        {
+            string path = ConfigurationManager.AppSettings["ExcelTemplatePath"];
+            string pathtempt = ConfigurationManager.AppSettings["ExcelTemplatePath"];
+            string exname = ConfigurationManager.AppSettings["StatisticExcelVoucher"];
+            string ext = ConfigurationManager.AppSettings["ExcelExtension"];
+            string fileNameTemplate = path + exname + ext;
+            string fileName = exname + DateTime.Now.Ticks.ToString() + ext;
+            string pathfileName = pathtempt + fileName;
+
+            FileInfo filename = new FileInfo(@fileNameTemplate);
+
+            using (ExcelPackage pck = new ExcelPackage(filename))
+            {
+                ExcelWorkbook workBook = pck.Workbook;
+                if (workBook != null)
+                {
+                    if (workBook.Worksheets.Count > 0)
+                    {
+                        var color = System.Drawing.Color.FromArgb(218, 238, 243);
+                        ExcelWorksheet cSheet = workBook.Worksheets[1];
+
+                        int r = 4;
+                        for (int i = 0; i < Data.Length; i++)
+                        {
+                            UserTelephoneExport item = Data[i];
+                            // Thêm  ngày/tháng/năm, Người tạo.
+                            cSheet.Cells[2, 2].Value = "";
+                            cSheet.Cells[2, 4].Value = item.StartDate;
+                            cSheet.Cells[2, 6].Value = item.EndDate;
+                            cSheet.Cells[2, 8].Value = DateTime.Now.ToString("dd/MM/yyyy");
+
+                            cSheet.Cells[r, 1].Value = i + 1;
+                            cSheet.Cells[r, 2].Value = item.NumberOrder;
+                            if (item.IsReceived)
+                            {
+                                cSheet.Cells[r, 3].Value = "Đã nhận";
+                            }else
+                            {
+                                cSheet.Cells[r, 3].Value = "Chưa nhập OTP";
+                            }
+
+                            cSheet.Cells[r, 4].Value = item.TelephoneNumber;
+                            cSheet.Cells[r, 5].Value = item.CodeOTP;          
+                            if(!String.IsNullOrEmpty(item.SerialNumber) && item.SerialNumber.Contains("postback"))
+                            {
+                                item.SerialNumber = "";
+                            }    
+                            cSheet.Cells[r, 6].Value = item.SerialNumber;
+                            cSheet.Cells[r, 7].Value = item.CreatedDate;
+                            cSheet.Cells[r, 8].Value = item.Type;
+                            if ((i + 1) % 2 == 0)
+                            {
+                                cSheet.Cells[r, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 1].Style.Fill.BackgroundColor.SetColor(color);
+                                cSheet.Cells[r, 2].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 2].Style.Fill.BackgroundColor.SetColor(color);
+                                cSheet.Cells[r, 3].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 3].Style.Fill.BackgroundColor.SetColor(color);
+                                cSheet.Cells[r, 4].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 4].Style.Fill.BackgroundColor.SetColor(color);
+                                cSheet.Cells[r, 5].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 5].Style.Fill.BackgroundColor.SetColor(color);
+                                cSheet.Cells[r, 6].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 6].Style.Fill.BackgroundColor.SetColor(color);
+                                cSheet.Cells[r, 7].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 7].Style.Fill.BackgroundColor.SetColor(color);
+                                cSheet.Cells[r, 8].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 8].Style.Fill.BackgroundColor.SetColor(color);
+
+                            }
+                            cSheet.Cells[r, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            r++;
+                        }
+                    }
+                }
+                pck.SaveAs(new FileInfo(@pathfileName));
+            }
+
+            CustomFile file = new CustomFile();
+            file.FileName = fileName;
+            file.FilePath = pathtempt;
+
+            return Json(new { Table = file });
+        }
+
+        public FileResult Download(CustomFile file)
+        {
+            //string file = @"c:\someFolder\foo.xlsx";
+            string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            return File(file.FilePath + file.FileName, contentType, file.FileName);
+        }
+    }
+    public class CustomFile
+    {
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
     }
 }

@@ -14,6 +14,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Script.Serialization;
@@ -412,6 +413,7 @@ namespace BotProject.Service
                                     usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
                                     usTelephone.NumberReceive = 1;
                                     usTelephone.Type = Type;
+                                    usTelephone.CreatedDate = DateTime.Now;
                                     usTelephone.SerialNumber = serialNumber;
 
 									if (!String.IsNullOrEmpty(Type)){
@@ -438,6 +440,8 @@ namespace BotProject.Service
 									
 									_userTelephoneService.Create(usTelephone);
                                     _unitOfWork.Commit();
+
+                                    Thread.Sleep(1000);
                                 }
                                 else
                                 {
@@ -564,6 +568,7 @@ namespace BotProject.Service
 
         public HandleResultBotViewModel HandleIsSearchAPI(string text, string mdSearchID, string notFound)
         {
+            text = text.ToLower();
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             var mdSearchDb = _mdSearchService.GetByID(Int32.Parse(mdSearchID));
             string rsMessage = "";

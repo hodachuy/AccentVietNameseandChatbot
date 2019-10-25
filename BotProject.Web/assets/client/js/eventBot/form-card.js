@@ -1,5 +1,5 @@
 ﻿//###### DIGIPRO ######//
-var url_image_generic_default ="https://developers.zalo.me/web/static/zalo.png";//"File/Images/Card/dad45d0d-09a9-4299-92f0-86dad36f1310-logo-digipro-v2.png";
+var url_image_generic_default = "File/Images/Card/img_white.jpg"; //"https://developers.zalo.me/web/static/zalo.png"
 
 var botId = $("#botId").val();
 var srcFolderImg = "https://platform.messnow.com/",
@@ -1169,8 +1169,8 @@ $(document).ready(function () {
                                         "subtitle": $(this).find('.bt_title').text(),
                                         "image_url": url_image_generic_default,
                                         "default_action": {
-                                            "type": "oa.query.show",
-                                            "payload": $(this).find('.bt_title').text(),//"#"+postback_card,
+                                            "type": "oa.query.hide",
+                                            "payload": postback_card//$(this).find('.bt_title').text(),//"#"+postback_card,
                                         }
                                     }
                                     zalo_list.push(zalo_list_element);
@@ -1212,8 +1212,8 @@ $(document).ready(function () {
                                         "subtitle": $(this).find('.bt_title').text(),
                                         "image_url": url_image_generic_default,
                                         "default_action": {
-                                            "type": "oa.query.show",
-                                            "payload": $(this).find('.bt_title').text(),//"#" + postback_module,
+                                            "type": "oa.query.hide",
+                                            "payload": postback_module//$(this).find('.bt_title').text(),//"#" + postback_module,
                                         }
                                     }
                                     zalo_list.push(zalo_list_element);
@@ -1369,8 +1369,8 @@ $(document).ready(function () {
                                             "subtitle": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "image_url": url_image_generic_default,
                                             "default_action": {
-                                                "type": "oa.query.show",
-                                                "payload": $(this).find('.wr_reply_btcontent .name-button').text(),//"#"+payload,
+                                                "type": "oa.query.hide",
+                                                "payload": payload//$(this).find('.wr_reply_btcontent .name-button').text(),//"#"+payload,
                                             }
                                         }
                                         zalo_list.push(zalo_list_element);
@@ -1388,8 +1388,8 @@ $(document).ready(function () {
                                             "subtitle": $(this).find('.wr_reply_btcontent .name-button').text(),
                                             "image_url": url_image_generic_default,
                                             "default_action": {
-                                                "type": "oa.query.show",
-                                                "payload": $(this).find('.wr_reply_btcontent .name-button').text(),//"#"+payload,
+                                                "type": "oa.query.hide",
+                                                "payload":payload// $(this).find('.wr_reply_btcontent .name-button').text(),//"#"+payload,
                                             }
                                         }
                                         zalo_list.push(zalo_list_element);
