@@ -5,7 +5,7 @@ public class AllowCrossSiteAttribute : ActionFilterAttribute
 {
     /// <summary>
     /// Allow header domain call to action controller
-    /// *,http://qa.surelrn.vn
+    /// *
     /// </summary>
     /// <param name="filterContext"></param>
     public override void OnActionExecuting(ActionExecutingContext filterContext)

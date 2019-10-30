@@ -84,34 +84,41 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
+            string text = "postback_card_1";
 
-            while (true)
+            if (text.Contains("postback") || text.Contains("chuyen vien"))
             {
-                Console.InputEncoding = Encoding.Unicode;
-                Console.WriteLine("Nhap giờ :");
-                string text = Console.ReadLine();
-                if (text == "exit")
-                {
-                    break;
-                }
-                DateTime timeCurrent = DateTime.Now.AddHours(Convert.ToDouble(text));
-
-                if((timeCurrent.DayOfWeek == DayOfWeek.Saturday) || (timeCurrent.DayOfWeek == DayOfWeek.Sunday))
-                {
-
-                }
-
-                if ((timeCurrent.Hour >= 8 && timeCurrent.Hour < 12))
-                {
-                    Console.WriteLine("ok");
-                }else if (timeCurrent.Hour >= 13 && (timeCurrent.TimeOfDay < System.TimeSpan.Parse("17:30:00")))
-                {
-                    Console.WriteLine("ok");
-                }else
-                {
-                    Console.WriteLine("fail :");
-                }
+                
             }
+
+            var x = 1;
+            //while (true)
+            //{
+            //    Console.InputEncoding = Encoding.Unicode;
+            //    Console.WriteLine("Nhap giờ :");
+            //    string text = Console.ReadLine();
+            //    if (text == "exit")
+            //    {
+            //        break;
+            //    }
+            //    DateTime timeCurrent = DateTime.Now.AddHours(Convert.ToDouble(text));
+
+            //    if((timeCurrent.DayOfWeek == DayOfWeek.Saturday) || (timeCurrent.DayOfWeek == DayOfWeek.Sunday))
+            //    {
+
+            //    }
+
+            //    if ((timeCurrent.Hour >= 8 && timeCurrent.Hour < 12))
+            //    {
+            //        Console.WriteLine("ok");
+            //    }else if (timeCurrent.Hour >= 13 && (timeCurrent.TimeOfDay < System.TimeSpan.Parse("17:30:00")))
+            //    {
+            //        Console.WriteLine("ok");
+            //    }else
+            //    {
+            //        Console.WriteLine("fail :");
+            //    }
+            //}
 
 
             

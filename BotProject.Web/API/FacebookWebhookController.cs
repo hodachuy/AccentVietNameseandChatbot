@@ -892,8 +892,18 @@ namespace BotProject.Web.API
                     //turn off AI
                     if (_isSearchAI == false)
                     {
-                        string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                        return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                        fbUserDb.IsHavePredicate = true;
+                        fbUserDb.PredicateName = "Admin_Contact";
+                        fbUserDb.PredicateValue = "";
+                        fbUserDb.IsHaveCardCondition = false;
+                        fbUserDb.CardConditionPattern = "";
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+
+                        //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
+                        //return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
                     }
 
                     //Chuyển tới tìm kiếm Search NLP

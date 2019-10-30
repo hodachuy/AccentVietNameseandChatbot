@@ -864,8 +864,17 @@ namespace BotProject.Web.API
 
                     if (_isSearchAI == false)
                     {
-                        string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                        return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                        zlUserDb.IsHavePredicate = true;
+                        zlUserDb.PredicateName = "Admin_Contact";
+                        zlUserDb.PredicateValue = "";
+                        zlUserDb.IsHaveCardCondition = false;
+                        zlUserDb.CardConditionPattern = "";
+                        _appZaloUser.Update(zlUserDb);
+                        _appZaloUser.Save();
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+
+                        //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
+                        //return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
                     }
 
                     // Chuyển tới tìm kiếm Search NLP
