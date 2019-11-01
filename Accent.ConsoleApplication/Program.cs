@@ -77,51 +77,45 @@ namespace Accent.ConsoleApplication
                               message = new { text = "Welcome to Chatbot Lacviet!" },
                           }).ToString();
 
-                SendMessage(abc, "2666433486706739");
+                //SendMessage(abc, "2666433486706739");
                 Console.WriteLine("HelloJob is executing. " + userId2 +" Started:" + TimeStarted + " TimeOut:" + TimeOut + " Count:" + _lstProac.Count() + " ItemCount:" + lstActive.Count());
+            }
+        }
+
+        public class HelloJob2 : IJob
+        {
+            public void Execute(IJobExecutionContext context)
+            {
+                JobKey key = context.JobDetail.Key;
+                //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
+                //string userId = dataMapDefault.GetString("userId");
+                //Console.WriteLine("HelloJob is executing. " + userId);
+                //if(userId == "0")
+                //{
+
+                //}
+                ProactiveMessage pr = new ProactiveMessage();
+
+                JobDataMap dataMap = context.MergedJobDataMap;
+                string userId2 = dataMap.GetString("userId");
+                string TimeStarted = dataMap.GetString("TimeStarted");
+                string TimeOut = dataMap.GetString("timeout");
+
+                pr.id = userId2;
+                pr.started = TimeStarted;
+                pr.timeout = TimeOut;
+
+                _lstProac.Add(pr);
+
+                var lstActive = _lstProac.OrderBy(x => x.timeout).GroupBy(x => x.id);
+                Console.WriteLine("HelloJob2 is executing. " + userId2 + " Started:" + TimeStarted + " TimeOut:" + TimeOut + " Count:" + _lstProac.Count() + " ItemCount:" + lstActive.Count());
             }
         }
 
         public static void Main(string[] args)
         {
-            string text = "postback_card_1";
-
-            if (text.Contains("postback") || text.Contains("chuyen vien"))
-            {
-                
-            }
-
-            var x = 1;
-            //while (true)
-            //{
-            //    Console.InputEncoding = Encoding.Unicode;
-            //    Console.WriteLine("Nhap giờ :");
-            //    string text = Console.ReadLine();
-            //    if (text == "exit")
-            //    {
-            //        break;
-            //    }
-            //    DateTime timeCurrent = DateTime.Now.AddHours(Convert.ToDouble(text));
-
-            //    if((timeCurrent.DayOfWeek == DayOfWeek.Saturday) || (timeCurrent.DayOfWeek == DayOfWeek.Sunday))
-            //    {
-
-            //    }
-
-            //    if ((timeCurrent.Hour >= 8 && timeCurrent.Hour < 12))
-            //    {
-            //        Console.WriteLine("ok");
-            //    }else if (timeCurrent.Hour >= 13 && (timeCurrent.TimeOfDay < System.TimeSpan.Parse("17:30:00")))
-            //    {
-            //        Console.WriteLine("ok");
-            //    }else
-            //    {
-            //        Console.WriteLine("fail :");
-            //    }
-            //}
 
 
-            
 
             // define the job and tie it to our HelloJob class
             //IJobDetail job = JobBuilder.Create<HelloJob>()
@@ -129,19 +123,20 @@ namespace Accent.ConsoleApplication
             //    .UsingJobData("userId", "0")
             //    .Build();
 
-            //while (true)
-            //{
-            //    Console.InputEncoding = Encoding.Unicode;
-            //    Console.WriteLine("Nhap chuoi :");
-            //    string text = Console.ReadLine();
-            //    if (text == "exit")
-            //    {
-            //        break;
-            //    }
+            while (true)
+            {
+                Console.InputEncoding = Encoding.Unicode;
+                Console.WriteLine("Nhap chuoi :");
+                string text = Console.ReadLine();
+                if (text == "exit")
+                {
+                    break;
+                }
 
-            //    //Schedule("groupUser1", text, "trigger1");
-            //    Console.WriteLine("abc :");
-            //}
+                Schedule("groupUser1", text, "trigger1");
+                Schedule2("groupUser2", text, "trigger1");
+                Console.WriteLine("abc :");
+            }
 
             //Schedule("groupUser1","1235","trigger1");
             //System.Threading.Thread.Sleep(5000);
@@ -185,6 +180,41 @@ namespace Accent.ConsoleApplication
 
         }
 
+
+        public static void Schedule2(string name, string UserId, string triggerName)
+        {
+            // construct a scheduler factory
+            ISchedulerFactory schedFact = new StdSchedulerFactory();
+
+            // get a scheduler
+            IScheduler sched = schedFact.GetScheduler();
+            sched.Start();
+
+
+            //define the job and tie it to our HelloJob class
+            IJobDetail job2 = JobBuilder.Create<HelloJob2>()
+                 //.WithIdentity("ProactiveMsgJob", "ProactiveMsgJob") 
+                 //.UsingJobData("userId", "0")
+                 .Build();
+
+
+
+            // Trigger the job to run now, and then every 40 seconds
+            ITrigger trigger2 = TriggerBuilder.Create()
+                    //.WithIdentity(triggerName, "ProactiveMsgJob")
+                    .UsingJobData("userId", UserId)
+                    .UsingJobData("TimeStarted", DateTime.Now.ToLocalTime().ToString())
+                    .UsingJobData("timeout", DateTime.Now.AddSeconds(10).ToLocalTime().ToString())
+                    .StartAt(DateTime.Now.AddSeconds(10).ToLocalTime())
+                    //.WithSimpleSchedule(x => x
+                    //    .WithIntervalInSeconds(5)
+                    //    .WithRepeatCount(0))
+                    //.ForJob("ProactiveMsgJob", group)
+                    .Build();
+
+            sched.ScheduleJob(job2, trigger2);
+
+        }
 
 
         private static async Task<HttpResponseMessage> SendMessage(string templateJson, string sender)

@@ -1387,6 +1387,52 @@ namespace BotProject.Web.API_Mobile
             }
         }
 
+
+        private static async Task ScheduleOTP(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
+        {
+            try
+            {
+                // Grab the Scheduler instance from the Factory
+                System.Collections.Specialized.NameValueCollection props = new System.Collections.Specialized.NameValueCollection
+                {
+                    { "quartz.serializer.type", "binary" }
+                };
+                StdSchedulerFactory factory = new StdSchedulerFactory(props);
+                IScheduler scheduler = await factory.GetScheduler();
+                // and start it off
+                await scheduler.Start();
+
+                IJobDetail job = JobBuilder.Create<CancleCodeOtpJob>()
+                     .Build();
+                ITrigger trigger = TriggerBuilder.Create()
+                        .UsingJobData("UserId", UserId)
+                        .UsingJobData("Message", strMessage)
+                        .UsingJobData("PageToken", pageToken)
+                        .UsingJobData("Payload", modulePayload)
+                        .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
+                        .StartAt(dTimeOut.ToLocalTime())
+                        .Build();
+                // Tell quartz to schedule the job using our trigger
+                await scheduler.ScheduleJob(job, trigger);
+            }
+            catch (SchedulerException se)
+            {
+
+            }
+        }
+
+        public class CancleCodeOtpJob : IJob
+        {
+            private readonly string Domain = Helper.ReadString("Domain");
+            private readonly string _sqlConnection = Helper.ReadString("SqlConnection");
+            public Task Execute(IJobExecutionContext context)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+
+
         //public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
         //{
         //    // construct a scheduler factory
