@@ -157,7 +157,7 @@ namespace BotProject.Service
 
         public IEnumerable<QuestionGroup> GetListQuesGroupToAimlByFormQnAnswerID(int formQnAnwerID)
         {
-            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.FormQuestionAnswerID == formQnAnwerID).ToList();
+            var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.FormQuestionAnswerID == formQnAnwerID && x.IsKeyword == true).ToList();
             if (lstQuesGroup.Count != 0)
             {
                 foreach (var item in lstQuesGroup)

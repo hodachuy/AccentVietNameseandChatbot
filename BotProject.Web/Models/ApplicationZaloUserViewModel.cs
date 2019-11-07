@@ -23,5 +23,6 @@ namespace BotProject.Web.Models
         public DateTime StartedOn { set; get; }
         public DateTime? CreatedDate { set; get; }
         public DateTime? TimeOut { set; get; }
-	}
+        public string BranchOTP { set; get; }
+    }
 }

@@ -31,13 +31,17 @@ namespace BotProject.Service
 		HandleResultBotViewModel HandleIsEngineerName(string name, int botID);
         HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound);
         HandleResultBotViewModel HandleIsSearchAPI(string mdName, string mdSearchID, string notFound);
-        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string engineerName, string Type = "");
-        HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID);
+        HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string engineerName, string branchOTP, string Type = "");
+        HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID, string msgTimeoutOTP = "");
 		HandleResultBotViewModel HandleIsAdminContact(string text, int botID, bool isFinishMessage = false);
 		void Save();
     }
     public class HandleModuleService : IHandleModuleServiceService
     {
+        private string _cardTitleResendSmsOTP = "Gửi lại OTP";
+        private string _cardPayloadID = ConfigHelper.ReadString("CARD_RESEND_SMS");
+        private string _msgSMS = ConfigHelper.ReadString("MSG_SMS");
+
         private const string CharacterPattern = @"^[A-Za-z]+";
         private const string NumberPattern = @"^\d+$";
         private const string PhonePattern = @"^(\+[0-9]{9})$";
@@ -295,7 +299,7 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID,  string engineerName, string Type = "")
+        public HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID,  string engineerName, string branchOTP, string Type = "")
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             string rsMessage = "";
@@ -351,7 +355,6 @@ namespace BotProject.Service
 							return rsHandle;
                         }
 
-
                         if (!String.IsNullOrEmpty(serialNumber))
                         {
                             bool isSerialNumber = true;// check serial number gọi api
@@ -400,7 +403,7 @@ namespace BotProject.Service
                             {
                                 rsHandle.Status = true;
                                 rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
-                                rsMessage = "Vui lòng nhập mã OTP được gửi tới số điện thoại";
+                                rsMessage = mdVoucherDb.MessageError;// "Vui lòng nhập mã OTP được gửi tới số điện thoại";
                                 rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 								rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
@@ -413,10 +416,16 @@ namespace BotProject.Service
                                     usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
                                     usTelephone.NumberReceive = 1;
                                     usTelephone.Type = Type;
+                                    if (!String.IsNullOrEmpty(branchOTP))
+                                    {
+                                        usTelephone.BranchOTP = branchOTP;
+                                    }
+
                                     usTelephone.CreatedDate = DateTime.Now;
                                     usTelephone.SerialNumber = serialNumber;
 
-									if (!String.IsNullOrEmpty(Type)){
+									if (!String.IsNullOrEmpty(Type))
+                                    {
 
                                         int numberOrder = 10000;
                                         string filter = "m.BotID = " + mdVoucherDb.BotID + " and u.Type Like N'" + Type + "'";
@@ -441,13 +450,17 @@ namespace BotProject.Service
 									_userTelephoneService.Create(usTelephone);
                                     _unitOfWork.Commit();
 
-                                    Thread.Sleep(1000);
                                 }
                                 else
                                 {
                                     var usT = _userTelephoneService.GetById(strProcUserTelephoneDb.ID);
                                     usT.IsReceive = false;
                                     usT.Code = codeOTP;
+                                    usT.SerialNumber = serialNumber;
+                                    if (!String.IsNullOrEmpty(branchOTP))
+                                    {
+                                        usT.BranchOTP = branchOTP;
+                                    }
                                     _userTelephoneService.Update(usT);
                                     _unitOfWork.Commit();
                                 }
@@ -463,6 +476,35 @@ namespace BotProject.Service
 
 								return rsHandle;
                             }
+                            if (ob.ReturnCode == "3")
+                            {
+                                rsHandle.Status = false;
+                                rsHandle.Message = tempText("Không có nội dung tin nhắn gửi");
+                                rsMessage = "Không có nội dung tin nhắn gửi";
+                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                                rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
+                                return rsHandle;
+                            }
+                            else
+                            {
+                                rsHandle.Status = false;
+                                rsHandle.Message = tempText("Tin nhắn OTP không gửi được");
+                                rsMessage = "Tin nhắn OTP không gửi được";
+                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                                rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
+                                return rsHandle;
+                            }
+                        }
+                        else
+                        {
+                            rsHandle.Status = false;
+                            rsHandle.Message = tempText("Tin nhắn OTP không gửi được");
+                            rsMessage = "Tin nhắn OTP không gửi được";
+                            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                            rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                            return rsHandle;
                         }
                     }
                 }
@@ -481,20 +523,36 @@ namespace BotProject.Service
             return rsHandle;
         }
 
-        public HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID)
+        public HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID, string msgTimeOutOTP = "")
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
             try
             {
-                var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
                 string rsMessage = "";
+
+                var mdVoucherDb = _mdVoucherService.GetByID(Int32.Parse(mdVoucherID));
+
+                var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
+                if(usTelephoneDb != null)
+                {
+                    if(usTelephoneDb.Code == "timeout")
+                    {
+                        rsHandle.Status = false;
+                        rsHandle.Message = tempText(msgTimeOutOTP);
+                        rsMessage = msgTimeOutOTP;
+                        rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReplyMulti(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload,_cardPayloadID,_cardTitleResendSmsOTP).ToString();
+                        rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReplyMulti(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload, _cardPayloadID, _cardTitleResendSmsOTP).ToString();
+                        return rsHandle;
+                    }
+                }
+
                 bool isContainOTP = _userTelephoneService.CheckContainOTP(OTP, phoneNumber, Int32.Parse(mdVoucherID));
                 if (isContainOTP)
                 {
                     rsHandle.Status = true;
                     rsHandle.Message = tempImage(mdVoucherDb.Image);
                     rsMessage = mdVoucherDb.Image;
-                    var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
+                    //var usTelephoneDb = _userTelephoneService.GetByPhoneAndMdVoucherId(phoneNumber, Int32.Parse(mdVoucherID));
                     if (usTelephoneDb != null)
                     {
                         var usT = _userTelephoneService.GetById(usTelephoneDb.ID);
@@ -518,6 +576,10 @@ namespace BotProject.Service
 
                         rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split" + FacebookTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
                         rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split" + ZaloTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
+                        SendSmsService sm = new SendSmsService();
+
+                        string msgSMS = Regex.Replace(_msgSMS, "{{stt}}", usTelephoneDb.NumberOrder);
+                        string rsSmsMsg = sm.SendSmsMsg(phoneNumber, msgSMS);
                     }
                 }
                 else

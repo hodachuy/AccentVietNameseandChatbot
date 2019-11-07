@@ -473,6 +473,40 @@
         </div>
     </div>
 
+    <!-- chatbot timeout OTP -->
+    <div class="card b-module-search">
+        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">THÔNG BÁO HẾT THỜI HẠN OTP</i></li>
+            </ol>
+            <div class="toolbar p-r-10" style="padding-top:13px">
+                <label>
+                    @if (Model.IsHaveTimeoutOTP == true)
+                    {
+                        <input type="checkbox" class="switchery randomText" id="isHaveTimeoutOTP" style="display:none" checked value="true">
+                        <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
+                    else
+                    {
+                        <input type="checkbox" class="switchery randomText" id="isHaveTimeoutOTP" style="display:none" value="false">
+                        <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
+
+                </label>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="form-group row">
+                <div class="col-lg-3">
+                    <p class="m-b-10">Thời gian (giây)</p>
+                    <input type="number" placeholder="Giá trị" id="TimeOutOTP" title="" class="form-control" value="@Model.TimeoutOTP">
+                </div>
+                <div class="col-lg-3">
+                    <p class="m-b-10">Nội dung gửi</p>
+                    <textarea class="form-control" id="txtMessageTimeoutOTP" style="height:34px;">@Html.Raw(Model.MessageTimeoutOTP)</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- chatbot on web -->
     <div class="row">
         <div class="col-xl-6 col-lg-12 col-md-12">

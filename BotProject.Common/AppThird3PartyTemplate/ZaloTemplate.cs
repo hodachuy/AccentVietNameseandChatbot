@@ -47,6 +47,60 @@ namespace BotProject.Common.AppThird3PartyTemplate
                  });
         }
 
+        public static JObject GetMessageTemplateTextAndQuickReplyMulti(string text,
+                                                                       string sender,
+                                                                       string patternQuickReply,
+                                                                       string titleQuickReply,
+                                                                       string patternQuickReply2,
+                                                                       string titleQuickReply2)
+        {
+            if (!String.IsNullOrEmpty(patternQuickReply) && !String.IsNullOrEmpty(titleQuickReply))
+            {
+                return JObject.FromObject(
+                     new
+                     {
+                         recipient = new { user_id = sender },
+                         message = new
+                         {
+                             text = text,
+                             attachment = new
+                             {
+                                 type = "template",
+                                 payload = new
+                                 {
+                                     template_type = "button",
+                                     buttons = new[]
+                                     {
+                                         new
+                                         {
+                                            type = "oa.query.hide",
+                                            title = titleQuickReply,
+                                            payload = patternQuickReply
+                                         },
+                                         new
+                                         {
+                                            type = "oa.query.hide",
+                                            title = titleQuickReply2,
+                                            payload = patternQuickReply2
+                                         }
+                                     }
+                                 }
+                             }
+                         },
+                     });
+            }
+            return JObject.FromObject(
+                     new
+                     {
+                         recipient = new { user_id = sender },
+                         message = new
+                         {
+                             text = text
+                         },
+                     });
+
+        }
+
         public static JObject GetMessageTemplateTextAndQuickReply(string text, string sender, string patternQuickReply, string titleQuickReply)
         {
             if (!String.IsNullOrEmpty(patternQuickReply) && !String.IsNullOrEmpty(titleQuickReply))

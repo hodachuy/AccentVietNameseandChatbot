@@ -568,7 +568,7 @@ namespace BotProject.Web.Controllers
                         return chatbot(text, group, token, botId, isMdSearch);
                     }
 
-                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId,"","");
+                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId,"","","");
 
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                     AddHistory(hisVm);
@@ -603,7 +603,7 @@ namespace BotProject.Web.Controllers
                 if (text.Contains("postback_module_voucher"))
                 {
                     string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId,"","");
+                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId,"","","");
                     _user.Predicates.addSetting("ThreadMdVoucherID", mdVoucherId);
                     _user.Predicates.addSetting("isChkMdVoucher", "true");
 

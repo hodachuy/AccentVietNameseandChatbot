@@ -114,29 +114,32 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
-
-
-
+            string _contactAdmin = "chat chuyên viên";
+            string text = "chat chuyên viên";
+            if (text.Contains("postback") || text.Contains(_contactAdmin))
+            {
+                var x = 1;
+            }
             // define the job and tie it to our HelloJob class
             //IJobDetail job = JobBuilder.Create<HelloJob>()
             //    .WithIdentity("s1", "group1") // name "myJob", group "group1"
             //    .UsingJobData("userId", "0")
             //    .Build();
 
-            while (true)
-            {
-                Console.InputEncoding = Encoding.Unicode;
-                Console.WriteLine("Nhap chuoi :");
-                string text = Console.ReadLine();
-                if (text == "exit")
-                {
-                    break;
-                }
+            //while (true)
+            //{
+            //    Console.InputEncoding = Encoding.Unicode;
+            //    Console.WriteLine("Nhap chuoi :");
+            //    string text = Console.ReadLine();
+            //    if (text == "exit")
+            //    {
+            //        break;
+            //    }
 
-                Schedule("groupUser1", text, "trigger1");
-                Schedule2("groupUser2", text, "trigger1");
-                Console.WriteLine("abc :");
-            }
+            //    Schedule("groupUser1", text, "trigger1");
+            //    Schedule2("groupUser2", text, "trigger1");
+            //    Console.WriteLine("abc :");
+            //}
 
             //Schedule("groupUser1","1235","trigger1");
             //System.Threading.Thread.Sleep(5000);

@@ -58,6 +58,11 @@ namespace BotProject.Web.API
         string _patternCardPayloadProactive = "";
         string _titleCardPayloadProactive = "🔙 Quay về";
 
+        //OTP
+        int _timeOutOTP = 60;
+        bool _isHaveTimeOutOTP = false;
+        string _messageOTP = "";
+
         string _pathStopWord = System.IO.Path.Combine(PathServer.PathNLR, "StopWord.txt");
         string _stopWord = "";
 
@@ -196,6 +201,11 @@ namespace BotProject.Web.API
             //tin vắng mặt
             _messageAbsent = settingDb.MessageMaintenance;
             _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+
+            //OTP
+            _timeOutOTP = settingDb.TimeoutOTP;
+            _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
+            _messageOTP = settingDb.MessageTimeoutOTP;
 
             var lstAIML = _aimlFileService.GetByBotId(botId);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
@@ -372,7 +382,7 @@ namespace BotProject.Web.API
                     // Nếu có yêu cầu click thẻ để đi theo luồng
                     if (fbUserDb.IsHaveCardCondition)
                     {
-                        if (text.Contains("postback_card") || text.Contains(_contactAdmin))
+                        if (text.Contains("postback") || text.Contains(_contactAdmin))
                         {
 
                         }
@@ -543,7 +553,7 @@ namespace BotProject.Web.API
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName,fbUserDb.BranchOTP, hisVm.Type);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                             AddHistory(hisVm);
@@ -571,8 +581,19 @@ namespace BotProject.Web.API
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
 
-                                // send otp
-                                return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
+
+                                // send sms otp
+                                await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
+
+                                // gọi timeout thời gian hủy otp
+                                if (_isHaveTimeOutOTP)
+                                {
+                                    DateTime dTimeOutOTP = DateTime.Now.AddSeconds(_timeOutOTP);
+                                    await ScheduleOTP(sender, telePhoneNumber, mdVoucherId, pageToken, dTimeOutOTP);
+                                }
+
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+
                                 //await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
                                 //return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
                             }
@@ -582,6 +603,24 @@ namespace BotProject.Web.API
                         {
                             string mdVoucherId = fbUserDb.PredicateValue;
                             string phoneNumber = fbUserDb.PhoneNumber;
+                            // thẻ gửi lại sms
+                            if (text.Equals("CARD_RESEND_SMS"))
+                            {
+                                var handleMdVoucher = _handleMdService.HandleIsVoucher(phoneNumber, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
+                                if (handleMdVoucher.Status)
+                                {
+                                    // send sms otp
+                                    await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
+                                    // gọi timeout thời gian hủy otp
+                                    if (_isHaveTimeOutOTP)
+                                    {
+                                        DateTime dTimeOutOTP = DateTime.Now.AddSeconds(_timeOutOTP);
+                                        await ScheduleOTP(sender, phoneNumber, mdVoucherId, pageToken, dTimeOutOTP);
+                                    }
+                                    return new HttpResponseMessage(HttpStatusCode.OK);
+                                }
+                                return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
+                            }
                             if (text.Contains("postback_card") || text.Contains(_contactAdmin))
                             {
                                 fbUserDb.IsHavePredicate = false;
@@ -593,7 +632,7 @@ namespace BotProject.Web.API
                                 _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
                             }
-                            var handleOTP = _handleMdService.HandleIsCheckOTP(text, phoneNumber, mdVoucherId);
+                            var handleOTP = _handleMdService.HandleIsCheckOTP(text, phoneNumber, mdVoucherId, _messageOTP);
                             if (handleOTP.Status)
                             {
                                 fbUserDb.IsHavePredicate = false;
@@ -688,6 +727,7 @@ namespace BotProject.Web.API
                             fbUserDb.EngineerName = "";
                             fbUserDb.IsHaveCardCondition = false;
                             fbUserDb.CardConditionPattern = "";
+                            fbUserDb.BranchOTP = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -751,7 +791,7 @@ namespace BotProject.Web.API
                         if (text.Contains(CommonConstants.ModuleVoucher))
                         {
                             string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName,fbUserDb.BranchOTP, hisVm.Type);
 
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Voucher";
@@ -795,6 +835,34 @@ namespace BotProject.Web.API
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
+
+                // lấy thông tin chi nhánh voucher map id từ tạo thẻ và thêm bên appsetingconfig
+                if (text.Equals(Helper.ReadString("HCM")))
+                {
+                    fbUserDb.BranchOTP = "HCM";
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
+                }
+                if (text.Equals(Helper.ReadString("HN")))
+                {
+                    fbUserDb.BranchOTP = "Hà Nội";
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
+                }
+                if (text.Equals(Helper.ReadString("DN")))
+                {
+                    fbUserDb.BranchOTP = "Đà Nẵng";
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
+                }
+                if (text.Equals(Helper.ReadString("CT")))
+                {
+                    fbUserDb.BranchOTP = "Cần Thơ";
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
+                }
+
+
                 // lưu lịch sử
                 if (text.Contains("postback_card"))
                 {
@@ -899,6 +967,16 @@ namespace BotProject.Web.API
                         fbUserDb.CardConditionPattern = "";
                         _appFacebookUser.Update(fbUserDb);
                         _appFacebookUser.Save();
+
+                        // Tin nhắn vắng mặt
+                        if (_isHaveMessageAbsent)
+                        {
+                            if (HelperMethods.IsTimeInWorks() == false)
+                            {
+                                await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
 
                         return new HttpResponseMessage(HttpStatusCode.OK);
 
@@ -1400,114 +1478,87 @@ namespace BotProject.Web.API
             }
         }
 
-        //public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
-        //{
-        //    // construct a scheduler factory
-        //    ISchedulerFactory schedFact = new StdSchedulerFactory();
+        private static async Task ScheduleOTP(string UserId, string telePhoneNumber, string mdVoucherId, string pageToken, DateTime dTimeOut)
+        {
+            try
+            {
+                // Grab the Scheduler instance from the Factory
+                System.Collections.Specialized.NameValueCollection props = new System.Collections.Specialized.NameValueCollection
+                {
+                    { "quartz.serializer.type", "binary" }
+                };
+                StdSchedulerFactory factory = new StdSchedulerFactory(props);
+                IScheduler scheduler = await factory.GetScheduler();
+                // and start it off
+                await scheduler.Start();
 
-        //    // get a scheduler
-        //    IScheduler scheduler = schedFact.GetScheduler();
-        //    scheduler.Start();
+                IJobDetail job = JobBuilder.Create<CancleCodeOtpJob>()
+                     .Build();
+                ITrigger trigger = TriggerBuilder.Create()
+                        .UsingJobData("UserId", UserId)
+                        .UsingJobData("PageToken", pageToken)
+                        .UsingJobData("PhoneNumber", telePhoneNumber)
+                        .UsingJobData("MdVoucherID", mdVoucherId)
+                        .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
+                        .StartAt(dTimeOut.ToLocalTime())
+                        .Build();
+                // Tell quartz to schedule the job using our trigger
+                await scheduler.ScheduleJob(job, trigger);
+            }
+            catch (SchedulerException se)
+            {
 
-        //    IJobDetail job = JobBuilder.Create<ProactiveMessageJob>()
-        //         //.WithIdentity("ProactiveMsgJob", "ProactiveMsgJob") 
-        //         //.UsingJobData("userId", "0")
-        //         .Build();
-        //    ITrigger trigger = TriggerBuilder.Create()
-        //            //.WithIdentity(triggerName, "ProactiveMsgJob")
-        //            .UsingJobData("UserId", UserId)
-        //            .UsingJobData("Message", strMessage)
-        //            .UsingJobData("PageToken", pageToken)
-        //            .UsingJobData("Payload", modulePayload)
-        //            .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
-        //            .StartAt(dTimeOut.ToLocalTime())
-        //            //.WithSimpleSchedule(x => x
-        //            //    .WithIntervalInSeconds(5)
-        //            //    .WithRepeatCount(0))
-        //            //.ForJob("ProactiveMsgJob", group)
-        //            .Build();
+            }
+        }
 
-        //    scheduler.ScheduleJob(job, trigger);
+        public class CancleCodeOtpJob : IJob
+        {
+            private readonly string Domain = Helper.ReadString("Domain");
+            private readonly string _sqlConnection = Helper.ReadString("SqlConnection");
+            public async Task Execute(IJobExecutionContext context)
+            {
+                JobKey key = context.JobDetail.Key;
+                //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
+                JobDataMap dataMap = context.MergedJobDataMap;
+                string userId = dataMap.GetString("UserId");
+                string pageToken = dataMap.GetString("PageToken");
+                string phoneNumber = dataMap.GetString("PhoneNumber");
+                string mdVoucherId = dataMap.GetString("MdVoucherID");
+                string TimeOut = dataMap.GetString("TimeOut");
+                DateTime dTimeOut = Convert.ToDateTime(TimeOut);
 
-        //    // some sleep to show what's happening
-        //    //await Task.Delay(TimeSpan.FromSeconds(60));
+                bool isReceived = false;
+                var sqlConnection = new SqlConnection(_sqlConnection);
+                sqlConnection.Open();
 
-        //    // and last shut down the scheduler when you are ready to close your program
-        //    //scheduler.Shutdown();
-        //}
-        //public class ProactiveMessageJob : IJob
-        //{
-        //    private readonly string Domain = Helper.ReadString("Domain");
-        //    public void Execute(IJobExecutionContext context)
-        //    {
-        //        JobKey key = context.JobDetail.Key;
-        //        //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
-        //        JobDataMap dataMap = context.MergedJobDataMap;
-        //        string userId = dataMap.GetString("UserId");
-        //        string message = dataMap.GetString("Message");
-        //        string pageToken = dataMap.GetString("PageToken");
-        //        string TimeOut = dataMap.GetString("TimeOut");
-        //        string payLoad = dataMap.GetString("Payload");
-        //        DateTime dTimeOut = Convert.ToDateTime(TimeOut);
+                SqlCommand command = new SqlCommand("Select top 1 * from [UserTelePhones] where TelephoneNumber = @phone and MdVoucherID = @voucherID", sqlConnection);
+                command.Parameters.AddWithValue("@phone", phoneNumber);
+                command.Parameters.AddWithValue("@voucherID", mdVoucherId);
 
-        //        DateTime timeOutDb;
-        //        int resultTimeCompare = 3;
-        //        var sqlConnection = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
-        //        sqlConnection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        isReceived = (bool)reader["IsReceive"];
+                    }
+                }
+                command.ExecuteNonQuery();
+                sqlConnection.Close();
 
-        //        SqlCommand command = new SqlCommand("Select TimeOut from [ApplicationFacebookUsers] where UserId=@userId", sqlConnection);
-        //        command.Parameters.AddWithValue("@userId", userId);
+                if (isReceived == false)
+                {
+                    var sqlConnection2 = new SqlConnection(_sqlConnection);
+                    sqlConnection2.Open();
 
-        //        using (SqlDataReader reader = command.ExecuteReader())
-        //        {
-        //            if (reader.Read())
-        //            {
-        //                timeOutDb = (DateTime)reader["TimeOut"];
-        //                resultTimeCompare = DateTime.Compare(DateTime.Now, timeOutDb);
-        //            }
-        //        }
-        //        command.ExecuteNonQuery();
-        //        sqlConnection.Close();
+                    SqlCommand command2 = new SqlCommand("UPDATE UserTelePhones SET Code = @code Where TelephoneNumber = @phone and MdVoucherID = @voucherID", sqlConnection2);
+                    command2.Parameters.AddWithValue("@phone", phoneNumber);
+                    command2.Parameters.AddWithValue("@code", "timeout");
+                    command2.Parameters.AddWithValue("@voucherID", mdVoucherId);
+                    command2.ExecuteNonQuery();
+                    sqlConnection2.Close();
+                }
 
-        //        if (resultTimeCompare == 1)
-        //        {
-        //            if(payLoad != CommonConstants.ModuleAdminContact)
-        //            {
-        //                SendProactiveMessage(message, userId, pageToken, dTimeOut);
-
-        //                var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
-        //                sqlConnection2.Open();
-
-        //                SqlCommand command2 = new SqlCommand("UPDATE ApplicationFacebookUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
-        //                command2.Parameters.AddWithValue("@userId", userId);
-        //                command2.Parameters.AddWithValue("@predicateName", "");
-        //                command2.Parameters.AddWithValue("@predicateValue", "");
-        //                command2.Parameters.AddWithValue("@isHavePredicate", "0");
-        //                command2.ExecuteNonQuery();
-        //                sqlConnection2.Close();
-        //            }
-        //        }
-        //    }
-        //    private async Task<HttpResponseMessage> SendProactiveMessage(string templateJson, string sender, string pageToken, DateTime dTimeOut)
-        //    {
-        //        HttpResponseMessage res;
-        //        if (!String.IsNullOrEmpty(templateJson))
-        //        {
-        //            templateJson = templateJson.Replace("{{senderId}}", sender);
-        //            templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
-        //            templateJson = Regex.Replace(templateJson, "<br />", "\\n");
-        //            templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
-        //            templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
-        //            templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
-        //            using (HttpClient client = new HttpClient())
-        //            {
-        //                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        //                res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
-        //            }
-        //        }
-        //        return new HttpResponseMessage(HttpStatusCode.OK);
-        //    }
-        //}
-
+            }
+        }
     }
 }

@@ -241,7 +241,7 @@ namespace BotProject.Web.API
                 mdVoucherDb.ExpirationDate = mdVoucherVm.ExpirationDate;
                 mdVoucherDb.CardPayloadID = mdVoucherVm.CardPayloadID;
                 mdVoucherDb.TitlePayload = mdVoucherVm.TitlePayload;
-                mdVoucherDb.MessageError = "Số điện thoại không đúng, bạn vui lòng nhập lại.";
+                mdVoucherDb.MessageError = mdVoucherVm.MessageError;
                 mdVoucherDb.MessageEnd = mdVoucherVm.MessageEnd;
                 mdVoucherDb.Code = mdVoucherVm.Code;
                 mdVoucherDb.Payload = "";
@@ -294,6 +294,7 @@ namespace BotProject.Web.API
                 mdVoucherDb.Title = mdVoucherVm.Title;
                 mdVoucherDb.BotID = mdVoucherVm.BotID;
                 mdVoucherDb.MessageStart = mdVoucherVm.MessageStart;
+                mdVoucherDb.MessageError = mdVoucherVm.MessageError;
                 mdVoucherDb.StartDate = mdVoucherVm.StartDate;
                 mdVoucherDb.ExpirationDate = mdVoucherVm.ExpirationDate;
                 mdVoucherDb.CardPayloadID = mdVoucherVm.CardPayloadID;

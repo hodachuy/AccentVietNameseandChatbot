@@ -349,7 +349,7 @@ namespace BotProject.Web.API_Mobile
                     // Nếu có yêu cầu click thẻ để đi theo luồng
                     if (fbUserDb.IsHaveCardCondition)
                     {
-                        if (text.Contains("postback_card") || text.Contains(_contactAdmin))
+                        if (text.Contains("postback") || text.Contains(_contactAdmin))
                         {
 
                         }
@@ -518,7 +518,7 @@ namespace BotProject.Web.API_Mobile
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName,"", hisVm.Type);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                             AddHistory(hisVm);
@@ -716,7 +716,7 @@ namespace BotProject.Web.API_Mobile
                         if (text.Contains(CommonConstants.ModuleVoucher))
                         {
                             string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName,"", hisVm.Type);
 
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Voucher";

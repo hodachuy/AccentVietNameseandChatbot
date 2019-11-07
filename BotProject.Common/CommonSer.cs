@@ -307,6 +307,17 @@ namespace BotProject.Common
                                 else if (filters[i].Value == "1")
                                     _whereClause.Append("u.Type" + " LIKE N'facebook' AND ");
                             }
+                            else if (filters[i].Field == "u.BranchOTP")
+                            {
+                                if (filters[i].Value == "HCM")
+                                    _whereClause.Append("u.BranchOTP" + " LIKE N'HCM' AND ");
+                                else if (filters[i].Value == "Hà Nội")
+                                    _whereClause.Append("u.BranchOTP" + " LIKE N'Hà Nội' AND ");
+                                else if (filters[i].Value == "Đà Nẵng")
+                                    _whereClause.Append("u.BranchOTP" + " LIKE N'Đà Nẵng' AND ");
+                                else if (filters[i].Value == "Cần Thơ")
+                                    _whereClause.Append("u.BranchOTP" + " LIKE N'Cần Thơ' AND ");
+                            }
                             else
                             {
                                 if (ToSQLOperator(filters[i].Operator) == " LIKE ")
@@ -337,6 +348,17 @@ namespace BotProject.Common
                                     _whereClause.Append("u.Type" + " LIKE N'zalo'");
                                 else if (filters[i].Value == "1")
                                     _whereClause.Append("u.Type" + " LIKE N'facebook'");
+                            }
+                            else if (filters[i].Field == "u.BranchOTP")
+                            {
+                                if (filters[i].Value == "HCM")
+                                    _whereClause.Append("u.BranchOTP" + " LIKE N'HCM'");
+                                else if (filters[i].Value == "Hà Nội")
+                                    _whereClause.Append("u.BranchOTP" + " LIKE N'Hà Nội'");
+                                else if (filters[i].Value == "Đà Nẵng")
+                                    _whereClause.Append("u.BranchOTP" + " LIKE N'Đà Nẵng'");
+                                else if (filters[i].Value == "Cần Thơ")
+                                    _whereClause.Append("u.BranchOTP" + " LIKE N'Cần Thơ'");
                             }
 
                             else if (filters[i].Field == "IsExpired")// cột hiệu lực VBL

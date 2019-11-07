@@ -24,5 +24,6 @@ namespace BotProject.Model.Models
         public string NumberOrder { set; get; }
         public int? MdVoucherID { set; get; }
         public DateTime? CreatedDate { set; get; }
+        public string BranchOTP { set; get; }
     }
 }

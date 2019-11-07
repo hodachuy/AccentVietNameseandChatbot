@@ -155,6 +155,12 @@ $("#btnSaveSettings").on('click', function () {
     BotSetting.IsHaveMaintenance = $('#isHaveMaintenance').val();
     BotSetting.MessageMaintenance = $('#txtMessageMaintenance').val();
 
+    //OTP
+    BotSetting.TimeOutOTP = $('#TimeOutOTP').val();
+    BotSetting.IsHaveTimeoutOTP = $('#isHaveTimeoutOTP').val();
+    BotSetting.MessageTimeoutOTP = $('#txtMessageTimeoutOTP').val();
+
+
     BotSetting.StopWord = strTag;
     BotSetting.TextIntroductory = $("#txtIntro").html();
     BotSetting.IsMDSearch = $("#statusSearch").val();
@@ -288,6 +294,13 @@ $('#isProactiveMessageFacebook').change(function () {
     }
 });
 $('#isHaveMaintenance').change(function () {
+    if ($(this).is(":checked")) {
+        $(this).val('true');
+    } else {
+        $(this).val('false');
+    }
+});
+$('#isHaveTimeoutOTP').change(function () {
     if ($(this).is(":checked")) {
         $(this).val('true');
     } else {

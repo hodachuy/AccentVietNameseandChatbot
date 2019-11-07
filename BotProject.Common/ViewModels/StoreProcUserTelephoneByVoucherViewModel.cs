@@ -23,6 +23,7 @@ namespace BotProject.Common.ViewModels
         public string SerialNumber { set; get; }
         public string NumberOrder { set; get; }
         public string CodeOTP { set; get; }
+        public string BranchOTP { set; get; }
         public int Total { set; get; }
     }
     public class UserTelephoneExport
@@ -42,6 +43,7 @@ namespace BotProject.Common.ViewModels
         public string SerialNumber { set; get; }
         public string NumberOrder { set; get; }
         public string CodeOTP { set; get; }
+        public string BranchOTP { set; get; }
         public int Total { set; get; }
     }
 }

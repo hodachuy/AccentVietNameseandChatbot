@@ -494,6 +494,14 @@
     <Compile Include="Migrations\201910231055152_UpdateUserTelephone2.Designer.cs">
       <DependentUpon>201910231055152_UpdateUserTelephone2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911040323522_UpdateDB_04112019.cs" />
+    <Compile Include="Migrations\201911040323522_UpdateDB_04112019.Designer.cs">
+      <DependentUpon>201911040323522_UpdateDB_04112019.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911040648463_UpdateFBzalo.cs" />
+    <Compile Include="Migrations\201911040648463_UpdateFBzalo.Designer.cs">
+      <DependentUpon>201911040648463_UpdateFBzalo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -867,6 +875,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201910231055152_UpdateUserTelephone2.resx">
       <DependentUpon>201910231055152_UpdateUserTelephone2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911040323522_UpdateDB_04112019.resx">
+      <DependentUpon>201911040323522_UpdateDB_04112019.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911040648463_UpdateFBzalo.resx">
+      <DependentUpon>201911040648463_UpdateFBzalo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

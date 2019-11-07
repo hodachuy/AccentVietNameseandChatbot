@@ -216,7 +216,10 @@ namespace BotProject.Web.Infrastructure.Extensions
             settingDb.ZaloQRCode = settingVm.ZaloQRCode;
 			settingDb.IsHaveMaintenance = settingVm.IsHaveMaintenance;
 			settingDb.MessageMaintenance = settingVm.MessageMaintenance;
-		}
+            settingDb.TimeoutOTP = settingVm.TimeoutOTP;
+            settingDb.IsHaveTimeoutOTP = settingVm.IsHaveTimeoutOTP;
+            settingDb.MessageTimeoutOTP = settingVm.MessageTimeoutOTP;
+        }
         #endregion
 
         #region Module QnA
@@ -300,7 +303,8 @@ namespace BotProject.Web.Infrastructure.Extensions
             fbUser.IsHavePredicate = fbUserVm.IsHavePredicate;
             fbUser.IsProactiveMessage = fbUserVm.IsProactiveMessage;
 			fbUser.EngineerName = fbUserVm.EngineerName;
-			fbUser.TimeOut = fbUserVm.TimeOut;
+            fbUser.BranchOTP = fbUserVm.BranchOTP;
+            fbUser.TimeOut = fbUserVm.TimeOut;
             fbUser.IsHaveCardCondition = fbUserVm.IsHaveCardCondition;
             fbUser.CardConditionPattern = fbUserVm.CardConditionPattern;
 			//fbUser.StartedOn = DateTime.Now;
@@ -320,6 +324,7 @@ namespace BotProject.Web.Infrastructure.Extensions
 			zlUser.TimeOut = zlUserVm.TimeOut;
             zlUser.IsHaveCardCondition = zlUserVm.IsHaveCardCondition;
             zlUser.CardConditionPattern = zlUserVm.CardConditionPattern;
+            zlUser.BranchOTP = zlUserVm.BranchOTP;
             //zlUser.StartedOn = DateTime.Now;
         }
         #endregion

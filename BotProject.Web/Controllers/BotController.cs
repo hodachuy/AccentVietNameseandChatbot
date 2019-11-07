@@ -204,6 +204,7 @@ namespace BotProject.Web.Controllers
                             cSheet.Cells[r, 6].Value = item.SerialNumber;
                             cSheet.Cells[r, 7].Value = item.CreatedDate;
                             cSheet.Cells[r, 8].Value = item.Type;
+                            cSheet.Cells[r, 9].Value = item.BranchOTP;
                             if ((i + 1) % 2 == 0)
                             {
                                 cSheet.Cells[r, 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -222,9 +223,11 @@ namespace BotProject.Web.Controllers
                                 cSheet.Cells[r, 7].Style.Fill.BackgroundColor.SetColor(color);
                                 cSheet.Cells[r, 8].Style.Fill.PatternType = ExcelFillStyle.Solid;
                                 cSheet.Cells[r, 8].Style.Fill.BackgroundColor.SetColor(color);
+                                cSheet.Cells[r, 9].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                                cSheet.Cells[r, 9].Style.Fill.BackgroundColor.SetColor(color);
 
                             }
-                            cSheet.Cells[r, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            cSheet.Cells[r, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                             r++;
                         }
                     }

@@ -49,5 +49,10 @@ namespace BotProject.Web.Models
 		public bool IsHaveMaintenance { set; get; }
 
 		public string MessageMaintenance { set; get; }
-	}
+
+        //OTP
+        public int TimeoutOTP { set; get; }
+        public bool IsHaveTimeoutOTP { set; get; }
+        public string MessageTimeoutOTP { set; get; }
+    }
 }

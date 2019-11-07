@@ -479,6 +479,15 @@ var Columns = [{
         filterable: {
             ui: StatusType
         },
+        width: 100,
+    },
+     {
+        template: '#=data.BranchOTP#',
+        field: "u.BranchOTP",
+        title: "Chi nhánh",
+        filterable: {
+            ui: StatusBranch
+        },
         width: 150,
     }
 
@@ -514,6 +523,30 @@ function StatusType(element) {
         dataTextField: "Text",
         dataValueField: "Type",
         optionLabel: "--Chọn ứng dụng--"
+    });
+}
+
+function StatusBranch(element) {
+    element.kendoDropDownList({
+        dataSource: [{
+            Type: 1,
+            Text: "HCM"
+        }, {
+            Type: 2,
+            Text: "Hà Nội"
+        },
+        {
+            Type: 3,
+            Text: "Đà Nẵng"
+        },
+        {
+            Type: 4,
+            Text: "Cần Thơ"
+        }
+        ],
+        dataTextField: "Text",
+        dataValueField: "BranchOTP",
+        optionLabel: "--Chọn chi nhánh--"
     });
 }
 
@@ -691,6 +724,7 @@ exportExcel = function () {
             Type: item.Type,
             StartDate: startDateEx,
             EndDate: endDateEx,
+            BranchOTP: item.BranchOTP
         });
     }
     console.log(Data)

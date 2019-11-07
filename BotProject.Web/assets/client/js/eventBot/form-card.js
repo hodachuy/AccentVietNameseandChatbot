@@ -3151,6 +3151,7 @@ $(document).ready(function () {
                 }
             },
             callback: function (result) {
+
                 if (result) {
                     if (el.parents('.content').attr('card') == 'text') {
                         if ($('#multi .content').length <= 1) {
@@ -3163,15 +3164,16 @@ $(document).ready(function () {
                         }
                     }
 
-                    if (el.parents('#multi').find('.content').length <= 1) {
-                        $('.card_quickReply').addClass('disable');
-                        $('#wr_reply').hide();
-                        $('#blReply .reply').remove();
-                    }
                     if (el.parents('.content').find('.layer').length <= 1) {
                         el.parents('.content').remove();
                     } else {
                         el.parents('.layer').remove();
+                    }
+
+                    if ($('#multi').find('.content').length == 0) {
+                        $('.card_quickReply').addClass('disable');
+                        $('#wr_reply').hide();
+                        $('#blReply .reply').remove();
                     }
 
                     if (el.parents('.content').attr('card') == 'module') {
@@ -6402,6 +6404,7 @@ $('body').on('click', '#mdVoucherSave', function (event) {
         BotID: $("#botId").val(),
         Title: title,
         MessageStart: msgStart,
+        MessageError: msgError,
         CardPayloadID: cardPayloadID,
         PayloadCard: payloadCard,
         Code: code,
@@ -6497,6 +6500,13 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
         html += '</div>';
 
         html += '<div class="form-group">';
+        html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung nhập OTP</label>';
+        html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+        html += '<textarea id="mdVoucherMsgError" rows="1" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn"></textarea>';
+        html += '</div>';
+        html += '</div>';
+
+        html += '<div class="form-group">';
         html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung trả về thành công</label>';
         html += '<div class="col-md-12 col-sm-12 col-xs-12">';
         html += '<textarea id="mdVoucherMsgEnd" rows="1" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">Cảm ơn bạn, chúng tôi đã tiếp nhận thông tin thành công!</textarea>';
@@ -6578,6 +6588,13 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
             html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung lời chào</label>';
             html += '<div class="col-md-12 col-sm-12 col-xs-12">';
             html += '<textarea id="mdVoucherMsgStart" rows="2" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageStart + '</textarea>';
+            html += '</div>';
+            html += '</div>';
+
+            html += '<div class="form-group">';
+            html += '<label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập nội dung nhập OTP</label>';
+            html += '<div class="col-md-12 col-sm-12 col-xs-12">';
+            html += '<textarea id="mdVoucherMsgError" rows="1" maxlength="640" class="form-control required" placeholder="Nhập nội dung của bạn">' + data.MessageError + '</textarea>';
             html += '</div>';
             html += '</div>';
 

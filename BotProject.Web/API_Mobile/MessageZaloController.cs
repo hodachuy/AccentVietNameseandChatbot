@@ -50,6 +50,11 @@ namespace BotProject.Web.API_Mobile
         string _patternCardPayloadProactive = "";
         string _titleCardPayloadProactive = "🔙 Quay về";
 
+        //OTP
+        int _timeOutOTP = 60;
+        bool _isHaveTimeOutOTP = false;
+        string _messageOTP = "";
+
         string _pathStopWord = System.IO.Path.Combine(PathServer.PathNLR, "StopWord.txt");
         string _stopWord = "";
 
@@ -137,8 +142,7 @@ namespace BotProject.Web.API_Mobile
                 }
                 botId = app3rd.BotID;
                 var settingDb = _settingService.GetSettingByBotID(botId);
-
-                pageToken = app3rd.AccessToken;// PAGE TEST
+                pageToken = settingDb.ZaloPageToken;
 
                 _isHaveTimeOut = settingDb.IsProactiveMessageZalo;
                 _timeOut = settingDb.Timeout;
@@ -149,6 +153,11 @@ namespace BotProject.Web.API_Mobile
                 //tin vắng mặt
                 _messageAbsent = settingDb.MessageMaintenance;
                 _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+
+                //OTP
+                _timeOutOTP = settingDb.TimeoutOTP;
+                _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
+                _messageOTP = settingDb.MessageTimeoutOTP;
 
                 // init stop word
                 _stopWord = settingDb.StopWord;
@@ -180,7 +189,6 @@ namespace BotProject.Web.API_Mobile
             }
 
             // sự kiện người dùng quan tâm
-            // sự kiện người dùng quan tâm
             if (body.Contains("follower"))
             {
                 var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
@@ -203,6 +211,11 @@ namespace BotProject.Web.API_Mobile
                 //tin vắng mặt
                 _messageAbsent = settingDb.MessageMaintenance;
                 _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+
+                //OTP
+                _timeOutOTP = settingDb.TimeoutOTP;
+                _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
+                _messageOTP = settingDb.MessageTimeoutOTP;
 
                 if (settingVm.CardID.HasValue)
                 {
@@ -339,7 +352,7 @@ namespace BotProject.Web.API_Mobile
                     zlUserVm.IsHavePredicate = false;
                     zlUserVm.IsProactiveMessage = false;
                     zlUserVm.TimeOut = dTimeOut;
-                    zlUserVm.CreatedDate = DateTime.Now;
+                    zlUserDb.CreatedDate = DateTime.Now;
                     zlUserDb.StartedOn = dStartedTime;
                     zlUserDb.UpdateZaloUser(zlUserVm);
                     _appZaloUser.Add(zlUserDb);
@@ -353,7 +366,7 @@ namespace BotProject.Web.API_Mobile
                     // Nếu có yêu cầu click thẻ để đi theo luồng
                     if (zlUserDb.IsHaveCardCondition)
                     {
-                        if (text.Contains("postback_card") || text.Contains(_contactAdmin))
+                        if (text.Contains("postback") || text.Contains(_contactAdmin))
                         {
 
                         }
@@ -522,7 +535,7 @@ namespace BotProject.Web.API_Mobile
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, zlUserDb.EngineerName, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, zlUserDb.EngineerName, zlUserDb.BranchOTP, hisVm.Type);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                             AddHistory(hisVm);
@@ -549,9 +562,19 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.CardConditionPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
-                                // send otp
 
-                                return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
+                                // send sms otp
+                                await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
+
+                                // gọi timeout thời gian hủy otp
+                                if (_isHaveTimeOutOTP)
+                                {
+                                    DateTime dTimeOutOTP = DateTime.Now.AddSeconds(_timeOutOTP);
+                                    await ScheduleOTP(sender, telePhoneNumber, mdVoucherId, pageToken, dTimeOutOTP);
+                                }
+
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+
                                 //await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
                                 //return await SendMessage(ZaloTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
                             }
@@ -561,6 +584,24 @@ namespace BotProject.Web.API_Mobile
                         {
                             string mdVoucherId = zlUserDb.PredicateValue;
                             string phoneNumber = zlUserDb.PhoneNumber;
+                            // thẻ gửi lại sms
+                            if (text.Equals("CARD_RESEND_SMS"))
+                            {
+                                var handleMdVoucher = _handleMdService.HandleIsVoucher(phoneNumber, mdVoucherId, zlUserDb.EngineerName, zlUserDb.BranchOTP, hisVm.Type);
+                                if (handleMdVoucher.Status)
+                                {
+                                    // send sms otp
+                                    await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
+                                    // gọi timeout thời gian hủy otp
+                                    if (_isHaveTimeOutOTP)
+                                    {
+                                        DateTime dTimeOutOTP = DateTime.Now.AddSeconds(_timeOutOTP);
+                                        await ScheduleOTP(sender, phoneNumber, mdVoucherId, pageToken, dTimeOutOTP);
+                                    }
+                                    return new HttpResponseMessage(HttpStatusCode.OK);
+                                }
+                                return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
+                            }
                             if (text.Contains("postback_card") || text.Contains(_contactAdmin))
                             {
                                 zlUserDb.IsHavePredicate = false;
@@ -572,7 +613,7 @@ namespace BotProject.Web.API_Mobile
                                 _appZaloUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
                             }
-                            var handleOTP = _handleMdService.HandleIsCheckOTP(text, phoneNumber, mdVoucherId);
+                            var handleOTP = _handleMdService.HandleIsCheckOTP(text, phoneNumber, mdVoucherId, _messageOTP);
                             if (handleOTP.Status)
                             {
                                 zlUserDb.IsHavePredicate = false;
@@ -612,7 +653,6 @@ namespace BotProject.Web.API_Mobile
                             hisVm.UserSay = "[Chat với chuyên viên]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
-
 
                             // Tin nhắn vắng mặt
                             if (_isHaveMessageAbsent)
@@ -668,6 +708,7 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.EngineerName = "";
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
+                            zlUserDb.BranchOTP = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -730,7 +771,7 @@ namespace BotProject.Web.API_Mobile
                         if (text.Contains(CommonConstants.ModuleVoucher))
                         {
                             string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, zlUserDb.EngineerName, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, zlUserDb.EngineerName, zlUserDb.BranchOTP, hisVm.Type);
 
                             zlUserDb.IsHavePredicate = true;
                             zlUserDb.PredicateName = "Voucher";
@@ -773,6 +814,34 @@ namespace BotProject.Web.API_Mobile
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
+
+                // lấy thông tin chi nhánh voucher map id từ tạo thẻ và thêm bên appsetingconfig
+                if (text.Equals(Helper.ReadString("HCM")))
+                {
+                    zlUserDb.BranchOTP = "HCM";
+                    _appZaloUser.Update(zlUserDb);
+                    _appZaloUser.Save();
+                }
+                if (text.Equals(Helper.ReadString("HN")))
+                {
+                    zlUserDb.BranchOTP = "Hà Nội";
+                    _appZaloUser.Update(zlUserDb);
+                    _appZaloUser.Save();
+                }
+                if (text.Equals(Helper.ReadString("DN")))
+                {
+                    zlUserDb.BranchOTP = "Đà Nẵng";
+                    _appZaloUser.Update(zlUserDb);
+                    _appZaloUser.Save();
+                }
+                if (text.Equals(Helper.ReadString("CT")))
+                {
+                    zlUserDb.BranchOTP = "Cần Thơ";
+                    _appZaloUser.Update(zlUserDb);
+                    _appZaloUser.Save();
+                }
+
+
                 // lưu lịch sử
                 if (text.Contains("postback_card"))
                 {
@@ -874,6 +943,17 @@ namespace BotProject.Web.API_Mobile
                         zlUserDb.CardConditionPattern = "";
                         _appZaloUser.Update(zlUserDb);
                         _appZaloUser.Save();
+
+                        // Tin nhắn vắng mặt
+                        if (_isHaveMessageAbsent)
+                        {
+                            if (HelperMethods.IsTimeInWorks() == false)
+                            {
+                                await SendMessageTask(ZaloTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+
                         return new HttpResponseMessage(HttpStatusCode.OK);
 
                         //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
@@ -1360,101 +1440,87 @@ namespace BotProject.Web.API_Mobile
             }
         }
 
+        private static async Task ScheduleOTP(string UserId, string telePhoneNumber, string mdVoucherId, string pageToken, DateTime dTimeOut)
+        {
+            try
+            {
+                // Grab the Scheduler instance from the Factory
+                System.Collections.Specialized.NameValueCollection props = new System.Collections.Specialized.NameValueCollection
+                {
+                    { "quartz.serializer.type", "binary" }
+                };
+                StdSchedulerFactory factory = new StdSchedulerFactory(props);
+                IScheduler scheduler = await factory.GetScheduler();
+                // and start it off
+                await scheduler.Start();
 
-        //public static void Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
-        //{
-        //    // construct a scheduler factory
-        //    ISchedulerFactory schedFact = new StdSchedulerFactory();
+                IJobDetail job = JobBuilder.Create<CancleCodeOtpJob>()
+                     .Build();
+                ITrigger trigger = TriggerBuilder.Create()
+                        .UsingJobData("UserId", UserId)
+                        .UsingJobData("PageToken", pageToken)
+                        .UsingJobData("PhoneNumber", telePhoneNumber)
+                        .UsingJobData("MdVoucherID", mdVoucherId)
+                        .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
+                        .StartAt(dTimeOut.ToLocalTime())
+                        .Build();
+                // Tell quartz to schedule the job using our trigger
+                await scheduler.ScheduleJob(job, trigger);
+            }
+            catch (SchedulerException se)
+            {
 
-        //    // get a scheduler
-        //    IScheduler scheduler = schedFact.GetScheduler();
-        //    scheduler.Start();
+            }
+        }
 
-        //    IJobDetail job = JobBuilder.Create<ProactiveMessageJob>()
-        //         .Build();
-        //    ITrigger trigger = TriggerBuilder.Create()
-        //            //.WithIdentity(triggerName, "ProactiveMsgJob")
-        //            .UsingJobData("UserId", UserId)
-        //            .UsingJobData("Message", strMessage)
-        //            .UsingJobData("PageToken", pageToken)
-        //            .UsingJobData("Payload", modulePayload)
-        //            .UsingJobData("TimeOut", dTimeOut.ToLocalTime().ToString())
-        //            .StartAt(dTimeOut.ToLocalTime())
-        //            .Build();
+        public class CancleCodeOtpJob : IJob
+        {
+            private readonly string Domain = Helper.ReadString("Domain");
+            private readonly string _sqlConnection = Helper.ReadString("SqlConnection");
+            public async Task Execute(IJobExecutionContext context)
+            {
+                JobKey key = context.JobDetail.Key;
+                //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
+                JobDataMap dataMap = context.MergedJobDataMap;
+                string userId = dataMap.GetString("UserId");
+                string pageToken = dataMap.GetString("PageToken");
+                string phoneNumber = dataMap.GetString("PhoneNumber");
+                string mdVoucherId = dataMap.GetString("MdVoucherID");
+                string TimeOut = dataMap.GetString("TimeOut");
+                DateTime dTimeOut = Convert.ToDateTime(TimeOut);
 
-        //    scheduler.ScheduleJob(job, trigger);
-        //}
-        //public class ProactiveMessageJob : IJob
-        //{
-        //    private readonly string Domain = Helper.ReadString("Domain");
-        //    public void Execute(IJobExecutionContext context)
-        //    {
-        //        JobKey key = context.JobDetail.Key;
-        //        //JobDataMap dataMapDefault = context.JobDetail.JobDataMap;
-        //        JobDataMap dataMap = context.MergedJobDataMap;
-        //        string userId = dataMap.GetString("UserId");
-        //        string message = dataMap.GetString("Message");
-        //        string pageToken = dataMap.GetString("PageToken");
-        //        string TimeOut = dataMap.GetString("TimeOut");
-        //        string payLoad = dataMap.GetString("Payload");
-        //        DateTime dTimeOut = Convert.ToDateTime(TimeOut);
+                bool isReceived = false;
+                var sqlConnection = new SqlConnection(_sqlConnection);
+                sqlConnection.Open();
 
-        //        DateTime timeOutDb;
-        //        int resultTimeCompare = 3;
-        //        var sqlConnection = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
-        //        sqlConnection.Open();
+                SqlCommand command = new SqlCommand("Select top 1 * from [UserTelePhones] where TelephoneNumber = @phone and MdVoucherID = @voucherID", sqlConnection);
+                command.Parameters.AddWithValue("@phone", phoneNumber);
+                command.Parameters.AddWithValue("@voucherID", mdVoucherId);
 
-        //        SqlCommand command = new SqlCommand("Select TimeOut from [ApplicationZaloUsers] where UserId=@userId", sqlConnection);
-        //        command.Parameters.AddWithValue("@userId", userId);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        isReceived = (bool)reader["IsReceive"];
+                    }
+                }
+                command.ExecuteNonQuery();
+                sqlConnection.Close();
 
-        //        using (SqlDataReader reader = command.ExecuteReader())
-        //        {
-        //            if (reader.Read())
-        //            {
-        //                timeOutDb = (DateTime)reader["TimeOut"];
-        //                resultTimeCompare = DateTime.Compare(DateTime.Now, timeOutDb);
-        //            }
-        //        }
-        //        command.ExecuteNonQuery();
-        //        sqlConnection.Close();
+                if (isReceived == false)
+                {
+                    var sqlConnection2 = new SqlConnection(_sqlConnection);
+                    sqlConnection2.Open();
 
-        //        if (resultTimeCompare == 1)
-        //        {
-        //            if (payLoad != CommonConstants.ModuleAdminContact)
-        //            {
-        //                SendProactiveMessage(message, userId, pageToken, dTimeOut);
-        //                var sqlConnection2 = new SqlConnection("Data Source=172.16.10.126\\SQL2014;Initial Catalog=BotProject;Integrated Security=False;User Id=qa;Password=SureLMS.SQL2014;MultipleActiveResultSets=True;");
-        //                sqlConnection2.Open();
+                    SqlCommand command2 = new SqlCommand("UPDATE UserTelePhones SET Code = @code Where TelephoneNumber = @phone and MdVoucherID = @voucherID", sqlConnection2);
+                    command2.Parameters.AddWithValue("@phone", phoneNumber);
+                    command2.Parameters.AddWithValue("@code", "timeout");
+                    command2.Parameters.AddWithValue("@voucherID", mdVoucherId);
+                    command2.ExecuteNonQuery();
+                    sqlConnection2.Close();
+                }
 
-        //                SqlCommand command2 = new SqlCommand("UPDATE ApplicationZaloUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate Where UserId=@userId", sqlConnection2);
-        //                command2.Parameters.AddWithValue("@userId", userId);
-        //                command2.Parameters.AddWithValue("@predicateName", "");
-        //                command2.Parameters.AddWithValue("@predicateValue", "");
-        //                command2.Parameters.AddWithValue("@isHavePredicate", "0");
-        //                command2.ExecuteNonQuery();
-        //                sqlConnection2.Close();
-        //            }
-        //        }
-        //    }
-        //    private async Task<HttpResponseMessage> SendProactiveMessage(string templateJson, string sender, string pageToken, DateTime dTimeOut)
-        //    {
-        //        HttpResponseMessage res;
-        //        if (!String.IsNullOrEmpty(templateJson))
-        //        {
-        //            templateJson = templateJson.Replace("{{senderId}}", sender);
-        //            templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
-        //            templateJson = Regex.Replace(templateJson, "<br />", "\\n");
-        //            templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
-        //            templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
-        //            templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
-        //            using (HttpClient client = new HttpClient())
-        //            {
-        //                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        //                res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
-        //            }
-        //        }
-        //        return new HttpResponseMessage(HttpStatusCode.OK);
-        //    }
-        //}
+            }
+        }
     }
 }
