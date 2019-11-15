@@ -11,7 +11,7 @@ var urlQnACreate = "api/qna/create",
 
 var countData = $('.wrap-content .panel.panel-flat').length,
 		limitpage = 5,
-		txtError = 'Lỗi',
+		txtError = 'Lỗi dữ liệu không được để trống',
 		txtAlert = 'Bạn có những từ khóa giống nhau!',
 		txtAlert1 = 'Bạn có chắc chắn muốn xóa nhóm này?',
 		txtAlert2 = 'Bạn có chắc chắn muốn xóa?',
@@ -20,6 +20,9 @@ var countData = $('.wrap-content .panel.panel-flat').length,
 txtbt1 = 'Đồng ý';
 txtbt2 = 'Hủy';var lstCardSelected;
 var TypeAction = "Create";
+
+var positionTagError = 0;
+
 $(document).ready(function () {
     // init load form if have data from db
     new ActionFormQnA().GetQnAnswerById();
@@ -520,6 +523,7 @@ $(document).ready(function () {
                         if (cardID == '' || cardID == undefined || cardID == null) {
                             $(this).addClass('has-error');
                             checkvalid = false;
+                            positionTagError = $(this).offset().top;
                         } else {
                             $(this).parents('.has-error').removeClass('has-error');
                         }
@@ -645,11 +649,16 @@ $(document).ready(function () {
             })
 
         } else {
+
             swal({
                 title: "Error",
                 text: txtError,
                 confirmButtonColor: "#ed4956",
                 type: "error"
+            }, function () {
+               $('html, body').animate({
+                scrollTop: positionTagError
+            }, 'fast');
             });
         }
     })

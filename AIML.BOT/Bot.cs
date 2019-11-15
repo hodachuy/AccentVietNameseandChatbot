@@ -917,6 +917,9 @@ namespace AIMLbot
                         case "image":
                             tagHandler = new AIMLTagHandlers.image(this, user, query, request, result, node);
                             break;
+                        case "file":
+                            tagHandler = new AIMLTagHandlers.file(this, user, query, request, result, node);
+                            break;
                         case "br":
                             tagHandler = new AIMLTagHandlers.br(this, user, query, request, result, node);
                             break;
@@ -952,6 +955,10 @@ namespace AIMLbot
                                     else if (childNode.Name == "image")
                                     {
                                         childNode.InnerXml = childNode.OuterXml.Replace("<image>", "").Replace("</image>", "");
+                                    }
+                                    else if (childNode.Name == "file")
+                                    {
+                                        childNode.InnerXml = childNode.OuterXml.Replace("<file>", "").Replace("</file>", "");
                                     }
                                     else if (childNode.Name == "link")
                                     {

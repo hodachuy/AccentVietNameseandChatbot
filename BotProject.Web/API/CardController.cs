@@ -384,6 +384,21 @@ namespace BotProject.Web.API
                                 _commonCardService.AddImage(imgDb);
                                 _commonCardService.Save();
                             }
+
+                            // File Document
+                            if (message.FileDocumentViewModel != null)
+                            {
+                                var fileDocVm = message.FileDocumentViewModel;
+                                FileDocument fileDocDb = new FileDocument();
+                                fileDocDb.CardID = cardDb.ID;
+                                fileDocDb.BotID = cardVm.BotID;
+                                fileDocDb.Url = fileDocVm.Url;
+                                fileDocDb.Index = fileDocVm.Index;
+                                fileDocDb.TokenZalo = fileDocVm.TokenZalo;
+                                _commonCardService.AddFileDocument(fileDocDb);
+                                _commonCardService.Save();
+                            }
+
                             // module follow card
                             if (message.ModuleFollowCardViewModel != null)
                             {
@@ -720,6 +735,14 @@ namespace BotProject.Web.API
                         {
                             sbAIML.AppendLine("<image>" + itemImg.Url + "</image>");
                             //sw.WriteLine("<image>"+itemImg.Url+"</image>");
+                        }
+                    }
+                    if (card.FileDocuments != null && card.FileDocuments.Count() != 0)
+                    {
+                        foreach (var itemFile in card.FileDocuments)
+                        {
+                            sbAIML.AppendLine("<file>" + itemFile.Url + "</file>");
+                            //sw.WriteLine("<file>"+itemFile.Url+"</file>");
                         }
                     }
                     if (card.ModuleFollowCards != null && card.ModuleFollowCards.Count() != 0)

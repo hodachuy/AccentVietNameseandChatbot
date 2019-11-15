@@ -190,7 +190,7 @@ $(document).ready(function () {
 var chatbot_chk_accent = JSON.parse(localStorage.getItem("cbot_chk_accent"));
 var chatbot_chk_popup = JSON.parse(localStorage.getItem("cbot_chk_popup"));
 function chatbotSetting() {
-    chatbot_chk_accent = false;
+    chatbot_chk_accent = true;
     $('#chk-stt-accent').prop('checked', chatbot_chk_accent);
     $("#chk-stt-popup").prop('checked', chatbot_chk_popup);
 }

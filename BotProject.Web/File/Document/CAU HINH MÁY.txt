@@ -1,0 +1,13 @@
+Dear ch? Nhung!
+
+H? th?ng c?n 2 server d? ch?y ?ng d?ng chatbot
+
+- 1 Server ch?y h? di?u hành Linux cài d?t các ?ng d?ng thu?t toán tìm ki?m bên AI và mongoDB
++ Ram: 8GB
++ HDD: 250GB
++ CPU: 64-bit, 1.4 GHz
+
+- 1 Server ch?y Window Server 2012 R2 cài d?t web qu?n tr? chatbot
++ Ram: 12GB
++ HDD: 250GB
++ CPU: 64-bit, 1.4 GHz

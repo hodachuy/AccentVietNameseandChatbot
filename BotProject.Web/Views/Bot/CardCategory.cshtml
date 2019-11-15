@@ -238,7 +238,7 @@
                         <li class="card_text"><i class="fa fa-file"></i><span>Thẻ văn bản</span></li>
                         <li class="card_list disable"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
                         <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
-                        <li class="card_file disable"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
+                        <li class="card_file"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
                         <li class="card_module"><i class="fa fa-plug"></i><span>Mô-đun</span></li>
                         <li class="card_quickReply"><i class="fab fa-flickr"></i><span>Trả lời nhanh</span></li>
                     </ul>
@@ -268,6 +268,8 @@
 </div>
 @section footerJS{
     <script>
+        var pageTokenZalo = "6xbC0GR1p4ONlK442SxCG1UpHGWErwGzJl1EOIVycbnxnNXB0CceTM7MMcqXoezkRj5IIWhHWLvIpN1k4R6ILtEKKbnZYfXBEuzqTJw9kp0bateJIP6L2bFfP2iau8iNV-zTCXJwb19FycWyKTsp0oZJQZDYwRyhAP1A2pEUcnaff6OXChgk2Kx6VIaXol0jSyeER17hy79nxI1k3VRDU4J8DdapkzXgGw8PAZ-jyYDcZG0WDfMF8NovG6K4kBni794tTm68o4TPgn46QIXAk740tSP8&oaId=1991768888787015631";
+        var pageTokenFacebook = "";
         var lstModule = @Html.Raw(Json.Encode(Model));
         console.log(lstModule)
         function module() {
@@ -283,7 +285,19 @@
             //var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
             //return htmlListModule;
         }
-
+        function loadPageTokenApp3rd(){
+            var param = {
+                botId: $("#botId").val()
+            };
+            var urlTest = "api/setting/getbybotid";
+            var svr = new AjaxCall(urlTest, param);
+            svr.callServiceGET(function (data) {
+                console.log(data)
+                pageTokenZalo = data.ZaloPageToken;
+                pageTokenFacebook = data.FacebookPageToken;
+            });
+        }
+        loadPageTokenApp3rd();
     </script>
     <script src="~/assets/client/js/eventBot/form-card.js"></script>
     <!--Icon Chat-->

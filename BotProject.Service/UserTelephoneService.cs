@@ -14,6 +14,7 @@ namespace BotProject.Service
     {
         IEnumerable<StoreProcUserTelephoneByVoucherViewModel> GetUserTelephoneByVoucher(string filter, string sort, int pageNumber, int pageSize, long? selectedID);
         UserTelePhone GetByPhoneAndMdVoucherId(string phoneNumber, int mdVoucherId);
+        void ChangeStatusNotReceived(UserTelePhone userTelephone);
         void Update(UserTelePhone userTelephone);
         UserTelePhone Create(UserTelePhone userTelephone);
         bool CheckIsReceivedVoucher(string phoneNumber, int mdVoucherId);
@@ -78,6 +79,11 @@ namespace BotProject.Service
         public UserTelePhone GetById(int id)
         {
             return _userTelephoneRepository.GetSingleById(id);
+        }
+
+        public void ChangeStatusNotReceived(UserTelePhone userTelephone)
+        {
+            _userTelephoneRepository.ChangeStatusNotReceived(userTelephone);
         }
     }
 }

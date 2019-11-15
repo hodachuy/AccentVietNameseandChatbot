@@ -19,6 +19,7 @@ namespace BotProject.Data
 		public DbSet<QuickReply> QuickReplys { set; get; }
 		public DbSet<Image> Images { set; get; }
 		public DbSet<FileCard> FileCards { set; get; }
+        public DbSet<FileDocument> FileDocuments { set; get; }
 		public DbSet<Card> Cards { set; get; }
 		public DbSet<TemplateGenericItem> TemplateGenericItems { set; get; }
 		public DbSet<TemplateGenericGroup> TemplateGenericGroups { set; get; }

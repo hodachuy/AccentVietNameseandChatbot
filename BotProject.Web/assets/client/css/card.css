@@ -452,7 +452,7 @@ div.sortable-placeholder {
 
     #multi .layer .wr_button .bt:nth-child(n+3) ~ div.bt,
     #multi .content .layer:nth-child(n+11) ~ div {
-        /*display: none !important;*/
+        display: none !important;
     }
 
     #multi .layer .wr_button .bt .action_bt {
@@ -700,14 +700,14 @@ div.sortable-placeholder {
     }
 
     .blPhone .selectboxit-container .selectboxit {
-        height: 36px;
-        padding: 7px 12px;
+        height: 34px;
+        /*padding: 7px 12px;*/
     }
 
     .blPhone .selectboxit-btn {
-        border-radius: 5px 0 0 5px;
+        /*border-radius: 5px 0 0 5px;*/
         box-shadow: inset 0 1px 3px 0 rgba(0,0,0,.07);
-        // border: 1px solid rgba(0,0,0,.33);
+        /*border: 1px solid rgba(0,0,0,.33);*/
         border-right: 0;
     }
 
@@ -715,6 +715,7 @@ div.sortable-placeholder {
     max-width: 322px;
     border-left: 0 !important;
     border-radius: 0 5px 5px 0 !important;
+    padding-left:40px;
 }
 
 .addCard {

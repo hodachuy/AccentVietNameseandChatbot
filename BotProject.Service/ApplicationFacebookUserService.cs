@@ -1,4 +1,5 @@
-﻿using BotProject.Data.Infrastructure;
+﻿using BotProject.Common.ViewModels;
+using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
 using BotProject.Model.Models;
 using System;
@@ -16,6 +17,7 @@ namespace BotProject.Service
         void Update(ApplicationFacebookUser user);
         bool CheckExistUser(string userId);
         void Save();
+        int CheckDuplicateRequestWithTimeStamp(string timeStamp, string userId);
     }
     public class ApplicationFacebookUserService: IApplicationFacebookUserService
     {
@@ -30,6 +32,11 @@ namespace BotProject.Service
         public ApplicationFacebookUser Add(ApplicationFacebookUser user)
         {
             return _appFacebookRepository.Add(user);
+        }
+
+        public int CheckDuplicateRequestWithTimeStamp(string timeStamp, string userId)
+        {
+            return _appFacebookRepository.CheckDuplicateRequestWithTimeStamp(timeStamp, userId);
         }
 
         public bool CheckExistUser(string userId)

@@ -13,7 +13,7 @@ namespace BotProject.Data.Repositories
     public interface IUserTelephoneRepository : IRepository<UserTelePhone>
     {
         IEnumerable<StoreProcUserTelephoneByVoucherViewModel> GetUserTelephoneByVoucher(string Filter, string Sort, int PageNumber, int PageSize, long? SelectedID = null);
-
+        void ChangeStatusNotReceived(UserTelePhone us);
     }
 
     public class UserTelephoneRepository : RepositoryBase<UserTelePhone>, IUserTelephoneRepository
@@ -35,6 +35,12 @@ namespace BotProject.Data.Repositories
                 "sp_GetUserTelephoneByVoucher @Filter,@Sort,@PageNumber,@PageSize,@SelectedID",
                 parameters);
             return query;
+        }
+        public void ChangeStatusNotReceived(UserTelePhone us)
+        {
+            DbContext.UserTelePhones.Attach(us);
+            DbContext.Entry(us).Property(x => x.IsReceive).IsModified = false;
+            DbContext.Entry(us).Property(x => x.IsDelete).IsModified = true;
         }
     }
 }

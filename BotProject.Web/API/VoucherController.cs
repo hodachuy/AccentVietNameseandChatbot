@@ -10,6 +10,8 @@ using BotProject.Common.ViewModels;
 using System.Web;
 using System.Web.Script.Serialization;
 using BotProject.Common;
+using Newtonsoft.Json.Linq;
+using BotProject.Model.Models;
 
 namespace BotProject.Web.API
 {
@@ -50,6 +52,7 @@ namespace BotProject.Web.API
                     filter += "BotID = " + botIdValue;
                 }
 
+                filter += " AND IsDelete = 0";
                 var lstTelephone = _userTelephoneService.GetUserTelephoneByVoucher(filter, "", page, pageSize, null).ToList();
                 if (lstTelephone.Count() != 0)
                 {
@@ -67,5 +70,31 @@ namespace BotProject.Web.API
                 return response;
             });
         }
+
+        [Route("delete")]
+        [HttpPost]
+        public HttpResponseMessage Delete(HttpRequestMessage request, JObject jsonData)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response;
+                dynamic json = jsonData;
+                int usID = json.userTelephoneId;
+                if (usID == 0)
+                {
+                    return request.CreateResponse(HttpStatusCode.NoContent);
+                }
+                UserTelePhone us = new UserTelePhone();
+                us = _userTelephoneService.GetById(usID);
+                us.IsDelete = true;
+                us.IsReceive = false;
+                _userTelephoneService.Update(us);
+                _userTelephoneService.Save();
+
+                response = request.CreateResponse(HttpStatusCode.OK, true);
+                return response;
+            });
+        }
+
     }
 }

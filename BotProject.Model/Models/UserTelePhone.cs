@@ -25,5 +25,6 @@ namespace BotProject.Model.Models
         public int? MdVoucherID { set; get; }
         public DateTime? CreatedDate { set; get; }
         public string BranchOTP { set; get; }
+        public bool IsDelete { set; get; }
     }
 }

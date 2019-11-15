@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -90,8 +91,6 @@ namespace BotProject.Web.API_Mobile
         private IApplicationThirdPartyService _app3rd;
         //private Bot _bot;
         private User _user;
-
-
         public MessageFbController(IErrorService errorService,
                               IBotService botDbService,
                               ISettingService settingService,
@@ -153,7 +152,6 @@ namespace BotProject.Web.API_Mobile
             var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
             var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
-            //LogError(body);
 
             var app3rd = _app3rd.GetByPageId(value.entry[0].id);
             if (app3rd == null)
@@ -182,9 +180,6 @@ namespace BotProject.Web.API_Mobile
             if (!VerifySignature(signature, body))
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
-            ////Test
-            //var botRequest = new JavaScriptSerializer().Serialize(value);
-            //LogError(botRequest);
 
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
@@ -225,19 +220,19 @@ namespace BotProject.Web.API_Mobile
                 }
                 else if (item.message == null && item.postback != null)
                 {
-                    await ExcuteMessage(item.postback.payload, item.sender.id, botId);
+                    await ExcuteMessage(item.postback.payload, item.sender.id, botId, item.timestamp);
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 }
                 else
                 {
                     if (item.message.quick_reply != null)
                     {
-                        await ExcuteMessage(item.message.quick_reply.payload, item.sender.id, botId);
+                        await ExcuteMessage(item.message.quick_reply.payload, item.sender.id, botId, item.timestamp);
                         return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                     else
                     {
-                        await ExcuteMessage(item.message.text, item.sender.id, botId);
+                        await ExcuteMessage(item.message.text, item.sender.id, botId, item.timestamp);
                         return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                 }
@@ -245,12 +240,24 @@ namespace BotProject.Web.API_Mobile
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-        private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
+        private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId, string timeStamp = "")
         {
+
             if (String.IsNullOrEmpty(text))
             {
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
+
+            //check duplicate request
+            if (!String.IsNullOrEmpty(timeStamp))
+            {
+                var rs = _appFacebookUser.CheckDuplicateRequestWithTimeStamp(timeStamp, sender);
+                if (rs == 4)
+                {
+                    return new HttpResponseMessage(HttpStatusCode.OK);
+                }
+            }
+
             text = HttpUtility.HtmlDecode(text);
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
@@ -289,14 +296,16 @@ namespace BotProject.Web.API_Mobile
 
             DateTime dStartedTime = DateTime.Now;
             DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
+
+            ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
+            fbUserDb = _appFacebookUser.GetByUserId(sender);
+
             try
             {
-                ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
-                fbUserDb = _appFacebookUser.GetByUserId(sender);
 
-                // chat với admin
                 if (fbUserDb != null)
                 {
+                    // chat với admin
                     if (fbUserDb.PredicateName == "Admin_Contact")
                     {
                         var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);

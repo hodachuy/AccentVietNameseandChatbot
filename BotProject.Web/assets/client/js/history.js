@@ -400,18 +400,18 @@ var Columns = [{
         style: "text-align: center"
     },
 },
-    //{
-    //    template: templateForAction,
-    //    filterable: false,
-    //    width: 90,
-    //    title: "Tiện ích",
-    //    attributes: {
-    //        style: "text-align: center; overflow : visible; cursor: pointer",
-    //    },
-    //    headerAttributes: {
-    //        style: "text-align: center"
-    //    },
-    //},
+    {
+        template: templateForAction,
+        filterable: false,
+        width: 90,
+        title: "Tiện ích",
+        attributes: {
+            style: "text-align: center; overflow : visible; cursor: pointer",
+        },
+        headerAttributes: {
+            style: "text-align: center"
+        },
+    },
     {
         template: '#=data.NumberOrder#',
         field: "u.NumberOrder",
@@ -496,6 +496,55 @@ LoadGrid = function () {
     InitVoucherKendoGrid(_idgrid, Columns, new DataSource().MasterDatasource("" + _Host + "api/voucher/gettelephone"), null, false, '')
 }
 
+function templateForAction(e) {
+    var html = '';
+    html += '<div class="btn-group">';
+    html += '<i class="ace-icon fa fa-cog icon-only bigger-120 dropdown-toggle" data-toggle="dropdown"></i>';
+    html += '<ul class="dropdown-menu dropdown-white dropdown-menu-right">';
+    html += '<li style="text-align:center;">';
+    html += '<a href="javascript:new ForumCatg(' + e.ID + ').Delete(\'' + e.TelephoneNumber + '\')">Xóa</a>';
+    html += '</li>';
+    html += '</ul></div>';
+    return html;
+}
+ForumCatg = function (id) {
+    this.Delete = function (phone) {
+        bootbox.confirm({
+            message: "Bạn có chắc muốn xóa số điện thoại này",
+            buttons: {
+                confirm: {
+                    label: "Đồng ý",
+                    className: 'btn-primary'
+                },
+                cancel: {
+                    label: "Hủy",
+                    className: 'btn-default'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    var param = {
+                        userTelephoneId: id
+                    }
+                    var svr1 = new AjaxCall("api/voucher/delete", JSON.stringify(param));
+                    svr1.callServicePOST(function (data) {
+                        if (data != undefined) {
+                            $("#model-notify").modal('hide');
+                            swal({
+                                title: "Thông báo",
+                                text: "Xóa số điện thoại thành công",
+                                confirmButtonColor: "#EF5350",
+                                type: "success"
+                            }, function () { $("#model-notify").modal('show'); });
+                            $('#grid').data('kendoGrid').dataSource.read();
+                            $('#grid').data('kendoGrid').refresh();
+                        }
+                    });
+                }
+            }
+        })
+    }
+}
 function StatusFilter(element) {
     element.kendoDropDownList({
         dataSource: [{
@@ -727,7 +776,6 @@ exportExcel = function () {
             BranchOTP: item.BranchOTP
         });
     }
-    console.log(Data)
     var url = _Host + "Bot/ExcelVoucherView";
     $.ajax({
         url: url,

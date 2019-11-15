@@ -1,0 +1,328 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<aiml>
+  <!-- insert your AIML categories here -->
+  <category>
+    <pattern>CHÀO *</pattern>
+    <template>
+      <srai>CHÀO</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>HI *</pattern>
+    <template>
+      <srai>CHÀO</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>HELLO *</pattern>
+    <template>
+      <srai>CHÀO</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>HEY *</pattern>
+    <template>
+      <srai>CHÀO</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>XIN CHÀO *</pattern>
+    <template>
+      <srai>CHÀO</srai>
+    </template>
+  </category>
+
+  <!-- __________Quy về câu phản hồi random khi chào __________-->
+  <category>
+    <pattern>CHÀO</pattern>
+    <template>
+      <random>
+        <li>
+          Chào bạn! Tôi là chatbot Pháp luật. Ban vui lòng chọn lĩnh vực để được tư vấn?
+          <button class="postback_area">
+                Sở hữu trí tuệ
+          </button>
+
+          <button class="postback_area">
+            Thuế-Phí-Lệ Phí
+          </button>
+
+          <button class="postback_area">
+            Du lịch
+          </button>
+        </li>
+        <li>
+          Mình có thể trả lời các câu hỏi thường gặp về luật. Bạn quan tâm lĩnh vực nào dưới đây?
+           <button class="postback_area">
+                Sở hữu trí tuệ
+          </button>
+
+          <button class="postback_area">
+            Thuế-Phí-Lệ Phí
+          </button>
+
+          <button class="postback_area">
+            Du lịch
+          </button>
+        </li>
+        <li>
+          Bạn có vấn đề cần giải đáp, bạn muốn hỏi về lĩnh vực nào?
+          <button class="postback_area">
+                Sở hữu trí tuệ
+          </button>
+
+          <button class="postback_area">
+            Thuế-Phí-Lệ Phí
+          </button>
+
+          <button class="postback_area">
+            Du lịch
+          </button>
+        </li>
+      </random>
+    </template>
+  </category>
+
+  <!-- __________giới thiệu lĩnh vực tư vấn __________-->
+  <category>
+    <pattern>TEST</pattern>
+    <template>
+      <script>
+        alert('Y');
+      </script>
+    </template>
+  </category>
+
+  <category>
+    <pattern>SHTT</pattern>
+    <template>
+      Lĩnh vực Sở hữu trí tuệ, <!--<set name = "arename"><star/> </set>-->
+      Hiện tại có 23100 văn bản luật và 2600 câu hỏi liên quan đến lĩnh vực bạn quan tâm.
+      Bạn có thể gửi câu hỏi cho tôi?
+    </template>
+  </category>
+
+  <category>
+    <pattern>THUE</pattern>
+    <template>
+      Lĩnh vực
+      Hiện tại có 5100 văn bản luật và 1600 câu hỏi liên quan đến lĩnh vực bạn quan tâm.
+      Bạn vui lòng đặt câu hỏi cho tôi?
+    </template>
+  </category>
+
+  <category>
+    <pattern>DULICH</pattern>
+    <template>
+      Rất tiếc tôi chưa có dữ liệu về lĩnh bạn quan tâm! Ban vui lòng quay lại sau nhé.
+    </template>
+  </category>
+
+  <!-- ______________Trả lời tư vấn _______________-->
+  <!-- call api -->
+
+  <!--______ Not match - truong hop không tìm thấy_________-->
+  <category>
+    <pattern>*</pattern>
+    <template>
+      <random>
+        <li>NOT_MATCH_01</li>
+        <li>NOT_MATCH_02</li>
+        <li>NOT_MATCH_03</li>
+        <li>NOT_MATCH_04</li>
+        <li>NOT_MATCH_05</li>
+        <li>NOT_MATCH_06</li>
+      </random>
+    </template>
+  </category>
+
+  <!-- _________________________________________________  -->
+
+  <category>
+    <pattern>CẢM ƠN</pattern>
+    <template>
+      <random>
+        <li>Không có chi ^^</li>
+        <li>Không có gì đâu ạ.</li>
+      </random>
+    </template>
+  </category>
+
+  <category>
+    <pattern>CẢM ƠN *</pattern>
+    <template>
+      <srai>CẢM ƠN</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>THANK YOU *</pattern>
+    <template>
+      <srai>CẢM ƠN</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>THANK *</pattern>
+    <template>
+      <srai>CẢM ƠN</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>THANKS *</pattern>
+    <template>
+      <srai>CẢM_ƠN</srai>
+    </template>
+  </category>
+
+  <!-- _________________________________________________  -->
+
+  <category>
+    <pattern>TẠM BIỆT</pattern>
+    <template>
+      <random>
+        <li>Hẹn gặp lại.</li>
+        <li>Tạm biệt.</li>
+      </random>
+    </template>
+  </category>
+
+  <category>
+    <pattern>TẠM BIỆT *</pattern>
+    <template>
+      <srai>TẠM BIỆT</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>BYE *</pattern>
+    <template>
+      <srai>TẠM BIỆT</srai>
+    </template>
+  </category>
+
+  <category>
+    <pattern>GOODBYE *</pattern>
+    <template>
+      <srai>TẠM BIỆT</srai>
+    </template>
+  </category>
+
+  <!-- Giới Thiệu, chào hỏi-->
+  <category>
+    <pattern>BẠN LÀ AI *</pattern>
+    <template>Tôi là robot 😊, Tôi có thể giúp gì cho bạn?</template>
+  </category>
+
+  <category>
+    <pattern>BẠN TÊN GÌ *</pattern>
+    <template>Tên tôi là Pháp Luật chatbot, còn bạn?</template>
+  </category>
+
+  <category>
+    <pattern>BẠN TÊN LÀ GÌ *</pattern>
+    <template>Tôi tên là Pháp Luật chatbot, còn bạn?</template>
+  </category>
+
+  <category>
+    <pattern>BẠN BIẾT TÊN TÔI *</pattern>
+    <template>
+      <get name="username1" />
+    </template>
+  </category>
+  <category>
+    <pattern>BẠN CÓ BIẾT TÊN TÔI *</pattern>
+    <template>
+      <get name="username1" />
+    </template>
+  </category>
+
+  <category>
+    <pattern>TÔI TÊN *</pattern>
+    <template>
+      Xin chào <set name = "username1">
+        <star/>
+      </set>
+      ! Cảm ơn bạn đã tham gia tư vấn cùng tôi.
+    </template>
+  </category>
+
+  <category>
+    <pattern>TÊN TÔI LÀ *</pattern>
+    <template>
+      Xin chào <set name = "username1">
+        <star/>
+      </set>
+      ! Cảm ơn bạn đã tham gia tư vấn cùng tôi.
+    </template>
+  </category>
+
+  <!-- Thong tin luật-->
+
+  <category>
+    <pattern>TÔI CÓ VẤN ĐỀ NÀY</pattern>
+    <template>
+      <condition name="problem">
+        <li>Bạn chưa trình bày vấn đề cho tôi biết.</li>
+        <li>
+          Vấn đề về <get name="problem" /> à.
+        </li>
+      </condition>
+    </template>
+  </category>
+  <category>
+    <pattern>TÔI MUỐN HỎI</pattern>
+    <template>
+      <condition name="problem">
+        <li>Bạn chưa trình bày vấn đề cho tôi biết.</li>
+        <li>
+          Vấn đề về <get name="problem" /> à.
+        </li>
+      </condition>
+    </template>
+  </category>
+
+  <category>
+    <pattern>TÔI CÓ VẤN ĐỀ NÀY</pattern>
+    <template>
+      <condition name="problem">
+        <li>Bạn chưa trình bày vấn đề cho tôi biết.</li>
+        <li>
+          Vấn đề về <get name="problem" /> à.
+        </li>
+      </condition>
+    </template>
+  </category>
+
+  <category>
+    <pattern>THÔNG TIN VỀ LUẬT *</pattern>
+    <template>
+      Thông tin chi tiết <set name = "about">
+        <star/>
+      </set>
+      <button>
+        <text>Xem chi tiết</text>
+        <url>http://qa.surelrn.vn/van-ban-phap-luat.html</url>
+      </button>
+    </template>
+  </category>
+
+  <category>
+    <pattern>THÔNG TIN LUẬT *</pattern>
+    <template>
+      Thông tin chi tiết <set name = "about">
+        <star/>
+      </set>
+      <button>
+        <text>Xem chi tiết</text>
+        <url>http://qa.surelrn.vn/van-ban-phap-luat.html</url>
+      </button>
+    </template>
+  </category>
+
+</aiml>

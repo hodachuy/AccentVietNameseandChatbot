@@ -114,6 +114,9 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
+            string outerTagContent = "http://www.foo.com/bar/baz/filename.pdf";
+            string nameFile = new Regex("(?:[^/][\\d\\w\\.]+)$(?<=(?:.jpg)|(?:.pdf)|(?:.gif)|(?:.jpeg)|(more_extension))", RegexOptions.IgnoreCase).Match(outerTagContent).Value;
+
             string _contactAdmin = "chat chuyên viên";
             string text = "chat chuyên viên";
             if (text.Contains("postback") || text.Contains(_contactAdmin))
@@ -221,6 +224,49 @@ namespace Accent.ConsoleApplication
 
 
         private static async Task<HttpResponseMessage> SendMessage(string templateJson, string sender)
+        {
+            string pageToken = "EAAhdfR3uJyYBAC3Af74l0eB92vGj4rom6PZAmIJg32cwwnmPoCmCnr6Hf1Y0ZAxyvbVuPjazIwWi1h4lppZAPbDSLBakjFdojM02Ipk2rOnjvfCTyzBTCwmUv4CZATIxLNflL7cmbkYeZAfuZBf9CgElNyFmKHLdb9gtb5ZAnI1owZDZD";
+            HttpResponseMessage res;
+            if (!String.IsNullOrEmpty(templateJson))
+            {
+                string Domain = "https://bot.surelrn.vn/";
+                templateJson = templateJson.Replace("{{senderId}}", sender);
+                templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
+                templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                }
+            }
+            return new HttpResponseMessage(HttpStatusCode.OK);
+
+        }
+
+        public static JObject GetMessageTemplateImage(string urlImage, string sender)
+        {
+            return JObject.FromObject(
+                 new
+                 {
+                     recipient = new { id = sender },
+                     message = new
+                     {
+                         attachment = new
+                         {
+                             type = "file",
+                             payload = new
+                             {
+                                 is_reusable = true
+                             }
+                         }
+                     },
+                 });
+        }
+
+        private static async Task<HttpResponseMessage> SendMessage2(string templateJson, string sender)
         {
             string pageToken = "EAAhdfR3uJyYBAC3Af74l0eB92vGj4rom6PZAmIJg32cwwnmPoCmCnr6Hf1Y0ZAxyvbVuPjazIwWi1h4lppZAPbDSLBakjFdojM02Ipk2rOnjvfCTyzBTCwmUv4CZATIxLNflL7cmbkYeZAfuZBf9CgElNyFmKHLdb9gtb5ZAnI1owZDZD";
             HttpResponseMessage res;

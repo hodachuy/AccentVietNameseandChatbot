@@ -502,6 +502,26 @@
     <Compile Include="Migrations\201911040648463_UpdateFBzalo.Designer.cs">
       <DependentUpon>201911040648463_UpdateFBzalo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201911070719009_AddFileDocumentAndUpdateUsPhone.cs" />
+    <Compile Include="Migrations\201911070719009_AddFileDocumentAndUpdateUsPhone.Designer.cs">
+      <DependentUpon>201911070719009_AddFileDocumentAndUpdateUsPhone.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911070741322_UpdateFileDoc.cs" />
+    <Compile Include="Migrations\201911070741322_UpdateFileDoc.Designer.cs">
+      <DependentUpon>201911070741322_UpdateFileDoc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911080201475_UpdateCardAddFile.cs" />
+    <Compile Include="Migrations\201911080201475_UpdateCardAddFile.Designer.cs">
+      <DependentUpon>201911080201475_UpdateCardAddFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911080356309_UpdateFileDoc1.cs" />
+    <Compile Include="Migrations\201911080356309_UpdateFileDoc1.Designer.cs">
+      <DependentUpon>201911080356309_UpdateFileDoc1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201911111031225_UpdateFbUser.cs" />
+    <Compile Include="Migrations\201911111031225_UpdateFbUser.Designer.cs">
+      <DependentUpon>201911111031225_UpdateFbUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -514,6 +534,7 @@
     <Compile Include="Repositories\ApplicationUserGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationZaloUserRepository.cs" />
     <Compile Include="Repositories\ButtonModuleRepository.cs" />
+    <Compile Include="Repositories\FileDocumentRepository.cs" />
     <Compile Include="Repositories\FormQuestionAnswerRepository.cs" />
     <Compile Include="Repositories\BotRepository.cs" />
     <Compile Include="Repositories\ButtonLinkRepository.cs" />
@@ -881,6 +902,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911040648463_UpdateFBzalo.resx">
       <DependentUpon>201911040648463_UpdateFBzalo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911070719009_AddFileDocumentAndUpdateUsPhone.resx">
+      <DependentUpon>201911070719009_AddFileDocumentAndUpdateUsPhone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911070741322_UpdateFileDoc.resx">
+      <DependentUpon>201911070741322_UpdateFileDoc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911080201475_UpdateCardAddFile.resx">
+      <DependentUpon>201911080201475_UpdateCardAddFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911080356309_UpdateFileDoc1.resx">
+      <DependentUpon>201911080356309_UpdateFileDoc1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201911111031225_UpdateFbUser.resx">
+      <DependentUpon>201911111031225_UpdateFbUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

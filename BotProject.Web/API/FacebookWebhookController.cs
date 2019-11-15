@@ -191,7 +191,7 @@ namespace BotProject.Web.API
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
-            //BotLog.Info(body);
+            BotLog.Info(body);
 
             _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
             _timeOut = settingDb.Timeout;
@@ -1237,7 +1237,6 @@ namespace BotProject.Web.API
                 }
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
-
         }
 
         private async Task SendMessageTask(string templateJson, string sender)

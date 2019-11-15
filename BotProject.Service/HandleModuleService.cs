@@ -411,6 +411,7 @@ namespace BotProject.Service
                                 {
                                     usTelephone.Code = codeOTP;
                                     usTelephone.IsReceive = false;
+                                    usTelephone.IsDelete = false;
                                     usTelephone.TelephoneNumber = telePhoneNumber;
                                     usTelephone.TypeService = "Voucher";
                                     usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
@@ -455,6 +456,7 @@ namespace BotProject.Service
                                 {
                                     var usT = _userTelephoneService.GetById(strProcUserTelephoneDb.ID);
                                     usT.IsReceive = false;
+                                    usT.IsDelete = false;
                                     usT.Code = codeOTP;
                                     usT.SerialNumber = serialNumber;
                                     if (!String.IsNullOrEmpty(branchOTP))
@@ -557,6 +559,7 @@ namespace BotProject.Service
                     {
                         var usT = _userTelephoneService.GetById(usTelephoneDb.ID);
                         usT.IsReceive = true;
+                        usT.IsDelete = false;
                         _userTelephoneService.Update(usT);
                         _unitOfWork.Commit();
                     }

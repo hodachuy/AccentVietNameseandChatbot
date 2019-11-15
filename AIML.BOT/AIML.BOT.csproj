@@ -52,6 +52,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +68,7 @@
     <Compile Include="AIMLTagHandlers\carousel.cs" />
     <Compile Include="AIMLTagHandlers\condition.cs" />
     <Compile Include="AIMLTagHandlers\date.cs" />
+    <Compile Include="AIMLTagHandlers\file.cs" />
     <Compile Include="AIMLTagHandlers\formal.cs" />
     <Compile Include="AIMLTagHandlers\gender.cs" />
     <Compile Include="AIMLTagHandlers\get.cs" />

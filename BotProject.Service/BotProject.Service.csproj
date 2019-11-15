@@ -97,6 +97,7 @@
     <Compile Include="CommonCardService.cs" />
     <Compile Include="ErrorService.cs" />
     <Compile Include="FileCardService.cs" />
+    <Compile Include="FileDocumentService.cs" />
     <Compile Include="GroupCardService.cs" />
     <Compile Include="HandleModuleService.cs" />
     <Compile Include="HistoryService.cs" />

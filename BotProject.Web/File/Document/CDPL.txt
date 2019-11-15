@@ -1,0 +1,28 @@
+﻿
+khoang san
+Loai 1: 2 sọc lớn bên trái
+ <div style="border-left:4.5pt double windowtext;margin-left:28.35pt;margin-right:0in;padding:0in 0in 0in 4pt;">
+Loai 2 : 2 sọc nhỏ bên trái
+<div style="border-left:2.5pt double windowtext;margin-left:56.7pt;margin-right:0in;padding:0in 0in 0in 4pt;"> 
+
+
+
+Loại 3: Table cke_show_border k-table  BVMT , DN
+Loại 4: Table k-table                  BVMT, DN
+
+Dau tu
+Loại 5:<div style="mso-element:para-border-div;border:solid windowtext 1.0pt;mso-border-alt:solid windowtext .5pt;padding:1.0pt 4.0pt 1.0pt 4.0pt;background:#C9C9C9;">
+
+  var editor = $(this).data("kendoEditor");
+                     var storedRange = editor.getRange();
+                     console.log(storedRange)
+
+                     var selectRange = editor.getSelection().toString();
+
+                     var customHtml = "<a href=" + 'h1' + ">" + selectRange + "</a>"
+
+
+
+                     editor.selectRange(storedRange);
+                     editor.exec("inserthtml", { value: customHtml });
+                 

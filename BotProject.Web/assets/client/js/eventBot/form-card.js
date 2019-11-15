@@ -5,8 +5,8 @@ var botId = $("#botId").val();
 var srcFolderImg = "https://platform.messnow.com/",
         srcAddImg = "api/file/create",
         srcRmImg = "api/file/delete",
-        srcAddFile = "/bots/addFile/227697874709279",
-        srcRmFile = "/bots/rmFile/227697874709279",
+        srcAddFile = "api/file/createByMedia";//"/bots/addFile/227697874709279",
+        srcRmFile = "api/file/deleteByMedia";//"/bots/rmFile/227697874709279",
         ajaxSave = "/bots/saveCard",
         urlBuild = "/bots/build/5c00dc63c941482ab456a090",
         srcRmcard = "/bots/rmCard",
@@ -281,6 +281,9 @@ $(document).ready(function () {
                                     name_card = obj_card_payload[0].Name;
                                 }
                                 var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="postback" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
+                                if (value.Type == "phone_number") {
+                                    contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="phone_number" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct" region="84">' + value.Payload + '</p></div>';
+                                }
                                 var objBtn = {
                                     "idx": value.Index,
                                     "contentHTML": contentBtn
@@ -410,6 +413,36 @@ $(document).ready(function () {
             //$("#multi").append(tempImage);
         }
 
+        //file document
+        if (data.FileDocuments.length != 0) {
+            $.each(data.FileDocuments, function (index, value) {
+                var tempFileDoc = '';
+                tempFileDoc += '<div class="content" card="file" data-index="' + value.Index + '">';
+                tempFileDoc += '<div class="bt_move_vertical">';
+                tempFileDoc += '<i class="icon-x fa fa-times"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i>';
+                tempFileDoc += '</div>';
+                tempFileDoc += '<div class="layer tile">';
+                tempFileDoc += '<div class="bt_move_horizontal">';
+                tempFileDoc += '<div class="layer_rm">';
+                tempFileDoc += '<i class="icon-bin fa fa-trash"></i>';
+                tempFileDoc += '</div>';
+                tempFileDoc += '</div>';
+                tempFileDoc += '<div class="wr_file">';
+                tempFileDoc += '<input class="input_file1" type="file">';
+                tempFileDoc += '<div class="click_input_file1"><i class="icon-attachment fa fa-paperclip"></i>';
+                tempFileDoc += '<br><span attachment_id="0" token_file_zalo = "' + value.TokenZalo + '" token_file_facebook = "' + value.TokenFacebook + '">' + _Host + value.Url + '</span>';
+                tempFileDoc += '<span class="hide hasFile"><a class="file-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>Thay thế</a><a class="file-rm"><i class="icon-cross2 fa fa-times"></i><br>Xóa</a></span>';
+                tempFileDoc += '</div></div></div>';
+
+                var objCard = {
+                    "idx": value.Index,
+                    "contentHTML": tempFileDoc
+                }
+                arrCardContent.push(objCard);
+            })
+            //$("#multi").append(tempImage);
+        }
+
         //module follow card
         var moduleName;
         var mdGetInfoPatientID = 0;
@@ -483,6 +516,9 @@ $(document).ready(function () {
                             name_card = obj_card_payload[0].Name;
                         }
                         var contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="postback"><p class="bt_title">' + value.Title + '</p><p class="bt_ct"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></p></div>';
+                        if (value.Type == "phone_number") {
+                            contentBtn = '<div class="bt" data-index="' + value.Index + '" type-button="phone_number" ><p class="bt_title">' + value.Title + '</p><p class="bt_ct" region="84">' + value.Payload + '</p></div>';
+                        }
                         var objBtn = {
                             "idx": value.Index,
                             "contentHTML": contentBtn
@@ -591,9 +627,17 @@ $(document).ready(function () {
                 if (obj_card_payload.length != 0) {
                     name_card = obj_card_payload[0].Name;
                 }
-                tempQuickReply += '<li class="reply" draggable="true"  data-index="' + value.Index + '" ><div class="reply_action"><div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div><div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div></div><div class="wr_reply_btcontent" attr-reply="postback"><div class="name-button no-img">' + value.Title + '</div><div class="reply_btcontent"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></div></div></li>'
+                var template = '<li class="reply" draggable="true"  data-index="' + value.Index + '" ><div class="reply_action"><div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div><div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div></div><div class="wr_reply_btcontent" attr-reply="postback"><div class="name-button no-img">' + value.Title + '</div><div class="reply_btcontent"><span postback-id="' + value.CardPayloadID + '">' + name_card + '</span></div></div></li>';
+                if (value.ContentType == "user_phone_number") {
+                    template = '<li class="reply" draggable="true"  data-index="' + value.Index + '" ><div class="reply_action"><div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div><div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div></div><div class="wr_reply_btcontent" attr-reply="user_phone_number"><div class="name-button no-img">' + value.Title + '</div><div class="reply_btcontent">Nút "số điện thoại" cho phép người dùng gửi số điện thoại của mình lên cho bot</div></div></li>';
+                } else if (value.ContentType == "user_email") {
+                    template = '<li class="reply" draggable="true"  data-index="' + value.Index + '" ><div class="reply_action"><div class="reply_rm"><i class="icon-bin fa fa-trash"></i></div><div class="reply_move"><i class="icon-move fa fa-arrows-alt"></i></div></div><div class="wr_reply_btcontent" attr-reply="user_email"><div class="name-button no-img">' + value.Title + '</div><div class="reply_btcontent">Nút "email" cho phép người dùng gửi email của mình lên cho bot</div></div></li>';
+                }
+                tempQuickReply += template;
             })
+
             tempQuickReply += '<li class="add_reply"><div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div></li>';
+
             $("#blReply").empty().append(tempQuickReply);
 
             $('#blReply').sortable('destroy');
@@ -1292,6 +1336,18 @@ $(document).ready(function () {
                                         "payload": $(this).find('.bt_ct').text()
                                     }
                                     buttons.push(button_object);
+
+
+                                    //database_sql
+                                    btn_object_sql = {
+                                        "Type": "phone_number",
+                                        "Title": $(this).find('.bt_title').text(),
+                                        "Payload": $(this).find('.bt_ct').text(),
+                                        "CardPayloadID": payload_id,
+                                        "Index": $(this).attr('data-index')
+                                    }
+                                    button_postbacks_sql.push(btn_object_sql);
+
                                 } else if ($(this).attr('type-button') == 'element_share') {
                                     button_object = {
                                         "type": "element_share"
@@ -1695,6 +1751,16 @@ $(document).ready(function () {
                                         "payload": $(this).find('.bt_ct').text()
                                     }
                                     buttons.push(button_object);
+
+                                    //database_sql
+                                    btn_object_sql = {
+                                        "Type": "phone_number",
+                                        "Title": $(this).find('.bt_title').text(),
+                                        "Payload": $(this).find('.bt_ct').text(),
+                                        "CardPayloadID": payload_id,
+                                        "Index": $(this).attr('data-index')
+                                    }
+                                    button_postbacks_sql.push(btn_object_sql);
                                 } else if ($(this).attr('type-button') == 'element_share') {
                                     button_object = {
                                         "type": "element_share"
@@ -1887,7 +1953,7 @@ $(document).ready(function () {
 
                         var payload = '';
                         // if($(this).find('.wr_file').attr('attachment_id')==null){
-                        var srcVideo = $(this).find('.wr_file').find('.click_input_file1 span').text();
+                        var srcVideo = $(this).find('.wr_file').find('.click_input_file1 span').eq(0).text().replace(/\"/gi, "").replace('' + _Host + '', '');
                         payload = { "url": srcVideo };
                         // }else{
                         //     payload = {"attachment_id": $(this).find('.wr_file').attr('attachment_id')};
@@ -1898,7 +1964,19 @@ $(document).ready(function () {
                         //     listUpdate.push(arAt);
                         // }
 
-                        var srcVideo = $(this).find('.wr_file').find('.click_input_file1 span').text();
+                        var srcVideo = $(this).find('.wr_file').find('.click_input_file1 span').eq(0).text().replace(/\"/gi, "").replace('' + _Host + '', '');
+                        //var template_file = {
+                        //    "recipient": {
+                        //        "id": "{{senderId}}"
+                        //    },
+                        //    "message": {
+                        //        "attachment": {
+                        //            "type": type_card,
+                        //            "payload": payload
+                        //        }
+                        //    }
+                        //};
+                        //card.push(template_file);
                         var template_file = {
                             "recipient": {
                                 "id": "{{senderId}}"
@@ -1906,12 +1984,43 @@ $(document).ready(function () {
                             "message": {
                                 "attachment": {
                                     "type": type_card,
-                                    "payload": payload
+                                    "payload": {
+                                        "attachment_id": $(this).find('.wr_file').find('.click_input_file1 span').attr("token_file_facebook"),
+                                    }
                                 }
                             }
                         };
                         card.push(template_file);
+
+                        //zalo
+                        var zalo_template_file = {
+                            "recipient": {
+                                "user_id": "{{senderId}}"
+                            },
+                            "message": {
+                                "attachment": {
+                                    "type": type_card,
+                                    "payload": {
+                                        "token": $(this).find('.wr_file').find('.click_input_file1 span').attr("token_file_zalo")
+                                    }
+                                }
+                            }
+                        };
+                        card_zalo.push(zalo_template_file);
+
+                       var template_file_sql = {
+                            "Message": {
+                                "FileDocumentViewModel": {
+                                    "Url": srcVideo,
+                                    "Index": $(this).attr('data-index'),
+                                    "TokenZalo": $(this).find('.wr_file').find('.click_input_file1 span').attr("token_file_zalo"),
+                                    "TokenFacebook": $(this).find('.wr_file').find('.click_input_file1 span').attr("token_file_facebook")
+                                }
+                            }
+                        };
+                       card_sql.push(template_file_sql);
                     }
+
                 } else if ($(this).attr('card') == 'module') {
                     var modExt = '';
                     var elRadio = '';
@@ -2248,9 +2357,31 @@ $(document).ready(function () {
                 } else if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'user_phone_number') {
                     obj_quickReply = { "content_type": "user_phone_number" };
                     ar_quickReply.push(obj_quickReply);
+
+                    obj_quickReply_sql = {
+                        "ContentType": "user_phone_number",
+                        "Title": "Số điện thoại",
+                        "Payload": "",
+                        "CardPayloadID": "",
+                        "Index": $(this).attr('data-index'),
+                        "Icon": ""
+                    };
+                    ar_quickReply_sql.push(obj_quickReply_sql);
+
                 } else if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'user_email') {
                     obj_quickReply = { "content_type": "user_email" };
                     ar_quickReply.push(obj_quickReply);
+
+                    obj_quickReply_sql = {
+                        "ContentType": "user_email",
+                        "Title": "Email",
+                        "Payload": "",
+                        "CardPayloadID": "",
+                        "Index": $(this).attr('data-index'),
+                        "Icon": ""
+                    };
+                    ar_quickReply_sql.push(obj_quickReply_sql);
+
                 } else if ($(this).find('.wr_reply_btcontent').attr('attr-reply') == 'postback') {
                     if ($(this).find('.wr_reply_btcontent').children('i').length > 0) {
                         if (typeof $(this).find('.wr_reply_btcontent').children('i').attr('attachment_id') !== typeof undefined
@@ -2678,17 +2809,21 @@ $(document).ready(function () {
     });
     $('.card_file').click(function (event) {
         var str_audio = '<div class="content" card="file" data-index="">' +
-                '<div class="bt_move_vertical"><i class="icon-x fa fa-times"></i><i class=" icon-arrow-up13 fa fa-arrow-up "></i><i class="icon-arrow-down132 fa fa-arrow-down "></i></div>' +
+                '<div class="bt_move_vertical">' +
+                    '<i class="icon-x fa fa-times"></i>' +
+                    '<i class=" icon-arrow-up13 fa fa-arrow-up "></i>' +
+                    '<i class="icon-arrow-down132 fa fa-arrow-down "></i>' +
+                '</div>' +
                 '<div class="layer tile">' +
                     '<div class="bt_move_horizontal">' +
                         '<div class="layer_rm"><i class="icon-bin fa fa-trash"></i></div>' +
                     '</div>' +
                     '<div class="wr_file">' +
-                        '<input class="input_file1" type="file" accept=".pdf">' +
+                        '<input class="input_file1" type="file">' +//accept=".pdf"
                         '<div class="click_input_file1">' +
                             '<i class="icon-attachment fa fa-paperclip"></i><br>' +
                             '<span>' + txtCard13 + '</span></div>' +
-                        '<span class="hidden">' +
+                        '<span class="hide">' +
                             '<a class="file-rp"><i class="icon-rotate-ccw3 fa fa-exchange-alt"></i><br>' + txtCard15 + '</a>' +
                             '<a class="file-rm"><i class="icon-cross2 fa fa-times"></i><br>' + txtCard16 + '</a>' +
                         '</span>' +
@@ -3981,30 +4116,75 @@ $(document).ready(function () {
             extend_suport = 'video/*';
         }
 
-        if (file && file.type.match(extend_suport) && file.size <= 1048576 * 10
-            || file.type == 'application/pdf') {
+        if (file && file.type.match(extend_suport) && file.size <= 1048576 * 10) {// || file.type == 'application/pdf'
             el.parents('.layer').removeClass('error');
             el.parents('.wr_file').append('<div class="img-loading"><i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i></div>');
+            //data = new FormData();
+            //data.append('file', file);
+            //data.append('botId', botId);
+            //data.append('type', el.parents('.content').attr('card'));
+            var fb_attachment_id = "";
+
+            var msg = "message={\"attachment\":{\"type\":\"file\", \"payload\":{\"is_reusable\":true}}}";
+            var urlFb = "https://graph.facebook.com/v5.0/me/message_attachments?access_token=" + pageTokenFacebook + "&" + msg + "";
             data = new FormData();
             data.append('file', file);
-            data.append('botId', botId);
-            data.append('type', el.parents('.content').attr('card'));
             $.ajax({
-                url: srcAddFile,
+                url: urlFb,
                 type: "POST",
                 data: data,
-                enctype: 'multipart/form-data',
                 processData: false,
-                contentType: false
-            })
-            .done(function (val) {
-                val = JSON.parse(val);
-                el.parents('.wr_file').find('.click_input_file1 span').html(val.url);
-                el.parents('.wr_file').find('.click_input_file1 span').attr('attachment_id', val.attachment_id);
-                el.parents('.wr_file').find('.hide').addClass('hasFile');
-                setTimeout(function () {
-                    el.parents('.wr_file').find('.img-loading').remove();
-                }, 500);
+                contentType: false               
+            }).done(function (result) {
+                console.log(result)
+                fb_attachment_id = result.attachment_id;
+                if (pageTokenZalo == "") {
+                    alert("Vui lòng add token zalo")
+                    return false;
+                }
+                var urlT = "https://openapi.zalo.me/v2.0/oa/upload/file?access_token=" + pageTokenZalo + "";
+                data = new FormData();
+                data.append('file', file);
+                $.ajax({
+                    url: urlT,
+                    type: "POST",
+                    data: data,
+                    enctype: 'multipart/form-data',
+                    processData: false,
+                    contentType: false
+                }).done(function (result) {
+                    if (result.message = "Succes") {
+                        data = new FormData();
+                        data.append('file', file);
+                        data.append('botId', botId);
+                        data.append('type', JSON.stringify(el.parents('.content').attr('card')));
+
+                        $.ajax({
+                            url: _Host + srcAddFile,
+                            type: "POST",
+                            data: data,
+                            enctype: 'multipart/form-data',
+                            processData: false,
+                            contentType: false
+                        })
+                        .done(function (val) {
+                            //val = JSON.parse(val);
+                            console.log(val)
+                            val.Url = _Host + val.Url;
+                            el.parents('.wr_file').find('.click_input_file1 span').html(val.Url);
+                            el.parents('.wr_file').find('.click_input_file1 span').attr('attachment_id', val.ID);
+                            el.parents('.wr_file').find('.click_input_file1 span').attr('token_file_zalo', result.data.token);
+                            el.parents('.wr_file').find('.click_input_file1 span').attr('token_file_facebook', fb_attachment_id);
+                            el.parents('.wr_file').find('.hide').addClass('hasFile');
+                            setTimeout(function () {
+                                el.parents('.wr_file').find('.img-loading').remove();
+                            }, 500);
+                        })
+                    } else {
+                        alert(result.message)
+                    }
+                    console.log(result)
+                })
             })
         } else {
             el.parents('.layer').addClass('error');
@@ -4020,21 +4200,45 @@ $(document).ready(function () {
             text_upload = txtCard13;
         }
 
+        var path = elrm.parents('.wr_file').find('.click_input_file1 span').text();
+        path = path.replace("url(", "").replace(")", "").replace("\"", "").replace("\"", "");
+        var id = elrm.parents('.wr_file').find('.click_input_file1 span').attr('attachment_id');
 
-        $.ajax({
-            url: srcRmFile,
-            method: "POST",
-            data: {
-                url: elrm.parents('.wr_file').find('.click_input_file1 span').text(),
-                attachment_id: elrm.parents('.wr_file').find('.click_input_file1 span').attr('attachment_id')
-            }
-        }).done(function (val) {
-            if (val == 1) {
+        if (id == 0) {
+            elrm.parents('.wr_file').find('.input_file1').val('');
+            elrm.parents('.wr_file').find('.click_input_file1 span').html(text_upload);
+            elrm.parents('.wr_file').find('.hide').removeClass('hasFile');
+            return false;
+        }
+
+        var fileMedia = {
+            ID: id,
+            Path: path
+        }
+
+        var svr = new AjaxCall(srcRmFile, JSON.stringify(fileMedia));
+        svr.callServicePOST(function (data) {
+            if (data == 1) {
                 elrm.parents('.wr_file').find('.input_file1').val('');
                 elrm.parents('.wr_file').find('.click_input_file1 span').html(text_upload);
                 elrm.parents('.wr_file').find('.hide').removeClass('hasFile');
             }
-        })
+        });
+
+        //$.ajax({
+        //    url: _Host + srcRmFile,
+        //    method: "POST",
+        //    data: {
+        //        url:elrm.parents('.wr_file').find('.click_input_file1 span').text(),
+        //        attachment_id: elrm.parents('.wr_file').find('.click_input_file1 span').attr('attachment_id')
+        //    }
+        //}).done(function (val) {
+        //    if (val == 1) {
+        //        elrm.parents('.wr_file').find('.input_file1').val('');
+        //        elrm.parents('.wr_file').find('.click_input_file1 span').html(text_upload);
+        //        elrm.parents('.wr_file').find('.hide').removeClass('hasFile');
+        //    }
+        //})
     })
     $('body').on('click', '.file-rp', function (event) {
         $(this).siblings('a').trigger('click');

@@ -1,0 +1,830 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+/* carousel */
+#quote-carousel 
+{
+  padding: 0 10px 30px 10px;
+  margin-top: 30px 0px 0px;
+}
+
+/* Control buttons  */
+#quote-carousel .carousel-control
+{
+  background: none;
+  color: #222;
+  font-size: 2.3em;
+  text-shadow: none;
+  margin-top: 30px;
+}
+/* Previous button  */
+#quote-carousel .carousel-control.left 
+{
+  left: -12px;
+}
+/* Next button  */
+#quote-carousel .carousel-control.right 
+{
+  right: -12px !important;
+}
+/* Changes the position of the indicators */
+#quote-carousel .carousel-indicators 
+{
+  right: 50%;
+  top: auto;
+  bottom: 0px;
+  margin-right: -19px;
+}
+/* Changes the color of the indicators */
+#quote-carousel .carousel-indicators li 
+{
+  background: #c0c0c0;
+}
+#quote-carousel .carousel-indicators .active 
+{
+  background: #333333;
+}
+#quote-carousel img
+{
+  width: 250px;
+  height: 100px
+}
+/* End carousel */
+
+.item blockquote {
+    border-left: none; 
+    margin: 0;
+}
+
+.item blockquote img {
+    margin-bottom: 10px;
+}
+
+.item blockquote p:before {
+    content: "\f10d";
+    font-family: 'Fontawesome';
+    float: left;
+    margin-right: 10px;
+}
+
+
+
+/**
+  MEDIA QUERIES
+*/
+
+/* Small devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+    #quote-carousel 
+    {
+      margin-bottom: 0;
+      padding: 0 40px 30px 40px;
+      margin-top: 30px;
+    }
+    
+}
+
+
+/* Small devices (tablets, up to 768px) */
+@media (max-width: 768px) { 
+    
+    /* Make the indicators larger for easier clicking with fingers/thumb on mobile */
+    
+    #quote-carousel .carousel-indicators {
+        bottom: -20px !important;  
+    }
+    #quote-carousel .carousel-indicators li {
+        display: inline-block;
+        margin: 0px 5px;
+        width: 15px;
+        height: 15px;
+    }
+    #quote-carousel .carousel-indicators li.active {
+        margin: 0px 5px;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*!
+ * Bootstrap v3.1.1 (https://getbootstrap.com)
+ * Copyright 2011-2014 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ */
+
+/*! normalize.css v3.0.0 | MIT License | git.io/normalize */
+
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+*:before,
+*:after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+.img-circle {
+  border-radius: 50%;
+}
+
+.carousel {
+  position: relative;
+}
+.carousel-inner {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+.carousel-inner > .item {
+  display: none;
+  position: relative;
+  -webkit-transition: 0.6s ease-in-out left;
+  transition: 0.6s ease-in-out left;
+}
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img {
+  line-height: 1;
+}
+.carousel-inner > .active,
+.carousel-inner > .next,
+.carousel-inner > .prev {
+  display: block;
+}
+.carousel-inner > .active {
+  left: 0;
+}
+.carousel-inner > .next,
+.carousel-inner > .prev {
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.carousel-inner > .next {
+  left: 100%;
+}
+.carousel-inner > .prev {
+  left: -100%;
+}
+.carousel-inner > .next.left,
+.carousel-inner > .prev.right {
+  left: 0;
+}
+.carousel-inner > .active.left {
+  left: -100%;
+}
+.carousel-inner > .active.right {
+  left: 100%;
+}
+.carousel-control {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 15%;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+  font-size: 20px;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.carousel-control.left {
+  background-image: -webkit-linear-gradient(left, color-stop(rgba(0, 0, 0, 0.5) 0%), color-stop(rgba(0, 0, 0, 0.0001) 100%));
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.0001) 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#80000000', endColorstr='#00000000', GradientType=1);
+}
+.carousel-control.right {
+  left: auto;
+  right: 0;
+  background-image: -webkit-linear-gradient(left, color-stop(rgba(0, 0, 0, 0.0001) 0%), color-stop(rgba(0, 0, 0, 0.5) 100%));
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.0001) 0%, rgba(0, 0, 0, 0.5) 100%);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00000000', endColorstr='#80000000', GradientType=1);
+}
+.carousel-control:hover,
+.carousel-control:focus {
+  outline: none;
+  color: #ffffff;
+  text-decoration: none;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+}
+.carousel-control .icon-prev,
+.carousel-control .icon-next,
+.carousel-control .glyphicon-chevron-left,
+.carousel-control .glyphicon-chevron-right {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  display: inline-block;
+}
+.carousel-control .icon-prev,
+.carousel-control .glyphicon-chevron-left {
+  left: 50%;
+}
+.carousel-control .icon-next,
+.carousel-control .glyphicon-chevron-right {
+  right: 50%;
+}
+.carousel-control .icon-prev,
+.carousel-control .icon-next {
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  font-family: serif;
+}
+.carousel-control .icon-prev:before {
+  content: '\2039';
+}
+.carousel-control .icon-next:before {
+  content: '\203a';
+}
+.carousel-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  z-index: 15;
+  width: 60%;
+  margin-left: -30%;
+  padding-left: 0;
+  list-style: none;
+  text-align: center;
+}
+.carousel-indicators li {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 1px;
+  text-indent: -999px;
+  border: 1px solid #ffffff;
+  border-radius: 10px;
+  cursor: pointer;
+  background-color: #000 \9;
+  background-color: rgba(0, 0, 0, 0);
+}
+.carousel-indicators .active {
+  margin: 0;
+  width: 12px;
+  height: 12px;
+  background-color: #ffffff;
+}
+.carousel-caption {
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  bottom: 20px;
+  z-index: 10;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.carousel-caption .btn {
+  text-shadow: none;
+}
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+@media screen and (min-width: 768px) {
+  .carousel-control .glyphicon-chevron-left,
+  .carousel-control .glyphicon-chevron-right,
+  .carousel-control .icon-prev,
+  .carousel-control .icon-next {
+    width: 30px;
+    height: 30px;
+    margin-top: -15px;
+    margin-left: -15px;
+    font-size: 30px;
+  }
+  .carousel-caption {
+    left: 20%;
+    right: 20%;
+    padding-bottom: 30px;
+  }
+  .carousel-indicators {
+    bottom: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  .container {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  .container {
+    width: 1170px;
+  }
+}
+.container-fluid {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.row {
+  margin-left: -15px;
+  margin-right: -15px;
+}
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+  position: relative;
+  min-height: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+@media (min-width: 768px) {
+  .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12 {
+    float: left;
+  }
+  .col-sm-12 {
+    width: 100%;
+  }
+  .col-sm-11 {
+    width: 91.66666667%;
+  }
+  .col-sm-10 {
+    width: 83.33333333%;
+  }
+  .col-sm-9 {
+    width: 75%;
+  }
+  .col-sm-8 {
+    width: 66.66666667%;
+  }
+  .col-sm-7 {
+    width: 58.33333333%;
+  }
+  .col-sm-6 {
+    width: 50%;
+  }
+  .col-sm-5 {
+    width: 41.66666667%;
+  }
+  .col-sm-4 {
+    width: 33.33333333%;
+  }
+  .col-sm-3 {
+    width: 25%;
+  }
+  .col-sm-2 {
+    width: 16.66666667%;
+  }
+  .col-sm-1 {
+    width: 8.33333333%;
+  }
+}
+
+
+
+blockquote {
+padding: 10px 20px;
+margin: 0 0 20px;
+border-left: 5px solid #EEE;
+}
+.text-center {
+text-align: center;
+}
+
+<link href="~/Content/common.css" rel="stylesheet" />
+<h2>Chuyển tiếng Việt không dấu tới có dấu.</h2>
+<div class="row">
+    <div class="col-md-6">
+        @*<textarea id="txtSearch" style="height:150px;width:580px;resize:none;border:none;box-shadow:0 0 10px 0 gainsboro;padding:5px" placeholder="Nhập nội dung..."></textarea>*@
+        <div id="txtSearch" data-placeholder="Nhập nội dung..." contenteditable="true"></div>
+        <br />
+        <span id="accent-vn" data-toggle="popover" data-placement="bottom" style="color:grey"></span>
+
+    </div>
+    <div id="center-text">
+        <h2>ChatBox UI</h2>
+        <p>Message send and scroll to bottom enabled </p>
+    </div>
+    <div id="body">
+
+        <div id="chat-circle" class="btn btn-raised">
+            <div id="chat-overlay"></div>
+            <i class="material-icons"></i>
+        </div>
+
+        <div class="chat-box">
+            <div class="chat-box-header">
+                ChatBot
+                <span class="chat-box-toggle"><i class="fa fa-close"></i></span>
+            </div>
+            <div class="chat-box-body">
+                <div class="chat-box-overlay">
+                </div>
+                <div class="chat-logs">
+                <div class="chat-msg user">
+                    <span class="msg-avatar">
+                        <img src="https://image.crisp.im/avatar/operator/196af8cc-f6ad-4ef7-afd1-c45d5231387c/240/?1483361727745">;
+                    </span>
+                    <div class="cm-msg-text">
+                        <div class="row">
+                            <div class='col-md-12 text-center'>
+                                <h5>Responsive Quote Carousel BS3</h5>
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-12'>
+                                <div class="carousel slide" data-ride="carousel" id="quote-carousel">
+                                    <!-- Bottom Carousel Indicators -->
+                                    <ol class="carousel-indicators">
+                                        <li data-target="#quote-carousel" data-slide-to="0" class="active"></li>
+                                        <li data-target="#quote-carousel" data-slide-to="1"></li>
+                                        <li data-target="#quote-carousel" data-slide-to="2"></li>
+                                    </ol>
+
+                                    <!-- Carousel Slides / Quotes -->
+                                    <div class="carousel-inner">
+                                        <!-- Quote 1 -->
+                                        <div class="item active">
+                                            <blockquote>
+                                                <div class="row">
+                                                    <div class="col-sm-12  text-center">
+                                                        <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit!</p>
+                                                        <small>Someone famous</small>
+                                                    </div>
+                                                </div>
+                                            </blockquote>
+                                        </div>
+                                        <!-- Quote 2 -->
+                                        <div class="item">
+                                            <blockquote>
+                                                <div class="row">
+                                                    <div class="col-sm-12 text-center">
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam auctor nec lacus ut tempor. Mauris.</p>
+                                                        <small>Someone famous</small>
+                                                    </div>
+                                                </div>
+                                            </blockquote>
+                                        </div>
+                                        <!-- Quote 3 -->
+                                        <div class="item">
+                                            <blockquote>
+                                                <div class="row">
+                                                    <div class="col-sm-12 text-center">
+                                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut rutrum elit in arcu blandit, eget pretium nisl accumsan. Sed ultricies commodo tortor, eu pretium mauris.</p>
+                                                        <small>Someone famous</small>
+                                                    </div>
+                                                </div>
+                                            </blockquote>
+                                        </div>
+                                    </div>
+
+                                    <!-- Carousel Buttons Next/Prev -->
+                                    <a data-slide="prev" href="#quote-carousel" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>
+                                    <a data-slide="next" href="#quote-carousel" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div><!--chat-log -->
+            </div>
+            <div class="chat-input">
+                <form>
+                    <input type="text" id="chat-input" placeholder="Send a message..." />
+                    <button type="submit" class="chat-submit" id="chat-submit"><i class="fa fa-send"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var data = [];
+
+    $(document).ready(function () {
+        //Set the carousel options
+        $('#quote-carousel').carousel({
+            pause: true,
+            interval: 9000,
+        }); 
+    });
+
+    function renderCarousel(lstData,numShow) {
+        var html = '';
+        html += '<div class="row">';
+        html +=                     '<div class="col-md-12 text-center">';
+        html +=                         '<h5>Responsive Quote Carousel BS3</h5>';
+        html +=                     '</div>';
+        html +=                 '</div>';
+        html +=                  '<div class="row">';
+        html +=                    '<div class="col-md-12">';
+        html +=                        '<div class="carousel slide" data-ride="carousel" id="quote-carousel">';
+        html +=                           '<ol class="carousel-indicators">';
+        html +=                              '<li data-target="#quote-carousel" data-slide-to="0" class="active"></li>';
+        html +=                            ' <li data-target="#quote-carousel" data-slide-to="1"></li>';
+        html +=                              '<li data-target="#quote-carousel" data-slide-to="2"></li>';
+        html +=                       ' </ol>';
+        html +=                         '<div class="carousel-inner">';
+        html +=                            '<div class="item active">';
+        html +=                                '<blockquote>';
+        html +=                                  ' <div class="row">';
+        html +=                                     ' <div class="col-sm-12  text-center">';
+        html +=                                         '<p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit!</p>';
+        html +=                                        '<small>Someone famous</small>';
+        html +=                                    '</div>';
+        html +=                             '  </div>';
+        html +=                           '</blockquote>';
+        html +=                      '</div>';
+        html +=               '</div>';
+        html +=             '<a data-slide="prev" href="#quote-carousel" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>';
+        html +=           '<a data-slide="next" href="#quote-carousel" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>';
+        html +=      ' </div>';
+        html +=   '</div>';
+        html += '</div>';
+    }
+    /*
+    ** chat
+    */
+    $(function () {
+        var INDEX = 0;
+        $("#chat-submit").click(function (e) {
+            e.preventDefault();
+            var msg = $("#chat-input").val();
+            if (msg.trim() == '') {
+                return false;
+            }
+            generate_message(msg, 'self');
+            var buttons = [
+                {
+                    name: 'Existing User',
+                    value: 'existing'
+                },
+                {
+                    name: 'New User',
+                    value: 'new'
+                }
+            ];
+            setTimeout(function () {
+                generate_message(msg, 'user');
+            }, 1000)
+
+        })
+
+        function generate_message(msg, type) {
+            INDEX++;
+            var str = "";
+            str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
+            str += "          <span class=\"msg-avatar\">";
+            str += "            <img src=\"https:\/\/image.crisp.im\/avatar\/operator\/196af8cc-f6ad-4ef7-afd1-c45d5231387c\/240\/?1483361727745\">";
+            str += "          <\/span>";
+            str += "          <div class=\"cm-msg-text\">";
+            str += msg;
+            str += "          <\/div>";
+            str += "        <\/div>";
+            $(".chat-logs").append(str);
+            $("#cm-msg-" + INDEX).hide().fadeIn(300);
+            if (type == 'self') {
+                $("#chat-input").val('');
+            }
+            $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
+        }
+
+        $(document).delegate(".chat-btn", "click", function () {
+            var value = $(this).attr("chat-value");
+            var name = $(this).html();
+            $("#chat-input").attr("disabled", false);
+            generate_message(name, 'self');
+        })
+
+        $("#chat-circle").click(function () {
+            $("#chat-circle").toggle('scale');
+            $(".chat-box").toggle('scale');
+        })
+
+        $(".chat-box-toggle").click(function () {
+            $("#chat-circle").toggle('scale');
+            $(".chat-box").toggle('scale');
+        })
+
+    })
+
+
+
+    /*
+    ===========================================================
+    * Vietnamese accent
+    ===========================================================
+    */
+    var delay = (function () {
+        var timer = 0;
+        return function (callback, ms) {
+            clearTimeout(timer);
+            timer = setTimeout(callback, ms);
+        };
+    })();
+
+    $('#txtSearch').keyup(function () {
+        delay(function () {
+            closeOptions();
+            predictVN('#txtSearch');
+        }, 200);
+    });
+    //$('#txtSearch').blur(function () {
+    //    addTag('#txtSearch');
+
+    //});
+    var timer = null;
+    $('#txtSearch').keydown(function () {
+        clearTimeout(timer);
+        timer = setTimeout(doStuff, 1000)
+    });
+
+    function doStuff() {
+        closeOptions();
+        addTag('#txtSearch');
+        getOptions();
+    }
+
+    $("#accent-vn").popover({
+        title: 'Gợi ý khác',
+        html: true,
+        container: 'body',
+        trigger: "manual",
+        animation: false
+    }).on("mouseenter", function () {
+        var _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+    }).on("mouseleave", function () {
+        var _this = this;
+        setTimeout(function () {
+            if (!$(".popover:hover").length) {
+                $(_this).popover("hide");
+            }
+        }, 1500);
+    });
+
+    $(document).dblclick(function () {
+        //this is similar to the "Cancel" option clicked
+        closeOptions();
+    });
+
+    function predictVN(element) {
+        var text = $(element).text();
+        $.ajax({
+            url: 'http://localhost:47887/api/GetAccentVN?text=' + text,
+            contentType: 'application/json; charset=utf-8',
+            type: 'GET',
+            success: function (result) {
+                if (text === result) {
+                    $("#accent-vn").empty();
+                }
+                else {
+                    $("#accent-vn").html('Ý của bạn là : ' + '<a class="spell-correct-text" href="javascript:getTextAccent(\'' + result.Item + '\',\'' + element + '\')">' + result.Item + '</a>')
+                    var html = '';
+                    html += '<ul>';
+                    $.each(result.ArrItems, function (index, item) {
+                        html += '<li><a href="javascript:getTextAccent(\'' + item + '\',\'' + element + '\')">' + item + '</a></li>';
+                    })
+                    html += '</ul>';
+                    $('#accent-vn').data('bs.popover').options.content = html;
+                    if (text == "")
+                        $("#accent-vn").empty();
+                }
+            },
+        });
+    }
+
+
+    function getMultiPredictVN(element) {
+        $.ajax({
+            url: 'http://localhost:47887/api/GetMultiMatchesAccentVN?text=' + $(element).text(),
+            contentType: 'application/json; charset=utf-8',
+            type: 'GET',
+            success: function (results) {
+                var arrText = [];
+                if (document.getElementById('id-options') !== null) {
+                    closeOptions();
+                }
+
+                var alters = '<ul id ="id-options"class="options clearfix">';
+                var choiceId;
+                var oddColor = "odd-choice";
+                var evenColor = "even-choice";
+                var isOdd = true;
+                var color;
+                for (var i = 0; i < results.length; ++i) {
+                    if (i % 6 == 0) {
+                        //start of a new group
+                        if (isOdd) {
+                            color = oddColor;
+                            isOdd = false;
+                        } else {
+                            color = evenColor;
+                            isOdd = true;
+                        }
+                    }
+                    alters += '<li id="choice-' + i + '" class="choice ' + color + '">&nbsp;<a style="cursor:pointer;" href="javascript:void(0);" onclick="changeTextError(\'' + results[i] + '\',this)">' + results[i] + '</a></li>';
+
+                }
+                alters += '<li class="cancel-btn"><i class="fa fa-times"></i><span class="cancel"></span></li>';
+                alters += '</ul>';
+
+                $(element).append(alters)
+                $(element).css('position', 'relative');
+            },
+        });
+    }
+
+    function changeTextError(text, element) {
+        event.stopPropagation;
+        $(element).parent().parent().parent().text(text);
+        $("#id-options").remove();
+        return false;
+    }
+
+    function getTextAccent(text, element) {
+        $(element).html(text);
+        $("#accent-vn").empty();
+        $("#accent-vn").popover("hide");
+    }
+
+    function addTag(element) {
+        $("#div-cursor").remove();
+        var str = $(element).text();
+        str = str.replace("</span> <span class='word'>", " ");
+        var i = 0;
+        str = str.replace(/\s/g, "</span> <span class='word'>");
+
+
+        $(element).html("<span class='word'>" + str + "</span>");
+    }
+    this.getOptions = function () {
+        $(".word").off().on('click', function () {
+            getMultiPredictVN(this);
+        })
+
+    }
+    function closeOptions() {
+        $("#id-options").remove();
+    }
+
+    String.prototype.replaceAllSpace = function (search, replacement) {
+        var target = this;
+        return target.replace(new RegExp(search, 'g'), replacement);
+    };
+
+</script>

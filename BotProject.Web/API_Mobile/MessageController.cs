@@ -202,7 +202,7 @@ namespace BotProject.Web.API_Mobile
                     await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 }
-
+                
                 if (item.message == null && item.postback == null)
                 {
                     continue;

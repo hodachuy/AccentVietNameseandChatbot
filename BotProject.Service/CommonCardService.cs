@@ -20,6 +20,7 @@ namespace BotProject.Service
         TemplateGenericItem AddTempGnrItem(TemplateGenericItem tempGnrItem);
         TemplateText AddTempText(TemplateText tempText);
         Image AddImage(Image image);
+        FileDocument AddFileDocument(FileDocument fileDoc);
         QuickReply AddQuickReply(QuickReply qReply);
 
 
@@ -41,6 +42,7 @@ namespace BotProject.Service
 
     public class CommonCardService : ICommonCardService
     {
+        IFileDocumentRepository _fileDocRepository;
         IButtonModuleRepository _buttonModuleRepository;
         IButtonLinkRepository _buttonLinkRepository;
         IButtonPostbackRepository _buttonPostbackRepository;
@@ -62,7 +64,8 @@ namespace BotProject.Service
                                 ITemplateTextRepository templateTextRepository,
                                 IQuickReplyRepository quickReplyRepository,
                                 IButtonModuleRepository buttonModuleRepository,
-                                IModuleFollowCardRepository mdFollowCardRepository)
+                                IModuleFollowCardRepository mdFollowCardRepository,
+                                IFileDocumentRepository fileDocRepository)
         {
             _unitOfWork = unitOfWork;
             _cardRepository = cardRepository;
@@ -75,6 +78,7 @@ namespace BotProject.Service
             _quickReplyRepository = quickReplyRepository;
             _buttonModuleRepository = buttonModuleRepository;
             _mdFollowCardRepository = mdFollowCardRepository;
+            _fileDocRepository = fileDocRepository;
         }
         public ButtonLink AddButtonLink(ButtonLink btnLink)
         {
@@ -89,6 +93,11 @@ namespace BotProject.Service
         public Image AddImage(Image image)
         {
             return _imageRepository.Add(image);
+        }
+
+        public FileDocument AddFileDocument(FileDocument fileDoc)
+        {
+            return _fileDocRepository.Add(fileDoc);
         }
 
         public QuickReply AddQuickReply(QuickReply qReply)
@@ -125,7 +134,8 @@ namespace BotProject.Service
             card.TemplateTexts = _templateTextRepository.GetMulti(x => x.CardID == cardId).ToList();
             card.TemplateGenericGroups = _templateGenericGroupRepository.GetMulti(x => x.CardID == cardId).ToList();
             card.QuickReplys = _quickReplyRepository.GetMulti(x => x.CardID == cardId).ToList();
-            if(card.TemplateTexts != null && card.TemplateTexts.Count() != 0)
+            card.FileDocuments = _fileDocRepository.GetMulti(x => x.CardID == cardId).ToList();
+            if (card.TemplateTexts != null && card.TemplateTexts.Count() != 0)
             {
                 foreach(var item in card.TemplateTexts)
                 {
@@ -172,6 +182,7 @@ namespace BotProject.Service
             _templateGenericGroupRepository.DeleteMulti(x => x.CardID == cardId);
             _quickReplyRepository.DeleteMulti(x => x.CardID == cardId);
             _imageRepository.DeleteMulti(x => x.CardID == cardId);
+            _fileDocRepository.DeleteMulti(x => x.CardID == cardId);
             _mdFollowCardRepository.DeleteMulti(x => x.CardID == cardId);
             //var lstImage = _imageRepository.GetMulti(x => x.CardID == cardId).ToList();
             //if(lstImage.Count() != 0)
