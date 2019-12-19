@@ -34,7 +34,7 @@ namespace BotProject.Service
 
         public IEnumerable<GroupCard> GetListGroupCardByBotID(int botId)
         {
-            return _GroupCardRepository.GetMulti(x => x.BotID == botId && x.IsDelete == false);
+            return _GroupCardRepository.GetMulti(x => x.BotID == botId && x.IsDelete == false).OrderBy(x=>x.Index);
         }
 
         public void Save()

@@ -19,6 +19,8 @@ namespace BotProject.Web.Models
 
 		public string UserID { set; get; }
 
+        public string StrTempOtpCards { set; get; }
+
         public virtual IEnumerable<QuestionGroupViewModel> QuestionGroups { set; get; }
     }
 }

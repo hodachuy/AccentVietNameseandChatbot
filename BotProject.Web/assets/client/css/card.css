@@ -239,6 +239,55 @@ div.sortable-placeholder {
     border: 2px solid rgba(0, 132, 255, 0.6);
 }
 
+/*bt move group card*/
+ #build .wrBlock:nth-child(1) .bt_groupcard_move_vertical i.icon-arrow-up13,
+    #build .wrBlock:last-child .bt_groupcard_move_vertical i.icon-arrow-down132 {
+        display: none;
+    }
+
+.wrBlock:hover .bt_groupcard_move_vertical {
+    visibility: visible;
+    opacity: 1;
+    cursor:pointer;
+}
+
+.wrBlock .bt_groupcard_move_vertical{
+    position: absolute;
+    left: 5px;
+    height: 100px;
+    cursor: pointer;
+    width: 30px;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.2s linear;
+}
+
+.wrBlock .bt_groupcard_move_vertical i {
+    font-size: 20px;
+    margin-bottom: 10px;
+    padding-left:3px;
+    /*visibility: hidden;*/
+    /*opacity: 0;*/
+    transition: visibility 0s, opacity 0.2s linear;
+    /*border: 1px solid rgba(51, 51, 51, 0.13);*/
+    color: rgba(51, 51, 51, 0.8);
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    color: rgba(51, 51, 51, 0.62);
+    font-size: 16px;
+    margin-top: 2px;
+}
+.wrBlock .bt_groupcard_move_vertical i:hover{
+    color: rgba(0, 132, 255, 0.6);
+}
+.bt_groupcard_move_vertical:hover i{
+    visibility: visible;
+    opacity: 1;
+}
+
+
 #multi .wr_image {
     width: 254px;
     height: 144px;

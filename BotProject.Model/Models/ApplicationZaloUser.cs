@@ -26,6 +26,9 @@ namespace BotProject.Model.Models
 		public bool IsProactiveMessage { set; get; }
         public bool IsHaveCardCondition { set; get; }
         public string CardConditionPattern { set; get; }
+        public bool IsConditionWithAreaButton { set; get; }
+        public string CardConditionAreaButtonPattern { set; get; }
+
         public DateTime StartedOn { set; get; }
         public DateTime? CreatedDate { set; get; }
         public DateTime? TimeOut { set; get; }

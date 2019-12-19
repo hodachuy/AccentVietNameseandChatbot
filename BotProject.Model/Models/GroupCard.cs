@@ -17,6 +17,8 @@ namespace BotProject.Model.Models
 
         public int BotID { set; get; }
 
+        public int Index { set; get; }
+
         public bool IsDelete { set; get; }
 
         public bool Status { set; get; }

@@ -143,12 +143,6 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Accent.ConsoleApplication\Accent.ConsoleApplication.csproj">
-      <Project>{1AB7B571-A6E1-45F1-ACFC-A77A2CCE18E9}</Project>
-      <Name>Accent.ConsoleApplication</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

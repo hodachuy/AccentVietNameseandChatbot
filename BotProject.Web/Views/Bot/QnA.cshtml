@@ -3,12 +3,17 @@
 @{
     ViewBag.Title = "QnA";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var cards = (IEnumerable<BotProject.Web.Models.GroupCardViewModel>)ViewBag.Cards;
+    var strCards = ViewBag.Cards;
+
+    //var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    //serializer.MaxJsonLength = Int32.MaxValue;
+    //var cardModel = serializer.Serialize(cards);
+
 }
 <link href="~/assets/client/css/jquery.selectBoxIt.css" rel="stylesheet" />
 <link href="~/assets/client/css/sweetalert.css" rel="stylesheet" />
 <link href="~/assets/client/css/sweetalert.min.css" rel="stylesheet" />
-<link href="~/assets/client/css/sweetalert.min.css.map" rel="stylesheet" type="application/json"/>
+<link href="~/assets/client/css/sweetalert.min.css.map" rel="stylesheet" type="application/json" />
 <link href="~/assets/client/css/select2.min.css" rel="stylesheet" />
 <link href="~/assets/client/css/card.css" rel="stylesheet" />
 <link href="~/assets/client/css/common-bot.css" rel="stylesheet" />
@@ -198,22 +203,22 @@
         <div class="d-flex">
             <p style="font-size:13pt;padding-left:20px;color:darkblue;" id="search-label" for="search-terms" class="addCt"><i class="fas fa-plus-circle"></i> <span style="padding-left:5px;text-decoration:underline">Thêm kịch bản</span></p>
             <div class="ml-auto" style="font-size:13px;padding-right:100px">
-            @if (Model.Status == true)
+                @if (Model.Status == true)
             {
-                <label class="containerChk">
-                    <span style="margin-right:10px">Kích hoạt</span>
-                    <input type="checkbox" id="statusFormQnA" value="true" checked>
-                    <span class="checkmark"></span>
-                </label>
-            }
-            else
-            {
-                <label class="containerChk">
-                    <span style="margin-right:10px">Kích hoạt</span>
-                    <input type="checkbox" id="statusFormQnA" value="false">
-                    <span class="checkmark"></span>
-                </label>
-            }
+                    <label class="containerChk">
+                        <span style="margin-right:10px">Kích hoạt</span>
+                        <input type="checkbox" id="statusFormQnA" value="true" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                }
+                else
+                {
+                    <label class="containerChk">
+                        <span style="margin-right:10px">Kích hoạt</span>
+                        <input type="checkbox" id="statusFormQnA" value="false">
+                        <span class="checkmark"></span>
+                    </label>
+                }
             </div>
         </div>
     </div>
@@ -242,6 +247,7 @@
         <div class="wrap-content" data-countpanel="1">
             <div class="panel panel-flat" indexpanel="1" data-quesgroup-id="">
                 <div class="panel-body">
+                    <i class="fa fa-plus icon-bin addCtShowNextRow"></i>
                     <i class="fa fa-trash icon-bin rmCt"></i>
                     <div class="wrMove">
                         <i class="fa fa-arrow-up moveTop" style="display: inline;"></i>
@@ -324,27 +330,28 @@
         var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
         var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
         var encryptedBotID = CryptoJS.AES.encrypt($("#botId").val(), "Secret Passphrase").toString();
-        lacviet.load(''+encryptedUrl+'',''+encryptedUserID+'',''+encryptedBotID+'','U2FsdGVkX19D5jsWIYosQVQ4bBWt2cjbzgkJbDAOSB+Igj5G2vGw1bAq+sh1P/Yc')
+        lacviet.load('' + encryptedUrl + '', '' + encryptedUserID + '', '' + encryptedBotID + '', 'U2FsdGVkX19D5jsWIYosQVQ4bBWt2cjbzgkJbDAOSB+Igj5G2vGw1bAq+sh1P/Yc')
     </script>
 }
 @section footerJS{
     <script>
-        var lstCard = @Html.Raw(Json.Encode(cards));
+        //var lstCard = @Html.Raw(strCards);
+        //console.log(lstCard)
         function card() {
-            var temp = '';
-            if (lstCard.length != 0) {
-                $.each(lstCard, function (index, value) {
-                    temp += '<optgroup label="' + value.Name.toUpperCase() + '">';
-                    if (value.Cards.length != 0) {
-                        $.each(value.Cards, function (index, value) {
-                            temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
-                        })
-                    } else {
-                        temp += '<option value=""></option>';
-                    }
-                    temp += '</optgroup>';
-                })
-            }
+            var temp = '@Html.Raw(Model.StrTempOtpCards)';
+            //if (lstCard.length != 0) {
+            //    $.each(lstCard, function (index, value) {
+            //        temp += '<optgroup label="' + value.Name.toUpperCase() + '">';
+            //        if (value.Cards.length != 0) {
+            //            $.each(value.Cards, function (index, value) {
+            //                temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
+            //            })
+            //        } else {
+            //            temp += '<option value=""></option>';
+            //        }
+            //        temp += '</optgroup>';
+            //    })
+            //}
             return temp;
         }
 

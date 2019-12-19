@@ -10,6 +10,7 @@ namespace BotProject.Common
         public string ServiceTag { get; set; }
         public DateTime ShipDate { get; set; }
         public string Country { get; set; }
+        public string Model { get; set; }
 
         public string TextWarranty { get; set; }
 

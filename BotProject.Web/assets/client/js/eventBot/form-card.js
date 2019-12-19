@@ -100,6 +100,7 @@ $(document).ready(function () {
         $('#card-name').val('');
         resetFormCard();
         initConditionCard();
+        initConditionCardByAreaButton();
         //}
     })
 
@@ -136,6 +137,13 @@ $(document).ready(function () {
         html += '<span style="margin-left:30px;">Yêu cầu chọn nút "Button" để đi luồng tiếp theo</span>';
         $('#container-chk-condition').empty().append(html);
     }
+    function initConditionCardByAreaButton() {
+        var html = '';
+        html += '<input type="checkbox" id="chk-card-condition-by-area-button" value="false">';
+        html += '<span class="checkmark"></span>';
+        html += '<span style="margin-left:30px;">Nội dung nhập vào kiểm tra theo lĩnh vực trên button</span>';
+        $('#container-chk-condition-by-area-button').empty().append(html);
+    }
 
     $('body').on('click', '#chk-card-condition', function () {
         if ($(this).is(":checked")) {
@@ -145,7 +153,13 @@ $(document).ready(function () {
         }
     })
 
-
+    $('body').on('click', '#chk-card-condition-by-area-button', function () {
+        if ($(this).is(":checked")) {
+            $(this).val('true');
+        } else {
+            $(this).val('false');
+        }
+    })
     // ====================================================================
     // ========================== GET CARD BY ID ==========================
     // ====================================================================
@@ -198,6 +212,21 @@ $(document).ready(function () {
             htmlCardCondition += '<span style="margin-left:30px;">Yêu cầu chọn nút "Button" để đi luồng tiếp theo</span>';
             $('#container-chk-condition').empty().append(htmlCardCondition);
         }
+
+        var htmlCardConditionByAreaButton = '';
+        if (data.IsConditionWithAreaButton) {
+            htmlCardConditionByAreaButton += '<input type="checkbox" id="chk-card-condition-by-area-button" value="true" checked>';
+            htmlCardConditionByAreaButton += '<span class="checkmark"></span>';
+            htmlCardConditionByAreaButton += '<span style="margin-left:30px;">Nội dung nhập vào kiểm tra theo lĩnh vực trên button</span>';
+            $('#container-chk-condition-by-area-button').empty().append(htmlCardConditionByAreaButton);
+        } else {
+            htmlCardConditionByAreaButton += '<input type="checkbox" id="chk-card-condition-by-area-button" value="false">';
+            htmlCardConditionByAreaButton += '<span class="checkmark"></span>';
+            htmlCardConditionByAreaButton += '<span style="margin-left:30px;">Nội dung nhập vào kiểm tra theo lĩnh vực trên button</span>';
+            $('#container-chk-condition-by-area-button').empty().append(htmlCardConditionByAreaButton);
+        }
+
+
         $('#card-name').val(data.Name);
         var lstCard = function () {
             var temp = [];
@@ -1067,7 +1096,30 @@ $(document).ready(function () {
                         }
                         var svr = new AjaxCall("api/card/delete", JSON.stringify(param));
                         svr.callServicePOST(function (data) {
-                            location.reload();
+                            //location.reload();
+                            //resetFormCard();
+                            var params = {
+                                groupCardId: grCardId,
+                            };
+                            var urlTest = "api/card/getbygroupcard";
+                            var svr2 = new AjaxCall(urlTest, params);
+                            svr2.callServiceGET(function (data) {
+                                if (data.length != 0) {
+                                    var html = '';
+                                    $.each(data, function (index, value) {
+                                        html += '<li>';
+                                        html += '<a class="nav-link card-item" data-cardid="' + value.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#setsmenu-' + value.ID + '" aria-controls="setsmenu-' + value.ID + '">';
+                                        html += '<span class="icon">';
+                                        html += '<i class="fas fa-fw fa-copy"></i>';
+                                        html += '</span>' + value.Name + '';
+                                        html += '</a>';
+                                        html += '</li>';
+                                    })
+                                    $("#lst-card").empty().append(html)
+                                }
+                                //$("#groupCardName").html(groupCardName)
+                            });
+
                         });
                 }
             }
@@ -2556,6 +2608,7 @@ $(document).ready(function () {
             //'pageId'        : $('#pageId').val(),
             'BotID': $('#botId').val(),
             'IsHaveCondition': $('#chk-card-condition').val(),
+            'IsConditionWithAreaButton': $('#chk-card-condition-by-area-button').val(),
             //'blockId'       : $('#blockId').val(),
             'Name': $('#card-name').val(),
             'Alias': common.getSeoTitle($('#card-name').val()),
@@ -4116,6 +4169,30 @@ $(document).ready(function () {
             extend_suport = 'video/*';
         }
 
+        //var reader = new FileReader();
+        //reader.onload = function () {
+
+        //    var arrayBuffer = this.result,
+        //      array = new Uint8Array(arrayBuffer),
+        //      binaryString = String.fromCharCode.apply(null, array);
+
+        //    console.log(binaryString);
+
+        //    var urlFb = "https://api.openfpt.vn/fsr?api_key=74ea791c21504fc5b6fd4978cce6d6e0";
+
+        //    $.ajax({
+        //        url: urlFb,
+        //        type: "POST",
+        //        data: array,
+        //        processData: false,
+        //    }).done(function (result) {
+        //        console.log(result)
+        //    });
+        //}
+        //reader.readAsArrayBuffer(file);
+
+
+
         if (file && file.type.match(extend_suport) && file.size <= 1048576 * 10) {// || file.type == 'application/pdf'
             el.parents('.layer').removeClass('error');
             el.parents('.wr_file').append('<div class="img-loading"><i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i></div>');
@@ -5154,7 +5231,7 @@ function loadGroupCard() {
     var urlTest = "api/groupcard/getbybot";
     var svr = new AjaxCall(urlTest, param);
     svr.callServiceGET(function (data) {
-        console.log(data)
+        //console.log(data)
         templateGroupCard(data)
     });
 }
@@ -5163,12 +5240,16 @@ function templateGroupCard(data) {
     var html = '';
     if (data.length != 0) {
         $.each(data, function (index, value) {
-            html += '<div class="wrBlock" data-gr-id="' + value.ID + '">';
+            html += '<div class="wrBlock" data-gr-id="' + value.ID + '" data-index="' + value.Index + '">';
             html += '<i class="icon-cube2 fa fa-cube"></i>';
             html += '<input type="text" maxlength="240" class="text-semibold text-uppercase titleBlock" value="' + value.Name + '" data="' + value.Name + '">';
             html += '<span class="pull-right rmBlock">';
             html += '<i class="icon-bin fa fa-trash"></i>';
             html += '</span>';
+            html += '<span class="pull-right addBlock">';
+            html += '<i class="icon-bin fa fa-plus"></i>';
+            html += '</span>';
+            html += '<div class="bt_groupcard_move_vertical"><i class="icon-arrow-up13 fa fa-arrow-up"></i><i class="icon-arrow-down132 fa fa-arrow-down"></i></div>';
             html += '<ul class="sortable grid list-inline">';
             html += '<li class="addItemCard">';
             html += '<div>';
@@ -5234,14 +5315,16 @@ $('body').on('click', '.rmBlock', function () {
         }
     })
 })
-
-function addBlock() {
+$('body').on('click', '.addBlock', function (e) {
+    var el = $(this);
     var index = $(".wrBlock").size() + 1;
+    var positionIndex = el.parents('.wrBlock').attr('data-index');
     console.log(index);
     var groupCardName = "Nhóm " + index;
     var params = {
         Name: groupCardName,
-        BotID: botId
+        BotID: botId,
+        Index: positionIndex
     };
     params = JSON.stringify(params);
     var urlTest = "api/groupcard/create";
@@ -5249,12 +5332,64 @@ function addBlock() {
     svr.callServicePOST(function (data) {
         if (data != null) {
             var html = '';
-            html += '<div class="wrBlock" data-gr-id="' + data.ID + '">';
+            var length = $(".wrBlock").length + 1;
+            console.log(length)
+            html += '<div class="wrBlock" data-gr-id="' + data.ID + '" data-index="' + data.Index + '">';
             html += '<i class="icon-cube2 fa fa-cube"></i>';
             html += '<input type="text" maxlength="240" class="text-semibold text-uppercase titleBlock" value="' + groupCardName + '" data="">';
             html += '<span class="pull-right rmBlock">';
             html += '<i class="icon-bin fa fa-trash"></i>';
             html += '</span>';
+
+            html += '<span class="pull-right addBlock">';
+            html += '<i class="icon-bin fa fa-plus"></i>';
+            html += '</span>';
+
+            html += '<div class="bt_groupcard_move_vertical"><i class="icon-arrow-up13 fa fa-arrow-up"></i><i class="icon-arrow-down132 fa fa-arrow-down"></i></div>';
+
+            html += '<ul class="sortable grid list-inline">';
+            html += '<li class="addItemCard">';
+            html += '<div>';
+            html += '<a href="#"><i class="icon-plus22 fa fa-plus"></i></a>';
+            html += '</div>';
+            html += '</li>';
+            html += '</ul>';
+            html += '</div>';
+            el.parents('.wrBlock').after(html);
+        }
+    });
+})
+
+function addBlock() {
+    var index = $(".wrBlock").size() + 1;
+    console.log(index);
+    var groupCardName = "Nhóm " + index;
+    var params = {
+        Name: groupCardName,
+        BotID: botId,
+        Index : index
+    };
+    params = JSON.stringify(params);
+    var urlTest = "api/groupcard/create";
+    var svr = new AjaxCall(urlTest, params);
+    svr.callServicePOST(function (data) {
+        if (data != null) {
+            var html = '';
+            var length = $(".wrBlock").length + 1;
+            console.log(length)
+            html += '<div class="wrBlock" data-gr-id="' + data.ID + '" data-index="'+length+'">';
+            html += '<i class="icon-cube2 fa fa-cube"></i>';
+            html += '<input type="text" maxlength="240" class="text-semibold text-uppercase titleBlock" value="' + groupCardName + '" data="">';
+            html += '<span class="pull-right rmBlock">';
+            html += '<i class="icon-bin fa fa-trash"></i>';
+            html += '</span>';
+
+            html += '<span class="pull-right addBlock">';
+            html += '<i class="icon-bin fa fa-plus"></i>';
+            html += '</span>';
+
+            html += '<div class="bt_groupcard_move_vertical"><i class="icon-arrow-up13 fa fa-arrow-up"></i><i class="icon-arrow-down132 fa fa-arrow-down"></i></div>';
+
             html += '<ul class="sortable grid list-inline">';
             html += '<li class="addItemCard">';
             html += '<div>';
@@ -5271,10 +5406,12 @@ function addBlock() {
 $('body').on('change', '.titleBlock', function () {
     var groupName = $(this).val();
     var groupId = $(this).parent().attr('data-gr-id');
+    var index = $(this).parent().attr('data-index');
     var params = {
         Name: groupName,
         ID: groupId,
-        BotID: botId
+        BotID: botId,
+        Index : index
     };
     params = JSON.stringify(params);
     var urlTest = "api/groupcard/update";
@@ -5326,6 +5463,7 @@ $('body').on('click', '.select-item-card', function () {
     var groupCardId = $(this).closest('.wrBlock').eq(0).attr('data-gr-id');
     var groupCardName = $(this).closest('.wrBlock').find('.titleBlock').val();
     var cardId = $(this).parent().parent().attr('data-card-id');
+    $("#grCard").val(groupCardId);
     grCardId = groupCardId;
     var params = {
         groupCardId: groupCardId,
@@ -6889,3 +7027,92 @@ function getTemplateVoucher(mdVoucherID, typeActionFormOrButton) {
 
     }
 }
+
+
+//Move Group Card
+$('#build').on('click', '.icon-arrow-down132', function (event) {
+        el = $(this);
+        var index_move = el.parents('.wrBlock').index();
+
+        var increase_index_move = parseInt(el.parents('.wrBlock').attr('data-index')) + 1;
+        el.parents('.wrBlock').attr('data-index', increase_index_move)       
+        var grId = el.parents('.wrBlock').attr('data-gr-id')
+        UpdateGroupCardIndex(grId, increase_index_move)
+
+        el.parents('.wrBlock').find('input').each(function (index1, el1) {
+            $(el1).attr('value', $(el1).val());
+        });
+
+        el.parents('.wrBlock').slideUp('slow', function (e) {
+            var html_move = el.parents('.wrBlock').prop('outerHTML');
+            el.parents('#build').find('.wrBlock').eq(index_move + 1).after(html_move);
+            el.parents('#build').find('.wrBlock').eq(index_move + 2).slideDown('slow');
+
+            var decrease_index_move = parseInt($(this).next().eq(0).attr('data-index')) - 1;
+            $(this).next().eq(0).attr('data-index', decrease_index_move)
+            var grId = $(this).next().eq(0).attr('data-gr-id')
+            UpdateGroupCardIndex(grId, decrease_index_move)
+
+            $(this).remove();
+
+
+            //var groupCardIndex = parseInt(el.parents('#build').find('.wrBlock').eq(index_move + 2).attr('data-index')) + 1;
+            //var groupCardId = el.parents('.wrBlock').attr('data-gr-id');
+            //el.parents('#build').find('.wrBlock').eq(index_move + 2).attr('data-index', groupCardIndex)
+
+            //UpdateGroupCardIndex(groupCardId, groupCardIndex)
+
+        });
+    });
+    $('#build').on('click', '.icon-arrow-up13', function (event) {
+        el = $(this);
+        var index_move = el.parents('.wrBlock').index();
+
+        var decrease_index_move = parseInt(el.parents('.wrBlock').attr('data-index')) - 1;
+        el.parents('.wrBlock').attr('data-index', decrease_index_move)
+        var grId = el.parents('.wrBlock').attr('data-gr-id')
+        UpdateGroupCardIndex(grId, decrease_index_move)
+
+        el.parents('.wrBlock').find('input').each(function (index1, el1) {
+            $(el1).attr('value', $(el1).val());
+        });
+        el.parents('.wrBlock').slideUp('slow', function () {
+
+            var html_move = el.parents('.wrBlock').prop('outerHTML');
+            el.parents('#build').find('.wrBlock').eq(index_move - 1).before(html_move);
+            el.parents('#build').find('.wrBlock').eq(index_move - 1).slideDown('slow');
+
+            var increase_index_move = parseInt($(this).prev().eq(0).attr('data-index')) + 1;
+            $(this).prev().eq(0).attr('data-index', increase_index_move)
+            var grId = $(this).prev().eq(0).attr('data-gr-id')
+            UpdateGroupCardIndex(grId, increase_index_move)
+
+            $(this).remove();
+        });
+    });
+
+    function UpdateGroupCardIndex(groupId, index) {
+        var groupId = groupId;
+        var index = index;
+        var params = {
+            ID: groupId,
+            BotID: botId,
+            Index: index
+        };
+        params = JSON.stringify(params);
+        var urlTest = "api/groupcard/updateIndex";
+        $.ajax({
+            type: 'POST',
+            url: _Host + urlTest,
+            data: params,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                console.log(data)
+            },
+            error: function (error) {
+                $(block).unblock();
+                console.log(error.responseJSON)
+            }
+        });
+    }

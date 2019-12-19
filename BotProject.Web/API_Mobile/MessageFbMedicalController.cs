@@ -7,14 +7,19 @@ using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Extensions;
+using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
+using Common.Logging.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quartz;
 using Quartz.Impl;
+//using SearchEngine.Service;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -29,17 +34,16 @@ using System.Web.Script.Serialization;
 
 namespace BotProject.Web.API_Mobile
 {
-    public class MessageZaloController : ApiController
+    public class MessageFbMedicalController : ApiController
     {
-        string pageToken = "OUQpPbeaQqbjuhvZLIjhJstikczICc8EDPBCEaCHQKStjV4gJ1fqPJEwnaeBPsSmOjhq7rL485CgnvKRSa97SYpW_bXRIMe04el3A2e9Rb9ca-C63ZKn9dcAbbeV0oDqMgos31yhEqLhhvfhD1HC45sWnKKR51GAUwEWHaS_0Xbvzhf94qu34LxQXKOVQI8gGwdxGpKILZjqrS1cAK5hAHA7oNvA3qzIVPpUA1quUtTTaDms2YflNsxgvNCMIZmDV8EVTZCa7ITJPWxmu1bSE657";
-        //string appSecret = Helper.ReadString("AppSecret");
-        //string verifytoken = Helper.ReadString("VerifyTokenWebHook");
-
+        string pageToken = Helper.ReadString("AccessToken");
+        string appSecret = Helper.ReadString("AppSecret");
+        string verifytoken = Helper.ReadString("VerifyTokenWebHook");
         string _contactAdmin = Helper.ReadString("AdminContact");
         string _titlePayloadContactAdmin = Helper.ReadString("TitlePayloadAdminContact");
-
         int _timeOut = 60;
         bool _isHaveTimeOut = false;
+        //tin nhắn phản hồi chờ
         string _messageProactive = "";
         bool _isSearchAI = false;
 
@@ -55,6 +59,8 @@ namespace BotProject.Web.API_Mobile
         bool _isHaveTimeOutOTP = false;
         string _messageOTP = "";
 
+        string _cardResendSMS = Helper.ReadString("CARD_RESEND_SMS");
+
         string _pathStopWord = System.IO.Path.Combine(PathServer.PathNLR, "StopWord.txt");
         string _stopWord = "";
 
@@ -66,7 +72,7 @@ namespace BotProject.Web.API_Mobile
 
         private Dictionary<string, string> _dicNotMatch;
 
-        private IApplicationZaloUserService _appZaloUser;
+        private IApplicationFacebookUserService _appFacebookUser;
         private BotService _botService;
         private IBotService _botDbService;
         private ISettingService _settingService;
@@ -82,11 +88,10 @@ namespace BotProject.Web.API_Mobile
         private IHistoryService _historyService;
         private ICardService _cardService;
         private IApplicationThirdPartyService _app3rd;
+        private AccentService _accentService;
         //private Bot _bot;
         private User _user;
-
-        private AccentService _accentService;
-        public MessageZaloController(IErrorService errorService,
+        public MessageFbMedicalController(IErrorService errorService,
                               IBotService botDbService,
                               ISettingService settingService,
                               IHandleModuleServiceService handleMdService,
@@ -98,7 +103,7 @@ namespace BotProject.Web.API_Mobile
                               IModuleSearchEngineService moduleSearchEngineService,
                               IHistoryService historyService,
                               ICardService cardService,
-                              IApplicationZaloUserService appZaloUser,
+                              IApplicationFacebookUserService appFacebookUser,
                               IApplicationThirdPartyService app3rd)
         {
             _errorService = errorService;
@@ -116,138 +121,195 @@ namespace BotProject.Web.API_Mobile
             _moduleSearchEngineService = moduleSearchEngineService;
             _historyService = historyService;
             _cardService = cardService;
-            _appZaloUser = appZaloUser;
+            _appFacebookUser = appFacebookUser;
             _app3rd = app3rd;
             _accentService = AccentService.AccentInstance;
         }
 
         public HttpResponseMessage Get()
         {
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            var querystrings = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
+            foreach (var item in querystrings)
+            {
+                //LogError(item.Key + " " + item.Value);
+                if (item.Key == "hub.verify_token")
+                {
+                    if (item.Value == "lacviet_bot_chat")
+                        return new HttpResponseMessage(HttpStatusCode.OK)
+                        {
+                            Content = new StringContent(querystrings["hub.challenge"], Encoding.UTF8, "text/plain")
+                        };
+                }
+            }
+
+            return new HttpResponseMessage(HttpStatusCode.Unauthorized);
         }
 
         [HttpPost]
         public async Task<HttpResponseMessage> Post()
         {
             int botId = 5028;
+
+            var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
-            //LogError(body);
-            if (body.Contains("user_send_text"))
+            var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
+
+            var app3rd = _app3rd.GetByPageId(value.entry[0].id);
+            if (app3rd == null)
             {
-
-                var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
-                //LogError(body);
-                var app3rd = _app3rd.GetByZaloPageId(value.app_id);
-                if (app3rd == null)
-                {
-                    return new HttpResponseMessage(HttpStatusCode.OK);
-                }
-                botId = app3rd.BotID;
-                var settingDb = _settingService.GetSettingByBotID(botId);
-                pageToken = settingDb.ZaloPageToken;
-
-                _isHaveTimeOut = settingDb.IsProactiveMessageZalo;
-                _timeOut = settingDb.Timeout;
-                _messageProactive = settingDb.ProactiveMessageText;
-                _isSearchAI = settingDb.IsMDSearch;
-                _patternCardPayloadProactive = "postback_card_" + settingDb.CardID.ToString();
-
-                //tin vắng mặt
-                _messageAbsent = settingDb.MessageMaintenance;
-                _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
-
-                //OTP
-                _timeOutOTP = settingDb.TimeoutOTP;
-                _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
-                _messageOTP = settingDb.MessageTimeoutOTP;
-
-                // init stop word
-                _stopWord = settingDb.StopWord;
-                if (System.IO.File.Exists(_pathStopWord))
-                {
-                    string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
-                    _stopWord += string.Join(",", stopWordDefault);
-                }
-
-
-
-                //if (settingDb.IsHaveMaintenance)
-                //{
-                //    await SendMessageTask(ZaloTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), value.sender.id);
-                //    return new HttpResponseMessage(HttpStatusCode.OK);
-                //}
-
-
-                var lstAIML = _aimlFileService.GetByBotId(botId);
-                var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
-                _botService.loadAIMLFromDatabase(lstAIMLVm);
-                string _userId = Guid.NewGuid().ToString();
-                _user = _botService.loadUserBot(_userId);
-                //_user = _botService.loadUserBot(value.sender.id);
-
-                await ExcuteMessage(value.message.text, value.sender.id, botId);
-
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
 
-            // sự kiện người dùng quan tâm
-            if (body.Contains("follower"))
+            botId = app3rd.BotID;
+            var settingDb = _settingService.GetSettingByBotID(botId);
+
+
+            //get pagetoken
+            pageToken = settingDb.FacebookPageToken;
+            appSecret = settingDb.FacebookAppSecrect;
+            _patternCardPayloadProactive = "postback_card_" + settingDb.CardID.ToString();
+
+            //init stop word
+            _stopWord = settingDb.StopWord;
+            if (System.IO.File.Exists(_pathStopWord))
             {
-                var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
-                var app3rd = _app3rd.GetByZaloPageId(value.app_id);
-                if (app3rd == null)
+                string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
+                _stopWord += string.Join(",", stopWordDefault);
+            }
+
+            // xác nhận app facebook
+            if (!VerifySignature(signature, body))
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+
+
+            if (value.@object != "page")
+                return new HttpResponseMessage(HttpStatusCode.OK);
+
+            _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
+            _timeOut = settingDb.Timeout;
+            _messageProactive = settingDb.ProactiveMessageText;
+            _isSearchAI = settingDb.IsMDSearch;
+
+            //tin vắng mặt
+            _messageAbsent = settingDb.MessageMaintenance;
+            _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+
+            //OTP
+            _timeOutOTP = settingDb.TimeoutOTP;
+            _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
+            _messageOTP = settingDb.MessageTimeoutOTP;
+
+            var lstAIML = _aimlFileService.GetByBotId(botId);
+            var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+            _botService.loadAIMLFromDatabase(lstAIMLVm);
+            string _userId = Guid.NewGuid().ToString();
+            _user = _botService.loadUserBot(_userId);
+
+            foreach (var item in value.entry[0].messaging)
+            {
+                //BotLog.Info(body);
+                //if (settingDb.IsHaveMaintenance)
+                //{
+                //    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), item.sender.id);
+                //    return new HttpResponseMessage(HttpStatusCode.OK);
+                //}
+
+                if (item.message == null && item.postback == null)
                 {
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 }
-                botId = app3rd.BotID;
-                var settingDb = _settingService.GetSettingByBotID(botId);
-                var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
-
-                pageToken = settingDb.ZaloPageToken;
-                _isHaveTimeOut = settingDb.IsProactiveMessageZalo;
-                _timeOut = settingDb.Timeout;
-                _messageProactive = settingDb.ProactiveMessageText;
-                _isSearchAI = settingDb.IsMDSearch;
-                _patternCardPayloadProactive = "postback_card_" + settingDb.CardID.ToString();
-
-                //tin vắng mặt
-                _messageAbsent = settingDb.MessageMaintenance;
-                _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
-
-                //OTP
-                _timeOutOTP = settingDb.TimeoutOTP;
-                _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
-                _messageOTP = settingDb.MessageTimeoutOTP;
-
-                if (settingVm.CardID.HasValue)
+                else if (item.message == null && item.postback != null)
                 {
-                    var lstAIML = _aimlFileService.GetByBotId(botId);
-                    var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
-                    _botService.loadAIMLFromDatabase(lstAIMLVm);
-                    string _userId = Guid.NewGuid().ToString();
-                    _user = _botService.loadUserBot(_userId);
-                    string getStartCardPayload = "postback_card_" + settingVm.CardID;
-                    await ExcuteMessage(getStartCardPayload, value.follower.id, botId);
-
+                    await ExcuteMessage(item.postback.payload, item.sender.id, botId, item.timestamp);
                     return new HttpResponseMessage(HttpStatusCode.OK);
+                }
+                else
+                {
+                    if (item.message.quick_reply != null)
+                    {
+                        await ExcuteMessage(item.message.quick_reply.payload, item.sender.id, botId, item.timestamp);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                    else if (item.message.attachments != null)
+                    {
+                        if (item.message.attachments[0].type == "audio")
+                        {
+                            string urlAudio = item.message.attachments[0].payload.url;
+                            //BotLog.Info("URL: " + urlAudio);
+
+                            //string senderActionTyping = FacebookTemplate.GetMessageSenderAction("typing_on", item.sender.id).ToString();
+                            //await SendMessageTask(senderActionTyping, item.sender.id);
+                            var rsAudioToTextJson = await SpeechReconitionVNService.ConvertSpeechToText(urlAudio);
+                            if (String.IsNullOrEmpty(rsAudioToTextJson))
+                            {
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+
+                            dynamic stuff = JsonConvert.DeserializeObject(rsAudioToTextJson);
+                            string status = stuff.status;
+                            if (status == "0")
+                            {
+                                string text = stuff.hypotheses[0].utterance;
+                                if (!String.IsNullOrEmpty(text))
+                                {
+                                    text = Regex.Replace(text, @"\.", "");
+                                }
+                                await ExcuteMessage(text, item.sender.id, botId, item.timestamp, "audio");
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                            else if (status == "1")
+                            {
+                                string meanTextFromAudio = FacebookTemplate.GetMessageTemplateText("Không có âm thanh", item.sender.id).ToString();
+                                await SendMessage(meanTextFromAudio, item.sender.id);
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                            else if (status == "2")
+                            {
+                                string meanTextFromAudio = FacebookTemplate.GetMessageTemplateText("Xử lý âm thanh bị hủy", item.sender.id).ToString();
+                                await SendMessage(meanTextFromAudio, item.sender.id);
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                            else if (status == "9")
+                            {
+                                string meanTextFromAudio = FacebookTemplate.GetMessageTemplateText("Hệ thống xử lý âm thanh đang bận, bạn vui lòng quay lại sau nhé!", item.sender.id).ToString();
+                                await SendMessage(meanTextFromAudio, item.sender.id);
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+
+                        }
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                    else
+                    {
+                        await ExcuteMessage(item.message.text, item.sender.id, botId, item.timestamp);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
                 }
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
-
-        private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
+        private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId, string timeStamp = "", string audio = "")
         {
+
             if (String.IsNullOrEmpty(text))
             {
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
-            text = HttpUtility.HtmlDecode(text);
 
+            //check duplicate request
+            if (!String.IsNullOrEmpty(timeStamp))
+            {
+                var rs = _appFacebookUser.CheckDuplicateRequestWithTimeStamp(timeStamp, sender);
+                if (rs == 4)
+                {
+                    return new HttpResponseMessage(HttpStatusCode.OK);
+                }
+            }
+
+            text = HttpUtility.HtmlDecode(text);
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
-            text = Regex.Replace(text, @"#", "").Trim();
-
 
             if (!text.Contains("postpack") && !text.Contains(_contactAdmin))
             {
@@ -272,11 +334,11 @@ namespace BotProject.Web.API_Mobile
                 string strDefaultNotMatch = "Anh/chị cho em biết thêm chi tiết được không ạ";
                 if (_isSearchAI)
                 {
-                    return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
                 }
-
+                //turn off AI
                 strDefaultNotMatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
             }
 
             HistoryViewModel hisVm = new HistoryViewModel();
@@ -284,35 +346,38 @@ namespace BotProject.Web.API_Mobile
             hisVm.CreatedDate = DateTime.Now;
             hisVm.UserSay = text;
             hisVm.UserName = sender;
-            hisVm.Type = CommonConstants.TYPE_ZALO;
+            hisVm.Type = CommonConstants.TYPE_FACEBOOK;
 
             DateTime dStartedTime = DateTime.Now;
             DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
 
+            ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
+            fbUserDb = _appFacebookUser.GetByUserId(sender);
+
             try
             {
-                ApplicationZaloUser zlUserDb = new ApplicationZaloUser();
-                zlUserDb = _appZaloUser.GetByUserId(sender);
 
-                if (zlUserDb != null)
+                if (fbUserDb != null)
                 {
-                    if (zlUserDb.PredicateName == "Admin_Contact")
+                    // chat với admin
+                    if (fbUserDb.PredicateName == "Admin_Contact")
                     {
                         var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
                         AddHistory(hisVm);
                         if (text.Contains("postback") || text.Contains(_contactAdmin))
                         {
-                            zlUserDb.IsHavePredicate = false;
-                            zlUserDb.PredicateName = "";
-                            zlUserDb.PredicateValue = "";
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = false;
+                            fbUserDb.PredicateName = "";
+                            fbUserDb.PredicateValue = "";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
                             return await ExcuteMessage(text, sender, botId);
                         }
-
                         if (_isHaveMessageAbsent)
                         {
                             if (HelperMethods.IsTimeInWorks() == false)
@@ -324,7 +389,7 @@ namespace BotProject.Web.API_Mobile
 
                         if (handleAdminContact.Status == false)
                         {
-                            string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonZalo, "split");
+                            string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");
                             if (strArrayJson.Length != 0)
                             {
                                 var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -333,6 +398,7 @@ namespace BotProject.Web.API_Mobile
                                     string tempJson = temp;
                                     await SendMessageTask(tempJson, sender);
                                 }
+
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
                         }
@@ -340,60 +406,66 @@ namespace BotProject.Web.API_Mobile
                     }
                 }
 
-                if (_isHaveTimeOut)
+                //xử lý audio
+                string senderActionTyping = FacebookTemplate.GetMessageSenderAction("typing_on", sender).ToString();
+                await SendMessageTask(senderActionTyping, sender);
+                if (!String.IsNullOrEmpty(audio))
                 {
-                    if (zlUserDb != null)
-                    {
-                        zlUserDb.StartedOn = dStartedTime;
-                        zlUserDb.TimeOut = dTimeOut;
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
-                    }
-                    await Schedule(sender, ZaloTemplate.GetMessageTemplateTextAndQuickReply(_messageProactive, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), pageToken, dTimeOut, text);
-                    //Schedule(sender, ZaloTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
+                    string meanTextFromAudio = FacebookTemplate.GetMessageTemplateText("Ý của bạn là: " + text, sender).ToString();
+                    await SendMessageTask(meanTextFromAudio, sender);
+                    await SendMessageTask(senderActionTyping, sender);
                 }
 
-                if (zlUserDb == null)
+                // TimeOut được bật
+                if (_isHaveTimeOut)
                 {
-                    zlUserDb = new ApplicationZaloUser();
-                    ApplicationZaloUserViewModel zlUserVm = new ApplicationZaloUserViewModel();
-                    zlUserVm.UserId = sender;
-                    zlUserVm.IsHavePredicate = false;
-                    zlUserVm.IsProactiveMessage = false;
-                    zlUserVm.TimeOut = dTimeOut;
-                    zlUserDb.CreatedDate = DateTime.Now;
-                    zlUserDb.StartedOn = dStartedTime;
-                    zlUserDb.UpdateZaloUser(zlUserVm);
-                    _appZaloUser.Add(zlUserDb);
-                    _appZaloUser.Save();
+                    if (fbUserDb != null)
+                    {
+                        fbUserDb.StartedOn = dStartedTime;
+                        fbUserDb.TimeOut = dTimeOut;
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+                    }
+                    await Schedule(sender, FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageProactive, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), pageToken, dTimeOut, text);
+                    // Schedule(sender, FacebookTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
+                }
+                if (fbUserDb == null)
+                {
+                    fbUserDb = new ApplicationFacebookUser();
+                    ApplicationFacebookUserViewModel fbUserVm = new ApplicationFacebookUserViewModel();
+                    fbUserVm.UserId = sender;
+                    fbUserVm.IsHavePredicate = false;
+                    fbUserVm.IsProactiveMessage = false;
+                    fbUserVm.TimeOut = dTimeOut;
+                    fbUserDb.CreatedDate = DateTime.Now;
+                    fbUserDb.StartedOn = dStartedTime;
+                    fbUserDb.UpdateFacebookUser(fbUserVm);
+                    _appFacebookUser.Add(fbUserDb);
+                    _appFacebookUser.Save();
                 }
                 else
                 {
-                    zlUserDb.StartedOn = DateTime.Now;
-                    zlUserDb.TimeOut = dTimeOut;
+                    fbUserDb.StartedOn = dStartedTime;
+                    fbUserDb.TimeOut = dTimeOut;
 
                     // Nếu có yêu cầu click thẻ để đi theo luồng
-                    if (zlUserDb.IsHaveCardCondition)
+                    if (fbUserDb.IsHaveCardCondition)
                     {
-                        if (text.Contains("postback") || text.Contains(_contactAdmin))
+                        if (!text.Contains("postback") && !text.Contains(_contactAdmin))
                         {
-
-                        }
-                        else
-                        {
-                            var cardDb = _cardService.GetSingleCondition(zlUserDb.CardConditionPattern);
+                            var cardDb = _cardService.GetSingleCondition(fbUserDb.CardConditionPattern);
                             if (cardDb == null)
                             {
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
-                            string tempJsonZalo = cardDb.TemplateJsonZalo;
-                            if (!String.IsNullOrEmpty(tempJsonZalo))
+                            string tempJsonFacebook = cardDb.TemplateJsonFacebook;
+                            if (!String.IsNullOrEmpty(tempJsonFacebook))
                             {
-                                tempJsonZalo = tempJsonZalo.Trim();
-                                string[] strArrayJson = Regex.Split(tempJsonZalo, "split");
+                                tempJsonFacebook = tempJsonFacebook.Trim();
+                                string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");
                                 if (strArrayJson.Length != 0)
                                 {
-                                    await SendMessageTask(ZaloTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới", sender).ToString(), sender);
+                                    await SendMessageTask(FacebookTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới", sender).ToString(), sender);
                                     var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
                                     foreach (var temp in strArray)
                                     {
@@ -406,31 +478,53 @@ namespace BotProject.Web.API_Mobile
                         }
                     }
 
-                    // Điều kiện xử lý module
-                    if (zlUserDb.IsHavePredicate)
+
+                    // Nếu có yêu cầu query text theo lĩnh vực button
+                    // Click button -> card (tên card nên đặt như tên lĩnh vực ngắn gọn)
+                    // Build lại kịch bản với từ khoán ngắn gọn + tên lĩnh vực
+                    // ví dụ: thủ tục cấp phép, thủ tục giạn + tên lĩnh vực
+                    if (fbUserDb.IsConditionWithAreaButton)
                     {
-                        var predicateName = zlUserDb.PredicateName;
+                        if (!text.Contains("postback") && !text.Contains(_contactAdmin))
+                        {
+                            var cardDb = _cardService.GetSingleCondition(fbUserDb.CardConditionAreaButtonPattern);
+                            if (cardDb == null)
+                            {
+                                return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                            string area = cardDb.Name;
+                            text = text + " " + area;
+                        }
+                    }
+
+
+                    // Điều kiện xử lý module
+                    if (fbUserDb.IsHavePredicate)
+                    {
+                        var predicateName = fbUserDb.PredicateName;
                         if (predicateName == "ApiSearch")
                         {
                             if (text.Contains("postback_card") || text.Contains(_contactAdmin))// nều còn điều kiện search mà chọn postback
                             {
-                                zlUserDb.IsHavePredicate = false;
-                                zlUserDb.PredicateName = "";
-                                zlUserDb.PredicateValue = "";
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
-                            string predicateValue = zlUserDb.PredicateValue;
+                            string predicateValue = fbUserDb.PredicateValue;
                             var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, predicateValue, "");
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
                             AddHistory(hisVm);
 
-                            return await SendMessage(handleMdSearch.TemplateJsonZalo, sender);
+                            return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
 
                         }
                         if (predicateName == "Age")
@@ -440,20 +534,22 @@ namespace BotProject.Web.API_Mobile
                             AddHistory(hisVm);
                             if (handleAge.Status)// đúng age
                             {
-                                zlUserDb.IsHavePredicate = false;
-                                zlUserDb.PredicateName = "";
-                                zlUserDb.PredicateValue = "";
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                zlUserDb.PhoneNumber = text;
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.PhoneNumber = text;
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
                                 if (!String.IsNullOrEmpty(handleAge.Postback))
                                 {
                                     return await ExcuteMessage(handleAge.Postback, sender, botId);
                                 }
                             }
-                            return await SendMessage(handleAge.TemplateJsonZalo, sender);
+                            return await SendMessage(handleAge.TemplateJsonFacebook, sender);
                         }
                         if (predicateName == "Phone")
                         {
@@ -463,14 +559,16 @@ namespace BotProject.Web.API_Mobile
                             AddHistory(hisVm);
                             if (handlePhone.Status)// đúng số dt
                             {
-                                zlUserDb.IsHavePredicate = false;
-                                zlUserDb.PredicateName = "";
-                                zlUserDb.PredicateValue = "";
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                zlUserDb.PhoneNumber = text;
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.PhoneNumber = text;
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
 
                                 // Nếu đúng số điện thoại sẽ trả về thẻ tiếp theo nếu có
                                 if (!String.IsNullOrEmpty(handlePhone.Postback))
@@ -478,7 +576,7 @@ namespace BotProject.Web.API_Mobile
                                     return await ExcuteMessage(handlePhone.Postback, sender, botId);
                                 }
                             }
-                            return await SendMessage(handlePhone.TemplateJsonZalo, sender);
+                            return await SendMessage(handlePhone.TemplateJsonFacebook, sender);
                         }
                         if (predicateName == "Email")
                         {
@@ -487,20 +585,22 @@ namespace BotProject.Web.API_Mobile
                             AddHistory(hisVm);
                             if (handleEmail.Status)// đúng email
                             {
-                                zlUserDb.IsHavePredicate = false;
-                                zlUserDb.PredicateName = "";
-                                zlUserDb.PredicateValue = "";
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
 
                                 if (!String.IsNullOrEmpty(handleEmail.Postback))
                                 {
                                     return await ExcuteMessage(handleEmail.Postback, sender, botId);
                                 }
                             }
-                            return await SendMessage(handleEmail.TemplateJsonZalo, sender);
+                            return await SendMessage(handleEmail.TemplateJsonFacebook, sender);
                         }
                         if (predicateName == "Engineer_Name")
                         {
@@ -509,42 +609,46 @@ namespace BotProject.Web.API_Mobile
                             AddHistory(hisVm);
                             if (handleEngineerName.Status)
                             {
-                                zlUserDb.IsHavePredicate = false;
-                                zlUserDb.PredicateName = "";
-                                zlUserDb.PredicateValue = "";
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                zlUserDb.EngineerName = text;
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                fbUserDb.EngineerName = text;
                                 if (text.Contains("postback") || text.Contains(_contactAdmin))
                                 {
-                                    zlUserDb.EngineerName = "";
+                                    fbUserDb.EngineerName = "";
                                 }
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
 
                                 if (!String.IsNullOrEmpty(handleEngineerName.Postback))
                                 {
                                     return await ExcuteMessage(handleEngineerName.Postback, sender, botId);
                                 }
                             }
-                            return await SendMessage(handleEngineerName.TemplateJsonZalo, sender);
+                            return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
                         }
                         if (predicateName == "Voucher")
                         {
-                            string mdVoucherId = zlUserDb.PredicateValue;
+                            string mdVoucherId = fbUserDb.PredicateValue;
                             if (text.Contains("postback_card") || text.Contains(_contactAdmin))
                             {
-                                zlUserDb.IsHavePredicate = false;
-                                zlUserDb.PredicateName = "";
-                                zlUserDb.PredicateValue = "";
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, zlUserDb.EngineerName, zlUserDb.BranchOTP, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                             AddHistory(hisVm);
@@ -563,17 +667,19 @@ namespace BotProject.Web.API_Mobile
                                     }
                                 }
 
-                                zlUserDb.IsHavePredicate = true;
-                                zlUserDb.PredicateName = "IsVoucherOTP";
-                                zlUserDb.PredicateValue = mdVoucherId;// voucherId
-                                zlUserDb.PhoneNumber = telePhoneNumber;
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                fbUserDb.IsHavePredicate = true;
+                                fbUserDb.PredicateName = "IsVoucherOTP";
+                                fbUserDb.PredicateValue = mdVoucherId;// voucherId
+                                fbUserDb.PhoneNumber = telePhoneNumber;
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
 
                                 // send sms otp
-                                await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
+                                await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
 
                                 // gọi timeout thời gian hủy otp
                                 if (_isHaveTimeOutOTP)
@@ -584,23 +690,24 @@ namespace BotProject.Web.API_Mobile
 
                                 return new HttpResponseMessage(HttpStatusCode.OK);
 
-                                //await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
-                                //return await SendMessage(ZaloTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
+                                //await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
+                                //return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
                             }
-                            return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
+                            return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                         }
                         if (predicateName == "IsVoucherOTP")
                         {
-                            string mdVoucherId = zlUserDb.PredicateValue;
-                            string phoneNumber = zlUserDb.PhoneNumber;
+                            string mdVoucherId = fbUserDb.PredicateValue;
+                            string phoneNumber = fbUserDb.PhoneNumber;
+
                             // thẻ gửi lại sms
                             if (text.Equals("CARD_RESEND_SMS"))
                             {
-                                var handleMdVoucher = _handleMdService.HandleIsVoucher(phoneNumber, mdVoucherId, zlUserDb.EngineerName, zlUserDb.BranchOTP, hisVm.Type);
+                                var handleMdVoucher = _handleMdService.HandleIsVoucher(phoneNumber, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
                                 if (handleMdVoucher.Status)
                                 {
                                     // send sms otp
-                                    await SendMessageTask(handleMdVoucher.TemplateJsonZalo, sender);
+                                    await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
                                     // gọi timeout thời gian hủy otp
                                     if (_isHaveTimeOutOTP)
                                     {
@@ -609,40 +716,44 @@ namespace BotProject.Web.API_Mobile
                                     }
                                     return new HttpResponseMessage(HttpStatusCode.OK);
                                 }
-                                return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
+                                return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                             }
+
                             if (text.Contains("postback_card") || text.Contains(_contactAdmin))
                             {
-                                zlUserDb.IsHavePredicate = false;
-                                zlUserDb.PredicateName = "";
-                                zlUserDb.PredicateValue = "";
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
                             }
                             var handleOTP = _handleMdService.HandleIsCheckOTP(text, phoneNumber, mdVoucherId, _messageOTP);
                             if (handleOTP.Status)
                             {
-                                zlUserDb.IsHavePredicate = false;
-                                zlUserDb.PredicateName = "";
-                                zlUserDb.PredicateValue = "";
-                                zlUserDb.IsHaveCardCondition = false;
-                                zlUserDb.CardConditionPattern = "";
-                                _appZaloUser.Update(zlUserDb);
-                                _appZaloUser.Save();
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                fbUserDb.IsConditionWithAreaButton = false;
+                                fbUserDb.CardConditionAreaButtonPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
 
                                 // trả về image voucher + text message end
-                                string[] arrMsgHandleOTP = Regex.Split(handleOTP.TemplateJsonZalo, "split");
+                                string[] arrMsgHandleOTP = Regex.Split(handleOTP.TemplateJsonFacebook, "split");
                                 foreach (var itemMessageJson in arrMsgHandleOTP)
                                 {
                                     await SendMessageTask(itemMessageJson, sender);
                                 }
                                 return new HttpResponseMessage(HttpStatusCode.OK);
-
                             }
-                            return await SendMessage(handleOTP.TemplateJsonZalo, sender);
+                            return await SendMessage(handleOTP.TemplateJsonFacebook, sender);
                         }
                     }
                     else // Input: Khởi tạo module được chọn
@@ -651,13 +762,15 @@ namespace BotProject.Web.API_Mobile
                         {
                             var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
 
-                            zlUserDb.IsHavePredicate = true;
-                            zlUserDb.PredicateName = "Admin_Contact";
-                            zlUserDb.PredicateValue = "";
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "Admin_Contact";
+                            fbUserDb.PredicateValue = "";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
                             hisVm.UserSay = "[Chat với chuyên viên]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
@@ -668,12 +781,12 @@ namespace BotProject.Web.API_Mobile
                             {
                                 if (HelperMethods.IsTimeInWorks() == false)
                                 {
-                                    await SendMessageTask(ZaloTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
+                                    await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
                                     return new HttpResponseMessage(HttpStatusCode.OK);
                                 }
                             }
 
-                            string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonZalo, "split");//nhớ thêm bên formcard xử lý lục trên face
+                            string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
                             if (strArrayJson.Length != 0)
                             {
                                 var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -682,7 +795,6 @@ namespace BotProject.Web.API_Mobile
                                     string tempJson = temp;
                                     await SendMessageTask(tempJson, sender);
                                 }
-
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
 
@@ -693,130 +805,123 @@ namespace BotProject.Web.API_Mobile
                         {
                             string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
                             var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
-                            zlUserDb.IsHavePredicate = true;
-                            zlUserDb.PredicateName = "ApiSearch";
-                            zlUserDb.PredicateValue = mdSearchId;
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "ApiSearch";
+                            fbUserDb.PredicateValue = mdSearchId;
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
                             hisVm.UserSay = "[Tra cứu]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
 
-                            return await SendMessage(handleMdSearch.TemplateJsonZalo, sender);
+                            return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
 
                         }
                         if (text.Contains(CommonConstants.ModuleEngineerName))
                         {
                             var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
 
-                            zlUserDb.IsHavePredicate = true;
-                            zlUserDb.PredicateName = "Engineer_Name";
-                            zlUserDb.EngineerName = "";
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            zlUserDb.BranchOTP = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "Engineer_Name";
+                            fbUserDb.EngineerName = "";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
+                            fbUserDb.BranchOTP = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
                             hisVm.UserSay = "[Tên hoặc mã kỹ sư]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
 
-                            return await SendMessage(handleEngineerName.TemplateJsonZalo, sender);
+                            return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
                         }
+
                         if (text.Contains(CommonConstants.ModuleAge))
                         {
                             var handleAge = _handleMdService.HandledIsAge(text, botId);
 
-                            zlUserDb.IsHavePredicate = true;
-                            zlUserDb.PredicateName = "Age";
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "Age";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
                             hisVm.UserSay = "[Tuổi]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
 
-                            return await SendMessage(handleAge.TemplateJsonZalo, sender);
+                            return await SendMessage(handleAge.TemplateJsonFacebook, sender);
                         }
                         if (text.Contains(CommonConstants.ModulePhone))
                         {
                             var handlePhone = _handleMdService.HandleIsPhoneNumber(text, botId);
-                            zlUserDb.IsHavePredicate = true;
-                            zlUserDb.PredicateName = "Phone";
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "Phone";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
                             hisVm.UserSay = "[Số điện thoại]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
 
-                            return await SendMessage(handlePhone.TemplateJsonZalo, sender);
+                            return await SendMessage(handlePhone.TemplateJsonFacebook, sender);
                         }
                         if (text.Contains(CommonConstants.ModuleEmail))
                         {
                             var handleEmail = _handleMdService.HandledIsEmail(text, botId);
-                            zlUserDb.IsHavePredicate = true;
-                            zlUserDb.PredicateName = "Email";
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "Email";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
                             hisVm.UserSay = "[Email]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
 
-                            return await SendMessage(handleEmail.TemplateJsonZalo, sender);
+                            return await SendMessage(handleEmail.TemplateJsonFacebook, sender);
                         }
 
                         if (text.Contains(CommonConstants.ModuleVoucher))
                         {
                             string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, zlUserDb.EngineerName, zlUserDb.BranchOTP, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
 
-                            zlUserDb.IsHavePredicate = true;
-                            zlUserDb.PredicateName = "Voucher";
-                            zlUserDb.PredicateValue = mdVoucherId;
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateName = "Voucher";
+                            fbUserDb.PredicateValue = mdVoucherId;
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
                             hisVm.UserSay = "[Voucher]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
                             AddHistory(hisVm);
 
-                            return await SendMessage(handleMdVoucher.TemplateJsonZalo, sender);
+                            return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                         }
 
-                    }
-                }
-
-                // Lấy target from knowledge base QnA trained mongodb
-                if (_isSearchAI)
-                {
-                    if (text.Contains("postback") == false || text.Contains("module") == false)
-                    {
-                        string target = _apiNLR.GetPrecidictTextClass(text, botId);
-                        if (!String.IsNullOrEmpty(target))
-                        {
-                            target = Regex.Replace(target, "\n", "").Replace("\"", "");
-                            QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-                            quesTarget = _qnaService.GetQuesByTarget(target, botId);
-                            if (quesTarget != null)
-                            {
-                                text = quesTarget.ContentText;
-                            }
-                            hisVm.BotUnderStands = target;
-                        }
                     }
                 }
 
@@ -824,32 +929,34 @@ namespace BotProject.Web.API_Mobile
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
 
-                // lấy thông tin chi nhánh voucher map id từ tạo thẻ và thêm bên appsetingconfig
-                if (text.Equals(Helper.ReadString("HCM")))
+                //tìm theo keyword trước, nếu keyword k có thì tìm theo core NLP
+                if (result.Contains("NOT_MATCH"))
                 {
-                    zlUserDb.BranchOTP = "HCM";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
-                }
-                if (text.Equals(Helper.ReadString("HN")))
-                {
-                    zlUserDb.BranchOTP = "Hà Nội";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
-                }
-                if (text.Equals(Helper.ReadString("DN")))
-                {
-                    zlUserDb.BranchOTP = "Đà Nẵng";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
-                }
-                if (text.Equals(Helper.ReadString("CT")))
-                {
-                    zlUserDb.BranchOTP = "Cần Thơ";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
-                }
+                    // Lấy target from knowledge base QnA trained mongodb
+                    //turn on AI
+                    if (_isSearchAI)
+                    {
+                        if (text.Contains("postback") == false || text.Contains("module") == false)
+                        {
+                            string target = _apiNLR.GetPrecidictTextClass(text, botId);
+                            if (!String.IsNullOrEmpty(target))
+                            {
+                                target = Regex.Replace(target, "\n", "").Replace("\"", "");
 
+                                QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                                quesTarget = _qnaService.GetQuesByTarget(target, botId);
+                                if (quesTarget != null)
+                                {
+                                    text = quesTarget.ContentText;
+                                }
+                                hisVm.BotUnderStands = target;
+                                // gọi lại aiml
+                                aimlBotResult = _botService.Chat(text, _user);
+                                result = aimlBotResult.OutputSentences[0].ToString();
+                            }
+                        }
+                    }
+                }
 
                 // lưu lịch sử
                 if (text.Contains("postback_card"))
@@ -900,26 +1007,28 @@ namespace BotProject.Web.API_Mobile
                             }
                             if (contains == "postback_module_age")
                             {
-                                zlUserDb.PredicateName = "Age";
+                                fbUserDb.PredicateName = "Age";
                                 var handleAge = _handleMdService.HandledIsAge(contains, botId);
-                                rsHandle = handleAge.TemplateJsonZalo;
+                                rsHandle = handleAge.TemplateJsonFacebook;
                             }
                             if (contains == "postback_module_email")
                             {
-                                zlUserDb.PredicateName = "Email";
+                                fbUserDb.PredicateName = "Email";
                                 var handleEmail = _handleMdService.HandledIsEmail(contains, botId);
-                                rsHandle = handleEmail.TemplateJsonZalo;
+                                rsHandle = handleEmail.TemplateJsonFacebook;
                             }
                             if (contains == "postback_module_phone")
                             {
-                                zlUserDb.PredicateName = "Phone";
+                                fbUserDb.PredicateName = "Phone";
                                 var handlePhone = _handleMdService.HandleIsPhoneNumber(contains, botId);
-                                rsHandle = handlePhone.TemplateJsonZalo;
+                                rsHandle = handlePhone.TemplateJsonFacebook;
                             }
-                            zlUserDb.IsHavePredicate = true;
-                            zlUserDb.PredicateValue = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHavePredicate = true;
+                            fbUserDb.PredicateValue = "";
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
 
                             return await SendMessage(rsHandle, sender);
                         }
@@ -929,97 +1038,163 @@ namespace BotProject.Web.API_Mobile
                 {
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
                     AddHistory(hisVm);
+                    try
+                    {
+                        fbUserDb.IsHaveCardCondition = false;
+                        fbUserDb.CardConditionPattern = "";
+                        fbUserDb.IsConditionWithAreaButton = false;
+                        fbUserDb.CardConditionAreaButtonPattern = "";
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError("RS NOT MATCH:" + ex.Message);
+                    }
 
-                    zlUserDb.IsHaveCardCondition = false;
-                    zlUserDb.CardConditionPattern = "";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
+                    if (_isHaveTimeOutOTP) //_isSearchAI
+                    {
+                        var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
+                        var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
+                        if (systemConfigVm.Count() == 0)
+                        {
+                            return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
+                        }
+                        string nameFunctionAPI = "";
+                        string number = "";
+                        string field = "";
+                        string valueBotId = "";
+                        foreach (var item in systemConfigVm)
+                        {
+                            if (item.Code == "UrlAPI")
+                                nameFunctionAPI = item.ValueString;
+                            if (item.Code == "ParamBotID")
+                                valueBotId = item.ValueString;
+                            if (item.Code == "ParamAreaID")
+                                field = item.ValueString;
+                            if (item.Code == "ParamNumberResponse")
+                                number = item.ValueString;
+                        }
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+                        AddHistory(hisVm);
+                        string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", valueBotId);
+                        if (!String.IsNullOrEmpty(resultAPI))
+                        {
+                            var lstQnaAPI = new JavaScriptSerializer
+                            {
+                                MaxJsonLength = Int32.MaxValue,
+                                RecursionLimit = 100
+                            }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
+                            // render template json generic
+                            int totalQnA = lstQnaAPI.Count();
+                            string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                            await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
+                            string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI, "http://qa.surelrn.vn/cau-hoi-phap-luat").ToString();
+                            BotLog.Info(strTemplateGenericRelatedQuestion);
+                            return await SendMessage(strTemplateGenericRelatedQuestion, sender);
+                        }
+                    }
+
 
                     _dicNotMatch = new Dictionary<string, string>() {
                         {"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
                         {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
                         {"NOT_MATCH_03", "Chưa hiểu lắm ạ, anh/chị có thể nói rõ hơn được không ạ?"},
-                        {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể nói rỏ hơn được không?"},
-                        {"NOT_MATCH_05", "Xin lỗi, em chưa hiểu ạ"}
+                        {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể giải thích thêm được không?"},
+                        {"NOT_MATCH_05", "Xin lỗi, Anh/chị có thể giải thích thêm được không?"}
                     };
 
-                    if (_isSearchAI == false)
+                    string strDefaultNotMatch = "";
+                    foreach (var item in _dicNotMatch)
                     {
-                        zlUserDb.IsHavePredicate = true;
-                        zlUserDb.PredicateName = "Admin_Contact";
-                        zlUserDb.PredicateValue = "";
-                        zlUserDb.IsHaveCardCondition = false;
-                        zlUserDb.CardConditionPattern = "";
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
-
-                        // Tin nhắn vắng mặt
-                        if (_isHaveMessageAbsent)
+                        string itemNotMatch = item.Key;
+                        if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
                         {
-                            if (HelperMethods.IsTimeInWorks() == false)
-                            {
-                                await SendMessageTask(ZaloTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
-                                return new HttpResponseMessage(HttpStatusCode.OK);
-                            }
+                            strDefaultNotMatch = item.Value;
                         }
+                    }
+                    await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    return new HttpResponseMessage(HttpStatusCode.OK);
 
-                        return new HttpResponseMessage(HttpStatusCode.OK);
 
-                        //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                        //return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-                    }
+                    //turn off AI
+                    //if (_isSearchAI == false)
+                    //{
+                    //    fbUserDb.IsHavePredicate = true;
+                    //    fbUserDb.PredicateName = "Admin_Contact";
+                    //    fbUserDb.PredicateValue = "";
+                    //    fbUserDb.IsHaveCardCondition = false;
+                    //    fbUserDb.CardConditionPattern = "";
+                    //    _appFacebookUser.Update(fbUserDb);
+                    //    _appFacebookUser.Save();
 
-                    // Chuyển tới tìm kiếm Search NLP
-                    var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
-                    var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
-                    if (systemConfigVm.Count() == 0)
-                    {
-                        return await SendMessage(ZaloTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
-                    }
-                    string nameFunctionAPI = "";
-                    string number = "";
-                    string field = "";
-                    foreach (var item in systemConfigVm)
-                    {
-                        if (item.Code == "UrlAPI")
-                            nameFunctionAPI = item.ValueString;
-                        if (item.Code == "ParamAreaID")
-                            field = item.ValueString;
-                        if (item.Code == "ParamNumberResponse")
-                            number = item.ValueString;
-                    }
-                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-                    AddHistory(hisVm);
-                    string resultAPI = GetRelatedQuestionToZalo(nameFunctionAPI, text, field, number, botId.ToString());
-                    if (!String.IsNullOrEmpty(resultAPI))
-                    {
-                        var lstQnaAPI = new JavaScriptSerializer
-                        {
-                            MaxJsonLength = Int32.MaxValue,
-                            RecursionLimit = 100
-                        }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
-                        // render template json generic
-                        int totalQnA = lstQnaAPI.Count();
-                        string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
-                        await SendMessageTask(ZaloTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
-                        string strTemplateGenericRelatedQuestion = ZaloTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
-                        return await SendMessage(strTemplateGenericRelatedQuestion, sender);
-                    }
-                    else
-                    {
-                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
-                        AddHistory(hisVm);
-                        string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
-                        foreach (var item in _dicNotMatch)
-                        {
-                            string itemNotMatch = item.Key;
-                            if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
-                            {
-                                strDefaultNotMatch = item.Value;
-                            }
-                        }
-                        return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-                    }
+                    //    // Tin nhắn vắng mặt
+                    //    if (_isHaveMessageAbsent)
+                    //    {
+                    //        if (HelperMethods.IsTimeInWorks() == false)
+                    //        {
+                    //            await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
+                    //            return new HttpResponseMessage(HttpStatusCode.OK);
+                    //        }
+                    //    }
+
+                    //    return new HttpResponseMessage(HttpStatusCode.OK);
+                    //    //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
+                    //    //return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    //}
+
+                    //Chuyển tới tìm kiếm Search NLP
+                    //var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
+                    //var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
+                    //if (systemConfigVm.Count() == 0)
+                    //{
+                    //    return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
+                    //}
+                    //string nameFunctionAPI = "";
+                    //string number = "";
+                    //string field = "";
+                    //foreach (var item in systemConfigVm)
+                    //{
+                    //    if (item.Code == "UrlAPI")
+                    //        nameFunctionAPI = item.ValueString;
+                    //    if (item.Code == "ParamAreaID")
+                    //        field = item.ValueString;
+                    //    if (item.Code == "ParamNumberResponse")
+                    //        number = item.ValueString;
+                    //}
+                    //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+                    //AddHistory(hisVm);
+                    //string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", botId.ToString());
+                    //if (!String.IsNullOrEmpty(resultAPI))
+                    //{
+                    //    var lstQnaAPI = new JavaScriptSerializer
+                    //    {
+                    //        MaxJsonLength = Int32.MaxValue,
+                    //        RecursionLimit = 100
+                    //    }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
+                    //    // render template json generic
+                    //    int totalQnA = lstQnaAPI.Count();
+                    //    string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                    //    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
+                    //    string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                    //    return await SendMessage(strTemplateGenericRelatedQuestion, sender);
+                    //}
+                    //else
+                    //{
+                    //    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
+                    //    AddHistory(hisVm);
+
+                    //    string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
+                    //    foreach (var item in _dicNotMatch)
+                    //    {
+                    //        string itemNotMatch = item.Key;
+                    //        if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
+                    //        {
+                    //            strDefaultNotMatch = item.Value;
+                    //        }
+                    //    }
+                    //    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    //}
                 }
                 // input là postback
                 if (text.Contains("postback_card"))
@@ -1027,23 +1202,26 @@ namespace BotProject.Web.API_Mobile
                     var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
                     if (cardDb.IsHaveCondition)
                     {
-                        zlUserDb.IsHaveCardCondition = true;
-                        zlUserDb.CardConditionPattern = text.Replace(".", String.Empty);
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
+                        fbUserDb.IsHaveCardCondition = true;
+                        fbUserDb.CardConditionPattern = text.Replace(".", String.Empty);
+                    }
+                    else if (cardDb.IsConditionWithAreaButton)
+                    {
+                        fbUserDb.IsConditionWithAreaButton = true;
+                        fbUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                     }
                     else
                     {
-                        zlUserDb.IsHaveCardCondition = false;
-                        zlUserDb.CardConditionPattern = "";
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
+                        fbUserDb.IsHaveCardCondition = false;
+                        fbUserDb.CardConditionPattern = "";
                     }
-                    string tempJsonZalo = cardDb.TemplateJsonZalo;
-                    if (!String.IsNullOrEmpty(tempJsonZalo))
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
+                    string tempJsonFacebook = cardDb.TemplateJsonFacebook;
+                    if (!String.IsNullOrEmpty(tempJsonFacebook))
                     {
-                        tempJsonZalo = tempJsonZalo.Trim();
-                        string[] strArrayJson = Regex.Split(tempJsonZalo, "split");//nhớ thêm bên formcard xử lý lục trên face
+                        tempJsonFacebook = tempJsonFacebook.Trim();
+                        string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
                         if (strArrayJson.Length != 0)
                         {
                             var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -1058,13 +1236,12 @@ namespace BotProject.Web.API_Mobile
                     }
                 }
 
-                //chat admin
-                if (text.Contains(_contactAdmin))
+                if (text.Contains(_contactAdmin))//chat admin
                 {
-                    zlUserDb.IsHaveCardCondition = false;
-                    zlUserDb.CardConditionPattern = "";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
+                    fbUserDb.IsHaveCardCondition = false;
+                    fbUserDb.CardConditionPattern = "";
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
 
                     string strTempPostbackContactAdmin = aimlBotResult.SubQueries[0].Template;
                     bool isPostbackContactAdmin = Regex.Match(strTempPostbackContactAdmin, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
@@ -1072,11 +1249,11 @@ namespace BotProject.Web.API_Mobile
                     {
                         strTempPostbackContactAdmin = Regex.Replace(strTempPostbackContactAdmin, @"<(.|\n)*?>", "").Trim();
                         var cardDb = _cardService.GetSingleCondition(strTempPostbackContactAdmin.Replace(".", String.Empty));
-                        string tempJsonZalo = cardDb.TemplateJsonZalo;
-                        if (!String.IsNullOrEmpty(tempJsonZalo))
+                        string tempJsonFacebook = cardDb.TemplateJsonFacebook;
+                        if (!String.IsNullOrEmpty(tempJsonFacebook))
                         {
-                            tempJsonZalo = tempJsonZalo.Trim();
-                            string[] strArrayJson = Regex.Split(tempJsonZalo, "split");//nhớ thêm bên formcard xử lý lục trên face
+                            tempJsonFacebook = tempJsonFacebook.Trim();
+                            string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
                             if (strArrayJson.Length != 0)
                             {
                                 var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -1101,23 +1278,26 @@ namespace BotProject.Web.API_Mobile
                     var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
                     if (cardDb.IsHaveCondition)
                     {
-                        zlUserDb.IsHaveCardCondition = true;
-                        zlUserDb.CardConditionPattern = strTempPostback.Replace(".", String.Empty);
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
+                        fbUserDb.IsHaveCardCondition = true;
+                        fbUserDb.CardConditionPattern = strTempPostback.Replace(".", String.Empty);
+                    }
+                    else if (cardDb.IsConditionWithAreaButton)
+                    {
+                        fbUserDb.IsConditionWithAreaButton = true;
+                        fbUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                     }
                     else
                     {
-                        zlUserDb.IsHaveCardCondition = false;
-                        zlUserDb.CardConditionPattern = "";
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
+                        fbUserDb.IsHaveCardCondition = false;
+                        fbUserDb.CardConditionPattern = "";
                     }
-                    string tempJsonZalo = cardDb.TemplateJsonZalo;
-                    if (!String.IsNullOrEmpty(tempJsonZalo))
+                    _appFacebookUser.Update(fbUserDb);
+                    _appFacebookUser.Save();
+                    string tempJsonFacebook = cardDb.TemplateJsonFacebook;
+                    if (!String.IsNullOrEmpty(tempJsonFacebook))
                     {
-                        tempJsonZalo = tempJsonZalo.Trim();
-                        string[] strArrayJson = Regex.Split(tempJsonZalo, "split");//nhớ thêm bên formcard xử lý lục trên face
+                        tempJsonFacebook = tempJsonFacebook.Trim();
+                        string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
                         if (strArrayJson.Length != 0)
                         {
                             var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -1141,23 +1321,26 @@ namespace BotProject.Web.API_Mobile
                         var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
                         if (cardDb.IsHaveCondition)
                         {
-                            zlUserDb.IsHaveCardCondition = true;
-                            zlUserDb.CardConditionPattern = text.Replace(".", String.Empty);
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHaveCardCondition = true;
+                            fbUserDb.CardConditionPattern = text.Replace(".", String.Empty);
+                        }
+                        else if (cardDb.IsConditionWithAreaButton)
+                        {
+                            fbUserDb.IsConditionWithAreaButton = true;
+                            fbUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                         }
                         else
                         {
-                            zlUserDb.IsHaveCardCondition = false;
-                            zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
                         }
-                        string tempJsonZalo = cardDb.TemplateJsonZalo;
-                        if (!String.IsNullOrEmpty(tempJsonZalo))
+                        _appFacebookUser.Update(fbUserDb);
+                        _appFacebookUser.Save();
+                        string tempJsonFacebook = cardDb.TemplateJsonFacebook;
+                        if (!String.IsNullOrEmpty(tempJsonFacebook))
                         {
-                            tempJsonZalo = tempJsonZalo.Trim();
-                            string[] strArrayJson = Regex.Split(tempJsonZalo, "split");//nhớ thêm bên formcard xử lý lục trên face
+                            tempJsonFacebook = tempJsonFacebook.Trim();
+                            string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
                             if (strArrayJson.Length != 0)
                             {
                                 var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
@@ -1173,7 +1356,9 @@ namespace BotProject.Web.API_Mobile
                     }
                 }
 
-                return await SendMessage(ZaloTemplate.GetMessageTemplateText(result, sender));
+
+                // trả lời text bình thường
+                return await SendMessage(FacebookTemplate.GetMessageTemplateText(result, sender));
 
             }
             catch (Exception ex)
@@ -1193,7 +1378,7 @@ namespace BotProject.Web.API_Mobile
             using (HttpClient client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
@@ -1216,7 +1401,7 @@ namespace BotProject.Web.API_Mobile
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                    res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
                 }
             }
             return new HttpResponseMessage(HttpStatusCode.OK);
@@ -1236,7 +1421,7 @@ namespace BotProject.Web.API_Mobile
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                    HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
                 }
             }
         }
@@ -1282,7 +1467,7 @@ namespace BotProject.Web.API_Mobile
             }
             return result;
         }
-        private string GetRelatedQuestionToZalo(string nameFuncAPI, string question, string field, string number, string botId)
+        private string GetRelatedQuestionToFacebook(string nameFuncAPI, string question, string field, string number, string botId)
         {
             string result = "";
             if (String.IsNullOrEmpty(nameFuncAPI))
@@ -1307,6 +1492,19 @@ namespace BotProject.Web.API_Mobile
 
         #endregion
 
+
+        private bool VerifySignature(string signature, string body)
+        {
+            var hashString = new StringBuilder();
+            using (var crypto = new HMACSHA1(Encoding.UTF8.GetBytes(appSecret)))
+            {
+                var hash = crypto.ComputeHash(Encoding.UTF8.GetBytes(body));
+                foreach (var item in hash)
+                    hashString.Append(item.ToString("X2"));
+            }
+
+            return hashString.ToString().ToLower() == signature.ToLower();
+        }
         private void LogError(string message)
         {
             try
@@ -1328,7 +1526,6 @@ namespace BotProject.Web.API_Mobile
             _historyService.Create(hisDb);
             _historyService.Save();
         }
-
         private static async Task Schedule(string UserId, string strMessage, string pageToken, DateTime dTimeOut, string modulePayload)
         {
             try
@@ -1393,7 +1590,7 @@ namespace BotProject.Web.API_Mobile
                 var sqlConnection = new SqlConnection(_sqlConnection);
                 sqlConnection.Open();
 
-                SqlCommand command = new SqlCommand("Select TimeOut from [ApplicationZaloUsers] where UserId=@userId", sqlConnection);
+                SqlCommand command = new SqlCommand("Select TimeOut from [ApplicationFacebookUsers] where UserId=@userId", sqlConnection);
                 command.Parameters.AddWithValue("@userId", userId);
 
                 using (SqlDataReader reader = command.ExecuteReader())
@@ -1416,7 +1613,7 @@ namespace BotProject.Web.API_Mobile
                         var sqlConnection2 = new SqlConnection(_sqlConnection);
                         sqlConnection2.Open();
 
-                        SqlCommand command2 = new SqlCommand("UPDATE ApplicationZaloUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate,IsHaveCardCondition = @isHaveCardCondition,CardConditionPattern = @cardConditionPattern Where UserId=@userId", sqlConnection2);
+                        SqlCommand command2 = new SqlCommand("UPDATE ApplicationFacebookUsers SET PredicateName = @predicateName, PredicateValue = @predicateValue, IsHavePredicate = @isHavePredicate,IsHaveCardCondition = @isHaveCardCondition,CardConditionPattern = @cardConditionPattern Where UserId=@userId", sqlConnection2);
                         command2.Parameters.AddWithValue("@userId", userId);
                         command2.Parameters.AddWithValue("@predicateName", "");
                         command2.Parameters.AddWithValue("@predicateValue", "");
@@ -1442,7 +1639,7 @@ namespace BotProject.Web.API_Mobile
                     using (HttpClient client = new HttpClient())
                     {
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                        res = await client.PostAsync($"https://openapi.zalo.me/v2.0/oa/message?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                        res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
                     }
                 }
                 return new HttpResponseMessage(HttpStatusCode.OK);
@@ -1515,6 +1712,7 @@ namespace BotProject.Web.API_Mobile
                 }
                 command.ExecuteNonQuery();
                 sqlConnection.Close();
+
 
                 if (isReceived == false)
                 {

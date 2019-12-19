@@ -89,6 +89,7 @@ namespace BotProject.Web.API_Mobile
         private IHistoryService _historyService;
         private ICardService _cardService;
         private IApplicationThirdPartyService _app3rd;
+        private AccentService _accentService;
         //private Bot _bot;
         private User _user;
         public MessageFbController(IErrorService errorService,
@@ -123,6 +124,7 @@ namespace BotProject.Web.API_Mobile
             _cardService = cardService;
             _appFacebookUser = appFacebookUser;
             _app3rd = app3rd;
+            _accentService = AccentService.AccentInstance;
         }
 
         public HttpResponseMessage Get()
@@ -261,6 +263,11 @@ namespace BotProject.Web.API_Mobile
             text = HttpUtility.HtmlDecode(text);
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
+
+            if(!text.Contains("postpack") && !text.Contains(_contactAdmin))
+            {
+                text = _accentService.GetAccentVN(text);
+            }
 
             // Lọc từ cấm
             if (!String.IsNullOrEmpty(_stopWord))
@@ -820,6 +827,9 @@ namespace BotProject.Web.API_Mobile
                         if (!String.IsNullOrEmpty(target))
                         {
                             target = Regex.Replace(target, "\n", "").Replace("\"", "");
+
+                            BotLog.Info(target);
+
                             QuesTargetViewModel quesTarget = new QuesTargetViewModel();
                             quesTarget = _qnaService.GetQuesByTarget(target, botId);
                             if (quesTarget != null)
@@ -954,7 +964,7 @@ namespace BotProject.Web.API_Mobile
                         {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
                         {"NOT_MATCH_03", "Chưa hiểu lắm ạ, anh/chị có thể nói rõ hơn được không ạ?"},
                         {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể giải thích thêm được không?"},
-                        {"NOT_MATCH_05", "Xin lỗi, em chưa hiểu ạ"}
+                        {"NOT_MATCH_05", "Xin lỗi, Anh/chị có thể giải thích thêm được không?"}
                     };
 
                     //turn off AI
@@ -977,7 +987,6 @@ namespace BotProject.Web.API_Mobile
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
                         }
-
 
                         return new HttpResponseMessage(HttpStatusCode.OK);
                         //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";

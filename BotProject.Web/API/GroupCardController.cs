@@ -62,6 +62,7 @@ namespace BotProject.Web.API
                 GroupCard grCardDb = new GroupCard();
                 grCardDb.Name = grCardVm.Name;
                 grCardDb.BotID = grCardVm.BotID;
+                grCardDb.Index = grCardVm.Index;
                 _groupCardService.Create(grCardDb);
                 _groupCardService.Save();
                 response = request.CreateResponse(HttpStatusCode.OK, grCardDb);
@@ -81,6 +82,24 @@ namespace BotProject.Web.API
                 grCardDb.Name = grCardVm.Name;
                 grCardDb.BotID = grCardVm.BotID;
                 grCardDb.ID = grCardVm.ID;
+                grCardDb.Index = grCardVm.Index;
+                _groupCardService.Update(grCardDb);
+                _groupCardService.Save();
+                response = request.CreateResponse(HttpStatusCode.OK, grCardDb);
+                return response;
+            });
+        }
+        [Route("updateIndex")]
+        [HttpPost]
+        public HttpResponseMessage UpdateIndex(HttpRequestMessage request, GroupCardViewModel grCardVm)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+
+                GroupCard grCardDb = new GroupCard();
+                grCardDb = _groupCardService.GetById(grCardVm.ID);
+                grCardDb.Index = grCardVm.Index;
                 _groupCardService.Update(grCardDb);
                 _groupCardService.Save();
                 response = request.CreateResponse(HttpStatusCode.OK, grCardDb);

@@ -292,7 +292,11 @@
     <Compile Include="API\ZaloWebhookController.cs" />
     <Compile Include="API_Mobile\MessageController.cs" />
     <Compile Include="API_Mobile\MessageFbController.cs" />
+    <Compile Include="API_Mobile\MessageFbMedicalController.cs" />
+    <Compile Include="API_Mobile\MessageFbTNMTController.cs" />
     <Compile Include="API_Mobile\MessageZaloController.cs" />
+    <Compile Include="API_Mobile\MessageZaloMedicalController.cs" />
+    <Compile Include="API_Mobile\MessageZaloTNMTController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
@@ -325,6 +329,7 @@
     <Compile Include="Infrastructure\Core\BotServiceDigipro.cs" />
     <Compile Include="Infrastructure\Core\PaginationSet.cs" />
     <Compile Include="Infrastructure\Core\ServiceFactory.cs" />
+    <Compile Include="Infrastructure\Core\SpeechReconitionVNService.cs" />
     <Compile Include="Infrastructure\Cors\AllowCrossSiteAttribute.cs" />
     <Compile Include="Infrastructure\Extensions\FacebookBotRequest.cs" />
     <Compile Include="Infrastructure\Extensions\EntityExtensions.cs" />

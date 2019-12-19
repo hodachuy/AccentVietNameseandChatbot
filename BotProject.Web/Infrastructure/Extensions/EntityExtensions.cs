@@ -106,6 +106,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             card.TemplateJsonZalo = cardVm.TemplateJsonZalo;
             card.IsDelete = false;
             card.IsHaveCondition = cardVm.IsHaveCondition;
+            card.IsConditionWithAreaButton = cardVm.IsConditionWithAreaButton;
         }
 
         public static void UpdateTemplateGenericGroup(this TemplateGenericGroup temGnrGroup, TemplateGenericGroupViewModel temGnrGroupVm)

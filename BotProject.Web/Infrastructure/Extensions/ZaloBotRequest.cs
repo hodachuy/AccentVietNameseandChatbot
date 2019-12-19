@@ -26,5 +26,20 @@ namespace BotProject.Web.Infrastructure.Extensions
     {
         public string text { set; get; }
         public string msg_id { set; get; }
+
+        public List<MessageAttachmentZalo> attachments { get; set; }
+    }
+    public class MessageAttachmentZalo
+    {
+        public string type { get; set; }
+        public MessageAttachmentPayLoadZalo payload { get; set; }
+    }
+    public class MessageAttachmentPayLoadZalo
+    {
+        public string url { get; set; }
+        public string size { get; set; }
+        public string name { get; set; }
+        public string checksum { get; set; }
+        public string type { get; set; }
     }
 }

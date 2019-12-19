@@ -13,6 +13,7 @@ using OfficeOpenXml;
 using System.Configuration;
 using BotProject.Common.ViewModels;
 using OfficeOpenXml.Style;
+using System.Text;
 
 namespace BotProject.Web.Controllers
 {
@@ -60,19 +61,41 @@ namespace BotProject.Web.Controllers
             }
             var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
             var formQnAVm = Mapper.Map<FormQuestionAnswer, FormQuestionAnswerViewModel>(formQnA);
-            var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botId);
-            var lstGroupCardVm = Mapper.Map<IEnumerable<GroupCard>, IEnumerable<GroupCardViewModel>>(lstGroupCard);
-            if (lstGroupCardVm != null && lstGroupCardVm.Count() != 0)
+
+            string strCards = "";
+            StringBuilder sb = new StringBuilder();
+            var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botId).ToList();
+            if (lstGroupCard.Count() != 0)
             {
-                foreach (var item in lstGroupCardVm)
+                foreach (var item in lstGroupCard)
                 {
+                    sb.Append("<optgroup label=\"" + item.Name.ToUpper() + "\">");
                     var lstCard = _cardService.GetListCardByGroupCardID(item.ID).ToList();
-                    item.Cards = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);
+                    if(lstCard.Count() != 0)
+                    {
+                        foreach(var iCard in lstCard)
+                        {
+                            sb.Append("<option value=\"" + iCard.ID + "\"> "+ iCard.Name + "</option>");
+                        }
+                    }else
+                    {
+                        sb.Append("<option value=\"\"></option>");
+                    }
+                    //item.Cards = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);
+                    sb.Append("</optgroup>");
                 }
+                strCards = sb.ToString();
             }
+            formQnAVm.StrTempOtpCards = strCards;
             ViewBag.BotQnAnswerID = formQnAId;
             ViewBag.BotName = botName;
-            ViewBag.Cards = lstGroupCardVm;
+
+            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            serializer.MaxJsonLength = Int32.MaxValue;
+            formQnAVm.StrTempOtpCards = serializer.Serialize(strCards).TrimStart('"').TrimEnd('"');
+
+            //ViewBag.Cards = jsonLstGroupCard;
+            //ViewBag.Cards = strCards;
             return View(formQnAVm);
 		}
 

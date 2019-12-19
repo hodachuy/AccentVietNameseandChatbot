@@ -7,6 +7,7 @@ using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Extensions;
+using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -29,7 +30,7 @@ using System.Web.Script.Serialization;
 
 namespace BotProject.Web.API_Mobile
 {
-    public class MessageZaloController : ApiController
+    public class MessageZaloMedicalController : ApiController
     {
         string pageToken = "OUQpPbeaQqbjuhvZLIjhJstikczICc8EDPBCEaCHQKStjV4gJ1fqPJEwnaeBPsSmOjhq7rL485CgnvKRSa97SYpW_bXRIMe04el3A2e9Rb9ca-C63ZKn9dcAbbeV0oDqMgos31yhEqLhhvfhD1HC45sWnKKR51GAUwEWHaS_0Xbvzhf94qu34LxQXKOVQI8gGwdxGpKILZjqrS1cAK5hAHA7oNvA3qzIVPpUA1quUtTTaDms2YflNsxgvNCMIZmDV8EVTZCa7ITJPWxmu1bSE657";
         //string appSecret = Helper.ReadString("AppSecret");
@@ -86,7 +87,7 @@ namespace BotProject.Web.API_Mobile
         private User _user;
 
         private AccentService _accentService;
-        public MessageZaloController(IErrorService errorService,
+        public MessageZaloMedicalController(IErrorService errorService,
                               IBotService botDbService,
                               ISettingService settingService,
                               IHandleModuleServiceService handleMdService,
@@ -132,6 +133,7 @@ namespace BotProject.Web.API_Mobile
             int botId = 5028;
             var body = await Request.Content.ReadAsStringAsync();
             //LogError(body);
+            //BotLog.Info(body);
             if (body.Contains("user_send_text"))
             {
 
@@ -190,6 +192,97 @@ namespace BotProject.Web.API_Mobile
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
 
+            if (body.Contains("user_send_audio"))
+            {
+                //BotLog.Info(body);
+                var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
+                //LogError(body);
+                var app3rd = _app3rd.GetByZaloPageId(value.app_id);
+                if (app3rd == null)
+                {
+                    return new HttpResponseMessage(HttpStatusCode.OK);
+                }
+                botId = app3rd.BotID;
+                var settingDb = _settingService.GetSettingByBotID(botId);
+                pageToken = settingDb.ZaloPageToken;
+
+                _isHaveTimeOut = settingDb.IsProactiveMessageZalo;
+                _timeOut = settingDb.Timeout;
+                _messageProactive = settingDb.ProactiveMessageText;
+                _isSearchAI = settingDb.IsMDSearch;
+                _patternCardPayloadProactive = "postback_card_" + settingDb.CardID.ToString();
+
+                //tin vắng mặt
+                _messageAbsent = settingDb.MessageMaintenance;
+                _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+
+                //OTP
+                _timeOutOTP = settingDb.TimeoutOTP;
+                _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
+                _messageOTP = settingDb.MessageTimeoutOTP;
+
+                // init stop word
+                _stopWord = settingDb.StopWord;
+                if (System.IO.File.Exists(_pathStopWord))
+                {
+                    string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
+                    _stopWord += string.Join(",", stopWordDefault);
+                }
+
+                var lstAIML = _aimlFileService.GetByBotId(botId);
+                var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+                _botService.loadAIMLFromDatabase(lstAIMLVm);
+                string _userId = Guid.NewGuid().ToString();
+                _user = _botService.loadUserBot(_userId);
+                //_user = _botService.loadUserBot(value.sender.id);
+
+                if (value.message.attachments[0].type == "audio")
+                {
+                    string urlAudio = value.message.attachments[0].payload.url;
+                    //BotLog.Info(urlAudio);
+                    var rsAudioToTextJson = await SpeechReconitionVNService.ConvertSpeechToText(urlAudio);
+                    if (String.IsNullOrEmpty(rsAudioToTextJson))
+                    {
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+
+                    dynamic stuff = JsonConvert.DeserializeObject(rsAudioToTextJson);
+                    string status = stuff.status;
+                    if (status == "0")
+                    {
+                        string text = stuff.hypotheses[0].utterance;
+                        if (!String.IsNullOrEmpty(text))
+                        {
+                            text = Regex.Replace(text, @"\.", "");
+                        }
+                        await ExcuteMessage(text, value.sender.id, botId, "audio");
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                    else if (status == "1")
+                    {
+                        string meanTextFromAudio = ZaloTemplate.GetMessageTemplateText("Không có âm thanh", value.sender.id).ToString();
+                        await SendMessage(meanTextFromAudio, value.sender.id);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                    else if (status == "2")
+                    {
+                        string meanTextFromAudio = ZaloTemplate.GetMessageTemplateText("Xử lý âm thanh bị hủy", value.sender.id).ToString();
+                        await SendMessage(meanTextFromAudio, value.sender.id);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                    else if (status == "9")
+                    {
+                        string meanTextFromAudio = ZaloTemplate.GetMessageTemplateText("Hệ thống xử lý âm thanh đang bận", value.sender.id).ToString();
+                        await SendMessage(meanTextFromAudio, value.sender.id);
+                        return new HttpResponseMessage(HttpStatusCode.OK);
+                    }
+                    return new HttpResponseMessage(HttpStatusCode.OK);
+                }
+
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+
+
             // sự kiện người dùng quan tâm
             if (body.Contains("follower"))
             {
@@ -236,7 +329,7 @@ namespace BotProject.Web.API_Mobile
         }
 
 
-        private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId)
+        private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId, string typeFile = "")
         {
             if (String.IsNullOrEmpty(text))
             {
@@ -308,6 +401,8 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.PredicateValue = "";
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
+                            zlUserDb.IsConditionWithAreaButton = false;
+                            zlUserDb.CardConditionAreaButtonPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
                             return await ExcuteMessage(text, sender, botId);
@@ -338,6 +433,13 @@ namespace BotProject.Web.API_Mobile
                         }
                         return new HttpResponseMessage(HttpStatusCode.OK);
                     }
+                }
+
+                //xử lý audio
+                if (!String.IsNullOrEmpty(typeFile))
+                {
+                    string meanTextFromAudio = ZaloTemplate.GetMessageTemplateText("Ý của bạn là: " + text, sender).ToString();
+                    await SendMessageTask(meanTextFromAudio, sender);
                 }
 
                 if (_isHaveTimeOut)
@@ -419,6 +521,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.PredicateValue = "";
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -446,6 +550,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
                                 zlUserDb.PhoneNumber = text;
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
                                 if (!String.IsNullOrEmpty(handleAge.Postback))
@@ -469,6 +575,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
                                 zlUserDb.PhoneNumber = text;
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
 
@@ -492,6 +600,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.PredicateValue = "";
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
 
@@ -514,6 +624,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.PredicateValue = "";
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 zlUserDb.EngineerName = text;
                                 if (text.Contains("postback") || text.Contains(_contactAdmin))
                                 {
@@ -539,6 +651,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.PredicateValue = "";
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -569,6 +683,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.PhoneNumber = telePhoneNumber;
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
 
@@ -618,6 +734,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.PredicateValue = "";
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -630,6 +748,8 @@ namespace BotProject.Web.API_Mobile
                                 zlUserDb.PredicateValue = "";
                                 zlUserDb.IsHaveCardCondition = false;
                                 zlUserDb.CardConditionPattern = "";
+                                zlUserDb.IsConditionWithAreaButton = false;
+                                zlUserDb.CardConditionAreaButtonPattern = "";
                                 _appZaloUser.Update(zlUserDb);
                                 _appZaloUser.Save();
 
@@ -656,6 +776,8 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.PredicateValue = "";
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
+                            zlUserDb.IsConditionWithAreaButton = false;
+                            zlUserDb.CardConditionAreaButtonPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -698,6 +820,8 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.PredicateValue = mdSearchId;
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
+                            zlUserDb.IsConditionWithAreaButton = false;
+                            zlUserDb.CardConditionAreaButtonPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -718,6 +842,8 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
                             zlUserDb.BranchOTP = "";
+                            zlUserDb.IsConditionWithAreaButton = false;
+                            zlUserDb.CardConditionAreaButtonPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -735,6 +861,8 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.PredicateName = "Age";
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
+                            zlUserDb.IsConditionWithAreaButton = false;
+                            zlUserDb.CardConditionAreaButtonPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -751,6 +879,8 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.PredicateName = "Phone";
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
+                            zlUserDb.IsConditionWithAreaButton = false;
+                            zlUserDb.CardConditionAreaButtonPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -767,6 +897,8 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.PredicateName = "Email";
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
+                            zlUserDb.IsConditionWithAreaButton = false;
+                            zlUserDb.CardConditionAreaButtonPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -787,6 +919,8 @@ namespace BotProject.Web.API_Mobile
                             zlUserDb.PredicateValue = mdVoucherId;
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
+                            zlUserDb.IsConditionWithAreaButton = false;
+                            zlUserDb.CardConditionAreaButtonPattern = "";
                             _appZaloUser.Update(zlUserDb);
                             _appZaloUser.Save();
 
@@ -800,56 +934,58 @@ namespace BotProject.Web.API_Mobile
                     }
                 }
 
-                // Lấy target from knowledge base QnA trained mongodb
-                if (_isSearchAI)
-                {
-                    if (text.Contains("postback") == false || text.Contains("module") == false)
-                    {
-                        string target = _apiNLR.GetPrecidictTextClass(text, botId);
-                        if (!String.IsNullOrEmpty(target))
-                        {
-                            target = Regex.Replace(target, "\n", "").Replace("\"", "");
-                            QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-                            quesTarget = _qnaService.GetQuesByTarget(target, botId);
-                            if (quesTarget != null)
-                            {
-                                text = quesTarget.ContentText;
-                            }
-                            hisVm.BotUnderStands = target;
-                        }
-                    }
-                }
+                //// Lấy target from knowledge base QnA trained mongodb
+                //if (_isSearchAI)
+                //{
+                //    if (text.Contains("postback") == false || text.Contains("module") == false)
+                //    {
+                //        string target = _apiNLR.GetPrecidictTextClass(text, botId);
+                //        if (!String.IsNullOrEmpty(target))
+                //        {
+                //            target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                //            QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                //            quesTarget = _qnaService.GetQuesByTarget(target, botId);
+                //            if (quesTarget != null)
+                //            {
+                //                text = quesTarget.ContentText;
+                //            }
+                //            hisVm.BotUnderStands = target;
+                //        }
+                //    }
+                //}
 
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
 
-                // lấy thông tin chi nhánh voucher map id từ tạo thẻ và thêm bên appsetingconfig
-                if (text.Equals(Helper.ReadString("HCM")))
+                //tìm theo keyword trước, nếu keyword k có thì tìm theo core NLP
+                if (result.Contains("NOT_MATCH"))
                 {
-                    zlUserDb.BranchOTP = "HCM";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
-                }
-                if (text.Equals(Helper.ReadString("HN")))
-                {
-                    zlUserDb.BranchOTP = "Hà Nội";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
-                }
-                if (text.Equals(Helper.ReadString("DN")))
-                {
-                    zlUserDb.BranchOTP = "Đà Nẵng";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
-                }
-                if (text.Equals(Helper.ReadString("CT")))
-                {
-                    zlUserDb.BranchOTP = "Cần Thơ";
-                    _appZaloUser.Update(zlUserDb);
-                    _appZaloUser.Save();
-                }
+                    // Lấy target from knowledge base QnA trained mongodb
+                    //turn on AI
+                    if (_isSearchAI)
+                    {
+                        if (text.Contains("postback") == false || text.Contains("module") == false)
+                        {
+                            string target = _apiNLR.GetPrecidictTextClass(text, botId);
+                            if (!String.IsNullOrEmpty(target))
+                            {
+                                target = Regex.Replace(target, "\n", "").Replace("\"", "");
 
+                                QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                                quesTarget = _qnaService.GetQuesByTarget(target, botId);
+                                if (quesTarget != null)
+                                {
+                                    text = quesTarget.ContentText;
+                                }
+                                hisVm.BotUnderStands = target;
+                                // gọi lại aiml
+                                aimlBotResult = _botService.Chat(text, _user);
+                                result = aimlBotResult.OutputSentences[0].ToString();
+                            }
+                        }
+                    }
+                }
 
                 // lưu lịch sử
                 if (text.Contains("postback_card"))
@@ -935,91 +1071,146 @@ namespace BotProject.Web.API_Mobile
                     _appZaloUser.Update(zlUserDb);
                     _appZaloUser.Save();
 
+                    if (_isHaveTimeOutOTP) //_isSearchAI
+                    {
+                        var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
+                        var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
+                        if (systemConfigVm.Count() == 0)
+                        {
+                            return await SendMessage(ZaloTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
+                        }
+                        string nameFunctionAPI = "";
+                        string number = "";
+                        string field = "";
+                        string valueBotId = "";
+                        foreach (var item in systemConfigVm)
+                        {
+                            if (item.Code == "UrlAPI")
+                                nameFunctionAPI = item.ValueString;
+                            if (item.Code == "ParamBotID")
+                                valueBotId = item.ValueString;
+                            if (item.Code == "ParamAreaID")
+                                field = item.ValueString;
+                            if (item.Code == "ParamNumberResponse")
+                                number = item.ValueString;
+                        }
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+                        AddHistory(hisVm);
+                        string resultAPI = GetRelatedQuestionToZalo(nameFunctionAPI, text, field, number, valueBotId);
+                        if (!String.IsNullOrEmpty(resultAPI))
+                        {
+                            var lstQnaAPI = new JavaScriptSerializer
+                            {
+                                MaxJsonLength = Int32.MaxValue,
+                                RecursionLimit = 100
+                            }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
+                            // render template json generic
+                            int totalQnA = lstQnaAPI.Count();
+                            string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                            await SendMessageTask(ZaloTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
+                            string strTemplateGenericRelatedQuestion = ZaloTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                            return await SendMessage(strTemplateGenericRelatedQuestion, sender);
+                        }
+                    }
+
                     _dicNotMatch = new Dictionary<string, string>() {
                         {"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
                         {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
                         {"NOT_MATCH_03", "Chưa hiểu lắm ạ, anh/chị có thể nói rõ hơn được không ạ?"},
-                        {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể nói rỏ hơn được không?"},
-                        {"NOT_MATCH_05", "Xin lỗi, em chưa hiểu ạ"}
+                        {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể giải thích thêm được không?"},
+                        {"NOT_MATCH_05", "Xin lỗi, Anh/chị có thể giải thích thêm được không?"}
                     };
 
-                    if (_isSearchAI == false)
-                    {
-                        zlUserDb.IsHavePredicate = true;
-                        zlUserDb.PredicateName = "Admin_Contact";
-                        zlUserDb.PredicateValue = "";
-                        zlUserDb.IsHaveCardCondition = false;
-                        zlUserDb.CardConditionPattern = "";
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
 
-                        // Tin nhắn vắng mặt
-                        if (_isHaveMessageAbsent)
+                    string strDefaultNotMatch = "";
+                    foreach (var item in _dicNotMatch)
+                    {
+                        string itemNotMatch = item.Key;
+                        if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
                         {
-                            if (HelperMethods.IsTimeInWorks() == false)
-                            {
-                                await SendMessageTask(ZaloTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
-                                return new HttpResponseMessage(HttpStatusCode.OK);
-                            }
+                            strDefaultNotMatch = item.Value;
                         }
+                    }
+                    return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
 
-                        return new HttpResponseMessage(HttpStatusCode.OK);
 
-                        //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                        //return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-                    }
+                    //if (_isSearchAI == false)
+                    //{
+                    //    zlUserDb.IsHavePredicate = true;
+                    //    zlUserDb.PredicateName = "Admin_Contact";
+                    //    zlUserDb.PredicateValue = "";
+                    //    zlUserDb.IsHaveCardCondition = false;
+                    //    zlUserDb.CardConditionPattern = "";
+                    //    _appZaloUser.Update(zlUserDb);
+                    //    _appZaloUser.Save();
 
-                    // Chuyển tới tìm kiếm Search NLP
-                    var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
-                    var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
-                    if (systemConfigVm.Count() == 0)
-                    {
-                        return await SendMessage(ZaloTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
-                    }
-                    string nameFunctionAPI = "";
-                    string number = "";
-                    string field = "";
-                    foreach (var item in systemConfigVm)
-                    {
-                        if (item.Code == "UrlAPI")
-                            nameFunctionAPI = item.ValueString;
-                        if (item.Code == "ParamAreaID")
-                            field = item.ValueString;
-                        if (item.Code == "ParamNumberResponse")
-                            number = item.ValueString;
-                    }
-                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-                    AddHistory(hisVm);
-                    string resultAPI = GetRelatedQuestionToZalo(nameFunctionAPI, text, field, number, botId.ToString());
-                    if (!String.IsNullOrEmpty(resultAPI))
-                    {
-                        var lstQnaAPI = new JavaScriptSerializer
-                        {
-                            MaxJsonLength = Int32.MaxValue,
-                            RecursionLimit = 100
-                        }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
-                        // render template json generic
-                        int totalQnA = lstQnaAPI.Count();
-                        string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
-                        await SendMessageTask(ZaloTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
-                        string strTemplateGenericRelatedQuestion = ZaloTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
-                        return await SendMessage(strTemplateGenericRelatedQuestion, sender);
-                    }
-                    else
-                    {
-                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
-                        AddHistory(hisVm);
-                        string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
-                        foreach (var item in _dicNotMatch)
-                        {
-                            string itemNotMatch = item.Key;
-                            if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
-                            {
-                                strDefaultNotMatch = item.Value;
-                            }
-                        }
-                        return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-                    }
+                    //    // Tin nhắn vắng mặt
+                    //    if (_isHaveMessageAbsent)
+                    //    {
+                    //        if (HelperMethods.IsTimeInWorks() == false)
+                    //        {
+                    //            await SendMessageTask(ZaloTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
+                    //            return new HttpResponseMessage(HttpStatusCode.OK);
+                    //        }
+                    //    }
+
+                    //    return new HttpResponseMessage(HttpStatusCode.OK);
+
+                    //    //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
+                    //    //return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    //}
+
+                    //// Chuyển tới tìm kiếm Search NLP
+                    //var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
+                    //var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
+                    //if (systemConfigVm.Count() == 0)
+                    //{
+                    //    return await SendMessage(ZaloTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
+                    //}
+                    //string nameFunctionAPI = "";
+                    //string number = "";
+                    //string field = "";
+                    //foreach (var item in systemConfigVm)
+                    //{
+                    //    if (item.Code == "UrlAPI")
+                    //        nameFunctionAPI = item.ValueString;
+                    //    if (item.Code == "ParamAreaID")
+                    //        field = item.ValueString;
+                    //    if (item.Code == "ParamNumberResponse")
+                    //        number = item.ValueString;
+                    //}
+                    //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+                    //AddHistory(hisVm);
+                    //string resultAPI = GetRelatedQuestionToZalo(nameFunctionAPI, text, field, number, botId.ToString());
+                    //if (!String.IsNullOrEmpty(resultAPI))
+                    //{
+                    //    var lstQnaAPI = new JavaScriptSerializer
+                    //    {
+                    //        MaxJsonLength = Int32.MaxValue,
+                    //        RecursionLimit = 100
+                    //    }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
+                    //    // render template json generic
+                    //    int totalQnA = lstQnaAPI.Count();
+                    //    string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                    //    await SendMessageTask(ZaloTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
+                    //    string strTemplateGenericRelatedQuestion = ZaloTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                    //    return await SendMessage(strTemplateGenericRelatedQuestion, sender);
+                    //}
+                    //else
+                    //{
+                    //    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
+                    //    AddHistory(hisVm);
+                    //    string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
+                    //    foreach (var item in _dicNotMatch)
+                    //    {
+                    //        string itemNotMatch = item.Key;
+                    //        if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
+                    //        {
+                    //            strDefaultNotMatch = item.Value;
+                    //        }
+                    //    }
+                    //    return await SendMessage(ZaloTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
+                    //}
                 }
                 // input là postback
                 if (text.Contains("postback_card"))
@@ -1029,16 +1220,19 @@ namespace BotProject.Web.API_Mobile
                     {
                         zlUserDb.IsHaveCardCondition = true;
                         zlUserDb.CardConditionPattern = text.Replace(".", String.Empty);
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
+                    }
+                    else if (cardDb.IsConditionWithAreaButton)
+                    {
+                        zlUserDb.IsConditionWithAreaButton = true;
+                        zlUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                     }
                     else
                     {
                         zlUserDb.IsHaveCardCondition = false;
                         zlUserDb.CardConditionPattern = "";
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
                     }
+                    _appZaloUser.Update(zlUserDb);
+                    _appZaloUser.Save();
                     string tempJsonZalo = cardDb.TemplateJsonZalo;
                     if (!String.IsNullOrEmpty(tempJsonZalo))
                     {
@@ -1103,16 +1297,20 @@ namespace BotProject.Web.API_Mobile
                     {
                         zlUserDb.IsHaveCardCondition = true;
                         zlUserDb.CardConditionPattern = strTempPostback.Replace(".", String.Empty);
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
+                    }
+                    else if (cardDb.IsConditionWithAreaButton)
+                    {
+                        zlUserDb.IsConditionWithAreaButton = true;
+                        zlUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                     }
                     else
                     {
                         zlUserDb.IsHaveCardCondition = false;
                         zlUserDb.CardConditionPattern = "";
-                        _appZaloUser.Update(zlUserDb);
-                        _appZaloUser.Save();
                     }
+                    _appZaloUser.Update(zlUserDb);
+                    _appZaloUser.Save();
+
                     string tempJsonZalo = cardDb.TemplateJsonZalo;
                     if (!String.IsNullOrEmpty(tempJsonZalo))
                     {
@@ -1143,16 +1341,20 @@ namespace BotProject.Web.API_Mobile
                         {
                             zlUserDb.IsHaveCardCondition = true;
                             zlUserDb.CardConditionPattern = text.Replace(".", String.Empty);
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
+                        }
+                        else if (cardDb.IsConditionWithAreaButton)
+                        {
+                            zlUserDb.IsConditionWithAreaButton = true;
+                            zlUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                         }
                         else
                         {
                             zlUserDb.IsHaveCardCondition = false;
                             zlUserDb.CardConditionPattern = "";
-                            _appZaloUser.Update(zlUserDb);
-                            _appZaloUser.Save();
                         }
+                        _appZaloUser.Update(zlUserDb);
+                        _appZaloUser.Save();
+
                         string tempJsonZalo = cardDb.TemplateJsonZalo;
                         if (!String.IsNullOrEmpty(tempJsonZalo))
                         {

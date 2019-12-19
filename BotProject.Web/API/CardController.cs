@@ -395,6 +395,7 @@ namespace BotProject.Web.API
                                 fileDocDb.Url = fileDocVm.Url;
                                 fileDocDb.Index = fileDocVm.Index;
                                 fileDocDb.TokenZalo = fileDocVm.TokenZalo;
+                                fileDocDb.TokenFacebook = fileDocVm.TokenFacebook;
                                 _commonCardService.AddFileDocument(fileDocDb);
                                 _commonCardService.Save();
                             }

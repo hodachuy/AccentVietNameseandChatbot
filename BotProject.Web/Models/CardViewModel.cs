@@ -20,6 +20,7 @@ namespace BotProject.Web.Models
         public bool IsDelete { set; get; }
         public bool Status { set; get; }
         public bool IsHaveCondition { set; get; }
+        public bool IsConditionWithAreaButton { set; get; }
 
         public string UserID { set; get; }
         [Required]

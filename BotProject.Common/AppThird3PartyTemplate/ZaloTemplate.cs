@@ -144,7 +144,7 @@ namespace BotProject.Common.AppThird3PartyTemplate
 
         }
 
-        public static Object GetMessageTemplateGenericByList(string sender, List<SearchNlpQnAViewModel> lstSearchNLP)
+        public static Object GetMessageTemplateGenericByList(string sender, List<SearchNlpQnAViewModel> lstSearchNLP,string urlDetail = "")
         {
             return JObject.FromObject(
               new
@@ -167,7 +167,7 @@ namespace BotProject.Common.AppThird3PartyTemplate
                                              default_action = new
                                              {
                                                  type = "oa.open.url",
-                                                 url = ConfigHelper.ReadString("Domain") + "home/faq/" + q.id + "",
+                                                 url = (String.IsNullOrEmpty(urlDetail) == true ? ConfigHelper.ReadString("Domain") + "home/faq/" + q.id + "" : urlDetail + "-" + q.id + ".html"),
                                              }
                                          }
                           }

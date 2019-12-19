@@ -181,6 +181,19 @@
         display: none;
     }
 
+     #pageLearning .panel.panel-flat .addCtShowNextRow {
+        position: absolute;
+        right: 20px;
+        top: -10px;
+        cursor: pointer;
+        /*display: none;*/
+        border-radius: 50%;
+        padding: 2px;
+        -webkit-transition: opacity 0.5s, -webkit-transform 0.5s;
+        transition: opacity 0.5s, transform 0.5s;
+        opacity: 0;
+    }
+
     #pageLearning .panel.panel-flat .rmCt {
         position: absolute;
         right: -5px;
@@ -212,6 +225,12 @@
         transition: opacity 0.5s, transform 0.5s;
         opacity: 0;
         margin-right: 5px;
+    }
+
+     #pageLearning .panel.panel-flat:hover i.addCtShowNextRow {
+        background: #fff;
+        border: 1px solid #333;
+        opacity: 1;
     }
 
     #pageLearning .panel.panel-flat:hover i.rmCt {

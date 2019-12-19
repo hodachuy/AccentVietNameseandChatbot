@@ -22,7 +22,8 @@ txtbt2 = 'Hủy';var lstCardSelected;
 var TypeAction = "Create";
 
 var positionTagError = 0;
-
+//init event form Qna
+var checkAlert = false;
 $(document).ready(function () {
     // init load form if have data from db
     new ActionFormQnA().GetQnAnswerById();
@@ -58,8 +59,6 @@ $(document).ready(function () {
         }
     })
 
-    //init event form Qna
-    var checkAlert = false;
     $('body').on('click', '.moveTop', function (event) {
         var el_index = $(this).closest('.panel-flat').index();
         var el_html = '';
@@ -141,6 +140,7 @@ $(document).ready(function () {
         sizeCT = parseInt(sizeCT);
         var stri = '<div class="panel panel-flat" indexpanel="' + (sizeCT + 1) + '" data-quesgroup-id="">' +
                 '<div class="panel-body">' +
+                    '<i class="fa fa-plus icon-bin addCtShowNextRow"></i>'+
                     '<i class="fa fa-trash icon-bin rmCt"></i>' +
                     '<div class="wrMove">' +
                         '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>' +
@@ -211,7 +211,7 @@ $(document).ready(function () {
         //        var switchery = new Switchery(elems[i]);
         //    }
         //}
-        $('.rmCt, .moveBot, .moveTop').show();
+        $('.rmCt, .addCtShowNextRow, .moveBot, .moveTop').show();
 
         $('.wrap-content').attr('data-countpanel', sizeCT + 1);
 
@@ -405,6 +405,71 @@ $(document).ready(function () {
             }
         })
     })
+
+    $('body').on('click', '.addCtShowNextRow', function (event) {
+        var element = $(this).closest('.panel-flat').eq(0);
+        var sizeCT = $('.wrap-content').attr('data-countpanel');
+        sizeCT = parseInt(sizeCT);
+        var stri = '<div class="panel panel-flat" indexpanel="' + (sizeCT + 1) + '" data-quesgroup-id="">' +
+                '<div class="panel-body">' +
+                    '<i class="fa fa-plus icon-bin addCtShowNextRow"></i>' +
+                    '<i class="fa fa-trash icon-bin rmCt"></i>' +
+                    '<div class="wrMove">' +
+                        '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>' +
+                        '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>' +
+                    '</div>' +
+                    '<div class="row">' +
+                        '<div class="col-lg-5 userSay">' +
+                            '<label>Người dùng nói</label>' +
+                            '<div class="input-group">' +
+                                '<ul class="tags checkvalid">' +
+                                    '<li class="tagAdd taglist">' +
+                                        '<input type="text" autocomplete="off" class="search-field">' +
+                                    '</li>' +
+                                '</ul>' +
+                                '<span class="input-group-addon">' +
+                                    '<input type="checkbox" class="styled" ' +
+                                    'checked="checked">' +
+                                '</span>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="col-lg-5 botReply">' +
+                            '<label>Bot trả lời với&nbsp;</label>' +
+                            '<label class="learn_switchbot">' +
+                                '<input type="checkbox" class="learn_switchinput" checked="">' +
+                                '<span class="learn_sliderbot learn_roundbot"></span>' +
+                            '</label>' +
+                            '<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>' +
+                            '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">' +
+                                '<label>' +
+                                    '<input type="checkbox" class="switchery randomText" style="display:none">' +
+                                    '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>' +
+                                    'Ngẫu nhiên' +
+                                '</label>' +
+                            '</div>' +
+                            '<div class="wrbutton" indexbt="1">' +
+                                '<div class="bt" data-answer-id="">' +
+                                    '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
+                                    '<i class="fa fa-times icon-bin rmText"></i>' +
+                                '</div>' +
+                            '</div>' +
+                            '<button type="button" class="btn btn-rounded mt20 w100 hidden"><i class="fa fa-plus"></i> ' + txtbt + '</button>' +
+                        '</div>' +
+                        '<div class="col-lg-2 metaTarget">' +
+                            '<label>Ý định</label>' +
+                            '<div class="input-group">' +
+                                '<input type="text" class="target-field" data-target-id="">' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+        console.log(element)
+        console.log(stri)
+        element.after(stri);
+        ReOder();
+    })
+
     // ReOder
     ReOder = function () {
         $('.wrap-content .panel.panel-flat').each(function (index) {
@@ -491,6 +556,7 @@ $(document).ready(function () {
                                 $(this).parents('.input-group').addClass('has-error');
                             }
                             checkvalid = false;
+                            positionTagError = $(this).offset().top;
                         } else {
                             $(this).parents('.has-error').removeClass('has-error');
                         }
@@ -509,6 +575,7 @@ $(document).ready(function () {
                                 $(this).parents('.input-group').addClass('has-error');
                             }
                             checkvalid = false;
+                            positionTagError = $(this).offset().top;
                         } else {
                             $(this).parents('.has-error').removeClass('has-error');
                         }
@@ -701,6 +768,7 @@ ActionFormQnA = function () {
 
             html += '<div class="panel panel-flat" indexpanel="' + index + '"  data-quesgroup-id="' + grQnAnswerID + '">';
             html += '<div class="panel-body">';
+            html += '<i class="fa fa-plus icon-bin addCtShowNextRow"></i>';
             html += '<i class="fa fa-trash icon-bin rmCt"></i>';
             html += '<div class="wrMove">';
             html += '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>';

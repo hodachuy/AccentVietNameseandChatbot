@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Script.Serialization;
 using static BotProject.Common.AssetWarrantyResponse;
 
 namespace BotProject.Common
@@ -14,6 +15,7 @@ namespace BotProject.Common
     public class DellServices
     {
         private static string UrlDell = ConfigHelper.ReadString("UrlDell");
+
 
         private static Dictionary<string, int> ServicePrioritize = new Dictionary<string, int>() {
             {"2HR", 1},
@@ -28,54 +30,80 @@ namespace BotProject.Common
         {
             if (!String.IsNullOrEmpty(ServiceTag))
             {
-                String URL = String.Format("getassetwarranty/{0}?apikey=1b31b0bf-980d-49eb-b77b-2c135ceb6974", ServiceTag);
+                //String URL = String.Format("getassetwarranty/{0}?apikey=1b31b0bf-980d-49eb-b77b-2c135ceb6974", ServiceTag);
+                String URL = String.Format("api/Dell/Warranty/{0}", ServiceTag);
                 string jsonResult = GetAsync(URL).Result;
                 if (!String.IsNullOrEmpty(jsonResult))
                 {
-                    AssetWarrantyResponseModel assetWarrantyResponseModel = ConvertJsonToAssetWarrantyResponse(jsonResult);
-                    if (assetWarrantyResponseModel.AssetHeader != null)
-                    {
-                        WarrantyResultModel warrantyResultModel = new WarrantyResultModel();
-                        WarrantyDetailModel warrantyDetailModel = new WarrantyDetailModel();
-                        List<WarrantyDetailModel> warrantyDetailList = new List<WarrantyDetailModel>();
-                        warrantyResultModel.ServiceTag = assetWarrantyResponseModel.AssetHeader.ServiceTag;
-                        warrantyResultModel.Country = assetWarrantyResponseModel.AssetHeader.CountryLookupCode;
-                        warrantyResultModel.ShipDate = assetWarrantyResponseModel.AssetHeader.ShipDate;
-                        if(assetWarrantyResponseModel.AssetEntitlement != null)
-                        {
-                            foreach (var item in assetWarrantyResponseModel.AssetEntitlement)
-                            {
-                                warrantyDetailModel = new WarrantyDetailModel();
-                                warrantyDetailModel.Service = (item.ServiceLevelCode + " (" + item.ServiceLevelDescription + ")");
-                                warrantyDetailModel.ServiceLevelCode = item.ServiceLevelCode;
-                                warrantyDetailModel.EntitlementType = item.EntitlementType;
-                                warrantyDetailModel.StartDate = item.StartDate;
-                                warrantyDetailModel.ExpirationDate = item.EndDate;
-                                warrantyDetailList.Add(warrantyDetailModel);                           
-                            }
-                            //Xử lý danh sách warrantyDetail
-                            var WarrantyDetailResult = GroupWarrantyDetail(warrantyDetailList);
-                            warrantyResultModel.WarrantyDetails = WarrantyDetailResult.OrderBy(x=>x.ExpirationDate).OrderBy(x => x.Priority).ToList();
-                            StringBuilder sb = new StringBuilder();
-                            sb.AppendLine("Thông tin bảo hành của máy có Service tag "+ warrantyResultModel.ServiceTag +":" +"<br/><br/>");
-                            sb.AppendLine("- Model: " + assetWarrantyResponseModel.AssetHeader.MachineDescription + "<br/>");
-                            sb.AppendLine("- Ngày ship: " + assetWarrantyResponseModel.AssetHeader.ShipDate.ToString("dd/MM/yyyy") + "<br/>");
-                            sb.AppendLine("- Quốc gia: " + assetWarrantyResponseModel.AssetHeader.CountryLookupCode + "<br/>");
-                            sb.AppendLine("- Ngày hết hạn BH ("+ warrantyResultModel.WarrantyDetails[0].ServiceLevelCode + "): " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd/MM/yyyy") + "<br/>");
+                    WarrantyResultModel warrantyResultModel = new WarrantyResultModel();
+                    warrantyResultModel = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<WarrantyResultModel>(jsonResult);
 
-                            //sb.AppendLine("Service Tag: " + warrantyResultModel.ServiceTag + "<br/>");
-                            //sb.AppendLine("Thời hạn bảo hành: " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd MMM yyyy") + "<br/>");
-                            //sb.AppendLine("Thông tin chi tiết: <br/>");
-                            //foreach (var obj in warrantyResultModel.WarrantyDetails)
-                            //{
-                            //    sb.AppendLine(obj.Service + "<br/>");
-                            //    sb.AppendLine("Sta: "+obj.StartDate.ToString("dd MMM yyyy") + " ,Exp: "+obj.ExpirationDate.ToString("dd MMM yyyy")+"<br/>");
-                            //}
+                    //Xử lý danh sách warrantyDetail
+                    var WarrantyDetailResult = GroupWarrantyDetail(warrantyResultModel.WarrantyDetails);
+                    warrantyResultModel.WarrantyDetails = WarrantyDetailResult.OrderBy(x => x.ExpirationDate).OrderBy(x => x.Priority).ToList();
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendLine("Thông tin bảo hành của máy có Service tag " + warrantyResultModel.ServiceTag + ":" + "<br/><br/>");
+                    sb.AppendLine("- Model: " + warrantyResultModel.Model + "<br/>");
+                    sb.AppendLine("- Ngày ship: " + warrantyResultModel.ShipDate.ToString("dd/MM/yyyy") + "<br/>");
+                    sb.AppendLine("- Quốc gia: " + warrantyResultModel.Country + "<br/>");
+                    sb.AppendLine("- Ngày hết hạn BH (" + warrantyResultModel.WarrantyDetails[0].Service + "): " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd/MM/yyyy") + "<br/>");
 
-                            warrantyResultModel.TextWarranty = sb.ToString();
-                            return warrantyResultModel;
-                        }
-                    }
+                    //sb.AppendLine("Service Tag: " + warrantyResultModel.ServiceTag + "<br/>");
+                    //sb.AppendLine("Thời hạn bảo hành: " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd MMM yyyy") + "<br/>");
+                    //sb.AppendLine("Thông tin chi tiết: <br/>");
+                    //foreach (var obj in warrantyResultModel.WarrantyDetails)
+                    //{
+                    //    sb.AppendLine(obj.Service + "<br/>");
+                    //    sb.AppendLine("Sta: "+obj.StartDate.ToString("dd MMM yyyy") + " ,Exp: "+obj.ExpirationDate.ToString("dd MMM yyyy")+"<br/>");
+                    //}
+
+                    warrantyResultModel.TextWarranty = sb.ToString();
+                    return warrantyResultModel;
+
+                    //AssetWarrantyResponseModel assetWarrantyResponseModel = ConvertJsonToAssetWarrantyResponse(jsonResult);
+                    //if (assetWarrantyResponseModel.AssetHeader != null)
+                    //{
+                    //    WarrantyResultModel warrantyResultModel = new WarrantyResultModel();
+                    //    WarrantyDetailModel warrantyDetailModel = new WarrantyDetailModel();
+                    //    List<WarrantyDetailModel> warrantyDetailList = new List<WarrantyDetailModel>();
+                    //    warrantyResultModel.ServiceTag = assetWarrantyResponseModel.AssetHeader.ServiceTag;
+                    //    warrantyResultModel.Country = assetWarrantyResponseModel.AssetHeader.CountryLookupCode;
+                    //    warrantyResultModel.ShipDate = assetWarrantyResponseModel.AssetHeader.ShipDate;
+                    //    if(assetWarrantyResponseModel.AssetEntitlement != null)
+                    //    {
+                    //        foreach (var item in assetWarrantyResponseModel.AssetEntitlement)
+                    //        {
+                    //            warrantyDetailModel = new WarrantyDetailModel();
+                    //            warrantyDetailModel.Service = (item.ServiceLevelCode + " (" + item.ServiceLevelDescription + ")");
+                    //            warrantyDetailModel.ServiceLevelCode = item.ServiceLevelCode;
+                    //            warrantyDetailModel.EntitlementType = item.EntitlementType;
+                    //            warrantyDetailModel.StartDate = item.StartDate;
+                    //            warrantyDetailModel.ExpirationDate = item.EndDate;
+                    //            warrantyDetailList.Add(warrantyDetailModel);                           
+                    //        }
+                    //        //Xử lý danh sách warrantyDetail
+                    //        var WarrantyDetailResult = GroupWarrantyDetail(warrantyDetailList);
+                    //        warrantyResultModel.WarrantyDetails = WarrantyDetailResult.OrderBy(x=>x.ExpirationDate).OrderBy(x => x.Priority).ToList();
+                    //        StringBuilder sb = new StringBuilder();
+                    //        sb.AppendLine("Thông tin bảo hành của máy có Service tag "+ warrantyResultModel.ServiceTag +":" +"<br/><br/>");
+                    //        sb.AppendLine("- Model: " + assetWarrantyResponseModel.AssetHeader.MachineDescription + "<br/>");
+                    //        sb.AppendLine("- Ngày ship: " + assetWarrantyResponseModel.AssetHeader.ShipDate.ToString("dd/MM/yyyy") + "<br/>");
+                    //        sb.AppendLine("- Quốc gia: " + assetWarrantyResponseModel.AssetHeader.CountryLookupCode + "<br/>");
+                    //        sb.AppendLine("- Ngày hết hạn BH ("+ warrantyResultModel.WarrantyDetails[0].ServiceLevelCode + "): " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd/MM/yyyy") + "<br/>");
+
+                    //        //sb.AppendLine("Service Tag: " + warrantyResultModel.ServiceTag + "<br/>");
+                    //        //sb.AppendLine("Thời hạn bảo hành: " + warrantyResultModel.WarrantyDetails[0].ExpirationDate.ToString("dd MMM yyyy") + "<br/>");
+                    //        //sb.AppendLine("Thông tin chi tiết: <br/>");
+                    //        //foreach (var obj in warrantyResultModel.WarrantyDetails)
+                    //        //{
+                    //        //    sb.AppendLine(obj.Service + "<br/>");
+                    //        //    sb.AppendLine("Sta: "+obj.StartDate.ToString("dd MMM yyyy") + " ,Exp: "+obj.ExpirationDate.ToString("dd MMM yyyy")+"<br/>");
+                    //        //}
+
+                    //        warrantyResultModel.TextWarranty = sb.ToString();
+                    //        return warrantyResultModel;
+                    //    }
+                    //}
                 }
             }
             return null;

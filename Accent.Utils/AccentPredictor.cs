@@ -324,6 +324,10 @@ namespace Accent.Utils
                     {
                         text = Regex.Replace(text, "tay tôi bị đầu", "tay tôi bị đau");
                     }
+                    if (text.Contains("khoản nước"))
+                    {
+                        text = Regex.Replace(text, "khoản nước", "khoan nước");
+                    }
                 }
                 output.Add(processOutput(@in, text.Trim()), path.get_weight());
             }

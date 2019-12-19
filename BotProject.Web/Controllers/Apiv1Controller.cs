@@ -107,7 +107,7 @@ namespace BotProject.Web.Controllers
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
 
-            var lstAIML = _aimlFileService.GetByBotId(botID);
+            var lstAIML = _aimlFileService.GetAllByBotId(botID);//_aimlFileService.GetByBotId(botID);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
 
@@ -651,25 +651,49 @@ namespace BotProject.Web.Controllers
                 }
 
 				// Lấy target from knowledge base QnA trained mongodb
-				if (text.Contains("postback") == false || text.Contains("module") == false)
-                {
-                    string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
-                    if (!String.IsNullOrEmpty(target))
-                    {
-                        target = Regex.Replace(target, "\n", "").Replace("\"", "");
-                        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-                        quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
-                        if(quesTarget != null)
-                        {
-                            text = quesTarget.ContentText;
-                        }
-                        hisVm.BotUnderStands = target;
-                    }
-                }
+				//if (text.Contains("postback") == false || text.Contains("module") == false)
+    //            {
+    //                string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
+    //                if (!String.IsNullOrEmpty(target))
+    //                {
+    //                    target = Regex.Replace(target, "\n", "").Replace("\"", "");
+    //                    QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+    //                    quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
+    //                    if(quesTarget != null)
+    //                    {
+    //                        text = quesTarget.ContentText;
+    //                    }
+    //                    hisVm.BotUnderStands = target;
+    //                }
+    //            }
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
                 bool isMatch = true;
+
+                if (result.Contains("NOT_MATCH"))
+                {
+                    if (text.Contains("postback") == false || text.Contains("module") == false)
+                    {
+                        string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
+                        if (!String.IsNullOrEmpty(target))
+                        {
+                            target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                            QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                            quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
+                            if (quesTarget != null)
+                            {
+                                text = quesTarget.ContentText;
+                            }
+                            hisVm.BotUnderStands = target;
+
+                            aimlBotResult = _botService.Chat(text, _user);
+                            result = aimlBotResult.OutputSentences[0].ToString();
+                        }
+                    }
+                }
+
+
                 // lưu lịch sử
                 if (text.Contains("postback_card"))
                 {
@@ -807,15 +831,18 @@ namespace BotProject.Web.Controllers
                 if (text.Contains("postback_card"))
                 {
                     var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
-                    if (cardDb.IsHaveCondition)
+                    if(cardDb != null)
                     {
-                        _user.Predicates.addSetting("cardConditionCheck", "true");
-                        _user.Predicates.addSetting("cardConditionPattern", text.Replace(".", String.Empty));
-                    }
-                    else
-                    {
-                        _user.Predicates.addSetting("cardConditionCheck", "false");
-                        _user.Predicates.addSetting("cardConditionPattern", "");
+                        if (cardDb.IsHaveCondition)
+                        {
+                            _user.Predicates.addSetting("cardConditionCheck", "true");
+                            _user.Predicates.addSetting("cardConditionPattern", text.Replace(".", String.Empty));
+                        }
+                        else
+                        {
+                            _user.Predicates.addSetting("cardConditionCheck", "false");
+                            _user.Predicates.addSetting("cardConditionPattern", "");
+                        }
                     }
                 }
                 // nếu nhập text trả lời ra postback
@@ -825,24 +852,8 @@ namespace BotProject.Web.Controllers
                 {
                     strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
                     var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
-                    if (cardDb.IsHaveCondition)
+                    if(cardDb != null)
                     {
-                        _user.Predicates.addSetting("cardConditionCheck", "true");
-                        _user.Predicates.addSetting("cardConditionPattern", strTempPostback.Replace(".", String.Empty));
-                    }
-                    else
-                    {
-                        _user.Predicates.addSetting("cardConditionCheck", "false");
-                        _user.Predicates.addSetting("cardConditionPattern", "");
-                    }
-                }
-
-                bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
-                if (isPostbackAnswer)
-                {
-                    if (result.Contains("postback"))
-                    {
-                        var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
                         if (cardDb.IsHaveCondition)
                         {
                             _user.Predicates.addSetting("cardConditionCheck", "true");
@@ -853,8 +864,31 @@ namespace BotProject.Web.Controllers
                             _user.Predicates.addSetting("cardConditionCheck", "false");
                             _user.Predicates.addSetting("cardConditionPattern", "");
                         }
+                    }
+                }
 
-                        return chatbot(result.Replace(".", String.Empty), group, token, botId, isMdSearch);
+                bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
+                if (isPostbackAnswer)
+                {
+                    if (result.Contains("postback"))
+                    {
+                        var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
+                        if(cardDb != null)
+                        {
+                            if (cardDb.IsHaveCondition)
+                            {
+                                _user.Predicates.addSetting("cardConditionCheck", "true");
+                                _user.Predicates.addSetting("cardConditionPattern", strTempPostback.Replace(".", String.Empty));
+                            }
+                            else
+                            {
+                                _user.Predicates.addSetting("cardConditionCheck", "false");
+                                _user.Predicates.addSetting("cardConditionPattern", "");
+                            }
+
+                            return chatbot(result.Replace(".", String.Empty), group, token, botId, isMdSearch);
+                        }
+
                     }
                 }
                 //set new predicate to session user bot request
@@ -931,6 +965,20 @@ namespace BotProject.Web.Controllers
                 return Json(message, JsonRequestBehavior.AllowGet);
             }
             return Json(textVN, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult PreHitAccentVN()
+        {
+            try
+            {
+                _accentService = AccentService.AccentInstance;
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                return Json(message, JsonRequestBehavior.AllowGet);
+            }
+            return Json("0", JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetAccentVN(string text)

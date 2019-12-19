@@ -9,6 +9,15 @@ namespace BotProject.Common.AppThird3PartyTemplate
 {
     public class FacebookTemplate
     {
+        public static JObject GetMessageSenderAction(string action, string sender)
+        {
+            return JObject.FromObject(
+                 new
+                 {
+                     recipient = new { id = sender },
+                     sender_action = action,
+                 });
+        }
         public static JObject GetMessageTemplateText(string text, string sender)
         {
             return JObject.FromObject(
@@ -119,7 +128,7 @@ namespace BotProject.Common.AppThird3PartyTemplate
 
         }
 
-        public static Object GetMessageTemplateGenericByList(string sender, List<SearchNlpQnAViewModel> lstSearchNLP)
+        public static Object GetMessageTemplateGenericByList(string sender, List<SearchNlpQnAViewModel> lstSearchNLP, string urlDetail = "")
         {
             return JObject.FromObject(
               new
@@ -145,7 +154,7 @@ namespace BotProject.Common.AppThird3PartyTemplate
                                                              new
                                                                 {
                                                                    type = "web_url",
-                                                                   url = ConfigHelper.ReadString("Domain")+"home/faq/"+q.id+"",
+                                                                   url = (String.IsNullOrEmpty(urlDetail) == true ? ConfigHelper.ReadString("Domain")+"home/faq/"+q.id+"" : urlDetail + "-"+q.id+".html") ,
                                                                    title = "Xem chi tiết"
                                                                 },
                                                         }
