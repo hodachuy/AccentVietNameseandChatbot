@@ -493,10 +493,9 @@ namespace BotProject.Web.API_Mobile
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
                             string area = cardDb.Name;
-                            text = text + " " + area;
+                            text = text + " " + area;// + thêm tên lĩnh vực button và nội dung trong form QnA có chứa từ lĩnh vực
                         }
                     }
-
 
                     // Điều kiện xử lý module
                     if (fbUserDb.IsHavePredicate)

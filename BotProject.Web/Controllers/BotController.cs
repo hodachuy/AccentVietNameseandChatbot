@@ -86,6 +86,7 @@ namespace BotProject.Web.Controllers
                 }
                 strCards = sb.ToString();
             }
+
             formQnAVm.StrTempOtpCards = strCards;
             ViewBag.BotQnAnswerID = formQnAId;
             ViewBag.BotName = botName;
@@ -137,6 +138,14 @@ namespace BotProject.Web.Controllers
             }
             var settingDb = _settingService.GetSettingByBotID(id);
             var lstCard = _cardService.GetListCardByBotID(id);
+            if(lstCard != null && lstCard.Count() != 0)
+            {
+                lstCard = lstCard.Select(x => new Card
+                {
+                    ID = x.ID,
+                    Name = x.Name
+                });
+            }
             var settingVm = Mapper.Map<Setting, BotSettingViewModel>(settingDb);
             var lstBot = _botService.GetListBotByUserID(UserInfo.Id);
             var lstBotVm = Mapper.Map<IEnumerable<Bot>,IEnumerable<BotViewModel>>(lstBot);

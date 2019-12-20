@@ -112,6 +112,22 @@ namespace BotProject.Web.API
                 HttpResponseMessage response = null;
                 var lstCard = _cardService.GetListCardByBotID(botId);
                 var lstCardVm = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);
+                if(lstCardVm.Count() != 0)
+                {
+                    lstCardVm = lstCardVm.Select(x => new CardViewModel
+                    {
+                        ID = x.ID,
+                        Alias = x.Alias,
+                        Name = x.Name,
+                        IsDelete = x.IsDelete,
+                        Status = x.Status,
+                        IsHaveCondition = x.IsHaveCondition,
+                        IsConditionWithAreaButton = x.IsConditionWithAreaButton,
+                        UserID = x.UserID,
+                        BotID = x.BotID,
+                        GroupCardID = x.GroupCardID
+                    });
+                }
                 response = request.CreateResponse(HttpStatusCode.OK, lstCardVm);
                 return response;
             });

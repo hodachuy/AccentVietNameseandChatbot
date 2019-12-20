@@ -43,6 +43,8 @@ namespace BotProject.Model.Models
 
         public bool IsConditionWithAreaButton { set; get; }
 
+        public int AttributeSettingID { set; get; }
+
         [Required]
         public int GroupCardID { set; get; }
 

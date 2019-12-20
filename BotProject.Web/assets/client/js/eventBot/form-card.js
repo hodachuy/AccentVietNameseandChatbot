@@ -1090,7 +1090,7 @@ $(document).ready(function () {
             callback: function (result) {
                 if (result) {
                     console.log(result)
-                        let cardId = $('#idCard').val();
+                        var cardId = $('#idCard').val();
                         var param = {
                             cardId: cardId
                         }
@@ -1115,7 +1115,10 @@ $(document).ready(function () {
                                         html += '</a>';
                                         html += '</li>';
                                     })
-                                    $("#lst-card").empty().append(html)
+                                    $("#lst-card").empty().append(html);
+                                    var elItemCard = $("li[data-card-id='" + cardId + "']");
+                                    elItemCard.remove()
+
                                 }
                                 //$("#groupCardName").html(groupCardName)
                             });
@@ -2646,9 +2649,15 @@ $(document).ready(function () {
                     $('#lst-card').append(html);
                     $('#idCard').val(card.ID);
                     $("#model-notify").modal('hide');
+
+                    //ADD to lisst group
+                    var elGroupCard = $(".wrBlock[data-gr-id='" + card.GroupCardID + "']")
+                    elGroupCard.find('ul').append('<li data-card-id="' + card.ID + '" draggable="true"><div><a href="#" class="select-item-card">' + card.Name + '</a></div></li>')
+                    //console.log(el)
+
                     swal({
                         title: "Thông báo",
-                        text: "Đã lưu",
+                        text: "Huấn luyện thành công",
                         confirmButtonColor: "#EF5350",
                         type: "success"
                     }, function () { $("#model-notify").modal('show'); });
@@ -2657,7 +2666,7 @@ $(document).ready(function () {
                     getAimlCard(card.ID);
                 }, 500)
 
-                loadListCardByGroup();
+                //loadListCardByGroup();
                 //console.log(data)
             });
 
@@ -5520,7 +5529,7 @@ function loadListCardByGroup(){
 $('body').on('click', '#groupCardName', function () {
     $("#block-card").show();
     $("#layout-card").hide();
-    loadGroupCard();
+    //loadGroupCard();
 })
 
 var card = function () {
