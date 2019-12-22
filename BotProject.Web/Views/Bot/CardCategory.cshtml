@@ -9,106 +9,11 @@
 <link href="~/assets/client/css/components.css" rel="stylesheet" />
 <link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
 <style>
-    .hide {
-        display: none !important;
-    }
-
-    .attribute {
-        display: none;
-    }
-
-    .rmAtt {
-        cursor: pointer;
-    }
-
-    .error {
-        border: 1px solid rgba(244, 67, 54, 0.64);
-    }
-
-    .bl_bt_view {
-        position: absolute;
-        padding-left: 110px;
-        padding-top: 6px;
-        cursor: pointer;
-    }
-    .breadcrumb{
-        padding: .75rem 1rem;
-    }
-    .file-preview {
-        border-radius: 5px;
-        /*border: 1px solid #ddd;*/
-        width: 100%;
-        margin-bottom: 10px;
-        position: relative;
-    }
-</style>
-<style>
-    /* The container */
-    .containerChk {
-        /*display: block;*/
-        position: relative;
-        /*padding-left: 35px;*/
-        /*margin-bottom: 12px;*/
-        cursor: pointer;
-        /*font-size: 22px;*/
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-
-        /* Hide the browser's default checkbox */
-        .containerChk input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
+    @@media (min-width: 576px) {
+        .modal-dialog {
+            max-width: 650px;
+            margin: 1.75rem auto;
         }
-
-    /* Create a custom checkbox */
-    .checkmark {
-        position: absolute;
-        top: 0;
-        /*left: 0;*/
-        height: 18px;
-        width: 18px;
-        background-color: #ccc;
-    }
-
-    /* On mouse-over, add a grey background color */
-    .containerChk:hover input ~ .checkmark {
-        background-color: #ccc;
-    }
-
-    /* When the checkbox is checked, add a blue background */
-    .containerChk input:checked ~ .checkmark {
-        background-color: #3f51b5;
-    }
-
-    /* Create the checkmark/indicator (hidden when not checked) */
-    .checkmark:after {
-        content: "";
-        position: absolute;
-        display: none;
-    }
-
-    /* Show the checkmark when checked */
-    .containerChk input:checked ~ .checkmark:after {
-        display: block;
-    }
-
-    /* Style the checkmark/indicator */
-    .containerChk .checkmark:after {
-        left: 8px;
-        top: 4px;
-        width: 5px;
-        height: 10px;
-        border: solid white;
-        border-width: 0 3px 3px 0;
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        transform: rotate(45deg);
     }
 </style>
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
@@ -211,12 +116,12 @@
             <div class="card-head-title">
                 <div class="title">
                     <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
-                    <span><input type="text" maxlength="240" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>                
+                    <span><input type="text" maxlength="240" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>
                 </div>
                 <div class="row" style="padding-top:5px">
                     <div class="col-md-6">
                         <label class="containerChk" id="container-chk-condition">
-                          
+
                         </label>
                         <label class="containerChk" id="container-chk-condition-by-area-button">
 
@@ -273,6 +178,99 @@
         </div>
         <div id="modal_button" class="modal fade in" style="display: none;">
 
+        </div>
+    </div>
+    <!--modal form attribute-->
+    <div class="modal fade" id="modalCreateAttribute" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true" style="display:none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thêm biến</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </a>
+                </div>
+                <div class="modal-body">
+                    <div class="card-header" style="background-color:lightgray">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <p>BIẾN CÀI ĐẶT</p>
+                            </div>
+                            <div class="col-lg-6">
+                                <a href="#" style="float:right;"><i class="fa fa-plus-circle"></i>Thêm biến</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding:unset !important">
+                        <div class="table-responsive" id="table-qna">
+                            <table class="table table-striped table-bordered table-sm" id="table-data">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="width:10%"></th>
+                                        <th scope="col" style="width:30%">Tên biến</th>
+                                        <th scope="col" style="width:30%">Kiểu</th>
+                                        <th scope="col" style="width:30%">Tiện ích</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-data-training">
+                                    <tr>
+                                        <td>1</td>
+                                        <td onclick="viewQnA(10443,10443)">sender_id</td>
+                                        <td>text</td>
+                                        <td>
+                                            <a href="#" style="padding-right:8px"><i class="fa fa-edit"></i></a>
+                                            <a href="#"><i class="fa fa-trash-alt"></i></a>
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav class="pagination pagination_type1">
+                            <ol class="pagination__list" id="pagination-list"></ol>
+                            <div class="pagination__list m-l-20">
+                                <select id="results-pp">
+                                    <option value="5">5</option>
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="100">100</option>
+                                    <option value="All">Tất cả</option>
+                                </select>
+                                <span class="m-l-10">Số lượng hiển thị</span>
+                            </div>
+                            <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
+                        </nav>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <table class="table" style="margin-bottom: 5px;">
+                        <tr>
+                            <td style="width: 25%; padding-right: 0px;border-right:none !important">
+                                <input id="txt_variable_name" placeholder="Biến" class="form-control">
+                            </td>
+                            <td style="border-right:none !important">
+                                <select class="form-control">
+                                    <option value="text">Văn bản</option>
+                                    <option value="number">Số</option>
+                                    <option value="email">Email</option>
+                                    <option value="url">Url</option>
+                                </select>
+                            </td>
+                            <td style="width: 6%;border-right:none !important">
+                                <button title="Lưu" class="icon-btn" style="font-size: 18px;">
+                                    <i class="fa fa-save"></i>
+                                </button>
+                            </td>
+                            <td style="width: 6%;border-right:none !important">
+                                <button title="Hủy" class="icon-btn" style="font-size: 18px;">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                    @*<a href="#" class="btn btn-primary" id="btnSaveBotQnA">Save</a>*@
+                </div>
+            </div>
         </div>
     </div>
 </div>

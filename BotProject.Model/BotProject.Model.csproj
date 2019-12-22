@@ -82,6 +82,9 @@
     <Compile Include="Models\ApplicationFacebookUser.cs" />
     <Compile Include="Models\ApplicationThirdParty.cs" />
     <Compile Include="Models\ApplicationZaloUser.cs" />
+    <Compile Include="Models\AttributeFacebookUser.cs" />
+    <Compile Include="Models\AttributeSystem.cs" />
+    <Compile Include="Models\AttributeZaloUser.cs" />
     <Compile Include="Models\FileDocument.cs" />
     <Compile Include="Models\History.cs" />
     <Compile Include="Models\AIMLFile.cs" />

@@ -96,7 +96,7 @@ $(document).ready(function () {
     var param = {
         botId:$("#botId").val()
     }
-    //param = JSON.stringify(param);
+    param = JSON.stringify(param);
     var urlArea = "api/modulesearchengine/getareabybotid";
     var element = "#cboArea";
     LoadComboBoxWithServices(element, urlArea, param, "ID", "Name", null, "--- Lĩnh vực ---", false, null, function () { }, null);

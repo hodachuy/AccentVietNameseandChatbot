@@ -100,7 +100,7 @@ namespace BotProject.Web.API
 
 
         [Route("getareabybotid")]
-        [HttpGet]
+        [HttpPost]
         public HttpResponseMessage GetListAreaByBotId(HttpRequestMessage request, int botId)
         {
             return CreateHttpResponse(request, () =>

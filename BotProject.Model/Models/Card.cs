@@ -43,7 +43,7 @@ namespace BotProject.Model.Models
 
         public bool IsConditionWithAreaButton { set; get; }
 
-        public int AttributeSettingID { set; get; }
+        public string AttributeSystemName { set; get; }// biến lưu
 
         [Required]
         public int GroupCardID { set; get; }

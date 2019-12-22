@@ -2701,6 +2701,9 @@ $(document).ready(function () {
     // =============================Add Card===============================
     // ====================================================================
     autosize($('.content-text'));
+    $('.card_attribute').click(function (event) {
+        $('#modalCreateAttribute').modal('show');
+    })
     $('.card_galery').click(function (event) {
         var str_galery = '<div class="content" card="galery" data-index="">' +
             '<div class="bt_move_vertical">' +

@@ -53,7 +53,10 @@ namespace BotProject.Data
         public DbSet<ApplicationZaloUser> ApplicationZaloUsers { set; get; }
         public DbSet<UserTelePhone> UserTelePhones { set; get; }
         public DbSet<MdSearchCategory> MdSearchCategories { set; get; }
-        public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
+		public DbSet<AttributeSystem> AttributeSystems { set; get; }
+		public DbSet<AttributeZaloUser> AttributeZaloUsers { set; get; }
+		public DbSet<AttributeFacebookUser> AttributeFacebookUsers { set; get; }
+		public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
         public DbSet<ApplicationRole> ApplicationRoles { set; get; }
         public DbSet<ApplicationRoleGroup> ApplicationRoleGroups { set; get; }
         public DbSet<ApplicationUserGroup> ApplicationUserGroups { set; get; }

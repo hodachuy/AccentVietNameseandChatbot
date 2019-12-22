@@ -534,6 +534,10 @@
     <Compile Include="Migrations\201911210950583_UpdateZalo.Designer.cs">
       <DependentUpon>201911210950583_UpdateZalo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912221036203_AddAttribute.cs" />
+    <Compile Include="Migrations\201912221036203_AddAttribute.Designer.cs">
+      <DependentUpon>201912221036203_AddAttribute.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -545,6 +549,9 @@
     <Compile Include="Repositories\ApplicationThirdPartyRepository.cs" />
     <Compile Include="Repositories\ApplicationUserGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationZaloUserRepository.cs" />
+    <Compile Include="Repositories\AttributeFacebookUserRepository.cs" />
+    <Compile Include="Repositories\AttributeSystemRepository.cs" />
+    <Compile Include="Repositories\AttributeZaloUserRepository.cs" />
     <Compile Include="Repositories\ButtonModuleRepository.cs" />
     <Compile Include="Repositories\FileDocumentRepository.cs" />
     <Compile Include="Repositories\FormQuestionAnswerRepository.cs" />
@@ -938,6 +945,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911210950583_UpdateZalo.resx">
       <DependentUpon>201911210950583_UpdateZalo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912221036203_AddAttribute.resx">
+      <DependentUpon>201912221036203_AddAttribute.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
