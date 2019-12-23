@@ -280,6 +280,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\AttributeSystemController.cs" />
     <Compile Include="API\DellController.cs" />
     <Compile Include="API\GroupCardController.cs" />
     <Compile Include="API\HistoryController.cs" />
@@ -345,6 +346,7 @@
     <Compile Include="Models\ApplicationRoleViewModel.cs" />
     <Compile Include="Models\ApplicationUserViewModel.cs" />
     <Compile Include="Models\ApplicationZaloUserViewModel.cs" />
+    <Compile Include="Models\AttributeSystemViewModel.cs" />
     <Compile Include="Models\FileDocumentViewModel.cs" />
     <Compile Include="Models\FormQuestionAnswerViewModel.cs" />
     <Compile Include="Models\BotSettingViewModel.cs" />

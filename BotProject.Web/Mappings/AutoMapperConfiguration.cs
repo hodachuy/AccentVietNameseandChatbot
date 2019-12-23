@@ -20,6 +20,7 @@ namespace BotProject.Web.Mappings
                 cfg.CreateMap<Card, CardViewModel>();
                 cfg.CreateMap<Module, ModuleViewModel>();
                 cfg.CreateMap<AIMLFile, AIMLViewModel>();
+                cfg.CreateMap<AttributeSystem, AttributeSystemViewModel>();
                 cfg.CreateMap<SystemConfig, SystemConfigViewModel>();
             });
         }

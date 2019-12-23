@@ -20,12 +20,10 @@ namespace BotProject.Service
     public class BotService : IBotService
     {
         IBotRepository _botRepository;
-		IAttributeSystemRepository _attributeRepository;
         IUnitOfWork _unitOfWork;
-        public BotService(IBotRepository botRepository, IUnitOfWork unitOfWork, IAttributeSystemRepository attributeRepository)
+        public BotService(IBotRepository botRepository, IUnitOfWork unitOfWork)
         {
             _botRepository = botRepository;
-			_attributeRepository = attributeRepository;
 			_unitOfWork = unitOfWork;
         }
         public Bot Create(ref Bot bot)

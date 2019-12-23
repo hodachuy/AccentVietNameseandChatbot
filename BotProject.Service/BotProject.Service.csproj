@@ -90,6 +90,7 @@
     <Compile Include="ApplicationRoleService.cs" />
     <Compile Include="ApplicationThirdPartyService.cs" />
     <Compile Include="ApplicationZaloUserService.cs" />
+    <Compile Include="AttributeSystemService.cs" />
     <Compile Include="BotService.cs" />
     <Compile Include="ButtonLinkService.cs" />
     <Compile Include="ButtonPostbackService.cs" />

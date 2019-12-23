@@ -149,7 +149,7 @@
                         <li class="card_file"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
                         <li class="card_module"><i class="fa fa-plug"></i><span>Mô-đun</span></li>
                         <li class="card_quickReply"><i class="fab fa-flickr"></i><span>Trả lời nhanh</span></li>
-                        <li class="card_attribute"><i class="fa fa-edit"></i><span>Thêm biến</span></li>
+                        <li class="card_attribute"><i class="fa fa-edit"></i><span>Cài đặt biến</span></li>
                     </ul>
                 </div>
             </div>
@@ -171,106 +171,22 @@
             </div>
         </div>
         <div class="card-attribute">
-            <div id="wr_attribute" style="display: none;">
+            <div id="wr_attribute" style="width:30%">
                 <h3><i class="icon-primitive-dot position-left"></i>Thêm biến <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
-                <select id="kosd6cci9qypdyebv1fmdfikl7w9523g_select_var_0" class="dm-card-input"><option value="" disabled="disabled" selected="selected">Chọn biến</option> <option value="+">+ Thêm mới biến</option> <option value="channel">channel</option><option value="currency">currency</option><option value="i" disabled="disabled">i</option><option value="link_url">link_url</option><option value="location_city">location_city</option><option value="location_country">location_country</option><option value="location_county" disabled="disabled">location_county</option><option value="location_full_address">location_full_address</option><option value="location_latitude">location_latitude</option><option value="location_longitude">location_longitude</option><option value="location_route">location_route</option><option value="location_street_number">location_street_number</option><option value="nlp_predict">nlp_predict</option><option value="otp">otp</option><option value="sender_id">sender_id</option><option value="sender_input">sender_input</option><option value="sender_name">sender_name</option><option value="topup_amount">topup_amount</option><option value="topup_phone">topup_phone</option><option value="transfer_amount">transfer_amount</option><option value="transfer_otp">transfer_otp</option><option value="transfer_toaccount">transfer_toaccount</option></select>
+                <select id="AttributeName" data-live-search="true" class="form-control selectKeyword3 checkvalid">
+                    <option value="" selected>---Chọn biến---</option>
+                    @*@foreach (var item in cards)
+                    {
+                        <option value="@item.ID">@item.Name</option>
+                    }*@
+                    <option value="1">c</option>
+                    <option value="2">dsf</option>
+                </select>
+
             </div>
         </div>
         <div id="modal_button" class="modal fade in" style="display: none;">
 
-        </div>
-    </div>
-    <!--modal form attribute-->
-    <div class="modal fade" id="modalCreateAttribute" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true" style="display:none;">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Thêm biến</h5>
-                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </a>
-                </div>
-                <div class="modal-body">
-                    <div class="card-header" style="background-color:lightgray">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <p>BIẾN CÀI ĐẶT</p>
-                            </div>
-                            <div class="col-lg-6">
-                                <a href="#" style="float:right;"><i class="fa fa-plus-circle"></i>Thêm biến</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body" style="padding:unset !important">
-                        <div class="table-responsive" id="table-qna">
-                            <table class="table table-striped table-bordered table-sm" id="table-data">
-                                <thead>
-                                    <tr>
-                                        <th scope="col" style="width:10%"></th>
-                                        <th scope="col" style="width:30%">Tên biến</th>
-                                        <th scope="col" style="width:30%">Kiểu</th>
-                                        <th scope="col" style="width:30%">Tiện ích</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-data-training">
-                                    <tr>
-                                        <td>1</td>
-                                        <td onclick="viewQnA(10443,10443)">sender_id</td>
-                                        <td>text</td>
-                                        <td>
-                                            <a href="#" style="padding-right:8px"><i class="fa fa-edit"></i></a>
-                                            <a href="#"><i class="fa fa-trash-alt"></i></a>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <nav class="pagination pagination_type1">
-                            <ol class="pagination__list" id="pagination-list"></ol>
-                            <div class="pagination__list m-l-20">
-                                <select id="results-pp">
-                                    <option value="5">5</option>
-                                    <option value="10" selected>10</option>
-                                    <option value="20">20</option>
-                                    <option value="100">100</option>
-                                    <option value="All">Tất cả</option>
-                                </select>
-                                <span class="m-l-10">Số lượng hiển thị</span>
-                            </div>
-                            <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
-                        </nav>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <table class="table" style="margin-bottom: 5px;">
-                        <tr>
-                            <td style="width: 25%; padding-right: 0px;border-right:none !important">
-                                <input id="txt_variable_name" placeholder="Biến" class="form-control">
-                            </td>
-                            <td style="border-right:none !important">
-                                <select class="form-control">
-                                    <option value="text">Văn bản</option>
-                                    <option value="number">Số</option>
-                                    <option value="email">Email</option>
-                                    <option value="url">Url</option>
-                                </select>
-                            </td>
-                            <td style="width: 6%;border-right:none !important">
-                                <button title="Lưu" class="icon-btn" style="font-size: 18px;">
-                                    <i class="fa fa-save"></i>
-                                </button>
-                            </td>
-                            <td style="width: 6%;border-right:none !important">
-                                <button title="Hủy" class="icon-btn" style="font-size: 18px;">
-                                    <i class="fa fa-times"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-                    @*<a href="#" class="btn btn-primary" id="btnSaveBotQnA">Save</a>*@
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -279,7 +195,6 @@
         var pageTokenZalo = "6xbC0GR1p4ONlK442SxCG1UpHGWErwGzJl1EOIVycbnxnNXB0CceTM7MMcqXoezkRj5IIWhHWLvIpN1k4R6ILtEKKbnZYfXBEuzqTJw9kp0bateJIP6L2bFfP2iau8iNV-zTCXJwb19FycWyKTsp0oZJQZDYwRyhAP1A2pEUcnaff6OXChgk2Kx6VIaXol0jSyeER17hy79nxI1k3VRDU4J8DdapkzXgGw8PAZ-jyYDcZG0WDfMF8NovG6K4kBni794tTm68o4TPgn46QIXAk740tSP8&oaId=1991768888787015631";
         var pageTokenFacebook = "";
         var lstModule = @Html.Raw(Json.Encode(Model));
-        console.log(lstModule)
         function module() {
             var html = '';
             if (lstModule.length != 0) {
@@ -290,8 +205,6 @@
                 html += '<option value=""></option>';
             }
             return html;
-            //var htmlListModule = '<option  value="vote">Bình chọn</option><option  value="livechat">Chat trực tiếp</option><option attr-template="true" value="rss">RSS</option><option attr-template="true" value="weather">Thời tiết</option><option  value="reservation">Đặt bàn</option>';
-            //return htmlListModule;
         }
         function loadPageTokenApp3rd(){
             var param = {
@@ -306,7 +219,163 @@
             });
         }
         loadPageTokenApp3rd();
+
+        // Chọn biến
+        $('.selectKeyword3').selectpicker();
+        $('#AttributeName').on('hidden.bs.select', function (e) {
+            var attName = $(this).selectpicker('val');
+            console.log(attName)
+        });
+
+        var pageSize = 10;
+        // Table, Add Update biến cài đặt
+        getDataTableAttribute(1, pageSize);
+        // select number show table
+        $("select#results-pp").change(function () {
+            pageSize = $(this).children("option:selected").val();
+            getDataTableAttribute(1, pageSize);
+        });
+        var attributeModel = {
+            ID :0,
+            Name:'',
+            Type:'',
+            BotID:$("#botId").val()
+        }
+
+        $("#btnAddAttribute").off().on('click',function(){
+            $("#table-add-attribute").show();
+            $("#txt_attribute_name").val('');
+            $("#txt_attribute_id").val('0');
+        })
+        $("#btnSaveAttribute").off().on('click',function(){
+            var nameAttr = $("#txt_attribute_name").val();
+            var typeAttr = $("#txt_attribute_type").val();
+            if(nameAttr == ""){
+                toastr.error('Vui lòng nhập tên biến');
+                return false;
+            }
+            attributeModel.ID = $("#txt_attribute_id").val();
+            attributeModel.Name = nameAttr;
+            attributeModel.Type = typeAttr;
+            var svr = new AjaxCall("api/attribute/createUpdate", JSON.stringify(attributeModel));
+            svr.callServicePOST(function (data) {
+                console.log(data)
+                if (data.status) {
+                    toastr.success('Thêm thành công');
+                    getDataTableAttribute(1, pageSize);
+                    $("#txt_attribute_name").val('');
+                    $("#txt_attribute_id").val('0');
+                }else{
+                    toastr.error('Tên biến đã tồn tại');                    
+                }
+            });
+        })
+        $("#btnCloseAttribute").off().on('click',function(){
+            $("#table-add-attribute").hide();
+        })
+        function editAttribute(id, name, type){
+            $("#table-add-attribute").show();
+            $("#txt_attribute_name").val(name);
+            $("#txt_attribute_type").val(type);
+            $("#txt_attribute_id").val(id);
+        }
+        function getDataTableAttribute(page, pageSize) {
+            var param = {
+                page: page,
+                pageSize: pageSize,
+                botId: $("#botId").val()
+            }
+            //param = JSON.stringify(param)
+            $.ajax({
+                url: _Host + 'api/attribute/getListByBotId',
+                contentType: 'application/json; charset=utf-8',
+                data: param,
+                type: 'GET',
+                success: function (result) {
+                    new renderTemplate(result).Table();
+                },
+            });
+        }
+        renderTemplate = function (data) {
+            this.Table = function () {
+
+                var dataTable = data.Items;
+                var html = '';
+
+                var paginationListHtml = '';
+                paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
+                paginationListHtml += '<li class="pagination__group"><a href="#0" class="pagination__item">1</a></li>';
+                paginationListHtml += '<li class="pagination__group"><a href="#0" class="pagination__item pagination__control pagination__control_next">next</a></li>';
+
+                var paginationTextHtml = '';
+                var fromPP = 0;
+                var toPP = 0;
+                var totalPP = 0;
+
+                if (dataTable.length != 0) {
+                    // đếm số index
+                    var iCount = 1;
+                    if (data.Page > 1) {
+                        iCount = ((data.Page - 1) * pageSize) + 1;
+                    }
+
+                    $.each(dataTable, function (index, item) {
+                        //index = index + 1;
+                        html += '<tr>';
+                        html += '<td>' + (iCount++) + '</td>';
+                        html += '<td>' + item.Name + '</td>';
+                        html += '<td>' + item.Type+'</td>';
+                        html += '<td><a href="#" style="padding-right:8px" onclick="editAttribute(\''+item.ID+'\',\''+item.Name+'\',\''+item.Type+'\')"><i class="fa fa-edit"></i></a><a href="#"><i class="fa fa-trash-alt"></i></a></td>';
+                        html += '</tr>';
+                    })
+
+                    // khoản cách mRangePage <--> " so page chọn" <--> mRangePage
+                    var mRangePage;
+                    if (data.MaxPage == 5) {
+                        mRangePage = data.MaxPage / 2;
+                    }else{
+                        mRangePage = data.MaxPage / (data.MaxPage / 2);
+                    }
+                    // render pagination : phân trang table
+                    var startPageIndex = Math.max(1, (data.Page - mRangePage));
+                    var endPageIndex = Math.min(data.TotalPages, (data.Page + mRangePage));
+                    var firstPage = 1;
+                    var lastPage = data.TotalPages;
+                    var previousPage = data.Page - 1;
+                    var nextPage = data.Page + 1;
+
+                    paginationListHtml = '';
+                    if (data.Page > firstPage) {
+                        paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTable(' + (data.Page - 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
+                    }
+                    for (var i = startPageIndex; i <= endPageIndex; i++) {
+                        if (data.Page == i) {
+                            paginationListHtml += '<li class="pagination__group"><span class="pagination__item pagination__item_active">' + i + '</span></li>';
+                        }
+                        else {
+                            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTable(' + i + ',' + pageSize + ')" class="pagination__item">' + i + '</a></li>';
+                        }
+                    }
+                    if (data.Page < lastPage) {
+                        paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTable(' + (data.Page + 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_next">next</a></li>';
+                    }
+
+                    // thông tin số trang
+                    fromPP = ((data.Page - 1) * pageSize) + 1;
+                    toPP = ((data.Page - 1) * pageSize) + dataTable.length;
+                    totalPP = data.TotalCount;
+                }
+
+                $("#table-data-attribute").empty().append(html);
+                $("#pagination-list").empty().append(paginationListHtml);
+
+                paginationTextHtml = 'từ <span style="font-weight: bold">' + fromPP + '</span> đến <span style="font-weight: bold">' + toPP + ' </span>trong <span style="font-weight: bold">' + totalPP + ' </span>mục';
+                $("#pagination-text-number-show").empty().append(paginationTextHtml);
+            }
+        }
     </script>
+
+    <!--Event Form Card-->
     <script src="~/assets/client/js/eventBot/form-card.js"></script>
     <!--Icon Chat-->
     <script src="~/assets/client/libs/emoji-picker/js/config.js"></script>
