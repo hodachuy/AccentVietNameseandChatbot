@@ -45,6 +45,8 @@ namespace BotProject.Model.Models
 
         public string AttributeSystemName { set; get; }// biến lưu
 
+        public int? CardStepID { set; get; } // card đi tiếp không phải click
+
         [Required]
         public int GroupCardID { set; get; }
 

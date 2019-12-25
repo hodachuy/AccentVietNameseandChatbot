@@ -264,9 +264,21 @@ namespace BotProject.Web.API_Mobile
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
 
-            if(!text.Contains("postpack") && !text.Contains(_contactAdmin))
+            if(!text.Contains("postback") && !text.Contains(_contactAdmin))
             {
                 text = _accentService.GetAccentVN(text);
+            }
+
+            string attributeValue = "";
+            // Xét payload postback nếu postback từ quickreply sẽ chứa thêm sperator - và tiêu đề nút
+            if (text.Contains("postback"))
+            {
+                var arrPostback = Regex.Split(text, "-");
+                if (arrPostback.Length > 1)
+                {
+                    attributeValue = arrPostback[1];
+                }
+                text = arrPostback[0];
             }
 
             // Lọc từ cấm
@@ -1156,7 +1168,7 @@ namespace BotProject.Web.API_Mobile
                     }
                 }
 
-                //trường hợp trả về câu hỏi random chứa postpack
+                //trường hợp trả về câu hỏi random chứa postback
                 bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
                 if (isPostbackAnswer)
                 {

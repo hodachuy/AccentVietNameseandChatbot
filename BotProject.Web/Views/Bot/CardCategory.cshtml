@@ -150,6 +150,7 @@
                         <li class="card_module"><i class="fa fa-plug"></i><span>Mô-đun</span></li>
                         <li class="card_quickReply"><i class="fab fa-flickr"></i><span>Trả lời nhanh</span></li>
                         <li class="card_attribute"><i class="fa fa-edit"></i><span>Cài đặt biến</span></li>
+                        <li class="card_step"><i class="fa fa-step-forward"></i><span>Thêm bước</span></li>
                     </ul>
                 </div>
             </div>
@@ -170,19 +171,18 @@
                 </ul>
             </div>
         </div>
-        <div class="card-attribute">
-            <div id="wr_attribute" style="width:30%">
-                <h3><i class="icon-primitive-dot position-left"></i>Thêm biến <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
-                <select id="AttributeName" data-live-search="true" class="form-control selectKeyword3 checkvalid">
-                    <option value="" selected>---Chọn biến---</option>
-                    @*@foreach (var item in cards)
-                    {
-                        <option value="@item.ID">@item.Name</option>
-                    }*@
-                    <option value="1">c</option>
-                    <option value="2">dsf</option>
-                </select>
-
+        <div class="card-attribute row" style="border-top:none !important">
+            <div class="col-md-4">
+                <div id="wr_attribute">
+                    <h3><i class="icon-primitive-dot position-left"></i>Thêm biến <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
+                    <select id="sl_AttributeName" data-live-search="true" class="form-control selectKeyword3 checkvalid"></select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div id="wr_card_step" style="display:none">
+                    <h3><i class="icon-primitive-dot position-left"></i>Thêm thẻ đi tiếp <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
+                    <select id="lst_card_step" data-live-search="true" class="form-control selectKeyword5"></select>
+                </div>
             </div>
         </div>
         <div id="modal_button" class="modal fade in" style="display: none;">
@@ -206,6 +206,7 @@
             }
             return html;
         }
+        
         function loadPageTokenApp3rd(){
             var param = {
                 botId: $("#botId").val()
@@ -220,14 +221,10 @@
         }
         loadPageTokenApp3rd();
 
-        // Chọn biến
-        $('.selectKeyword3').selectpicker();
-        $('#AttributeName').on('hidden.bs.select', function (e) {
-            var attName = $(this).selectpicker('val');
-            console.log(attName)
-        });
+        // Chọn thêm biến
 
-        var pageSize = 10;
+
+        var pageSize = 20;
         // Table, Add Update biến cài đặt
         getDataTableAttribute(1, pageSize);
         // select number show table
@@ -301,6 +298,7 @@
 
                 var dataTable = data.Items;
                 var html = '';
+                var htmlOtp = '<option value="" selected>---Chọn biến---</option>';
 
                 var paginationListHtml = '';
                 paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
@@ -327,7 +325,12 @@
                         html += '<td>' + item.Type+'</td>';
                         html += '<td><a href="#" style="padding-right:8px" onclick="editAttribute(\''+item.ID+'\',\''+item.Name+'\',\''+item.Type+'\')"><i class="fa fa-edit"></i></a><a href="#"><i class="fa fa-trash-alt"></i></a></td>';
                         html += '</tr>';
+
+                        htmlOtp +='<option value="'+item.Name+'">'+item.Name+'</option>'
                     })
+
+                    $("#sl_AttributeName").empty().append(htmlOtp);
+
 
                     // khoản cách mRangePage <--> " so page chọn" <--> mRangePage
                     var mRangePage;
@@ -346,18 +349,18 @@
 
                     paginationListHtml = '';
                     if (data.Page > firstPage) {
-                        paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTable(' + (data.Page - 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
+                        paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTableAttribute(' + (data.Page - 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
                     }
                     for (var i = startPageIndex; i <= endPageIndex; i++) {
                         if (data.Page == i) {
                             paginationListHtml += '<li class="pagination__group"><span class="pagination__item pagination__item_active">' + i + '</span></li>';
                         }
                         else {
-                            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTable(' + i + ',' + pageSize + ')" class="pagination__item">' + i + '</a></li>';
+                            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTableAttribute(' + i + ',' + pageSize + ')" class="pagination__item">' + i + '</a></li>';
                         }
                     }
                     if (data.Page < lastPage) {
-                        paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTable(' + (data.Page + 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_next">next</a></li>';
+                        paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getDataTableAttribute(' + (data.Page + 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_next">next</a></li>';
                     }
 
                     // thông tin số trang
@@ -365,6 +368,13 @@
                     toPP = ((data.Page - 1) * pageSize) + dataTable.length;
                     totalPP = data.TotalCount;
                 }
+
+                $('.selectKeyword3').selectpicker('refresh');
+                $('.selectKeyword3').selectpicker();
+                $('#sl_AttributeName').on('hidden.bs.select', function (e) {
+                    var attName = $(this).selectpicker('val');
+                    console.log(attName)
+                });
 
                 $("#table-data-attribute").empty().append(html);
                 $("#pagination-list").empty().append(paginationListHtml);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace BotProject.Model.Models
 		public int ID { set; get; }
 		public string Name { set; get; }
 		public string Type { set; get;}
-		public int BotID { set; get; }
+        [DefaultValue(false)]
+        public bool IsDefaultSystem { set; get; }
+        public int BotID { set; get; }
 	}
 }

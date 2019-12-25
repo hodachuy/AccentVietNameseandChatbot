@@ -187,6 +187,7 @@ $(document).ready(function () {
             renderCard(data)
         });
         $('#form-card').show("slow");
+        $('#wr_card_step').hide();
     })
 
     function resetFormCard() {
@@ -224,6 +225,22 @@ $(document).ready(function () {
             htmlCardConditionByAreaButton += '<span class="checkmark"></span>';
             htmlCardConditionByAreaButton += '<span style="margin-left:30px;">Nội dung nhập vào kiểm tra theo lĩnh vực trên button</span>';
             $('#container-chk-condition-by-area-button').empty().append(htmlCardConditionByAreaButton);
+        }
+
+        if (data.AttributeSystemName != "") {       
+            $('#sl_AttributeName').selectpicker('val', data.AttributeSystemName);
+        } else {
+            $('#sl_AttributeName').selectpicker('val', '');
+        }
+
+        if (data.CardStepID != null) {
+            $("#wr_card_step").show();
+            card();
+            setTimeout(function () {
+                $('#lst_card_step').selectpicker('val', data.CardStepID);
+            }, 3000)
+        } else {
+            $('#lst_card_step').selectpicker('val', '');
         }
 
 
@@ -1481,7 +1498,7 @@ $(document).ready(function () {
                                             "image_url": url_image_generic_default,
                                             "default_action": {
                                                 "type": "oa.query.hide",
-                                                "payload": payload//$(this).find('.wr_reply_btcontent .name-button').text(),//"#"+payload,
+                                                "payload": payload + "-" + $(this).find('.wr_reply_btcontent .name-button').text()//$(this).find('.wr_reply_btcontent .name-button').text(),//"#"+payload,
                                             }
                                         }
                                         zalo_list.push(zalo_list_element);
@@ -1604,7 +1621,7 @@ $(document).ready(function () {
                                         var zalo_button_object = {
                                             "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": payload,//$(this).find('.wr_reply_btcontent .name-button').text(),//"#" + payload
+                                            "payload": payload + "-" + $(this).find('.wr_reply_btcontent .name-button').text(),//$(this).find('.wr_reply_btcontent .name-button').text(),//"#" + payload
                                         }
                                         zalo_arr_quick.push(zalo_button_object);
                                     }
@@ -1847,7 +1864,7 @@ $(document).ready(function () {
                                         var zalo_button_object = {
                                             "type": "oa.query.hide",
                                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                                            "payload": payload//$(this).find('.wr_reply_btcontent .name-button').text(), //payload
+                                            "payload": payload + "-" + $(this).find('.wr_reply_btcontent .name-button').text()//$(this).find('.wr_reply_btcontent .name-button').text(), //payload
                                         }
                                         zalo_buttons.push(zalo_button_object);
                                     }
@@ -2466,7 +2483,7 @@ $(document).ready(function () {
                         obj_quickReply = {
                             "content_type": "text",
                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                            "payload": payload,
+                            "payload": payload + "-" + $(this).find('.wr_reply_btcontent .name-button').text(),
                             "image_url": $(this).find('.wr_reply_btcontent i').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "")
                         };
                         ar_quickReply.push(obj_quickReply);
@@ -2474,7 +2491,7 @@ $(document).ready(function () {
                         obj_quickReply_sql = {
                             "ContentType": "text",
                             "Title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                            "Payload": payload,
+                            "Payload": payload + "-" + $(this).find('.wr_reply_btcontent .name-button').text(),
                             "CardPayloadID": payload_id,
                             "Index": $(this).attr('data-index'),
                             "Icon": $(this).find('.wr_reply_btcontent i').css('background-image').replace('url(', '').replace(')', '').replace(/\"/gi, "").replace("" + _Host + "", "")
@@ -2497,7 +2514,7 @@ $(document).ready(function () {
                         obj_quickReply = {
                             "content_type": "text",
                             "title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                            "payload": payload
+                            "payload": payload + "-" + $(this).find('.wr_reply_btcontent .name-button').text()
                         };
                         ar_quickReply.push(obj_quickReply);
 
@@ -2505,7 +2522,7 @@ $(document).ready(function () {
                         obj_quickReply_sql = {
                             "ContentType": "text",
                             "Title": $(this).find('.wr_reply_btcontent .name-button').text(),
-                            "Payload": payload,
+                            "Payload": payload + "-" + $(this).find('.wr_reply_btcontent .name-button').text(),
                             "CardPayloadID": payload_id,
                             "Icon": ""
                         };
@@ -2615,6 +2632,8 @@ $(document).ready(function () {
             //'blockId'       : $('#blockId').val(),
             'Name': $('#card-name').val(),
             'Alias': common.getSeoTitle($('#card-name').val()),
+            'AttributeSystemName': $('#sl_AttributeName').val(),
+            'CardStepID':$('#lst_card_step').val(),
             'CardContents': card_sql,
             'QuickReplyViewModels': ar_quickReply_sql,
             //'TemplateJSON': JSON.stringify(objectCard.cardContent),
@@ -2701,6 +2720,16 @@ $(document).ready(function () {
     // =============================Add Card===============================
     // ====================================================================
     autosize($('.content-text'));
+    $(".card_step").click(function (event) {
+        //render template card
+        card();
+        $("#wr_card_step").show();
+        $('#lst_card_step').selectpicker('refresh');
+        $('#lst_card_step').on('hidden.bs.select', function (e) {
+            var attName = $(this).selectpicker('val');
+            console.log(attName)
+        });
+    })
     $('.card_attribute').click(function (event) {
         $('#modalCreateAttribute').modal('show');
     })
@@ -3054,6 +3083,7 @@ $(document).ready(function () {
             $(this).addClass('disable');
             $('#wr_reply').show();
             $('.add_reply').trigger('click')
+            $('#wr_card_step').hide();
         }
     });
     // ====================================================================
@@ -5248,8 +5278,11 @@ function loadGroupCard() {
     });
 }
 
+
+//var card = "";
 function templateGroupCard(data) {
     var html = '';
+    //var htmlCard = '';
     if (data.length != 0) {
         $.each(data, function (index, value) {
             html += '<div class="wrBlock" data-gr-id="' + value.ID + '" data-index="' + value.Index + '">';
@@ -5268,6 +5301,9 @@ function templateGroupCard(data) {
             html += '<a href="#"><i class="icon-plus22 fa fa-plus"></i></a>';
             html += '</div>';
             html += '</li>';
+
+            //htmlCard += '<optgroup label="' + value.Name.toUpperCase() + '">';
+
             if (value.Cards.length != 0) {
                 $.each(value.Cards, function (index, value) {
                     html += '<li data-card-id="' + value.ID + '" draggable="true">';
@@ -5275,12 +5311,23 @@ function templateGroupCard(data) {
                     html += '<a href="#" class="select-item-card">' + value.Name + '</a>';
                     html += '</div>';
                     html += '</li>';
+
+                    //if (value.Cards.length != 0) {
+                    //    $.each(value.Cards, function (index, value) {
+                    //        htmlCard += '<option value="' + value.ID + '">' + value.Name + '</option>';
+                    //    })
+                    //} else {
+                    //    htmlCard += '<option value=""></option>';
+                    //}
                 })
             }
             html += '</ul>';
             html += '</div>';
+
+            //htmlCard += '</optgroup>';
         })
     }
+    //card = htmlCard;
     $("#build").show();
     $("#build").empty().append(html);
 
@@ -5535,40 +5582,6 @@ $('body').on('click', '#groupCardName', function () {
     //loadGroupCard();
 })
 
-var card = function () {
-    var html = null;
-    var param = {
-        botId: botId
-    };
-    var urlGroupCard = "api/groupcard/getbybot";
-    $.ajax({
-        type: 'GET',
-        async: false,
-        global: false,
-        contentType: "application/json; charset=utf-8",
-        dataType: "json",
-        url: _Host + urlGroupCard,
-        data: param,
-        success: function (data) {
-            var temp = '';
-            if (data.length != 0) {
-                $.each(data, function (index, value) {
-                    temp += '<optgroup label="' + value.Name.toUpperCase() + '">';
-                    if (value.Cards.length != 0) {
-                        $.each(value.Cards, function (index, value) {
-                            temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
-                        })
-                    } else {
-                        temp += '<option value=""></option>';
-                    }
-                    temp += '</optgroup>';
-                })
-            }
-            html = temp;
-        }
-    });
-    return html;
-};
 
 var mdSearchCategory = function () {
     var html = null;
@@ -7128,3 +7141,44 @@ $('#build').on('click', '.icon-arrow-down132', function (event) {
             }
         });
     }
+
+
+
+
+    // Tạo template card()
+    var card = function () {
+        var html = null;
+        var param = {
+            botId: botId
+        };
+        var urlGroupCard = "api/groupcard/getbybot";
+        $.ajax({
+            type: 'GET',
+            async: false,
+            global: false,
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            url: _Host + urlGroupCard,
+            data: param,
+            success: function (data) {
+                var temp = '';
+                if (data.length != 0) {
+                    $.each(data, function (index, value) {
+                        temp += '<optgroup label="' + value.Name.toUpperCase() + '">';
+                        if (value.Cards.length != 0) {
+                            $.each(value.Cards, function (index, value) {
+                                temp += '<option value="' + value.ID + '">' + value.Name + '</option>';
+                            })
+                        } else {
+                            temp += '<option value=""></option>';
+                        }
+                        temp += '</optgroup>';
+                    })
+                }
+                html = temp;
+                $("#lst_card_step").empty().append('<option value="" selected>---Chọn thẻ---</option>' + html);
+                $('.selectKeyword5').selectpicker();
+            }
+        });
+        return html;
+    };

@@ -10,6 +10,7 @@ namespace BotProject.Web.Models
         public int ID { set; get; }
         public string Name { set; get; }
         public string Type { set; get; }
+        public bool IsDefaultSystem { set; get; }
         public int BotID { set; get; }
     }
 }

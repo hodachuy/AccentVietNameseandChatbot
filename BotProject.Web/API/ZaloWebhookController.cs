@@ -245,6 +245,20 @@ namespace BotProject.Web.API
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
             text = Regex.Replace(text, @"#", "").Trim();
+
+
+            string attributeValue = "";
+            // Xét payload postback nếu postback từ quickreply sẽ chứa thêm sperator - và tiêu đề nút
+            if (text.Contains("postback"))
+            {
+                var arrPostback = Regex.Split(text, "-");
+                if (arrPostback.Length > 1)
+                {
+                    attributeValue = arrPostback[1];
+                }
+                text = arrPostback[0];
+            }
+
             // Lọc từ cấm
             if (!String.IsNullOrEmpty(_stopWord))
             {

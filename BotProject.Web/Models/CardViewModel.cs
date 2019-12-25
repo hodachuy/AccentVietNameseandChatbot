@@ -22,6 +22,7 @@ namespace BotProject.Web.Models
         public bool IsHaveCondition { set; get; }
         public bool IsConditionWithAreaButton { set; get; }
         public string AttributeSystemName { set; get; }// biến lưu
+        public int? CardStepID { set; get; } // card đi tiếp không phải click
         public string UserID { set; get; }
         [Required]
         public int GroupCardID { set; get; }

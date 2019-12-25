@@ -342,9 +342,21 @@ namespace BotProject.Web.API_Mobile
             text = Regex.Replace(text, @"#", "").Trim();
 
 
-            if (!text.Contains("postpack") && !text.Contains(_contactAdmin))
+            if (!text.Contains("postback") && !text.Contains(_contactAdmin))
             {
                 text = _accentService.GetAccentVN(text);
+            }
+
+            string attributeValue = "";
+            // Xét payload postback nếu postback từ quickreply sẽ chứa thêm sperator - và tiêu đề nút
+            if (text.Contains("postback"))
+            {
+                var arrPostback = Regex.Split(text, "-");
+                if (arrPostback.Length > 1)
+                {
+                    attributeValue = arrPostback[1];
+                }
+                text = arrPostback[0];
             }
 
             // Lọc từ cấm

@@ -13,6 +13,7 @@ namespace BotProject.Service
     {
         AIMLFile GetByCardId(int cardId);
         IEnumerable<AIMLFile> GetByBotId(int botId);
+        IEnumerable<AIMLFile> GetByBotIdAndExcludeFormQnAnwer(int botId, int? formQnaID);
         IEnumerable<AIMLFile> GetAllByBotId(int botId);
         IEnumerable<AIMLFile> GetByUserId(string userId);
         AIMLFile GetByFormId(int formId);
@@ -43,6 +44,19 @@ namespace BotProject.Service
         public IEnumerable<AIMLFile> GetByBotId(int botId)
         {
             return _aimlRepository.GetMulti(x => x.BotID == botId && x.Status == true);
+        }
+
+        public IEnumerable<AIMLFile> GetByBotIdAndExcludeFormQnAnwer(int botId, int? formQnaID)
+        {
+            if(formQnaID == null)
+            {
+                return _aimlRepository.GetMulti(x => x.BotID == botId && x.Status == true);
+            }
+            if(formQnaID == 2005)
+            {
+                return _aimlRepository.GetMulti(x => x.BotID == botId && x.Status == true && x.FormQnAnswerID != formQnaID && x.FormQnAnswerID != 4036);
+            }
+            return _aimlRepository.GetMulti(x => x.BotID == botId && x.Status == true && x.FormQnAnswerID != formQnaID);
         }
 
         public AIMLFile GetByCardId(int cardId)

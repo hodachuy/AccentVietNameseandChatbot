@@ -16,8 +16,12 @@ namespace BotProject.Model.Models
         public int ID { set; get; }
         public string UserId { set; get; }
         public string UserName { set; get; }
-        public int Age { set; get; }
-        public bool Gender { set; get; }
+        public string FirstName { set; get; }
+        public string LastName { set; get; }
+        public string Age { set; get; }
+        public string Gender { set; get; }
+        public string Location { set; get; }
+        public string AvatarPicture { set; get; }
         public string PredicateName { set; get; }
         public string PredicateValue { set; get; }
         public string PhoneNumber { set; get; }
@@ -28,6 +32,10 @@ namespace BotProject.Model.Models
         public string CardConditionPattern { set; get; }
         public bool IsConditionWithAreaButton { set; get; }
         public string CardConditionAreaButtonPattern { set; get; }
+
+        public bool IsHaveSetAttributeSystem { set; get; }
+        public string AttributeName { set; get; }
+        public string CardStepPattern { set; get; }// card chuyển tiếp k cần click khi người dùng nhập giá trị text
 
         public DateTime StartedOn { set; get; }
         public DateTime? CreatedDate { set; get; }

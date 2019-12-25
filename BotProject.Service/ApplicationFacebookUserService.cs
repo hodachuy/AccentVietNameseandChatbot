@@ -31,7 +31,10 @@ namespace BotProject.Service
 
         public ApplicationFacebookUser Add(ApplicationFacebookUser user)
         {
-            return _appFacebookRepository.Add(user);
+            var userDb = _appFacebookRepository.GetSingleByCondition(x => x.UserId == user.UserId);
+            if (userDb == null)
+                return _appFacebookRepository.Add(user);
+            return userDb;
         }
 
         public int CheckDuplicateRequestWithTimeStamp(string timeStamp, string userId)
@@ -49,7 +52,18 @@ namespace BotProject.Service
 
         public ApplicationFacebookUser GetByUserId(string userId)
         {
-            return _appFacebookRepository.GetSingleByCondition(x => x.UserId == userId);
+            var lstUserDuplicate = _appFacebookRepository.GetMulti(x => x.UserId == userId).ToList();
+            if(lstUserDuplicate.Count() == 0)
+            {
+                return null;
+            }
+            if (lstUserDuplicate.Count() > 1)
+            {
+                _appFacebookRepository.Delete(lstUserDuplicate[0]);
+                _unitOfWork.Commit();
+                return lstUserDuplicate[1];
+            }
+            return lstUserDuplicate[0];
         }
 
         public void Save()

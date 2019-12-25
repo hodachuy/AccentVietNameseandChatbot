@@ -101,12 +101,14 @@ namespace BotProject.Web.Infrastructure.Extensions
             card.BotID = cardVm.BotID;
             card.GroupCardID = cardVm.GroupCardID;
             card.Alias = cardVm.Alias;
+            card.AttributeSystemName = cardVm.AttributeSystemName;
             card.TemplateJSON = cardVm.TemplateJSON;
             card.TemplateJsonFacebook = cardVm.TemplateJsonFacebook;
             card.TemplateJsonZalo = cardVm.TemplateJsonZalo;
             card.IsDelete = false;
             card.IsHaveCondition = cardVm.IsHaveCondition;
             card.IsConditionWithAreaButton = cardVm.IsConditionWithAreaButton;
+            card.CardStepID = cardVm.CardStepID;
         }
 
         public static void UpdateTemplateGenericGroup(this TemplateGenericGroup temGnrGroup, TemplateGenericGroupViewModel temGnrGroupVm)

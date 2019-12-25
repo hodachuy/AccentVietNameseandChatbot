@@ -21,9 +21,12 @@ namespace BotProject.Service
         // Attribute Facebook
         IEnumerable<AttributeFacebookUser> GetListAttributeFacebook(string userId, int botId);
         AttributeFacebookUser CreateUpdateAttributeFacebook(AttributeFacebookUser attr);
+        bool CheckExistAttributeFacebook(string userId, int botId, string key);
         // Attribute Zalo
         AttributeZaloUser CreateUpdateAttributeZalo(AttributeZaloUser attr);
         IEnumerable<AttributeZaloUser> GetListAttributeZalo(string userId, int botId);
+        bool CheckExistAttributeZalo(string userId, int botId, string key);
+
         void Save();
     }
     public class AttributeSystemService : IAttributeSystemService
@@ -82,10 +85,10 @@ namespace BotProject.Service
 
         public AttributeFacebookUser CreateUpdateAttributeFacebook(AttributeFacebookUser attr)
         {
-            if (attr.ID != 0)
+            AttributeFacebookUser attDb = new AttributeFacebookUser();
+            attDb = _attFacebookRepository.GetSingleByCondition(x => x.AttributeKey == attr.AttributeKey && x.BotID == attr.BotID && x.UserID == attr.UserID);
+            if(attDb != null)
             {
-                AttributeFacebookUser attDb = new AttributeFacebookUser();
-                attDb = _attFacebookRepository.GetSingleByCondition(x => x.AttributeKey == attr.AttributeKey && x.BotID == attr.BotID && x.UserID == attr.UserID);
                 attDb.AttributeValue = attr.AttributeValue;
                 _attFacebookRepository.Update(attDb);
                 _unitOfWork.Commit();
@@ -100,10 +103,12 @@ namespace BotProject.Service
 
         public AttributeZaloUser CreateUpdateAttributeZalo(AttributeZaloUser attr)
         {
-            if (attr.ID != 0)
+            AttributeZaloUser attDb = new AttributeZaloUser();
+            attDb = _attZaloRepository.GetSingleByCondition(x => x.AttributeKey == attr.AttributeKey
+                                                            && x.BotID == attr.BotID
+                                                            && x.UserID == attr.UserID);
+            if(attDb != null)
             {
-                AttributeZaloUser attDb = new AttributeZaloUser();
-                attDb = _attZaloRepository.GetSingleByCondition(x => x.AttributeKey == attr.AttributeKey && x.BotID == attr.BotID && x.UserID == attr.UserID);
                 attDb.AttributeValue = attr.AttributeValue;
                 _attZaloRepository.Update(attDb);
                 _unitOfWork.Commit();
@@ -120,6 +125,20 @@ namespace BotProject.Service
         public IEnumerable<AttributeZaloUser> GetListAttributeZalo(string userId, int botId)
         {
             return _attZaloRepository.GetMulti(x => x.UserID == userId && x.BotID == botId);
+        }
+
+        public bool CheckExistAttributeFacebook(string userId, int botId, string key)
+        {
+            var attDb = _attFacebookRepository.GetSingleByCondition(x => x.AttributeKey == key && x.BotID == botId && x.UserID == userId);
+            if (attDb == null) return false;
+            return true;
+        }
+
+        public bool CheckExistAttributeZalo(string userId, int botId, string key)
+        {
+            var attDb = _attZaloRepository.GetSingleByCondition(x => x.AttributeKey == key && x.BotID == botId && x.UserID == userId);
+            if (attDb == null) return false;
+            return true;
         }
     }
 }
