@@ -550,6 +550,10 @@
     <Compile Include="Migrations\201912240723039_UpdateFacebookZalo.Designer.cs">
       <DependentUpon>201912240723039_UpdateFacebookZalo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912260825264_UpdateAimlFile123.cs" />
+    <Compile Include="Migrations\201912260825264_UpdateAimlFile123.Designer.cs">
+      <DependentUpon>201912260825264_UpdateAimlFile123.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -969,6 +973,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912240723039_UpdateFacebookZalo.resx">
       <DependentUpon>201912240723039_UpdateFacebookZalo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912260825264_UpdateAimlFile123.resx">
+      <DependentUpon>201912260825264_UpdateAimlFile123.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

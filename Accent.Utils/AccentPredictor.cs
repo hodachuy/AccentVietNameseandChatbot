@@ -16,18 +16,28 @@ namespace Accent.Utils
 {
     public class AccentPredictor
     {
-        private Dictionary<string, int> _1Gram; // 1-gram
-        private Dictionary<string, int> _2Grams; // 2-grams
-        private Dictionary<string, int> _1Statistic = new Dictionary<string, int>();
+        private static Dictionary<string, int> _1Gram = new Dictionary<string, int>(); // 1-gram // khong co static
+        private static Dictionary<string, int> _2Grams = new Dictionary<string, int>(); // 2-grams // khong co static
+        private static Dictionary<string, int> _1Statistic = new Dictionary<string, int>(); //= new Dictionary<string, int>();
         private HashSet<string> accents;
         private int max = 18;
         private double MIN = -1000;
-        private long size1Gram = 0;
-        private long totalcount1Gram = 0;
+        private long size1Gram = 216448;//0;
+        private long totalcount1Gram = 400508609;//0;
 
-        private long size2Grams = 0;
-        private long totalcount2Grams = 0;
+        private long size2Grams = 5553699;// 0;
+        private long totalcount2Grams = 400508022;//0;
         private HashSet<string> globalPosibleChanges = new HashSet<string>();
+
+        static bool isInitialized2Gram;
+        static object initLock2Gram = new object();
+
+        static bool isInitialized1Gram;
+        static object initLock1Gram = new object();
+
+
+        static bool isInitialized1Statistic;
+        static object initLock1Statistic = new object();
 
         //public AccentPredictor(string _1GramFile, string _2GramsFile)
         //{
@@ -50,10 +60,10 @@ namespace Accent.Utils
         /// </summary>
         /// <param name="path1Gram"></param>
         /// <param name="path2Gram"></param>
-        public void InitNgram(string path1Gram, string path2Gram)
+        public void InitNgram(string path1Gram, string path2Gram, string path1Statistic = "")
         {
             Console.WriteLine("Loading NGrams...");
-            loadNGram(path1Gram, path2Gram);
+            loadNGram(path1Gram, path2Gram, path1Statistic);
             Console.WriteLine("Done!");
         }
 
@@ -119,15 +129,12 @@ namespace Accent.Utils
         /// <param name="fileIn"></param>
         /// <param name="is1Gram"></param>
         /// <returns></returns>
-        public virtual Dictionary<string, int> getNgrams(string fileIn, bool is1Gram)
+        public static Dictionary<string, int> getNgrams(string fileIn, bool is1Gram)//virtual
         {
-
             Dictionary<string, int> ngrams = new Dictionary<string, int>();
-
             long size = 0, counts = 0;
             try
             {
-
                 var file = new FileInfo(fileIn);
                 var content = File.ReadAllLines(file.FullName, Encoding.UTF8);
 
@@ -144,22 +151,22 @@ namespace Accent.Utils
                         indexTab = indexSpace;
                     }
                     string ngramWord = line.Substring(0, indexTab);
-                    if (!is1Gram)
-                    {
-                        string firstGram = ngramWord.Substring(0, ngramWord.IndexOf(' '));
-                        if (_1Statistic.ContainsKey(firstGram))
-                        {
-                            int val = _1Statistic[firstGram];
-                            _1Statistic[firstGram] = val + 1;
-                        }
-                        else
-                        {
-                            _1Statistic.Add(firstGram, 1);
-                        }
-                    }
-                    size++;
+                    //if (!is1Gram)
+                    //{
+                    //    string firstGram = ngramWord.Substring(0, ngramWord.IndexOf(' '));
+                    //    if (_1Statistic.ContainsKey(firstGram))
+                    //    {
+                    //        int val = _1Statistic[firstGram];
+                    //        _1Statistic[firstGram] = val + 1;
+                    //    }
+                    //    else
+                    //    {
+                    //        _1Statistic.Add(firstGram, 1);
+                    //    }
+                    //}
+                    //size++;
                     int ngramCount = int.Parse(line.Substring(indexTab + 1));
-                    counts += ngramCount;
+                    //counts += ngramCount;
 
                     //ngrams.Add(ngramWord, ngramCount);
 
@@ -167,31 +174,32 @@ namespace Accent.Utils
                     // put - nếu có rồi thì update không thì thêm vào
 
                     // C#
-                    if (ngrams.ContainsKey(ngramWord))
-                    {
-                        ngrams[ngramWord] = ngramCount;
-                        //ngrams.Add(ngramWord + " ", ngramCount);
-                    }
-                    else
-                    {
-                        ngrams.Add(ngramWord, ngramCount);
-                    }
+                    //if (ngrams.ContainsKey(ngramWord))
+                    //{
+                    //    ngrams[ngramWord] = ngramCount;
+                    //    //ngrams.Add(ngramWord + " ", ngramCount);
+                    //}
+                    //else
+                    //{
+                    //    ngrams.Add(ngramWord, ngramCount);
+                    //}
+                    ngrams.Add(ngramWord, ngramCount);
                 }
             }
             catch (Exception ex)
             {
 
             }
-            if (is1Gram)
-            {
-                size1Gram = size;
-                totalcount1Gram = counts;
-            }
-            else
-            {
-                size2Grams = size;
-                totalcount2Grams = counts;
-            }
+            //if (is1Gram)
+            //{
+            //    size1Gram = size;
+            //    totalcount1Gram = counts;
+            //}
+            //else
+            //{
+            //    size2Grams = size;
+            //    totalcount2Grams = counts;
+            //}
 
             return ngrams;
         }
@@ -261,11 +269,85 @@ namespace Accent.Utils
         int maxn = 100;
         int maxp = 100;
 
-        public virtual void loadNGram(string _1GramFile, string _2Gram2File)
+        public virtual void loadNGram(string _1GramFile, string _2Gram2File, string _path1Statistic)
         {
-            _1Gram = getNgrams(_1GramFile, true);
-            _2Grams = getNgrams(_2Gram2File, false);
             accents = getAccentInfo();
+            _1Statistic = getNgrams(_path1Statistic, true);
+           // _1Gram = getNgrams(_1GramFile, true);
+            Initialize2Grams(_2Gram2File);
+            Initialize1Grams(_1GramFile);
+            //_2Grams = getNgrams(_2Gram2File, false);
+
+        }
+
+        static void Initialize1Statistic(string _path1Statistic)
+        {
+            if (!isInitialized1Statistic)
+            {
+                lock (initLock1Statistic)
+                {
+                    _1Statistic.Clear();
+                    if (!isInitialized1Statistic)
+                    {
+                        // init code here
+                        _1Statistic = getNgrams(_path1Statistic, false);
+                        isInitialized1Statistic = true;
+                    }
+                }
+            }
+        }
+
+        static void Initialize2Grams(string _2Gram2File)
+        {
+            if (!isInitialized2Gram)
+            {
+                lock (initLock2Gram)
+                {
+                    _2Grams.Clear();
+                    if (!isInitialized2Gram)
+                    {
+                        // init code here
+                        _2Grams = getNgrams(_2Gram2File, false);
+                        isInitialized2Gram = true;
+                    }
+                }
+            }
+        }
+        static void Initialize1Grams(string _1GramFile)
+        {
+            if (!isInitialized1Gram)
+            {
+                lock (initLock1Gram)
+                {
+                    _1Gram.Clear();
+                    if (!isInitialized1Gram)
+                    {
+                        // init code here
+                        _1Gram = getNgrams(_1GramFile, false);
+                        isInitialized1Gram = true;
+                    }
+                }
+            }
+        }
+
+        private void writeToFile(Dictionary<string, int> map, string fileOut)
+        {
+            try
+            {
+
+                FileStream fos = new FileStream(fileOut, FileMode.Create, FileAccess.Write);
+                StreamWriter @out = new StreamWriter(fos, Encoding.UTF8);
+                foreach (string ngrams in map.Keys)
+                {
+                    @out.Write(ngrams + "\t" + map[ngrams] + "\n");
+                }
+                @out.Close();
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e.ToString());
+                Console.Write(e.StackTrace);
+            }
         }
 
         public HashSet<string> getPosibleChanges()

@@ -24,6 +24,7 @@ using Quartz;
 using Quartz.Impl;
 using System.IO;
 using System.Web.Script.Serialization;
+using System.Threading;
 
 namespace Accent.ConsoleApplication
 {
@@ -33,16 +34,14 @@ namespace Accent.ConsoleApplication
         public static void Main(string[] args)
         {
 
-            var x = GetProfileUser("2723257564384999");
-
             AccentPredictor accent = new AccentPredictor();
 
             string path1Gram = System.IO.Path.GetFullPath("news1gram");
             string path2Gram = System.IO.Path.GetFullPath("news2grams");
-            accent.InitNgram(path1Gram, path2Gram);
+            string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
+            accent.InitNgram(path1Gram, path2Gram, path1Statistic);
 
             Console.OutputEncoding = Encoding.UTF8;
-
             //----- Test -----//
             //Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
 
@@ -61,32 +60,6 @@ namespace Accent.ConsoleApplication
                 Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
             }
         }
-        public static string GetProfileUser(string senderId)
-        {
-            using (HttpClient client = new HttpClient())
-            {
-                HttpResponseMessage res = new HttpResponseMessage();
-                string pageToken = "EAAH5LTILzD8BAG0rz64t8pb9kbYckP11Mc1pLigLPzjMf07u5065zjt2tfLThBXTrWvCNTDZAeRdtz3hW3jzqgZBVqTrYeuB6aVcqy4wQSxnO0G8AadfBj7QYpHJTmSoNMONYrSlfVPGou0kONnSDJaKcwrDDMYSThEq84EwZDZD";
-                res = client.GetAsync($"https://graph.facebook.com/" + senderId + "?fields=first_name,last_name,profile_pic&access_token=" + pageToken).Result;
-                if (res.IsSuccessStatusCode)
-                {
-                    User user = new User();
-                    var serializer = new JavaScriptSerializer();
-                    serializer.MaxJsonLength = Int32.MaxValue;
-                    var x = serializer.Deserialize<User>(res.Content.ReadAsStringAsync().Result);
-                    string gen = x.first_name;
-                }
-                return "";
-            }
-        }
 
-        public class User
-        {
-            public string first_name { set; get; }
-            public string last_name { set; get; }
-            public string profile_pic { set; get; }
-            public string id { set; get; }
-            public string gender { set; get; }
-        }
     }
 }

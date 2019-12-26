@@ -31,6 +31,7 @@ namespace BotProject.Web.API
         private IMdVoucherService _mdVoucherService;
         private IModuleKnowledegeService _mdKnowledgeService;
         private IAIMLFileService _aimlService;
+
         public CardController(IErrorService errorService,
                             ICardService cardService,
                             IImageService imageService,
@@ -60,7 +61,6 @@ namespace BotProject.Web.API
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-
                 var card = _commonCardService.GetFullDetailCard(cardId);
                 response = request.CreateResponse(HttpStatusCode.OK, card);
                 return response;

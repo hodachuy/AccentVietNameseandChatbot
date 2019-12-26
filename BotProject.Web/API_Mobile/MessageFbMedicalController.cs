@@ -36,8 +36,8 @@ namespace BotProject.Web.API_Mobile
 {
     public class MessageFbMedicalController : ApiController
     {
-        string pageToken = "";
-        string appSecret = "";
+        string pageToken = "EAAfPgPELM6IBAHGk90mbGZC92Y56bD2bQZBc5qDZCo8Hn4qKosGNZAL3oDKTYV1GSYCrQVJUTyX4MRUVenjO0mZBzz3xcewOM9pyHo4YL3XbNVfodMgA7G0nbvLuJZCC2brHbEGYH9WM8irio4GwtfhYNbuKLPGiB4eYlxSLZC6FgZDZD";
+        string appSecret = "be46264e45777ee8c35bc75d64132c53";
         string _contactAdmin = Helper.ReadString("AdminContact");
         string _titlePayloadContactAdmin = Helper.ReadString("TitlePayloadAdminContact");
         int _timeOut = 60;
@@ -78,7 +78,7 @@ namespace BotProject.Web.API_Mobile
         private Dictionary<string, string> _dicAttributeUser;
 
         private IApplicationFacebookUserService _appFacebookUser;
-        private BotService _botService;
+        private BotServiceMedical _botService;
         private ISettingService _settingService;
         private IHandleModuleServiceService _handleMdService;
         private IErrorService _errorService;
@@ -91,7 +91,7 @@ namespace BotProject.Web.API_Mobile
         private AccentService _accentService;
         private IAttributeSystemService _attributeService;
         //private Bot _bot;
-        private User _user;
+        //private User _user;
         public MessageFbMedicalController(IErrorService errorService,
                               ISettingService settingService,
                               IHandleModuleServiceService handleMdService,
@@ -104,19 +104,18 @@ namespace BotProject.Web.API_Mobile
                               IAttributeSystemService attributeService)
         {
             _errorService = errorService;
-            //_accentService = AccentService.AccentInstance;
             _settingService = settingService;
             _handleMdService = handleMdService;
             _apiNLR = new ApiQnaNLRService();
             _aimlFileService = aimlFileService;
             _qnaService = qnaService;
-            _botService = BotService.BotInstance;
+            _botService = BotServiceMedical.BotInstance;
             _historyService = historyService;
             _cardService = cardService;
             _appFacebookUser = appFacebookUser;
             _app3rd = app3rd;
             _attributeService = attributeService;
-            _accentService = AccentService.AccentInstance;
+            //_accentService = new AccentService();// AccentService.AccentInstance;
         }
 
         public HttpResponseMessage Get()
@@ -153,21 +152,21 @@ namespace BotProject.Web.API_Mobile
             //}
             //botId = app3rd.BotID;
 
-            var settingDb = _settingService.GetSettingByBotID(botId);
+            //var settingDb = _settingService.GetSettingByBotID(botId);
 
 
             //get pagetoken
-            pageToken = settingDb.FacebookPageToken;
-            appSecret = settingDb.FacebookAppSecrect;
-            _patternCardPayloadProactive = "postback_card_" + settingDb.CardID.ToString();
+            //pageToken = settingDb.FacebookPageToken;
+            //appSecret = settingDb.FacebookAppSecrect;
+            _patternCardPayloadProactive = "postback_card_8794";// + settingDb.CardID.ToString();
 
             //init stop word
-            _stopWord = settingDb.StopWord;
-            if (System.IO.File.Exists(_pathStopWord))
-            {
-                string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
-                _stopWord += string.Join(",", stopWordDefault);
-            }
+            //_stopWord = settingDb.StopWord;
+            //if (System.IO.File.Exists(_pathStopWord))
+            //{
+            //    string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
+            //    _stopWord += string.Join(",", stopWordDefault);
+            //}
 
             // xác nhận app facebook
             if (!VerifySignature(signature, body))
@@ -177,38 +176,28 @@ namespace BotProject.Web.API_Mobile
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
-            _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
-            _timeOut = settingDb.Timeout;
-            _messageProactive = settingDb.ProactiveMessageText;
-            _isSearchAI = settingDb.IsMDSearch;
+            //_isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
+            //_timeOut = settingDb.Timeout;
+            //_messageProactive = settingDb.ProactiveMessageText;
+            _isSearchAI = true;// settingDb.IsMDSearch;
 
             //tin vắng mặt
-            _messageAbsent = settingDb.MessageMaintenance;
-            _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+            //_messageAbsent = settingDb.MessageMaintenance;
+            //_isHaveMessageAbsent = settingDb.IsHaveMaintenance;
 
             //OTP
-            _timeOutOTP = settingDb.TimeoutOTP;
-            _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
-            _messageOTP = settingDb.MessageTimeoutOTP;
+            //_timeOutOTP = settingDb.TimeoutOTP;
+            //_isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
+            //_messageOTP = settingDb.MessageTimeoutOTP;
 
             // mượn tạm biến OTP
-            age = settingDb.TimeoutOTP;
-            if (age <= 7) // trẻ em không load AIML formQnA người lớn
-            {
-                var lstAIML = _aimlFileService.GetByBotIdAndExcludeFormQnAnwer(botId, 2005);
-                var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
-                _botService.loadAIMLFromDatabase(lstAIMLVm);
-                string _userId = Guid.NewGuid().ToString();
-                _user = _botService.loadUserBot(_userId);
-            }
-            else
-            {
-                var lstAIML = _aimlFileService.GetByBotIdAndExcludeFormQnAnwer(botId, 4030);
-                var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
-                _botService.loadAIMLFromDatabase(lstAIMLVm);
-                string _userId = Guid.NewGuid().ToString();
-                _user = _botService.loadUserBot(_userId);
-            }
+
+            //var lstAIML = _aimlFileService.GetByBotIdAndExcludeFormQnAnwer(botId, null);
+            //var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+            //_botService.loadAIMLFromDatabase(lstAIMLVm);
+            //string _userId = Guid.NewGuid().ToString();
+            //_user = _botService.loadUserBot(_userId);
+
             //var lstAIML = _aimlFileService.GetByBotId(botId);
             //var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             //_botService.loadAIMLFromDatabase(lstAIMLVm);
@@ -222,7 +211,7 @@ namespace BotProject.Web.API_Mobile
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 }
                 var lstAttribute = _attributeService.GetListAttributeFacebook(item.sender.id, botId).ToList();
-                if(lstAttribute.Count() != 0)
+                if (lstAttribute.Count() != 0)
                 {
                     _dicAttributeUser = new Dictionary<string, string>();
                     foreach (var attr in lstAttribute)
@@ -329,6 +318,7 @@ namespace BotProject.Web.API_Mobile
 
             if (!text.Contains("postback") && !text.Contains(_contactAdmin))
             {
+                _accentService = new AccentService();
                 text = _accentService.GetAccentVN(text);
             }
 
@@ -337,7 +327,7 @@ namespace BotProject.Web.API_Mobile
             if (text.Contains("postback"))
             {
                 var arrPostback = Regex.Split(text, "-");
-                if(arrPostback.Length > 1)
+                if (arrPostback.Length > 1)
                 {
                     attributeValueFromPostback = arrPostback[1];
                 }
@@ -345,17 +335,17 @@ namespace BotProject.Web.API_Mobile
             }
 
             // Lọc từ cấm
-            if (!String.IsNullOrEmpty(_stopWord))
-            {
-                string[] arrStopWord = _stopWord.Split(',');
-                if (arrStopWord.Length != 0)
-                {
-                    foreach (var w in arrStopWord)
-                    {
-                        text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
-                    }
-                }
-            }
+            //if (!String.IsNullOrEmpty(_stopWord))
+            //{
+            //    string[] arrStopWord = _stopWord.Split(',');
+            //    if (arrStopWord.Length != 0)
+            //    {
+            //        foreach (var w in arrStopWord)
+            //        {
+            //            text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
+            //        }
+            //    }
+            //}
 
             if (String.IsNullOrEmpty(text))
             {
@@ -370,11 +360,11 @@ namespace BotProject.Web.API_Mobile
             }
 
             HistoryViewModel hisVm = new HistoryViewModel();
-            hisVm.BotID = botId;
-            hisVm.CreatedDate = DateTime.Now;
-            hisVm.UserSay = text;
-            hisVm.UserName = sender;
-            hisVm.Type = CommonConstants.TYPE_FACEBOOK;
+            //hisVm.BotID = botId;
+            //hisVm.CreatedDate = DateTime.Now;
+            //hisVm.UserSay = text;
+            //hisVm.UserName = sender;
+            //hisVm.Type = CommonConstants.TYPE_FACEBOOK;
 
             DateTime dStartedTime = DateTime.Now;
             DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
@@ -399,7 +389,7 @@ namespace BotProject.Web.API_Mobile
                     {
                         var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-                        AddHistory(hisVm);
+                        //AddHistory(hisVm);
                         if (text.Contains("postback") || text.Contains(_contactAdmin))
                         {
                             fbUserDb.IsHavePredicate = false;
@@ -501,7 +491,7 @@ namespace BotProject.Web.API_Mobile
                     {
                         if (!text.Contains("postback") && !text.Contains(_contactAdmin))
                         {
-                            var cardDb = _cardService.GetSingleCondition(fbUserDb.CardConditionPattern);
+                            var cardDb = _cardService.GetCardByPattern(fbUserDb.CardConditionPattern);
                             if (cardDb == null)
                             {
                                 return new HttpResponseMessage(HttpStatusCode.OK);
@@ -537,12 +527,13 @@ namespace BotProject.Web.API_Mobile
                         if (!text.Contains("postback") && !text.Contains(_contactAdmin))
                         {
                             attFbUser.AttributeValue = text;
-                        }else if(text.Contains("postback"))
+                        }
+                        else if (text.Contains("postback"))
                         {
                             attFbUser.AttributeValue = attributeValueFromPostback.Trim();
                         }
 
-                        if(attFbUser.AttributeKey == "gender")
+                        if (attFbUser.AttributeKey == "gender")
                         {
                             attFbUser.AttributeValue = fbUserDb.Gender;
                         }
@@ -559,21 +550,22 @@ namespace BotProject.Web.API_Mobile
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
                         }
+
+                        _dicAttributeUser.Remove(attFbUser.AttributeKey);
+                        _dicAttributeUser.Add(attFbUser.AttributeKey, attFbUser.AttributeValue);
+
                         var att = _attributeService.CreateUpdateAttributeFacebook(attFbUser);
 
                         if (attFbUser.AttributeKey == "age")
                         {
-                            Setting settingDb = new Setting();
-                            settingDb = _settingService.GetSettingByBotID(botId);
-                            settingDb.TimeoutOTP = Int32.Parse(text);
-                            _settingService.Update(settingDb);
-                            _settingService.Save();
-
                             fbUserDb.Age = text;
                             fbUserDb.IsHaveSetAttributeSystem = false;
                             fbUserDb.AttributeName = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
+
+                            _dicAttributeUser.Remove("age");
+                            _dicAttributeUser.Add("age", text);
                             return await ExcuteMessage("postback_card_8927", sender, botId); //postback_card_8927 thẻ thông tin người dùng
                         }
                     }
@@ -586,7 +578,7 @@ namespace BotProject.Web.API_Mobile
                     {
                         if (!text.Contains("postback") && !text.Contains(_contactAdmin))
                         {
-                            var cardDb = _cardService.GetSingleCondition(fbUserDb.CardConditionAreaButtonPattern);
+                            var cardDb = _cardService.GetCardByPattern(fbUserDb.CardConditionAreaButtonPattern);
                             if (cardDb == null)
                             {
                                 return new HttpResponseMessage(HttpStatusCode.OK);
@@ -623,262 +615,10 @@ namespace BotProject.Web.API_Mobile
                             var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, predicateValue, "");
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
-                            AddHistory(hisVm);
+                            //AddHistory(hisVm);
 
                             return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
 
-                        }
-                        if (predicateName == "Age")
-                        {
-                            var handleAge = _handleMdService.HandledIsAge(text, botId);
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-                            AddHistory(hisVm);
-                            if (handleAge.Status)// đúng age
-                            {
-                                fbUserDb.IsHavePredicate = false;
-                                fbUserDb.PredicateName = "";
-                                fbUserDb.PredicateValue = "";
-                                fbUserDb.IsHaveCardCondition = false;
-                                fbUserDb.CardConditionPattern = "";
-                                fbUserDb.PhoneNumber = text;
-                                fbUserDb.IsConditionWithAreaButton = false;
-                                fbUserDb.CardConditionAreaButtonPattern = "";
-                                fbUserDb.CardStepPattern = "";
-                                fbUserDb.AttributeName = "";
-                                fbUserDb.IsHaveSetAttributeSystem = false;
-                                _appFacebookUser.Update(fbUserDb);
-                                _appFacebookUser.Save();
-                                if (!String.IsNullOrEmpty(handleAge.Postback))
-                                {
-                                    return await ExcuteMessage(handleAge.Postback, sender, botId);
-                                }
-                            }
-                            return await SendMessage(handleAge.TemplateJsonFacebook, sender);
-                        }
-                        if (predicateName == "Phone")
-                        {
-                            var handlePhone = _handleMdService.HandleIsPhoneNumber(text, botId);
-
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-                            AddHistory(hisVm);
-                            if (handlePhone.Status)// đúng số dt
-                            {
-                                fbUserDb.IsHavePredicate = false;
-                                fbUserDb.PredicateName = "";
-                                fbUserDb.PredicateValue = "";
-                                fbUserDb.IsHaveCardCondition = false;
-                                fbUserDb.CardConditionPattern = "";
-                                fbUserDb.PhoneNumber = text;
-                                fbUserDb.IsConditionWithAreaButton = false;
-                                fbUserDb.CardConditionAreaButtonPattern = "";
-                                fbUserDb.CardStepPattern = "";
-                                fbUserDb.AttributeName = "";
-                                fbUserDb.IsHaveSetAttributeSystem = false;
-                                _appFacebookUser.Update(fbUserDb);
-                                _appFacebookUser.Save();
-
-                                // Nếu đúng số điện thoại sẽ trả về thẻ tiếp theo nếu có
-                                if (!String.IsNullOrEmpty(handlePhone.Postback))
-                                {
-                                    return await ExcuteMessage(handlePhone.Postback, sender, botId);
-                                }
-                            }
-                            return await SendMessage(handlePhone.TemplateJsonFacebook, sender);
-                        }
-                        if (predicateName == "Email")
-                        {
-                            var handleEmail = _handleMdService.HandledIsEmail(text, botId);
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-                            AddHistory(hisVm);
-                            if (handleEmail.Status)// đúng email
-                            {
-                                fbUserDb.IsHavePredicate = false;
-                                fbUserDb.PredicateName = "";
-                                fbUserDb.PredicateValue = "";
-                                fbUserDb.IsHaveCardCondition = false;
-                                fbUserDb.CardConditionPattern = "";
-                                fbUserDb.IsConditionWithAreaButton = false;
-                                fbUserDb.CardConditionAreaButtonPattern = "";
-                                fbUserDb.CardStepPattern = "";
-                                fbUserDb.AttributeName = "";
-                                fbUserDb.IsHaveSetAttributeSystem = false;
-                                _appFacebookUser.Update(fbUserDb);
-                                _appFacebookUser.Save();
-
-                                if (!String.IsNullOrEmpty(handleEmail.Postback))
-                                {
-                                    return await ExcuteMessage(handleEmail.Postback, sender, botId);
-                                }
-                            }
-                            return await SendMessage(handleEmail.TemplateJsonFacebook, sender);
-                        }
-                        if (predicateName == "Engineer_Name")
-                        {
-                            var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-                            AddHistory(hisVm);
-                            if (handleEngineerName.Status)
-                            {
-                                fbUserDb.IsHavePredicate = false;
-                                fbUserDb.PredicateName = "";
-                                fbUserDb.PredicateValue = "";
-                                fbUserDb.IsHaveCardCondition = false;
-                                fbUserDb.CardConditionPattern = "";
-                                fbUserDb.IsConditionWithAreaButton = false;
-                                fbUserDb.CardConditionAreaButtonPattern = "";
-                                fbUserDb.CardStepPattern = "";
-                                fbUserDb.AttributeName = "";
-                                fbUserDb.IsHaveSetAttributeSystem = false;
-                                fbUserDb.EngineerName = text;
-                                if (text.Contains("postback") || text.Contains(_contactAdmin))
-                                {
-                                    fbUserDb.EngineerName = "";
-                                }
-                                _appFacebookUser.Update(fbUserDb);
-                                _appFacebookUser.Save();
-
-                                if (!String.IsNullOrEmpty(handleEngineerName.Postback))
-                                {
-                                    return await ExcuteMessage(handleEngineerName.Postback, sender, botId);
-                                }
-                            }
-                            return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
-                        }
-                        if (predicateName == "Voucher")
-                        {
-                            string mdVoucherId = fbUserDb.PredicateValue;
-                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))
-                            {
-                                fbUserDb.IsHavePredicate = false;
-                                fbUserDb.PredicateName = "";
-                                fbUserDb.PredicateValue = "";
-                                fbUserDb.IsHaveCardCondition = false;
-                                fbUserDb.CardConditionPattern = "";
-                                fbUserDb.IsConditionWithAreaButton = false;
-                                fbUserDb.CardConditionAreaButtonPattern = "";
-                                fbUserDb.CardStepPattern = "";
-                                fbUserDb.IsHaveSetAttributeSystem = false;
-                                fbUserDb.AttributeName = "";
-                                _appFacebookUser.Update(fbUserDb);
-                                _appFacebookUser.Save();
-                                return await ExcuteMessage(text, sender, botId);
-                            }
-
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
-
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
-                            AddHistory(hisVm);
-                            if (handleMdVoucher.Status)
-                            {
-                                string telePhoneNumber = text;
-                                string[] strArrSpecial = new string[] { "-", " ", ",", ":" };
-                                //check phonenumber có kèm theo serialnumber không
-                                foreach (var item in strArrSpecial)
-                                {
-                                    if (text.Contains(item))
-                                    {
-                                        var arrStrPhone = Regex.Split(text, item);
-                                        telePhoneNumber = arrStrPhone[0];
-                                        break;
-                                    }
-                                }
-
-                                fbUserDb.IsHavePredicate = true;
-                                fbUserDb.PredicateName = "IsVoucherOTP";
-                                fbUserDb.PredicateValue = mdVoucherId;// voucherId
-                                fbUserDb.PhoneNumber = telePhoneNumber;
-                                fbUserDb.IsHaveCardCondition = false;
-                                fbUserDb.CardConditionPattern = "";
-                                fbUserDb.IsConditionWithAreaButton = false;
-                                fbUserDb.CardConditionAreaButtonPattern = "";
-                                fbUserDb.CardStepPattern = "";
-                                fbUserDb.IsHaveSetAttributeSystem = false;
-                                fbUserDb.AttributeName = "";
-                                _appFacebookUser.Update(fbUserDb);
-                                _appFacebookUser.Save();
-
-                                // send sms otp
-                                await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
-
-                                // gọi timeout thời gian hủy otp
-                                if (_isHaveTimeOutOTP)
-                                {
-                                    DateTime dTimeOutOTP = DateTime.Now.AddSeconds(_timeOutOTP);
-                                    await ScheduleOTP(sender, telePhoneNumber, mdVoucherId, pageToken, dTimeOutOTP);
-                                }
-
-                                return new HttpResponseMessage(HttpStatusCode.OK);
-
-                                //await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
-                                //return await SendMessage(FacebookTemplate.GetMessageTemplateText(("Mã OTP đang được gửi, Anh/Chị chờ tí nhé...").ToString(), sender));
-                            }
-                            return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
-                        }
-                        if (predicateName == "IsVoucherOTP")
-                        {
-                            string mdVoucherId = fbUserDb.PredicateValue;
-                            string phoneNumber = fbUserDb.PhoneNumber;
-
-                            // thẻ gửi lại sms
-                            if (text.Equals("CARD_RESEND_SMS"))
-                            {
-                                var handleMdVoucher = _handleMdService.HandleIsVoucher(phoneNumber, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
-                                if (handleMdVoucher.Status)
-                                {
-                                    // send sms otp
-                                    await SendMessageTask(handleMdVoucher.TemplateJsonFacebook, sender);
-                                    // gọi timeout thời gian hủy otp
-                                    if (_isHaveTimeOutOTP)
-                                    {
-                                        DateTime dTimeOutOTP = DateTime.Now.AddSeconds(_timeOutOTP);
-                                        await ScheduleOTP(sender, phoneNumber, mdVoucherId, pageToken, dTimeOutOTP);
-                                    }
-                                    return new HttpResponseMessage(HttpStatusCode.OK);
-                                }
-                                return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
-                            }
-
-                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))
-                            {
-                                fbUserDb.IsHavePredicate = false;
-                                fbUserDb.PredicateName = "";
-                                fbUserDb.PredicateValue = "";
-                                fbUserDb.IsHaveCardCondition = false;
-                                fbUserDb.CardConditionPattern = "";
-                                fbUserDb.IsConditionWithAreaButton = false;
-                                fbUserDb.CardConditionAreaButtonPattern = "";
-                                fbUserDb.CardStepPattern = "";
-                                fbUserDb.IsHaveSetAttributeSystem = false;
-                                fbUserDb.AttributeName = "";
-                                _appFacebookUser.Update(fbUserDb);
-                                _appFacebookUser.Save();
-                                return await ExcuteMessage(text, sender, botId);
-                            }
-                            var handleOTP = _handleMdService.HandleIsCheckOTP(text, phoneNumber, mdVoucherId, _messageOTP);
-                            if (handleOTP.Status)
-                            {
-                                fbUserDb.IsHavePredicate = false;
-                                fbUserDb.PredicateName = "";
-                                fbUserDb.PredicateValue = "";
-                                fbUserDb.IsHaveCardCondition = false;
-                                fbUserDb.CardConditionPattern = "";
-                                fbUserDb.IsConditionWithAreaButton = false;
-                                fbUserDb.CardConditionAreaButtonPattern = "";
-                                fbUserDb.CardStepPattern = "";
-                                fbUserDb.IsHaveSetAttributeSystem = false;
-                                fbUserDb.AttributeName = "";
-                                _appFacebookUser.Update(fbUserDb);
-                                _appFacebookUser.Save();
-
-                                // trả về image voucher + text message end
-                                string[] arrMsgHandleOTP = Regex.Split(handleOTP.TemplateJsonFacebook, "split");
-                                foreach (var itemMessageJson in arrMsgHandleOTP)
-                                {
-                                    await SendMessageTask(itemMessageJson, sender);
-                                }
-                                return new HttpResponseMessage(HttpStatusCode.OK);
-                            }
-                            return await SendMessage(handleOTP.TemplateJsonFacebook, sender);
                         }
                     }
                     else // Input: Khởi tạo module được chọn
@@ -902,7 +642,7 @@ namespace BotProject.Web.API_Mobile
 
                             hisVm.UserSay = "[Chat với chuyên viên]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                            AddHistory(hisVm);
+                            //AddHistory(hisVm);
 
                             // Tin nhắn vắng mặt
                             if (_isHaveMessageAbsent)
@@ -948,178 +688,17 @@ namespace BotProject.Web.API_Mobile
 
                             hisVm.UserSay = "[Tra cứu]";
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                            AddHistory(hisVm);
+                            //AddHistory(hisVm);
 
                             return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
 
                         }
-                        if (text.Contains(CommonConstants.ModuleEngineerName))
-                        {
-                            var handleEngineerName = _handleMdService.HandleIsEngineerName(text, botId);
-
-                            fbUserDb.IsHavePredicate = true;
-                            fbUserDb.PredicateName = "Engineer_Name";
-                            fbUserDb.EngineerName = "";
-                            fbUserDb.IsHaveCardCondition = false;
-                            fbUserDb.CardConditionPattern = "";
-                            fbUserDb.IsConditionWithAreaButton = false;
-                            fbUserDb.CardConditionAreaButtonPattern = "";
-                            fbUserDb.CardStepPattern = "";
-                            fbUserDb.IsHaveSetAttributeSystem = false;
-                            fbUserDb.BranchOTP = "";
-                            fbUserDb.AttributeName = "";
-                            _appFacebookUser.Update(fbUserDb);
-                            _appFacebookUser.Save();
-
-                            hisVm.UserSay = "[Tên hoặc mã kỹ sư]";
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                            AddHistory(hisVm);
-
-                            return await SendMessage(handleEngineerName.TemplateJsonFacebook, sender);
-                        }
-
-                        if (text.Contains(CommonConstants.ModuleAge))
-                        {
-                            var handleAge = _handleMdService.HandledIsAge(text, botId);
-
-                            fbUserDb.IsHavePredicate = true;
-                            fbUserDb.PredicateName = "Age";
-                            fbUserDb.IsHaveCardCondition = false;
-                            fbUserDb.CardConditionPattern = "";
-                            fbUserDb.IsConditionWithAreaButton = false;
-                            fbUserDb.CardConditionAreaButtonPattern = "";
-                            fbUserDb.CardStepPattern = "";
-                            fbUserDb.IsHaveSetAttributeSystem = false;
-                            fbUserDb.AttributeName = "";
-                            _appFacebookUser.Update(fbUserDb);
-                            _appFacebookUser.Save();
-
-                            hisVm.UserSay = "[Tuổi]";
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                            AddHistory(hisVm);
-
-                            return await SendMessage(handleAge.TemplateJsonFacebook, sender);
-                        }
-                        if (text.Contains(CommonConstants.ModulePhone))
-                        {
-                            var handlePhone = _handleMdService.HandleIsPhoneNumber(text, botId);
-                            fbUserDb.IsHavePredicate = true;
-                            fbUserDb.PredicateName = "Phone";
-                            fbUserDb.IsHaveCardCondition = false;
-                            fbUserDb.CardConditionPattern = "";
-                            fbUserDb.IsConditionWithAreaButton = false;
-                            fbUserDb.CardConditionAreaButtonPattern = "";
-                            fbUserDb.CardStepPattern = "";
-                            fbUserDb.IsHaveSetAttributeSystem = false;
-                            fbUserDb.AttributeName = "";
-                            _appFacebookUser.Update(fbUserDb);
-                            _appFacebookUser.Save();
-
-                            hisVm.UserSay = "[Số điện thoại]";
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                            AddHistory(hisVm);
-
-                            return await SendMessage(handlePhone.TemplateJsonFacebook, sender);
-                        }
-                        if (text.Contains(CommonConstants.ModuleEmail))
-                        {
-                            var handleEmail = _handleMdService.HandledIsEmail(text, botId);
-                            fbUserDb.IsHavePredicate = true;
-                            fbUserDb.PredicateName = "Email";
-                            fbUserDb.IsHaveCardCondition = false;
-                            fbUserDb.CardConditionPattern = "";
-                            fbUserDb.IsConditionWithAreaButton = false;
-                            fbUserDb.CardConditionAreaButtonPattern = "";
-                            fbUserDb.CardStepPattern = "";
-                            fbUserDb.IsHaveSetAttributeSystem = false;
-                            fbUserDb.AttributeName = "";
-                            _appFacebookUser.Update(fbUserDb);
-                            _appFacebookUser.Save();
-
-                            hisVm.UserSay = "[Email]";
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                            AddHistory(hisVm);
-
-                            return await SendMessage(handleEmail.TemplateJsonFacebook, sender);
-                        }
-
-                        if (text.Contains(CommonConstants.ModuleVoucher))
-                        {
-                            string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
-
-                            fbUserDb.IsHavePredicate = true;
-                            fbUserDb.PredicateName = "Voucher";
-                            fbUserDb.PredicateValue = mdVoucherId;
-                            fbUserDb.IsHaveCardCondition = false;
-                            fbUserDb.CardConditionPattern = "";
-                            fbUserDb.IsConditionWithAreaButton = false;
-                            fbUserDb.CardConditionAreaButtonPattern = "";
-                            fbUserDb.CardStepPattern = "";
-                            fbUserDb.IsHaveSetAttributeSystem = false;
-                            fbUserDb.AttributeName = "";
-                            _appFacebookUser.Update(fbUserDb);
-                            _appFacebookUser.Save();
-
-                            hisVm.UserSay = "[Voucher]";
-                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                            AddHistory(hisVm);
-
-                            return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
-                        }
-
                     }
                 }
 
 
-                AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
+                AIMLbot.Result aimlBotResult = _botService.Chat(text);
                 string result = aimlBotResult.OutputSentences[0].ToString();
-
-                //tìm theo keyword trước, nếu keyword k có thì tìm theo core NLP
-                if (result.Contains("NOT_MATCH"))
-                {
-                    // Lấy target from knowledge base QnA trained mongodb
-                    //turn on AI
-                    if (_isSearchAI)
-                    {
-                        if (text.Contains("postback") == false || text.Contains("module") == false)
-                        {
-                            string target = _apiNLR.GetPrecidictTextClass(text, botId);
-                            if (!String.IsNullOrEmpty(target))
-                            {
-                                target = Regex.Replace(target, "\n", "").Replace("\"", "");
-
-                                QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-                                quesTarget = _qnaService.GetQuesByTarget(target, botId);
-                                if (quesTarget != null)
-                                {
-                                    text = quesTarget.ContentText;
-                                }
-                                hisVm.BotUnderStands = target;
-                                // gọi lại aiml
-                                aimlBotResult = _botService.Chat(text, _user);
-                                result = aimlBotResult.OutputSentences[0].ToString();
-                            }
-                        }
-                    }
-                }
-
-                // lưu lịch sử
-                if (text.Contains("postback_card"))
-                {
-                    var cardDb = _cardService.GetSingleCondition(text);
-                    if (cardDb != null)
-                    {
-                        hisVm.UserSay = "[" + cardDb.Name + "]";
-                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_001;
-                        AddHistory(hisVm);
-                    }
-                }
-                else if (text.Contains("postback_module") == false && result.Contains("NOT_MATCH") == false)
-                {
-                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-                    AddHistory(hisVm);
-                }
 
                 // Nếu trả về là module
                 if (result.Replace("\r\n", "").Trim().Contains(CommonConstants.POSTBACK_MODULE))
@@ -1186,7 +765,7 @@ namespace BotProject.Web.API_Mobile
                 if (result.Contains("NOT_MATCH"))
                 {
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
-                    AddHistory(hisVm);
+                    //AddHistory(hisVm);
                     try
                     {
                         fbUserDb.IsHaveCardCondition = false;
@@ -1228,7 +807,7 @@ namespace BotProject.Web.API_Mobile
                                 number = item.ValueString;
                         }
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-                        AddHistory(hisVm);
+                        //AddHistory(hisVm);
                         string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", valueBotId);
                         if (!String.IsNullOrEmpty(resultAPI))
                         {
@@ -1241,8 +820,8 @@ namespace BotProject.Web.API_Mobile
                             int totalQnA = lstQnaAPI.Count();
                             string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
                             await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
-                            string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI, "http://qa.surelrn.vn/cau-hoi-phap-luat").ToString();
-                            BotLog.Info(strTemplateGenericRelatedQuestion);
+                            string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                            //BotLog.Info(strTemplateGenericRelatedQuestion);
                             return await SendMessage(strTemplateGenericRelatedQuestion, sender);
                         }
                     }
@@ -1252,8 +831,8 @@ namespace BotProject.Web.API_Mobile
                         {"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
                         {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
                         {"NOT_MATCH_03", "Chưa hiểu lắm ạ, anh/chị có thể nói rõ hơn được không ạ?"},
-                        {"NOT_MATCH_04", "Xin lỗi, anh/chị có thể giải thích thêm được không?"},
-                        {"NOT_MATCH_05", "Xin lỗi, Anh/chị có thể giải thích thêm được không?"}
+                        {"NOT_MATCH_04", "Xin lỗi, Anh/chị có thể giải thích thêm được không?"},
+                        {"NOT_MATCH_05", "Xin lỗi, Tôi chưa được học để hiểu nội dung này?"}
                     };
 
                     string strDefaultNotMatch = "";
@@ -1267,91 +846,11 @@ namespace BotProject.Web.API_Mobile
                     }
                     await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
                     return new HttpResponseMessage(HttpStatusCode.OK);
-
-
-                    //turn off AI
-                    //if (_isSearchAI == false)
-                    //{
-                    //    fbUserDb.IsHavePredicate = true;
-                    //    fbUserDb.PredicateName = "Admin_Contact";
-                    //    fbUserDb.PredicateValue = "";
-                    //    fbUserDb.IsHaveCardCondition = false;
-                    //    fbUserDb.CardConditionPattern = "";
-                    //    _appFacebookUser.Update(fbUserDb);
-                    //    _appFacebookUser.Save();
-
-                    //    // Tin nhắn vắng mặt
-                    //    if (_isHaveMessageAbsent)
-                    //    {
-                    //        if (HelperMethods.IsTimeInWorks() == false)
-                    //        {
-                    //            await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
-                    //            return new HttpResponseMessage(HttpStatusCode.OK);
-                    //        }
-                    //    }
-
-                    //    return new HttpResponseMessage(HttpStatusCode.OK);
-                    //    //string notmatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                    //    //return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(notmatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-                    //}
-
-                    //Chuyển tới tìm kiếm Search NLP
-                    //var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
-                    //var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
-                    //if (systemConfigVm.Count() == 0)
-                    //{
-                    //    return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
-                    //}
-                    //string nameFunctionAPI = "";
-                    //string number = "";
-                    //string field = "";
-                    //foreach (var item in systemConfigVm)
-                    //{
-                    //    if (item.Code == "UrlAPI")
-                    //        nameFunctionAPI = item.ValueString;
-                    //    if (item.Code == "ParamAreaID")
-                    //        field = item.ValueString;
-                    //    if (item.Code == "ParamNumberResponse")
-                    //        number = item.ValueString;
-                    //}
-                    //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-                    //AddHistory(hisVm);
-                    //string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", botId.ToString());
-                    //if (!String.IsNullOrEmpty(resultAPI))
-                    //{
-                    //    var lstQnaAPI = new JavaScriptSerializer
-                    //    {
-                    //        MaxJsonLength = Int32.MaxValue,
-                    //        RecursionLimit = 100
-                    //    }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
-                    //    // render template json generic
-                    //    int totalQnA = lstQnaAPI.Count();
-                    //    string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
-                    //    await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
-                    //    string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
-                    //    return await SendMessage(strTemplateGenericRelatedQuestion, sender);
-                    //}
-                    //else
-                    //{
-                    //    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_008;
-                    //    AddHistory(hisVm);
-
-                    //    string strDefaultNotMatch = "Xin lỗi! Anh/chị có thể giải thích thêm được không";
-                    //    foreach (var item in _dicNotMatch)
-                    //    {
-                    //        string itemNotMatch = item.Key;
-                    //        if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
-                    //        {
-                    //            strDefaultNotMatch = item.Value;
-                    //        }
-                    //    }
-                    //    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-                    //}
                 }
                 // input là postback
                 if (text.Contains("postback_card"))
                 {
-                    var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
+                    var cardDb = _cardService.GetCardByPattern(text.Replace(".", String.Empty));
                     if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
                     {
                         fbUserDb.IsHaveSetAttributeSystem = true;
@@ -1365,8 +864,9 @@ namespace BotProject.Web.API_Mobile
 
                     if (cardDb.CardStepID != null)
                     {
-                        fbUserDb.CardStepPattern = "postback_card_"+ cardDb.CardStepID;
-                    }else
+                        fbUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
+                    }
+                    else
                     {
                         fbUserDb.CardStepPattern = "";
                     }
@@ -1427,7 +927,7 @@ namespace BotProject.Web.API_Mobile
                     if (isPostbackContactAdmin)
                     {
                         strTempPostbackContactAdmin = Regex.Replace(strTempPostbackContactAdmin, @"<(.|\n)*?>", "").Trim();
-                        var cardDb = _cardService.GetSingleCondition(strTempPostbackContactAdmin.Replace(".", String.Empty));
+                        var cardDb = _cardService.GetCardByPattern(strTempPostbackContactAdmin.Replace(".", String.Empty));
                         string tempJsonFacebook = cardDb.TemplateJsonFacebook;
                         if (!String.IsNullOrEmpty(tempJsonFacebook))
                         {
@@ -1454,8 +954,8 @@ namespace BotProject.Web.API_Mobile
                 if (isPostback)
                 {
                     strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
-                    var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
-                    if(cardDb.ID == 4031)
+                    var cardDb = _cardService.GetCardByPattern(strTempPostback.Replace(".", String.Empty));
+                    if (cardDb.ID == 4031)
                     {
                         if (String.IsNullOrEmpty(fbUserDb.Age))//nếu thông tin tuổi chưa có trả về thẻ hỏi thông tin
                         {
@@ -1529,7 +1029,7 @@ namespace BotProject.Web.API_Mobile
                 {
                     if (result.Contains("postback_card"))
                     {
-                        var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
+                        var cardDb = _cardService.GetCardByPattern(result.Replace(".", String.Empty));
                         if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
                         {
                             fbUserDb.IsHaveSetAttributeSystem = true;
@@ -1613,11 +1113,14 @@ namespace BotProject.Web.API_Mobile
             using (HttpClient client = new HttpClient())
             {
                 string templateJson = json.ToString();
-                if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
+                if (templateJson.Contains("{{"))
                 {
-                    foreach (var item in _dicAttributeUser)
+                    if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
                     {
-                        templateJson = templateJson.Replace("{{" + item.Key + "}}", item.Value);
+                        foreach (var item in _dicAttributeUser)
+                        {
+                            templateJson = templateJson.Replace("{{" + item.Key + "}}", item.Value);
+                        }
                     }
                 }
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -1641,12 +1144,14 @@ namespace BotProject.Web.API_Mobile
                 templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
                 templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
                 templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
-
-                if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
+                if (templateJson.Contains("{{"))
                 {
-                    foreach (var item in _dicAttributeUser)
+                    if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
                     {
-                        templateJson = templateJson.Replace("{{"+item.Key+"}}", item.Value);                       
+                        foreach (var item in _dicAttributeUser)
+                        {
+                            templateJson = templateJson.Replace("{{" + item.Key + "}}", item.Value);
+                        }
                     }
                 }
                 using (HttpClient client = new HttpClient())
@@ -1669,13 +1174,17 @@ namespace BotProject.Web.API_Mobile
                 templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
                 templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
                 templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
-                if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
+                if (templateJson.Contains("{{"))
                 {
-                    foreach (var item in _dicAttributeUser)
+                    if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
                     {
-                        templateJson = templateJson.Replace("{{" + item.Key + "}}", item.Value);
+                        foreach (var item in _dicAttributeUser)
+                        {
+                            templateJson = templateJson.Replace("{{" + item.Key + "}}", item.Value);
+                        }
                     }
                 }
+
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

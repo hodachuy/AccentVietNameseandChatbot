@@ -70,7 +70,7 @@ namespace BotProject.Web.Controllers
         {
             _errorService = errorService;
             //_elastic = new ElasticSearch();
-            _accentService = AccentService.AccentInstance;
+            _accentService = new AccentService();// AccentService.AccentInstance;
             _botDbService = botDbService;
             _settingService = settingService;
             _handleMdService = handleMdService;
@@ -967,19 +967,19 @@ namespace BotProject.Web.Controllers
             return Json(textVN, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult PreHitAccentVN()
-        {
-            try
-            {
-                _accentService = AccentService.AccentInstance;
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                return Json(message, JsonRequestBehavior.AllowGet);
-            }
-            return Json("0", JsonRequestBehavior.AllowGet);
-        }
+        //public JsonResult PreHitAccentVN()
+        //{
+        //    try
+        //    {
+        //        _accentService = AccentService.AccentInstance;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        string message = ex.Message;
+        //        return Json(message, JsonRequestBehavior.AllowGet);
+        //    }
+        //    return Json("0", JsonRequestBehavior.AllowGet);
+        //}
 
         public JsonResult GetAccentVN(string text)
         {

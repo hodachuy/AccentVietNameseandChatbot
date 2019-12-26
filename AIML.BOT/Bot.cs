@@ -554,6 +554,9 @@ namespace AIMLbot
             // Load setting.xml
             //string pathSetting = Path.GetDirectoryName(pathToSettings) + "\\config\\Settings.xml";
 
+
+            // Comment 26/12/2019
+
             string pathSetting = pathToSettings + "\\Settings.xml";
             //Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("person2substitutionsfile"))
             this.GlobalSettings.loadSettings(pathSetting);

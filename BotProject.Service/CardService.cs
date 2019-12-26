@@ -1,4 +1,5 @@
-﻿using BotProject.Data.Infrastructure;
+﻿using BotProject.Common.ViewModels;
+using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
 using BotProject.Model.Models;
 using System;
@@ -17,6 +18,7 @@ namespace BotProject.Service
         IEnumerable<Card> GetListCardByGroupCardID(int grCardId);
         Card GetByID(int CardId);
         Card GetSingleCondition(string pattern);
+        StoreProcCardViewModel GetCardByPattern(string pattern);
         void Save();
     }
     public class CardService : ICardService
@@ -58,6 +60,11 @@ namespace BotProject.Service
         public Card GetSingleCondition(string pattern)
         {
             return _CardRepository.GetSingleByCondition(x => x.PatternText.Contains(pattern));
+        }
+
+        public StoreProcCardViewModel GetCardByPattern(string pattern)
+        {
+            return _CardRepository.GetCardByPattern(pattern);
         }
     }
 }

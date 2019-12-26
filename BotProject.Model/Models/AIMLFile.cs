@@ -21,10 +21,8 @@ namespace BotProject.Model.Models
 
         public int BotID { set; get; }
 
-        [MaxLength(50)]
         public string Name { set; get; }
 
-        [MaxLength(256)]
         public string Src { set; get; }
         
         public string Extension { set; get; }

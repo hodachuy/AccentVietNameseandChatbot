@@ -287,6 +287,7 @@
     <Compile Include="API\ModuleCategoryController.cs" />
     <Compile Include="API\ModuleSearchEngineController.cs" />
     <Compile Include="API\ModuleController.cs" />
+    <Compile Include="API\ResetController.cs" />
     <Compile Include="API\SettingController.cs" />
     <Compile Include="API\VoucherController.cs" />
     <Compile Include="API\FacebookWebhookController.cs" />
@@ -328,6 +329,7 @@
     <Compile Include="Infrastructure\Core\BaseController.cs" />
     <Compile Include="Infrastructure\Core\BotService.cs" />
     <Compile Include="Infrastructure\Core\BotServiceDigipro.cs" />
+    <Compile Include="Infrastructure\Core\BotServiceMedical.cs" />
     <Compile Include="Infrastructure\Core\PaginationSet.cs" />
     <Compile Include="Infrastructure\Core\ServiceFactory.cs" />
     <Compile Include="Infrastructure\Core\SpeechReconitionVNService.cs" />
@@ -945,6 +947,7 @@
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5020\Card_ID_6049_buoc-4-dk-logo.aiml" />
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5020\Card_ID_6050_le-phi-dk-logo.aiml" />
     <Content Include="assets\client\css\sweetalert.min.css.map" />
+    <Content Include="File\Datasets_Training_Accent\_1Statistic" />
     <None Include="Properties\PublishProfiles\BotProject_Publish.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
