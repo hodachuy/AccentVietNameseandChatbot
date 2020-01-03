@@ -466,11 +466,7 @@ namespace BotProject.Web.API_Mobile
                     // Nếu có yêu cầu click thẻ để đi theo luồng
                     if (fbUserDb.IsHaveCardCondition)
                     {
-                        if (text.Contains("postback") || text.Contains(_contactAdmin))
-                        {
-
-                        }
-                        else
+                        if (!text.Contains("postback") && !text.Contains(_contactAdmin))
                         {
                             var cardDb = _cardService.GetSingleCondition(fbUserDb.CardConditionPattern);
                             if (cardDb == null)

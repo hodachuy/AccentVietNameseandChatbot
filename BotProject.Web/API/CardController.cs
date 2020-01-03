@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
+using BotProject.Common.SendSmsMsgService;
 
 namespace BotProject.Web.API
 {
@@ -31,6 +32,7 @@ namespace BotProject.Web.API
         private IMdVoucherService _mdVoucherService;
         private IModuleKnowledegeService _mdKnowledgeService;
         private IAIMLFileService _aimlService;
+        private IHandleModuleServiceService _hService;
 
         public CardController(IErrorService errorService,
                             ICardService cardService,
@@ -40,6 +42,7 @@ namespace BotProject.Web.API
                             IFileCardService fileCardService,
                             IAIMLFileService aimlService,
                             IMdVoucherService mdVoucherService,
+                            IHandleModuleServiceService hService,
                             IMdSearchService mdSearchService) : base(errorService)
         {
             _cardService = cardService;
@@ -51,8 +54,27 @@ namespace BotProject.Web.API
             _mdSearchService = mdSearchService;
             _aimlService = aimlService;
             _mdVoucherService = mdVoucherService;
+            _hService = hService;
 
         }
+
+        [Route("test")]
+        [HttpGet]
+        public HttpResponseMessage test(HttpRequestMessage request, string phone, string msg)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+
+                //string result = _hService.SendSms(phone, msg);
+
+                SendSmsService sm = new SendSmsService();
+                var y = sm.SendSmsMsg("0375348328", "12345 la ma OTP cua ban tu DIGIPRO");
+                response = request.CreateResponse(HttpStatusCode.OK, "y");
+                return response;
+            });
+        }
+
 
         [Route("getbyid")]
         [HttpGet]

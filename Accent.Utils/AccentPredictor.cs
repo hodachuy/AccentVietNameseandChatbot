@@ -135,56 +135,82 @@ namespace Accent.Utils
             long size = 0, counts = 0;
             try
             {
-                var file = new FileInfo(fileIn);
-                var content = File.ReadAllLines(file.FullName, Encoding.UTF8);
+                //var file = new FileInfo(fileIn);
+                //var content = File.ReadAllLines(file.FullName, Encoding.UTF8);              
+                //string line = "";
+                //for (int i = 0; i < content.Length; i++)
+                //{
+                //    line = content[i];
 
-                string line = "";
-                for (int i = 0; i < content.Length; i++)
+                //    int indexSpace = line.LastIndexOf(' ');
+                //    int indexTab = line.LastIndexOf('\t');
+
+                //    if (indexTab < indexSpace)
+                //    {
+                //        indexTab = indexSpace;
+                //    }
+                //    string ngramWord = line.Substring(0, indexTab);
+                //    //if (!is1Gram)
+                //    //{
+                //    //    string firstGram = ngramWord.Substring(0, ngramWord.IndexOf(' '));
+                //    //    if (_1Statistic.ContainsKey(firstGram))
+                //    //    {
+                //    //        int val = _1Statistic[firstGram];
+                //    //        _1Statistic[firstGram] = val + 1;
+                //    //    }
+                //    //    else
+                //    //    {
+                //    //        _1Statistic.Add(firstGram, 1);
+                //    //    }
+                //    //}
+                //    //size++;
+                //    int ngramCount = int.Parse(line.Substring(indexTab + 1));
+                //    //counts += ngramCount;
+
+                //    //ngrams.Add(ngramWord, ngramCount);
+
+                //    // Java - ngrams.put(ngramWord, ngramCount);
+                //    // put - nếu có rồi thì update không thì thêm vào
+
+                //    // C#
+                //    //if (ngrams.ContainsKey(ngramWord))
+                //    //{
+                //    //    ngrams[ngramWord] = ngramCount;
+                //    //    //ngrams.Add(ngramWord + " ", ngramCount);
+                //    //}
+                //    //else
+                //    //{
+                //    //    ngrams.Add(ngramWord, ngramCount);
+                //    //}
+                //    ngrams.Add(ngramWord, ngramCount);
+                //}
+
+
+                //doc file
+                using (FileStream fs = new FileStream(fileIn, FileMode.Open, FileAccess.Read))
                 {
-                    line = content[i];
-
-                    int indexSpace = line.LastIndexOf(' ');
-                    int indexTab = line.LastIndexOf('\t');
-
-                    if (indexTab < indexSpace)
+                    using (StreamReader sr = new StreamReader(fs))
                     {
-                        indexTab = indexSpace;
+                        while (!sr.EndOfStream)
+                        {
+                            string line = "";
+                            line = sr.ReadLine();
+
+                            int indexSpace = line.LastIndexOf(' ');
+                            int indexTab = line.LastIndexOf('\t');
+
+                            if (indexTab < indexSpace)
+                            {
+                                indexTab = indexSpace;
+                            }
+                            string ngramWord = line.Substring(0, indexTab);
+                            int ngramCount = int.Parse(line.Substring(indexTab + 1));                            
+                            ngrams.Add(ngramWord, ngramCount);
+                        }
                     }
-                    string ngramWord = line.Substring(0, indexTab);
-                    //if (!is1Gram)
-                    //{
-                    //    string firstGram = ngramWord.Substring(0, ngramWord.IndexOf(' '));
-                    //    if (_1Statistic.ContainsKey(firstGram))
-                    //    {
-                    //        int val = _1Statistic[firstGram];
-                    //        _1Statistic[firstGram] = val + 1;
-                    //    }
-                    //    else
-                    //    {
-                    //        _1Statistic.Add(firstGram, 1);
-                    //    }
-                    //}
-                    //size++;
-                    int ngramCount = int.Parse(line.Substring(indexTab + 1));
-                    //counts += ngramCount;
-
-                    //ngrams.Add(ngramWord, ngramCount);
-
-                    // Java - ngrams.put(ngramWord, ngramCount);
-                    // put - nếu có rồi thì update không thì thêm vào
-
-                    // C#
-                    //if (ngrams.ContainsKey(ngramWord))
-                    //{
-                    //    ngrams[ngramWord] = ngramCount;
-                    //    //ngrams.Add(ngramWord + " ", ngramCount);
-                    //}
-                    //else
-                    //{
-                    //    ngrams.Add(ngramWord, ngramCount);
-                    //}
-                    ngrams.Add(ngramWord, ngramCount);
                 }
+
+
             }
             catch (Exception ex)
             {
@@ -280,6 +306,8 @@ namespace Accent.Utils
 
         }
 
+        #region InitializeGrams
+
         static void Initialize1Statistic(string _path1Statistic)
         {
             if (!isInitialized1Statistic)
@@ -296,7 +324,6 @@ namespace Accent.Utils
                 }
             }
         }
-
         static void Initialize2Grams(string _2Gram2File)
         {
             if (!isInitialized2Gram)
@@ -329,6 +356,7 @@ namespace Accent.Utils
                 }
             }
         }
+        #endregion
 
         private void writeToFile(Dictionary<string, int> map, string fileOut)
         {

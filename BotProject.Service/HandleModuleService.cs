@@ -9,7 +9,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -34,6 +36,8 @@ namespace BotProject.Service
         HandleResultBotViewModel HandleIsVoucher(string phoneNumber, string mdVoucherID, string engineerName, string branchOTP, string Type = "");
         HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID, string msgTimeoutOTP = "");
 		HandleResultBotViewModel HandleIsAdminContact(string text, int botID, bool isFinishMessage = false);
+
+        string SendSms(string strPhoneNumber, string strMsg); 
 		void Save();
     }
     public class HandleModuleService : IHandleModuleServiceService
@@ -60,6 +64,11 @@ namespace BotProject.Service
 		private IMdAdminContactService _mdAdminContactService;
 		private IUnitOfWork _unitOfWork;
         private IErrorService _errorService;
+
+        // SEND SMS
+        private const string APIKey = "CEB8AEF76FCB2A7E7D1C35BCD35A11";//Login to eSMS.vn to get this";//Dang ky tai khoan tai esms.vn de lay key//Register account at esms.vn to get key
+        private const string SecretKey = "CD5E0FC78C4234F07FAADEC41B3B2E";//Login to eSMS.vn to get this";
+
 
         public HandleModuleService(IMdPhoneService mdPhoneService,
                                     IMdEmailService mdEmailService,
@@ -393,111 +402,150 @@ namespace BotProject.Service
                         }
 
                         string codeOTP = RandomStr(5);
-                        SendSmsService sm = new SendSmsService();
-                        string rsSmsMsg = sm.SendSmsMsg(telePhoneNumber,codeOTP + " là mã OTP của bạn từ DIGIPRO");
-                        dynamic obj = JsonConvert.DeserializeObject(rsSmsMsg);
-                        if (obj.Table != null)
+
+                        //rsHandle.Status = true;
+                        //rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
+                        //rsMessage = "Vui lòng nhập mã OTP " + codeOTP;//mdVoucherDb.MessageError;// "Vui lòng nhập mã OTP được gửi tới số điện thoại";
+                        //rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                        //rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
+                        //if (strProcUserTelephoneDb == null)
+                        //{
+                        //    usTelephone.Code = codeOTP;
+                        //    usTelephone.IsReceive = false;
+                        //    usTelephone.IsDelete = false;
+                        //    usTelephone.TelephoneNumber = telePhoneNumber;
+                        //    usTelephone.TypeService = "Voucher";
+                        //    usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
+                        //    usTelephone.NumberReceive = 1;
+                        //    usTelephone.Type = Type;
+                        //    if (!String.IsNullOrEmpty(branchOTP))
+                        //    {
+                        //        usTelephone.BranchOTP = branchOTP;
+                        //    }
+
+                        //    usTelephone.CreatedDate = DateTime.Now;
+                        //    usTelephone.SerialNumber = serialNumber;
+
+                        //    if (!String.IsNullOrEmpty(Type))
+                        //    {
+
+                        //        int numberOrder = 10000;
+                        //        string filter = "m.BotID = " + mdVoucherDb.BotID + " and u.Type Like N'" + Type + "'";
+                        //        StoreProcUserTelephoneByVoucherViewModel userTelePhoneDb = new StoreProcUserTelephoneByVoucherViewModel();
+                        //        userTelePhoneDb = _userTelephoneService.GetUserTelephoneByVoucher(filter, "", 1, 1, null).SingleOrDefault();
+                        //        if (userTelePhoneDb == null)
+                        //        {
+                        //            numberOrder = 10001;
+                        //        }
+                        //        else
+                        //        {
+                        //            numberOrder = 10000 + userTelePhoneDb.Total + 1;
+                        //        }
+                        //        if (Type == "facebook")
+                        //        {
+                        //            usTelephone.NumberOrder = "F" + numberOrder.ToString();
+                        //        }
+                        //        if (Type == "zalo")
+                        //        {
+                        //            usTelephone.NumberOrder = "Z" + numberOrder.ToString();
+                        //        }
+                        //    }
+
+                        //    _userTelephoneService.Create(usTelephone);
+                        //    _unitOfWork.Commit();
+
+                        //}
+                        //else
+                        //{
+                        //    var usT = _userTelephoneService.GetById(strProcUserTelephoneDb.ID);
+                        //    usT.IsReceive = false;
+                        //    usT.IsDelete = false;
+                        //    usT.Code = codeOTP;
+                        //    usT.SerialNumber = serialNumber;
+                        //    if (!String.IsNullOrEmpty(branchOTP))
+                        //    {
+                        //        usT.BranchOTP = branchOTP;
+                        //    }
+                        //    _userTelephoneService.Update(usT);
+                        //    _unitOfWork.Commit();
+                        //}
+                        //return rsHandle;
+
+
+                        //SendSmsService sm = new SendSmsService();
+                        //string rsSmsMsg = sm.SendSmsMsg(telePhoneNumber, codeOTP + " la ma OTP cua ban tu DIGIPRO");
+                        string rsSmsMsg = SendSms(telePhoneNumber, codeOTP + " la ma OTP cua ban tu DIGIPRO");
+                        if (rsSmsMsg == "100")//thành công
                         {
-                            dynamic ob = obj.Table[0];
-                            if (ob.ReturnCode == "0")//thành công
-                            {
-                                rsHandle.Status = true;
-                                rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
-                                rsMessage = mdVoucherDb.MessageError;// "Vui lòng nhập mã OTP được gửi tới số điện thoại";
-                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-								rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                            rsHandle.Status = true;
+                            rsHandle.Message = tempText("Vui lòng nhập mã OTP được gửi tới số điện thoại");
+                            rsMessage = mdVoucherDb.MessageError;// "Vui lòng nhập mã OTP được gửi tới số điện thoại";//"Vui lòng nhập mã OTP " + codeOTP;//
+                            rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                            rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
-								if (strProcUserTelephoneDb == null)
+                            if (strProcUserTelephoneDb == null)
+                            {
+                                usTelephone.Code = codeOTP;
+                                usTelephone.IsReceive = false;
+                                usTelephone.IsDelete = false;
+                                usTelephone.TelephoneNumber = telePhoneNumber;
+                                usTelephone.TypeService = "Voucher";
+                                usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
+                                usTelephone.NumberReceive = 1;
+                                usTelephone.Type = Type;
+                                if (!String.IsNullOrEmpty(branchOTP))
                                 {
-                                    usTelephone.Code = codeOTP;
-                                    usTelephone.IsReceive = false;
-                                    usTelephone.IsDelete = false;
-                                    usTelephone.TelephoneNumber = telePhoneNumber;
-                                    usTelephone.TypeService = "Voucher";
-                                    usTelephone.MdVoucherID = Int32.Parse(mdVoucherID);
-                                    usTelephone.NumberReceive = 1;
-                                    usTelephone.Type = Type;
-                                    if (!String.IsNullOrEmpty(branchOTP))
-                                    {
-                                        usTelephone.BranchOTP = branchOTP;
-                                    }
-
-                                    usTelephone.CreatedDate = DateTime.Now;
-                                    usTelephone.SerialNumber = serialNumber;
-
-									if (!String.IsNullOrEmpty(Type))
-                                    {
-
-                                        int numberOrder = 10000;
-                                        string filter = "m.BotID = " + mdVoucherDb.BotID + " and u.Type Like N'" + Type + "'";
-										StoreProcUserTelephoneByVoucherViewModel userTelePhoneDb = new StoreProcUserTelephoneByVoucherViewModel();
-										userTelePhoneDb = _userTelephoneService.GetUserTelephoneByVoucher(filter, "", 1, 1, null).SingleOrDefault();
-                                        if(userTelePhoneDb == null)
-                                        {
-                                            numberOrder = 10001;
-                                        }else
-                                        {
-                                            numberOrder = 10000 + userTelePhoneDb.Total + 1;
-                                        }
-                                        if (Type == "facebook") {
-											usTelephone.NumberOrder = "F"+numberOrder.ToString();
-										}
-										if (Type == "zalo")
-										{
-											usTelephone.NumberOrder = "Z" + numberOrder.ToString();
-										}
-									}
-									
-									_userTelephoneService.Create(usTelephone);
-                                    _unitOfWork.Commit();
-
+                                    usTelephone.BranchOTP = branchOTP;
                                 }
-                                else
+
+                                usTelephone.CreatedDate = DateTime.Now;
+                                usTelephone.SerialNumber = serialNumber;
+
+                                if (!String.IsNullOrEmpty(Type))
                                 {
-                                    var usT = _userTelephoneService.GetById(strProcUserTelephoneDb.ID);
-                                    usT.IsReceive = false;
-                                    usT.IsDelete = false;
-                                    usT.Code = codeOTP;
-                                    usT.SerialNumber = serialNumber;
-                                    if (!String.IsNullOrEmpty(branchOTP))
+
+                                    int numberOrder = 10000;
+                                    string filter = "m.BotID = " + mdVoucherDb.BotID + " and u.Type Like N'" + Type + "'";
+                                    StoreProcUserTelephoneByVoucherViewModel userTelePhoneDb = new StoreProcUserTelephoneByVoucherViewModel();
+                                    userTelePhoneDb = _userTelephoneService.GetUserTelephoneByVoucher(filter, "", 1, 1, null).SingleOrDefault();
+                                    if (userTelePhoneDb == null)
                                     {
-                                        usT.BranchOTP = branchOTP;
+                                        numberOrder = 10001;
                                     }
-                                    _userTelephoneService.Update(usT);
-                                    _unitOfWork.Commit();
+                                    else
+                                    {
+                                        numberOrder = 10000 + userTelePhoneDb.Total + 1;
+                                    }
+                                    if (Type == "facebook")
+                                    {
+                                        usTelephone.NumberOrder = "F" + numberOrder.ToString();
+                                    }
+                                    if (Type == "zalo")
+                                    {
+                                        usTelephone.NumberOrder = "Z" + numberOrder.ToString();
+                                    }
                                 }
-                                return rsHandle;
-                            }
-                            if (ob.ReturnCode == "2")
-                            {
-                                rsHandle.Status = false;
-                                rsHandle.Message = tempText("Vui lòng nhập lại, số điện thoại không đúng");
-                                rsMessage = "Vui lòng nhập lại, số điện thoại không đúng";
-                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-								rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
 
-								return rsHandle;
-                            }
-                            if (ob.ReturnCode == "3")
-                            {
-                                rsHandle.Status = false;
-                                rsHandle.Message = tempText("Không có nội dung tin nhắn gửi");
-                                rsMessage = "Không có nội dung tin nhắn gửi";
-                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-                                rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+                                _userTelephoneService.Create(usTelephone);
+                                _unitOfWork.Commit();
 
-                                return rsHandle;
                             }
                             else
                             {
-                                rsHandle.Status = false;
-                                rsHandle.Message = tempText("Tin nhắn OTP không gửi được");
-                                rsMessage = "Tin nhắn OTP không gửi được";
-                                rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-                                rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
-
-                                return rsHandle;
+                                var usT = _userTelephoneService.GetById(strProcUserTelephoneDb.ID);
+                                usT.IsReceive = false;
+                                usT.IsDelete = false;
+                                usT.Code = codeOTP;
+                                usT.SerialNumber = serialNumber;
+                                if (!String.IsNullOrEmpty(branchOTP))
+                                {
+                                    usT.BranchOTP = branchOTP;
+                                }
+                                _userTelephoneService.Update(usT);
+                                _unitOfWork.Commit();
                             }
+                            return rsHandle;
                         }
                         else
                         {
@@ -506,6 +554,7 @@ namespace BotProject.Service
                             rsMessage = "Tin nhắn OTP không gửi được";
                             rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
                             rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", mdVoucherDb.Payload, mdVoucherDb.TitlePayload).ToString();
+
                             return rsHandle;
                         }
                     }
@@ -579,10 +628,11 @@ namespace BotProject.Service
 
                         rsHandle.TemplateJsonFacebook = FacebookTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split" + FacebookTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
                         rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateImage(rsMessage, "{{senderId}}").ToString() + "split" + ZaloTemplate.GetMessageTemplateText(messageEnd, "{{senderId}}").ToString();
-                        SendSmsService sm = new SendSmsService();
+                        //SendSmsService sm = new SendSmsService();
 
                         string msgSMS = Regex.Replace(_msgSMS, "{{stt}}", usTelephoneDb.NumberOrder);
-                        string rsSmsMsg = sm.SendSmsMsg(phoneNumber, msgSMS);
+                        //string rsSmsMsg = sm.SendSmsMsg(phoneNumber, msgSMS);
+                        string rsSmsMsg = SendSms(phoneNumber, msgSMS);
                     }
                 }
                 else
@@ -990,6 +1040,69 @@ namespace BotProject.Service
             }
         }
 
-		#endregion
-	}
+        #endregion
+
+
+
+        #region SEND SMS
+        private string SendGetRequest(string RequestUrl)
+        {
+            Uri address = new Uri(RequestUrl);
+            HttpWebRequest request;
+            HttpWebResponse response = null;
+            StreamReader reader;
+            if (address == null) { throw new ArgumentNullException("address"); }
+            try
+            {
+                request = WebRequest.Create(address) as HttpWebRequest;
+                request.UserAgent = ".NET Sample";
+                request.KeepAlive = false;
+                request.Timeout = 15 * 1000;
+                response = request.GetResponse() as HttpWebResponse;
+                if (request.HaveResponse == true && response != null)
+                {
+                    reader = new StreamReader(response.GetResponseStream());
+                    string result = reader.ReadToEnd();
+                    result = result.Replace("</string>", "");
+                    return result;
+                }
+            }
+            catch (WebException wex)
+            {
+                if (wex.Response != null)
+                {
+                    using (HttpWebResponse errorResponse = (HttpWebResponse)wex.Response)
+                    {
+                        Console.WriteLine(
+                            "The server returned '{0}' with the status code {1} ({2:d}).",
+                            errorResponse.StatusDescription, errorResponse.StatusCode,
+                            errorResponse.StatusCode);
+                    }
+                }
+            }
+            finally
+            {
+                if (response != null) { response.Close(); }
+            }
+            return null;
+        }
+
+        public string SendSms(string strPhoneNumber, string strMsg)
+        {
+            string URL = "http://rest.esms.vn/MainService.svc/json/SendMultipleMessage_V4_get?Phone=" + strPhoneNumber + "&Content=" + strMsg + "&ApiKey=" + APIKey + "&SecretKey=" + SecretKey + "&IsUnicode=0&Brandname=&SmsType=8";
+            //De dang ky brandname rieng vui long lien he hotline 0902435340 hoac nhan vien kinh Doanh cua ban
+            //-----------------------------------
+
+            //-----------------------------------
+            string result = SendGetRequest(URL);
+            JObject ojb = JObject.Parse(result);
+            int CodeResult = (int)ojb["CodeResult"];//100 is successfull
+
+            string SMSID = (string)ojb["SMSID"];//id of SMS
+            return CodeResult.ToString();
+        }
+
+        #endregion
+
+    }
 }

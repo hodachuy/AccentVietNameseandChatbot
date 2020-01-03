@@ -36,7 +36,7 @@ namespace BotProject.Web.API_Mobile
 {
     public class MessageFbMedicalController : ApiController
     {
-        string pageToken = "EAAfPgPELM6IBAHGk90mbGZC92Y56bD2bQZBc5qDZCo8Hn4qKosGNZAL3oDKTYV1GSYCrQVJUTyX4MRUVenjO0mZBzz3xcewOM9pyHo4YL3XbNVfodMgA7G0nbvLuJZCC2brHbEGYH9WM8irio4GwtfhYNbuKLPGiB4eYlxSLZC6FgZDZD";
+        string pageToken = "EAAfPgPELM6IBAIGY9gTer454DZCyhZB2Ah7NNSiZBJZBW8TZA91c7mCEZCdDwP3nh1yV9ha7Bk2K4Vwprdm1qeW1mECvt0pAKBazpKkokusSJU9T3edcZCWsZAqS0tU9bslpIZAjeVFuhk8G3ZCcyfr8UzzQcMC2vgEZBaileZC5PZAEDigZDZD";
         string appSecret = "be46264e45777ee8c35bc75d64132c53";
         string _contactAdmin = Helper.ReadString("AdminContact");
         string _titlePayloadContactAdmin = Helper.ReadString("TitlePayloadAdminContact");
@@ -312,9 +312,24 @@ namespace BotProject.Web.API_Mobile
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
 
-            //Typing ...
+            ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
+            fbUserDb = _appFacebookUser.GetByUserId(sender);
+
             string senderActionTyping = FacebookTemplate.GetMessageSenderAction("typing_on", sender).ToString();
-            await SendMessageTask(senderActionTyping, sender);
+            int age = 10;
+            //Typing ...
+            if (fbUserDb != null && (fbUserDb.PredicateName != "Admin_Contact"))
+            {
+                if (fbUserDb.Age != 0)
+                {
+                    bool isAge = Regex.Match(text, NumberPattern).Success;
+                    if (isAge)
+                    {
+                        age = fbUserDb.Age;
+                    }
+                }
+                await SendMessageTask(senderActionTyping, sender);
+            }
 
             if (!text.Contains("postback") && !text.Contains(_contactAdmin))
             {
@@ -334,30 +349,6 @@ namespace BotProject.Web.API_Mobile
                 text = arrPostback[0];
             }
 
-            // Lọc từ cấm
-            //if (!String.IsNullOrEmpty(_stopWord))
-            //{
-            //    string[] arrStopWord = _stopWord.Split(',');
-            //    if (arrStopWord.Length != 0)
-            //    {
-            //        foreach (var w in arrStopWord)
-            //        {
-            //            text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
-            //        }
-            //    }
-            //}
-
-            if (String.IsNullOrEmpty(text))
-            {
-                string strDefaultNotMatch = "Anh/chị cho em biết thêm chi tiết được không ạ";
-                if (_isSearchAI)
-                {
-                    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-                }
-                //turn off AI
-                strDefaultNotMatch = "Anh/chị vui lòng chọn Chat với chuyên viên để được tư vấn chi tiết hơn ạ";
-                return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-            }
 
             HistoryViewModel hisVm = new HistoryViewModel();
             //hisVm.BotID = botId;
@@ -369,17 +360,13 @@ namespace BotProject.Web.API_Mobile
             DateTime dStartedTime = DateTime.Now;
             DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
 
-            ApplicationFacebookUser fbUserDb = new ApplicationFacebookUser();
-            fbUserDb = _appFacebookUser.GetByUserId(sender);
-
             if (text == "postback_card_4031")// thẻ chào hỏi
             {
-                if (String.IsNullOrEmpty(fbUserDb.Age))//nếu thông tin tuổi chưa có trả về thẻ hỏi thông tin
+                if (fbUserDb.Age == 0)//nếu thông tin tuổi chưa có trả về thẻ hỏi thông tin
                 {
                     text = "postback_card_8917";//trả về thẻ hỏi thông tin
-                }
+                }               
             }
-
             try
             {
                 if (fbUserDb != null)
@@ -402,6 +389,8 @@ namespace BotProject.Web.API_Mobile
                             fbUserDb.CardStepPattern = "";
                             fbUserDb.AttributeName = "";
                             fbUserDb.IsHaveSetAttributeSystem = false;
+                            fbUserDb.IsConditionWithInputText = false;
+                            fbUserDb.CardConditionWithInputTextPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
                             return await ExcuteMessage(text, sender, botId);
@@ -440,19 +429,6 @@ namespace BotProject.Web.API_Mobile
                     await SendMessageTask(senderActionTyping, sender);
                 }
 
-                // TimeOut được bật
-                if (_isHaveTimeOut)
-                {
-                    if (fbUserDb != null)
-                    {
-                        fbUserDb.StartedOn = dStartedTime;
-                        fbUserDb.TimeOut = dTimeOut;
-                        _appFacebookUser.Update(fbUserDb);
-                        _appFacebookUser.Save();
-                    }
-                    await Schedule(sender, FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageProactive, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), pageToken, dTimeOut, text);
-                    // Schedule(sender, FacebookTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
-                }
                 if (fbUserDb == null)
                 {
                     ProfileUser profileUser = new ProfileUser();
@@ -467,9 +443,10 @@ namespace BotProject.Web.API_Mobile
                     fbUserDb.CreatedDate = DateTime.Now;
                     fbUserDb.StartedOn = dStartedTime;
                     fbUserDb.FirstName = profileUser.first_name;
+                    fbUserDb.Age = 0;// "N/A";
                     fbUserDb.LastName = profileUser.last_name;
                     fbUserDb.UserName = profileUser.first_name + " " + profileUser.last_name;
-                    fbUserDb.Gender = (String.IsNullOrEmpty(profileUser.gender) == true ? "N/A" : (profileUser.gender == "male" ? "Nam" : "Nữ"));
+                    fbUserDb.Gender = true; //"N/A";
                     fbUserDb.UpdateFacebookUser(fbUserVm);
                     _appFacebookUser.Add(fbUserDb);
                     _appFacebookUser.Save();
@@ -479,7 +456,7 @@ namespace BotProject.Web.API_Mobile
                     AddAttributeDefault(sender, botId, "sender_name", fbUserDb.UserName);
                     AddAttributeDefault(sender, botId, "sender_first_name", fbUserDb.FirstName);
                     AddAttributeDefault(sender, botId, "sender_last_name", fbUserDb.LastName);
-                    AddAttributeDefault(sender, botId, "gender", fbUserDb.Gender);
+                    AddAttributeDefault(sender, botId, "gender", "N/A");
                 }
                 else
                 {
@@ -533,10 +510,6 @@ namespace BotProject.Web.API_Mobile
                             attFbUser.AttributeValue = attributeValueFromPostback.Trim();
                         }
 
-                        if (attFbUser.AttributeKey == "gender")
-                        {
-                            attFbUser.AttributeValue = fbUserDb.Gender;
-                        }
                         if (attFbUser.AttributeKey == "age")
                         {
                             bool isAge = Regex.Match(text, NumberPattern).Success;
@@ -558,7 +531,7 @@ namespace BotProject.Web.API_Mobile
 
                         if (attFbUser.AttributeKey == "age")
                         {
-                            fbUserDb.Age = text;
+                            fbUserDb.Age = Int32.Parse(text);
                             fbUserDb.IsHaveSetAttributeSystem = false;
                             fbUserDb.AttributeName = "";
                             _appFacebookUser.Update(fbUserDb);
@@ -566,7 +539,22 @@ namespace BotProject.Web.API_Mobile
 
                             _dicAttributeUser.Remove("age");
                             _dicAttributeUser.Add("age", text);
-                            return await ExcuteMessage("postback_card_8927", sender, botId); //postback_card_8927 thẻ thông tin người dùng
+                            //return await ExcuteMessage("postback_card_8927", sender, botId); //postback_card_8927 thẻ thông tin người dùng
+                        }
+                    }
+
+                    // Nhập text để đi luồng tiếp theo nhưng CardStepID không được rỗng
+                    if (fbUserDb.IsConditionWithInputText)
+                    {
+                        if (!text.Contains("postback") && !text.Contains(_contactAdmin))
+                        {
+                            fbUserDb.IsHaveSetAttributeSystem = false;
+                            fbUserDb.AttributeName = "";
+                            fbUserDb.IsConditionWithInputText = false;
+                            fbUserDb.IsHaveCardCondition = false;
+                            _appFacebookUser.Update(fbUserDb);
+                            _appFacebookUser.Save();
+                            return await ExcuteMessage(fbUserDb.CardConditionWithInputTextPattern, sender, botId); //postback_card_8927 thẻ thông tin người dùng
                         }
                     }
 
@@ -606,6 +594,8 @@ namespace BotProject.Web.API_Mobile
                                 fbUserDb.CardStepPattern = "";
                                 fbUserDb.AttributeName = "";
                                 fbUserDb.IsHaveSetAttributeSystem = false;
+                                fbUserDb.IsConditionWithInputText = false;
+                                fbUserDb.CardConditionWithInputTextPattern = "";
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
@@ -637,6 +627,8 @@ namespace BotProject.Web.API_Mobile
                             fbUserDb.CardStepPattern = "";
                             fbUserDb.IsHaveSetAttributeSystem = false;
                             fbUserDb.AttributeName = "";
+                            fbUserDb.IsConditionWithInputText = false;
+                            fbUserDb.CardConditionWithInputTextPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -683,6 +675,8 @@ namespace BotProject.Web.API_Mobile
                             fbUserDb.CardStepPattern = "";
                             fbUserDb.IsHaveSetAttributeSystem = false;
                             fbUserDb.AttributeName = "";
+                            fbUserDb.IsConditionWithInputText = false;
+                            fbUserDb.CardConditionWithInputTextPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -696,6 +690,13 @@ namespace BotProject.Web.API_Mobile
                     }
                 }
 
+                if (!text.Contains("postback") && !text.Contains(_contactAdmin))
+                {
+                    if (age <= 7)
+                    {
+                        text = "trẻ em " + text;
+                    }
+                }
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text);
                 string result = aimlBotResult.OutputSentences[0].ToString();
@@ -755,6 +756,8 @@ namespace BotProject.Web.API_Mobile
                             fbUserDb.CardStepPattern = "";
                             fbUserDb.IsHaveSetAttributeSystem = false;
                             fbUserDb.AttributeName = "";
+                            fbUserDb.IsConditionWithInputText = false;
+                            fbUserDb.CardConditionWithInputTextPattern = "";
                             _appFacebookUser.Update(fbUserDb);
                             _appFacebookUser.Save();
 
@@ -775,6 +778,8 @@ namespace BotProject.Web.API_Mobile
                         fbUserDb.CardStepPattern = "";
                         fbUserDb.IsHaveSetAttributeSystem = false;
                         fbUserDb.AttributeName = "";
+                        fbUserDb.IsConditionWithInputText = false;
+                        fbUserDb.CardConditionWithInputTextPattern = "";
                         _appFacebookUser.Update(fbUserDb);
                         _appFacebookUser.Save();
                     }
@@ -865,6 +870,16 @@ namespace BotProject.Web.API_Mobile
                     if (cardDb.CardStepID != null)
                     {
                         fbUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
+                        if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                        {
+                            fbUserDb.IsConditionWithInputText = true;
+                            fbUserDb.CardConditionWithInputTextPattern = fbUserDb.CardStepPattern;
+                        }
+                        else
+                        {
+                            fbUserDb.IsConditionWithInputText = false;
+                            fbUserDb.CardConditionWithInputTextPattern = "";
+                        }
                     }
                     else
                     {
@@ -876,16 +891,25 @@ namespace BotProject.Web.API_Mobile
                         fbUserDb.IsHaveCardCondition = true;
                         fbUserDb.CardConditionPattern = text.Replace(".", String.Empty);
                     }
-                    else if (cardDb.IsConditionWithAreaButton)
+                    else
+                    {
+                        fbUserDb.IsHaveCardCondition = false;
+                        fbUserDb.CardConditionPattern = "";
+                    }
+
+                    if (cardDb.IsConditionWithAreaButton)
                     {
                         fbUserDb.IsConditionWithAreaButton = true;
                         fbUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                     }
                     else
                     {
-                        fbUserDb.IsHaveCardCondition = false;
-                        fbUserDb.CardConditionPattern = "";
+                        fbUserDb.IsConditionWithAreaButton = false;
+                        fbUserDb.CardConditionAreaButtonPattern = "";
                     }
+
+
+
                     _appFacebookUser.Update(fbUserDb);
                     _appFacebookUser.Save();
                     string tempJsonFacebook = cardDb.TemplateJsonFacebook;
@@ -903,7 +927,7 @@ namespace BotProject.Web.API_Mobile
                             }
                         }
                     }
-                    if (cardDb.CardStepID != null)
+                    if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
                     {
                         fbUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
                         return await ExcuteMessage(fbUserDb.CardStepPattern, sender, botId);
@@ -957,7 +981,7 @@ namespace BotProject.Web.API_Mobile
                     var cardDb = _cardService.GetCardByPattern(strTempPostback.Replace(".", String.Empty));
                     if (cardDb.ID == 4031)
                     {
-                        if (String.IsNullOrEmpty(fbUserDb.Age))//nếu thông tin tuổi chưa có trả về thẻ hỏi thông tin
+                        if (fbUserDb.Age == 0)//nếu thông tin tuổi chưa có trả về thẻ hỏi thông tin
                         {
                             return await ExcuteMessage("postback_card_8917", sender, botId);
                         }
@@ -977,6 +1001,16 @@ namespace BotProject.Web.API_Mobile
                     if (cardDb.CardStepID != null)
                     {
                         fbUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
+                        if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                        {
+                            fbUserDb.IsConditionWithInputText = true;
+                            fbUserDb.CardConditionWithInputTextPattern = fbUserDb.CardStepPattern;
+                        }
+                        else
+                        {
+                            fbUserDb.IsConditionWithInputText = false;
+                            fbUserDb.CardConditionWithInputTextPattern = "";
+                        }
                     }
                     else
                     {
@@ -986,17 +1020,23 @@ namespace BotProject.Web.API_Mobile
                     if (cardDb.IsHaveCondition)
                     {
                         fbUserDb.IsHaveCardCondition = true;
-                        fbUserDb.CardConditionPattern = strTempPostback.Replace(".", String.Empty);
+                        fbUserDb.CardConditionPattern = text.Replace(".", String.Empty);
                     }
-                    else if (cardDb.IsConditionWithAreaButton)
+                    else
+                    {
+                        fbUserDb.IsHaveCardCondition = false;
+                        fbUserDb.CardConditionPattern = "";
+                    }
+
+                    if (cardDb.IsConditionWithAreaButton)
                     {
                         fbUserDb.IsConditionWithAreaButton = true;
                         fbUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                     }
                     else
                     {
-                        fbUserDb.IsHaveCardCondition = false;
-                        fbUserDb.CardConditionPattern = "";
+                        fbUserDb.IsConditionWithAreaButton = false;
+                        fbUserDb.CardConditionAreaButtonPattern = "";
                     }
                     _appFacebookUser.Update(fbUserDb);
                     _appFacebookUser.Save();
@@ -1015,7 +1055,7 @@ namespace BotProject.Web.API_Mobile
                             }
                         }
                     }
-                    if (cardDb.CardStepID != null)
+                    if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
                     {
                         fbUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
                         return await ExcuteMessage(fbUserDb.CardStepPattern, sender, botId);
@@ -1044,6 +1084,16 @@ namespace BotProject.Web.API_Mobile
                         if (cardDb.CardStepID != null)
                         {
                             fbUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
+                            if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                            {
+                                fbUserDb.IsConditionWithInputText = true;
+                                fbUserDb.CardConditionWithInputTextPattern = fbUserDb.CardStepPattern;
+                            }
+                            else
+                            {
+                                fbUserDb.IsConditionWithInputText = false;
+                                fbUserDb.CardConditionWithInputTextPattern = "";
+                            }
                         }
                         else
                         {
@@ -1055,15 +1105,21 @@ namespace BotProject.Web.API_Mobile
                             fbUserDb.IsHaveCardCondition = true;
                             fbUserDb.CardConditionPattern = text.Replace(".", String.Empty);
                         }
-                        else if (cardDb.IsConditionWithAreaButton)
+                        else
+                        {
+                            fbUserDb.IsHaveCardCondition = false;
+                            fbUserDb.CardConditionPattern = "";
+                        }
+
+                        if (cardDb.IsConditionWithAreaButton)
                         {
                             fbUserDb.IsConditionWithAreaButton = true;
                             fbUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
                         }
                         else
                         {
-                            fbUserDb.IsHaveCardCondition = false;
-                            fbUserDb.CardConditionPattern = "";
+                            fbUserDb.IsConditionWithAreaButton = false;
+                            fbUserDb.CardConditionAreaButtonPattern = "";
                         }
                         _appFacebookUser.Update(fbUserDb);
                         _appFacebookUser.Save();
@@ -1082,7 +1138,7 @@ namespace BotProject.Web.API_Mobile
                                 }
                             }
                         }
-                        if (cardDb.CardStepID != null)
+                        if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
                         {
                             fbUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
                             return await ExcuteMessage(fbUserDb.CardStepPattern, sender, botId);
@@ -1119,7 +1175,8 @@ namespace BotProject.Web.API_Mobile
                     {
                         foreach (var item in _dicAttributeUser)
                         {
-                            templateJson = templateJson.Replace("{{" + item.Key + "}}", item.Value);
+                            string val = String.IsNullOrEmpty(item.Value) == true ? "N/A" : item.Value;
+                            templateJson = templateJson.Replace("{{" + item.Key + "}}", val);
                         }
                     }
                 }
@@ -1150,7 +1207,8 @@ namespace BotProject.Web.API_Mobile
                     {
                         foreach (var item in _dicAttributeUser)
                         {
-                            templateJson = templateJson.Replace("{{" + item.Key + "}}", item.Value);
+                            string val = String.IsNullOrEmpty(item.Value) == true ? "N/A" : item.Value;
+                            templateJson = templateJson.Replace("{{" + item.Key + "}}", val);
                         }
                     }
                 }
@@ -1180,7 +1238,8 @@ namespace BotProject.Web.API_Mobile
                     {
                         foreach (var item in _dicAttributeUser)
                         {
-                            templateJson = templateJson.Replace("{{" + item.Key + "}}", item.Value);
+                            string val = String.IsNullOrEmpty(item.Value) == true ? "N/A" : item.Value;
+                            templateJson = templateJson.Replace("{{" + item.Key + "}}", val);
                         }
                     }
                 }
@@ -1198,22 +1257,12 @@ namespace BotProject.Web.API_Mobile
             using (HttpClient client = new HttpClient())
             {
                 HttpResponseMessage res = new HttpResponseMessage();
-                res = client.GetAsync($"https://graph.facebook.com/" + senderId + "?fields=first_name,last_name,profile_pic,gender&access_token=" + pageToken).Result;//gender y/c khi sử dụng
+                res = client.GetAsync($"https://graph.facebook.com/" + senderId + "?fields=first_name,last_name,profile_pic&access_token=" + pageToken).Result;//gender y/c khi sử dụng
                 if (res.IsSuccessStatusCode)
                 {
                     var serializer = new JavaScriptSerializer();
                     serializer.MaxJsonLength = Int32.MaxValue;
                     user = serializer.Deserialize<ProfileUser>(res.Content.ReadAsStringAsync().Result);
-                }
-                else
-                {
-                    res = client.GetAsync($"https://graph.facebook.com/" + senderId + "?fields=first_name,last_name,profile_pic&access_token=" + pageToken).Result;//gender y/c khi sử dụng
-                    if (res.IsSuccessStatusCode)
-                    {
-                        var serializer = new JavaScriptSerializer();
-                        serializer.MaxJsonLength = Int32.MaxValue;
-                        user = serializer.Deserialize<ProfileUser>(res.Content.ReadAsStringAsync().Result);
-                    }
                 }
                 return user;
             }

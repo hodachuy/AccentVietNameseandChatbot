@@ -554,6 +554,14 @@
     <Compile Include="Migrations\201912260825264_UpdateAimlFile123.Designer.cs">
       <DependentUpon>201912260825264_UpdateAimlFile123.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201912270141070_UpdateFbZalo900.cs" />
+    <Compile Include="Migrations\201912270141070_UpdateFbZalo900.Designer.cs">
+      <DependentUpon>201912270141070_UpdateFbZalo900.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201912300230420_UpdateAge123.cs" />
+    <Compile Include="Migrations\201912300230420_UpdateAge123.Designer.cs">
+      <DependentUpon>201912300230420_UpdateAge123.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -976,6 +984,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912260825264_UpdateAimlFile123.resx">
       <DependentUpon>201912260825264_UpdateAimlFile123.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912270141070_UpdateFbZalo900.resx">
+      <DependentUpon>201912270141070_UpdateFbZalo900.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201912300230420_UpdateAge123.resx">
+      <DependentUpon>201912300230420_UpdateAge123.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

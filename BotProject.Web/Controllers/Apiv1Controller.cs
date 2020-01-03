@@ -107,7 +107,7 @@ namespace BotProject.Web.Controllers
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
 
-            var lstAIML = _aimlFileService.GetAllByBotId(botID);//_aimlFileService.GetByBotId(botID);
+            var lstAIML = _aimlFileService.GetByBotId(botID);//_aimlFileService.GetByBotId(botID);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
             _botService.loadAIMLFromDatabase(lstAIMLVm);
 

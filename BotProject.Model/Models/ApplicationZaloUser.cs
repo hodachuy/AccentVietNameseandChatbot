@@ -18,8 +18,8 @@ namespace BotProject.Model.Models
         public string UserName { set; get; }
         public string FirstName { set; get; }
         public string LastName { set; get; }
-        public string Age { set; get; }
-        public string Gender { set; get; }
+        public int Age { set; get; }
+        public bool Gender { set; get; }
         public string Location { set; get; }
         public string AvatarPicture { set; get; }
         public string PredicateName { set; get; }
@@ -32,6 +32,9 @@ namespace BotProject.Model.Models
         public string CardConditionPattern { set; get; }
         public bool IsConditionWithAreaButton { set; get; }
         public string CardConditionAreaButtonPattern { set; get; }
+
+        public bool IsConditionWithInputText { set; get; }
+        public string CardConditionWithInputTextPattern { set; get; }
 
         public bool IsHaveSetAttributeSystem { set; get; }
         public string AttributeName { set; get; }

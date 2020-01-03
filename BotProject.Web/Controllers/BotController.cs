@@ -20,6 +20,7 @@ namespace BotProject.Web.Controllers
     [OutputCacheAttribute(VaryByParam = "*", Duration = 0, NoStore = true)]
     public class BotController : BaseController
     {
+        private AccentService _accentService;
         private ICardService _cardService;
 		private IQnAService _qnaService;
         private ISettingService _settingService;
@@ -27,6 +28,7 @@ namespace BotProject.Web.Controllers
         private IModuleService _moduleService;
         private IModuleSearchEngineService _mdSearchEngineService;
         private IBotService _botService;
+        private BotServiceMedical _botServiceMed;
         public BotController(IErrorService errorService,
             ICardService cardService,
             IQnAService qnaService,
@@ -59,6 +61,12 @@ namespace BotProject.Web.Controllers
             {
                 return RedirectToAction("Index","Dashboard");
             }
+            if(botId == 3019)
+            {
+                _botServiceMed = BotServiceMedical.BotInstance;
+            }
+            _accentService = new AccentService();// AccentService.AccentInstance;
+
             var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
             var formQnAVm = Mapper.Map<FormQuestionAnswer, FormQuestionAnswerViewModel>(formQnA);
 
@@ -94,6 +102,7 @@ namespace BotProject.Web.Controllers
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             serializer.MaxJsonLength = Int32.MaxValue;
             formQnAVm.StrTempOtpCards = serializer.Serialize(strCards).TrimStart('"').TrimEnd('"');
+
 
             //ViewBag.Cards = jsonLstGroupCard;
             //ViewBag.Cards = strCards;

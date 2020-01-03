@@ -436,6 +436,32 @@ namespace BotProject.Web.API_Mobile
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
+                            if (!String.IsNullOrEmpty(text))
+                            {
+                                // custom api digipro check text is service tag 
+                                Regex rSvTagPattern = new Regex(@"^(?=.*[a-z])[a-zA-Z0-9]+$", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                                Match _mSvTagPattern = rSvTagPattern.Match(text);
+                                if (_mSvTagPattern.Success == false)
+                                {
+                                    string numberPattern = @"^\d+$";
+                                    bool isRofNumber = Regex.Match(text, numberPattern).Success;
+                                    //check is isRofNumber
+                                    if (isRofNumber == false)
+                                    {
+                                        zlUserDb.IsHavePredicate = false;
+                                        zlUserDb.PredicateName = "";
+                                        zlUserDb.PredicateValue = "";
+                                        zlUserDb.IsHaveCardCondition = false;
+                                        zlUserDb.CardConditionPattern = "";
+                                        _appZaloUser.Update(zlUserDb);
+                                        _appZaloUser.Save();
+                                      
+                                        return new HttpResponseMessage(HttpStatusCode.OK);
+                                    }
+
+                                }
+                            }
+
                             string predicateValue = zlUserDb.PredicateValue;
                             var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, predicateValue, "");
 

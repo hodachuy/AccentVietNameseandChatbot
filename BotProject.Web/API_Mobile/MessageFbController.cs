@@ -452,7 +452,30 @@ namespace BotProject.Web.API_Mobile
                                 _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
                             }
-
+                            if (!String.IsNullOrEmpty(text))
+                            {
+                                // custom api digipro check text is service tag 
+                                Regex rSvTagPattern = new Regex(@"^(?=.*[a-z])[a-zA-Z0-9]+$", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                                Match _mSvTagPattern = rSvTagPattern.Match(text);
+                                if (_mSvTagPattern.Success == false)
+                                {
+                                    string numberPattern = @"^\d+$";
+                                    bool isRofNumber = Regex.Match(text, numberPattern).Success;
+                                    //check is isRofNumber
+                                    if (isRofNumber == false)
+                                    {
+                                        fbUserDb.IsHavePredicate = false;
+                                        fbUserDb.PredicateName = "";
+                                        fbUserDb.PredicateValue = "";
+                                        fbUserDb.IsHaveCardCondition = false;
+                                        fbUserDb.CardConditionPattern = "";
+                                        _appFacebookUser.Update(fbUserDb);
+                                        _appFacebookUser.Save();
+                                    
+                                        return new HttpResponseMessage(HttpStatusCode.OK);
+                                    }
+                                }
+                            }
                             string predicateValue = fbUserDb.PredicateValue;
                             var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, predicateValue, "");
 

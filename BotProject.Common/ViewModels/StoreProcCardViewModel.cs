@@ -12,6 +12,7 @@ namespace BotProject.Common.ViewModels
         public string Name { set; get; }
         public bool IsHaveCondition { set; get; }
         public bool IsConditionWithAreaButton { set; get; }
+        public bool IsConditionWithInputText { set; get; }
         public string AttributeSystemName { set; get; }
         public string TemplateJsonFacebook { set; get; }
         public string TemplateJsonZalo { set; get; }

@@ -60,6 +60,5 @@ namespace Accent.ConsoleApplication
                 Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
             }
         }
-
     }
 }

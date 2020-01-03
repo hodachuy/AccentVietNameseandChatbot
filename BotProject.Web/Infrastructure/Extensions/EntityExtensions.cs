@@ -109,6 +109,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             card.IsHaveCondition = cardVm.IsHaveCondition;
             card.IsConditionWithAreaButton = cardVm.IsConditionWithAreaButton;
             card.CardStepID = cardVm.CardStepID;
+            card.IsConditionWithInputText = cardVm.IsConditionWithInputText;
         }
 
         public static void UpdateTemplateGenericGroup(this TemplateGenericGroup temGnrGroup, TemplateGenericGroupViewModel temGnrGroupVm)

@@ -73,6 +73,7 @@ namespace BotProject.Web.API
         private string pathSetting = PathServer.PathAIML + "config";
 
         private Dictionary<string, string> _dicNotMatch;
+        private Dictionary<string, string> _dicAttributeUser;
 
         private IApplicationFacebookUserService _appFacebookUser;
         private BotServiceDigipro _botService;
@@ -92,7 +93,6 @@ namespace BotProject.Web.API
         private IApplicationThirdPartyService _app3rd;
         //private Bot _bot;
         private User _user;
-
 
         public FacebookWebhookController(IErrorService errorService,
                               IBotService botDbService,
@@ -158,7 +158,7 @@ namespace BotProject.Web.API
             //LogError(body);
 
             var app3rd = _app3rd.GetByPageId(value.entry[0].id);
-            if(app3rd == null)
+            if (app3rd == null)
             {
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
@@ -225,7 +225,8 @@ namespace BotProject.Web.API
                 {
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 }
-                else if (item.message == null && item.postback != null)
+
+                if (item.message == null && item.postback != null)
                 {
                     await ExcuteMessage(item.postback.payload, item.sender.id, botId);
                     return new HttpResponseMessage(HttpStatusCode.OK);
@@ -370,7 +371,7 @@ namespace BotProject.Web.API
                         _appFacebookUser.Save();
                     }
                     await Schedule(sender, FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageProactive, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), pageToken, dTimeOut, text);
-                   // Schedule(sender, FacebookTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
+                    // Schedule(sender, FacebookTemplate.GetMessageTemplateText(_messageProactive, "{{senderId}}").ToString(), pageToken, dTimeOut);
                 }
                 if (fbUserDb == null)
                 {
@@ -422,7 +423,7 @@ namespace BotProject.Web.API
                                     return new HttpResponseMessage(HttpStatusCode.OK);
                                 }
                             }
-                        }                    
+                        }
                     }
 
                     // Điều kiện xử lý module
@@ -441,6 +442,31 @@ namespace BotProject.Web.API
                                 _appFacebookUser.Update(fbUserDb);
                                 _appFacebookUser.Save();
                                 return await ExcuteMessage(text, sender, botId);
+                            }
+
+                            if (!String.IsNullOrEmpty(text))
+                            {
+                                // custom api digipro check text is service tag 
+                                Regex rSvTagPattern = new Regex(@"^(?=.*[a-z])[a-zA-Z0-9]+$", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                                Match _mSvTagPattern = rSvTagPattern.Match(text);
+                                if (_mSvTagPattern.Success == false)
+                                {
+                                    string numberPattern = @"^\d+$";
+                                    bool isRofNumber = Regex.Match(text, numberPattern).Success;
+                                    //check is isRofNumber
+                                    if (isRofNumber == false)
+                                    {
+                                        fbUserDb.IsHavePredicate = false;
+                                        fbUserDb.PredicateName = "";
+                                        fbUserDb.PredicateValue = "";
+                                        fbUserDb.IsHaveCardCondition = false;
+                                        fbUserDb.CardConditionPattern = "";
+                                        _appFacebookUser.Update(fbUserDb);
+                                        _appFacebookUser.Save();
+
+                                        return new HttpResponseMessage(HttpStatusCode.OK);
+                                    }
+                                }
                             }
 
                             string predicateValue = fbUserDb.PredicateValue;
@@ -565,7 +591,7 @@ namespace BotProject.Web.API
                                 return await ExcuteMessage(text, sender, botId);
                             }
 
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName,fbUserDb.BranchOTP, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                             AddHistory(hisVm);
@@ -803,7 +829,7 @@ namespace BotProject.Web.API
                         if (text.Contains(CommonConstants.ModuleVoucher))
                         {
                             string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName,fbUserDb.BranchOTP, hisVm.Type);
+                            var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, fbUserDb.EngineerName, fbUserDb.BranchOTP, hisVm.Type);
 
                             fbUserDb.IsHavePredicate = true;
                             fbUserDb.PredicateName = "Voucher";
@@ -1406,9 +1432,9 @@ namespace BotProject.Web.API
 
                 //await scheduler.Shutdown();
             }
-            catch(SchedulerException se)
+            catch (SchedulerException se)
             {
-                
+
             }
         }
 

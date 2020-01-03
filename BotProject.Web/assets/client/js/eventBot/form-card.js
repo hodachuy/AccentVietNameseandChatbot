@@ -101,6 +101,7 @@ $(document).ready(function () {
         resetFormCard();
         initConditionCard();
         initConditionCardByAreaButton();
+        initConditionCardByInputText();
         //}
     })
 
@@ -144,6 +145,13 @@ $(document).ready(function () {
         html += '<span style="margin-left:30px;">Nội dung nhập vào kiểm tra theo lĩnh vực trên button</span>';
         $('#container-chk-condition-by-area-button').empty().append(html);
     }
+    function initConditionCardByInputText() {
+        var html = '';
+        html += '<input type="checkbox" id="chk-card-condition-by-input-text" value="false">';
+        html += '<span class="checkmark"></span>';
+        html += '<span style="margin-left:30px;">Yêu cầu nhập "Text" để đi luồng tiếp theo</span>';
+        $('#container-chk-condition-by-input-text').empty().append(html);
+    }
 
     $('body').on('click', '#chk-card-condition', function () {
         if ($(this).is(":checked")) {
@@ -154,6 +162,14 @@ $(document).ready(function () {
     })
 
     $('body').on('click', '#chk-card-condition-by-area-button', function () {
+        if ($(this).is(":checked")) {
+            $(this).val('true');
+        } else {
+            $(this).val('false');
+        }
+    })
+
+    $('body').on('click', '#chk-card-condition-by-input-text', function () {
         if ($(this).is(":checked")) {
             $(this).val('true');
         } else {
@@ -225,6 +241,19 @@ $(document).ready(function () {
             htmlCardConditionByAreaButton += '<span class="checkmark"></span>';
             htmlCardConditionByAreaButton += '<span style="margin-left:30px;">Nội dung nhập vào kiểm tra theo lĩnh vực trên button</span>';
             $('#container-chk-condition-by-area-button').empty().append(htmlCardConditionByAreaButton);
+        }
+
+        var htmlCardConditionByInputText = '';
+        if (data.IsConditionWithInputText) {
+            htmlCardConditionByInputText += '<input type="checkbox" id="chk-card-condition-by-input-text" value="true" checked>';
+            htmlCardConditionByInputText += '<span class="checkmark"></span>';
+            htmlCardConditionByInputText += '<span style="margin-left:30px;">Yêu cầu nhập "Text" để đi luồng tiếp theo</span>';
+            $('#container-chk-condition-by-input-text').empty().append(htmlCardConditionByInputText);
+        } else {
+            htmlCardConditionByInputText += '<input type="checkbox" id="chk-card-condition-by-input-text" value="false">';
+            htmlCardConditionByInputText += '<span class="checkmark"></span>';
+            htmlCardConditionByInputText += '<span style="margin-left:30px;">Yêu cầu nhập "Text" để đi luồng tiếp theo</span>';
+            $('#container-chk-condition-by-input-text').empty().append(htmlCardConditionByInputText);
         }
 
         if (data.AttributeSystemName != "") {       
@@ -2629,6 +2658,7 @@ $(document).ready(function () {
             'BotID': $('#botId').val(),
             'IsHaveCondition': $('#chk-card-condition').val(),
             'IsConditionWithAreaButton': $('#chk-card-condition-by-area-button').val(),
+            'IsConditionWithInputText': $('#chk-card-condition-by-input-text').val(),
             //'blockId'       : $('#blockId').val(),
             'Name': $('#card-name').val(),
             'Alias': common.getSeoTitle($('#card-name').val()),
