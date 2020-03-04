@@ -13,6 +13,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using System.Web.SessionState;
 
 namespace BotProject.Web
 {
@@ -27,6 +28,10 @@ namespace BotProject.Web
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             //Main();
+        }
+        protected void Application_PostAuthorizeRequest()
+        {
+            HttpContext.Current.SetSessionStateBehavior(SessionStateBehavior.Required);
         }
 
         //System.Timers.Timer webKeepAlive = new System.Timers.Timer();
@@ -71,7 +76,6 @@ namespace BotProject.Web
         //            });
 
         //        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls | SecurityProtocolType.Ssl3;
-
 
         //        String URL = "http://113.161.108.36:80/tiengviet/apiv1/PreHitAccentVN";
         //        WebRequest request = WebRequest.Create(URL);

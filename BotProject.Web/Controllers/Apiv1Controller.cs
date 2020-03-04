@@ -43,8 +43,8 @@ namespace BotProject.Web.Controllers
         private IModuleService _mdService;
         private IModuleKnowledegeService _mdKnowledgeService;
         private IMdSearchService _mdSearchService;
-		private IMdVoucherService _mdVoucherService;
-		private IErrorService _errorService;
+        private IMdVoucherService _mdVoucherService;
+        private IErrorService _errorService;
         private IAIMLFileService _aimlFileService;
         private IQnAService _qnaService;
         private ApiQnaNLRService _apiNLR;
@@ -53,6 +53,10 @@ namespace BotProject.Web.Controllers
         private ICardService _cardService;
         //private Bot _bot;
         private User _user;
+        private IAttributeSystemService _attributeService;
+
+        public bool isMdSearch = false;
+        public bool isHaveSymptomAndMsgNotMatch = false;
 
         public Apiv1Controller(IErrorService errorService,
                                 IBotService botDbService,
@@ -66,7 +70,8 @@ namespace BotProject.Web.Controllers
                                 IModuleSearchEngineService moduleSearchEngineService,
                                 IHistoryService historyService,
                                 ICardService cardService,
-								IMdVoucherService mdVoucherService)
+                                IMdVoucherService mdVoucherService,
+                                IAttributeSystemService attributeService)
         {
             _errorService = errorService;
             //_elastic = new ElasticSearch();
@@ -84,9 +89,10 @@ namespace BotProject.Web.Controllers
             _moduleSearchEngineService = moduleSearchEngineService;
             _historyService = historyService;
             _cardService = cardService;
-			_mdVoucherService = mdVoucherService;
+            _mdVoucherService = mdVoucherService;
+            _attributeService = attributeService;
 
-		}
+        }
 
         // GET: Apiv1
         public ActionResult Index()
@@ -102,7 +108,7 @@ namespace BotProject.Web.Controllers
             var settingDb = _settingService.GetSettingByBotID(botID);
             var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
             var systemConfig = _settingService.GetListSystemConfigByBotId(botID);
-            var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>,IEnumerable<SystemConfigViewModel>>(systemConfig);
+            var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfig);
             //string nameBotAIML = "User_" + token + "_BotID_" + botId;
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
@@ -116,12 +122,12 @@ namespace BotProject.Web.Controllers
             userBot.SystemConfigViewModel = systemConfigVm;
 
             // load file stopword default
-            string pathStopWord = System.IO.Path.Combine(PathServer.PathNLR, "StopWord.txt");
-            if (System.IO.File.Exists(pathStopWord))
-            {
-                string[] stopWordDefault = System.IO.File.ReadAllLines(pathStopWord);
-                userBot.StopWord += string.Join(",", stopWordDefault);
-            }
+            //string pathStopWord = System.IO.Path.Combine(PathServer.PathNLR, "StopWord.txt");
+            //if (System.IO.File.Exists(pathStopWord))
+            //{
+            //    string[] stopWordDefault = System.IO.File.ReadAllLines(pathStopWord);
+            //    userBot.StopWord += string.Join(",", stopWordDefault);
+            //}
 
             userBot.ID = Guid.NewGuid().ToString();
             userBot.BotID = botId;
@@ -136,11 +142,19 @@ namespace BotProject.Web.Controllers
             _user.Predicates.addSetting("age", "");
             _user.Predicates.addSetting("agecheck", "false");
 
-            _user.Predicates.addSetting("name","");
+            _user.Predicates.addSetting("name", "");
             _user.Predicates.addSetting("namecheck", "false");
 
             _user.Predicates.addSetting("cardConditionCheck", "false");
             _user.Predicates.addSetting("cardConditionPattern", "");
+
+            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+            _user.Predicates.addSetting("AttributeName", "");
+
+            _user.Predicates.addSetting("IsConditionWithInputText", "false");
+            _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
+
+            _user.Predicates.addSetting("isMdSearch", settingVm.IsMDSearch.ToString());
 
             // load tất cả module của bot và thêm key vao predicate
             var mdBotDb = _mdService.GetAllModuleByBotID(botID).Where(x => x.Name != "med_get_info_patient").ToList();
@@ -174,42 +188,29 @@ namespace BotProject.Web.Controllers
                     }
                 }
             }
-			_user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
-			_user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
+            _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
+            _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
 
-			//var lstMdSearchDb = _mdSearchService.GetByBotID(botID).ToList();
-   //         if (lstMdSearchDb.Count() != 0)
-   //         {
-   //             foreach (var item in lstMdSearchDb)
-   //             {                    
-   //                 if (!String.IsNullOrEmpty(item.Payload))
-   //                 {
-   //                     _user.Predicates.addSetting("api_search" + item.ID, "");//check bat mo truong hop nut' payload khi qua the moi
-   //                     _user.Predicates.addSetting("api_search_check_" + item.ID, "false");
-   //                 }
-   //             }
-   //         }
-			_user.Predicates.addSetting("isChkMdSearch", "false");
-			_user.Predicates.addSetting("ThreadMdSearchID", "");
-
-            //var lstMdVoucherDb = _mdVoucherService.GetByBotID(botID).ToList();
-            //if (lstMdVoucherDb.Count() != 0)
-            //{
-            //	foreach (var item in lstMdVoucherDb)
-            //	{
-            //		if (!String.IsNullOrEmpty(item.Payload))
-            //		{
-            //			_user.Predicates.addSetting("voucher" + item.ID, "");//check bat mo truong hop nut' payload khi qua the moi
-            //			_user.Predicates.addSetting("api_search_check_" + item.ID, "false");
-            //		}
-            //	}
-            //}
+            _user.Predicates.addSetting("isChkMdSearch", "false");
+            _user.Predicates.addSetting("ThreadMdSearchID", "");
 
             _user.Predicates.addSetting("isChkOTP", "false");
             _user.Predicates.addSetting("isChkMdVoucher", "false");
-			_user.Predicates.addSetting("ThreadMdVoucherID", "");
+            _user.Predicates.addSetting("ThreadMdVoucherID", "");
 
-			SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
+            // text
+            _user.Predicates.addSetting("content_message", "");
+
+            var lstAttribute = _attributeService.GetListAttributeSystemByBotId(botID).ToList();
+            if (lstAttribute.Count() != 0)
+            {
+                foreach (var attr in lstAttribute)
+                {
+                    _user.Predicates.addSetting(attr.Name, "");
+                }
+            }
+
+            SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
             settingDic.Count = _user.Predicates.Count;
             settingDic.orderedKeys = _user.Predicates.orderedKeys;
             settingDic.settingsHash = _user.Predicates.settingsHash;
@@ -217,19 +218,23 @@ namespace BotProject.Web.Controllers
             userBot.SettingDicstionary = settingDic;
             Session[CommonConstants.SessionUserBot] = userBot;
 
+            Session[CommonConstants.SessionResultBot] = null;
             return View(settingVm);
         }
 
-        public JsonResult chatbot(string text, string group, string token, string botId, bool isMdSearch)
+        public JsonResult chatbot(string text, string token, string botId, string titlePostback = "")
         {
             //string nameBotAIML = "User_" + token + "_BotID_" + botId;
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
 
             string txtOriginal = "";
+            List<SearchSymptomViewModel> _lstSymptomVm = new List<SearchSymptomViewModel>();
+            List<SearchNlpQnAViewModel> _lstQnAVm = new List<SearchNlpQnAViewModel>();
+            isHaveSymptomAndMsgNotMatch = false;
             int valBotID = Int32.Parse(botId);
             try
-            {               
+            {
                 if (!String.IsNullOrEmpty(text))
                 {
                     text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
@@ -242,8 +247,9 @@ namespace BotProject.Web.Controllers
                     {
                         message = new List<string>() { "Session Timeout" },
                         postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 //get new predicate from session user bot request
@@ -253,8 +259,9 @@ namespace BotProject.Web.Controllers
                 _user.Predicates.SettingNames = userBot.SettingDicstionary.SettingNames;
                 _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
                 _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
+                isMdSearch = bool.Parse(_user.Predicates.settingsHash["ISMDSEARCH"].ToLower());
 
-                // Lọc từ cấm
+
                 if (!String.IsNullOrEmpty(userBot.StopWord))
                 {
                     string[] arrStopWord = userBot.StopWord.Split(',');
@@ -267,6 +274,13 @@ namespace BotProject.Web.Controllers
                     }
                 }
 
+                //List<string> lstSymptomp = new List<string>();
+
+                if (text.Contains("postback") == false)
+                {
+                    _user.Predicates.addSetting("content_message", text);
+                }
+
                 HistoryViewModel hisVm = new HistoryViewModel();
                 hisVm.BotID = Int32.Parse(botId);
                 hisVm.CreatedDate = DateTime.Now;
@@ -275,13 +289,39 @@ namespace BotProject.Web.Controllers
 
                 if (bool.Parse(_user.Predicates.grabSetting("cardConditionCheck")))
                 {
-                    if(text.Contains("postback") == false)
+                    if (text.Contains("postback") == false)
                     {
                         string cardPayload = _user.Predicates.grabSetting("cardConditionPattern");
-                        return chatbot(cardPayload, group, token, botId, isMdSearch);
+                        List<string> lstConditionClick = new List<string>();
+                        string tplIsConditionClick = tempText("Anh/chị vui lòng chọn lại thông tin bên dưới");
+                        lstConditionClick.Add(tplIsConditionClick);
+                        Session[CommonConstants.SessionResultBot] = lstConditionClick;
+                        return chatbot(cardPayload, token, botId);
                     }
                 }
 
+                if (bool.Parse(_user.Predicates.grabSetting("IsHaveSetAttributeSystem")))
+                {
+                    if (text.Contains("postback") == false)
+                    {
+                        _user.Predicates.addSetting(_user.Predicates.grabSetting("AttributeName"), text);
+                    }
+                    else
+                    {
+                        // lấy ký tự postback
+                        _user.Predicates.addSetting(_user.Predicates.grabSetting("AttributeName"), titlePostback);
+                    }
+                }
+
+                if (bool.Parse(_user.Predicates.grabSetting("IsConditionWithInputText")))
+                {
+                    if (text.Contains("postback") == false)
+                    {
+                        _user.Predicates.addSetting("IsConditionWithInputText", "false");
+                        _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+                        return chatbot(_user.Predicates.grabSetting("CardConditionWithInputTextPattern"), token, botId);
+                    }
+                }
 
                 // Module lấy thông tin bệnh
                 #region Module lấy thông tin bệnh
@@ -299,7 +339,7 @@ namespace BotProject.Web.Controllers
                         //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
                         //AddHistory(hisVm);
 
-                        return chatbot(text, group, token, botId, isMdSearch);
+                        return chatbot(text, token, botId);
                     }
                     else
                     {
@@ -312,8 +352,9 @@ namespace BotProject.Web.Controllers
                         {
                             message = new List<string>() { handlePatient.Message },
                             postback = new List<string>() { null },
-                            messageai = "",
-                            isCheck = true
+                            messageLstSearchNLP = _lstQnAVm,
+                            messageLstSymptoms = _lstSymptomVm,
+                            isSearchNLP = isMdSearch
                         }, JsonRequestBehavior.AllowGet);
                     }
                 }
@@ -336,8 +377,9 @@ namespace BotProject.Web.Controllers
                     {
                         message = new List<string>() { handlePatient.Message },
                         postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 #endregion
@@ -350,7 +392,7 @@ namespace BotProject.Web.Controllers
                     {
                         _user.Predicates.addSetting("isChkMdSearch", "false");
                         _user.Predicates.addSetting("ThreadMdSearchID", "");
-                        return chatbot(text, group, token, botId, isMdSearch);
+                        return chatbot(text, token, botId);
                     }
                     string mdSearchId = _user.Predicates.grabSetting("ThreadMdSearchID");
                     var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
@@ -363,7 +405,8 @@ namespace BotProject.Web.Controllers
                     {
                         message = new List<string>() { handleMdSearch.Message },
                         postback = new List<string>() { handleMdSearch.Postback },
-                        messageai = handleMdSearch.ResultAPI,
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
                         isCheck = chkAPI
                     }, JsonRequestBehavior.AllowGet);
                 }
@@ -384,8 +427,9 @@ namespace BotProject.Web.Controllers
                     {
                         message = new List<string>() { handleMdSearch.Message },
                         postback = new List<string>() { handleMdSearch.Postback },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 #endregion
@@ -405,15 +449,16 @@ namespace BotProject.Web.Controllers
                         _user.Predicates.addSetting("phone", text);
                         if (!String.IsNullOrEmpty(handlePhone.Postback))
                         {
-                            return chatbot(handlePhone.Postback, group, token, botId, isMdSearch);
+                            return chatbot(handlePhone.Postback, token, botId);
                         }
                     }
                     return Json(new
                     {
                         message = new List<string>() { handlePhone.Message },
                         postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 if (text.Contains("postback_module_phone"))
@@ -433,16 +478,18 @@ namespace BotProject.Web.Controllers
                         {
                             message = new List<string>() { handlePhone.Message },
                             postback = new List<string>() { sbPostback.ToString() },
-                            messageai = "",
-                            isCheck = true
+                            messageLstSearchNLP = _lstQnAVm,
+                            messageLstSymptoms = _lstSymptomVm,
+                            isSearchNLP = isMdSearch
                         }, JsonRequestBehavior.AllowGet);
                     }
                     return Json(new
                     {
                         message = new List<string>() { handlePhone.Message },
                         postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 #endregion
@@ -461,15 +508,16 @@ namespace BotProject.Web.Controllers
                         _user.Predicates.addSetting("email", text);
                         if (!String.IsNullOrEmpty(handleEmail.Postback))
                         {
-                            return chatbot(handleEmail.Postback, group, token, botId, isMdSearch);
+                            return chatbot(handleEmail.Postback, token, botId);
                         }
                     }
                     return Json(new
                     {
                         message = new List<string>() { handleEmail.Message },
                         postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 if (text.Contains("postback_module_email"))
@@ -487,16 +535,18 @@ namespace BotProject.Web.Controllers
                         {
                             message = new List<string>() { handleEmail.Message },
                             postback = new List<string>() { sbPostback.ToString() },
-                            messageai = "",
-                            isCheck = true
+                            messageLstSearchNLP = _lstQnAVm,
+                            messageLstSymptoms = _lstSymptomVm,
+                            isSearchNLP = isMdSearch
                         }, JsonRequestBehavior.AllowGet);
                     }
                     return Json(new
                     {
                         message = new List<string>() { handleEmail.Message },
                         postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 #endregion
@@ -515,15 +565,16 @@ namespace BotProject.Web.Controllers
                         _user.Predicates.addSetting("age", text);
                         if (!String.IsNullOrEmpty(handleAge.Postback))
                         {
-                            return chatbot(handleAge.Postback, group, token, botId, isMdSearch);
+                            return chatbot(handleAge.Postback, token, botId);
                         }
                     }
                     return Json(new
                     {
                         message = new List<string>() { handleAge.Message },
                         postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 if (text.Contains("postback_module_age"))// nếu check đi từ đây trước
@@ -542,16 +593,17 @@ namespace BotProject.Web.Controllers
                         {
                             message = new List<string>() { handleAge.Message },
                             postback = new List<string>() { sbPostback.ToString() },
-                            messageai = "",
-                            isCheck = true
+                            messageLstSearchNLP = "",
+                            isSearchNLP = isMdSearch
                         }, JsonRequestBehavior.AllowGet);
                     }
                     return Json(new
                     {
                         message = new List<string>() { handleAge.Message },
                         postback = new List<string>() { null },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 #endregion
@@ -565,10 +617,10 @@ namespace BotProject.Web.Controllers
                     {
                         _user.Predicates.addSetting("isChkMdVoucher", "false");
                         _user.Predicates.addSetting("ThreadMdVoucherID", "");
-                        return chatbot(text, group, token, botId, isMdSearch);
+                        return chatbot(text, token, botId);
                     }
 
-                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId,"","","");
+                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, "", "", "");
 
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
                     AddHistory(hisVm);
@@ -595,15 +647,16 @@ namespace BotProject.Web.Controllers
                     {
                         message = new List<string>() { handleMdVoucher.Message },
                         postback = new List<string>() { handleMdVoucher.Postback },
-                        messageai = handleMdVoucher.ResultAPI,
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
 
                 if (text.Contains("postback_module_voucher"))
                 {
                     string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId,"","","");
+                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, "", "", "");
                     _user.Predicates.addSetting("ThreadMdVoucherID", mdVoucherId);
                     _user.Predicates.addSetting("isChkMdVoucher", "true");
 
@@ -616,8 +669,9 @@ namespace BotProject.Web.Controllers
 
                         message = new List<string>() { handleMdVoucher.Message },
                         postback = new List<string>() { handleMdVoucher.Postback },
-                        messageai = "",
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
                 #endregion
@@ -632,7 +686,7 @@ namespace BotProject.Web.Controllers
                         _user.Predicates.addSetting("isChkOTP", "false");
                         _user.Predicates.addSetting("isChkMdVoucher", "false");
                         _user.Predicates.addSetting("ThreadMdVoucherID", "");
-                        return chatbot(text, group, token, botId, isMdSearch);
+                        return chatbot(text, token, botId);
                     }
                     var handleOTP = _handleMdService.HandleIsCheckOTP(text, numberPhone, mdVoucherId);
                     if (handleOTP.Status)
@@ -645,36 +699,37 @@ namespace BotProject.Web.Controllers
                     {
                         message = new List<string>() { handleOTP.Message },
                         postback = new List<string>() { handleOTP.Postback },
-                        messageai = handleOTP.ResultAPI,
-                        isCheck = true
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
 
-				// Lấy target from knowledge base QnA trained mongodb
-				//if (text.Contains("postback") == false || text.Contains("module") == false)
-    //            {
-    //                string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
-    //                if (!String.IsNullOrEmpty(target))
-    //                {
-    //                    target = Regex.Replace(target, "\n", "").Replace("\"", "");
-    //                    QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-    //                    quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
-    //                    if(quesTarget != null)
-    //                    {
-    //                        text = quesTarget.ContentText;
-    //                    }
-    //                    hisVm.BotUnderStands = target;
-    //                }
-    //            }
+                // Lấy target from knowledge base QnA trained mongodb
+                //if (text.Contains("postback") == false || text.Contains("module") == false)
+                //{
+                //    string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
+                //    if (!String.IsNullOrEmpty(target))
+                //    {
+                //        target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                //        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                //        quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
+                //        if (quesTarget != null)
+                //        {
+                //            text = quesTarget.ContentText;
+                //        }
+                //        hisVm.BotUnderStands = target;
+                //    }
+                //}
 
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
-                bool isMatch = true;
 
                 if (result.Contains("NOT_MATCH"))
                 {
                     if (text.Contains("postback") == false || text.Contains("module") == false)
                     {
+                        // Lấy target from knowledge base QnA trained mongodb
                         string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
                         if (!String.IsNullOrEmpty(target))
                         {
@@ -693,14 +748,13 @@ namespace BotProject.Web.Controllers
                     }
                 }
 
-
                 // lưu lịch sử
                 if (text.Contains("postback_card"))
                 {
                     var cardDb = _cardService.GetSingleCondition(text);
                     if (cardDb != null)
                     {
-                        hisVm.UserSay = "["+ cardDb.Name+"]";
+                        hisVm.UserSay = "[" + cardDb.Name + "]";
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_001;
                         AddHistory(hisVm);
                     }
@@ -715,10 +769,10 @@ namespace BotProject.Web.Controllers
                 {
                     if (result.Contains("<module>") != true)// k phải button module trả về
                     {
-                        string txtModule = result.Replace("\r\n", "").Replace(".","").Trim();
+                        string txtModule = result.Replace("\r\n", "").Replace(".", "").Trim();
                         txtModule = Regex.Replace(txtModule, @"<(.|\n)*?>", "").Trim();
                         int idxModule = txtModule.IndexOf("postback_module");
-                        if(idxModule != -1)
+                        if (idxModule != -1)
                         {
                             string strPostback = txtModule.Substring(idxModule, txtModule.Length - idxModule);
                             var punctuation = strPostback.Where(Char.IsPunctuation).Distinct().ToArray();
@@ -727,18 +781,18 @@ namespace BotProject.Web.Controllers
 
                             if (words.ToList().Count == 1 && (txtModule.Length == contains.Length))
                             {
-                                return chatbot(contains, group, token, botId, isMdSearch);
+                                return chatbot(contains, token, botId);
                             }
 
                             List<string> msg = new List<string>();
                             msg.Add(aimlBotResult.OutputHtmlMessage[0].Replace(contains, ""));
                             if (contains == "postback_module_api_search")
                             {
-                                return chatbot(txtModule, group, token, botId, isMdSearch);
+                                return chatbot(txtModule, token, botId);
                             }
                             if (contains == "postback_module_med_get_info_patient")
                             {
-                                return chatbot(txtModule, group, token, botId, isMdSearch);
+                                return chatbot(txtModule, token, botId);
                             }
                             if (contains == "postback_module_age")
                             {
@@ -762,8 +816,9 @@ namespace BotProject.Web.Controllers
                             {
                                 message = msg,
                                 postback = aimlBotResult.OutputHtmlPostback,
-                                messageai = result,
-                                isCheck = isMatch
+                                messageLstSearchNLP = _lstQnAVm,
+                                messageLstSymptoms = _lstSymptomVm,
+                                isSearchNLP = isMdSearch
                             }, JsonRequestBehavior.AllowGet);
                         }
                         //return chatbot(txtModule, group, token, botId, isMdSearch);
@@ -772,16 +827,15 @@ namespace BotProject.Web.Controllers
                 // K tìm thấy trong Rule gọi tới module tri thức
                 if (result.Contains("NOT_MATCH"))
                 {
-                    isMatch = false;
                     if (isMdSearch)
                     {
-                        if(userBot.SystemConfigViewModel.Count() != 0)
+                        if (userBot.SystemConfigViewModel.Count() != 0)
                         {
                             string nameFuncAPI = "";
                             string valueBotId = "";
                             string number = "";
                             string field = "";
-                            foreach(var item in userBot.SystemConfigViewModel)
+                            foreach (var item in userBot.SystemConfigViewModel)
                             {
                                 if (item.Code == "UrlAPI")
                                     nameFuncAPI = item.ValueString;
@@ -795,43 +849,54 @@ namespace BotProject.Web.Controllers
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
                             AddHistory(hisVm);
                             result = GetRelatedQuestion(nameFuncAPI, text, field, number, valueBotId);
-
+                            if (!String.IsNullOrEmpty(result))
+                            {
+                                _lstQnAVm = new JavaScriptSerializer
+                                {
+                                    MaxJsonLength = Int32.MaxValue,
+                                    RecursionLimit = 100
+                                }.Deserialize<List<SearchNlpQnAViewModel>>(result);
+                            }
                         }
                         else
                         {
                             return Json(new
                             {
-                                message = new List<string>() { "Not found API" },
+                                message = new List<string>() { "Service API not found" },
                                 postback = new List<string>() { null },
-                                messageai = "",
-                                isCheck = true
+                                messageLstSearchNLP = _lstQnAVm,
+                                messageLstSymptoms = _lstSymptomVm,
+                                isSearchNLP = isMdSearch
                             }, JsonRequestBehavior.AllowGet);
                         }
 
-                        if (!String.IsNullOrEmpty(result))
-                        {
-                            var lstQnaAPI = new JavaScriptSerializer
-                            {
-                                MaxJsonLength = Int32.MaxValue,
-                                RecursionLimit = 100
-                            }
-                            .Deserialize<List<ObjQnaAPI>>(result);
-                        }
-                        else
+                        if (String.IsNullOrEmpty(result))
                         {
                             //result = NOT_MATCH[res.OutputSentences[0]];
-                            result = aimlBotResult.OutputSentences[0].ToString();
-
+                            //result = aimlBotResult.OutputSentences[0].ToString();
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
                             AddHistory(hisVm);
                         }
+
+                        if(botId == "3019")
+                        {
+                            string resultSymptomp = _apiNLR.GetListSymptoms(text, 1);
+                            if (!String.IsNullOrEmpty(resultSymptomp))
+                            {
+                                _lstSymptomVm = new JavaScriptSerializer
+                                {
+                                    MaxJsonLength = Int32.MaxValue,
+                                    RecursionLimit = 100
+                                }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                            }
+                        }                     
                     }
                 }
 
                 if (text.Contains("postback_card"))
                 {
                     var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
-                    if(cardDb != null)
+                    if (cardDb != null)
                     {
                         if (cardDb.IsHaveCondition)
                         {
@@ -843,6 +908,35 @@ namespace BotProject.Web.Controllers
                             _user.Predicates.addSetting("cardConditionCheck", "false");
                             _user.Predicates.addSetting("cardConditionPattern", "");
                         }
+                        if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
+                        {
+                            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
+                            _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
+                        }
+                        else
+                        {
+                            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+                            _user.Predicates.addSetting("AttributeName", "");
+                        }
+                        if (cardDb.CardStepID != null)
+                        {
+                            if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                            {
+                                _user.Predicates.addSetting("IsConditionWithInputText", "true");
+                                _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
+                            }
+                            else
+                            {
+                                _user.Predicates.addSetting("IsConditionWithInputText", "false");
+                                _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
+                            }
+                        }
+                        if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
+                        {
+                            Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
+
+                            return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
+                        }
                     }
                 }
                 // nếu nhập text trả lời ra postback
@@ -852,7 +946,7 @@ namespace BotProject.Web.Controllers
                 {
                     strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
                     var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
-                    if(cardDb != null)
+                    if (cardDb != null)
                     {
                         if (cardDb.IsHaveCondition)
                         {
@@ -864,6 +958,35 @@ namespace BotProject.Web.Controllers
                             _user.Predicates.addSetting("cardConditionCheck", "false");
                             _user.Predicates.addSetting("cardConditionPattern", "");
                         }
+                        if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
+                        {
+                            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
+                            _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
+                        }
+                        else
+                        {
+                            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+                            _user.Predicates.addSetting("AttributeName", "");
+                        }
+                        if (cardDb.CardStepID != null)
+                        {
+                            if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                            {
+                                _user.Predicates.addSetting("IsConditionWithInputText", "true");
+                                _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
+                            }
+                            else
+                            {
+                                _user.Predicates.addSetting("IsConditionWithInputText", "false");
+                                _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
+                            }
+                        }
+                        if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
+                        {
+                            Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
+
+                            return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
+                        }
                     }
                 }
 
@@ -873,8 +996,9 @@ namespace BotProject.Web.Controllers
                     if (result.Contains("postback"))
                     {
                         var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
-                        if(cardDb != null)
+                        if (cardDb != null)
                         {
+                            // Nếu có yêu cầu click thẻ để đi theo luồng
                             if (cardDb.IsHaveCondition)
                             {
                                 _user.Predicates.addSetting("cardConditionCheck", "true");
@@ -885,10 +1009,37 @@ namespace BotProject.Web.Controllers
                                 _user.Predicates.addSetting("cardConditionCheck", "false");
                                 _user.Predicates.addSetting("cardConditionPattern", "");
                             }
-
-                            return chatbot(result.Replace(".", String.Empty), group, token, botId, isMdSearch);
+                            if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
+                            {
+                                _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
+                                _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
+                            }
+                            else
+                            {
+                                _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+                                _user.Predicates.addSetting("AttributeName", "");
+                            }
+                            if (cardDb.CardStepID != null)
+                            {
+                                if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                                {
+                                    _user.Predicates.addSetting("IsConditionWithInputText", "true");
+                                    _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
+                                }
+                                else
+                                {
+                                    _user.Predicates.addSetting("IsConditionWithInputText", "false");
+                                    _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
+                                }
+                            }
+                            if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
+                            {
+                                // tạo biến session lưu aimlBotResult.OutputHtmlMessage của lần trước
+                                Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
+                                return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
+                            }
+                            return chatbot(result.Replace(".", String.Empty), token, botId);
                         }
-
                     }
                 }
                 //set new predicate to session user bot request
@@ -899,13 +1050,106 @@ namespace BotProject.Web.Controllers
                 settingDic.SettingNames = aimlBotResult.user.Predicates.SettingNames;
                 userBot.SettingDicstionary = settingDic;
                 Session[CommonConstants.SessionUserBot] = userBot;
-             
+                //var lstMsg = aimlBotResult.OutputHtmlMessage;
+                List<string> lstOutputMsg = new List<string>();
+                List<string> lstMsg = new List<string>();
+                lstMsg = aimlBotResult.OutputHtmlMessage;
+
+                if(lstMsg.Count() == 1 && _lstSymptomVm.Count() != 0)
+                {
+                    foreach(var item in lstMsg)
+                    {
+                        if (item.Contains("NOT_MATCH"))
+                        {
+                            lstMsg = new List<string>();
+                            isHaveSymptomAndMsgNotMatch = true;
+                        }
+                    }
+                }
+
+                if(lstMsg.Count() == 1)
+                {
+                    foreach (var item in lstMsg)
+                    {
+                        if (item.Contains("NOT_MATCH"))
+                        {
+                            lstMsg = new List<string>();
+                            lstMsg.Add(aimlBotResult.RawOutput.ToString().Replace(".", String.Empty));
+                        }
+                    }
+                }
+
+                if(Session[CommonConstants.SessionResultBot] != null)
+                {
+                    var lstAimlResult = (List<string>)Session[CommonConstants.SessionResultBot];
+                    if(lstAimlResult != null && lstAimlResult.Count() != 0)
+                    {
+                        foreach (string item in lstAimlResult)
+                        {
+                            string msg = item;
+                            if (item.Contains("{{"))
+                            {
+                                foreach (var i in settingDic.settingsHash)
+                                {
+                                    string value = String.IsNullOrEmpty(i.Value) == true ? "N/A" : i.Value;
+                                    string key = i.Key.ToLower();
+                                    if(key == "sender_name")
+                                    {
+                                        value = "bạn";
+                                    }
+                                    msg = Regex.Replace(msg, "{{" + key + "}}", value);
+                                }
+                            }
+                            lstOutputMsg.Add(msg);
+                        }
+                    }
+                }
+                if (lstMsg.Count() != 0)
+                {
+                    foreach (string item in lstMsg)
+                    {
+                        string msg = item;
+                        if (item.Contains("{{"))
+                        {
+                            foreach (var i in settingDic.settingsHash)
+                            {
+                                string value = String.IsNullOrEmpty(i.Value) == true ? "N/A" : i.Value;
+                                string key = i.Key.ToLower();
+                                if (key == "sender_name")
+                                {
+                                    value = "bạn";
+                                }
+                                msg = Regex.Replace(msg, "{{" + key + "}}", value);
+                            }
+                        }
+                        lstOutputMsg.Add(msg);
+                        if(botId == "3019")
+                        {
+                            if (item.Contains("Nguyên nhân") || item.Contains("bác sĩ") || item.Contains("Bác sĩ"))
+                            {
+                                // Hiển thị thêm thông tin về triệu chứng đó
+                                string resultSymptomp = _apiNLR.GetListSymptoms(_user.Predicates.grabSetting("content_message"), 1);
+                                if (!String.IsNullOrEmpty(resultSymptomp))
+                                {
+                                    _lstSymptomVm = new JavaScriptSerializer
+                                    {
+                                        MaxJsonLength = Int32.MaxValue,
+                                        RecursionLimit = 100
+                                    }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                                }
+                            }
+                        }
+                    }
+                }
+                Session[CommonConstants.SessionResultBot] = null;
                 return Json(new
                 {
-                    message = aimlBotResult.OutputHtmlMessage,
+                    message = lstOutputMsg,
                     postback = aimlBotResult.OutputHtmlPostback,
-                    messageai = result,
-                    isCheck = isMatch
+                    messageLstSearchNLP = _lstQnAVm,
+                    messageLstSymptoms = _lstSymptomVm,
+                    isSearchNLP = isMdSearch,
+                    isHaveSymptomsAndNotMatch = isHaveSymptomAndMsgNotMatch
                 }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -915,8 +1159,10 @@ namespace BotProject.Web.Controllers
                 {
                     message = new List<string>() { "Error" },
                     postback = new List<string>() { null },
-                    messageai = "",
-                    isCheck = true
+                    messageLstSearchNLP = new List<string>() {},
+                    messageLstSymptoms = new List<string>() {},
+                    isSearchNLP = isMdSearch,
+                    isHaveSymptomsAndNotMatch = isHaveSymptomAndMsgNotMatch
                 }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -940,11 +1186,31 @@ namespace BotProject.Web.Controllers
             sbPostback.AppendLine("                                                                        </div>");
             return sbPostback.ToString();
         }
-        
-        public List<ObjQnaAPI> GetListQnaByCategory(string category)
+        private static string tempText(string text)
         {
-            List<ObjQnaAPI> lstQnA = new List<ObjQnaAPI>();
-            return lstQnA;
+            text = Regex.Replace(text, "  ", "<br/>");
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<div class=\"_4xkn clearfix\">");
+            sb.AppendLine("     <div class=\"profilePictureColumn\" style=\"bottom: 0px;\">");
+            sb.AppendLine("         <div class=\"_4cqr\">");
+            sb.AppendLine("             <img class=\"profilePicture img\" src=\"{{image_logo}}\" alt=\"\">");
+            sb.AppendLine("             <div class=\"clearfix\"></div>");
+            sb.AppendLine("         </div>");
+            sb.AppendLine("     </div>");
+            sb.AppendLine("     <div class=\"messages\">");
+            sb.AppendLine("         <div class=\"_21c3\">");
+            sb.AppendLine("             <div class=\"clearfix _2a0-\">");
+
+            sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); font-family: Segoe UI Light\">");
+            sb.AppendLine("     <span>");
+            sb.AppendLine("         <span>" + text + "</span>");
+            sb.AppendLine("     </span>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("</div>");
+            return sb.ToString();
         }
 
         #endregion
@@ -1160,7 +1426,7 @@ namespace BotProject.Web.Controllers
                         mdQnA.QuesID = i;
                         mdQnA.QuesContent = item[0] == null ? "" : item[0].ToString();
                         mdQnA.AnsContent = item[1] == null ? "" : item[1].ToString();
-                        mdQnA.AreaName = item[2] == null ? "0" :  item[2].ToString();
+                        mdQnA.AreaName = item[2] == null ? "0" : item[2].ToString();
                         if (String.IsNullOrEmpty(mdQnA.AreaName))
                         {
                             mdQnA.AreaName = "0";
@@ -1183,7 +1449,7 @@ namespace BotProject.Web.Controllers
                         }
                         if (flag)
                         {
-                            return Json(new { status = false ,msg = "File Excel có lỗi ở dòng thứ " + (i + 1) + ":<br/>" + mess });
+                            return Json(new { status = false, msg = "File Excel có lỗi ở dòng thứ " + (i + 1) + ":<br/>" + mess });
                         }
 
                         //quesList.Add(mdQnA);
@@ -1215,16 +1481,16 @@ namespace BotProject.Web.Controllers
                         //CreateQuesForImport("", ques.AreaTitle, ques.ContentsText, ques.AnsContents, null, null, null, null
                         //, null, null, null);
                     }
-                    return Json(new {status = true });
+                    return Json(new { status = true });
                 }
                 else
                 {
-                    return Json(new { status = false , msg = "File không có dữ liệu" });
+                    return Json(new { status = false, msg = "File không có dữ liệu" });
                 }
             }
             catch (Exception ex)
             {
-                return Json(new { status = false, msg = "Lỗi: " + ex.Message.ToString()});
+                return Json(new { status = false, msg = "Lỗi: " + ex.Message.ToString() });
             }
         }
         #endregion
@@ -1243,7 +1509,7 @@ namespace BotProject.Web.Controllers
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 client.DefaultRequestHeaders.Add("x-api-key", KeyAPI);
                 HttpResponseMessage response = new HttpResponseMessage();
-                string json = JsonConvert.SerializeObject(T);            
+                string json = JsonConvert.SerializeObject(T);
                 StringContent httpContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
                 try
                 {
@@ -1269,12 +1535,13 @@ namespace BotProject.Web.Controllers
             }
             return result;
         }
-        public string GetRelatedQuestion(string nameFuncAPI,string question, string field,string number, string botId)
+        public string GetRelatedQuestion(string nameFuncAPI, string question, string field, string number, string botId)
         {
             if (String.IsNullOrEmpty(nameFuncAPI))
             {
                 nameFuncAPI = apiRelateQA;
-            }else
+            }
+            else
             {
                 nameFuncAPI = nameFuncAPI.Replace("http://172.16.7.71:80", "").Trim();
             }

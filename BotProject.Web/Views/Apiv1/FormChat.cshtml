@@ -1,6 +1,7 @@
 ﻿@model BotProject.Web.Models.BotSettingViewModel
 @{
     Layout = null;
+    string linkCssCustom = Model.PathCssCustom;
 }
 
 <!DOCTYPE html>
@@ -30,12 +31,9 @@
     <link href="~/assets/client/css/lvbot-chat-dialog/c16_NBmlZsJMwcg.css" rel="stylesheet" />
     <link href="~/assets/client/css/lvbot-chat-dialog/c17_Y8U2p4FZgyH.css" rel="stylesheet" />
     <link href="~/assets/client/css/lvbot-chat-dialog/c18_Iq_mLA6uRtL.css" rel="stylesheet" />
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">  
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    @*<script src="~/Scripts/jquery-2.1.4.min.js"></script>*@
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="~/assets/client/vendor/bootstrap-4.3.1/bootstrap.min.js"></script>
     <script>
         var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
     </script>
@@ -47,6 +45,7 @@
             font-family:'Segoe UI';
         }
     </style>
+    <!--css custom-->
 </head>
 <body dir="ltr" class="plugin chrome webkit win x1 Locale_vi_VN">
     <input type="hidden" id="botColor" value="@Model.Color"/>
@@ -119,7 +118,7 @@
                                     <div class="_424s">
                                         <div class="_4fsi" style="display:none;">
                                             <div class="_2jjx">
-                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color:@Model.Color"><input type="checkbox" id="chk-stt-accent" checked /> Hổ trợ hiểu không dấu Tiếng Việt</div>
+                                                <div class="_4bqf _4fsj" tabindex="0" role="button" style="color:@Model.Color"><input type="checkbox" id="chk-stt-accent" checked /> Hỗ trợ hiểu không dấu Tiếng Việt</div>
                                             </div>
                                             <div class="_2jjx">
                                                 <div class="_4bqf _4fsj" tabindex="0" role="button" style="color: @Model.Color"><input type="checkbox" id="chk-stt-popup" /> Hiển thị xem chi tiết cùng trang</div>
@@ -673,5 +672,17 @@
         </div>
     </div>
     <script src="~/assets/client/js/eventBot/chat-dialog.js"></script>
+    <script>
+        var linkCssCustom = '@linkCssCustom';
+        if (linkCssCustom != '') {
+            //var decryptedUrl = CryptoJS.AES.decrypt(encryptUrl, "Secret Passphrase").toString(CryptoJS.enc.Utf8);
+            var headID = document.getElementsByTagName('head')[0];
+            var link = document.createElement('link');
+            link.type = 'text/css';
+            link.rel = 'stylesheet';
+            headID.appendChild(link);
+            link.href = linkCssCustom;
+        }
+    </script>
 </body>
 </html>

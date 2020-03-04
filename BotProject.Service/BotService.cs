@@ -1,4 +1,5 @@
-﻿using BotProject.Data.Infrastructure;
+﻿using BotProject.Common.ViewModels;
+using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
 using BotProject.Model.Models;
 using System;
@@ -13,6 +14,7 @@ namespace BotProject.Service
     {
         Bot Create(ref Bot bot);
         IEnumerable<Bot> GetListBotByUserID(string userId);
+        IEnumerable<StoreProcBotViewModel> GetListBotDashboard(string userId);
         Bot GetByID(int botId);
         void Update(Bot bot);
         void Save();
@@ -58,6 +60,11 @@ namespace BotProject.Service
         public void Update(Bot bot)
         {
             _botRepository.Update(bot);
+        }
+
+        public IEnumerable<StoreProcBotViewModel> GetListBotDashboard(string userId)
+        {
+            return _botRepository.GetListBotDashboard(userId);
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using Accent.KShortestPaths.Controller;
 using System;
 using static System.Net.Mime.MediaTypeNames;
+using System.Threading;
 
 namespace Accent.Utils
 {
@@ -60,11 +61,37 @@ namespace Accent.Utils
         /// </summary>
         /// <param name="path1Gram"></param>
         /// <param name="path2Gram"></param>
-        public void InitNgram(string path1Gram, string path2Gram, string path1Statistic = "")
+        //public void InitNgram(string path1Gram, string path2Gram, string path1Statistic = "")
+        //{
+        //    Console.WriteLine("Loading NGrams...");
+        //    loadNGram(path1Gram, path2Gram, path1Statistic);
+        //    Console.WriteLine("Done!");
+        //}
+
+        public void InitNgram2(string path1Gram)
         {
             Console.WriteLine("Loading NGrams...");
-            loadNGram(path1Gram, path2Gram, path1Statistic);
+            Console.WriteLine(DateTime.Now);
+            _1Statistic = getNgrams(path1Gram, true);
+            //string filePath = @"D:\ngram2.bin";
+            //WriteFileBianry(_1Statistic, filePath);
+            Console.WriteLine(DateTime.Now);
             Console.WriteLine("Done!");
+        }
+        static void WriteFileBianry(Dictionary<string, int> dictionary, string file)
+        {
+            using (FileStream fs = File.OpenWrite(file))
+            using (BinaryWriter writer = new BinaryWriter(fs))
+            {
+                // Put count.
+                writer.Write(dictionary.Count);
+                // Write pairs.
+                foreach (var pair in dictionary)
+                {
+                    writer.Write(pair.Key);
+                    writer.Write(pair.Value);
+                }
+            }
         }
 
         private int maxWordLength = 8;
@@ -185,32 +212,51 @@ namespace Accent.Utils
                 //    ngrams.Add(ngramWord, ngramCount);
                 //}
 
-
-                //doc file
                 using (FileStream fs = new FileStream(fileIn, FileMode.Open, FileAccess.Read))
                 {
-                    using (StreamReader sr = new StreamReader(fs))
+                    // đọc từ file txt
+
+                    //using (StreamReader sr = new StreamReader(fs))
+                    //{
+                    //    while (!sr.EndOfStream)
+                    //    {
+                    //        string line = "";
+                    //        line = sr.ReadLine();
+
+                    //        int indexSpace = line.LastIndexOf(' ');
+                    //        int indexTab = line.LastIndexOf('\t');
+
+                    //        if (indexTab < indexSpace)
+                    //        {
+                    //            indexTab = indexSpace;
+                    //        }
+                    //        string ngramWord = line.Substring(0, indexTab);
+                    //        int ngramCount = int.Parse(line.Substring(indexTab + 1));
+                    //        ngrams.Add(ngramWord, ngramCount);
+                    //    }
+                    //}
+
+
+                    // doc từ file binary nhanh hơn 2s
+                    using (BinaryReader reader = new BinaryReader(fs))
                     {
-                        while (!sr.EndOfStream)
+                        //int count = reader.ReadInt32();
+                        //Parallel.For(0, count, x =>
+                        //{
+                        //    ngrams.Add(reader.ReadString(), reader.ReadInt32());
+                        //    Thread.Sleep(10);
+                        //});
+                        //Get count.
+
+                        int count = reader.ReadInt32();
+                        // Read in all pairs.
+                        for (int i = 0; i < count; i++)
                         {
-                            string line = "";
-                            line = sr.ReadLine();
-
-                            int indexSpace = line.LastIndexOf(' ');
-                            int indexTab = line.LastIndexOf('\t');
-
-                            if (indexTab < indexSpace)
-                            {
-                                indexTab = indexSpace;
-                            }
-                            string ngramWord = line.Substring(0, indexTab);
-                            int ngramCount = int.Parse(line.Substring(indexTab + 1));                            
-                            ngrams.Add(ngramWord, ngramCount);
+                            ngrams.Add(reader.ReadString(), reader.ReadInt32());
+                            //result[key] = value;
                         }
                     }
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -298,11 +344,14 @@ namespace Accent.Utils
         public virtual void loadNGram(string _1GramFile, string _2Gram2File, string _path1Statistic)
         {
             accents = getAccentInfo();
-            _1Statistic = getNgrams(_path1Statistic, true);
-           // _1Gram = getNgrams(_1GramFile, true);
-            Initialize2Grams(_2Gram2File);
-            Initialize1Grams(_1GramFile);
+            //_1Statistic = getNgrams(_path1Statistic, true);
+            // _1Gram = getNgrams(_1GramFile, true);
+            //Initialize1Grams(_1GramFile);
+            //Initialize2Grams(_2Gram2File);
+
             //_2Grams = getNgrams(_2Gram2File, false);
+
+            Singleton form = Singleton.SingleInstance;
 
         }
 
@@ -767,6 +816,32 @@ namespace Accent.Utils
         }
 
 
+        public sealed class Singleton
+        {
+            private static readonly Lazy<Singleton> singleInstance = new Lazy<Singleton>(() => new Singleton()); //private static Singleton singleInstance = null;  
+            private Singleton()
+            {
+                // ổ C từ server dgipro
+                string _1GramFile = @"D:\HDHUY_V.1\BotProject\BotProject.Web\File\Datasets_Training_Accent\news1gram";//@"C:\Hosting\Chatbot\File\Datasets_Training_Accent\news1gram"; 
+                string _2GramFile = @"D:\HDHUY_V.1\BotProject\BotProject.Web\File\Datasets_Training_Accent\news2grams";//@"C:\Hosting\Chatbot\File\Datasets_Training_Accent\news2grams"; 
+                string _1StatisticFile = @"D:\HDHUY_V.1\BotProject\BotProject.Web\File\Datasets_Training_Accent\_1Statistic";//@"C:\Hosting\Chatbot\File\Datasets_Training_Accent\_1Statistic";//
 
+                _1Statistic = getNgrams(_1StatisticFile, true);
+                _1Gram = getNgrams(_1GramFile, true);
+                _2Grams = getNgrams(_2GramFile, false);
+            }
+            public static Singleton SingleInstance
+            {
+                get
+                {
+                    return singleInstance.Value;
+                }
+            }
+            //public class DerivedClass : Singleton
+            //{
+            //}
+        }
     }
+
+
 }

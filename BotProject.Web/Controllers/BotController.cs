@@ -65,7 +65,7 @@ namespace BotProject.Web.Controllers
             {
                 _botServiceMed = BotServiceMedical.BotInstance;
             }
-            _accentService = new AccentService();// AccentService.AccentInstance;
+            //_accentService = new AccentService();// AccentService.AccentInstance;
 
             var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
             var formQnAVm = Mapper.Map<FormQuestionAnswer, FormQuestionAnswerViewModel>(formQnA);
@@ -192,6 +192,14 @@ namespace BotProject.Web.Controllers
             ViewBag.BotID = botId;
             return View();
         }
+
+        public ActionResult BotMedicalSymptoms(int botId, string botName)
+        {
+            ViewBag.BotName = botName;
+            ViewBag.BotID = botId;
+            return View();
+        }
+
 
         [ValidateInput(false)]
         public JsonResult ExcelVoucherView(UserTelephoneExport[] Data)

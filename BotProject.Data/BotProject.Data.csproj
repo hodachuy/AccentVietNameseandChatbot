@@ -562,18 +562,48 @@
     <Compile Include="Migrations\201912300230420_UpdateAge123.Designer.cs">
       <DependentUpon>201912300230420_UpdateAge123.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202001130411541_AddMedicalSymptoms.cs" />
+    <Compile Include="Migrations\202001130411541_AddMedicalSymptoms.Designer.cs">
+      <DependentUpon>202001130411541_AddMedicalSymptoms.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001130443011_UpdateMedical.cs" />
+    <Compile Include="Migrations\202001130443011_UpdateMedical.Designer.cs">
+      <DependentUpon>202001130443011_UpdateMedical.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202001150757586_UpdateSetting1.cs" />
+    <Compile Include="Migrations\202001150757586_UpdateSetting1.Designer.cs">
+      <DependentUpon>202001150757586_UpdateSetting1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002100826183_ApplicationPlatformUser.cs" />
+    <Compile Include="Migrations\202002100826183_ApplicationPlatformUser.Designer.cs">
+      <DependentUpon>202002100826183_ApplicationPlatformUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002100909540_AttributePlatformUsers.cs" />
+    <Compile Include="Migrations\202002100909540_AttributePlatformUsers.Designer.cs">
+      <DependentUpon>202002100909540_AttributePlatformUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002140903056_UpdateMedicalSymptoms.cs" />
+    <Compile Include="Migrations\202002140903056_UpdateMedicalSymptoms.Designer.cs">
+      <DependentUpon>202002140903056_UpdateMedicalSymptoms.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202002170213494_UpdateMedSymptoms.cs" />
+    <Compile Include="Migrations\202002170213494_UpdateMedSymptoms.Designer.cs">
+      <DependentUpon>202002170213494_UpdateMedSymptoms.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
     <Compile Include="Repositories\AnswerRepository.cs" />
     <Compile Include="Repositories\ApplicationFacebookUserRepository.cs" />
     <Compile Include="Repositories\ApplicationGroupRepository.cs" />
+    <Compile Include="Repositories\ApplicationPlatformUserRepository.cs" />
     <Compile Include="Repositories\ApplicationRoleGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationRoleRepository.cs" />
     <Compile Include="Repositories\ApplicationThirdPartyRepository.cs" />
     <Compile Include="Repositories\ApplicationUserGroupRepository.cs" />
     <Compile Include="Repositories\ApplicationZaloUserRepository.cs" />
     <Compile Include="Repositories\AttributeFacebookUserRepository.cs" />
+    <Compile Include="Repositories\AttributePlatformUserRepository.cs" />
     <Compile Include="Repositories\AttributeSystemRepository.cs" />
     <Compile Include="Repositories\AttributeZaloUserRepository.cs" />
     <Compile Include="Repositories\ButtonModuleRepository.cs" />
@@ -598,6 +628,7 @@
     <Compile Include="Repositories\MdSearchCategoryRepository.cs" />
     <Compile Include="Repositories\MdSearchRepository.cs" />
     <Compile Include="Repositories\MdVoucherRepository.cs" />
+    <Compile Include="Repositories\MedicalSymptomRepository.cs" />
     <Compile Include="Repositories\ModuleCategoryRepository.cs" />
     <Compile Include="Repositories\MdQuestionRepository.cs" />
     <Compile Include="Repositories\ModuleFollowCardRepository.cs" />
@@ -990,6 +1021,27 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201912300230420_UpdateAge123.resx">
       <DependentUpon>201912300230420_UpdateAge123.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001130411541_AddMedicalSymptoms.resx">
+      <DependentUpon>202001130411541_AddMedicalSymptoms.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001130443011_UpdateMedical.resx">
+      <DependentUpon>202001130443011_UpdateMedical.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202001150757586_UpdateSetting1.resx">
+      <DependentUpon>202001150757586_UpdateSetting1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002100826183_ApplicationPlatformUser.resx">
+      <DependentUpon>202002100826183_ApplicationPlatformUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002100909540_AttributePlatformUsers.resx">
+      <DependentUpon>202002100909540_AttributePlatformUsers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002140903056_UpdateMedicalSymptoms.resx">
+      <DependentUpon>202002140903056_UpdateMedicalSymptoms.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202002170213494_UpdateMedSymptoms.resx">
+      <DependentUpon>202002170213494_UpdateMedSymptoms.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

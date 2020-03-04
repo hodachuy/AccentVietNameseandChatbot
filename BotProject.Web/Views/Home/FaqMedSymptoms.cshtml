@@ -1,0 +1,26 @@
+﻿@model BotProject.Web.Models.MedicalSymptomViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Symptoms</title>
+    <link href="~/assets/client/vendor/boostrap-v3/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/assets/client/vendor/boostrap-v3/bootstrap.min.js"></script>
+    <link href="~/assets/client/css/faq/style.css" rel="stylesheet" />
+    <link href="~/assets/client/css/faq/faq-reponsive.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container">
+        <h1>FAQs</h1>
+        <div class="row">
+            <article class="question question-type-normal question_author_yes sticky post-2110 type-question status-publish hentry question-category-analytics question_tags-analytics question_tags-programs" id="post-2110" itemscope="" itemtype="https://schema.org/Question">
+                @Html.Raw(!String.IsNullOrEmpty(Model.ContentHTML) == true ? Model.ContentHTML : "")              
+            </article>
+        </div>
+    </div>
+</body>
+</html>

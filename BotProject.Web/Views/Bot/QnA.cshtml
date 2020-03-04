@@ -94,6 +94,21 @@
     .breadcrumb {
         padding: .75rem 1rem;
     }
+    .pull-right {
+    float: right !important;
+}
+    #paging .panel-flat{
+  overflow: hidden;
+}
+#paging .panel-flat .pagination{
+  display: block;
+}
+#paging{
+  margin-bottom: 20px;
+}
+	.inner{
+		width:450px !important;
+	}
 </style>
 <input type="hidden" id="botId" value="@Model.BotID" />
 <input type="hidden" id="formQnaID" value="@Model.ID" />
@@ -177,7 +192,7 @@
                 <li class="breadcrumb-item active">@Model.Name</li>
             </ol>
             <div class="toolbar ml-auto p-r-10 p-t-10">
-                <a href="#" class="btn btn-success btn-sm saveKeyword"><i class="fas fa-sync-alt"></i> Lưu và huấn luyện</a>
+                <a href="#" class="btn btn-success btn-sm saveKeyword"><i class="fas fa-sync-alt"></i> Huấn luyện dữ liệu</a>
                 @*<a href="#" class="btn btn-primary btn-sm"><i class="fas fa-upload"></i> Publish</a>*@
             </div>
         </div>
@@ -225,28 +240,11 @@
 </div>
 
 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="pageLearning">
-    <div id="paging">
-        @*<div class="panel-flat"><div class="pull-right"><select class="form-control limitPage"><option value="5" selected="">5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option></select></div></div>*@
-    </div>
-    @*<nav class="pagination pagination_type1">
-            <ol class="pagination__list" id="pagination-list"></ol>
-            <div class="pagination__list m-l-20">
-                <select id="results-pp">
-                    <option value="5">5</option>
-                    <option value="10" selected>10</option>
-                    <option value="20">20</option>
-                    <option value="100">100</option>
-                    <option value="All">Tất cả</option>
-                </select>
-                <span class="m-l-10">Số lượng hiển thị</span>
-            </div>
-            <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
-        </nav>*@
-
     <div class="card form-qna" id="form-qna">
         <div class="wrap-content" data-countpanel="1">
             <div class="panel panel-flat" indexpanel="1" data-quesgroup-id="">
                 <div class="panel-body">
+                    <i class="fa fa-save icon-bin saveRowQnA"></i>
                     <i class="fa fa-plus icon-bin addCtShowNextRow"></i>
                     <i class="fa fa-trash icon-bin rmCt"></i>
                     <div class="wrMove">
@@ -303,6 +301,24 @@
             </div>
         </div>
     </div>
+    <div class="clearfix"></div>
+    <div id="paging1">
+
+    </div>
+    <nav class="pagination pagination_type1" id="pagination_type" style="display:none">
+        <ol class="pagination__list" id="pagination-list"></ol>
+        <div class="pagination__list m-l-20">
+            <select id="results-pp">
+                <option value="5" selected>5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="100">100</option>
+                <option value="2000000">Tất cả</option>
+            </select>
+            <span class="m-l-10">Số lượng hiển thị</span>
+        </div>
+        <span id="pagination-text-number-show" style="margin:10px 10px 0 auto"></span>
+    </nav>
 </div>
 
 @section dialogBotJS{
@@ -336,7 +352,7 @@
 
 
 @section footerJS{
-    <script>
+    <script>       
         //var lstCard = @Html.Raw(strCards);
         //console.log(lstCard)
         function card() {

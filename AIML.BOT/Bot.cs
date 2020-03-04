@@ -1043,8 +1043,14 @@ namespace AIMLbot
                         {
 							if(childNode.InnerText != ".")
 							{
-								//html = childNode.InnerText;
-								sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); font-family: Segoe UI Light;\">");
+                                childNode.InnerText = Regex.Replace(childNode.InnerText, @"\r\n", "<br/>");
+                                string strTextWithTagBr = childNode.InnerText.Substring(0,5);
+                                if(strTextWithTagBr == "<br/>")
+                                {
+                                    childNode.InnerText = childNode.InnerText.Remove(0, 5);
+                                }
+                                //html = childNode.InnerText;
+                                sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240); font-family: Segoe UI Light;\">");
 								sb.AppendLine("     <span>");
 								sb.AppendLine("         <span>" + childNode.InnerText + "</span>");
 								sb.AppendLine("     </span>");
@@ -1072,6 +1078,11 @@ namespace AIMLbot
                                     lstCarousel.Add(tagHtml.Body);
                                     break;
                                 case "br":
+                                    break;
+                                case "image":
+                                    sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240);font-family: Segoe UI Light; width:100%\">");
+                                    sb.AppendLine(tagHtml.Body);
+                                    sb.AppendLine("</div>");
                                     break;
                                 default:
 									sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:rgb(241, 240, 240);font-family: Segoe UI Light; \">");

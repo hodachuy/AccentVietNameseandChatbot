@@ -297,6 +297,7 @@
     <Compile Include="API\DellController.cs" />
     <Compile Include="API\GroupCardController.cs" />
     <Compile Include="API\HistoryController.cs" />
+    <Compile Include="API\MedicalSymptomsController.cs" />
     <Compile Include="API\ModuleCategoryController.cs" />
     <Compile Include="API\ModuleSearchEngineController.cs" />
     <Compile Include="API\ModuleController.cs" />
@@ -309,9 +310,12 @@
     <Compile Include="API_Mobile\MessageFbController.cs" />
     <Compile Include="API_Mobile\MessageFbMedicalController.cs" />
     <Compile Include="API_Mobile\MessageFbTNMTController.cs" />
+    <Compile Include="API_Mobile\MessageKioskController.cs" />
     <Compile Include="API_Mobile\MessageZaloController.cs" />
     <Compile Include="API_Mobile\MessageZaloMedicalController.cs" />
     <Compile Include="API_Mobile\MessageZaloTNMTController.cs" />
+    <Compile Include="API_Webhook\FacebookController.cs" />
+    <Compile Include="API_Webhook\ZaloController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
@@ -358,6 +362,7 @@
     <Compile Include="Models\AIMLViewModel.cs" />
     <Compile Include="Models\ApplicationFacebookUserViewModel.cs" />
     <Compile Include="Models\ApplicationGroupViewModel.cs" />
+    <Compile Include="Models\ApplicationPlatformUserViewModel.cs" />
     <Compile Include="Models\ApplicationRoleViewModel.cs" />
     <Compile Include="Models\ApplicationUserViewModel.cs" />
     <Compile Include="Models\ApplicationZaloUserViewModel.cs" />
@@ -374,6 +379,7 @@
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\MdAreaViewModel.cs" />
     <Compile Include="Models\MdSearchViewModel.cs" />
+    <Compile Include="Models\MedicalSymptomViewModel.cs" />
     <Compile Include="Models\ModuleFollowCardViewModel.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatientViewModel.cs" />
     <Compile Include="Models\ModuleQnAViewModel.cs" />
@@ -424,6 +430,7 @@
     <Content Include="assets\client\js\common.js" />
     <Content Include="assets\client\js\helper\callServiceHelper.js" />
     <Content Include="assets\client\js\history.js" />
+    <Content Include="assets\client\js\medical\symptoms.js" />
     <Content Include="assets\client\js\moduleBot\lstModuleBot.js" />
     <Content Include="assets\client\js\moduleSearchEngine\search.js" />
     <Content Include="assets\client\js\searchEngineQnA.js" />
@@ -507,6 +514,7 @@
     <Content Include="assets\client\libs\toastr\toastr.min.js" />
     <Content Include="assets\client\vendor\boostrap-v3\bootstrap.min.css" />
     <Content Include="assets\client\vendor\boostrap-v3\bootstrap.min.js" />
+    <Content Include="assets\client\vendor\bootstrap-4.3.1\bootstrap.min.js" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.css" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.min.js" />
     <Content Include="assets\client\vendor\bootstrap-colorpicker\claviska\jquery-minicolors\jquery.minicolors.png" />
@@ -784,7 +792,11 @@
     <Content Include="assets\client\vendor\fonts\themify-icons\fonts\themify9f24.svg" />
     <Content Include="assets\client\vendor\fonts\themify-icons\themify-icons.css" />
     <Content Include="assets\client\vendor\fonts\weather-icons\css\weather-icons.min.css" />
+    <Content Include="assets\client\vendor\loading-bar\loading.css" />
     <Content Include="assets\client\vendor\slimscroll\jquery.slimscroll.js" />
+    <Content Include="assets\images\img-zalo-2.png" />
+    <Content Include="assets\images\img-website.jpg" />
+    <Content Include="assets\images\img-facebook.png" />
     <Content Include="assets\images\avatar-1.jpg" />
     <Content Include="assets\images\avatar-2.jpg" />
     <Content Include="assets\images\avatar-3.jpg" />
@@ -813,10 +825,12 @@
     <Content Include="assets\images\faq.png" />
     <Content Include="assets\images\github.png" />
     <Content Include="assets\images\images_question.jpg" />
+    <Content Include="assets\images\img-kiosk.png" />
     <Content Include="assets\images\loader.svg" />
     <Content Include="assets\images\loads.gif" />
     <Content Include="assets\images\logo.png" />
     <Content Include="assets\images\mail_chimp.png" />
+    <Content Include="assets\images\medical-logo.jpg" />
     <Content Include="assets\images\phone.png" />
     <Content Include="assets\images\product-pic-2.jpg" />
     <Content Include="assets\images\product-pic-3.jpg" />
@@ -827,7 +841,9 @@
     <Content Include="assets\images\banner.jpg" />
     <Content Include="assets\images\thuthap.png" />
     <Content Include="assets\images\user_bot.jpg" />
+    <Content Include="assets\images\vn.svg" />
     <Content Include="assets\images\whatsaquestion.jpg" />
+    <Content Include="assets\images\img-zalo.png" />
     <Content Include="favicon.ico" />
     <Content Include="File\AIML\config\DefaultPredicates.xml" />
     <Content Include="File\AIML\config\GenderSubstitutions.xml" />
@@ -1020,6 +1036,8 @@
     <Content Include="Views\Bot\BotSearchEngine.cshtml" />
     <Content Include="Views\Bot\BotHistory.cshtml" />
     <Content Include="Views\Home\FAQ.cshtml" />
+    <Content Include="Views\Bot\BotMedicalSymptoms.cshtml" />
+    <Content Include="Views\Home\FaqMedSymptoms.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1028,6 +1046,7 @@
     <Folder Include="File\AIML\User_a596de6b-5055-4aa0-a4bf-056d0cc8ed8f_BotID_5021\" />
     <Folder Include="File\Document\" />
     <Folder Include="File\Images\Voucher\" />
+    <Folder Include="File\MedicalSymptoms\" />
     <Folder Include="Views\FacebookBot\" />
   </ItemGroup>
   <ItemGroup>

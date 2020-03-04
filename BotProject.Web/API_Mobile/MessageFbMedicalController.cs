@@ -36,7 +36,7 @@ namespace BotProject.Web.API_Mobile
 {
     public class MessageFbMedicalController : ApiController
     {
-        string pageToken = "EAAfPgPELM6IBAIGY9gTer454DZCyhZB2Ah7NNSiZBJZBW8TZA91c7mCEZCdDwP3nh1yV9ha7Bk2K4Vwprdm1qeW1mECvt0pAKBazpKkokusSJU9T3edcZCWsZAqS0tU9bslpIZAjeVFuhk8G3ZCcyfr8UzzQcMC2vgEZBaileZC5PZAEDigZDZD";
+        string pageToken = "EAAfPgPELM6IBAAmr0xU2ZBOBxZCTtinA4t75iRAK6V7yZC2NJAgF3c2sZCaJXHcVF39wqu9AbtdFks5vOqx6cRrZCAKUEcZBxxB2hz86EblZBkJRSwVjwGsWXxHXCFFONpY8mRXaN6irO2ZADsaZBucboUjRZCyTzolFDNsbOajdxS0QZDZD";
         string appSecret = "be46264e45777ee8c35bc75d64132c53";
         string _contactAdmin = Helper.ReadString("AdminContact");
         string _titlePayloadContactAdmin = Helper.ReadString("TitlePayloadAdminContact");
@@ -277,7 +277,6 @@ namespace BotProject.Web.API_Mobile
                                 await SendMessage(meanTextFromAudio, item.sender.id);
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
-
                         }
                         return new HttpResponseMessage(HttpStatusCode.OK);
                     }
@@ -293,8 +292,11 @@ namespace BotProject.Web.API_Mobile
 
         private async Task<HttpResponseMessage> ExcuteMessage(string text, string sender, int botId, string timeStamp = "", string audio = "")
         {
-
             if (String.IsNullOrEmpty(text))
+            {
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            if (String.IsNullOrEmpty(sender))
             {
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
@@ -334,7 +336,18 @@ namespace BotProject.Web.API_Mobile
             if (!text.Contains("postback") && !text.Contains(_contactAdmin))
             {
                 _accentService = new AccentService();
-                text = _accentService.GetAccentVN(text);
+                string textAccentVN = _accentService.GetAccentVN(text);
+
+                if (textAccentVN != text)
+                {
+                    string msg = FacebookTemplate.GetMessageTemplateText("Ý bạn là: " + textAccentVN + "", sender).ToString();
+                    await SendMessageTask(msg, sender);
+                }
+                text = textAccentVN;
+
+                AddAttributeDefault(sender, botId, "content_message", text);
+                _dicAttributeUser.Remove("content_message");
+                _dicAttributeUser.Add("content_message", text);
             }
 
             string attributeValueFromPostback = "";
@@ -348,7 +361,6 @@ namespace BotProject.Web.API_Mobile
                 }
                 text = arrPostback[0];
             }
-
 
             HistoryViewModel hisVm = new HistoryViewModel();
             //hisVm.BotID = botId;
@@ -436,10 +448,10 @@ namespace BotProject.Web.API_Mobile
 
                     fbUserDb = new ApplicationFacebookUser();
                     ApplicationFacebookUserViewModel fbUserVm = new ApplicationFacebookUserViewModel();
-                    fbUserVm.UserId = sender;
-                    fbUserVm.IsHavePredicate = false;
-                    fbUserVm.IsProactiveMessage = false;
-                    fbUserVm.TimeOut = dTimeOut;
+                    fbUserDb.UserId = sender;
+                    fbUserDb.IsHavePredicate = false;
+                    fbUserDb.IsProactiveMessage = false;
+                    fbUserDb.TimeOut = dTimeOut;
                     fbUserDb.CreatedDate = DateTime.Now;
                     fbUserDb.StartedOn = dStartedTime;
                     fbUserDb.FirstName = profileUser.first_name;
@@ -516,6 +528,11 @@ namespace BotProject.Web.API_Mobile
                             if (isAge)
                             {
                                 attFbUser.AttributeValue = text;
+                                if(Int32.Parse(text) == 0)
+                                {
+                                    await SendMessageTask(FacebookTemplate.GetMessageTemplateText("Anh/chị vui lòng nhập lại độ tuổi chính xác", sender).ToString(), sender);
+                                    return new HttpResponseMessage(HttpStatusCode.OK);
+                                }
                             }
                             else
                             {
@@ -557,7 +574,6 @@ namespace BotProject.Web.API_Mobile
                             return await ExcuteMessage(fbUserDb.CardConditionWithInputTextPattern, sender, botId); //postback_card_8927 thẻ thông tin người dùng
                         }
                     }
-
                     // Nếu có yêu cầu query text theo lĩnh vực button
                     // Click button -> card (tên card nên đặt như tên lĩnh vực ngắn gọn)
                     // Build lại kịch bản với từ khoán ngắn gọn + tên lĩnh vực
@@ -765,6 +781,7 @@ namespace BotProject.Web.API_Mobile
                         }
                     }
                 }
+
                 if (result.Contains("NOT_MATCH"))
                 {
                     hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
@@ -813,6 +830,45 @@ namespace BotProject.Web.API_Mobile
                         }
                         hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
                         //AddHistory(hisVm);
+
+                        // Hiển thị thêm thông tin về triệu chứng đó
+                        string resultSymptomp = _apiNLR.GetListSymptoms(text, 1);
+                        if (!String.IsNullOrEmpty(resultSymptomp))
+                        {
+                            var dataSymptomp = new JavaScriptSerializer
+                            {
+                                MaxJsonLength = Int32.MaxValue,
+                                RecursionLimit = 100
+                            }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                            if (dataSymptomp.Count() != 0)
+                            {
+                                string msgFAQs = "Bạn vui lòng xem thêm thông tin triệu chứng bên dưới";
+                                await SendMessageSymptom(FacebookTemplate.GetMessageTemplateText(msgFAQs, sender).ToString(), sender);
+                                string strTemplateGenericMedicalSymptoms = FacebookTemplate.GetMessageTemplateGenericByListMed(sender, dataSymptomp).ToString();
+                                await SendMessageTask(strTemplateGenericMedicalSymptoms, sender);
+
+                                //string msgSymptompDes = Regex.Replace(dataSymptomp[0].description, "  ", "<br/>");
+                                //await SendMessageSymptom(FacebookTemplate.GetMessageTemplateText(msgSymptompDes, sender).ToString(), sender);
+                                //string msgCause = Regex.Replace("Nguyên nhân: <br/>" + dataSymptomp[0].cause, "  ", "<br/>");
+                                //if (!String.IsNullOrEmpty(dataSymptomp[0].cause) && dataSymptomp[0].cause != "NULL")
+                                //{
+                                //    await SendMessageSymptom(FacebookTemplate.GetMessageTemplateText(msgCause, sender).ToString(), sender);
+                                //}
+                                //string msgTreament = Regex.Replace("Chữa trị cấp thời: <br/>" + dataSymptomp[0].treatment, "  ", "<br/>");
+                                //if (!String.IsNullOrEmpty(dataSymptomp[0].treatment) && dataSymptomp[0].treatment != "NULL")
+                                //{
+                                //    await SendMessageSymptom(FacebookTemplate.GetMessageTemplateText(msgTreament, sender).ToString(), sender);
+
+                                //}
+                                //string msgAdvice = Regex.Replace("Khi nào cần đi bác sỹ: <br/>" + dataSymptomp[0].advice, "  ", "<br/>");
+                                //if (!String.IsNullOrEmpty(dataSymptomp[0].advice) && dataSymptomp[0].advice != "NULL")
+                                //{
+                                //    await SendMessageSymptom(FacebookTemplate.GetMessageTemplateText(msgAdvice, sender).ToString(), sender);
+                                //}
+                                //return new HttpResponseMessage(HttpStatusCode.OK);
+                            }
+                        }
+
                         string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", valueBotId);
                         if (!String.IsNullOrEmpty(resultAPI))
                         {
@@ -826,11 +882,17 @@ namespace BotProject.Web.API_Mobile
                             string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
                             await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
                             string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(sender, lstQnaAPI).ToString();
+                            await SendMessageTask(strTemplateGenericRelatedQuestion, sender);
                             //BotLog.Info(strTemplateGenericRelatedQuestion);
-                            return await SendMessage(strTemplateGenericRelatedQuestion, sender);
+                            //return await SendMessage(strTemplateGenericRelatedQuestion, sender);
+                            return new HttpResponseMessage(HttpStatusCode.OK);
+                        }
+                        
+                        if (!String.IsNullOrEmpty(resultSymptomp))
+                        {
+                            return new HttpResponseMessage(HttpStatusCode.OK);
                         }
                     }
-
 
                     _dicNotMatch = new Dictionary<string, string>() {
                         {"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
@@ -852,6 +914,7 @@ namespace BotProject.Web.API_Mobile
                     await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 }
+
                 // input là postback
                 if (text.Contains("postback_card"))
                 {
@@ -924,6 +987,26 @@ namespace BotProject.Web.API_Mobile
                             {
                                 string tempJson = temp;
                                 await SendMessageTask(tempJson, sender);
+                                if (tempJson.Contains("Nguyên nhân") || tempJson.Contains("bác sĩ") || tempJson.Contains("Bác sĩ"))
+                                {
+                                    //GetMessageSymptom(_dicAttributeUser["content_message"], sender);
+                                    string resultSymptomp = _apiNLR.GetListSymptoms(_dicAttributeUser["content_message"], 1);
+                                    if (!String.IsNullOrEmpty(resultSymptomp))
+                                    {
+                                        var dataSymptomp = new JavaScriptSerializer
+                                        {
+                                            MaxJsonLength = Int32.MaxValue,
+                                            RecursionLimit = 100
+                                        }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                                        if (dataSymptomp.Count() != 0)
+                                        {
+                                            string msgFAQs = "Bạn vui lòng xem thêm thông tin triệu chứng bên dưới";
+                                            await SendMessageSymptom(FacebookTemplate.GetMessageTemplateText(msgFAQs, sender).ToString(), sender);
+                                            string strTemplateGenericMedicalSymptoms = FacebookTemplate.GetMessageTemplateGenericByListMed(sender, dataSymptomp).ToString();
+                                            await SendMessageTask(strTemplateGenericMedicalSymptoms, sender);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -965,7 +1048,6 @@ namespace BotProject.Web.API_Mobile
                                     string tempJson = temp;
                                     await SendMessageTask(tempJson, sender);
                                 }
-
                                 return new HttpResponseMessage(HttpStatusCode.OK);
                             }
                         }
@@ -1052,6 +1134,26 @@ namespace BotProject.Web.API_Mobile
                             {
                                 string tempJson = temp;
                                 await SendMessageTask(tempJson, sender);
+                                if (tempJson.Contains("Nguyên nhân") || tempJson.Contains("bác sĩ") || tempJson.Contains("Bác sĩ"))
+                                {
+                                    //GetMessageSymptom(_dicAttributeUser["content_message"], sender);
+                                    string resultSymptomp = _apiNLR.GetListSymptoms(_dicAttributeUser["content_message"], 1);
+                                    if (!String.IsNullOrEmpty(resultSymptomp))
+                                    {
+                                        var dataSymptomp = new JavaScriptSerializer
+                                        {
+                                            MaxJsonLength = Int32.MaxValue,
+                                            RecursionLimit = 100
+                                        }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                                        if (dataSymptomp.Count() != 0)
+                                        {
+                                            string msgFAQs = "Bạn vui lòng xem thêm thông tin triệu chứng bên dưới";
+                                            await SendMessageSymptom(FacebookTemplate.GetMessageTemplateText(msgFAQs, sender).ToString(), sender);
+                                            string strTemplateGenericMedicalSymptoms = FacebookTemplate.GetMessageTemplateGenericByListMed(sender, dataSymptomp).ToString();
+                                            await SendMessageTask(strTemplateGenericMedicalSymptoms, sender);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -1135,6 +1237,26 @@ namespace BotProject.Web.API_Mobile
                                 {
                                     string tempJson = temp;
                                     await SendMessageTask(tempJson, sender);
+                                    if (tempJson.Contains("Nguyên nhân") || tempJson.Contains("bác sĩ") || tempJson.Contains("Bác sĩ"))
+                                    {
+                                        //GetMessageSymptom(_dicAttributeUser["content_message"], sender);
+                                        string resultSymptomp = _apiNLR.GetListSymptoms(_dicAttributeUser["content_message"], 1);
+                                        if (!String.IsNullOrEmpty(resultSymptomp))
+                                        {
+                                            var dataSymptomp = new JavaScriptSerializer
+                                            {
+                                                MaxJsonLength = Int32.MaxValue,
+                                                RecursionLimit = 100
+                                            }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                                            if (dataSymptomp.Count() != 0)
+                                            {
+                                                string msgFAQs = "Bạn vui lòng xem thêm thông tin triệu chứng bên dưới";
+                                                await SendMessageSymptom(FacebookTemplate.GetMessageTemplateText(msgFAQs, sender).ToString(), sender);
+                                                string strTemplateGenericMedicalSymptoms = FacebookTemplate.GetMessageTemplateGenericByListMed(sender, dataSymptomp).ToString();
+                                                await SendMessageTask(strTemplateGenericMedicalSymptoms, sender);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1197,10 +1319,11 @@ namespace BotProject.Web.API_Mobile
             {
                 templateJson = templateJson.Replace("{{senderId}}", sender);
                 templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
-                templateJson = Regex.Replace(templateJson, "<br />", "\\n");
-                templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
-                templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
-                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, "  ", "\\n");
                 if (templateJson.Contains("{{"))
                 {
                     if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
@@ -1228,10 +1351,11 @@ namespace BotProject.Web.API_Mobile
             {
                 templateJson = templateJson.Replace("{{senderId}}", sender);
                 templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
-                templateJson = Regex.Replace(templateJson, "<br />", "\\n");
-                templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
-                templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
-                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, "  ", "\\n");
                 if (templateJson.Contains("{{"))
                 {
                     if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
@@ -1243,7 +1367,25 @@ namespace BotProject.Web.API_Mobile
                         }
                     }
                 }
+                using (HttpClient client = new HttpClient())
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "", new StringContent(templateJson, Encoding.UTF8, "application/json"));
+                }               
+            }
+        }
 
+        private async Task SendMessageSymptom(string templateJson, string sender)
+        {
+            if (!String.IsNullOrEmpty(templateJson))
+            {
+                templateJson = templateJson.Replace("{{senderId}}", sender);
+                templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
+                //templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, "  ", "\\n");
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -1251,6 +1393,7 @@ namespace BotProject.Web.API_Mobile
                 }
             }
         }
+
         private ProfileUser GetProfileUser(string senderId)
         {
             ProfileUser user = new ProfileUser();

@@ -200,6 +200,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             settingDb.TextIntroductory = settingVm.TextIntroductory;
             settingDb.UserID = settingVm.UserID;
             settingDb.StopWord = settingVm.StopWord;
+            settingDb.PathCssCustom = settingVm.PathCssCustom;
             if (settingDb.CardID == null && String.IsNullOrEmpty(settingDb.TextIntroductory))
             {
                 settingDb.IsActiveIntroductory = false;

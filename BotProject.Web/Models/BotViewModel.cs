@@ -14,6 +14,7 @@ namespace BotProject.Web.Models
         public string Name { set; get; }
 
 		public string Alias { set; get; }
+        public string NameAcronym { set; get; }
 
         public DateTime? CreatedDate { set; get; }
 
@@ -30,6 +31,12 @@ namespace BotProject.Web.Models
         public bool Status { set; get; }
 
         public string UserID { set; get; }
+
+        public int TotalCard { set; get; }
+        public int TotalQuestionScript { set; get; }
+        public int TotalIntent { set; get; }
+        public string FacebookToken { set; get; }
+        public string ZaloToken { set; get; }
 
         public virtual ApplicationUserViewModel User { set; get; }
 

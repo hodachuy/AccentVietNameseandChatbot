@@ -56,12 +56,41 @@ namespace BotProject.Web.API
 				var lstBot = _botService.GetListBotByUserID(userID);
 
 				var lstBotVm = Mapper.Map<IEnumerable<Bot>, IEnumerable<BotViewModel>>(lstBot);
-
-				response = request.CreateResponse(HttpStatusCode.OK, lstBotVm);
+                if (lstBotVm.Count() != 0)
+                {
+                    foreach (var item in lstBotVm)
+                    {
+                        var formQnaDb = _qnaService.GetListFormByBotID(item.ID);
+                        item.FormQuestionAnswers = Mapper.Map<IEnumerable<FormQuestionAnswer>, IEnumerable<FormQuestionAnswerViewModel>>(formQnaDb);
+                    }
+                }
+                response = request.CreateResponse(HttpStatusCode.OK, lstBotVm);
 
 				return response;
 			});
 		}
+
+        [Route("getById")]
+        [HttpGet]
+        public HttpResponseMessage GetBotById(HttpRequestMessage request, int botId)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response;
+                if (botId == 0)
+                {
+                    response = request.CreateResponse(HttpStatusCode.NotFound);
+                    return response;
+                }
+                var botDb = _botService.GetByID(botId);
+                var lstBotVm = Mapper.Map<Bot, BotViewModel>(botDb);
+                var formQnaDb = _qnaService.GetListFormByBotID(lstBotVm.ID);
+                lstBotVm.FormQuestionAnswers = Mapper.Map<IEnumerable<FormQuestionAnswer>, IEnumerable<FormQuestionAnswerViewModel>>(formQnaDb);
+                response = request.CreateResponse(HttpStatusCode.OK, lstBotVm);
+                return response;
+            });
+        }
+
 
         [Route("create")]
         [HttpPost]

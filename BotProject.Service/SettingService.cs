@@ -14,6 +14,8 @@ namespace BotProject.Service
         Setting Create(Setting Setting);
         void Update(Setting Setting);
         Setting GetSettingByBotID(int botId);
+        Setting GetSettingByFbPageID(string pageFbId);
+        Setting GetSettingByZaloPageID(string pageZaloId);
         SystemConfig CreateKeyConfig(SystemConfig system);
         void DeleteConfigByBotID(int botId);
         IEnumerable<SystemConfig> GetListSystemConfigByBotId(int botId);
@@ -65,6 +67,16 @@ namespace BotProject.Service
         public IEnumerable<SystemConfig> GetListSystemConfigByBotId(int botId)
         {
             return _systemConfigRepository.GetMulti(x => x.BotID == botId);
+        }
+
+        public Setting GetSettingByFbPageID(string pageFbId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Setting GetSettingByZaloPageID(string pageZaloId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

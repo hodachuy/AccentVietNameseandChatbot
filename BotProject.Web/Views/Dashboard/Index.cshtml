@@ -1,6 +1,105 @@
-﻿
+﻿@model IEnumerable<BotProject.Web.Models.BotViewModel>
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<div class="d-flex" style="padding-top:10px">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">DANH SÁCH BOT</i></li>
+    </ol>
+</div>
+<div class="row" style="margin: 15px 0px 20px;">
+    <div id="collapseDiv_0" class="row collapse show" style="width: 100%; padding: 0px; margin: 0px -5px;">
+        @if (Model.Count() != 0)
+        {
+            foreach (var bot in Model)
+            {
+                var urlSetting = Url.Content("~") + "bot/setting/" + bot.Alias + "/" + bot.ID + "?name=" + bot.Name;
+                var urlCard = Url.Content("~") + "bot/" + bot.Alias + "/" + bot.ID + "/cardcategory?botName=" + bot.Name;
+                var urlHistory = Url.Content("~") + "bot/history/" + bot.Alias + "/" + bot.ID + "?botName=" + bot.Name;
+                <div class="col-lg-4 col-md-6 col-12 bot-role-1" style="padding-bottom: 15px;">
+                    <div class="dropdown dropleft btn-bot-setting-home show">
+                        <button data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Menu" class="icon-btn btn-menu-bot">
+                            <i class="icon-dots-vertical fas fa-ellipsis-h"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right hide" x-placement="left-start" style="cursor: auto; box-shadow: rgb(220, 220, 220) 2px 2px 10px; position: absolute; will-change: transform; top: 0px; left: 45px; transform: translate3d(-212px, 3px, 0px);">
+                            <li>
+                                <i class="icon-scenarios fa fa-file"></i>
+                                <a href="@urlCard"><span class="bot-setting-option">Tạo thẻ</span></a>
+                            </li>
+                            <li>
+                                <i class="icon-nlp fa fa-history"></i>
+                                <a href="@urlHistory"><span class="bot-setting-option">Lịch sử</span></a>
+
+                            </li>
+                            <li>
+                                <i class="icon-message1 fa fa-cog"></i>
+                                <a href="@urlSetting"><span class="bot-setting-option">Cài đặt</span>  </a>
+                            </li>
+                            <li style="color: rgb(255, 0, 0);">
+                                <i class="icon-trash fa fa-trash" style="color: rgb(255, 0, 0);"></i>
+                                <span class="bot-setting-option">Xóa Bot</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <a href="@urlSetting">
+                        <div class="bot-style">
+                            <div class="bot-header">
+                                <div class="bot-icon" style="color:white;">
+                                    @bot.NameAcronym
+                                </div>
+                                <span title="@bot.Name" class="bot-dp-name">@bot.Name</span>
+                                <span class="bot-dp-lang"><i class="flag-icon flag-icon-gb"></i> Tiếng Việt</span>
+                            </div>
+                            <div class="bot-content">
+                                <div class="row">
+                                    <!----> <!---->
+                                    <div title="Ý định" class="col-6" style="padding-right: 0px;">Ý định</div>
+                                    <div class="col-6">@bot.TotalIntent</div>
+                                    <div title="Loại thực thể" class="col-6" style="padding-right: 0px;">Loại thực thể</div>
+                                    <div class="col-6">@bot.TotalCard</div>
+                                    <div title="Câu mẫu" class="col-6" style="border-bottom: none;">Câu kịch bản </div>
+                                    <div class="col-6" style="border-bottom: none;">@bot.TotalQuestionScript</div>
+                                </div>
+                            </div>
+                            <div class="bot-footer">
+                                <div class="row">
+                                    <div title="Lần huấn luyện gần nhất" class="col-6">Lần huấn luyện gần nhất</div>
+                                    <div class="col-6">@(bot.UpdatedDate.HasValue ? bot.UpdatedDate.Value.ToString("dd/MM/yyyy hh:mm:ss") : "")</div>
+                                </div>
+                            </div>
+                            <div class="bot-footer">
+                                <div class="row">
+                                    <div title="Hoạt động" class="col-6">Đang hoạt động</div>
+                                    <div class="col-6">
+                                        @if (!String.IsNullOrEmpty(bot.FacebookToken))
+                                        {
+                                            <span><img title="Facebook" src="~/assets/images/img-facebook.png" class="img-bot-activing" /></span>
+                                        }
+                                        @if (!String.IsNullOrEmpty(bot.ZaloToken))
+                                        {
+                                            <span><img title="Zalo" src="~/assets/images/img-zalo-2.png" class="img-bot-activing" /></span>
+                                        }
+                                        @if (bot.ID == 3019)
+                                        {
+                                            <span><img title="Kiosk" src="~/assets/images/img-kiosk.png" class="img-bot-activing" /></span>
+                                        }
+                                        <span><img title="Website" src="~/assets/images/img-website.jpg" class="img-bot-activing" /></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+            }
+        }
+        else
+        {
+            <div class="row">
+                <h4 style="text-align:center;position:center">Vui lòng tạo bot để trải nghiệm</h4>
+            </div>
+        }
+    </div>
+</div>

@@ -20,8 +20,9 @@ namespace BotProject.Common
         public const string UpdateQnA = "Update";
 
         public const string SessionUserBot = "UserBot";
+        public const string SessionResultBot = "ResultBot";
 
-		public const string ModuleAdminContact = "postback_module_admin_contact";
+        public const string ModuleAdminContact = "postback_module_admin_contact";
 		public const string ModuleEngineerName = "postback_module_engineer_name";
 		public const string ModulePhone = "postback_module_phone";
         public const string ModuleVoucher = "postback_module_voucher";
@@ -53,11 +54,19 @@ namespace BotProject.Common
 
         public const string TYPE_FACEBOOK = "facebook";
         public const string TYPE_ZALO = "zalo";
+        public const string TYPE_KIOSK = "kiosk";
 
+        public const string BOT_REQUEST_TEXT = "text";
+        public const string BOT_REQUEST_PAYLOAD_POSTBACK = "payload_postback";
+        public const string BOT_REQUEST_PAYLOAD_QUICKREPLY = "payload_quickreply";
     }
     public class ZaloConstans
     {
         public const string EVENT_USER_SEND_TEXT = "user_send_text";
+    }
+    public class FacebookConstans
+    {
+        public const string BOT_SETTING = "BotSetting";
     }
 
 
@@ -82,7 +91,10 @@ namespace BotProject.Common
 
         public static string PathNLR = HttpContext.Current.Server.MapPath("~/File/NLR/");
 
-
+        /// <summary>
+        /// ~/File/MedicalSymptoms/
+        /// </summary>
+        public static string PathMedicalSymptoms = HttpContext.Current.Server.MapPath("~/File/MedicalSymptoms/");
     }
 
     public class PathConfig

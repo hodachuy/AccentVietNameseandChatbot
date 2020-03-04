@@ -54,5 +54,7 @@ namespace BotProject.Web.Models
         public int TimeoutOTP { set; get; }
         public bool IsHaveTimeoutOTP { set; get; }
         public string MessageTimeoutOTP { set; get; }
+
+        public string PathCssCustom { set; get; }
     }
 }

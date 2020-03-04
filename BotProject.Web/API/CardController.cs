@@ -17,6 +17,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using BotProject.Common.SendSmsMsgService;
+using System.Threading;
 
 namespace BotProject.Web.API
 {
@@ -546,7 +547,7 @@ namespace BotProject.Web.API
                 //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"] + "\\" + "User_" + userId + "_BotID_" + card.BotID;
                 string pathFolderAIML = PathServer.PathAIML;
                 string nameFolderAIML = "User_" + userId + "_BotID_" + card.BotID + "\\Card_ID_" + card.ID + "_" + card.Alias + ".aiml";
-                string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
+                //string pathString = System.IO.Path.Combine(pathFolderAIML, nameFolderAIML);
 
                 var aimlDb = _aimlService.GetByCardId(cardId);
 
@@ -575,7 +576,8 @@ namespace BotProject.Web.API
                         foreach (var item in lstTemplateText)
                         {
                             // text
-                            sbAIML.AppendLine("" + item.Text + "");
+                            string contentText = Regex.Replace(item.Text, "&", "và");
+                            sbAIML.AppendLine("" + contentText + "");
 
                             //sw.WriteLine(""+item.Text+"");
                             if (item.ButtonPostbacks != null && item.ButtonPostbacks.Count() != 0)
@@ -932,6 +934,39 @@ namespace BotProject.Web.API
                 return response;
             });
         }
+
+
+        //[Route("getAimlMultiCard")]
+        //[HttpGet]
+        //public HttpResponseMessage GetAimlMultiCard(HttpRequestMessage request)
+        //{
+        //    return CreateHttpResponse(request, () =>
+        //    {
+        //        HttpResponseMessage response = null;
+
+        //        var lstAIML = _aimlService.GetByBotId(5036).Where(x =>x.FormQnAnswerID == null).ToList();
+        //        int ttCount = lstAIML.Count();
+        //        int i = 0;
+        //        foreach(var item in lstAIML)
+        //        {
+        //            i++;
+        //            int x = 100;
+        //            AIMLFile aimlFileDb = new AIMLFile();
+        //            aimlFileDb = _aimlService.GetByID(item.ID);
+        //            aimlFileDb.Content = Regex.Replace(item.Content, "&", "và");
+        //            _aimlService.Update(aimlFileDb);
+        //            _aimlService.Save();
+        //            if(i == x)
+        //            {
+        //                Thread.Sleep(3000);
+        //                x = x + 100;
+        //            }
+        //        }
+               
+        //        response = request.CreateResponse(HttpStatusCode.OK, true);
+        //        return response;
+        //    });
+        //}
 
         public class ResultCard
         {

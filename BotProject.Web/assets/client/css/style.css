@@ -146,7 +146,6 @@
     - 10.2.  Level 2
    */
 
-
 /* ==========================================================================
    0. ELEMENT
    ========================================================================== */
@@ -160,12 +159,18 @@ body {
     font-family: 'Segoe UI';
     font-style: normal;
     font-weight: normal;
+
+    line-height: 1.5384616;
+    color: #333;
+    background-color: #fbfbfb;
+
     font-size: 14px;
-    color: #71748d;
-    background-color: #efeff6;
+    /*color: #71748d;
+    background-color: #efeff6;*/
     -webkit-font-smoothing: antialiased;
     /*overflow: hidden;*/
     overflow-x: hidden;
+
 }
 
 h1,
@@ -8746,3 +8751,178 @@ label.switchery-xs {
 .editor-file-aiml {
     height: 550px;
 }
+
+
+/*****************************
+    DASHBOARD INDEX
+******************************/
+
+   #collapseDiv_0 .bot-style {
+        border-radius: 5px;
+        box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.03);
+        border: solid 2px #e4e9f3;
+        background-color: #ffffff;
+        padding: 0;
+        cursor: pointer;
+    }
+
+        #collapseDiv_0 .bot-style .bot-header {
+            width: 100%;
+            height: 80px;
+            border-bottom: solid 1px #e6e6e8;
+        }
+
+            #collapseDiv_0 .bot-style .bot-header .bot-icon {
+                width: 40px;
+                height: 40px;
+                float: left;
+                margin: 20px 19px 0 19px;
+                border-radius: 50%;
+                background-color: #3f51b5;
+                text-align: center;
+                line-height: 3;
+                font-size: 13px;
+                font-weight: bold;
+            }
+
+            #collapseDiv_0 .bot-style .bot-header .bot-dp-name {
+                width: 60%;
+                font-size: 18px;
+                font-weight: 600;
+                font-style: normal;
+                font-stretch: normal;
+                line-height: normal;
+                letter-spacing: 0.3px;
+                color: #333333;
+                margin-top: 17px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                /* display: -webkit-box; */
+                /* -webkit-line-clamp: 1; */
+                -webkit-box-orient: vertical;
+                word-break: break-all;
+                float: left;
+                white-space: nowrap;
+            }
+
+            #collapseDiv_0 .bot-style .bot-header .bot-dp-lang {
+                width: 60%;
+                font-size: 13px;
+                font-weight: normal;
+                font-style: normal;
+                font-stretch: normal;
+                line-height: normal;
+                letter-spacing: 0.4px;
+                color: #777777;
+                position: relative;
+                top: -4px;
+                display: inline-block;
+            }
+
+                #collapseDiv_0 .bot-style .bot-header .bot-dp-lang i {
+                    position: relative;
+                }
+
+    .flag-icon {
+        background-size: contain;
+        background-position: 50%;
+        background-repeat: no-repeat;
+        position: relative;
+        display: inline-block;
+        width: 1.33333333em;
+        line-height: 1em;
+    }
+
+        .flag-icon:before {
+            content: "\00a0";
+        }
+
+.flag-icon-gb {
+    background-image: url('../../images/vn.svg');
+}
+
+    #collapseDiv_0 .bot-content {
+        border-bottom: solid 1px #e6e6e8;
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        color: #777777;
+        padding: 0 10px;
+    }
+
+        #collapseDiv_0 .bot-content .row > div {
+            height: 40px;
+            border-bottom: dashed 0.5px #e6e6e6;
+            line-height: 2.8;
+            -webkit-box-orient: vertical;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+    #collapseDiv_0 .bot-footer {
+        padding: 0 10px;
+        height: 40px;
+        line-height: 2.8;
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        color: #777777;
+    }
+
+    #collapseDiv_0 .bot-style .row > div {
+        padding-right: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* display: -webkit-box; */
+        /* -webkit-line-clamp: 1; */
+        -webkit-box-orient: vertical;
+        white-space: nowrap;
+    }
+
+    /*#collapseDiv_0 .bot-display-area > .row > div > div:hover .bot-style {
+        box-shadow: 0 30px 46px 0 rgba(0, 0, 0, 0.12) !important;
+        border: solid 2px #bfd3f5 !important;
+        background-color: #ffffff !important;
+    }*/
+    .btn-bot-setting-home {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: transparent;
+    border: 0;
+    font-size: 18px;
+    /* display: none; */
+    z-index: 1000;
+}
+    #collapseDiv_0 .btn-bot-setting-home li {
+    font-size: 15px;
+    padding-left: 15px;
+    line-height: 2;
+    cursor: pointer;
+}
+    #collapseDiv_0 .btn-bot-setting-home .icon-btn i {
+    position: relative;
+    top: -4px;
+    font-size: 0.4cm;
+    cursor:pointer;
+    right: 5px;
+}
+    .icon-btn {
+    border: 0;
+    background-color: transparent;
+}
+    [class^="icon-"] {
+    font-size: 0.8rem;
+    /*color: #7C909A;*/
+}
+    .img-bot-activing{
+        width:25px;
+        height:25px;
+    }
+    .bot-setting-option{
+        padding-left:5px
+    }
+    #collapseDiv_0 .bot-style:hover {
+        box-shadow: 0 30px 46px 0 rgba(0, 0, 0, 0.12) !important;
+        border: solid 2px #bfd3f5 !important;
+        background-color: #ffffff !important;
+    }

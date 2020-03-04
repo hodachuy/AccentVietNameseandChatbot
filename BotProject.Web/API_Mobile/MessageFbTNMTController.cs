@@ -150,34 +150,35 @@ namespace BotProject.Web.API_Mobile
         [HttpPost]
         public async Task<HttpResponseMessage> Post()
         {
-            int botId = 5028;
+            //Chạy demo tạm thời cho cà mau
+            int botId = 5036;
 
             var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
             var value = JsonConvert.DeserializeObject<FacebookBotRequest>(body);
 
-            var app3rd = _app3rd.GetByPageId(value.entry[0].id);
-            if (app3rd == null)
-            {
-                return new HttpResponseMessage(HttpStatusCode.OK);
-            }
+            //var app3rd = _app3rd.GetByPageId(value.entry[0].id);
+            //if (app3rd == null)
+            //{
+            //    return new HttpResponseMessage(HttpStatusCode.OK);
+            //}
 
-            botId = app3rd.BotID;
+            //botId = app3rd.BotID;
             var settingDb = _settingService.GetSettingByBotID(botId);
 
 
             //get pagetoken
-            pageToken = settingDb.FacebookPageToken;
-            appSecret = settingDb.FacebookAppSecrect;
-            _patternCardPayloadProactive = "postback_card_" + settingDb.CardID.ToString();
+            pageToken = "EAAH5LTILzD8BAC9biKm4xZBlr3ZCi1RGBAYY2DGVZC6idoJzUwmBIpjYE1ZB9v3j36MiYB5J7cszZCFzWe8AZCLYo9obxfa6AsB3zHUdje5cWYRiW8FGB4AXEqCZC5e5npMgvvtPngZAYAymGDLRgCcJ5ompigX0kBRqs5xu58JWFgZDZD";//settingDb.FacebookPageToken;
+            appSecret = "a537ad461c7487d16040f3468e66af00";// settingDb.FacebookAppSecrect;
+            _patternCardPayloadProactive = "postback_card_9140";// + settingDb.CardID.ToString();
 
             //init stop word
-            _stopWord = settingDb.StopWord;
-            if (System.IO.File.Exists(_pathStopWord))
-            {
-                string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
-                _stopWord += string.Join(",", stopWordDefault);
-            }
+            //_stopWord = settingDb.StopWord;
+            //if (System.IO.File.Exists(_pathStopWord))
+            //{
+            //    string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
+            //    _stopWord += string.Join(",", stopWordDefault);
+            //}
 
             // xác nhận app facebook
             if (!VerifySignature(signature, body))
@@ -187,19 +188,19 @@ namespace BotProject.Web.API_Mobile
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
-            _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
-            _timeOut = settingDb.Timeout;
-            _messageProactive = settingDb.ProactiveMessageText;
-            _isSearchAI = settingDb.IsMDSearch;
+            //_isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
+            //_timeOut = settingDb.Timeout;
+            //_messageProactive = settingDb.ProactiveMessageText;
+            //_isSearchAI = settingDb.IsMDSearch;
 
-            //tin vắng mặt
-            _messageAbsent = settingDb.MessageMaintenance;
-            _isHaveMessageAbsent = settingDb.IsHaveMaintenance;
+            ////tin vắng mặt
+            //_messageAbsent = settingDb.MessageMaintenance;
+            //_isHaveMessageAbsent = settingDb.IsHaveMaintenance;
 
-            //OTP
-            _timeOutOTP = settingDb.TimeoutOTP;
-            _isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
-            _messageOTP = settingDb.MessageTimeoutOTP;
+            ////OTP
+            //_timeOutOTP = settingDb.TimeoutOTP;
+            //_isHaveTimeOutOTP = settingDb.IsHaveTimeoutOTP;
+            //_messageOTP = settingDb.MessageTimeoutOTP;
 
             var lstAIML = _aimlFileService.GetByBotId(botId);
             var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
@@ -332,17 +333,17 @@ namespace BotProject.Web.API_Mobile
             }
 
             // Lọc từ cấm
-            if (!String.IsNullOrEmpty(_stopWord))
-            {
-                string[] arrStopWord = _stopWord.Split(',');
-                if (arrStopWord.Length != 0)
-                {
-                    foreach (var w in arrStopWord)
-                    {
-                        text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
-                    }
-                }
-            }
+            //if (!String.IsNullOrEmpty(_stopWord))
+            //{
+            //    string[] arrStopWord = _stopWord.Split(',');
+            //    if (arrStopWord.Length != 0)
+            //    {
+            //        foreach (var w in arrStopWord)
+            //        {
+            //            text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
+            //        }
+            //    }
+            //}
 
             if (String.IsNullOrEmpty(text))
             {
@@ -426,7 +427,7 @@ namespace BotProject.Web.API_Mobile
                 await SendMessageTask(senderActionTyping, sender);
                 if (!String.IsNullOrEmpty(audio))
                 {
-                    string meanTextFromAudio = FacebookTemplate.GetMessageTemplateText("Ý của bạn là: " + text, sender).ToString();
+                    string meanTextFromAudio = FacebookTemplate.GetMessageTemplateText("Ý bạn là: " + text, sender).ToString();
                     await SendMessageTask(meanTextFromAudio, sender);
                     await SendMessageTask(senderActionTyping, sender);
                 }
@@ -1408,10 +1409,10 @@ namespace BotProject.Web.API_Mobile
             {
                 templateJson = templateJson.Replace("{{senderId}}", sender);
                 templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
-                templateJson = Regex.Replace(templateJson, "<br />", "\\n");
-                templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
-                templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
-                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -1428,10 +1429,10 @@ namespace BotProject.Web.API_Mobile
             {
                 templateJson = templateJson.Replace("{{senderId}}", sender);
                 templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
-                templateJson = Regex.Replace(templateJson, "<br />", "\\n");
-                templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
-                templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
-                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                //templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                //templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

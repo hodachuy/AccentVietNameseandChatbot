@@ -7,9 +7,10 @@
         var urlCard = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/cardcategory?botName=" + item.Name;
         var urlAIML = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/aiml";
         var urlModule = Url.Content("~") + "bot/" + item.Alias + "/" + item.ID + "/module?botName=" + item.Name;
-        var urlSetting = Url.Content("~") + "bot/setting/" + item.Alias + "/" + item.ID +"?name="+item.Name;
+        var urlSetting = Url.Content("~") + "bot/setting/" + item.Alias + "/" + item.ID + "?name=" + item.Name;
         var urlBotSearchEngine = Url.Content("~") + "bot/searchengine/" + item.Alias + "/" + item.ID + "?botName=" + item.Name;
         var urlHistory = Url.Content("~") + "bot/history/" + item.Alias + "/" + item.ID + "?botName=" + item.Name;
+        var urlBotMedicalSymptoms = Url.Content("~") + "bot/medicalsymptoms/" + item.Alias + "/" + item.ID + "?botName=" + item.Name;
         <li class="nav-item nav-item-bot">
             <a class="nav-link collapsed" id="nav-bot-id-@item.ID" data-id="@item.ID" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-@item.ID" aria-controls="submenu-@item.ID">
                 <i class="fa fa fa-robot" aria-hidden="true"></i> @item.Name.ToUpper()
@@ -34,7 +35,7 @@
                                 {
                                     foreach (var form in item.FormQuestionAnswers)
                                     {
-                                        var urlQna = Url.Content("~") + "bot/qna/?formQnAId=" + form.ID + "&botId="+ item.ID + "&botName="+ item.Name;
+                                        var urlQna = Url.Content("~") + "bot/qna/?formQnAId=" + form.ID + "&botId=" + item.ID + "&botName=" + item.Name;
                                         <li class="nav-item nav-item-bot-sub">
                                             <a class="nav-link bot-qna-link" data-id="@item.ID" id="bot-scenarios-@item.ID-@form.ID" href="@urlQna"><i class="fa fa-file" aria-hidden="true" style="display:unset"></i>@form.Name</a>
                                         </li>
@@ -46,6 +47,12 @@
                     <li class="nav-item nav-item-bot-sub">
                         <a class="nav-link" href="@urlBotSearchEngine" data-id="@item.ID" id="bot-search-@item.ID"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>
                     </li>
+                    @if (item.ID == 3019)
+                    {
+                        <li class="nav-item nav-item-bot-sub">
+                            <a class="nav-link" href="@urlBotMedicalSymptoms" data-id="@item.ID" id="bot-med-@item.ID"><i class="fa fa-briefcase-medical" aria-hidden="true"></i>Triệu chứng y tế</a>
+                        </li>
+                    }
                     <li class="nav-item nav-item-bot-sub">
                         <a class="nav-link" href="@urlSetting" data-id="@item.ID" id="bot-setting-@item.ID"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>
                     </li>

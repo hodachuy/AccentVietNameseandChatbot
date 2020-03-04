@@ -135,6 +135,15 @@ namespace BotProject.Common
             return text;
         }
 
+        public static string EscapeXmlOutTag(string text)
+        {
+            if (!string.IsNullOrEmpty(text))
+            {
+                return text.Replace("&", "&amp;").Replace("\"", "&quot;").Replace("'", "&apos;");
+            }
+            return text;
+        }
+
         public const int OnWeekDay = 1;
         public const int OffWeekDay = 0;
         /// <summary>

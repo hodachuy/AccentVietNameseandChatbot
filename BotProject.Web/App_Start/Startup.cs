@@ -30,8 +30,6 @@ namespace BotProject.Web.App_Start
             ConfigAutofac(app);
             ConfigureAuth(app);
             ConfigSignalR(app);
-
-
         }
         private void ConfigSignalR(IAppBuilder app)
         {

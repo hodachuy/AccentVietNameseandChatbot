@@ -52,6 +52,10 @@ namespace BotProject.Service
 
         public ApplicationFacebookUser GetByUserId(string userId)
         {
+            if (String.IsNullOrEmpty(userId))
+            {
+                return null;
+            }
             var lstUserDuplicate = _appFacebookRepository.GetMulti(x => x.UserId == userId).ToList();
             if(lstUserDuplicate.Count() == 0)
             {

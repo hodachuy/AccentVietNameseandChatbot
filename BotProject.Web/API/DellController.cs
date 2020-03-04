@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
 
@@ -28,6 +29,39 @@ namespace BotProject.Web.API
         {
             return Ok();
         }
+
+        [HttpPost]
+        [Route("random")]
+        public IHttpActionResult RandomT(string id)
+        {
+            var newValue = new Random().Next(1, 7);
+            object context;
+            if (Request.Properties.TryGetValue("MS_HttpContext", out context))
+            {
+                var httpContext = context as HttpContextBase;
+                if (httpContext != null && httpContext.Session != null)
+                {
+                    var lastValue = httpContext.Session["LastValue"] as int?;
+                    httpContext.Session["LastValue"] = newValue;
+
+                    //var user = httpContext.Session["User"] as ApplicationUser;
+                    NumberResult num = new NumberResult
+                    {
+                        NewValue = newValue,
+                        LastValue = lastValue ?? 0
+                    };
+                    return Ok(num );
+                }
+            }
+            return Ok();
+        }
+
+        public class NumberResult
+        {
+            public int NewValue { set; get; }
+            public int LastValue { set; get; }
+        }
+
 
         //[Route("getdgpservice")]
         //[HttpGet]

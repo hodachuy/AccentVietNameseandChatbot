@@ -27,6 +27,7 @@ namespace AIMLbot.Normalize
         /// <returns>The resulting string</returns>
         public static string TransformInput(string input)
         {
+            //return input;
             return input.ToUpper();
         }
     }

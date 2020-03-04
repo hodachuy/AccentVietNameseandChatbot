@@ -1,0 +1,40 @@
+﻿.bot-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: transparent;
+  overflow: hidden;
+  z-index:99999999;
+}
+.bot-loading-bar.hide{
+  display:none;
+}
+.bot-loading-bar--active::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20%;
+  height: 4px;
+  background-color: #2ec551;
+  
+  -webkit-box-shadow: 10px 0 30px 15px #2ec551, -10px 0 30px 15px #2ec551;
+  -moz-box-shadow: 10px 0 30px 15px #2ec551, -10px 0 30px 15px #2ec551;
+  box-shadow: 10px 0 30px 15px #2ec551, -10px 0 30px 15px #2ec551;
+  
+  -webkit-animation: loadBar 2s cubic-bezier(.09,.89,.7,.71) infinite;
+  -moz-animation: loadBar 2s cubic-bezier(.09,.89,.7,.71) infinite;
+  animation: loadBar 2s cubic-bezier(.09,.89,.7,.71) infinite;
+}
+
+@keyframes loadBar {
+  0% {
+    left: -10%;
+  }
+  100% {
+    left: 110%;
+  }
+}
+

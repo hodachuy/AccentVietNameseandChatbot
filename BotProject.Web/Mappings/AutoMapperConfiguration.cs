@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BotProject.Common.ViewModels;
 using BotProject.Model.Models;
 using BotProject.Web.Models;
 
@@ -22,6 +23,9 @@ namespace BotProject.Web.Mappings
                 cfg.CreateMap<AIMLFile, AIMLViewModel>();
                 cfg.CreateMap<AttributeSystem, AttributeSystemViewModel>();
                 cfg.CreateMap<SystemConfig, SystemConfigViewModel>();
+                cfg.CreateMap<StoreProcQuesGroupViewModel, QuestionGroup>();
+                cfg.CreateMap<MedicalSymptom, MedicalSymptomViewModel>();
+                cfg.CreateMap<StoreProcBotViewModel, BotViewModel>();
             });
         }
     }

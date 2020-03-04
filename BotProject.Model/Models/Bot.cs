@@ -23,6 +23,8 @@ namespace BotProject.Model.Models
 		[MaxLength(256)]
 		public string Alias { set; get; }
 
+        //public DateTime? LastTrainTime { set; get; }
+
         [Required]
         [StringLength(128)]
         [Column(TypeName = "nvarchar")]

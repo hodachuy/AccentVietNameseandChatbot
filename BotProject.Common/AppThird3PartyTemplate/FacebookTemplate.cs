@@ -33,7 +33,8 @@ namespace BotProject.Common.AppThird3PartyTemplate
                  new
                  {
                      recipient = new { id = sender },
-                     message = new {
+                     message = new
+                     {
                          attachment = new
                          {
                              type = "image",
@@ -95,7 +96,7 @@ namespace BotProject.Common.AppThird3PartyTemplate
 
         public static JObject GetMessageTemplateTextAndQuickReply(string text, string sender, string patternQuickReply, string titleQuickReply)
         {
-            if(!String.IsNullOrEmpty(patternQuickReply) && !String.IsNullOrEmpty(titleQuickReply))
+            if (!String.IsNullOrEmpty(patternQuickReply) && !String.IsNullOrEmpty(titleQuickReply))
             {
                 return JObject.FromObject(
                      new
@@ -145,9 +146,9 @@ namespace BotProject.Common.AppThird3PartyTemplate
                               elements = from q in lstSearchNLP
                                          select new
                                          {
-                                             title = q.question.Substring(0,60)+"...",
+                                             title = q.question.Substring(0, 60) + "...",
                                              item_url = "",
-                                             image_url = ConfigHelper.ReadString("Domain")+ "assets/images/whatsaquestion.jpg",
+                                             image_url = ConfigHelper.ReadString("Domain") + "assets/images/whatsaquestion.jpg",
                                              subtitle = "FAQs",
                                              buttons = new[]
                                              {
@@ -164,5 +165,41 @@ namespace BotProject.Common.AppThird3PartyTemplate
                   },
               });
         }
+        public static Object GetMessageTemplateGenericByListMed(string sender, List<SearchSymptomViewModel> lstSearchNLP, string urlDetail = "")
+        {
+            return JObject.FromObject(
+              new
+              {
+                  recipient = new { id = sender },
+                  message = new
+                  {
+                      attachment = new
+                      {
+                          type = "template",
+                          payload = new
+                          {
+                              template_type = "generic",
+                              elements = from q in lstSearchNLP
+                                         select new
+                                         {
+                                             title = q.description.Substring(0, 60) + "...",
+                                             item_url = "",
+                                             image_url = ConfigHelper.ReadString("Domain") + "assets/images/medical-logo.jpg",
+                                             subtitle = "FAQs",
+                                             buttons = new[]
+                                             {
+                                                             new
+                                                                {
+                                                                   type = "web_url",
+                                                                   url = ConfigHelper.ReadString("Domain")+"home/FaqMedSymptoms/"+q.id+"",
+                                                                   title = "Xem chi tiết"
+                                                                },
+                                                        }
+                                         }
+                          }
+                      }
+                  },
+              });
+        }  
     }
 }

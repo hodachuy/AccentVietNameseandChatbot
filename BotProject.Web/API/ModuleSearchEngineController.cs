@@ -12,6 +12,7 @@ using BotProject.Model.Models;
 using System.Text.RegularExpressions;
 using System.Web;
 using BotProject.Web.Infrastructure.Extensions;
+using Newtonsoft.Json.Linq;
 
 namespace BotProject.Web.API
 {
@@ -101,11 +102,17 @@ namespace BotProject.Web.API
 
         [Route("getareabybotid")]
         [HttpPost]
-        public HttpResponseMessage GetListAreaByBotId(HttpRequestMessage request, int botId)
+        public HttpResponseMessage GetListAreaByBotId(HttpRequestMessage request, JObject jsonData)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
+                dynamic json = jsonData;
+                int botId = json.botId;
+                if (botId == 0)
+                {
+                    return request.CreateResponse(HttpStatusCode.NoContent);
+                }
                 var mdArea = _moduleSearchEngineService.GetListMdArea(botId).ToList();
                 response = request.CreateResponse(HttpStatusCode.OK, mdArea);
                 return response;

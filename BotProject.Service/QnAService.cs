@@ -15,8 +15,14 @@ namespace BotProject.Service
     {
 		FormQuestionAnswer AddFormQnAnswer(ref FormQuestionAnswer formQnAnswer);
         QuestionGroup AddQuesGroup(QuestionGroup quesGroup);
+        void UpdateQuesGroup(QuestionGroup quesGroup);
         Question AddQuestion(Question question);
+        IEnumerable<Question> GetListQuestionByGroupID(int grID);
         Answer AddAnswer(Answer answer);
+        IEnumerable<Answer> GetListAnswerByGroupID(int grID);
+
+        Question GetByQuestionId(int quesId);
+        Answer GetByAnswerId(int answerId);
 
         void UpdateQuestion(Question question);
         void UpdateAnswer(Answer answer);
@@ -27,11 +33,13 @@ namespace BotProject.Service
         Answer DeleteAnswer(int id);
         void DeleteAnswerByQuestionGroup(int qGroupID);
 
+        QuestionGroup GetQuestionGroupById(int Id);
         QuestionGroup DeleteQuestionGroup(int id);
         void DeleteMultiQuestionGroupByFormID(int formId);
 
         IEnumerable<QuestionGroup> GetListQuestionGroupByBotID(int botID);
         IEnumerable<QuestionGroup> GetListQuestionGroupByFormQnAnswerID(int formQnAnswerID);
+        IEnumerable<StoreProcQuesGroupViewModel> GetListQuestionGroupByFormQnAnswerPagination(int formQnAnswerID, int page, int pageSize);
         IEnumerable<QuestionGroup> GetListQuesGroupToAimlByFormQnAnswerID(int formQnAnwerID);
 		IEnumerable<FormQuestionAnswer> GetListFormByBotID(int botID);
 
@@ -40,6 +48,8 @@ namespace BotProject.Service
         QuesTargetViewModel GetQuesByTarget(string target, int botID);
 
 		FormQuestionAnswer GetFormQnAnswerById(int id);
+
+        int CheckExitsQuestionScriptByBotID(string contentQuestion, int botID, int quesGroupID);
 
         void Save();
 
@@ -197,6 +207,58 @@ namespace BotProject.Service
         public void UpdateFormQuestionAnswer(FormQuestionAnswer formQnAnswer)
         {
             _formQuestionAnswerRepository.Update(formQnAnswer);
+        }
+
+        public IEnumerable<StoreProcQuesGroupViewModel> GetListQuestionGroupByFormQnAnswerPagination(int formQnAnswerID, int page, int pageSize)
+        {
+            string filter = "qg.FormQuestionAnswerID = " + formQnAnswerID + " and " + "qg.IsKeyword = " + 1;
+            var lstQuesGroup = _quesGroupRepository.GetListQuesGroup(filter,"",page, pageSize);
+
+            //var lstQuesGroup = _quesGroupRepository.GetMulti(x => x.FormQuestionAnswerID == formQnAnswerID && x.IsKeyword == true).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            //if (lstQuesGroup.Count != 0)
+            //{
+            //    foreach (var item in lstQuesGroup)
+            //    {
+            //        item.Questions = _questionRepository.GetMulti(x => x.QuestionGroupID == item.ID).ToList();
+            //        item.Answers = _answerRepository.GetMulti(x => x.QuestionGroupID == item.ID).ToList();
+            //    }
+            //}
+            return lstQuesGroup;
+        }
+
+        public IEnumerable<Question> GetListQuestionByGroupID(int grID)
+        {
+            return _questionRepository.GetMulti(x => x.QuestionGroupID == grID);
+        }
+
+        public IEnumerable<Answer> GetListAnswerByGroupID(int grID)
+        {
+            return _answerRepository.GetMulti(x => x.QuestionGroupID == grID);
+        }
+
+        public Question GetByQuestionId(int quesId)
+        {
+            return _questionRepository.GetSingleById(quesId);
+        }
+
+        public Answer GetByAnswerId(int answerId)
+        {
+            return _answerRepository.GetSingleById(answerId);
+        }
+
+        public void UpdateQuesGroup(QuestionGroup quesGroup)
+        {
+            _quesGroupRepository.Update(quesGroup);
+        }
+
+        public QuestionGroup GetQuestionGroupById(int Id)
+        {
+            return _quesGroupRepository.GetSingleById(Id);
+        }
+
+        public int CheckExitsQuestionScriptByBotID(string contentQuestion, int botID, int quesGroupID)
+        {
+            return _quesGroupRepository.CheckExitsQuestionScriptByBotID(contentQuestion, botID, quesGroupID);
         }
     }
 }

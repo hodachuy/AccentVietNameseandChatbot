@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using static BotProject.Web.WebApiConfig;
 
 namespace BotProject.Web
 {
@@ -12,6 +14,12 @@ namespace BotProject.Web
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapHttpRoute(
+                name: "DefaultApi2",
+                routeTemplate: "api/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional }
+            ).RouteHandler = new SessionHttpControllerRouteHandler();
 
             routes.MapRoute(
               name: "Faq",
@@ -45,6 +53,13 @@ namespace BotProject.Web
             name: "Bot Search Engine",
             url: "bot/searchengine/{alias}/{botId}",
             defaults: new { controller = "Bot", action = "BotSearchEngine", botId = UrlParameter.Optional },
+              namespaces: new string[] { "BotProject.Web.Controllers" }
+            );
+
+            routes.MapRoute(
+            name: "Bot Medical Symptoms",
+            url: "bot/medicalsymptoms/{alias}/{botId}",
+            defaults: new { controller = "Bot", action = "BotMedicalSymptoms", botId = UrlParameter.Optional },
               namespaces: new string[] { "BotProject.Web.Controllers" }
             );
 

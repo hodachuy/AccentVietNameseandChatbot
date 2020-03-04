@@ -12,11 +12,30 @@ using System.Drawing.Drawing2D;
 using System.Security.Cryptography;
 using System.Globalization;
 using System.Collections;
+using System.Web;
 
 namespace BotProject.Common
 {
     public class CommonSer
     {
+        public static string RemoveAllTagHTML(string text, string tagExcept)
+        {
+            if (String.IsNullOrEmpty(text))
+            {
+                return "";
+            }
+            text = HttpUtility.HtmlDecode(text);
+            if (!String.IsNullOrEmpty(tagExcept))
+            {
+                text = Regex.Replace(text, @"<(?!"+ tagExcept + ").*?>", "").Trim();
+            }
+            else
+            {
+                text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
+            }
+            return text;
+        }
+
         /// <summary>
         /// Lấy thời gian trước đó
         /// </summary>

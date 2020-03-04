@@ -80,9 +80,11 @@
     <Compile Include="Abstract\Auditable.cs" />
     <Compile Include="Abstract\IAuditable.cs" />
     <Compile Include="Models\ApplicationFacebookUser.cs" />
+    <Compile Include="Models\ApplicationPlatformUser.cs" />
     <Compile Include="Models\ApplicationThirdParty.cs" />
     <Compile Include="Models\ApplicationZaloUser.cs" />
     <Compile Include="Models\AttributeFacebookUser.cs" />
+    <Compile Include="Models\AttributePlatformUser.cs" />
     <Compile Include="Models\AttributeSystem.cs" />
     <Compile Include="Models\AttributeZaloUser.cs" />
     <Compile Include="Models\FileDocument.cs" />
@@ -116,6 +118,7 @@
     <Compile Include="Models\MdSearch.cs" />
     <Compile Include="Models\MdSearchCategory.cs" />
     <Compile Include="Models\MdVoucher.cs" />
+    <Compile Include="Models\MedicalSymptom.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\ModuleFollowCard.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatient.cs" />

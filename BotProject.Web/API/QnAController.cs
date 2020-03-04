@@ -13,6 +13,9 @@ using System.Configuration;
 using System.IO;
 using System.Text;
 using BotProject.Common;
+using AutoMapper;
+using BotProject.Common.ViewModels;
+using Newtonsoft.Json.Linq;
 
 namespace BotProject.Web.API
 {
@@ -22,6 +25,7 @@ namespace BotProject.Web.API
         private IQnAService _qnaService;
         private IAIMLFileService _aimlService;
         private ApiQnaNLRService _apiNLR;
+        private IBotService _botService;
         private string[] _userSayStart = new string[]
         {
             CommonConstants.UserSay_IsStartDefault,
@@ -31,11 +35,13 @@ namespace BotProject.Web.API
         };
         public QnAController(IErrorService errorService,
                             IQnAService qnaService,
-                            IAIMLFileService aimlService) : base(errorService)
+                            IAIMLFileService aimlService,
+                            IBotService botService) : base(errorService)
         {
             _qnaService = qnaService;
             _aimlService = aimlService;
             _apiNLR = new ApiQnaNLRService();
+            _botService = botService;
         }
 
         [Route("create")]
@@ -180,6 +186,154 @@ namespace BotProject.Web.API
             });
         }
 
+        [Route("createSingleRowQnA")]
+        [HttpPost]
+        public HttpResponseMessage CreateSingleRowQnaVm(HttpRequestMessage request, FormQnACommonViewModel formQnAVm)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                bool IsCreated = false;
+                if (formQnAVm != null && formQnAVm.QuestionGroupViewModels != null && formQnAVm.QuestionGroupViewModels.Count() != 0)
+                {
+                    var lstQuesGroupVm = formQnAVm.QuestionGroupViewModels.ToList();
+                    // Check nội dung kịch bản đã tồn tại
+                    var lstQuestionCheck = lstQuesGroupVm[0].QnAViewModel.QuestionViewModels;
+                    if (lstQuestionCheck.Count() != 0)
+                    {
+                        foreach(var itemQuesCheck in lstQuestionCheck)
+                        {
+                            var rsCheckQuesExist = _qnaService.CheckExitsQuestionScriptByBotID(itemQuesCheck.ContentText, formQnAVm.BotID, lstQuesGroupVm[0].ID);
+                            if(rsCheckQuesExist == 0)
+                            {
+                                IsCreated = false;
+                                response = request.CreateResponse(HttpStatusCode.OK, new {status = IsCreated, msg = "Nội dung "+ "'"+ itemQuesCheck.ContentText + "'" + " đã được nhập trước đó" });
+                                return response;
+                            }
+                        }
+                    }
+
+
+                    // nếu trường hợp cập nhật chỉ thêm các question group với id rỗng
+                    if (formQnAVm.TypeAction == Common.CommonConstants.UpdateQnA)
+                    {
+                        var lstQues = _qnaService.GetListQuestionByGroupID(formQnAVm.QuestionGroupViewModels.ToList()[0].ID);
+                        if(lstQues != null && lstQues.Count() != 0)
+                        {
+                            foreach (var quesItem in lstQues)
+                            {
+                                _apiNLR.DeleteQuestion(quesItem.ID);
+                            }
+                        }
+                        //var lstAnswer = _qnaService.GetListAnswerByGroupID(formQnAVm.QuestionGroupViewModels.ToList()[0].ID);
+                        _qnaService.DeleteQuesByQuestionGroup(formQnAVm.QuestionGroupViewModels.ToList()[0].ID);
+                        _qnaService.DeleteAnswerByQuestionGroup(formQnAVm.QuestionGroupViewModels.ToList()[0].ID);
+                        _qnaService.Save();
+                    }
+
+                    if (lstQuesGroupVm != null && lstQuesGroupVm.Count() != 0)
+                    {
+                        foreach (var itemQGroup in lstQuesGroupVm)
+                        {
+                            try
+                            {
+                                int qGroupID = itemQGroup.ID;
+                                QuestionGroup questionGroup = new QuestionGroup();
+                                questionGroup = _qnaService.GetQuestionGroupById(qGroupID);
+                                questionGroup.IsKeyword = itemQGroup.IsKeyWord;
+                                _qnaService.UpdateQuesGroup(questionGroup);
+                                _qnaService.Save();
+
+                                if (itemQGroup.QnAViewModel.QuestionViewModels != null && itemQGroup.QnAViewModel.QuestionViewModels.Count() != 0
+                                    && itemQGroup.QnAViewModel.AnswerViewModels != null && itemQGroup.QnAViewModel.AnswerViewModels.Count() != 0)
+                                {
+                                    if (itemQGroup.QnAViewModel.QuestionViewModels != null &&
+                                        itemQGroup.QnAViewModel.QuestionViewModels.Count() != 0)
+                                    {
+                                        var lstQuestion = itemQGroup.QnAViewModel.QuestionViewModels;
+                                        foreach (var itemQues in lstQuestion)
+                                        {
+                                            string code = qGroupID + Guid.NewGuid().ToString();
+                                            if (itemQues.IsThatStar == false)
+                                            {
+                                                Question quesDb = new Question();
+                                                quesDb.UpdateQuestion(itemQues);
+                                                quesDb.CodeSymbol = code;
+                                                quesDb.QuestionGroupID = qGroupID;
+                                                _qnaService.AddQuestion(quesDb);
+                                                _qnaService.Save();
+                                                string resultAPI = _apiNLR.AddKnowledgeQuestion(formQnAVm.BotID, formQnAVm.FormQuestionAnswerID, quesDb.ID, itemQues.ContentText, itemQues.Target);
+                                                if (!String.IsNullOrEmpty(resultAPI))
+                                                {
+                                                    quesDb.IsSendAPI = true;
+                                                    _qnaService.UpdateQuestion(quesDb);
+                                                    _qnaService.Save();
+                                                }
+                                            }
+                                            else
+                                            {
+                                                //content
+                                                Question quesDb = new Question();
+                                                quesDb.UpdateQuestion(itemQues);
+                                                quesDb.CodeSymbol = code;
+                                                quesDb.QuestionGroupID = qGroupID;
+                                                _qnaService.AddQuestion(quesDb);
+                                                _qnaService.Save();
+                                                string resultAPI = _apiNLR.AddKnowledgeQuestion(formQnAVm.BotID, formQnAVm.FormQuestionAnswerID, quesDb.ID, itemQues.ContentText, itemQues.Target);
+                                                if (!String.IsNullOrEmpty(resultAPI))
+                                                {
+                                                    quesDb.IsSendAPI = true;
+                                                    _qnaService.UpdateQuestion(quesDb);
+                                                    _qnaService.Save();
+                                                }
+                                            }
+                                        }
+                                        _qnaService.Save();
+                                    }
+                                    if (itemQGroup.QnAViewModel.AnswerViewModels != null &&
+                                            itemQGroup.QnAViewModel.AnswerViewModels.Count() != 0)
+                                    {
+                                        var lstAnswer = itemQGroup.QnAViewModel.AnswerViewModels;
+                                        foreach (var itemAns in lstAnswer)
+                                        {
+                                            Answer ansDb = new Answer();
+                                            ansDb.UpdateAnswer(itemAns);
+                                            ansDb.QuestionGroupID = qGroupID;
+                                            _qnaService.AddAnswer(ansDb);
+                                        }
+                                        _qnaService.Save();
+                                    }
+                                    IsCreated = true;
+                                }
+                                else
+                                {
+                                    IsCreated = false;
+                                    response = request.CreateResponse(HttpStatusCode.BadGateway, new { status = IsCreated, msg = "" });
+                                    return response;
+                                }
+                                
+                            }
+                            catch (Exception ex)
+                            {
+                                IsCreated = false;
+                                response = request.CreateResponse(HttpStatusCode.BadGateway, new { status = IsCreated, msg = "" });
+                                return response;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        IsCreated = false;
+                        response = request.CreateResponse(HttpStatusCode.BadGateway, new { status = IsCreated, msg = "" });
+                        return response;
+                    }
+                }
+                IsCreated = true;
+                response = request.CreateResponse(HttpStatusCode.OK, new { status = IsCreated, msg = "Thành công" });
+                return response;
+            });
+        }
+
         [Route("getaimlqna")]
         [HttpGet]
         public HttpResponseMessage GetAimlQnA(HttpRequestMessage request, int formQnaID, string formAlias, string userID, int botID, bool status = false)
@@ -187,8 +341,20 @@ namespace BotProject.Web.API
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
+
+                var formQnaDb = _qnaService.GetFormQnAnswerById(formQnaID);
+                formQnaDb.Status = status;
+                _qnaService.UpdateFormQuestionAnswer(formQnaDb);
+                _qnaService.Save();
+
+                var botDb = _botService.GetByID(botID);
+                botDb.UpdatedDate = DateTime.Now;
+                _botService.Update(botDb);
+                _botService.Save();
+
                 var lstQnaGroup = _qnaService.GetListQuesGroupToAimlByFormQnAnswerID(formQnaID).ToList();
                 bool IsAiml = false;
+                string msg = "";
                 // open file bot aiml
                 //string pathFolderAIML = ConfigurationManager.AppSettings["AIMLPath"].ToString() + "User_" + userID + "_BotID_" + botID;
                 string pathFolderAIML = PathServer.PathAIML;
@@ -242,6 +408,12 @@ namespace BotProject.Web.API
                             var itemQGroup = lstQnaGroup[indexQGroup];
                             var lstAnswer = itemQGroup.Answers.ToList();
                             var lstQuestion = itemQGroup.Questions.ToList();
+                            if(lstQuestion.Count() == 0 && lstAnswer.Count() == 0)
+                            {
+                                IsAiml = false;
+                                response = request.CreateResponse(HttpStatusCode.OK, new { res = IsAiml, msg = "Dữ liệu chưa được lưu hoặc để trống" } );
+                                return response;
+                            }
                             string postbackAnswer = String.Empty;
                             if (lstAnswer.Count() != 0 && lstAnswer.Count() > 1)
                             {
@@ -354,7 +526,7 @@ namespace BotProject.Web.API
                 catch (Exception ex)
                 {
                     IsAiml = false;
-                    response = request.CreateResponse(HttpStatusCode.OK, IsAiml);
+                    response = request.CreateResponse(HttpStatusCode.OK, new { res = IsAiml, msg = "Lỗi hệ thống" });
                     return response;
                 }
                 finally
@@ -362,7 +534,7 @@ namespace BotProject.Web.API
 
                 }
                 //}
-                response = request.CreateResponse(HttpStatusCode.OK, IsAiml);
+                response = request.CreateResponse(HttpStatusCode.OK, new { res = IsAiml, msg = "Thành công" });
                 return response;
             });
         }
@@ -376,6 +548,38 @@ namespace BotProject.Web.API
                 HttpResponseMessage response = null;
                 var lstBotQna = _qnaService.GetListQuestionGroupByFormQnAnswerID(formQnaID).OrderBy(x => x.Index).ToList();
                 response = request.CreateResponse(HttpStatusCode.OK, lstBotQna);
+                return response;
+            });
+        }
+        [Route("getQnaByFormIdPagination")]
+        [HttpGet]
+        public HttpResponseMessage GetQnAnswerByFormIdPagination(HttpRequestMessage request, int formQnaID, int page, int pageSize = 5)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                int totalRow = 0;
+                var lstQuesGroup = _qnaService.GetListQuestionGroupByFormQnAnswerPagination(formQnaID, page, pageSize).ToList(); 
+                var lstQuesGroupVm = Mapper.Map<IEnumerable<StoreProcQuesGroupViewModel>, IEnumerable<QuestionGroup>>(lstQuesGroup);
+
+                if (lstQuesGroupVm.Count() != 0)
+                {
+                    totalRow = lstQuesGroup[0].Total;
+                    foreach (var item in lstQuesGroupVm)
+                    {
+                        item.Questions = _qnaService.GetListQuestionByGroupID(item.ID).ToList();
+                        item.Answers = _qnaService.GetListAnswerByGroupID(item.ID).ToList();
+                    }
+                }
+                var paginationSet = new PaginationSet<QuestionGroup>()
+                {
+                    Items = lstQuesGroupVm,
+                    Page = page,
+                    TotalCount = totalRow,
+                    MaxPage = pageSize,
+                    TotalPages = (int)Math.Ceiling((decimal)totalRow / pageSize)
+                };
+                response = request.CreateResponse(HttpStatusCode.OK, paginationSet);
                 return response;
             });
         }
@@ -408,14 +612,33 @@ namespace BotProject.Web.API
                 return response;
             });
         }
-
-        [Route("deletequesgroup")]
+        
+        [Route("addQuesGroup")]
         [HttpPost]
-        public HttpResponseMessage DeleteQuesGroup(HttpRequestMessage request, int qGroupID)
+        public HttpResponseMessage AddQuesGroup(HttpRequestMessage request, QuestionGroupViewModel qGroupVm)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
+                QuestionGroup qGroupDb = new QuestionGroup();
+                qGroupDb.UpdateQuestionGroup(qGroupVm);
+                _qnaService.AddQuesGroup(qGroupDb);
+                _qnaService.Save();
+                response = request.CreateResponse(HttpStatusCode.Created, qGroupDb);
+                return response;
+            });
+
+        }
+
+        [Route("deletequesgroup")]
+        [HttpPost]
+        public HttpResponseMessage DeleteQuesGroup(HttpRequestMessage request, JObject jsonData)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                dynamic json = jsonData;
+                int qGroupID = json.qGroupID;
                 var qGroup = _qnaService.DeleteQuestionGroup(qGroupID);
                 _qnaService.Save();
                 response = request.CreateResponse(HttpStatusCode.Created, qGroup);
@@ -423,92 +646,105 @@ namespace BotProject.Web.API
             });
         }
 
-        [Route("updatequestion")]
+
+        [Route("addUpdateQuestion")]
         [HttpPost]
-        public HttpResponseMessage UpdateQuestion(HttpRequestMessage request, QuestionViewModel quesVm)
+        public HttpResponseMessage AddUpdateQuestion(HttpRequestMessage request, QuestionViewModel quesVm)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                if (!ModelState.IsValid)
+                Question quesDb = new Question();
+                if (quesVm.ID == 0)
                 {
-                    request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                    quesDb.UpdateQuestion(quesVm);
+                    quesDb.QuestionGroupID = quesVm.QuestionGroupID;
+                    quesDb.IsSendAPI = false;
+                    _qnaService.AddQuestion(quesDb);
                 }
                 else
                 {
-                    try
-                    {
-                        var _lstQuesUpdate = _qnaService.GetListQuesCodeSymbol(quesVm.CodeSymbol).ToList();
-                        if (_lstQuesUpdate.Count != 0)
-                        {
-                            foreach (var item in _lstQuesUpdate)
-                            {
-                                if (item.IsThatStar == false)
-                                {
-                                    item.ContentText = quesVm.ContentText.Trim();
-                                }
-                                else
-                                {
-                                    item.ContentText = quesVm.ContentText.Trim() + " *";
-                                }
-                                _qnaService.UpdateQuestion(item);
-                            }
-                            _qnaService.Save();
-                        }
-
-                        response = request.CreateResponse(HttpStatusCode.OK, "Success");
-                    }
-                    catch (Exception ex)
-                    {
-                        response = request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
-                    }
+                    quesDb = _qnaService.GetByQuestionId(quesVm.ID);
+                    quesDb.ContentText = quesVm.ContentText;
+                    _qnaService.UpdateQuestion(quesDb);
                 }
+                _qnaService.Save();
+                response = request.CreateResponse(HttpStatusCode.Created, quesDb);
                 return response;
             });
         }
 
-        [Route("updateanswer")]
+        [Route("addUpdateAnswer")]
         [HttpPost]
-        public HttpResponseMessage UpdateAnswer(HttpRequestMessage request, AnswerViewModel answerVm)
+        public HttpResponseMessage AddUpdateAnswer(HttpRequestMessage request, AnswerViewModel answerVm)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
                 Answer answerDb = new Answer();
-                answerDb.UpdateAnswer(answerVm);
+                if(answerVm.ID == 0)
+                {
+                    answerDb.UpdateAnswer(answerVm);
+                    _qnaService.AddAnswer(answerDb);
+                }
+                else
+                {
+                    answerDb = _qnaService.GetByAnswerId(answerVm.ID);
+                    answerDb.ContentText = answerVm.ContentText;
+                    answerDb.CardPayload = answerVm.CardPayload;
+                    answerDb.CardID = answerVm.CardID;
+                    _qnaService.UpdateAnswer(answerDb);
+                }
                 _qnaService.Save();
                 response = request.CreateResponse(HttpStatusCode.Created, answerDb);
                 return response;
             });
         }
 
-        [Route("addquestion")]
-        [HttpPost]
-        public HttpResponseMessage AddQuestion(HttpRequestMessage request, QuestionViewModel quesVm)
-        {
-            return CreateHttpResponse(request, () =>
-            {
-                HttpResponseMessage response = null;
+        //[Route("updatequestion")]
+        //[HttpPost]
+        //public HttpResponseMessage UpdateQuestion(HttpRequestMessage request, QuestionViewModel quesVm)
+        //{
+        //    return CreateHttpResponse(request, () =>
+        //    {
+        //        HttpResponseMessage response = null;
+        //        if (!ModelState.IsValid)
+        //        {
+        //            request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+        //        }
+        //        else
+        //        {
+        //            try
+        //            {
+        //                var _lstQuesUpdate = _qnaService.GetListQuesCodeSymbol(quesVm.CodeSymbol).ToList();
+        //                if (_lstQuesUpdate.Count != 0)
+        //                {
+        //                    foreach (var item in _lstQuesUpdate)
+        //                    {
+        //                        if (item.IsThatStar == false)
+        //                        {
+        //                            item.ContentText = quesVm.ContentText.Trim();
+        //                        }
+        //                        else
+        //                        {
+        //                            item.ContentText = quesVm.ContentText.Trim() + " *";
+        //                        }
+        //                        _qnaService.UpdateQuestion(item);
+        //                    }
+        //                    _qnaService.Save();
+        //                }
 
-                string code = quesVm.QuestionGroupID + Guid.NewGuid().ToString();
-                Question quesDb = new Question();
-                quesDb.UpdateQuestion(quesVm);
-                quesDb.CodeSymbol = code;
-                quesDb.QuestionGroupID = quesVm.QuestionGroupID;
-                _qnaService.AddQuestion(quesDb);
+        //                response = request.CreateResponse(HttpStatusCode.OK, "Success");
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                response = request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
+        //            }
+        //        }
+        //        return response;
+        //    });
+        //}
 
-                // is that star
-                Question quesDbStar = new Question();
-                quesDbStar.UpdateQuestionIsStar(quesVm);
-                quesDbStar.CodeSymbol = code;
-                quesDbStar.QuestionGroupID = quesVm.QuestionGroupID;
-                _qnaService.AddQuestion(quesDbStar);
-
-                _qnaService.Save();
-                response = request.CreateResponse(HttpStatusCode.Created, quesDbStar);
-                return response;
-            });
-        }
-
+     
     }
 }

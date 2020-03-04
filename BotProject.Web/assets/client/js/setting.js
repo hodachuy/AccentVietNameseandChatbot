@@ -4,7 +4,7 @@ var txtError = 'Lỗi',
 var BotSetting = {
     ID: $("#settingID").val(),
     FormName: $("#formName").val(),
-    BotID: $("#botID").val(),
+    BotID: $("#botId").val(),
     Color: $("#formColor").val(),
     Logo: $(".file-preview-image").attr('src'),
     CardID: $("#cardID").val(),
@@ -15,6 +15,7 @@ var BotSetting = {
     StopWord: $('#stopWord').val(),
     TimeOut:$('#TimeOut').val(),
     ProactiveMessageText: ($("#ProactiveMessageText").val() == null ? "" : $("#ProactiveMessageText").val()),
+    PathCssCustom: $("#formPathCss").val()
     //IsProactiveMessage: $('#isProactiveMessage').val(),
 }
 
@@ -160,6 +161,7 @@ $("#btnSaveSettings").on('click', function () {
     BotSetting.IsHaveTimeoutOTP = $('#isHaveTimeoutOTP').val();
     BotSetting.MessageTimeoutOTP = $('#txtMessageTimeoutOTP').val();
 
+    BotSetting.PathCssCustom = $('#formPathCss').val();
 
     BotSetting.StopWord = strTag;
     BotSetting.TextIntroductory = $("#txtIntro").html();
@@ -183,7 +185,7 @@ $("#btnSaveSettings").on('click', function () {
     console.log($("#BotCategoryID").val())
     if ($("#UrlAPI").val() != "") {
         var BotSystemConfig = {};
-        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.BotID = $("#botId").val();
         BotSystemConfig.Code = "UrlAPI";
         BotSystemConfig.ValueString = $("#UrlAPI").val();
         BotSystemConfig.ValueInt = "";
@@ -191,7 +193,7 @@ $("#btnSaveSettings").on('click', function () {
     }
     if ($("#BotCategoryID").val() != "") {
         var BotSystemConfig = {};
-        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.BotID = $("#botId").val();
         BotSystemConfig.Code = "ParamBotID";
         BotSystemConfig.ValueString = $("#BotCategoryID").val();
         BotSystemConfig.ValueInt = $("#BotCategoryID").val();
@@ -199,7 +201,7 @@ $("#btnSaveSettings").on('click', function () {
     }
     if ($("#NumberReponse").val() != "") {
         var BotSystemConfig = {};
-        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.BotID = $("#botId").val();
         BotSystemConfig.Code = "ParamNumberResponse";
         BotSystemConfig.ValueString = $("#NumberReponse").val();
         BotSystemConfig.ValueInt = $("#NumberReponse").val();
@@ -208,14 +210,14 @@ $("#btnSaveSettings").on('click', function () {
 
     if ($("#AreaID").val() != "") {
         var BotSystemConfig = {};
-        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.BotID = $("#botId").val();
         BotSystemConfig.Code = "ParamAreaID";
         BotSystemConfig.ValueString = $("#AreaID").val();
         BotSystemConfig.ValueInt = $("#AreaID").val();
         lstBotSystemConfig.push(BotSystemConfig);
     } else {
         var BotSystemConfig = {};
-        BotSystemConfig.BotID = $("#botID").val();
+        BotSystemConfig.BotID = $("#botId").val();
         BotSystemConfig.Code = "ParamAreaID";
         BotSystemConfig.ValueString = "0";
         BotSystemConfig.ValueInt = "0";
@@ -320,7 +322,7 @@ function loadCodeScriptDeployBot() {
     var urlApp = _Host + "static/js/app.js";
     var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
     var encryptedUserID = CryptoJS.AES.encrypt($("#userID").val(), "Secret Passphrase").toString();
-    var encryptedBotID = CryptoJS.AES.encrypt($("#botID").val(), "Secret Passphrase").toString();
+    var encryptedBotID = CryptoJS.AES.encrypt($("#botId").val(), "Secret Passphrase").toString();
     var encryptedColor = CryptoJS.AES.encrypt($("#formColor").val(), "Secret Passphrase").toString();
     var html = '';
     html += "   ---Thêm đoạn mã vào trang HTML - trong thẻ body---\n";
@@ -458,12 +460,13 @@ function getAreaByBotId(botId) {
         $("#TempAreaID").empty().append(html);
         return;
     }
-    var param = {
+    var params = {
         botId: botId,
     };
+    params = JSON.stringify(params);
     var url = "api/modulesearchengine/getareabybotid";
-    var svr = new AjaxCall(url, param);
-    svr.callServiceGET(function (data) {
+    var svr = new AjaxCall(url, params);
+    svr.callServicePOST(function (data) {
         if (data.length != 0) {
             html += '<select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Tất cả---</option>';
                 $.each(data, function (index, value) {

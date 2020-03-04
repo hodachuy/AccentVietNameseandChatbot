@@ -1,16 +1,17 @@
-﻿// click vao tag neu co id hay symbol thi` this se lay' roi` set vao` lai
-var urlQnACreate = "api/qna/create",
-    urlQnAGet = "api/qna/getqnabyformid",
+﻿var urlQnACreate = "api/qna/create",
+    urlQnAGet = "api/qna/getQnaByFormIdPagination",//"api/qna/getqnabyformid",
     urlQnADeleteQues = "api/qna/deleteques",
     urlQnADeleteAnswer = "api/qna/deleteanswer",
     urlQnADeleteQuesGroup = "api/qna/deletequesgroup",
-    urlQnAUpdateQues = "api/qna/updatequestion",
-    urlQnAUpdateAnswer = "api/qna/updateanswer",
-    urlQnAAddQues = "api/qna/addquestion",
-    urlQnAAddAnswer = "api/qna/addanswer";
-
-var countData = $('.wrap-content .panel.panel-flat').length,
-		limitpage = 5,
+    urlQnA_AddUpdateQues = "api/qna/addUpdatequestion",
+    urlQnA_AddUpdateAnswer = "api/qna/addUpdateanswer",
+    //urlQnAAddQues = "api/qna/addquestion",
+    //urlQnAAddAnswer = "api/qna/addanswer",
+    urlQnAAddQuesGroup = "api/qna/addQuesGroup",
+    urlQnA_CreateSingleRowQnA = "api/qna/createSingleRowQnA";
+var pageSize = 5;
+var countData = 0,// $('.wrap-content .panel.panel-flat').length,
+		limitpage = 10,
 		txtError = 'Lỗi dữ liệu không được để trống',
 		txtAlert = 'Bạn có những từ khóa giống nhau!',
 		txtAlert1 = 'Bạn có chắc chắn muốn xóa nhóm này?',
@@ -24,16 +25,37 @@ var TypeAction = "Create";
 var positionTagError = 0;
 //init event form Qna
 var checkAlert = false;
+
+var questionModel = {
+    'ID': '0',
+    'ContentText': '',
+    'IsThatStar': '',
+    'QuestionGroupID': '',
+    'CodeSymbol': '',
+    'Index': '',
+    'Target': ''
+},
+    answerModel = {
+        'ID': '0',
+        'ContentText': '',
+        'CardID': '',
+        'QuestionGroupID': '',
+        'CardPayload': '',
+        'Index': ''
+    }
 $(document).ready(function () {
     // init load form if have data from db
-    new ActionFormQnA().GetQnAnswerById();
+    new ActionFormQnA().GetQnAnswerById(1, pageSize);
 
-    // loading
-    appendPaging(countData, limitpage);
+    // select number show table
+    $("select#results-pp").change(function () {
+        pageSize = $(this).children("option:selected").val();
+        new ActionFormQnA().GetQnAnswerById(1, pageSize);
+    });
 
     $('.selectKeyword').selectpicker();
     $('.selectKeyword').on('show.bs.select', function (e) {
-        var val = $(this).selectpicker('val');    
+        var val = $(this).selectpicker('val');
         $(this).parents('.bt').find('.selectKeyword option').remove();
         $(this).parents('.bt').find('select.selectKeyword').append(card());
         $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
@@ -50,11 +72,11 @@ $(document).ready(function () {
         $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
     });
 
-    $('body').on('change','.target-field',function(e){
-        if($(this).val().trim().length > 1){
+    $('body').on('change', '.target-field', function (e) {
+        if ($(this).val().trim().length > 1) {
             var target = stringToSlug($(this).val());
             $(this).val(target);
-        }else{
+        } else {
             $(this).val('');
         }
     })
@@ -79,7 +101,7 @@ $(document).ready(function () {
                     }
                 });
                 $('#paging').empty();
-                appendPaging(countDataPage, lmtPage);
+                //appendPaging(countDataPage, lmtPage);
             }
         });
         setTimeout(function () {
@@ -108,7 +130,7 @@ $(document).ready(function () {
                     }
                 });
                 $('#paging').empty();
-                appendPaging(countDataPage, lmtPage);
+                //appendPaging(countDataPage, lmtPage);
             }
         });
 
@@ -136,64 +158,95 @@ $(document).ready(function () {
     initEventQnA();
 
     $('body').on('click', '.addCt', function (event) {
-        var sizeCT = $('.wrap-content').attr('data-countpanel');
-        sizeCT = parseInt(sizeCT);
-        var stri = '<div class="panel panel-flat" indexpanel="' + (sizeCT + 1) + '" data-quesgroup-id="">' +
-                '<div class="panel-body">' +
-                    '<i class="fa fa-plus icon-bin addCtShowNextRow"></i>'+
-                    '<i class="fa fa-trash icon-bin rmCt"></i>' +
-                    '<div class="wrMove">' +
-                        '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>' +
-                        '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>' +
-                    '</div>' +
-                    '<div class="row">' +
-                        '<div class="col-lg-5 userSay">' +
-                            '<label>Người dùng nói</label>' +
-                            '<div class="input-group">' +
-                                '<ul class="tags checkvalid">' +
-                                    '<li class="tagAdd taglist">' +
-                                        '<input type="text" autocomplete="off" class="search-field">' +
-                                    '</li>' +
-                                '</ul>' +
-                                '<span class="input-group-addon">' +
-                                    '<input type="checkbox" class="styled" ' +
-                                    'checked="checked">' +
-                                '</span>' +
-                            '</div>' +
+        var qGroupVm = {
+            'ID': '',//quesGroupId,
+            'Index': '',// index + 1,
+            'FormQuestionAnswerID': $("#formQnaID").val(),
+            'BotID': $("#botId").val(),
+            'IsKeyWord': true,
+        }
+        var svr = new AjaxCall(urlQnAAddQuesGroup, JSON.stringify(qGroupVm));
+        svr.callServicePOST(function (data) {
+            console.log(data)
+            var sizeCT = $('.wrap-content').attr('data-countpanel');
+            sizeCT = parseInt(sizeCT);
+            var stri = '<div class="panel panel-flat" indexpanel="' + (sizeCT + 1) + '" data-quesgroup-id="' + data.ID + '">' +
+                    '<div class="panel-body">' +
+                        '<i class="fa fa-save icon-bin saveRowQnA" style="color:red"></i>' +
+                        '<i class="fa fa-plus icon-bin addCtShowNextRow"></i>' +
+                        '<i class="fa fa-trash icon-bin rmCt"></i>' +
+                        '<div class="wrMove">' +
+                            '<i class="fa fa-arrow-up moveTop" style="display: inline;"></i>' +
+                            '<i class="fa fa-arrow-down moveBot" style="display: inline;"></i>' +
                         '</div>' +
-                        '<div class="col-lg-5 botReply">' +
-                            '<label>Bot trả lời với&nbsp;</label>' +
-                            '<label class="learn_switchbot">' +
-                                '<input type="checkbox" class="learn_switchinput" checked="">' +
-                                '<span class="learn_sliderbot learn_roundbot"></span>' +
-                            '</label>' +
-                            '<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>' +
-                            '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">' +
-                                '<label>' +
-                                    '<input type="checkbox" class="switchery randomText" style="display:none">' +
-                                    '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>' +
-                                    'Ngẫu nhiên' +
-                                '</label>' +
-                            '</div>' +
-                            '<div class="wrbutton" indexbt="1">' +
-                                '<div class="bt" data-answer-id="">' +
-                                    '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
-                                    '<i class="fa fa-times icon-bin rmText"></i>' +
+                        '<div class="row">' +
+                            '<div class="col-lg-5 userSay">' +
+                                '<label>Người dùng nói</label>' +
+                                '<div class="input-group">' +
+                                    '<ul class="tags checkvalid">' +
+                                        '<li class="tagAdd taglist">' +
+                                            '<input type="text" autocomplete="off" class="search-field">' +
+                                        '</li>' +
+                                    '</ul>' +
+                                    '<span class="input-group-addon">' +
+                                        '<input type="checkbox" class="styled" ' +
+                                        'checked="checked">' +
+                                    '</span>' +
                                 '</div>' +
                             '</div>' +
-                            '<button type="button" class="btn btn-rounded mt20 w100 hidden"><i class="fa fa-plus"></i> ' + txtbt + '</button>' +
+                            '<div class="col-lg-5 botReply">' +
+                                '<label>Bot trả lời với&nbsp;</label>' +
+                                '<label class="learn_switchbot">' +
+                                    '<input type="checkbox" class="learn_switchinput" checked="">' +
+                                    '<span class="learn_sliderbot learn_roundbot"></span>' +
+                                '</label>' +
+                                '<label class="card-bot hidden"><i class="fa fa-plus-circle"></i><a href="#">Tạo thẻ</a></label>' +
+                                '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">' +
+                                    '<label>' +
+                                        '<input type="checkbox" class="switchery randomText" style="display:none">' +
+                                        '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>' +
+                                        'Ngẫu nhiên' +
+                                    '</label>' +
+                                '</div>' +
+                                '<div class="wrbutton" indexbt="1">' +
+                                    '<div class="bt" data-answer-id="">' +
+                                        '<input type="text" autocomplete="off" class="form-control checkvalid" maxlength="320">' +
+                                        '<i class="fa fa-times icon-bin rmText"></i>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<button type="button" class="btn btn-rounded mt20 w100 hidden"><i class="fa fa-plus"></i> ' + txtbt + '</button>' +
+                            '</div>' +
+                            '<div class="col-lg-2 metaTarget">' +
+                                '<label>Ý định</label>' +
+                                '<div class="input-group">' +
+                                    '<input type="text" class="target-field" data-target-id="">' +
+                                '</div>' +
+                            '</div>' +
                         '</div>' +
-                        '<div class="col-lg-2 metaTarget">'+
-                            '<label>Ý định</label>' +
-                            '<div class="input-group">'+
-                                '<input type="text" class="target-field" data-target-id="">'+
-                            '</div>'+
-                        '</div>'+
                     '</div>' +
-                '</div>' +
-            '</div>';
+                '</div>';
 
-        $('.wrap-content').prepend(stri);
+            $('.wrap-content').prepend(stri);
+            $('.rmCt, .addCtShowNextRow, .saveRowQnA, .moveBot, .moveTop').show();
+
+            $('.wrap-content').attr('data-countpanel', sizeCT + 1);
+
+            if ($('.limitPage').length > 0) {
+                var lmtPage = $('.limitPage').val();
+                var countDataPage = $('.wrap-content .panel.panel-flat').length;
+                $('.wrap-content .panel.panel-flat').each(function (index, el) {
+                    if (index >= lmtPage) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                });
+                $('#paging').empty();
+                //appendPaging(countDataPage, lmtPage);
+            }
+        })
+
+
         //$('[indexpanel="'+(sizeCT+1)+'"] .tokenfield').tagEditor({
         //  	placeholder: 'Enter tags ...',
         //  	autocomplete: { delay: 250, html: true, position: { collision: 'flip' }}
@@ -211,23 +264,7 @@ $(document).ready(function () {
         //        var switchery = new Switchery(elems[i]);
         //    }
         //}
-        $('.rmCt, .addCtShowNextRow, .moveBot, .moveTop').show();
 
-        $('.wrap-content').attr('data-countpanel', sizeCT + 1);
-
-        if ($('.limitPage').length > 0) {
-            var lmtPage = $('.limitPage').val();
-            var countDataPage = $('.wrap-content .panel.panel-flat').length;
-            $('.wrap-content .panel.panel-flat').each(function (index, el) {
-                if (index >= lmtPage) {
-                    $(this).hide();
-                } else {
-                    $(this).show();
-                }
-            });
-            $('#paging').empty();
-            appendPaging(countDataPage, lmtPage);
-        }
 
         //var lmtPage = 5;//$('.limitPage').val();
         //var countDataPage = $('.wrap-content .panel.panel-flat').length;
@@ -241,7 +278,6 @@ $(document).ready(function () {
         //$('#paging').empty();
         //appendPaging(countDataPage, lmtPage);
         ReOder();
-
     })
 
     $('body').on('click', '.randomText', function (event) {
@@ -371,6 +407,20 @@ $(document).ready(function () {
             },
             callback: function (result) {
                 if (result) {
+                    var elmQuesGroup = element.parents('.panel').eq(0);
+                    var quesGroupId = elmQuesGroup.attr('data-quesgroup-id');
+                    console.log(quesGroupId);
+                    if (quesGroupId != undefined) {
+                        var param = {
+                            qGroupID: quesGroupId,
+                        };
+                        var urlTest = "api/qna/getaimlqna";
+                        var svr = new AjaxCall(urlQnADeleteQuesGroup, JSON.stringify(param));
+                        svr.callServicePOST(function (data) {
+
+                        });
+                    }
+
                     var siict = $('.wrap-content .panel-flat').length;
                     element.parents('.panel-flat').find('.userSay ul.tags li.addedTag').each(function (index, el) {
                         if ($(el).hasClass('error-tag')) {
@@ -396,7 +446,7 @@ $(document).ready(function () {
                             }
                         });
                         $('#paging').empty();
-                        appendPaging(countDataPage, lmtPage);
+                        //appendPaging(countDataPage, lmtPage);
                     }
                     //recount panel
                     $('.wrap-content').attr('data-countpanel', $('.wrap-content .panel-flat').length);
@@ -412,6 +462,7 @@ $(document).ready(function () {
         sizeCT = parseInt(sizeCT);
         var stri = '<div class="panel panel-flat" indexpanel="' + (sizeCT + 1) + '" data-quesgroup-id="">' +
                 '<div class="panel-body">' +
+                    '<i class="fa fa-save icon-bin saveRowQnA"></i>' +
                     '<i class="fa fa-plus icon-bin addCtShowNextRow"></i>' +
                     '<i class="fa fa-trash icon-bin rmCt"></i>' +
                     '<div class="wrMove">' +
@@ -470,64 +521,10 @@ $(document).ready(function () {
         ReOder();
     })
 
-    // ReOder
-    ReOder = function () {
-        $('.wrap-content .panel.panel-flat').each(function (index) {
-            $(this).attr('indexpanel', index + 1);
-        });
-    }
-    // Paging
-    $('body').on('change', '.limitPage', function () {
-        var limitPageVal = $(this).find(":selected").val();
-        if (Math.ceil(countData / limitPageVal) > 1) {
-            var htmlUl = fn_htmlPaging(countData, limitPageVal);
-            $('.pagination').remove();
-            $('#paging .panel-flat').prepend(htmlUl);
-            $('.wrap-content .panel.panel-flat').each(function (index, el) {
-                if (index >= limitPageVal) {
-                    $(this).hide();
-                } else {
-                    $(this).show();
-                }
-            });
-        } else {
-            $('.pagination').remove();
-            $('.wrap-content .panel.panel-flat').show();
-        }
-
-    });
-    $('body').on('click', '.pagination li a', function (event) {
-        event.preventDefault();
-        var getLimitPage = $('.limitPage').val();
-        if (!$(this).closest('li').hasClass('disabled') && !$(this).closest('li').hasClass('active')) {
-            if ($(this).closest('li').hasClass('prev')) {
-                $('.pagination li').eq($('.pagination li.active').index() - 1).find('a').trigger('click');
-            } else if ($(this).closest('li').hasClass('next')) {
-                $('.pagination li').eq($('.pagination li.active').index() + 1).find('a').trigger('click');
-            } else {
-                var pagelocation = $(this).attr('attr-page');
-                $(this).closest('li').siblings('li').removeClass('active');
-                $(this).closest('li').addClass('active');
-                $('.pagination li').removeClass('disabled');
-                if ($(this).closest('li').index() == 1) {
-                    $('.pagination li.prev').addClass('disabled');
-                }
-                if ($(this).closest('li').index() == ($('.pagination li').length - 2)) {
-                    $('.pagination li.next').addClass('disabled');
-                }
-
-                $('.wrap-content .panel.panel-flat').each(function (index, el) {
-                    if (((pagelocation - 1) * getLimitPage < (index + 1)) && ((index + 1) <= pagelocation * getLimitPage)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            }
-        }
-    });
-
-    $('.saveKeyword').click(function () {
+    // Save single row qna
+    $("body").on('click', '.saveRowQnA', function () {
+        var elmQuesGroup = $(this).parents('.panel').eq(0);
+        console.log($(this).parents('.panel').eq(0))
         if ($('.error-tag').length > 0) {
             if (!checkAlert) {
                 checkAlert = true;
@@ -617,65 +614,67 @@ $(document).ready(function () {
         //});
         // End Validate Form
         if (checkvalid) {
+            $(this).css('color', 'unset');
             var arData = [];
             var arrGrpQna = [];
-            $('.wrap-content .panel-flat').each(function (index, el) {
-                var quesGroupId = $(this).attr('data-quesgroup-id');
-                var userSays = [];
-                var userExactly = $(this).find('.userSay .styled').is(':checked');
-                var targetText = $(this).find('.metaTarget').eq(0).find('input').val();
-                //console.log(targetText)
-                //console.log($(this).find('.metaTarget'))
-                //userExactly = userExactly ? 1 : 0;
-                $(this).find('.tags .addedTag').each(function (index1, el1) {
-                    var question = {
-                        'ContentText': decodeEntities($(el1).children('input').val()).trim(),//decode bỏ các ký tự đặc biệt ngoại trừ dấu *
-                        'IsThatStar': userExactly,
-                        'QuestionGroupID': quesGroupId,
-                        'CodeSymbol': $(el1).children('input').attr('data-ques-symbol'),
-                        'ID': $(el1).children('input').attr('data-ques-id'),
-                        'Index': index1,
-                        'Target': targetText
-                    }
-                    userSays.push(question);
-                })
 
-                var botReplys = [];
-                $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
-                    var reply = '',
-                        cardID = '',
-                        cardPayload = '';
-                    if ($(this).find('select.selectKeyword').length > 0) {
-                        cardID = $(this).find('select.selectKeyword').val();
-                        cardPayload = "postback_card_" + $(this).find('select.selectKeyword').val();
-                    } else {
-                        reply = $(this).find('input[type=text]').val();
-                    }
-                    console.log(reply)
-                    var answer = {
-                        'ContentText': reply,
-                        'CardID': cardID,
-                        'QuestionGroupID': quesGroupId,
-                        'CardPayload': cardPayload,
-                        'Index': index1,
-                        'ID': $(el1).attr('data-answer-id')
-                    }
-                    botReplys.push(answer);
-                });
-
-                var groupQnA = {
-                    'ID': quesGroupId,
-                    'Index': index + 1,
-                    'FormQuestionAnswerID': $("#formQnaID").val(),
-                    'BotID': $("#botId").val(),
-                    'IsKeyWord': userExactly,
-                    'QnAViewModel': {
-                        'QuestionViewModels': userSays,// k join toi chuoi~
-                        'AnswerViewModels': botReplys
-                    }
+            var elmQuesGroup = $(this).parents('.panel').eq(0);
+            var quesGroupId = elmQuesGroup.attr('data-quesgroup-id');
+            var userSays = [];
+            var userExactly = elmQuesGroup.find('.userSay .styled').is(':checked');
+            var targetText = elmQuesGroup.find('.metaTarget').eq(0).find('input').val();
+            //console.log(targetText)
+            //console.log($(this).find('.metaTarget'))
+            //userExactly = userExactly ? 1 : 0;
+            elmQuesGroup.find('.tags .addedTag').each(function (index1, el1) {
+                var question = {
+                    'ContentText': decodeEntities($(el1).children('input').val()).trim(),//decode bỏ các ký tự đặc biệt ngoại trừ dấu *
+                    'IsThatStar': userExactly,
+                    'QuestionGroupID': quesGroupId,
+                    'CodeSymbol': $(el1).children('input').attr('data-ques-symbol'),
+                    'ID': $(el1).children('input').attr('data-ques-id'),
+                    'Index': index1,
+                    'Target': targetText
                 }
-                arrGrpQna.push(groupQnA);
+                userSays.push(question);
+            })
+
+            var botReplys = [];
+            elmQuesGroup.find('.botReply .wrbutton .bt').each(function (index1, el1) {
+                var reply = '',
+                    cardID = '',
+                    cardPayload = '';
+                if ($(this).find('select.selectKeyword').length > 0) {
+                    cardID = $(this).find('select.selectKeyword').val();
+                    cardPayload = "postback_card_" + $(this).find('select.selectKeyword').val();
+                } else {
+                    reply = $(this).find('input[type=text]').val();
+                }
+                console.log(reply)
+                var answer = {
+                    'ContentText': reply,
+                    'CardID': cardID,
+                    'QuestionGroupID': quesGroupId,
+                    'CardPayload': cardPayload,
+                    'Index': index1,
+                    'ID': $(el1).attr('data-answer-id')
+                }
+                botReplys.push(answer);
             });
+
+            var groupQnA = {
+                'ID': quesGroupId,
+                'Index': quesGroupId,
+                'FormQuestionAnswerID': $("#formQnaID").val(),
+                'BotID': $("#botId").val(),
+                'IsKeyWord': userExactly,
+                'QnAViewModel': {
+                    'QuestionViewModels': userSays,// k join toi chuoi~
+                    'AnswerViewModels': botReplys
+                }
+            }
+            arrGrpQna.push(groupQnA);
+
             var formQnAVm = {
                 'BotID': $("#botId").val(),
                 'Status': $("#statusFormQnA").val(),
@@ -684,17 +683,16 @@ $(document).ready(function () {
                 'QuestionGroupViewModels': arrGrpQna
 
             }
-
             // Type Action : Add Update
             console.log(formQnAVm)
 
-            var svr = new AjaxCall(urlQnACreate, JSON.stringify(formQnAVm));
+            var svr = new AjaxCall(urlQnA_CreateSingleRowQnA, JSON.stringify(formQnAVm));
             svr.callServicePOST(function (data) {
                 //console.log(data)
-                if (data == true) {
+                if (data.status == true) {
                     // refresh load new data updated
-                    new ActionFormQnA().GetQnAnswerById();
-                    new ActionFormQnA().RenderToAiml($("#statusFormQnA").val());
+                    new ActionFormQnA().GetQnAnswerById(1, pageSize);
+                    //new ActionFormQnA().RenderToAiml($("#statusFormQnA").val());
                     $("#model-notify").modal('hide');
                     swal({
                         title: "Thông báo",
@@ -703,12 +701,12 @@ $(document).ready(function () {
                         type: "success"
                     }, function () { $("#model-notify").modal('show'); });
 
-                    $('#dialog_iframe',window.parent.document).attr('src',$('#dialog_iframe',window.parent.document).attr('src'));
+                    $('#dialog_iframe', window.parent.document).attr('src', $('#dialog_iframe', window.parent.document).attr('src'));
 
                 } else {
                     swal({
                         title: "Error",
-                        text: "Lỗi lưu dữ liệu.",
+                        text: data.msg == "" ? "Lưu thất bại" : data.msg,
                         confirmButtonColor: "#ed4956",
                         type: "error"
                     });
@@ -716,31 +714,313 @@ $(document).ready(function () {
             })
 
         } else {
-
             swal({
                 title: "Error",
                 text: txtError,
                 confirmButtonColor: "#ed4956",
                 type: "error"
             }, function () {
-               $('html, body').animate({
-                scrollTop: positionTagError
-            }, 'fast');
+                $('html, body').animate({
+                    scrollTop: positionTagError
+                }, 'fast');
             });
         }
+    })
+
+    // ReOder
+    ReOder = function () {
+        $('.wrap-content .panel.panel-flat').each(function (index) {
+            $(this).attr('indexpanel', index + 1);
+        });
+    }
+    // Paging
+    $('body').on('change', '.limitPage', function () {
+        var limitPageVal = $(this).find(":selected").val();
+        if (Math.ceil(countData / limitPageVal) > 1) {
+            var htmlUl = fn_htmlPaging(countData, limitPageVal);
+            $('.pagination').remove();
+            $('#paging .panel-flat').prepend(htmlUl);
+            $('.wrap-content .panel.panel-flat').each(function (index, el) {
+                if (index >= limitPageVal) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        } else {
+            $('.pagination').remove();
+            $('.wrap-content .panel.panel-flat').show();
+        }
+
+    });
+    $('body').on('click', '.pagination li a', function (event) {
+        event.preventDefault();
+        var getLimitPage = $('.limitPage').val();
+        if (!$(this).closest('li').hasClass('disabled') && !$(this).closest('li').hasClass('active')) {
+            if ($(this).closest('li').hasClass('prev')) {
+                $('.pagination li').eq($('.pagination li.active').index() - 1).find('a').trigger('click');
+            } else if ($(this).closest('li').hasClass('next')) {
+                $('.pagination li').eq($('.pagination li.active').index() + 1).find('a').trigger('click');
+            } else {
+                var pagelocation = $(this).attr('attr-page');
+                $(this).closest('li').siblings('li').removeClass('active');
+                $(this).closest('li').addClass('active');
+                $('.pagination li').removeClass('disabled');
+                if ($(this).closest('li').index() == 1) {
+                    $('.pagination li.prev').addClass('disabled');
+                }
+                if ($(this).closest('li').index() == ($('.pagination li').length - 2)) {
+                    $('.pagination li.next').addClass('disabled');
+                }
+
+                $('.wrap-content .panel.panel-flat').each(function (index, el) {
+                    if (((pagelocation - 1) * getLimitPage < (index + 1)) && ((index + 1) <= pagelocation * getLimitPage)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+        }
+    });
+
+    $('.saveKeyword').click(function () {
+        $(".bot-loading-bar").removeClass('hide');
+        var param = {
+            botId: $("#botId").val(),
+            formQnaID: $("#formQnaID").val(),
+            formAlias: $("#formAlias").val(),
+            userID: $("#userId").val(),
+            status: $("#statusFormQnA").val(),
+        };
+        var urlTest = "api/qna/getaimlqna";
+        var svr = new AjaxCall(urlTest, param);
+        svr.callServiceGET(function (data) {
+            console.log(data)
+            $(".bot-loading-bar").addClass('hide');
+            if (data.res) {
+                $("#model-notify").modal('hide');
+                swal({
+                    title: "Thông báo",
+                    text: "Huấn luyện thành công",
+                    confirmButtonColor: "#EF5350",
+                    type: "success"
+                }, function () { $("#model-notify").modal('show'); });
+            } else {
+                swal({
+                    title: "Thông báo",
+                    text: "Huấn luyện thất bại! " + data.msg,
+                    confirmButtonColor: "#EF5350",
+                    type: "error"
+                }, function () { $("#model-notify").modal('show'); });
+            }
+        });
+
+
+        //if ($('.error-tag').length > 0) {
+        //    if (!checkAlert) {
+        //        checkAlert = true;
+        //        bootbox.alert({
+        //            message: txtAlert,
+        //            callback: function () {
+        //                checkAlert = false;
+        //            }
+        //        });
+        //    }
+        //    return false;
+        //}
+        //// Validate Form
+        //var checkvalid = true;
+        //$('.wrap-content .panel-flat').each(function (index, el) {
+        //    if ($('.wrap-content .panel-flat').length >= 1) {
+        //        $(this).find('.checkvalid:not(".bootstrap-select")').each(function (index1, el1) {
+
+        //            if (!$(this).is('select') && !$(this).hasClass('tags')) {
+        //                var validVal = $(this).val();
+        //                if (validVal.trim() == '') {
+        //                    if ($(this).parents('.bt').length) {
+        //                        $(this).parents('.bt').addClass('has-error');
+        //                    } else {
+        //                        $(this).parents('.input-group').addClass('has-error');
+        //                    }
+        //                    checkvalid = false;
+        //                    positionTagError = $(this).offset().top;
+        //                } else {
+        //                    $(this).parents('.has-error').removeClass('has-error');
+        //                }
+        //            } else if ($(this).hasClass('tags')) {
+        //                if ($(this).children('.addedTag').size() <= 0) {
+        //                    $(this).parent().addClass('has-error');
+        //                } else {
+        //                    $(this).parent().removeClass('has-error');
+        //                }
+        //            } else {
+        //                var validVal = $(this).val();
+        //                if (validVal == null) {
+        //                    if ($(this).parents('.bt').length) {
+        //                        $(this).parents('.bt').addClass('has-error');
+        //                    } else {
+        //                        $(this).parents('.input-group').addClass('has-error');
+        //                    }
+        //                    checkvalid = false;
+        //                    positionTagError = $(this).offset().top;
+        //                } else {
+        //                    $(this).parents('.has-error').removeClass('has-error');
+        //                }
+        //            }
+
+        //        });
+
+        //        $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
+        //            if ($(this).find('select.selectKeyword').length > 0) {
+        //                cardID = $(this).find('select.selectKeyword').val();
+        //                console.log(cardID)
+        //                if (cardID == '' || cardID == undefined || cardID == null) {
+        //                    $(this).addClass('has-error');
+        //                    checkvalid = false;
+        //                    positionTagError = $(this).offset().top;
+        //                } else {
+        //                    $(this).parents('.has-error').removeClass('has-error');
+        //                }
+        //            }
+        //        });
+
+        //        if ($(this).find('.tags .addedTag').length == 0) {
+        //            checkvalid = false;
+        //        }
+        //    }
+        //});
+
+        //if ($('.titleLearning').val() == '') {
+        //    $('.titleLearning').parent().addClass('has-error');
+        //    checkvalid = false;
+        //} else {
+        //    $('.titleLearning').parent().removeClass('has-error');
+        //}
+        //// End Validate Form
+        //if (checkvalid) {
+        //    var arData = [];
+        //    var arrGrpQna = [];
+        //    $('.wrap-content .panel-flat').each(function (index, el) {
+        //        var quesGroupId = $(this).attr('data-quesgroup-id');
+        //        var userSays = [];
+        //        var userExactly = $(this).find('.userSay .styled').is(':checked');
+        //        var targetText = $(this).find('.metaTarget').eq(0).find('input').val();
+        //        //userExactly = userExactly ? 1 : 0;
+        //        $(this).find('.tags .addedTag').each(function (index1, el1) {
+        //            var question = {
+        //                'ContentText': decodeEntities($(el1).children('input').val()).trim(),//decode bỏ các ký tự đặc biệt ngoại trừ dấu *
+        //                'IsThatStar': userExactly,
+        //                'QuestionGroupID': quesGroupId,
+        //                'CodeSymbol': $(el1).children('input').attr('data-ques-symbol'),
+        //                'ID': $(el1).children('input').attr('data-ques-id'),
+        //                'Index': index1,
+        //                'Target': targetText
+        //            }
+        //            userSays.push(question);
+        //        })
+
+        //        var botReplys = [];
+        //        $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
+        //            var reply = '',
+        //                cardID = '',
+        //                cardPayload = '';
+        //            if ($(this).find('select.selectKeyword').length > 0) {
+        //                cardID = $(this).find('select.selectKeyword').val();
+        //                cardPayload = "postback_card_" + $(this).find('select.selectKeyword').val();
+        //            } else {
+        //                reply = $(this).find('input[type=text]').val();
+        //            }
+        //            console.log(reply)
+        //            var answer = {
+        //                'ContentText': reply,
+        //                'CardID': cardID,
+        //                'QuestionGroupID': quesGroupId,
+        //                'CardPayload': cardPayload,
+        //                'Index': index1,
+        //                'ID': $(el1).attr('data-answer-id')
+        //            }
+        //            botReplys.push(answer);
+        //        });
+
+        //        var groupQnA = {
+        //            'ID': quesGroupId,
+        //            'Index': index + 1,
+        //            'FormQuestionAnswerID': $("#formQnaID").val(),
+        //            'BotID': $("#botId").val(),
+        //            'IsKeyWord': userExactly,
+        //            'QnAViewModel': {
+        //                'QuestionViewModels': userSays,// k join toi chuoi~
+        //                'AnswerViewModels': botReplys
+        //            }
+        //        }
+        //        arrGrpQna.push(groupQnA);
+        //    });
+        //    var formQnAVm = {
+        //        'BotID': $("#botId").val(),
+        //        'Status': $("#statusFormQnA").val(),
+        //        'TypeAction': TypeAction,
+        //        'FormQuestionAnswerID': $("#formQnaID").val(),
+        //        'QuestionGroupViewModels': arrGrpQna
+
+        //    }
+        //    // Type Action : Add Update
+        //    console.log(formQnAVm)
+        //    var svr = new AjaxCall(urlQnACreate, JSON.stringify(formQnAVm));
+        //    svr.callServicePOST(function (data) {
+        //        //console.log(data)
+        //        if (data == true) {
+        //            // refresh load new data updated
+        //            new ActionFormQnA().GetQnAnswerById(1, pageSize);
+        //            new ActionFormQnA().RenderToAiml($("#statusFormQnA").val());
+        //            $("#model-notify").modal('hide');
+        //            swal({
+        //                title: "Thông báo",
+        //                text: "Đã lưu",
+        //                confirmButtonColor: "#EF5350",
+        //                type: "success"
+        //            }, function () { $("#model-notify").modal('show'); });
+
+        //            $('#dialog_iframe',window.parent.document).attr('src',$('#dialog_iframe',window.parent.document).attr('src'));
+
+        //        } else {
+        //            swal({
+        //                title: "Error",
+        //                text: "Lỗi lưu dữ liệu.",
+        //                confirmButtonColor: "#ed4956",
+        //                type: "error"
+        //            });
+        //        }
+        //    })
+
+        //} else {
+        //    swal({
+        //        title: "Error",
+        //        text: txtError,
+        //        confirmButtonColor: "#ed4956",
+        //        type: "error"
+        //    }, function () {
+        //        $('html, body').animate({
+        //            scrollTop: positionTagError
+        //        }, 'fast');
+        //    });
+        //}
     })
 })
 
 
 // CRUD - GET
 ActionFormQnA = function () {
-    this.GetQnAnswerById = function () {
+    this.GetQnAnswerById = function (page, pageSize) {
         var param = {
-            formQnaID: $("#formQnaID").val()
+            formQnaID: $("#formQnaID").val(),
+            page: page,
+            pageSize: pageSize
         };
         var svr = new AjaxCall(urlQnAGet, param);
-        svr.callServiceGET(function (data) {
-            //console.log(data)
+        svr.callServiceGET(function (res) {
+            data = res.Items;
+            console.log(res)
             if (data.length != 0) {
                 TypeAction = "Update";
                 var templateData = templateFormQnA(data);
@@ -749,8 +1029,17 @@ ActionFormQnA = function () {
                 $.each(lstCardSelected, function (index, value) {
                     activeDropdown(value.cardID, value.answerID)
                 })
+
                 // reactive event tag
                 initEventQnA();
+                // loading
+                var pagination = {
+                    Page: res.Page,
+                    TotalCount: res.TotalCount,
+                    MaxPage: res.MaxPage,
+                    TotalPages: res.TotalPages
+                }
+                appendPaging(pagination);
             }
 
         });
@@ -768,6 +1057,7 @@ ActionFormQnA = function () {
 
             html += '<div class="panel panel-flat" indexpanel="' + index + '"  data-quesgroup-id="' + grQnAnswerID + '">';
             html += '<div class="panel-body">';
+            html += '<i class="fa fa-save icon-bin saveRowQnA"></i>';
             html += '<i class="fa fa-plus icon-bin addCtShowNextRow"></i>';
             html += '<i class="fa fa-trash icon-bin rmCt"></i>';
             html += '<div class="wrMove">';
@@ -934,18 +1224,41 @@ ActionFormQnA = function () {
                     html += '<i class="fa fa-plus"></i> Thêm câu trả lời ngẫu nhiên';
                     html += '</button>';
                 }
+            } else { // answer and question is null
+                html += '<label class="learn_switchbot">';
+                html += '<input type="checkbox" class="learn_switchinput" checked="">';
+                html += '<span class="learn_sliderbot learn_roundbot"></span>';
+                html += '</label>';
+                html += '<div class="checkbox checkbox-switchery switchery-xs pull-right pd0">';
+                html += '<label>';
+                html += '<input type="checkbox" class="switchery randomText" style="display:none">';
+                html += '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;">';
+                html += '<small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small>';
+                html += '</span>';
+                html += 'Ngẫu nhiên';
+                html += '</label>';
+                html += '</div>';
+                html += '<div class="wrbutton" indexbt="1">';
+                html += '<div class="bt" data-answer-id="">';
+                html += '<input type="text" autocomplete="off" value="" class="form-control checkvalid" maxlength="320">';
+                html += '<i class="fa fa-times icon-bin rmText"></i>';
+                html += '</div>';
+                html += '</div>';
+                html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
+                html += '<i class="fa fa-plus"></i> Thêm câu trả lời ngẫu nhiên';
+                html += '</button>';
             }
             html += '</div>';
 
-            html +='<div class="col-lg-2 metaTarget">';
+            html += '<div class="col-lg-2 metaTarget">';
             html += '    <label>Ý định</label>';
-            html +='    <div class="input-group">';
+            html += '    <div class="input-group">';
             html += '               <input type="text" class="target-field" data-target-id="" value="' + (targetText == null ? "" : targetText) + '">';
-            html +='    </div>';
-            html +='</div>';
-            html +='</div>';
-            html +='</div>';
-            html +='</div>';
+            html += '    </div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
+            html += '</div>';
         }
         html += '</div>';
         return html;
@@ -991,24 +1304,79 @@ ActionFormQnA = function () {
         });
     }
 }
-function appendPaging(countData, limitpage) {
-    var htmlPaging = '';
-    if (Math.ceil(countData / limitpage) > 1) {
-        htmlPaging += '<div class="panel-flat">';
-        htmlPaging += fn_htmlPaging(countData, limitpage);
-        htmlPaging += '<div class="pull-right">';
-        htmlPaging += '<select class="form-control limitPage">';
-        for (var j = 1; j <= 4; j++) {
-            var selected = '';
-            if (j == 1) {
-                selected = 'selected';
-            }
-            htmlPaging += '<option value="' + limitpage * j + '" ' + selected + '>' + limitpage * j + '</option>';
+function appendPaging(pagination) {
+    //var htmlPaging = '';
+    //if (Math.ceil(countData / limitpage) > 1) {
+    //    htmlPaging += '<div class="panel-flat">';
+    //    htmlPaging += fn_htmlPaging(countData, limitpage);
+    //    htmlPaging += '<div class="pull-right">';
+    //    htmlPaging += '<select class="form-control limitPage">';
+    //    for (var j = 1; j <= 4; j++) {
+    //        var selected = '';
+    //        if (j == 1) {
+    //            selected = 'selected';
+    //        }
+    //        htmlPaging += '<option value="' + limitpage * j + '" ' + selected + '>' + limitpage * j + '</option>';
+    //    }
+    //    htmlPaging += '</select>';
+    //    htmlPaging += '</div>';
+    //    htmlPaging += '</div>';
+    //    $('#paging').append(htmlPaging);
+    //}
+    if (Math.ceil(pagination.TotalCount / pagination.TotalPages) > 1) {
+        var paginationListHtml = '';
+        paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
+        paginationListHtml += '<li class="pagination__group"><a href="#0" class="pagination__item">1</a></li>';
+        paginationListHtml += '<li class="pagination__group"><a href="#0" class="pagination__item pagination__control pagination__control_next">next</a></li>';
+
+        var paginationTextHtml = '';
+        var fromPP = 0;
+        var toPP = 0;
+        var totalPP = 0;
+
+        // khoản cách mRangePage <--> " so page chọn" <--> mRangePage
+        var mRangePage;
+        if (pagination.MaxPage == 5) {
+            mRangePage = Math.floor(pagination.MaxPage / 2);
+        } else {
+            mRangePage = pagination.MaxPage / (pagination.MaxPage / 2);
         }
-        htmlPaging += '</select>';
-        htmlPaging += '</div>';
-        htmlPaging += '</div>';
-        $('#paging').append(htmlPaging);
+        // render pagination : phân trang table
+        var startPageIndex = Math.max(1, (pagination.Page - mRangePage));
+        var endPageIndex = Math.min(pagination.TotalPages, (pagination.Page + mRangePage));
+        var firstPage = 1;
+        var lastPage = pagination.TotalPages;
+        var previousPage = pagination.Page - 1;
+        var nextPage = pagination.Page + 1;
+
+        paginationListHtml = '';
+        if (pagination.Page > firstPage) {
+            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="new ActionFormQnA().GetQnAnswerById(' + (pagination.Page - 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
+        }
+        for (var i = startPageIndex; i <= endPageIndex; i++) {
+            if (pagination.Page == i) {
+                paginationListHtml += '<li class="pagination__group"><span class="pagination__item pagination__item_active">' + i + '</span></li>';
+            }
+            else {
+                paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="new ActionFormQnA().GetQnAnswerById(' + i + ',' + pageSize + ')" class="pagination__item">' + i + '</a></li>';
+            }
+        }
+        if (pagination.Page < lastPage) {
+            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="new ActionFormQnA().GetQnAnswerById(' + (pagination.Page + 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_next">next</a></li>';
+        }
+
+        // thông tin số trang
+        fromPP = ((pagination.Page - 1) * pageSize) + 1;
+        toPP = parseInt(((pagination.Page - 1) * pageSize) + pageSize);
+        totalPP = pagination.TotalCount;
+
+        $("#pagination-list").empty().append(paginationListHtml);
+
+        paginationTextHtml = 'từ <span style="font-weight: bold">' + fromPP + '</span> đến <span style="font-weight: bold">' + (toPP == 2000000 ? "Tất cả" : toPP) + ' </span>trong <span style="font-weight: bold">' + totalPP + ' </span>mục';
+        $("#pagination-text-number-show").empty().append(paginationTextHtml);
+        if (parseInt(totalPP) > pageSize) {
+            $("#pagination_type").show();
+        }
     }
 }
 function fn_htmlPaging(countData, limitpage) {
@@ -1092,13 +1460,16 @@ function initEventQnA() {
                 $(this).parents('.tags').find('.tagAdd.taglist').replaceWith(html1);
             }
             var val = $(this).children('input').val().trim();
-            var html = '<li class="tagAdd taglist"><input type="text" autocomplete="off" attr-data="' + val + '" class="search-field" value="" style="display: inline-block;"></li>';
+            var html = '<li class="tagAdd taglist" data-ques-id="' + $(this).attr('data-ques-id') + '"><input type="text" autocomplete="off" attr-data="' + val + '" class="search-field" value="" style="display: inline-block;"></li>';
             $(this).replaceWith(html);
             elParent.find('.search-field').focus().val(val);
         }
     });
 
-    $('.wrap-content').on('focusout', '.tagAdd.taglist', function (event) {
+    $('.wrap-content').on('focusout', '.tagAdd.taglist', function (event) {//click ra ngoài
+        //var questionGroupID = $(this).parents('.panel').eq(0).attr('data-quesgroup-id');
+        //console.log($(this).attr('data-ques-id'))
+        //console.log(questionGroupID)
         var elParent = $(this).parents('.tags');
         if ($(this).children('input').val().trim() != '') {
             var classTag = '';
@@ -1114,19 +1485,30 @@ function initEventQnA() {
                 }
                 classTag = 'error-tag';
             }
+
+            var contentText = $(this).children('input').val().toLowerCase().trim();
             $("<li class=\"addedTag " + classTag + "\">" + $(this).children('input').val().toLowerCase().trim() + "<span class=\"tagRemove\">x</span><input type=\"hidden\" value=\"" + $(this).children('input').val().toLowerCase().trim() + "\"></li>").insertBefore($(this));
             // var attr = $(this).children('input').attr('attr-data');
             // if (typeof attr !== typeof undefined && attr !== false) {
             // 	if($('input[value=\""+attr+"\"]').size() <= 1){
             // 		$('input[value=\""+attr+"\"]').parent('.addedTag').removeClass('error-tag');
             // 	}
+
+            //if (classTag == '' && contentText != '') {
+            //    //ajax save
+            //    console.log('call ajax save')
+            //    questionModel.ContentText = decodeEntities(contentText);
+            //    questionModel.QuestionGroupID = questionGroupID;
+            //    questionModel.IsThatStar = true;
+            //    form_qna.createUpdateUserSay($(this), questionModel);
+            //}
+
             $(this).children('input').removeAttr('attr-data');
-            // }
-            //
             $(this).children('input').val('');
             $(this).parents('.tags').append($(this).clone());
             $(this).remove();
             elParent.find('.search-field').focus();
+
         } else {
             $(this).children('input').val('');
         }
@@ -1195,3 +1577,11 @@ function stringToSlug(str) {
         }
     };
 })(window);
+
+var form_qna = {
+    createUpdateUserSay: function (elm, question) {
+    },
+    createUpdateBotReply: function (answer) {
+
+    }
+}

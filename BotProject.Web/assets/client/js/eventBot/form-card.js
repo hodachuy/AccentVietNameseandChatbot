@@ -217,6 +217,8 @@ $(document).ready(function () {
 
     function renderCard(data) {
         console.log(data)
+        $("#tmp-json-fb").empty();
+        $("#tmp-json-fb").html(data.TemplateJsonFacebook);
         var htmlCardCondition = '';
         if (data.IsHaveCondition) {          
             htmlCardCondition += '<input type="checkbox" id="chk-card-condition" value="true" checked>';
@@ -1164,7 +1166,6 @@ $(document).ready(function () {
                                     $("#lst-card").empty().append(html);
                                     var elItemCard = $("li[data-card-id='" + cardId + "']");
                                     elItemCard.remove()
-
                                 }
                                 //$("#groupCardName").html(groupCardName)
                             });
@@ -2066,18 +2067,8 @@ $(document).ready(function () {
                         // }
 
                         var srcVideo = $(this).find('.wr_file').find('.click_input_file1 span').eq(0).text().replace(/\"/gi, "").replace('' + _Host + '', '');
-                        //var template_file = {
-                        //    "recipient": {
-                        //        "id": "{{senderId}}"
-                        //    },
-                        //    "message": {
-                        //        "attachment": {
-                        //            "type": type_card,
-                        //            "payload": payload
-                        //        }
-                        //    }
-                        //};
-                        //card.push(template_file);
+
+                        // template file với đường dẫn Url file trực tiếp
                         var template_file = {
                             "recipient": {
                                 "id": "{{senderId}}"
@@ -2085,13 +2076,27 @@ $(document).ready(function () {
                             "message": {
                                 "attachment": {
                                     "type": type_card,
-                                    "payload": {
-                                        "attachment_id": $(this).find('.wr_file').find('.click_input_file1 span').attr("token_file_facebook"),
-                                    }
+                                    "payload": payload
                                 }
                             }
                         };
                         card.push(template_file);
+
+                        // template file với token file trả về từ facebook attachment_id
+                        //var template_file = {
+                        //    "recipient": {
+                        //        "id": "{{senderId}}"
+                        //    },
+                        //    "message": {
+                        //        "attachment": {
+                        //            "type": type_card,
+                        //            "payload": {
+                        //                "attachment_id": $(this).find('.wr_file').find('.click_input_file1 span').attr("token_file_facebook"),
+                        //            }
+                        //        }
+                        //    }
+                        //};
+                        //card.push(template_file);
 
                         //zalo
                         var zalo_template_file = {
@@ -2675,12 +2680,9 @@ $(document).ready(function () {
         console.log(cardVm)
         if (checkCard) {
             var element = $(this);
-
             //console.log(objectCard)
             //console.log(listUpdate)
-
             //console.log(cardVm)
-
             var urlTest = "api/card/addupdate";
             var svr = new AjaxCall(urlTest, JSON.stringify(cardVm));
             svr.callServicePOST(function (data) {
@@ -2698,12 +2700,10 @@ $(document).ready(function () {
                     $('#lst-card').append(html);
                     $('#idCard').val(card.ID);
                     $("#model-notify").modal('hide');
-
                     //ADD to lisst group
                     var elGroupCard = $(".wrBlock[data-gr-id='" + card.GroupCardID + "']")
                     elGroupCard.find('ul').append('<li data-card-id="' + card.ID + '" draggable="true"><div><a href="#" class="select-item-card">' + card.Name + '</a></div></li>')
                     //console.log(el)
-
                     swal({
                         title: "Thông báo",
                         text: "Huấn luyện thành công",
@@ -2714,7 +2714,6 @@ $(document).ready(function () {
                 setTimeout(function () {
                     getAimlCard(card.ID);
                 }, 500)
-
                 //loadListCardByGroup();
                 //console.log(data)
             });
@@ -4240,7 +4239,6 @@ $(document).ready(function () {
         } else if (el.parents('.content').attr('card') == 'video') {
             extend_suport = 'video/*';
         }
-
         //var reader = new FileReader();
         //reader.onload = function () {
 
@@ -4262,79 +4260,101 @@ $(document).ready(function () {
         //    });
         //}
         //reader.readAsArrayBuffer(file);
-
-
-
         if (file && file.type.match(extend_suport) && file.size <= 1048576 * 10) {// || file.type == 'application/pdf'
             el.parents('.layer').removeClass('error');
             el.parents('.wr_file').append('<div class="img-loading"><i class="icon-spinner4 fa fa-spinner fa-pulse spinner"></i></div>');
-            //data = new FormData();
-            //data.append('file', file);
-            //data.append('botId', botId);
-            //data.append('type', el.parents('.content').attr('card'));
-            var fb_attachment_id = "";
 
-            var msg = "message={\"attachment\":{\"type\":\"file\", \"payload\":{\"is_reusable\":true}}}";
-            var urlFb = "https://graph.facebook.com/v5.0/me/message_attachments?access_token=" + pageTokenFacebook + "&" + msg + "";
-            data = new FormData();
-            data.append('file', file);
-            $.ajax({
-                url: urlFb,
-                type: "POST",
-                data: data,
-                processData: false,
-                contentType: false               
-            }).done(function (result) {
-                console.log(result)
-                fb_attachment_id = result.attachment_id;
-                if (pageTokenZalo == "") {
-                    alert("Vui lòng add token zalo")
-                    return false;
-                }
-                var urlT = "https://openapi.zalo.me/v2.0/oa/upload/file?access_token=" + pageTokenZalo + "";
+            var fb_attachment_id = "";
+            if (pageTokenFacebook == "") {
+                //alert("Vui lòng add token facebook")
+                //return false;
                 data = new FormData();
                 data.append('file', file);
+                data.append('botId', botId);
+                data.append('type', JSON.stringify('file'));
                 $.ajax({
-                    url: urlT,
+                    url: _Host + srcAddFile,
                     type: "POST",
                     data: data,
                     enctype: 'multipart/form-data',
                     processData: false,
                     contentType: false
-                }).done(function (result) {
-                    if (result.message = "Succes") {
-                        data = new FormData();
-                        data.append('file', file);
-                        data.append('botId', botId);
-                        data.append('type', JSON.stringify(el.parents('.content').attr('card')));
-
-                        $.ajax({
-                            url: _Host + srcAddFile,
-                            type: "POST",
-                            data: data,
-                            enctype: 'multipart/form-data',
-                            processData: false,
-                            contentType: false
-                        })
-                        .done(function (val) {
-                            //val = JSON.parse(val);
-                            console.log(val)
-                            val.Url = _Host + val.Url;
-                            el.parents('.wr_file').find('.click_input_file1 span').html(val.Url);
-                            el.parents('.wr_file').find('.click_input_file1 span').attr('attachment_id', val.ID);
-                            el.parents('.wr_file').find('.click_input_file1 span').attr('token_file_zalo', result.data.token);
-                            el.parents('.wr_file').find('.click_input_file1 span').attr('token_file_facebook', fb_attachment_id);
-                            el.parents('.wr_file').find('.hide').addClass('hasFile');
-                            setTimeout(function () {
-                                el.parents('.wr_file').find('.img-loading').remove();
-                            }, 500);
-                        })
-                    } else {
-                        alert(result.message)
-                    }
-                    console.log(result)
+                }).done(function (val) {
+                    //val = JSON.parse(val);
+                    console.log(val)
+                    val.Url = _Host + val.Url;
+                    el.parents('.wr_file').find('.click_input_file1 span').html(val.Url);
+                    el.parents('.wr_file').find('.click_input_file1 span').attr('attachment_id', val.ID);
+                    el.parents('.wr_file').find('.click_input_file1 span').attr('token_file_zalo', '');
+                    el.parents('.wr_file').find('.click_input_file1 span').attr('token_file_facebook', '');
+                    el.parents('.wr_file').find('.hide').addClass('hasFile');
+                    setTimeout(function () {
+                        el.parents('.wr_file').find('.img-loading').remove();
+                    }, 500);
                 })
-            })
+            }
+            else {
+                var msg = "message={\"attachment\":{\"type\":\"file\", \"payload\":{\"is_reusable\":true}}}";
+                var urlFb = "https://graph.facebook.com/v5.0/me/message_attachments?access_token=" + pageTokenFacebook + "&" + msg + "";
+                data = new FormData();
+                data.append('file', file);
+                $.ajax({
+                    url: urlFb,
+                    type: "POST",
+                    data: data,
+                    processData: false,
+                    contentType: false
+                }).done(function (result) {
+                    console.log(result)
+                    fb_attachment_id = result.attachment_id;
+                    if (pageTokenZalo == "") {
+                        alert("Vui lòng add token zalo")
+                        return false;
+                    }
+                    var urlZalo = "https://openapi.zalo.me/v2.0/oa/upload/file?access_token=" + pageTokenZalo + "";
+                    data = new FormData();
+                    data.append('file', file);
+                    $.ajax({
+                        url: urlZalo,
+                        type: "POST",
+                        data: data,
+                        enctype: 'multipart/form-data',
+                        processData: false,
+                        contentType: false
+                    }).done(function (result) {
+                        if (result.message = "Succes") {
+                            data = new FormData();
+                            data.append('file', file);
+                            data.append('botId', botId);
+                            data.append('type', JSON.stringify(el.parents('.content').attr('card')));
+                            $.ajax({
+                                url: _Host + srcAddFile,
+                                type: "POST",
+                                data: data,
+                                enctype: 'multipart/form-data',
+                                processData: false,
+                                contentType: false
+                            })
+                            .done(function (val) {
+                                //val = JSON.parse(val);
+                                console.log(val)
+                                val.Url = _Host + val.Url;
+                                el.parents('.wr_file').find('.click_input_file1 span').html(val.Url);
+                                el.parents('.wr_file').find('.click_input_file1 span').attr('attachment_id', val.ID);
+                                el.parents('.wr_file').find('.click_input_file1 span').attr('token_file_zalo', result.data.token);
+                                el.parents('.wr_file').find('.click_input_file1 span').attr('token_file_facebook', fb_attachment_id);
+                                el.parents('.wr_file').find('.hide').addClass('hasFile');
+                                setTimeout(function () {
+                                    el.parents('.wr_file').find('.img-loading').remove();
+                                }, 500);
+                            })
+                        } else {
+                            alert(result.message)
+                        }
+                        console.log(result)
+                    })
+                })
+            }
         } else {
             el.parents('.layer').addClass('error');
         }

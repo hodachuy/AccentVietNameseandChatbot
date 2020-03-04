@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BotProject.Common.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,20 @@ namespace BotProject.Web.Infrastructure.Core
         private string apiRelateQA = "/api/qa_for_all/get_related_pairs";
 
         /// <summary>
-        /// API KNOWLEDGE BASE CHATBOT
+        /// API KNOWLEDGE BASE CHATBOT - BÀI TOÁN PHÂN LỚP
         /// </summary>
         private string apiKnowledgeBaseAddQA = "/api/chatbot/bot_add";
         private string apiKnowledgeBaseDeleteQA = "/api/chatbot/bot_delete_formqnaid";
+        private string apiKnowledgeBaseDeleteSingleQA = "/api/chatbot/bot_delete";
         private string apiKnowledgeBasePrecidictTextClass = "/api/chatbot/text_class";
 
+        /// <summary>
+        /// API LẤY THÔNG TIN TRIỆU CHỨNG Y TẾ
+        /// </summary>
+        private string apiGetSymptoms = "/api/med_sym/get_related";
+        private string apiAddSymptoms = "/api/med_sym/add";
+        private string apiUpdateSymptoms = "/api/med_sym/update";
+        private string apiDeleteSymptoms = "/api/med_sym/delete";
         /// <summary>
         /// Gọi api chung
         /// </summary>
@@ -81,9 +90,9 @@ namespace BotProject.Web.Infrastructure.Core
             return result;
         }
 
-        public string AddQues(string QuesID, string QuestionContent, string AnswerContent, string AreaId,string QuestionHtml, string AnswerHtml,string BotId)
+        public string AddQues(string QuesID, string QuestionContent, string AnswerContent, string AreaId, string QuestionHtml, string AnswerHtml, string BotId)
         {
-            var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaId, botid = BotId, question_html = QuestionHtml , answer_html = AnswerHtml };
+            var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaId, botid = BotId, question_html = QuestionHtml, answer_html = AnswerHtml };
             return ApiAddUpdateQA(apiAddQA, param, "Post");
         }
         public string UpdateQues(string QuesID, string QuestionContent, string AnswerContent, string AreaId, string QuestionHtml, string AnswerHtml, string BotId)
@@ -95,7 +104,8 @@ namespace BotProject.Web.Infrastructure.Core
         // Function ADD KNOWLEDGE BASE - TEXT CLASSIFICATION
         public string AddKnowledgeQuestion(int botId, int formQnaId, int quesId, string question, string target)
         {
-            var param = new {
+            var param = new
+            {
                 botid = botId,
                 formQnAid = formQnaId,
                 id = quesId,
@@ -109,6 +119,11 @@ namespace BotProject.Web.Infrastructure.Core
             string urlDelete = apiKnowledgeBaseDeleteQA + "?formQnAid=" + formQnaId;
             return ApiAddUpdateQA(urlDelete, null, "Delete");
         }
+        public string DeleteQuestion(int quesId)
+        {
+            string urlDelete = apiKnowledgeBaseDeleteSingleQA + "?id=" + quesId;
+            return ApiAddUpdateQA(urlDelete, null, "Delete");
+        }
         public string GetPrecidictTextClass(string text, int botId)
         {
             var param = new
@@ -118,5 +133,78 @@ namespace BotProject.Web.Infrastructure.Core
             };
             return ApiAddUpdateQA(apiKnowledgeBasePrecidictTextClass, param, "Post");
         }
+
+        #region API TRIỆU TRỨNG Y TẾ
+        public string GetListSymptoms(string description, int number)
+        {
+            var param = new
+            {
+                name_des = description,
+                type = "med_sym",
+                number = number
+            };
+            string responseString = ApiAddUpdateQA(apiGetSymptoms, param, "Post");
+            return responseString;
+        }
+        public string AddSymptoms(string symptomsID,
+                                  string symptomsName,
+                                  string description,
+                                  string cause,
+                                  string treatment,
+                                  string advice,
+                                  string symptoms,
+                                  string predict,
+                                  string protect,
+                                  string doctorCanDo)
+        {
+            var param = new
+            {
+                id = symptomsID,
+                name = symptomsName,
+                description = description,
+                cause = cause,
+                treatment = treatment,
+                advice = advice,
+                symptom = symptoms,
+                predict = predict,
+                protect = protect,
+                doctorcando = doctorCanDo,
+                type = "med_sym"
+            };
+            return ApiAddUpdateQA(apiAddSymptoms, param, "Post");
+        }
+        public string UpdateSymptoms(string symptomsID,
+                                     string symptomsName,
+                                     string description,
+                                     string cause,
+                                     string treatment,
+                                     string advice,
+                                     string symptoms,
+                                     string predict,
+                                     string protect,
+                                     string doctorCanDo)
+        {
+            var param = new
+            {
+                id = symptomsID,
+                name = symptomsName,
+                description = description,
+                cause = cause,
+                treatment = treatment,
+                advice = advice,
+                symptom = symptoms,
+                predict = predict,
+                protect = protect,
+                doctorcando = doctorCanDo,
+                type = "med_sym"
+            };
+            return ApiAddUpdateQA(apiUpdateSymptoms, param, "Put");
+        }
+        public string DeleteSymptoms(int symptomsId)
+        {
+            string urlDelete = apiDeleteSymptoms + "?id=" + symptomsId + "&type=med_sym";
+            return ApiAddUpdateQA(urlDelete, null, "Delete");
+        }
+        #endregion
     }
 }

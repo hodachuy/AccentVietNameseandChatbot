@@ -56,11 +56,14 @@ namespace BotProject.Data
 		public DbSet<AttributeSystem> AttributeSystems { set; get; }
 		public DbSet<AttributeZaloUser> AttributeZaloUsers { set; get; }
 		public DbSet<AttributeFacebookUser> AttributeFacebookUsers { set; get; }
-		public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
+        public DbSet<MedicalSymptom> MedicalSymptoms { set; get; }
+        public DbSet<ApplicationGroup> ApplicationGroups { set; get; }
         public DbSet<ApplicationRole> ApplicationRoles { set; get; }
         public DbSet<ApplicationRoleGroup> ApplicationRoleGroups { set; get; }
         public DbSet<ApplicationUserGroup> ApplicationUserGroups { set; get; }
         public DbSet<ApplicationThirdParty> ApplicationThirdParties { set; get; }
+        public DbSet<ApplicationPlatformUser> ApplicationPlatformUsers { set; get; }
+        public DbSet<AttributePlatformUser> AttributePlatformUsers { set; get;}
 
         public static BotDbContext Create()
         {

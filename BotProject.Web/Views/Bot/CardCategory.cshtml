@@ -99,11 +99,23 @@
     <aside class="page-aside">
         <div class="aside-content">
             <div class="aside-header">
-                <button class="navbar-toggle" data-target=".aside-nav" data-toggle="collapse" type="button">
+                @*<button class="navbar-toggle" data-target=".aside-nav" data-toggle="collapse" type="button">
                     <span class="icon"><i class="fas fa-caret-down"></i></span>
-                </button>
-                <span class="title"><i class="fa fa-arrow-left" style="font-size:11px"></i> <span id="groupCardName" style="text-decoration:underline;cursor:pointer;text-transform:uppercase"></span><span style="float:right;cursor:pointer;" id="btn-create-card"><i class="fa fa-plus-circle"></i></span></span>
-                <p class="description">Tạo thẻ trả lời cho bot</p>
+                </button>*@
+                @*<span class="title"><i class="fa fa-arrow-left" style="font-size:11px"></i> <span id="groupCardName" style="text-decoration:underline;cursor:pointer;text-transform:uppercase"></span><span style="float:right;cursor:pointer;" id="btn-create-card"><i class="fa fa-plus-circle"></i></span></span>
+                <p class="description">Tạo thẻ trả lời cho bot</p>*@
+                <div class="row">
+                    <div class="col-md-12 col-xs-12">
+                        <i class="fa fa-arrow-circle-left" style="font-size:11px;position: absolute;left: 0px; margin-top: 7px;"></i>
+                        <span id="groupCardName" style="font-size:large;cursor:pointer"></span>
+                    </div>
+                    <div class="col-md-12 col-xs-12" style="padding-top:10px;">
+                        <span style="cursor:pointer;" id="btn-create-card">
+                            <span class="description">Tạo thẻ trả lời cho bot</span>
+                            <i class="fa fa-plus-circle" style="float:right"></i>
+                        </span>
+                    </div>
+                </div>
             </div>
             <div class="aside-nav collapse">
                 <ul class="nav" id="lst-card" style="height: 350px;overflow-y: auto;"></ul>
@@ -190,6 +202,16 @@
         </div>
         <div id="modal_button" class="modal fade in" style="display: none;">
 
+        </div>
+        <div class="card-attribute row" style="border-top:none !important">
+            <div class="col-md-4">
+                <div id="wr_attribute">
+                    <h3><i class="icon-primitive-dot position-left"></i>Template Json response</h3>
+                    <textarea id="tmp-json-fb" style="width:300px;height:250px;">
+
+                    </textarea>
+                </div>
+            </div>
         </div>
     </div>
 </div>

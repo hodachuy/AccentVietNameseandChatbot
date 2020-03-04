@@ -87,6 +87,7 @@
     <Compile Include="AIMLFileService.cs" />
     <Compile Include="ApplicationFacebookUserService.cs" />
     <Compile Include="ApplicationGroupService.cs" />
+    <Compile Include="ApplicationPlatformUserService.cs" />
     <Compile Include="ApplicationRoleService.cs" />
     <Compile Include="ApplicationThirdPartyService.cs" />
     <Compile Include="ApplicationZaloUserService.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="MdSearchCategoryService.cs" />
     <Compile Include="MdSearchService.cs" />
     <Compile Include="MdVoucherService.cs" />
+    <Compile Include="MedicalSymptomService.cs" />
     <Compile Include="ModuleCategoryService.cs" />
     <Compile Include="ModuleFollowCardService.cs" />
     <Compile Include="ModuleKnowledegeService.cs" />

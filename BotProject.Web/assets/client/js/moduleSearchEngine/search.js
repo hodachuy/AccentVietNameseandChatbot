@@ -93,13 +93,14 @@ $(document).ready(function () {
     }
 
     //load area
-    var param = {
-        botId:$("#botId").val()
-    }
-    param = JSON.stringify(param);
+
+    var params = {
+        botId: $("#botId").val()
+    };
+    params = JSON.stringify(params);
     var urlArea = "api/modulesearchengine/getareabybotid";
     var element = "#cboArea";
-    LoadComboBoxWithServices(element, urlArea, param, "ID", "Name", null, "--- Lĩnh vực ---", false, null, function () { }, null);
+    LoadComboBoxWithServices(element, urlArea, params, "ID", "Name", null, "--- Lĩnh vực ---", false, null, function () { }, null);
 })
 
 loadToolEditor = function () {
@@ -170,11 +171,13 @@ function search(content) {
 }
 
 function getListArea() {
-    var param = {
-        BotID: $("#botId").val()
-    }
-    var svr = new AjaxCall("api/modulesearchengine/getareabybotid", param);
-    svr.callServiceGET(function (data) {
+  var params = {
+        botId: $("#botId").val()
+    };
+    params = JSON.stringify(params);
+    var urlArea = "api/modulesearchengine/getareabybotid";
+    var svr = new AjaxCall(urlArea, params);
+    svr.callServicePOST(function (data) {
         console.log(data)
         if (data.length != 0) {
             var html = '';

@@ -12,8 +12,6 @@
     <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/assets/client/vendor/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
     <link href="~/assets/client/vendor/fonts/circular-std/style.css" rel="stylesheet" />
-    @*<link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">*@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.min.css"/>
     <link href="~/assets/client/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css" rel="stylesheet" />
@@ -25,14 +23,16 @@
     <link href="~/assets/client/css/sweetalert.min.css" rel="stylesheet" />
     <link href="~/assets/client/css/sweetalert.min.css.map" rel="stylesheet" type="application/json">
 
-
+    <link href="~/assets/client/vendor/loading-bar/loading.css" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script>
         var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
     </script>
 </head>
+
 <body>
+    <div class="bot-loading-bar bot-loading-bar--active hide"></div>
     <!-- ============================================================== -->
     <!-- main wrapper -->
     <!-- ============================================================== -->
@@ -68,25 +68,8 @@
                                 </a>
                             </li>
                             <div id="bot-category">
-                                @{Html.RenderAction("BotCategory", "Dashboard"); }
+                                @*@{Html.RenderAction("BotCategory", "Dashboard"); }*@
                             </div>
-
-                            @*<li class="nav-item nav-item-cog">
-                                <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#modulemenu-1" aria-controls="featuremenu-1">
-                                    <i class="fas fa-hockey-puck"></i>
-                                    <span class="pb-upper">Module</span>
-                                </a>
-                                <div id="modulemenu-1" class="collapse submenu" style="">
-                                    <ul class="nav flex-column">
-                                        <li class="nav-item">
-                                            <a class="nav-link bot-qa-link" href="@Url.Content("~/ModuleCategory/Search")">Tìm kiếm</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>*@
-                            @*<li class="nav-item nav-item-cog">
-                                <a class="nav-link" href="@Url.Content("~/SearchEngine/Index")"><i class="fa fa-search" aria-hidden="true"></i>Search Engine</a>
-                            </li>*@
                             <li class="nav-item nav-item-cog">
                                 <a class="nav-link" href="#" data-toggle="collapse" aria-expanded="false" data-target="#featuremenu-1" aria-controls="featuremenu-1">
                                     <i class="fas fa-cog"></i>
@@ -113,7 +96,6 @@
                                     </ul>
                                 </div>
                             </li>
-
                         </ul>
                     </div>
                 </nav>

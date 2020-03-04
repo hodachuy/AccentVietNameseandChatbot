@@ -22,10 +22,16 @@ namespace BotProject.Service
         IEnumerable<AttributeFacebookUser> GetListAttributeFacebook(string userId, int botId);
         AttributeFacebookUser CreateUpdateAttributeFacebook(AttributeFacebookUser attr);
         bool CheckExistAttributeFacebook(string userId, int botId, string key);
+
         // Attribute Zalo
         AttributeZaloUser CreateUpdateAttributeZalo(AttributeZaloUser attr);
         IEnumerable<AttributeZaloUser> GetListAttributeZalo(string userId, int botId);
         bool CheckExistAttributeZalo(string userId, int botId, string key);
+
+        // Attribute Platform User
+        AttributePlatformUser CreateUpdateAttributePlatform(AttributePlatformUser attr);
+        IEnumerable<AttributePlatformUser> GetListAttributePlatform(string userId, int botId);
+        bool CheckExistAttributePlatform(string userId, int botId, string key);
 
         void Save();
     }
@@ -34,9 +40,11 @@ namespace BotProject.Service
         IAttributeSystemRepository _attributeRepository;
         IAttributeFacebookUserRepository _attFacebookRepository;
         IAttributeZaloUserRepository _attZaloRepository;
+        IAttributePlatformUserRepository _attPlatformRepository;
         IUnitOfWork _unitOfWork;
         public AttributeSystemService(IAttributeSystemRepository attributeRepository,
                                       IAttributeFacebookUserRepository attFacebookRepository,
+                                      IAttributePlatformUserRepository attPlatformRepository,
                                       IAttributeZaloUserRepository attZaloRepository,
                                       IUnitOfWork unitOfWork)
         {
@@ -44,6 +52,7 @@ namespace BotProject.Service
             _attributeRepository = attributeRepository;
             _attZaloRepository = attZaloRepository;
             _attFacebookRepository = attFacebookRepository;
+            _attPlatformRepository = attPlatformRepository;
         }
 
         public AttributeSystem Create(AttributeSystem attr)
@@ -137,6 +146,39 @@ namespace BotProject.Service
         public bool CheckExistAttributeZalo(string userId, int botId, string key)
         {
             var attDb = _attZaloRepository.GetSingleByCondition(x => x.AttributeKey == key && x.BotID == botId && x.UserID == userId);
+            if (attDb == null) return false;
+            return true;
+        }
+
+        public AttributePlatformUser CreateUpdateAttributePlatform(AttributePlatformUser attr)
+        {
+            AttributePlatformUser attDb = new AttributePlatformUser();
+            attDb = _attPlatformRepository.GetSingleByCondition(x => x.AttributeKey == attr.AttributeKey
+                                                            && x.BotID == attr.BotID
+                                                            && x.UserID == attr.UserID);
+            if (attDb != null)
+            {
+                attDb.AttributeValue = attr.AttributeValue;
+                _attPlatformRepository.Update(attDb);
+                _unitOfWork.Commit();
+                return attDb;
+            }
+            else
+            {
+                _attPlatformRepository.Add(attr);
+                _unitOfWork.Commit();
+            }
+            return attr;
+        }
+
+        public IEnumerable<AttributePlatformUser> GetListAttributePlatform(string userId, int botId)
+        {
+            return _attPlatformRepository.GetMulti(x => x.UserID == userId && x.BotID == botId);
+        }
+
+        public bool CheckExistAttributePlatform(string userId, int botId, string key)
+        {
+            var attDb = _attPlatformRepository.GetSingleByCondition(x => x.AttributeKey == key && x.BotID == botId && x.UserID == userId);
             if (attDb == null) return false;
             return true;
         }

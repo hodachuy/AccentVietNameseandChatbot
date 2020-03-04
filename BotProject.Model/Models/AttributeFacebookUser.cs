@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-
 	[Table("AttributeFacebookUsers")]
 	public class AttributeFacebookUser
 	{
