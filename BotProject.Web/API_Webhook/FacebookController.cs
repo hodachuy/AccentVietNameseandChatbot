@@ -42,20 +42,24 @@ namespace BotProject.Web.API_Webhook
     public class FacebookController : ApiController
     {
         // appSettings
-        private string pageToken = "";
-        private string appSecret = "be46264e45777ee8c35bc75d64132c53";
+        string pageToken = Helper.ReadString("AccessToken");
+        string appSecret = Helper.ReadString("AppSecret");
+        string verifytoken = Helper.ReadString("VerifyTokenWebHook");
         private Dictionary<string, string> _dicAttributeUser = new Dictionary<string, string>();
         private readonly string Domain = Helper.ReadString("Domain");
         private Dictionary<string, string> _dicNotMatch = new Dictionary<string, string>();
+
         /// <summary>
         /// Điều kiện để đi tới card tiếp theo
         /// </summary>
-        private readonly string[] ARRAY_CARD_CONDITION_NAME = new string[]
+        private readonly string[] ARRAY_CONDITION_NAME = new string[]
         {
             "REQUIRE_CLICK_BUTTON_TO_NEXT_CARD",//IsHaveCondition
             "REQUIRE_INPUT_TEXT_TO_NEXT_CARD",//IsConditionWithInputText + CardStepID NOT NULL
-            "VERIFY_TEXT_WITH_AREA_BUTTON"//IsConditionWithAreaButton
+            "VERIFY_TEXT_WITH_AREA_BUTTON",//IsConditionWithAreaButton
+            "POSTBACK_MODULE",
         };
+
         /// <summary>
         /// Thời gian chờ để phản hồi lại tin nhắn,thời gian tính từ tin nhắn cuối cùng
         /// người dùng không tương tác lại
@@ -70,7 +74,7 @@ namespace BotProject.Web.API_Webhook
         private string TITLE_PAYLOAD_QUICKREPLY = "";
 
         // Model user
-        ApplicationFacebookUser _appFbUser;
+        ApplicationFacebookUser _fbUser;
 
         // Services
         private IApplicationFacebookUserService _appFacebookUser;
@@ -98,8 +102,13 @@ namespace BotProject.Web.API_Webhook
                                   IAttributeSystemService attributeService)
         {
             _errorService = errorService;
+            _appFacebookUser = appFacebookUser;
+            _settingService = settingService;
+            _historyService = historyService;
+            _cardService = cardService;
+            _attributeService = attributeService;
             _accentService = new AccentService();
-            _appFbUser = new ApplicationFacebookUser();
+            _fbUser = new ApplicationFacebookUser();
         }
 
         /// <summary>
@@ -167,7 +176,7 @@ namespace BotProject.Web.API_Webhook
                 {
                     if (item.message.quick_reply != null)
                     {
-                        await ExcuteMessage(item.message.quick_reply.payload, item.sender.id, botId, item.timestamp, "payload_quickreply");
+                        await ExcuteMessage(item.message.quick_reply.payload, item.sender.id, botId, item.timestamp, "payload_postback");
                         return new HttpResponseMessage(HttpStatusCode.OK);
                     }
                     else
@@ -200,7 +209,7 @@ namespace BotProject.Web.API_Webhook
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
 
-            // Kiểm tra nhiều request trong cùng một thời gian
+            // Kiểm tra duplicate request trong cùng một thời gian
             if (!String.IsNullOrEmpty(timeStamp))
             {
                 var rs = _appFacebookUser.CheckDuplicateRequestWithTimeStamp(timeStamp, sender);
@@ -218,7 +227,7 @@ namespace BotProject.Web.API_Webhook
             await SendMessageTyping(sender);
 
             // Lấy thông tin người dùng
-            _appFbUser = GetUserById(sender);
+            _fbUser = GetUserById(sender);
 
             // Input text
             if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
@@ -231,10 +240,10 @@ namespace BotProject.Web.API_Webhook
                     await SendMessageTask(msg, sender);
                 }
                 text = textAccentVN;
-                var rsAIMLBot = GetBotReplyFromAIMLBot(text);
             }
-            // Input payload
-            if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_QUICKREPLY)
+
+            // Input postback            
+            if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
             {
                 string[] arrPayloadQuickReply = Regex.Split(text, "-");
                 if (arrPayloadQuickReply.Length > 1)
@@ -243,41 +252,104 @@ namespace BotProject.Web.API_Webhook
                 }
                 text = arrPayloadQuickReply[0];
             }
-            // Input payload
-            if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
-            {
 
+            if (_fbUser.IsHavePredicate)
+            {
+                if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
+                {
+                    _fbUser.IsHavePredicate = false;
+                    _fbUser.PredicateName = "";
+                }
+                if (_fbUser.PredicateName == "REQUIRE_CLICK_BUTTON_TO_NEXT_CARD")
+                {
+
+                }
+                if (_fbUser.PredicateName == "REQUIRE_INPUT_TEXT_TO_NEXT_CARD")
+                {
+
+                }
+                if (_fbUser.PredicateName == "VERIFY_TEXT_WITH_AREA_BUTTON")
+                {
+
+                }
+                if (_fbUser.PredicateName == "POSTBACK_MODULE")
+                {
+                    if (_fbUser.PredicateValue == "POSTBACK_MODULE_ADMIN_CONTACT")
+                    {
+
+                    }
+                }
+                //Điều kiện CHAT_ADMIN
+                //Điều kiện CONDITION_CARD
+                //Điều kiện CONDITION_POSTBACK_MODULE
             }
+
+            AIMLbot.Result rsAIMLBot;
+            rsAIMLBot = GetBotReplyFromAIMLBot(text);
+
             return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
         private AIMLbot.Result GetBotReplyFromAIMLBot(string text)
         {
-            string result = "";
             AIMLbot.Result aimlBotResult = _botService.Chat(text);
-
-            //if(aimlBotResult.OutputSentences != null && aimlBotResult.OutputSentences.Count() != 0)
-            //{
-            //    result = aimlBotResult.OutputSentences[0].ToString();              
-            //}
-
-            // check case nếu k phải rồi cho return vòng lặp ngay chổ này lại lun
             return aimlBotResult;
         }
-        private string checkResultBotReply(AIMLbot.Result rsAIMLBot)
+        private ResultBot checkResultBotReply(AIMLbot.Result rsAIMLBot)
         {
-            string statusCode = "0";
-            string rs = "";
+            ResultBot rsBot = new ResultBot();
+            string result = "";
             // TH postback_module
             // TH NOTMATCH
             // TH postback_card
             if (rsAIMLBot.OutputSentences != null && rsAIMLBot.OutputSentences.Count() != 0)
             {
-                rs = rsAIMLBot.OutputSentences[0].ToString();
-                
+                result = rsAIMLBot.OutputSentences[0].ToString();
 
+                string strTempPostback = rsAIMLBot.SubQueries[0].Template;
+                // nếu nhập text trả về output là postback
+                bool isPostback = Regex.Match(strTempPostback, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
+                //trường hợp trả về câu hỏi random chứa postback
+                bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
+
+
+                string payload = result.Replace("\r\n", "").Trim();
+                if (payload.Contains(CommonConstants.POSTBACK_MODULE))
+                {
+                    //k phải từ button module trả về
+                    if (payload.Contains("<module>") != true)
+                    {
+                        string txtModule = payload.Replace("\r\n", "").Replace(".", "").Trim();
+                        txtModule = Regex.Replace(txtModule, @"<(.|\n)*?>", "").Trim();
+                        int idxModule = txtModule.IndexOf("postback_module");
+                        if (idxModule != -1)
+                        {
+                            string strPostback = txtModule.Substring(idxModule, txtModule.Length - idxModule);
+                            var punctuation = strPostback.Where(Char.IsPunctuation).Distinct().ToArray();
+                            var words = strPostback.Split().Select(x => x.Trim(punctuation));
+                            var patternPayloadModule = words.SingleOrDefault(x => x.Contains("postback_module") == true);
+
+                            if (words.ToList().Count == 1 && (txtModule.Length == patternPayloadModule.Length))
+                            {
+                                rsBot.Type = "POSTBACK_MODULE";
+                                rsBot.Total = 1;
+                                rsBot.PatternPayload = patternPayloadModule;
+                            }
+
+                            _fbUser.IsHavePredicate = true;
+                            _fbUser.PredicateValue = patternPayloadModule;
+                            _fbUser.PredicateName = "POSTBACK_MODULE";
+
+                            return rsBot;
+                        }
+                    }
+                    else if (result.Contains("NOT_MATCH"))
+                    {
+
+                    }                   
+                }
             }
-            return "";
+            return rsBot;
         }
 
         private string getCasePayload(string caseName)
@@ -301,7 +373,7 @@ namespace BotProject.Web.API_Webhook
                 case "POSTBACK_CARD":
                     break;
             }
-            return "";
+            return rsCase;
         }
 
         private string GetBotReplyFromCard(string patternCard)
@@ -313,10 +385,15 @@ namespace BotProject.Web.API_Webhook
 
 
         #region Create update and get Facebook user
-        private ApplicationFacebookUser UpdateStatusFacebookUser(string userId, ApplicationFacebookUserViewModel fbUserVm)
+        private ApplicationFacebookUser UpdateStatusFacebookUser(string userId, ApplicationFacebookUser fbUserVm)
         {
             ApplicationFacebookUser appFbUser = new ApplicationFacebookUser();
             appFbUser = _appFacebookUser.GetByUserId(userId);
+            appFbUser.IsHavePredicate = fbUserVm.IsHavePredicate;
+            appFbUser.PredicateName = fbUserVm.PredicateName;
+            appFbUser.PredicateValue = fbUserVm.PredicateValue;
+            _appFacebookUser.Update(appFbUser);
+            _appFacebookUser.Save();
             return appFbUser;
         }
         private ApplicationFacebookUser GetUserById(string senderId)
@@ -457,6 +534,13 @@ namespace BotProject.Web.API_Webhook
             public string profile_pic { set; get; }
             public string id { set; get; }
             public string gender { set; get; }
+        }
+
+        public class ResultBot
+        {
+            public string Type { set; get; }
+            public int Total { set; get; }
+            public string PatternPayload { set; get; }
         }
     }
 }

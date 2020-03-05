@@ -134,7 +134,6 @@ namespace BotProject.Web.API_Mobile
             //LogError(body);
             if (body.Contains("user_send_text"))
             {
-
                 var value = JsonConvert.DeserializeObject<ZaloBotRequest>(body);
                 //LogError(body);
                 var app3rd = _app3rd.GetByZaloPageId(value.app_id);
@@ -168,15 +167,11 @@ namespace BotProject.Web.API_Mobile
                     string[] stopWordDefault = System.IO.File.ReadAllLines(_pathStopWord);
                     _stopWord += string.Join(",", stopWordDefault);
                 }
-
-
-
                 //if (settingDb.IsHaveMaintenance)
                 //{
                 //    await SendMessageTask(ZaloTemplate.GetMessageTemplateText(settingDb.MessageMaintenance, "{{senderId}}").ToString(), value.sender.id);
                 //    return new HttpResponseMessage(HttpStatusCode.OK);
                 //}
-
 
                 var lstAIML = _aimlFileService.GetByBotId(botId);
                 var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);

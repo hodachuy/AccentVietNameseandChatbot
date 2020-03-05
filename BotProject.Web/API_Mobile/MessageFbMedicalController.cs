@@ -970,9 +970,6 @@ namespace BotProject.Web.API_Mobile
                         fbUserDb.IsConditionWithAreaButton = false;
                         fbUserDb.CardConditionAreaButtonPattern = "";
                     }
-
-
-
                     _appFacebookUser.Update(fbUserDb);
                     _appFacebookUser.Save();
                     string tempJsonFacebook = cardDb.TemplateJsonFacebook;

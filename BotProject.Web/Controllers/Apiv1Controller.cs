@@ -725,28 +725,28 @@ namespace BotProject.Web.Controllers
                 AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
                 string result = aimlBotResult.OutputSentences[0].ToString();
 
-                if (result.Contains("NOT_MATCH"))
-                {
-                    if (text.Contains("postback") == false || text.Contains("module") == false)
-                    {
-                        // Lấy target from knowledge base QnA trained mongodb
-                        string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
-                        if (!String.IsNullOrEmpty(target))
-                        {
-                            target = Regex.Replace(target, "\n", "").Replace("\"", "");
-                            QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-                            quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
-                            if (quesTarget != null)
-                            {
-                                text = quesTarget.ContentText;
-                            }
-                            hisVm.BotUnderStands = target;
+                //if (result.Contains("NOT_MATCH"))
+                //{
+                    //if (text.Contains("postback") == false || text.Contains("module") == false)
+                    //{
+                    //    // Lấy target from knowledge base QnA trained mongodb
+                    //    string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
+                    //    if (!String.IsNullOrEmpty(target))
+                    //    {
+                    //        target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                    //        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                    //        quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
+                    //        if (quesTarget != null)
+                    //        {
+                    //            text = quesTarget.ContentText;
+                    //        }
+                    //        hisVm.BotUnderStands = target;
 
-                            aimlBotResult = _botService.Chat(text, _user);
-                            result = aimlBotResult.OutputSentences[0].ToString();
-                        }
-                    }
-                }
+                    //        aimlBotResult = _botService.Chat(text, _user);
+                    //        result = aimlBotResult.OutputSentences[0].ToString();
+                    //    }
+                    //}
+                //}
 
                 // lưu lịch sử
                 if (text.Contains("postback_card"))
