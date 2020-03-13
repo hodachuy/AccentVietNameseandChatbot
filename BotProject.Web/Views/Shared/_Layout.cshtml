@@ -12,8 +12,9 @@
     <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/assets/client/vendor/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
     <link href="~/assets/client/vendor/fonts/circular-std/style.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.min.css"/>
+    <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet" />
+    @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.min.css" />*@
     <link href="~/assets/client/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css" rel="stylesheet" />
     <link href="~/assets/client/css/style.css" rel="stylesheet" />
     <link href="~/assets/client/css/chatbot-dialog.css" rel="stylesheet" />
@@ -24,7 +25,7 @@
     <link href="~/assets/client/css/sweetalert.min.css.map" rel="stylesheet" type="application/json">
 
     <link href="~/assets/client/vendor/loading-bar/loading.css" rel="stylesheet" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>*@
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script>
         var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
@@ -123,7 +124,7 @@
         <!-- end footer -->
         <!-- ============================================================== -->
     </div>
-    
+
     <!-- ============================================================== -->
     <!-- end main wrapper -->
     <!-- ============================================================== -->
@@ -160,9 +161,9 @@
 
     <!-- event click back url-->
     @*<script type="text/javascript">
-       function preventBack(){window.history.forward();}
-        setTimeout("preventBack()", 0);
-        window.onunload=function(){null};
-    </script>*@
+           function preventBack(){window.history.forward();}
+            setTimeout("preventBack()", 0);
+            window.onunload=function(){null};
+        </script>*@
 </body>
 </html>

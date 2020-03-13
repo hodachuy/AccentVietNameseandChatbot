@@ -19,7 +19,7 @@ namespace BotProject.Web.Infrastructure.Core
         private string apiAddQA = "/api/qa_for_all/pair_add";
         private string apiUpdateQA = "/api/qa_for_all/pair_update";
         private string apiDetailQA = "/api/qa_for_all/pair_get";
-        private string apiRelateQA = "/api/qa_for_all/get_related_pairs";
+        private string apiRelateQA = "/api/qa_for_all/get_related_pair";
 
         /// <summary>
         /// API KNOWLEDGE BASE CHATBOT - BÀI TOÁN PHÂN LỚP
@@ -99,6 +99,18 @@ namespace BotProject.Web.Infrastructure.Core
         {
             var param = new { id = QuesID, question = QuestionContent, answer = AnswerContent, field = AreaId, botid = BotId, question_html = QuestionHtml, answer_html = AnswerHtml };
             return ApiAddUpdateQA(apiUpdateQA, param, "Put");
+        }
+
+        public string GetRelatedPair(string question, string field, string number, string botId)
+        {
+            var param = new
+            {
+                question = question,
+                number = number,
+                field = field,
+                botid = botId
+            };
+            return ApiAddUpdateQA(apiRelateQA, param, "Post");
         }
 
         // Function ADD KNOWLEDGE BASE - TEXT CLASSIFICATION

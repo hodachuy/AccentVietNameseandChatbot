@@ -839,7 +839,6 @@ namespace BotProject.Web.API
 
                             return await SendMessage(handleMdVoucher.TemplateJsonFacebook, sender);
                         }
-
                     }
                 }
 

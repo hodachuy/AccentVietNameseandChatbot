@@ -2215,7 +2215,6 @@ $(document).ready(function () {
                     };
                     card.push(template_file);
 
-
                     var template_MdFollowCard_sql = {
                         "Message": {
                             "ModuleFollowCardViewModel": {
@@ -5469,7 +5468,7 @@ $('body').on('click', '.addBlock', function (e) {
     });
 })
 
-function addBlock() {
+function addBlockAtFooter() {
     var index = $(".wrBlock").size() + 1;
     console.log(index);
     var groupCardName = "Nhóm " + index;

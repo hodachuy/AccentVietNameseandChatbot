@@ -1,0 +1,580 @@
+﻿@{ Layout = null; }
+
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Nộp hồ sơ</title>
+    <link href="~/assets/client/vendor/boostrap-v3/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/assets/client/vendor/boostrap-v3/bootstrap.min.js"></script>
+    <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet" />
+    <style>
+        .row div.label {
+            color: #353535;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .row div.label {
+            color: #353535;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 10px 0 3px 2px !important;
+            display: block;
+            text-align: left;
+        }
+
+        .use-icon, .use-icon-view, .use-right-button {
+            position: relative;
+        }
+
+        .f-info {
+            background: #f2f2f2;
+            margin: 0 auto;
+            padding-bottom: 5px;
+        }
+
+        .use-icon .fa {
+            background: #f2f2f2 none repeat scroll 0 0;
+            border: 1px solid #e5e5e5 !important;
+            display: block;
+            height: 30px;
+            left: 5px;
+            padding-top: 8px;
+            position: absolute;
+            text-align: center;
+            top: 2px;
+            width: 30px;
+        }
+
+        .f-info .use-icon input[type="text"].in_require, .f-info .use-icon select.in_require, .in_require {
+            border-left: 3px solid #e62121 !important;
+        }
+
+        .f-info .use-icon input[type="text"], .f-info .use-icon select, .f-info .use-icon label {
+            padding-left: 40px !important;
+            border-left: 3px solid #e5e5e5 !important;
+        }
+
+        .f-info .f-input input[type="text"], .f-info .f-input input[type="select"], .f-info .f-input select, .f-info .f-input textarea {
+            background: #fbfbfb none repeat scroll 0 0;
+            border: 1px solid #e5e5e5;
+            border-radius: 0;
+            box-shadow: 1px 1px 2px rgba(238,238,238,0.2) inset;
+            box-sizing: border-box;
+            color: #555;
+            font: 14px/14px Arial,Helvetica,sans-serif;
+            height: 30px !important;
+            margin-top: 2px;
+            outline: 0 none;
+            width: 100%;
+        }
+
+        input[type="text"], input[type="password"], button {
+            background-image: url(../images/forms/input_shadow.png);
+            background-repeat: no-repeat;
+            border: 1px solid;
+            border-color: #bfbfbf #dedede #dedede #bfbfbf;
+            font: 12px Arial,Helvetica,Verdana,sans-serif;
+            height: 26px;
+            width: 300px;
+            margin: 2px;
+            padding-left: 5px;
+        }
+
+        .row-padding-0 {
+            padding: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        .group-upload .ice-file-entry input[type=file] {
+            /* padding: 6px 6px 6px 28px; */
+            opacity: 0;
+            background: #ccc;
+            width: 100%;
+            cursor: pointer;
+            position: absolute;
+            height: 105px;
+            top: 10px;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -o-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        input[type=file] {
+            display: block;
+        }
+
+        input[type="file"] {
+            border: 0 solid;
+            border-color: #bfbfbf #dedede #dedede #bfbfbf;
+        }
+
+        .header-group {
+            font-family: arial, 'Open Sans Condensed', sans-serif;
+            font-size: 15px;
+            padding: 5px 0px;
+            font-weight: bold;
+            color: #05567D;
+        }
+        .header-title-file{
+            text-align:center;
+            padding:10px;
+            font-weight: bold;
+            color: #05567D;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="header-title-file">
+            Tên thủ tục:	2.13 SLDTBXH Giải quyết hưởng chế độ ưu đãi đối với người hoạt động kháng chiến bị nhiễm chất độc hóa học ( 55.0 ngày)
+        </div>
+        <div class="header-group">
+            THÔNG TIN TỔ CHỨC - CÁ NHÂN
+        </div>
+        <div class="f-info">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="label"> Họ tên </div>
+                            <div class="f-input use-icon ">
+                                <i aria-hidden="true" class="fa fa-user"></i>
+                                <input class="in_require hoten-lltp" id="A6308:frmTongHopNoHoSo:updateTCCN_Ten_frmTCCN" maxlength="255" name="A6308:frmTongHopNoHoSo:updateTCCN_Ten_frmTCCN" onchange="mojarra.ab(this,event,'change',0,'@this')" style="height: 30px; background: rgb(251, 251, 251);" type="text" value="Huy Hồ Đắc">
+                                <br>
+                                <span id="A6308:frmTongHopNoHoSo:updateTCCN_TenError_frmTCCN"><span id="A6308:frmTongHopNoHoSo:updateTCCN_TenError_frmTCCN"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="A6308:frmTongHopNoHoSo:_t294">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="label"> Địa chỉ liên hệ </div>
+                            <div class="f-input use-icon">
+                                <i aria-hidden="true" class="fa fa-home"></i>
+                                <input class="in_require thuongtru-lltp" id="A6308:frmTongHopNoHoSo:updateTCCN_DiaChi_frmTCCN" maxlength="1000" name="A6308:frmTongHopNoHoSo:updateTCCN_DiaChi_frmTCCN" onchange="mojarra.ab(this,event,'change',0,'@this')" type="text" value="23 Nguyễn Thị Huỳnh,p08.Phú nhuận" style="">
+                                <br>
+                                <span id="A6308:frmTongHopNoHoSo:updateTCCN_DiaChiError_frmTCCN">
+                                    <span id="A6308:frmTongHopNoHoSo:updateTCCN_DiaChiError_frmTCCN"></span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
+                            <div class="label"> Giới tính </div>
+                            <div class="f-input">
+                                <table class="hSelOneRadio gioitinh1" id="A6308:frmTongHopNoHoSo:updateTCCNGioitinh_frmTCCN">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input checked="true" id="A6308:frmTongHopNoHoSo:updateTCCNGioitinh_frmTCCN:0" name="A6308:frmTongHopNoHoSo:updateTCCNGioitinh_frmTCCN" onchange="jsf.util.chain(this,event,'thaydoigioitinh(\'gioitinh1\',\'gioitinh2\');','mojarra.ab(this,event,\'change\',0,\'@this\')')" type="radio" value="true" style="">
+                                                <label for="A6308:frmTongHopNoHoSo:updateTCCNGioitinh_frmTCCN:0"> Nam</label>
+                                            </td>
+                                            <td>
+                                                <input id="A6308:frmTongHopNoHoSo:updateTCCNGioitinh_frmTCCN:1" name="A6308:frmTongHopNoHoSo:updateTCCNGioitinh_frmTCCN" onchange="jsf.util.chain(this,event,'thaydoigioitinh(\'gioitinh1\',\'gioitinh2\');','mojarra.ab(this,event,\'change\',0,\'@this\')')" type="radio" value="false" style="">
+                                                <label for="A6308:frmTongHopNoHoSo:updateTCCNGioitinh_frmTCCN:1"> Nữ</label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-4 col-lg-4">
+                            <div class="label"> Ngày sinh </div>
+                            <div class="f-input">
+                                <input class="requireNumber ngaysinh-lltp" id="A6308:frmTongHopNoHoSo:updateTCCN_NGAYSINH_frmTCCN" maxlength="2" name="A6308:frmTongHopNoHoSo:updateTCCN_NGAYSINH_frmTCCN" onchange="mojarra.ab(this,event,'change',0,'@this')" style="width: 20%;" type="text">
+                                <select class="thangsinh-lltp" id="A6308:frmTongHopNoHoSo:updateTCCN_THANGSINH_frmTCCN" name="A6308:frmTongHopNoHoSo:updateTCCN_THANGSINH_frmTCCN" onchange="mojarra.ab(this,event,'change',0,'@this')" size="1" style="width: 40%;">
+                                    <option value="">- Tháng -</option>
+                                    <option value="1">Tháng 1</option>
+                                    <option value="2">Tháng 2</option>
+                                    <option value="3">Tháng 3</option>
+                                    <option value="4">Tháng 4</option>
+                                    <option value="5">Tháng 5</option>
+                                    <option value="6">Tháng 6</option>
+                                    <option value="7">Tháng 7</option>
+                                    <option value="8">Tháng 8</option>
+                                    <option value="9">Tháng 9</option>
+                                    <option value="10">Tháng 10</option>
+                                    <option value="11">Tháng 11</option>
+                                    <option value="12">Tháng 12</option>
+                                </select>
+                                <input class="requireNumber namsinh-lltp" id="A6308:frmTongHopNoHoSo:updateTCCN_NAMSINH_frmTCCN" maxlength="4" name="A6308:frmTongHopNoHoSo:updateTCCN_NAMSINH_frmTCCN" onchange="jsf.util.chain(this,event,'ngaythangnamsinh();','mojarra.ab(this,event,\'change\',0,\'@this\')')" style="width: 30%;" type="text"><span id="A6308:frmTongHopNoHoSo:updateTCCN_NAMSINH_err_frmTCCN"><span id="A6308:frmTongHopNoHoSo:updateTCCN_NAMSINH_err_frmTCCN"></span></span>
+                            </div>
+                            <script>
+                                function ngaythangnamsinh() {
+                                    if ($(".ngaysinh-lltp").val() != "") {
+                                        if ($(".thangsinh-lltp").val() < 9) {
+                                            $(".ngaythangnamsinh").val($(".ngaysinh-lltp").val() + "/0" + $(".thangsinh-lltp").val() + "/" + $(".namsinh-lltp").val())
+                                        } else {
+                                            $(".ngaythangnamsinh").val($(".ngaysinh-lltp").val() + "/" + $(".thangsinh-lltp").val() + "/" + $(".namsinh-lltp").val())
+                                        }
+                                    } else {
+                                        if ($(".ngaysinh-lltp").val() == "" & $(".thangsinh-lltp").val() != "") {
+                                            if ($(".thangsinh-lltp").val() < 9) {
+                                                $(".ngaythangnamsinh").val("0" + $(".thangsinh-lltp").val() + "/" + $(".namsinh-lltp").val())
+                                            } else {
+                                                $(".ngaythangnamsinh").val($(".thangsinh-lltp").val() + "/" + $(".namsinh-lltp").val())
+                                            }
+                                        } else {
+                                            $(".ngaythangnamsinh").val($(".namsinh-lltp").val())
+                                        }
+                                    }
+                                };
+                            </script>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+                            <div class="label">
+                                CMND
+                            </div>
+                            <div class="f-input use-right-button">
+                                <input class="background-white textbox in_require cmnd-lltp" id="A6308:frmTongHopNoHoSo:updateTCCN_CMND_DKKD_frmTCCN" maxlength="15" name="A6308:frmTongHopNoHoSo:updateTCCN_CMND_DKKD_frmTCCN" onchange="mojarra.ab(this,event,'change',0,'@this')" onkeypress="return onlyNumber(event);" type="text" value="225510515" style="">
+                                <br>
+                                <span id="A6308:frmTongHopNoHoSo:updateTCCN_CMND_DKKDError_frmTCCN"><span id="A6308:frmTongHopNoHoSo:updateTCCN_CMND_DKKDError_frmTCCN"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <div class="label"> Điện thoại </div>
+                            <div class="f-input">
+                                <input class="sodienthoai-lltp" id="A6308:frmTongHopNoHoSo:updateTCCN_Dienthoai_frmTCCN" name="A6308:frmTongHopNoHoSo:updateTCCN_Dienthoai_frmTCCN" onchange="mojarra.ab(this,event,'change',0,'@this')" title="Số điện thoại (di động). Số điện thoại phải dài 10 hoặc 11 số" type="text" value="0375348328" style="">
+                                <br><span id="A6308:frmTongHopNoHoSo:updateTCCN_DienthoaiError_frmTCCN"><span id="A6308:frmTongHopNoHoSo:updateTCCN_DienthoaiError_frmTCCN"></span></span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                            <div class="label">Email</div>
+                            <div class="f-input">
+                                <input class="in_require" id="A6308:frmTongHopNoHoSo:updateTCCN_Email_frmTCCN" name="A6308:frmTongHopNoHoSo:updateTCCN_Email_frmTCCN" onchange="" type="text" value="" style="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                    <div class="row">
+                        <div class="col-xs-9 col-sm-9 col-md-6 col-lg-6 row-padding-0">
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="label"> Mã công dân </div>
+                                <div class="f-input">
+                                    <input id="A6308:frmTongHopNoHoSo:_t385" maxlength="255" name="A6308:frmTongHopNoHoSo:_t385" onchange="mojarra.ab(this,event,'change',0,'@this')" type="text" style="">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="label"> Quốc tịch </div>
+                                <div class="f-input">
+                                    <select class="iceSelOneMnu quoctich1" id="A6308:frmTongHopNoHoSo:_t388" name="A6308:frmTongHopNoHoSo:_t388" onchange="jsf.util.chain(this,event,'quoctichthaydoi(\'quoctich1\',\'quoctich2\');','mojarra.ab(this,event,\'change\',0,\'@this\')')" size="1" style="">
+                                        <option value="1">Việt Nam</option>
+                                        <option value="2">Afghanistan</option>
+                                        <option value="3">Adecbaigian</option>
+                                        <option value="4">Albania</option>
+                                        <option value="5">Algérie</option>
+                                        <option value="6">Andorra</option>
+                                        <option value="7">Anh và Bắc Ireland</option>
+                                        <option value="8">Argentina</option>
+                                        <option value="9">Antigua và Barbuda</option>
+                                        <option value="10">Armenia</option>
+                                        <option value="11">Angola</option>
+                                        <option value="12">Áo</option>
+                                        <option value="13">Ả Rập Saudi</option>
+                                        <option value="14">Ấn Độ</option>
+                                        <option value="15">Bahamas</option>
+                                        <option value="16">Bahrain</option>
+                                        <option value="17">Ba Lan</option>
+                                        <option value="18">Bangladesh</option>
+                                        <option value="19">Barbados</option>
+                                        <option value="20">Belarus</option>
+                                        <option value="21">Belize</option>
+                                        <option value="22">Benin</option>
+                                        <option value="23">Bhutan</option>
+                                        <option value="24">Bỉ</option>
+                                        <option value="25">Bolivia</option>
+                                        <option value="26">Bosna và Hercegovina</option>
+                                        <option value="27">Botswana</option>
+                                        <option value="28">Bồ Đào Nha</option>
+                                        <option value="29">Bờ Biển Ngà</option>
+                                        <option value="30">Brasil</option>
+                                        <option value="31">Brunei</option>
+                                        <option value="32">Bulgaria</option>
+                                        <option value="33">Burkina Faso</option>
+                                        <option value="34">Burundi</option>
+                                        <option value="35">Cabo Verde</option>
+                                        <option value="36">Các Tiểu Vương quốc Ả Rập Thống nhất</option>
+                                        <option value="37">Cameroon</option>
+                                        <option value="38">Campuchia</option>
+                                        <option value="39">Canada</option>
+                                        <option value="40">Chile</option>
+                                        <option value="41">Colombia</option>
+                                        <option value="42">Comoros</option>
+                                        <option value="43">Cộng hòa Congo</option>
+                                        <option value="44">Cộng hòa Dân chủ Congo</option>
+                                        <option value="45">Costa Rica</option>
+                                        <option value="46">Croatia</option>
+                                        <option value="47">Cuba</option>
+                                        <option value="48">Djibouti</option>
+                                        <option value="49">Dominica</option>
+                                        <option value="50">Cộng hòa Dominicana</option>
+                                        <option value="51">Đan Mạch</option>
+                                        <option value="52">Đông Timor</option>
+                                        <option value="53">Đức</option>
+                                        <option value="54">Ecuador</option>
+                                        <option value="55">El Salvador</option>
+                                        <option value="56">Eritrea</option>
+                                        <option value="57">Estonia</option>
+                                        <option value="58">Ethiopia</option>
+                                        <option value="59">Fiji</option>
+                                        <option value="60">Gabon</option>
+                                        <option value="61">Gambia</option>
+                                        <option value="62">Ghana</option>
+                                        <option value="63">Grenada</option>
+                                        <option value="64">Gruzia</option>
+                                        <option value="65">Guatemala</option>
+                                        <option value="66">Guinea-Bissau</option>
+                                        <option value="67">Guinea Xích Đạo</option>
+                                        <option value="68">Guinea</option>
+                                        <option value="69">Guyana</option>
+                                        <option value="70">Haiti</option>
+                                        <option value="71">Hà Lan</option>
+                                        <option value="72">Hàn Quốc</option>
+                                        <option value="73">Hoa Kỳ</option>
+                                        <option value="74">Honduras</option>
+                                        <option value="75">Hungary</option>
+                                        <option value="76">Hy Lạp</option>
+                                        <option value="77">Iceland</option>
+                                        <option value="78">Indonesia</option>
+                                        <option value="79">Iran</option>
+                                        <option value="80">Iraq</option>
+                                        <option value="81">Ireland</option>
+                                        <option value="82">Israel</option>
+                                        <option value="83">Jamaica</option>
+                                        <option value="84">Jordan</option>
+                                        <option value="85">Kazakhstan</option>
+                                        <option value="86">Kenya</option>
+                                        <option value="87">Kiribati</option>
+                                        <option value="88">Kuwait</option>
+                                        <option value="89">Síp</option>
+                                        <option value="90">Kyrgyzstan</option>
+                                        <option value="91">Lào</option>
+                                        <option value="92">Latvia</option>
+                                        <option value="93">Lesotho</option>
+                                        <option value="94">Liban</option>
+                                        <option value="95">Liberia</option>
+                                        <option value="96">Libya</option>
+                                        <option value="97">Liechtenstein</option>
+                                        <option value="98">Litva</option>
+                                        <option value="99">Luxembourg</option>
+                                        <option value="100">Macedonia</option>
+                                        <option value="101">Madagascar</option>
+                                        <option value="102">Malawi</option>
+                                        <option value="103">Malaysia</option>
+                                        <option value="104">Maldives</option>
+                                        <option value="105">Mali</option>
+                                        <option value="106">Malta</option>
+                                        <option value="107">Maroc</option>
+                                        <option value="108">Marshall</option>
+                                        <option value="109">Mauritanie</option>
+                                        <option value="110">Mauritius</option>
+                                        <option value="111">Mexico</option>
+                                        <option value="112">Micronesia</option>
+                                        <option value="113">Moldova</option>
+                                        <option value="114">Monaco</option>
+                                        <option value="115">Mông Cổ</option>
+                                        <option value="116">Montenegro</option>
+                                        <option value="117">Mozambique</option>
+                                        <option value="118">Myanma</option>
+                                        <option value="119">Namibia</option>
+                                        <option value="120">Nam Sudan</option>
+                                        <option value="121">Nam Phi</option>
+                                        <option value="122">Nauru</option>
+                                        <option value="123">Na Uy</option>
+                                        <option value="124">Nepal</option>
+                                        <option value="125">New Zealand</option>
+                                        <option value="126">Nicaragua</option>
+                                        <option value="127">Niger</option>
+                                        <option value="128">Nigeria</option>
+                                        <option value="129">Nga</option>
+                                        <option value="130">Nhật Bản</option>
+                                        <option value="131">Oman</option>
+                                        <option value="132">Pakistan</option>
+                                        <option value="133">Palau</option>
+                                        <option value="134">Panama</option>
+                                        <option value="135">Papua New Guinea</option>
+                                        <option value="136">Paraguay</option>
+                                        <option value="137">Peru</option>
+                                        <option value="138">Pháp</option>
+                                        <option value="139">Phần Lan</option>
+                                        <option value="140">Philippines</option>
+                                        <option value="141">Qatar</option>
+                                        <option value="142">România</option>
+                                        <option value="143">Rwanda</option>
+                                        <option value="144">Saint Kitts và Nevis</option>
+                                        <option value="145">Saint Lucia</option>
+                                        <option value="146">Saint Vincent và Grenadines</option>
+                                        <option value="147">Samoa</option>
+                                        <option value="148">San Marino</option>
+                                        <option value="149">São Tomé và Príncipe</option>
+                                        <option value="150">Séc</option>
+                                        <option value="151">Sénégal</option>
+                                        <option value="152">Serbia</option>
+                                        <option value="153">Seychelles</option>
+                                        <option value="154">Sierra Leone</option>
+                                        <option value="155">Singapore</option>
+                                        <option value="156">Slovakia</option>
+                                        <option value="157">Slovenia</option>
+                                        <option value="158">Solomon</option>
+                                        <option value="159">Somalia</option>
+                                        <option value="160">Sri Lanka</option>
+                                        <option value="161">Sudan</option>
+                                        <option value="162">Suriname</option>
+                                        <option value="163">Swaziland</option>
+                                        <option value="164">Syria</option>
+                                        <option value="165">Tajikistan</option>
+                                        <option value="166">Tanzania</option>
+                                        <option value="167">Tây Ban Nha</option>
+                                        <option value="168">Tchad</option>
+                                        <option value="169">Thái Lan</option>
+                                        <option value="170">Thổ Nhĩ Kỳ</option>
+                                        <option value="171">Thụy Điển</option>
+                                        <option value="172">Thụy Sĩ</option>
+                                        <option value="173">Togo</option>
+                                        <option value="174">Tonga</option>
+                                        <option value="175">Triều Tiên</option>
+                                        <option value="176">Trinidad và Tobago</option>
+                                        <option value="177">Trung Quốc</option>
+                                        <option value="178">Trung Phi</option>
+                                        <option value="179">Tunisia</option>
+                                        <option value="180">Turkmenistan</option>
+                                        <option value="181">Tuvalu</option>
+                                        <option value="182">Úc</option>
+                                        <option value="183">Uganda</option>
+                                        <option value="184">Ukraina</option>
+                                        <option value="185">Uruguay</option>
+                                        <option value="186">Uzbekistan</option>
+                                        <option value="187">Vanuatu</option>
+                                        <option value="188">Thành Vatican</option>
+                                        <option value="189">Venezuela</option>
+                                        <option value="190">Ý</option>
+                                        <option value="191">Yemen</option>
+                                        <option value="192">Zambia</option>
+                                        <option value="193">Zimbabwe</option>
+                                    </select>
+                                    <script>
+                                        function quoctichthaydoi(d, c) {
+                                            var f = $(".quoctich1").val();
+                                            var e = "";
+                                            $("." + d + "").children().each(function (a, b) {
+                                                if ((f - 1) == a) {
+                                                    e = b.text
+                                                }
+                                            });
+                                            $("." + d + "");
+                                            var g = "";
+                                            $("." + c + "").children().each(function (a, b) {
+                                                if (e == b.text) {
+                                                    g = b.value
+                                                }
+                                            });
+                                            $(".quoctich2").val(g)
+                                        };
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3 col-sm-3 col-md-6 col-lg-6" style="position: relative">
+                            <div class="showAvatar" id="A6308:frmTongHopNoHoSo:pnlHinhAnh_frmTCCN" style="position: relative"></div>
+                            <div class="" id="A6308:frmTongHopNoHoSo:_t393">
+                                <div class="group-upload" onclick="actionUpload(this);">
+                                    <div class="btn-upload-file">
+                                    <img alt="" class="iceGphImg img-responsive" id="A6308:frmTongHopNoHoSo:j_idt395" src="~/assets/images/dang-ky-ho-so.png" style="max-height: 103px; background: #e3e3e3"> </div>
+                                    <div class="ice-file-entry" id="A6308:frmTongHopNoHoSo:fuAnhDaiDien_frmTCCN" style="visibility: visible">
+                                        <div>
+                                            <input id="A6308:frmTongHopNoHoSo:fuAnhDaiDien_frmTCCN::vssydqukj" name="A6308:frmTongHopNoHoSo:fuAnhDaiDien_frmTCCN::vssydqukj" tabindex="0" type="file" title="Chọn tập tin" style="">
+                                        </div>
+                                        <div class="inactive">
+                                            <div class="ui-progressbar ui-widget ui-widget-content ui-corner-all">
+                                                <div class="ui-progressbar-value ui-widget-header ui-corner-left ui-corner-right"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <input class="submitUpload" id="A6308:frmTongHopNoHoSo:_t397" name="A6308:frmTongHopNoHoSo:_t397" style="visibility: visible; display: none;" type="submit" value="">
+                                </div>
+                            </div><span id="A6308:frmTongHopNoHoSo:j_idt399"></span>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <div class="label"> Dân tộc </div>
+                            <div class="f-input">
+                                <select class="iceSelOneMnu" id="A6308:frmTongHopNoHoSo:_t402" name="A6308:frmTongHopNoHoSo:_t402" onchange="mojarra.ab(this,event,'change',0,'@this')" size="1" style="">
+                                    <option value="12">Ba-na</option>
+                                    <option value="53">Brâu</option>
+                                    <option value="44">Chứt</option>
+                                    <option value="30">Co</option>
+                                    <option value="49">Cống</option>
+                                    <option value="15">Cơ-ho</option>
+                                    <option value="9">Dao</option>
+                                    <option value="11">Ê-đê</option>
+                                    <option value="26">Giáy</option>
+                                    <option value="29">Gié-Triêng</option>
+                                    <option value="18">Hrê</option>
+                                    <option value="37">Kháng</option>
+                                    <option value="23">Khơ-mú</option>
+                                    <option value="35">Lào</option>
+                                    <option value="42">Lự</option>
+                                    <option value="28">Mạ</option>
+                                    <option value="46">Mảng</option>
+                                    <option value="4">Mường</option>
+                                    <option value="20">Mnông</option>
+                                    <option value="43">Ngái</option>
+                                    <option value="7">Nùng</option>
+                                    <option value="19">Ra-glai</option>
+                                    <option value="2">Tày</option>
+                                    <option value="27">Tà-ôi</option>
+                                    <option value="3">Thái</option>
+                                    <option value="32">Xinh-mun</option>
+                                    <option value="16">Xơ-đăng</option>
+                                    <option value="1">Kinh (Việt)</option>
+                                    <option value="48">Bố Y</option>
+                                    <option value="24">Bru-Vân Kiều</option>
+                                    <option value="14">Chăm (Chàm)</option>
+                                    <option value="31">Chơ - ro</option>
+                                    <option value="34">Chu - ru</option>
+                                    <option value="47">Cơ Lao</option>
+                                    <option value="25">Cơ-Tu</option>
+                                    <option value="10">Gia - rai</option>
+                                    <option value="33">Hà Nhì</option>
+                                    <option value="6">Hoa (Hán)</option>
+                                    <option value="8">H'mông (Mèo)</option>
+                                    <option value="5">Khơ me</option>
+                                    <option value="36">La Chí</option>
+                                    <option value="40">La Ha</option>
+                                    <option value="39">La Hủ</option>
+                                    <option value="45">Lô Lô</option>
+                                    <option value="54">Ơ Đu</option>
+                                    <option value="41">Pà Thẻn</option>
+                                    <option value="38">Phù Lá</option>
+                                    <option value="51">Pu Péo</option>
+                                    <option value="52">Rơ - măm</option>
+                                    <option value="13">Sán Chay (Cao Lan-Sán Chỉ)</option>
+                                    <option value="17">Sán Dìu</option>
+                                    <option value="50">Si La</option>
+                                    <option value="21">Thổ (4)</option>
+                                    <option value="22">XTiêng</option>
+                                    <option value="55">Người nước ngoài</option>
+                                    <option value="0" selected="true">Chưa xác định thông tin</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-group">
+            THÀNH PHẦN HỒ SƠ
+        </div>
+    </div>
+</body>
+</html>

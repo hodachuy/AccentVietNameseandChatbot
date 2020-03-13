@@ -19,7 +19,7 @@ namespace SearchEngine.Service
         private string _urlAPI = ReadString("UrlSearchAPI");
         public ElasticSearch()
         {
-            _urlAPI = (String.IsNullOrEmpty(_urlAPI) == true ? "http://localhost:9200" : _urlAPI);//http://localhost:9200/
+            _urlAPI = (String.IsNullOrEmpty(_urlAPI) == true ? "http://172.16.13.135:9200" : _urlAPI);
             _settings = new ConnectionSettings(new Uri(_urlAPI));
             _settings.DefaultIndex("sample");
             _settings.DisableDirectStreaming(true);
@@ -28,11 +28,11 @@ namespace SearchEngine.Service
         }
         public void CreateIndex(string nameIndex)
         {
-            _client.Indices.Delete(Indices.Index("sample"));//sample
-            var indexSettings = _client.Indices.Exists(nameIndex);
+            _client.DeleteIndex(Indices.Index("sample"));//sample
+            var indexSettings = _client.IndexExists(nameIndex);
             if (!indexSettings.Exists)
             {
-                var createIndexResponse = _client.Indices.Create(nameIndex, c => c
+                var createIndexResponse = _client.CreateIndex(nameIndex, c => c
                                                             .Settings(s => s
                                                                 //.NumberOfReplicas(0)
                                                                 //.RefreshInterval(-1)
@@ -55,15 +55,14 @@ namespace SearchEngine.Service
                                                                                                  .Tokenizer("vi_tokenizer")
                                                                                                  )
                                                                                 .Shingle("single_filter", stf => stf
-                                                                                         .MaxShingleSize(5)
+                                                                                         .MaxShingleSize(20)
                                                                                          .MinShingleSize(2))
                                                                                         )
-
                                                                     .Analyzers(an => an
                                                                         .Custom("autocomplete", ca => ca
                                                                             .CharFilters("html_strip")
                                                                             .Tokenizer("vi_tokenizer")
-                                                                            .Filters("lowercase")//,"icu_folding","single_filter"
+                                                                            .Filters("lowercase", "single_filter")//,"icu_folding"
                                                                         )
                                                                         .Custom("vi_analyzer", ca => ca
                                                                             .CharFilters("html_strip")
@@ -73,9 +72,9 @@ namespace SearchEngine.Service
                                                                     )
                                                                 )
                                                             )
-                                                            .Map<Question>(mm => mm
+                                                            .Mappings(m => m
+                                                                .Map<Question>(mm => mm
                                                                     .AutoMap()
-                                                                    //.AutoMap(typeof(Question))
                                                                     .Properties(p => p
                                                                         .Text(z => z
                                                                             .Name(g => g.AutoComplete)
@@ -89,6 +88,7 @@ namespace SearchEngine.Service
                                                                             .Fields(y => y.AutoComplete))
                                                                        )
                                                                     )
+                                                                )
                                                             )
                                                         );
             }
@@ -165,6 +165,7 @@ namespace SearchEngine.Service
                     question.Body = item.Source.Body;
                     lstQuestion.Add(question);
                     //Console.WriteLine(index + " : " + item.Source.Body);
+
                     //Console.WriteLine(index + " Highligh : " + item.Highlights.Values.Select(x => x.Highlights.FirstOrDefault().ToString()).FirstOrDefault());
                 }
             }
@@ -181,13 +182,13 @@ namespace SearchEngine.Service
                                                                 .Terms("autoComplete", x => x
                                                                      .Field(f => f.AutoComplete)
                                                                      .Size(sizeAutoSuggester)
-                                                                     //.OrderDescending("_count")
-                                                                     .Order(o => o.CountDescending())
+                                                                     .OrderDescending("_count")
+                                                                     //.Order(o => o.CountDescending())
                                                                      .Include(patternText)
                                                                     )
                                                                 )
                                                          );
-            var resultSuggester = searchResponse.Aggregations.Terms("autoComplete");
+            var resultSuggester = searchResponse.Aggs.Terms("autoComplete");
             if (resultSuggester.Buckets.Count != 0)
             {
                 foreach (var item in resultSuggester.Buckets)
@@ -199,6 +200,7 @@ namespace SearchEngine.Service
                             lstSuggest.Add(item.Key);
                         }
                     }
+
                 }
             }
             //else
@@ -213,6 +215,7 @@ namespace SearchEngine.Service
             //        }
             //    }
             //}
+
             return lstSuggest;
         }
 
@@ -224,22 +227,20 @@ namespace SearchEngine.Service
             question.CreationDate = DateTime.Now;
             question.Body = body;
 
-            var indexResponse = _client.IndexDocument(question);
-            if (!indexResponse.IsValid)
-            {
-                // If the request isn't valid, we can take action here
-            }
+            var response = await _client.IndexAsync<Question>(question, x => x
+                      .Index("sample")
+                      .Type(TypeName.From<Question>())
+                      .Id(question.Id)
+                      .Refresh(Elasticsearch.Net.Refresh.True));
 
-            var indexResponseAsync = await _client.IndexDocumentAsync(question);
-
-            return indexResponseAsync.Id.ToString();
+            return response.Id.ToString();
         }
 
         public string Update(string quesID, string body)
         {
-
             var response = _client.Update<Question, QuestionViewModel>(Int32.Parse(quesID), d => d
               .Index("sample")
+              .Type("integer")
               .Doc(new QuestionViewModel
               {
                   Body = body
@@ -310,7 +311,11 @@ namespace SearchEngine.Service
                     question.Score = 1;
                     question.CreationDate = DateTime.Now;
                     question.Body = xlRange.Cells[i, j].Value2.ToString();
-                    await Create(question.Id.ToString(), question.Body);
+                    await esClient.IndexAsync<Question>(question, x => x
+                                          .Index("sample")
+                                          .Type(TypeName.From<Question>())
+                                          .Id(question.Id)
+                                          .Refresh(Elasticsearch.Net.Refresh.True));
                 }
             }
 

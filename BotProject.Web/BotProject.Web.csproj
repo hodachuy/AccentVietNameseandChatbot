@@ -15,7 +15,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BotProject.Web</RootNamespace>
     <AssemblyName>BotProject.Web</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -794,6 +794,7 @@
     <Content Include="assets\client\vendor\fonts\weather-icons\css\weather-icons.min.css" />
     <Content Include="assets\client\vendor\loading-bar\loading.css" />
     <Content Include="assets\client\vendor\slimscroll\jquery.slimscroll.js" />
+    <Content Include="assets\images\dang-ky-ho-so.png" />
     <Content Include="assets\images\img-zalo-2.png" />
     <Content Include="assets\images\img-website.jpg" />
     <Content Include="assets\images\img-facebook.png" />
@@ -1038,6 +1039,7 @@
     <Content Include="Views\Home\FAQ.cshtml" />
     <Content Include="Views\Bot\BotMedicalSymptoms.cshtml" />
     <Content Include="Views\Home\FaqMedSymptoms.cshtml" />
+    <Content Include="Views\Home\PublicService.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1085,6 +1087,14 @@
     <ProjectReference Include="..\BotProject.Service\BotProject.Service.csproj">
       <Project>{fcacce39-ad3a-451b-b3c4-afe7eee88f91}</Project>
       <Name>BotProject.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SearchEngine.Data\SearchEngine.Data.csproj">
+      <Project>{3d2f5b2a-12be-42e0-be1b-27f736523378}</Project>
+      <Name>SearchEngine.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SearchEngine.Service\SearchEngine.Service.csproj">
+      <Project>{e57606dd-4d4b-4b21-ac22-a9398cb8810c}</Project>
+      <Name>SearchEngine.Service</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

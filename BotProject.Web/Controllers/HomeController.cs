@@ -64,5 +64,15 @@ namespace BotProject.Web.Controllers
             Response.AddHeader("Content-Disposition", new System.Net.Mime.ContentDisposition { Inline = true, FileName = "index.htm" }.ToString());
             return File(pathFileMedSymptoms, "text/plain");
         }
+
+        /// <summary>
+        /// Dịch vụ công
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult PublicService()
+        {
+            return View();
+        }
     }
 }

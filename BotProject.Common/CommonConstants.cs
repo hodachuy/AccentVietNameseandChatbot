@@ -48,9 +48,7 @@ namespace BotProject.Common
 
         public const string MdSearch_Yte = "y-te";
 
-
         public const string POSTBACK_MODULE = "postback_module";
-
 
         public const string TYPE_FACEBOOK = "facebook";
         public const string TYPE_ZALO = "zalo";
@@ -58,7 +56,6 @@ namespace BotProject.Common
 
         public const string BOT_REQUEST_TEXT = "text";
         public const string BOT_REQUEST_PAYLOAD_POSTBACK = "payload_postback";
-        public const string BOT_REQUEST_PAYLOAD_QUICKREPLY = "payload_quickreply";
     }
     public class ZaloConstans
     {
@@ -120,5 +117,6 @@ namespace BotProject.Common
         public const string BOT_HISTORY_HANDLE_006 = "Gọi Search NLP trong cấu hình";
 		public const string BOT_HISTORY_HANDLE_007 = "Nhấn Voucher";
         public const string BOT_HISTORY_HANDLE_008 = "Bot không hiểu và Search NLP không tìm thấy";
+        public const string BOT_HISTORY_HANDLE_009 = "Nhấn Chat ADMIN";
     }
 }
