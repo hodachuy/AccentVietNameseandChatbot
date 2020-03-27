@@ -347,6 +347,7 @@
     <Compile Include="Infrastructure\Core\BotService.cs" />
     <Compile Include="Infrastructure\Core\BotServiceDigipro.cs" />
     <Compile Include="Infrastructure\Core\BotServiceMedical.cs" />
+    <Compile Include="Infrastructure\Core\BotServiceTNMT.cs" />
     <Compile Include="Infrastructure\Core\PaginationSet.cs" />
     <Compile Include="Infrastructure\Core\ServiceFactory.cs" />
     <Compile Include="Infrastructure\Core\SpeechReconitionVNService.cs" />

@@ -63,29 +63,6 @@ namespace BotProject.Web.API_Webhook
            {"NOT_MATCH_05", "Xin lỗi, Tôi chưa được học để hiểu nội dung này?"},
         };
 
-        ///// <summary>
-        ///// Điều kiện để đi tới card tiếp theo
-        ///// </summary>
-        //private readonly string[] ARRAY_CONDITION_NAME = new string[]
-        //{
-        //    "REQUIRE_CLICK_BUTTON_TO_NEXT_CARD",//IsHaveCondition
-        //    "REQUIRE_INPUT_TEXT_TO_NEXT_CARD",//IsConditionWithInputText true + CardStepID NOT NULL
-        //    "VERIFY_TEXT_WITH_AREA_BUTTON",//IsConditionWithAreaButton
-        //    "POSTBACK_MODULE",
-        //    "ADD_ATTRIBUTE_USER", // Thuộc tính người dùng 
-        //    "AUTO_NEXT_CARD" //IsConditionWithInputText false + CardStepID NOT NULL
-        //};
-
-        //private Dictionary<string, string> CONDITION_CARD = new Dictionary<string, string>
-        //{
-        //    {"CONDITION_CLICK","REQUIRE_CLICK_BUTTON_TO_NEXT_CARD"},
-        //    {"CONDITION_INPUT","REQUIRE_INPUT_TEXT_TO_NEXT_CARD"},
-        //    {"CONDITION_VERIFY","VERIFY_TEXT_WITH_AREA_BUTTON"},
-        //    {"POSTBACK_MODULE","POSTBACK_MODULE"},
-        //    {"ADD_ATTRIBUTE_USER","ADD_ATTRIBUTE_USER"},
-        //    {"AUTO_NEXT_CARD","AUTO_NEXT_CARD"},
-        //};
-
         /// <summary>
         /// Thời gian chờ để phản hồi lại tin nhắn,thời gian tính từ tin nhắn cuối cùng
         /// người dùng không tương tác lại
@@ -374,19 +351,13 @@ namespace BotProject.Web.API_Webhook
             }
             else if (_fbUser.PredicateName == "POSTBACK_MODULE")
             {
-                if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
+                if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
                 {
-                    _fbUser.PredicateName = "";
-                    _fbUser.PredicateValue = "";
-                    _fbUser.IsHaveSetAttributeSystem = false;
-                    _fbUser.AttributeName = "";
-                    UpdateStatusFacebookUser(_fbUser);
+                    string postbackModule = _fbUser.PredicateValue;
+                    string templateModule = HandlePostbackModule(postbackModule, text, botId, false);
+                    await SendMessage(templateModule, sender);
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 }
-                string postbackModule = _fbUser.PredicateValue;
-                string templateModule = HandlePostbackModule(postbackModule, text, botId, false);
-                await SendMessage(templateModule, sender);
-                return new HttpResponseMessage(HttpStatusCode.OK);
             }
 
             // print postback card
@@ -575,24 +546,24 @@ namespace BotProject.Web.API_Webhook
             _fbUser.PredicateName = "POSTBACK_MODULE";
             if (postbackModule.Contains(CommonConstants.ModuleSearchAPI))
             {
+                string mdSearchId = postbackModule.Replace("postback_module_api_search_", "");
                 if (isFristRequest)
                 {
-                    string mdSearchId = postbackModule.Replace("postback_module_api_search_", "");
                     var handleMdSearch = _handleMdService.HandleIsSearchAPI(postbackModule, mdSearchId, "");
                     templateHandle = handleMdSearch.TemplateJsonFacebook;
                 }
                 else
                 {
-                    var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, "", "");
+                    var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
                     templateHandle = handleMdSearch.TemplateJsonFacebook;
                 }
-                _fbUser.PredicateValue = CommonConstants.ModuleSearchAPI;
+                _fbUser.PredicateValue = postbackModule;
             }
             if (postbackModule.Contains(CommonConstants.ModuleAdminContact))
             {
                 var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
                 templateHandle = handleAdminContact.TemplateJsonFacebook;
-                _fbUser.PredicateValue = CommonConstants.ModuleAdminContact;
+                _fbUser.PredicateValue = postbackModule;
             }
 
             UpdateStatusFacebookUser(_fbUser);

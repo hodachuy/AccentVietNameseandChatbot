@@ -374,19 +374,13 @@ namespace BotProject.Web.API_Webhook
             }
             else if (_fbUser.PredicateName == "POSTBACK_MODULE")
             {
-                if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
+                if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
                 {
-                    _fbUser.PredicateName = "";
-                    _fbUser.PredicateValue = "";
-                    _fbUser.IsHaveSetAttributeSystem = false;
-                    _fbUser.AttributeName = "";
-                    UpdateStatusFacebookUser(_fbUser);
+                    string postbackModule = _fbUser.PredicateValue;
+                    string templateModule = HandlePostbackModule(postbackModule, text, botId, false);
+                    await SendMessage(templateModule, sender);
                     return new HttpResponseMessage(HttpStatusCode.OK);
                 }
-                string postbackModule = _fbUser.PredicateValue;
-                string templateModule = HandlePostbackModule(postbackModule, text, botId, false);
-                await SendMessage(templateModule, sender);
-                return new HttpResponseMessage(HttpStatusCode.OK);
             }
 
             // print postback card
@@ -575,24 +569,24 @@ namespace BotProject.Web.API_Webhook
             _fbUser.PredicateName = "POSTBACK_MODULE";
             if (postbackModule.Contains(CommonConstants.ModuleSearchAPI))
             {
+                string mdSearchId = postbackModule.Replace("postback_module_api_search_", "");
                 if (isFristRequest)
                 {
-                    string mdSearchId = postbackModule.Replace("postback_module_api_search_", "");
                     var handleMdSearch = _handleMdService.HandleIsSearchAPI(postbackModule, mdSearchId, "");
                     templateHandle = handleMdSearch.TemplateJsonFacebook;
                 }
                 else
                 {
-                    var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, "", "");
+                    var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
                     templateHandle = handleMdSearch.TemplateJsonFacebook;
                 }
-                _fbUser.PredicateValue = CommonConstants.ModuleSearchAPI;
+                _fbUser.PredicateValue = postbackModule;
             }
             if (postbackModule.Contains(CommonConstants.ModuleAdminContact))
             {
                 var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
                 templateHandle = handleAdminContact.TemplateJsonFacebook;
-                _fbUser.PredicateValue = CommonConstants.ModuleAdminContact;
+                _fbUser.PredicateValue = postbackModule;
             }
 
             UpdateStatusFacebookUser(_fbUser);
