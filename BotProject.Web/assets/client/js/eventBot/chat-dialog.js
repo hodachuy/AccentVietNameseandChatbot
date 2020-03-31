@@ -172,13 +172,17 @@ var cboxEvent = {
             e.stopPropagation();
         })
         //popup
-        // $('body').on('click', '._6ir4_popup', function (e) {
-        // e.preventDefault();
-        // //show 1 popup ngoài iframe
-        // var quesID = $(this).attr('data-id');
-        // var domain = 'http://qa.surelrn.vn';//http://localhost:54160;
-        // parent.postMessage(quesID, domain);
-        // })
+         $('body').on('click', '._6ir4_popup', function (e) {
+             e.preventDefault();
+             var urlPopup = $(this).attr('href');
+             console.log(urlPopup)
+             //show 1 popup ngoài iframe
+             //var quesID = $(this).attr('data-id');
+             //var domain = 'http://qa.surelrn.vn';//http://localhost:54160;
+             //parent.postMessage(quesID, domain);
+             parent.postMessage(urlPopup, "*");
+             e.stopPropagation();
+         })
 
         // Bùa nhớ xóa
         $('body').on('click', '._4fsj-menu1', function (e) {
