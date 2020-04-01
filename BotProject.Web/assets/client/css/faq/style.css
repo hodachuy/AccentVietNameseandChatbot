@@ -873,7 +873,7 @@ div[class*="slider_shadow"]:before, div[class^="header_shadow"] {
 	overflow: hidden;
 	font-size: 22px;
 	font-weight: bold;
-	padding-right: 161px;
+	/*padding-right: 161px;*/
 }
 .question h2 a {
 	color: #2f3239;

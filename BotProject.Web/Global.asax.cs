@@ -29,10 +29,10 @@ namespace BotProject.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             //Main();
         }
-        protected void Application_PostAuthorizeRequest()
-        {
-            HttpContext.Current.SetSessionStateBehavior(SessionStateBehavior.Required);
-        }
+        //protected void Application_PostAuthorizeRequest()
+        //{
+        //    HttpContext.Current.SetSessionStateBehavior(SessionStateBehavior.Required);
+        //}
 
         //System.Timers.Timer webKeepAlive = new System.Timers.Timer();
         //Int64 counter = 0;
@@ -42,7 +42,6 @@ namespace BotProject.Web
         //    webKeepAlive.Elapsed += WebKeepAlive_Elapsed;
         //    webKeepAlive.Start();
         //}
-
 
         //private void WebKeepAlive_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         //{

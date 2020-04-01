@@ -262,6 +262,10 @@ namespace BotProject.Web.API_Webhook
                     await SendMessage(msg, sender);
                 }
                 text = textAccentVN;
+
+                AddAttributeDefault(sender, botId, "content_message", text);
+                _dicAttributeUser.Remove("content_message");
+                _dicAttributeUser.Add("content_message", text);
             }
 
             // Input postback            
@@ -370,6 +374,21 @@ namespace BotProject.Web.API_Webhook
                     string partternNextCard = _fbUser.PredicateValue;
                     string templateNextCard = HandlePostbackCard(partternNextCard, botId);
                     await SendMultiMessageTask(templateNextCard, sender);
+                }
+                if (templateCard.Contains("Nguyên nhân") || templateCard.Contains("bác sĩ") || templateCard.Contains("Bác sĩ"))
+                {
+                    if (botId == 3019)
+                    {
+                        List<string> lstSymptoms = new List<string>();
+                        lstSymptoms = GetSymptoms(_dicAttributeUser["content_message"]);
+                        if (lstSymptoms.Count() != 0)
+                        {
+                            foreach (var symp in lstSymptoms)
+                            {
+                                await SendMessage(symp, sender);
+                            }
+                        }
+                    }
                 }
                 return new HttpResponseMessage(HttpStatusCode.OK);
             }
