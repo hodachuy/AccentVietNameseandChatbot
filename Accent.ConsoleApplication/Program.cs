@@ -26,6 +26,8 @@ using System.IO;
 using System.Web.Script.Serialization;
 using System.Threading;
 using static System.Console;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
 
 namespace Accent.ConsoleApplication
 {
@@ -33,69 +35,68 @@ namespace Accent.ConsoleApplication
     {
         public static void Main(string[] args)
         {
+            //var roleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC");
+            //var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE");
 
-            var roleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC");
-            var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE");
+            //string role = roleId.ToString().ToLower();
+            //string admin = adminId.ToString().ToLower();
 
-            string role = roleId.ToString().ToLower();
-            string admin = adminId.ToString().ToLower();
+            //Singleton fromManager = Singleton.SingleInstance;
+            //fromManager.LogMessage("Request Message from Manager");
 
-            Singleton fromManager = Singleton.SingleInstance;
-            fromManager.LogMessage("Request Message from Manager");
+            //Singleton fromEmployee = Singleton.SingleInstance;
+            //fromEmployee.LogMessage("Request Message from Employee");
 
-            Singleton fromEmployee = Singleton.SingleInstance;
-            fromEmployee.LogMessage("Request Message from Employee");
-
-            ReadLine();
-            while (true)
-            {
-                Console.InputEncoding = Encoding.Unicode;
-                Console.WriteLine("Nhap chuoi :");
-                string text = Console.ReadLine();
-                if (text == "exit")
-                    break;
-                if (text == "T")
-                {
-                    Singleton fromManager1 = Singleton.SingleInstance;
-                    fromManager1.LogMessage("Request Message from Manager");
-
-                    Singleton fromEmployee1 = Singleton.SingleInstance;
-                    fromEmployee1.LogMessage("Request Message from Employee");
-                    ReadLine();
-                }
-                else
-                {
-                    Singleton.DerivedClass derivedClass = new Singleton.DerivedClass();
-                    derivedClass.LogMessage("new Instances v2");
-                }
-                ReadLine();
-            }
-
-            //AccentPredictor accent = new AccentPredictor();
-
-            //string path1Gram = System.IO.Path.GetFullPath("news1gram");
-            //string path2Gram = System.IO.Path.GetFullPath("news2grams");
-            //string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
-            //accent.InitNgram(path1Gram, path2Gram, path1Statistic);
-
-            //Console.OutputEncoding = Encoding.UTF8;
-            //----- Test -----//
-            //Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
-
+            //ReadLine();
             //while (true)
             //{
             //    Console.InputEncoding = Encoding.Unicode;
             //    Console.WriteLine("Nhap chuoi :");
             //    string text = Console.ReadLine();
             //    if (text == "exit")
-            //    {
             //        break;
-            //    }
-            //    string results = accent.predictAccentsWithMultiMatches(text, 10);
-            //    Console.WriteLine("DS Ket qua : {0}", results);
+            //    if (text == "T")
+            //    {
+            //        Singleton fromManager1 = Singleton.SingleInstance;
+            //        fromManager1.LogMessage("Request Message from Manager");
 
-            //    Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
+            //        Singleton fromEmployee1 = Singleton.SingleInstance;
+            //        fromEmployee1.LogMessage("Request Message from Employee");
+            //        ReadLine();
+            //    }
+            //    else
+            //    {
+            //        Singleton.DerivedClass derivedClass = new Singleton.DerivedClass();
+            //        derivedClass.LogMessage("new Instances v2");
+            //    }
+            //    ReadLine();
             //}
+
+            ////AccentPredictor accent = new AccentPredictor();
+
+            ////string path1Gram = System.IO.Path.GetFullPath("news1gram");
+            ////string path2Gram = System.IO.Path.GetFullPath("news2grams");
+            ////string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
+            ////accent.InitNgram(path1Gram, path2Gram, path1Statistic);
+
+            ////Console.OutputEncoding = Encoding.UTF8;
+            ////----- Test -----//
+            ////Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
+
+            ////while (true)
+            ////{
+            ////    Console.InputEncoding = Encoding.Unicode;
+            ////    Console.WriteLine("Nhap chuoi :");
+            ////    string text = Console.ReadLine();
+            ////    if (text == "exit")
+            ////    {
+            ////        break;
+            ////    }
+            ////    string results = accent.predictAccentsWithMultiMatches(text, 10);
+            ////    Console.WriteLine("DS Ket qua : {0}", results);
+
+            ////    Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
+            ////}
         }
 
         public class Singleton

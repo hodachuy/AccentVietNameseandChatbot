@@ -20,7 +20,6 @@ namespace BotProject.Web.Controllers
     [OutputCacheAttribute(VaryByParam = "*", Duration = 0, NoStore = true)]
     public class BotController : BaseController
     {
-        private AccentService _accentService;
         private ICardService _cardService;
 		private IQnAService _qnaService;
         private ISettingService _settingService;
