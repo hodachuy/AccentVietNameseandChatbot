@@ -317,6 +317,7 @@
     <Compile Include="API_Webhook\FacebookController.cs" />
     <Compile Include="API_Webhook\ZaloController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
+    <Compile Include="Controllers\ChatRoomController.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
@@ -796,6 +797,8 @@
     <Content Include="assets\client\vendor\loading-bar\loading.css" />
     <Content Include="assets\client\vendor\slimscroll\jquery.slimscroll.js" />
     <Content Include="assets\images\dang-ky-ho-so.png" />
+    <Content Include="assets\images\icons-phones.png" />
+    <Content Include="assets\images\image-law.jpg" />
     <Content Include="assets\images\img-zalo-2.png" />
     <Content Include="assets\images\img-website.jpg" />
     <Content Include="assets\images\img-facebook.png" />
@@ -828,9 +831,14 @@
     <Content Include="assets\images\github.png" />
     <Content Include="assets\images\images_question.jpg" />
     <Content Include="assets\images\img-kiosk.png" />
+    <Content Include="assets\images\KIA-SHOWROOM.jpg" />
     <Content Include="assets\images\loader.svg" />
     <Content Include="assets\images\loads.gif" />
     <Content Include="assets\images\logo.png" />
+    <Content Include="assets\images\logo\icon-bot-v2.png" />
+    <Content Include="assets\images\logo\icon-bot.jpg" />
+    <Content Include="assets\images\logo\icon-chat-support-v2.png" />
+    <Content Include="assets\images\logo\icon-chat-support.png" />
     <Content Include="assets\images\mail_chimp.png" />
     <Content Include="assets\images\medical-logo.jpg" />
     <Content Include="assets\images\phone.png" />
@@ -838,6 +846,7 @@
     <Content Include="assets\images\product-pic-3.jpg" />
     <Content Include="assets\images\product-pic-4.jpg" />
     <Content Include="assets\images\product-pic.jpg" />
+    <Content Include="assets\images\rural_hospital_access.jpg" />
     <Content Include="assets\images\slack.png" />
     <Content Include="assets\images\switch.png" />
     <Content Include="assets\images\banner.jpg" />
@@ -846,6 +855,7 @@
     <Content Include="assets\images\vn.svg" />
     <Content Include="assets\images\whatsaquestion.jpg" />
     <Content Include="assets\images\img-zalo.png" />
+    <Content Include="assets\images\ảnh-dịch-vụ-công.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="File\AIML\config\DefaultPredicates.xml" />
     <Content Include="File\AIML\config\GenderSubstitutions.xml" />
@@ -1041,10 +1051,10 @@
     <Content Include="Views\Bot\BotMedicalSymptoms.cshtml" />
     <Content Include="Views\Home\FaqMedSymptoms.cshtml" />
     <Content Include="Views\Home\PublicService.cshtml" />
+    <Content Include="Views\ChatRoom\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="assets\images\logo\" />
     <Folder Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5019\" />
     <Folder Include="File\AIML\User_a596de6b-5055-4aa0-a4bf-056d0cc8ed8f_BotID_5021\" />
     <Folder Include="File\Document\" />

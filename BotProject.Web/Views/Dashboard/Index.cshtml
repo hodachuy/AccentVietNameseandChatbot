@@ -3,10 +3,147 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<style>
+    #lstTemplate .card-tmp-bot {
+        height: 200px;
+        border-radius: 4px;
+        box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.17);
+        background-color: #ffffff;
+        cursor: pointer;
+        overflow: hidden;
+    }
+        #lstTemplate .card-tmp-bot img {
+            height: 125px;
+            object-fit: cover;
+        }
+        #lstTemplate .card-tmp-bot .card-body {
+    padding: 15px 14px 22px;
+}
+        #lstTemplate .card-tmp-bot .card-body .card-title {
+    margin: 0;
+    height: 50px;
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    font-weight: bold;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+        #lstTemplate .new-blank-bot {
+    width: 100%;
+    height: 200px;
+    border-radius: 4px;
+    border: dashed 1px #9b9b9b;
+    background-color: #f0f1f4;
+    cursor: pointer;
+}
+        #lstTemplate .new-blank-bot i {
+    color: #c1c2c3;
+    font-size: 112px;
+    width: 100%;
+    text-align: center;
+    /*position: relative;*/
+    top: 17px;
+}
+        #lstTemplate .new-blank-bot span {
+    width: 100%;
+    text-align: center;
+    color: #888888;
+    margin-left:40px;
+}
+</style>
+<div class="row">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="page-header">
+            <h2 class="mb-2">Sales Dashboard Template </h2>
+            <p class="pageheader-text">Lorem ipsum dolor sit ametllam fermentum ipsum eu porta consectetur adipiscing elit.Nullam vehicula nulla ut egestas rhoncus.</p>
+            <div class="page-breadcrumb">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Sales Dashboard Template</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="d-flex" style="padding-top:10px">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">DANH SÁCH BOT</i></li>
+        <li class="breadcrumb-item">
+            <img src="~/assets/images/logo/icon-bot-v2.png" style="width:40px;height:30px" />
+            <i class="fa">DANH SÁCH MẪU CHAT BOT</i>
+        </li>
+    </ol>
+</div>
+<div id="lstTemplate" class="collapse show" style="padding-top:15px">
+    <div>
+        <div class="row">
+            <div class="col-xl-2 col-lg-3 col-md-4 col-4">
+                <div class="card-tmp-bot">
+                    <div style="float: left; width: 100%; height: 125px;">
+                        <img src="~/assets/images/rural_hospital_access.jpg" alt="Hospital Bot Template" class="card-img-top"/>
+                    </div>
+                    <div class="card-body">
+                        <span class="card-title">Hospital Bot Template</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4 col-4">
+                <div class="card-tmp-bot">
+                    <div style="float: left; width: 100%; height: 125px;">
+                        <img src="~/assets/images/image-law.jpg" alt="Law Bot Template" class="card-img-top">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-title">Law Bot Template</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4 col-4">
+                <div class="card-tmp-bot">
+                    <div style="float: left; width: 100%; height: 125px;">
+                        <img src="~/assets/images/ảnh-dịch-vụ-công.jpg" alt="Public Services Bot Template" class="card-img-top">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-title">Public Services Bot Template</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4 col-4">
+                <div class="card-tmp-bot">
+                    <div style="float: left; width: 100%; height: 125px;">
+                        <img src="~/assets/images/KIA-SHOWROOM.jpg" alt="Showroom Motors Bot Template" class="card-img-top">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-title">Showroom Motors Bot Template</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4 col-4">
+                <div class="card-tmp-bot">
+                    <div style="float: left; width: 100%; height: 125px;">
+                        <img src="~/assets/images/icons-phones.png" alt="Shop Phone and Devices" class="card-img-top">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-title">Shop and Devices Bot Template</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4 col-4">
+                <div class="new-blank-bot">
+                    <i class="fa fa-plus"></i>
+                    <span>Tạo bot mới</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="d-flex" style="padding-top:10px">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">CHỦ SỞ HỮU BOT</i></li>
     </ol>
 </div>
 <div class="row" style="margin: 15px 0px 20px;">
@@ -101,5 +238,39 @@
                 <h4 style="text-align:center;position:center">Vui lòng tạo bot để trải nghiệm</h4>
             </div>
         }
+    </div>
+</div>
+
+<!--modal form create bot-->
+<div class="modal fade" id="modalCreateBot" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tạo bot mới</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Mẫu</label>
+                        <input type="text" disabled class="form-control" id="txtBotTemplate" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Tên</label>
+                        <input type="text" class="form-control" id="txtBotName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Mô tả</label>
+                        <textarea class="form-control" style="resize:none;width:100%"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-dark" id="btnCancleSaveBot">Hủy</a>
+                <a href="#" class="btn btn-primary" id="btnSaveBot">Lưu</a>
+            </div>
+        </div>
     </div>
 </div>

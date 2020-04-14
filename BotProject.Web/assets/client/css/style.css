@@ -1625,7 +1625,7 @@ Top Header
     }
 
 .nav-divider {
-    padding: 10px 14px;
+    /*padding: 10px 14px;*/
     line-height: 30px;
     font-weight: 600;
     text-transform: uppercase;
@@ -1757,7 +1757,7 @@ Left Navigation Sidebar
     }
 
 .nav-divider {
-    padding: 10px 14px 0px 14px;
+    /*padding: 10px 14px 0px 14px;*/
     line-height: 30px;
     font-weight: 600;
     text-transform: uppercase;
@@ -2028,7 +2028,9 @@ Container / Wrapper
     position: relative;
     left: 0;
     margin-left: 264px;
-    min-height: 870px !important;
+    /*min-height: 870px !important;*/
+    height: 100%;
+    max-height: calc(100% - 0px);
 }
 
 .dashboard-content {
@@ -2147,12 +2149,12 @@ Pageheader
 
 .footer {
     border-top: 1px solid rgba(152, 166, 173, .2);
-    padding: 14px 30px 14px;
+    /*padding: 14px 30px 14px;*/
     color: #71748d;
     background-color: #fff;
     width: 100%;
-    /*position: absolute; 
-    bottom: 0;*/
+    position: fixed; 
+    bottom: 0;
 }
 
 .footer-links {
@@ -8926,3 +8928,29 @@ label.switchery-xs {
         border: solid 2px #bfd3f5 !important;
         background-color: #ffffff !important;
     }
+
+
+.menu-list{
+    max-height: calc(100% - 90px);
+}
+
+    .dashboard-header .navbar .notification .notification-list-user-img {
+    float: left;
+}
+    .rounded-circle {
+    border-radius: 50%!important;
+}
+    .avatar-xs {
+    width: 2.25rem!important;
+    height: 2.25rem!important;
+}
+    .dashboard-header .navbar .notification .notification-list-user-block {
+    padding-left: 50px;
+    font-size: 14px;
+    line-height: 21px;
+}
+    .dashboard-header .navbar .notification .notification-list-user-name {
+    color: #5969ff;
+    font-size: 14px;
+    margin-right: 8px;
+}

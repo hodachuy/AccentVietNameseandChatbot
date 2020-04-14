@@ -42,13 +42,19 @@ var common = {
 
         $('body').on('click', 'li.nav-item-bot', function (e) {
             //if ($(this).children().eq(0).attr('id') !== sessionStorage.getItem("nav-active")) {
-            $('.nav-item-bot').each(function (index) {
-                $(this).children().eq(0).next().removeClass('show');
-                $(this).children().eq(0).removeClass('collapsed');
-                $(this).children().eq(0).attr('aria-expanded', 'false');
-                $(this).children().eq(0).removeClass('active');
-                //$(this).children().eq(0).css('color', '#7a80b4')
-            })
+            //$('.nav-item-bot').each(function (index) {
+            //    $(this).children().eq(0).next().removeClass('show');
+            //    $(this).children().eq(0).removeClass('collapsed');
+            //    $(this).children().eq(0).attr('aria-expanded', 'false');
+            //    $(this).children().eq(0).removeClass('active');
+            //    //$(this).children().eq(0).css('color', '#7a80b4')
+            //})
+
+            $(this).children().eq(0).next().removeClass('show');
+            $(this).children().eq(0).removeClass('collapsed');
+            $(this).children().eq(0).attr('aria-expanded', 'false');
+            //$(this).children().eq(0).removeClass('active');
+
             //}
             var navBotID = $(this).children().eq(0).attr('id');
             //var attrBotID = $(this).children().eq(0).attr('data-id');
@@ -64,7 +70,7 @@ var common = {
                 }
             }
             //sessionStorage.setItem("attrBotID", attrBotID);
-            $(this).children().eq(0).addClass('active');
+            //$(this).children().eq(0).addClass('active');
         })
         $('body').on('click', 'li.nav-item-cog', function (e) {
             sessionStorage.setItem("nav-active", "");
@@ -234,9 +240,9 @@ var common = {
             //html += '<li class="nav-item">';
             //html += '<a class="nav-link btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
             //html += '</li>';
-            html += '<li class="nav-item nav-item-bot-sub">';
-            html += '<a class="nav-link btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Xóa bot</a>';
-            html += '</li>';
+            //html += '<li class="nav-item nav-item-bot-sub">';
+            //html += '<a class="nav-link btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Xóa bot</a>';
+            //html += '</li>';
             html += '</ul>';
             html += '</div>';
             html += '</li>';
@@ -332,6 +338,19 @@ var common = {
                 $('#modalCreateBot').modal('hide');
             });
         })
+        $('body').on('click', '.card-tmp-bot', function (e) {
+            var txtBotTemplate = $(this).find('.card-title').text();
+            $('#txtBotTemplate').val(txtBotTemplate);
+            $('#modalCreateBot').modal('show');
+        })
+        $('body').on('click', '.new-blank-bot', function (e) {
+            $('#txtBotTemplate').val('');
+            $('#modalCreateBot').modal('show');
+        })
+        
+        $('body').on('click', '#btnCancleSaveBot', function (e) {
+            $('#modalCreateBot').modal('hide');
+        })
     },
     createFormBotQnA: function () {
         var temp = function (data, botId, botName) {
@@ -383,7 +402,7 @@ var common = {
                     var html = '';
                     html += '<li class="nav-item nav-item-bot">';
                     html += '<a class="nav-link active" id="nav-bot-id-' + data.ID + '" data-id="' + data.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-' + data.ID + '" aria-controls="submenu-' + data.ID + '">';
-                    html += '<i class="fa fa fa-robot" aria-hidden="true"></i> ' + data.Name.toUpperCase() + '';
+                    html += '<img src="'+_Host+'/assets/images/logo/icon-bot-v2.png" style="width:40px;height:30px"/>BOT - ' + data.Name.toUpperCase() + '';
                     html += '</a>';
                     html += '<div id="submenu-' + data.ID + '" class="submenu collapse show" style="">';
                     html += '<ul class="nav flex-column">';
@@ -428,9 +447,9 @@ var common = {
                     html += '<li class="nav-item nav-item-bot-sub">';
                     html += '    <a class="nav-link" href="' + _Host + 'bot/history/' + data.Alias + '/' + data.ID + '?botName=' + data.Name + '" data-id="' + data.ID + '" id="bot-history-' + data.ID + '"><i class="fa fa-history" aria-hidden="true"></i>Lịch sử</a>';
                     html += '</li>';
-                    html += '<li class="nav-item nav-item-bot-sub">';
-                    html += '<a class="nav-link btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Xóa bot</a>';
-                    html += '</li>';
+                    //html += '<li class="nav-item nav-item-bot-sub">';
+                    //html += '<a class="nav-link btn-form-delete" href="javascript:void(0);" data-botID="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-trash" aria-hidden="true"></i>Xóa bot</a>';
+                    //html += '</li>';
                     html += '</ul>';
                     html += '</div>';
                     html += '</li>';
