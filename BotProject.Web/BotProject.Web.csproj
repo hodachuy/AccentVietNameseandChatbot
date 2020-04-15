@@ -390,9 +390,11 @@
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\UserBotViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SignalRChat\ChatHub.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="assets\client\css\card.css" />
+    <Content Include="assets\client\css\chat-room.css" />
     <Content Include="assets\client\css\chatbot-dialog.css" />
     <Content Include="assets\client\css\common-bot.css" />
     <Content Include="assets\client\css\components.css" />
@@ -421,9 +423,14 @@
     <Content Include="assets\client\css\style.css" />
     <Content Include="assets\client\css\sweetalert.css" />
     <Content Include="assets\client\css\sweetalert.min.css" />
+    <Content Include="assets\client\img\avatar-admin.jpg" />
     <Content Include="assets\client\img\faq_tyJQplIright.png" />
+    <Content Include="assets\client\img\fb-msg-icon-960x960.png" />
     <Content Include="assets\client\img\module.png" />
     <Content Include="assets\client\img\TL-H3CXYU4Nleft.png" />
+    <Content Include="assets\client\img\vietnam-icon.png" />
+    <Content Include="assets\client\img\zalo-msg-icon-2.png" />
+    <Content Include="assets\client\img\zalo-msg-icon.jpg" />
     <Content Include="assets\client\js\accentVN.js" />
     <Content Include="assets\client\js\aiml.js" />
     <Content Include="assets\client\js\eventBot\form-learning-qna.js" />

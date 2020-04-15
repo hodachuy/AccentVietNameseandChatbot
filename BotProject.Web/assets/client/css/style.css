@@ -250,6 +250,8 @@ ul {
 }
 
 
+
+
 /*-------------------- 
  Form
 ---------------------*/
@@ -2034,7 +2036,7 @@ Container / Wrapper
 }
 
 .dashboard-content {
-    padding: 30px 30px 60px 30px;
+    padding: 10px 30px 60px 30px;
 }
 
 
@@ -8519,7 +8521,7 @@ ol, ul, li {
 .list-group-item {
     position: relative;
     display: block;
-    padding: 16px 20px;
+    padding: 5px 10px;
     margin-bottom: -1px;
     border: 1px solid #e6e6f2;
     text-align: justify;

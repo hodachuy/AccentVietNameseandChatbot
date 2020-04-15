@@ -3,8 +3,8 @@
     ViewBag.Title = "CardCategory";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.selectboxit/3.8.0/jquery.selectBoxIt.css" rel="stylesheet" />
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css" rel="stylesheet" />
+<link href="~/assets/client/css/jquery.selectBoxIt.css" rel="stylesheet" />
+<link href="~/assets/client/css/select2.min.css" rel="stylesheet" />
 <link href="~/assets/client/css/card.css" rel="stylesheet" />
 <link href="~/assets/client/css/components.css" rel="stylesheet" />
 <link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
@@ -17,75 +17,77 @@
     }
 </style>
 <input type="hidden" id="botId" value="@ViewBag.BotID" />
-<div id="sidenav-module" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="closeNavModule()">&times;</a>
-    <div id="template-module">
-        <a href="#" style="text-decoration:underline" id="module-name">Tìm kiếm</a>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="control-label col-md-12 col-sm-12 col-xs-12">Đường dẫn API</label>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text" placeholder="Đường dẫn api" class="form-control" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>
-                    <div class="row" style="margin:unset;">
-                        <div class="col-md-6 col-sm-6 col-xs-6">
-                            <input type="text" placeholder="x-api-key" class="form-control" />
-                        </div>
-                        <div class="col-md-6 col-sm-6 col-xs-6">
-                            <input type="text" placeholder="2Zhldc3aq1" class="form-control" />
+<div class="container-fluid">
+    <div id="sidenav-module" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNavModule()">&times;</a>
+        <div id="template-module">
+            <a href="#" style="text-decoration:underline" id="module-name">Tìm kiếm</a>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12">Đường dẫn API</label>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <input type="text" placeholder="Đường dẫn api" class="form-control" />
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-12 col-sm-12 col-xs-12">API Param</label>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <input type="text" placeholder="params" class="form-control" />
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12">API Key</label>
+                        <div class="row" style="margin:unset;">
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <input type="text" placeholder="x-api-key" class="form-control" />
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <input type="text" placeholder="2Zhldc3aq1" class="form-control" />
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <textarea name="data2[default]" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12">API Param</label>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <input type="text" placeholder="params" class="form-control" />
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>
-                    <div class="col-md-12 col-sm-12 col-xs-12">
-                        <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch"></select>
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12">Nhập câu gợi ý khi không tìm thấy</label>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <textarea name="data2[default]" maxlength="640" class="form-control required" placeholder="Vui lòng nhập nội dung">Bạn đã nhập sai định dạng, vui lòng nhập lại!</textarea>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <button id="saveMdSearch" class="btn btn-default">Lưu</button>
+                    <div class="form-group">
+                        <label class="control-label col-md-12 col-sm-12 col-xs-12">Nút luồng tiếp theo</label>
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <select data-live-search="true" class="form-control selectKeyword checkvalid" id="mdCardSearch"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button id="saveMdSearch" class="btn btn-default">Lưu</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div id="block-card">
-    <div class="row">
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-            <div class="card">
-                <div class="d-flex">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@ViewBag.BotName</i></li>
-                        <li class="breadcrumb-item active">Tạo thẻ</li>
-                    </ol>
-                    @*<h5 class="pageheader-title p-l-10 p-t-10">Thiết lập thẻ</h5>*@
-                </div>
-                <div>
-                    <div class="card-body">
-                        <div class="content-wrapper">
-                            <!-- Form horizontal -->
-                            <div class="panel panel-flat">
-                                <div class="panel-body">
-                                    <div id="build">
+    <div id="block-card">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                <div class="card">
+                    <div class="d-flex">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@ViewBag.BotName</i></li>
+                            <li class="breadcrumb-item active">Tạo thẻ</li>
+                        </ol>
+                        @*<h5 class="pageheader-title p-l-10 p-t-10">Thiết lập thẻ</h5>*@
+                    </div>
+                    <div>
+                        <div class="card-body">
+                            <div class="content-wrapper">
+                                <!-- Form horizontal -->
+                                <div class="panel panel-flat">
+                                    <div class="panel-body">
+                                        <div id="build">
+                                        </div>
+                                        <hr>
+                                        <button type="button" class="btn btn-default" onclick="addBlockAtFooter()"><i class="icon-plus22 fa fa-plus"></i> Thêm Nhóm</button>
                                     </div>
-                                    <hr>
-                                    <button type="button" class="btn btn-default" onclick="addBlockAtFooter()"><i class="icon-plus22 fa fa-plus"></i> Thêm Nhóm</button>
                                 </div>
                             </div>
                         </div>
@@ -94,127 +96,127 @@
             </div>
         </div>
     </div>
-</div>
-<div id="layout-card" style="display:none">
-    <aside class="page-aside">
-        <div class="aside-content">
-            <div class="aside-header">
-                @*<button class="navbar-toggle" data-target=".aside-nav" data-toggle="collapse" type="button">
-                    <span class="icon"><i class="fas fa-caret-down"></i></span>
-                </button>*@
-                @*<span class="title"><i class="fa fa-arrow-left" style="font-size:11px"></i> <span id="groupCardName" style="text-decoration:underline;cursor:pointer;text-transform:uppercase"></span><span style="float:right;cursor:pointer;" id="btn-create-card"><i class="fa fa-plus-circle"></i></span></span>
-                <p class="description">Tạo thẻ trả lời cho bot</p>*@
-                <div class="row">
-                    <div class="col-md-12 col-xs-12">
-                        <i class="fa fa-arrow-circle-left" style="font-size:11px;position: absolute;left: 0px; margin-top: 7px;"></i>
-                        <span id="groupCardName" style="font-size:large;cursor:pointer"></span>
-                    </div>
-                    <div class="col-md-12 col-xs-12" style="padding-top:10px;">
-                        <span style="cursor:pointer;" id="btn-create-card">
-                            <span class="description">Tạo thẻ trả lời cho bot</span>
-                            <i class="fa fa-plus-circle" style="float:right"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="aside-nav collapse">
-                <ul class="nav" id="lst-card" style="height: 350px;overflow-y: auto;"></ul>
-            </div>
-        </div>
-    </aside>
-    <div class="main-content container-fluid p-0" id="form-card" style="display:none;">
-        <input type="hidden" id="idCard" value="" />
-        <div class="card-head">
-            <div class="card-head-title">
-                <div class="title">
-                    <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
-                    <span><input type="text" maxlength="240" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>
-                </div>
-                <div class="row" style="padding-top:5px">
-                    <div class="col-md-6">
-                        <label class="containerChk" id="container-chk-condition">
-
-                        </label>
-                        <label class="containerChk" id="container-chk-condition-by-area-button">
-
-                        </label>
-                        <label class="containerChk" id="container-chk-condition-by-input-text">
-
-                        </label>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="icons" style="float:right">
-                            <a href="#" class="icon" id="save_card">
-                                <i class="fas fa-save"></i>
-                            </a>
-                            <a href="#" class="icon" id="delete_card">
-                                <i class="fas fa-trash"></i>
-                            </a>
+    <div id="layout-card" style="display:none">
+        <aside class="page-aside">
+            <div class="aside-content">
+                <div class="aside-header">
+                    @*<button class="navbar-toggle" data-target=".aside-nav" data-toggle="collapse" type="button">
+                            <span class="icon"><i class="fas fa-caret-down"></i></span>
+                        </button>*@
+                    @*<span class="title"><i class="fa fa-arrow-left" style="font-size:11px"></i> <span id="groupCardName" style="text-decoration:underline;cursor:pointer;text-transform:uppercase"></span><span style="float:right;cursor:pointer;" id="btn-create-card"><i class="fa fa-plus-circle"></i></span></span>
+                        <p class="description">Tạo thẻ trả lời cho bot</p>*@
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12">
+                            <i class="fa fa-arrow-circle-left" style="font-size:11px;position: absolute;left: 0px; margin-top: 7px;"></i>
+                            <span id="groupCardName" style="font-size:large;cursor:pointer"></span>
+                        </div>
+                        <div class="col-md-12 col-xs-12" style="padding-top:10px;">
+                            <span style="cursor:pointer;" id="btn-create-card">
+                                <span class="description">Tạo thẻ trả lời cho bot</span>
+                                <i class="fa fa-plus-circle" style="float:right"></i>
+                            </span>
                         </div>
                     </div>
                 </div>
+                <div class="aside-nav collapse">
+                    <ul class="nav" id="lst-card" style="height: 350px;overflow-y: auto;"></ul>
+                </div>
             </div>
-            <div class="card-head-template">
-                <div class="addCard">
-                    <ul class="list-inline">
-                        <li class="card_galery"><i class="fa fa-copy"></i><span>Thẻ hình và chữ</span></li>
-                        <li class="card_text"><i class="fa fa-file"></i><span>Thẻ văn bản</span></li>
-                        <li class="card_list disable"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
-                        <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
-                        <li class="card_file"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
-                        <li class="card_module"><i class="fa fa-plug"></i><span>Mô-đun</span></li>
-                        <li class="card_quickReply"><i class="fab fa-flickr"></i><span>Trả lời nhanh</span></li>
-                        <li class="card_attribute"><i class="fa fa-edit"></i><span>Cài đặt biến</span></li>
-                        <li class="card_step"><i class="fa fa-step-forward"></i><span>Thêm bước</span></li>
+        </aside>
+        <div class="main-content container-fluid p-0" id="form-card" style="display:none;">
+            <input type="hidden" id="idCard" value="" />
+            <div class="card-head">
+                <div class="card-head-title">
+                    <div class="title">
+                        <a class="active" href="#"><span class="icon"><i class="fas fa-pencil-alt"></i></span></a>
+                        <span><input type="text" maxlength="240" id="card-name" placeholder="Tên Thẻ" autocomplete="off"></span>
+                    </div>
+                    <div class="row" style="padding-top:5px">
+                        <div class="col-md-6">
+                            <label class="containerChk" id="container-chk-condition">
+
+                            </label>
+                            <label class="containerChk" id="container-chk-condition-by-area-button">
+
+                            </label>
+                            <label class="containerChk" id="container-chk-condition-by-input-text">
+
+                            </label>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="icons" style="float:right">
+                                <a href="#" class="icon" id="save_card">
+                                    <i class="fas fa-save"></i>
+                                </a>
+                                <a href="#" class="icon" id="delete_card">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-head-template">
+                    <div class="addCard">
+                        <ul class="list-inline">
+                            <li class="card_galery"><i class="fa fa-copy"></i><span>Thẻ hình và chữ</span></li>
+                            <li class="card_text"><i class="fa fa-file"></i><span>Thẻ văn bản</span></li>
+                            <li class="card_list disable"><i class="fa fa-list-alt"></i><span>Danh sách</span></li>
+                            <li class="card_image"><i class="fa fa-image"></i><span>Hình ảnh</span></li>
+                            <li class="card_file"><i class="fa fa-file-archive"></i><span>Tệp tin</span></li>
+                            <li class="card_module"><i class="fa fa-plug"></i><span>Mô-đun</span></li>
+                            <li class="card_quickReply"><i class="fab fa-flickr"></i><span>Trả lời nhanh</span></li>
+                            <li class="card_attribute"><i class="fa fa-edit"></i><span>Cài đặt biến</span></li>
+                            <li class="card_step"><i class="fa fa-step-forward"></i><span>Thêm bước</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="wr_multi" class="scroll">
+                    <div id="multi">
+                    </div>
+                </div>
+            </div>
+            <div class="card-quickreply">
+                <div id="wr_reply" style="display: none;">
+                    <h3><i class="icon-primitive-dot position-left"></i>Trả lời nhanh <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
+                    <ul id="blReply" class="list-inline">
+                        <li class="add_reply">
+                            <div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div>
+                        </li>
                     </ul>
                 </div>
             </div>
-        </div>
-        <div class="card-body">
-            <div id="wr_multi" class="scroll">
-                <div id="multi">
+            <div class="card-attribute row" style="border-top:none !important">
+                <div class="col-md-4">
+                    <div id="wr_attribute">
+                        <h3><i class="icon-primitive-dot position-left"></i>Thêm biến <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
+                        <select id="sl_AttributeName" data-live-search="true" class="form-control selectKeyword3 checkvalid"></select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div id="wr_card_step" style="display:none">
+                        <h3><i class="icon-primitive-dot position-left"></i>Thêm thẻ đi tiếp <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
+                        <select id="lst_card_step" data-live-search="true" class="form-control selectKeyword5"></select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-quickreply">
-            <div id="wr_reply" style="display: none;">
-                <h3><i class="icon-primitive-dot position-left"></i>Trả lời nhanh <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
-                <ul id="blReply" class="list-inline">
-                    <li class="add_reply">
-                        <div class="name-button"><i class="icon-plus2 fa fa-plus position-left"></i> Thêm trả lời nhanh</div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="card-attribute row" style="border-top:none !important">
-            <div class="col-md-4">
-                <div id="wr_attribute">
-                    <h3><i class="icon-primitive-dot position-left"></i>Thêm biến <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
-                    <select id="sl_AttributeName" data-live-search="true" class="form-control selectKeyword3 checkvalid"></select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div id="wr_card_step" style="display:none">
-                    <h3><i class="icon-primitive-dot position-left"></i>Thêm thẻ đi tiếp <span class="rm_wrReply"><i class="icon-bin"></i></span></h3>
-                    <select id="lst_card_step" data-live-search="true" class="form-control selectKeyword5"></select>
-                </div>
-            </div>
-        </div>
-        <div id="modal_button" class="modal fade in" style="display: none;">
+            <div id="modal_button" class="modal fade in" style="display: none;">
 
-        </div>
-        <div class="card-attribute row" style="border-top:none !important">
-            <div class="col-md-4">
-                <div id="wr_attribute">
-                    <h3><i class="icon-primitive-dot position-left"></i>Template Json response</h3>
-                    <textarea id="tmp-json-fb" style="width:300px;height:250px;">
-
-                    </textarea>
+            </div>
+            <div class="card-attribute row" style="border-top:none !important">
+                <div class="col-md-4">
+                    <div id="wr_attribute">
+                        <h3><i class="icon-primitive-dot position-left"></i>Template Json response</h3>
+                        <textarea id="tmp-json-fb" style="width:300px;height:250px;"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 <!--modal form attribute-->
 <div class="modal fade" id="modalCreateAttribute" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true" style="display:none;">
     <div class="modal-dialog" role="document">

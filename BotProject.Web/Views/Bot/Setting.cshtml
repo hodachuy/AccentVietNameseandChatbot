@@ -151,427 +151,429 @@
 <input type="hidden" id="stopWord" value="@Model.StopWord" />
 <input type="hidden" id="settingColor" value="@Model.Color" />
 <input type="hidden" id="pathCssCustom" value="@Model.PathCssCustom" />
-
-<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="pageSetting">
-    <div class="card">
-        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@botName</i></li>
-                @*<li class="breadcrumb-item active">Cài đặt</li>*@
-            </ol>
-            <div class="toolbar ml-auto p-r-10 p-t-10">
-                <button href="javascript:void(0);" class="btn btn-success btn-sm" id="btnSaveSettings"><i class="fas fa-save"></i> Lưu</button>
-            </div>
-        </div>
-        <div class="card-body">
-            <form id="validationform" data-parsley-validate="" novalidate="" class="col-md-7" style="float:left">
-                <div class="form-group row">
-                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Tên:</label>
-                    <div class="col-12 col-sm-8">
-                        <input type="text" placeholder="Tên bot..." class="form-control" id="formName" value="@Model.FormName" onchange="getFormName(this)">
-                    </div>
+<div class="container-fluid">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="pageSetting">
+        <div class="card">
+            <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-home" href="javascript:void(0)">@botName</i></li>
+                    @*<li class="breadcrumb-item active">Cài đặt</li>*@
+                </ol>
+                <div class="toolbar ml-auto p-r-10 p-t-10">
+                    <button href="javascript:void(0);" class="btn btn-success btn-sm" id="btnSaveSettings"><i class="fas fa-save"></i> Lưu</button>
                 </div>
-                <div class="form-group row">
-                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Icon:</label>
-                    <div class="col-12 col-sm-8">
-                        <div class="input-file" name="Fichier1">
-                            <input type="file" id="formLogo" accept="image/png, image/jpeg" class="form-control" placeholder='Choose a file...' />
+            </div>
+            <div class="card-body">
+                <form id="validationform" data-parsley-validate="" novalidate="" class="col-md-7" style="float:left">
+                    <div class="form-group row">
+                        <label class="col-12 col-sm-3 col-form-label text-sm-left">Tên:</label>
+                        <div class="col-12 col-sm-8">
+                            <input type="text" placeholder="Tên bot..." class="form-control" id="formName" value="@Model.FormName" onchange="getFormName(this)">
                         </div>
-                        <div class="file-preview ">
-                            <div class="close fileinput-remove text-right">×</div>
-                            <div class="file-preview-thumbnails">
-                                <div class="file-preview-frame" id="preview-logo">
-                                    @if (!String.IsNullOrEmpty(Model.Logo))
-                                    {
-                                        <img src="@Url.Content("~/"+Model.Logo)" class="file-preview-image" alt="" width="50" height="40"/>
-                                    }
-                                    else
-                                    {
-                                        <img src="/assets/images/user_bot.jpg" class="file-preview-image" alt="" width="50" height="40"/>
-                                    }
-                                </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-12 col-sm-3 col-form-label text-sm-left">Icon:</label>
+                        <div class="col-12 col-sm-8">
+                            <div class="input-file" name="Fichier1">
+                                <input type="file" id="formLogo" accept="image/png, image/jpeg" class="form-control" placeholder='Choose a file...' />
                             </div>
-                            <div class="clearfix"></div>   <div class="file-preview-status text-center text-success"></div>
-                            <div class="kv-fileinput-error file-error-message" style="display: none;"></div>
+                            <div class="file-preview ">
+                                <div class="close fileinput-remove text-right">×</div>
+                                <div class="file-preview-thumbnails">
+                                    <div class="file-preview-frame" id="preview-logo">
+                                        @if (!String.IsNullOrEmpty(Model.Logo))
+                                        {
+                                            <img src="@Url.Content("~/"+Model.Logo)" class="file-preview-image" alt="" width="50" height="40" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/assets/images/user_bot.jpg" class="file-preview-image" alt="" width="50" height="40" />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>   <div class="file-preview-status text-center text-success"></div>
+                                <div class="kv-fileinput-error file-error-message" style="display: none;"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Màu nền:</label>
-                    <div class="col-12 col-sm-8">
-                        <input type="text" id="formColor" class="form-control demo" data-format="rgb" value="@Model.Color">
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-lg-3 col-sm-3 text-sm-left">
-                        <label class="learn_switchbot text-left mb0">
-                            <input type="checkbox" class="learn_switchinput" id="startedButton">
-                            <div class="learn_sliderbot learn_roundbot"></div>
-                        </label>
-                        <label class="text-bold mb0">
-                            Nút bắt đầu
-                        </label>
-                        <small class="help-block">Tin nhắn đầu tiên gửi cho người dùng</small>
-                    </div>
-                    <div class="col-12 col-sm-8" id="card-introduction">
-                        <select data-live-search="true" class="form-control selectKeyword checkvalid">
-                            <option value="" selected>---Chọn thẻ---</option>
-                            @foreach (var item in cards)
-                            {
-                                <option value="@item.ID">@item.Name</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Lọc từ:</label>
-                    <div class="col-12 col-sm-8 wrap-content">
-                        <div class="input-group">
-                            <ul class="tags checkvalid" id="ulTags">
-                                <li class="tagAdd taglist">
-                                    <input type="text" class="search-field">
-                                </li>
-                            </ul>
+                    <div class="form-group row">
+                        <label class="col-12 col-sm-3 col-form-label text-sm-left">Màu nền:</label>
+                        <div class="col-12 col-sm-8">
+                            <input type="text" id="formColor" class="form-control demo" data-format="rgb" value="@Model.Color">
                         </div>
                     </div>
-                </div>
-                <div class="form-group row">
-                    <label class="col-12 col-sm-3 col-form-label text-sm-left">Link Css custom:</label>
-                    <div class="col-12 col-sm-8">
-                        <input type="text" placeholder="link css custom..." class="form-control" id="formPathCss" value="@Model.PathCssCustom">
-                    </div>
-                </div>
-            </form>
-            <div class="col-md-5" style="float:right">
-                <iframe name="f12691cd05677d1" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no"
-                        allow="encrypted-media" title="" src="@System.Configuration.ConfigurationManager.AppSettings["Domain"]Bot/FormChatSetting?botName=@botName"
-                        id="frame_chat_setting"></iframe>
-            </div>
-        </div>
-    </div>
-    <!-- chatbot search nlp -->
-    <div class="card b-module-search">
-        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">TÍCH HỢP TÌM KIẾM NLP</i></li>
-            </ol>
-            <div class="toolbar p-r-10 p-t-10">
-                <label>
-                    @if (Model.IsMDSearch == true)
-                    {
-                        <input type="checkbox" class="switchery randomText" id="statusSearch" style="display:none" checked value="true">
-                        <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>
-                    }
-                    else
-                    {
-                        <input type="checkbox" class="switchery randomText" id="statusSearch" style="display:none" value="false">
-                        <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>
-                    }
-
-                    @if (Model.IsActiveIntroductory == true)
-                    {
-                        <input type="hidden" id="isActiveIntroduct" value="true" />
-                    }
-                    else
-                    {
-                        <input type="hidden" id="isActiveIntroduct" value="false" />
-                    }
-                </label>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group row">
-                <div class="col-lg-3">
-                    <p class="m-b-10">Phương thức:</p>
-                    <select class="form-control">
-                        <option>POST</option>
-                    </select>
-                </div>
-                <div class="col-lg-8">
-                    <p class="m-b-10">URL</p>
-                    <input type="text" class="form-control" placeholder="http://172.16.7.71:80/api/qa_for_all/get_related_pair" value="http://172.16.7.71:80/api/qa_for_all/get_related_pair" id="UrlAPI">
-                </div>
-                <div class="col-lg-12">
-                    <p data-current-language="vi" class="m-b-10-importan">Headers:</p>
-                </div>
-                <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
-                    <div class="col-lg-3">
-                        <input placeholder="key" class="form-control" value="x-api-key" disabled>
-                    </div>
-                    <div class="col-lg-8">
-                        <input placeholder="value" class="form-control" value="TGFjdmlldC1RQS1XZWJBUEk=" disabled>
-                    </div>
-                    @*<div class="col-lg-1" style="padding: 0px;">
-                        <a href="javascript:void(0)" class="icon-btn">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </div>*@
-                </div>
-                @*<div class="col-lg-12">
-                    <button class="btn btn-add-condition" data-msgid="+ Add header" data-current-language="vi" style="margin-bottom: 10px;">
-                        + Thêm header
-                    </button>
-                </div>*@
-                <div class="col-lg-12">
-                    <p class="m-b-10-importan">Điều kiện lọc:</p>
-                </div>
-                <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
-                    <div class="col-lg-3">
-                        <input placeholder="Giá trị" title="" class="form-control" value="Thể loại" disabled>
-                    </div>
-                    <div class="col-lg-3">
-                        <select title="=" class="form-control">
-                            <option value="=">=</option>
-                            <option value="!=">!=</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-5">
-                        <select title="number" id="BotCategoryID" data-live-search="true" class="form-control selectKeyword checkvalid">
-                            <option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option>
-                            @if (bots.Count() != 0)
-                            {
-                                foreach (var item in bots)
+                    <div class="form-group row">
+                        <div class="col-lg-3 col-sm-3 text-sm-left">
+                            <label class="learn_switchbot text-left mb0">
+                                <input type="checkbox" class="learn_switchinput" id="startedButton">
+                                <div class="learn_sliderbot learn_roundbot"></div>
+                            </label>
+                            <label class="text-bold mb0">
+                                Nút bắt đầu
+                            </label>
+                            <small class="help-block">Tin nhắn đầu tiên gửi cho người dùng</small>
+                        </div>
+                        <div class="col-12 col-sm-8" id="card-introduction">
+                            <select data-live-search="true" class="form-control selectKeyword checkvalid">
+                                <option value="" selected>---Chọn thẻ---</option>
+                                @foreach (var item in cards)
                                 {
                                     <option value="@item.ID">@item.Name</option>
                                 }
-                            }
-                        </select>
-                    </div> <div class="col-lg-1" style="padding: 0px;">
-                        <a href="javascript:void(0)" title="Xóa điều kiện" class="icon-btn"><i class="fa fa-trash"></i></a>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
-                    <div class="col-lg-3">
-                        <input placeholder="Giá trị" title="" class="form-control" value="Lĩnh vực" disabled>
-                    </div>
-                    <div class="col-lg-3">
-                        <select title="=" class="form-control">
-                            <option value="=" data-msgid="is" data-current-language="vi">=</option>
-                            <option value="!=" data-msgid="is not" data-current-language="vi">!=</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-5" id="TempAreaID">
-                        <select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid" disabled>
-                            <option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Tất cả---</option>
-                        </select>
-                    </div> <div class="col-lg-1" style="padding: 0px;">
-                        <a href="javascript:void(0)" title="Xóa điều kiện" class="icon-btn"><i class="fa fa-trash"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
-                    <div class="col-lg-3">
-                        <input placeholder="Giá trị" title="" class="form-control" value="Trả về" disabled>
-                    </div>
-                    <div class="col-lg-3">
-                        <select title="=" class="form-control">
-                            <option value="=" data-msgid="is" data-current-language="vi">=</option>
-                            <option value="!=" data-msgid="is not" data-current-language="vi">!=</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-5">
-                        <input type="number" placeholder="Giá trị" id="NumberReponse" title="" class="form-control" value="5">
-                    </div> 
-                    <div class="col-lg-1" style="padding: 0px;">
-                        <a href="javascript:void(0)" title="Xóa điều kiện" class="icon-btn"><i class="fa fa-trash"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- chatbot timeout -->
-    <div class="card b-module-search">
-        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">GỬI TIN NHẮN CHỜ TRONG THỜI GIAN CÀI ĐẶT:</i></li>
-            </ol>
-            <div class="toolbar p-r-10" style="padding-top:13px">
-                <span>Facebook</span>
-                <label>
-                    @if (Model.IsProactiveMessageFacebook == true)
-                    {
-                        <input type="checkbox" class="switchery randomText" id="isProactiveMessageFacebook" style="display:none" checked value="true">
-                        <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
-                    else
-                    {
-                        <input type="checkbox" class="switchery randomText" id="isProactiveMessageFacebook" style="display:none" value="false">
-                        <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
-
-                </label>
-                <span>Zalo</span>
-                <label>
-                    @if (Model.IsProactiveMessageZalo == true)
-                    {
-                        <input type="checkbox" class="switchery randomText" id="isProactiveMessageZalo" style="display:none" checked value="true">
-                        <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
-                    else
-                    {
-                        <input type="checkbox" class="switchery randomText" id="isProactiveMessageZalo" style="display:none" value="false">
-                        <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
-
-                </label>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group row">
-                <div class="col-lg-3">
-                    <p class="m-b-10">Tin nhắn gửi đi sau (giây)</p>
-                    <input type="number" placeholder="Giá trị" id="TimeOut" title="" class="form-control" value="@Model.Timeout">
-                </div>
-                <div class="col-lg-3">
-                    <p class="m-b-10">Nội dung gửi</p>
-                    <textarea class="form-control" id="txtProactiveMessageText" style="height:34px;">@Html.Raw(Model.ProactiveMessageText)</textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- chatbot mantaince -->
-    <div class="card b-module-search">
-        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">THÔNG BÁO TIN NHẮN VẮNG MẶT:</i></li>
-            </ol>
-            <div class="toolbar p-r-10" style="padding-top:13px">
-                <label>
-                    @if (Model.IsHaveMaintenance == true)
-                    {
-                        <input type="checkbox" class="switchery randomText" id="isHaveMaintenance" style="display:none" checked value="true">
-                        <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
-                    else
-                    {
-                        <input type="checkbox" class="switchery randomText" id="isHaveMaintenance" style="display:none" value="false">
-                        <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
-
-                </label>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group row">
-                <div class="col-lg-3">
-                    <p class="m-b-10">Tin nhắn</p>
-                    <textarea class="form-control" id="txtMessageMaintenance" style="height:64px;">@Html.Raw(String.IsNullOrEmpty(Model.MessageMaintenance) == true ? "Xin lỗi quý Anh/Chị hệ thống đang bảo trì, Anh/Chị vui lòng quay lại sau nhé!" : Model.MessageMaintenance)</textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- chatbot timeout OTP -->
-    <div class="card b-module-search">
-        <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">THÔNG BÁO HẾT THỜI HẠN OTP</i></li>
-            </ol>
-            <div class="toolbar p-r-10" style="padding-top:13px">
-                <label>
-                    @if (Model.IsHaveTimeoutOTP == true)
-                    {
-                        <input type="checkbox" class="switchery randomText" id="isHaveTimeoutOTP" style="display:none" checked value="true">
-                        <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
-                    else
-                    {
-                        <input type="checkbox" class="switchery randomText" id="isHaveTimeoutOTP" style="display:none" value="false">
-                        <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
-
-                </label>
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group row">
-                <div class="col-lg-3">
-                    <p class="m-b-10">Thời gian (giây)</p>
-                    <input type="number" placeholder="Giá trị" id="TimeOutOTP" title="" class="form-control" value="@Model.TimeoutOTP">
-                </div>
-                <div class="col-lg-3">
-                    <p class="m-b-10">Nội dung gửi</p>
-                    <textarea class="form-control" id="txtMessageTimeoutOTP" style="height:34px;">@Html.Raw(Model.MessageTimeoutOTP)</textarea>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- chatbot on web -->
-    <div class="row">
-        <div class="col-xl-6 col-lg-12 col-md-12">
-            <div class="card b-fb-at-work">
-                <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><i class="fa fa-comment" href="javascript:void(0)">CHATBOT TRÊN WEB</i></li>
-                    </ol>
-                </div>
-                <div class="card-body">
-                    <pre id="deploy-bot">         
-            </pre>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-6 col-lg-12 col-md-12">
-            <!-- chatbot on facebook-->
-            <div class="card b-module-search">
-                <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><i class="fab fa-facebook" href="javascript:void(0)">CHATBOT TRÊN FACEBOOK</i></li>
-                    </ol>
-                    <div class="toolbar ml-auto p-r-10 p-t-10">
-                        <a href="javascript:void(0)" title="Cách sử dụng" class="btn-zalo-guide"><i class="fa fa-question-circle-o"></i></a>                    
-                    </div>
-                </div>
-                <div class="card-body">
                     <div class="form-group row">
-                        <div class="col-lg-12">
-                            <p data-msgid="CallbackURL" data-current-language="vi" class="m-b-10">Webhook Callback URL</p>
-                            <input type="text" class="form-control" value="https://bot.surelrn.vn/api/webhook" disabled>
-                        </div>
-                        <div class="col-lg-12">
-                            <p data-msgid="Code" data-current-language="vi" class="m-b-10">Verify Token</p>
-                            <input type="text" class="form-control" value="lacviet_bot_chat" disabled>
-                        </div>
-                        <div class="col-lg-12">
-                            <p data-msgid="AccessToken" data-current-language="vi" class="m-b-10">Page AccessToken</p>
-                            <input type="text" class="form-control" id="txtFacebookPageToken" value="@Model.FacebookPageToken">
-                        </div>
-                        <div class="col-lg-12">
-                            <p data-msgid="Code" data-current-language="vi" class="m-b-10">Secret Key</p>
-                            <input type="text" class="form-control" id="txtFacebookSecretKey" value="@Model.FacebookAppSecrect">
+                        <label class="col-12 col-sm-3 col-form-label text-sm-left">Lọc từ:</label>
+                        <div class="col-12 col-sm-8 wrap-content">
+                            <div class="input-group">
+                                <ul class="tags checkvalid" id="ulTags">
+                                    <li class="tagAdd taglist">
+                                        <input type="text" class="search-field">
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+                    <div class="form-group row">
+                        <label class="col-12 col-sm-3 col-form-label text-sm-left">Link Css custom:</label>
+                        <div class="col-12 col-sm-8">
+                            <input type="text" placeholder="link css custom..." class="form-control" id="formPathCss" value="@Model.PathCssCustom">
+                        </div>
+                    </div>
+                </form>
+                <div class="col-md-5" style="float:right">
+                    <iframe name="f12691cd05677d1" frameborder="0" allowtransparency="true" allowfullscreen="true" scrolling="no"
+                            allow="encrypted-media" title="" src="@System.Configuration.ConfigurationManager.AppSettings["Domain"]Bot/FormChatSetting?botName=@botName"
+                            id="frame_chat_setting"></iframe>
                 </div>
             </div>
         </div>
-        <div class="col-xl-6 col-lg-12 col-md-12">
-            <!-- chatbot on zalo-->
-            <div class="card b-module-search">
-                <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><i class="fab fa-facebook" href="javascript:void(0)">CHATBOT TRÊN ZALO</i></li>
-                    </ol>
-                    <div class="toolbar ml-auto p-r-10 p-t-10">
-                        <a href="javascript:void(0)" title="Cách sử dụng" class="btn-zalo-guide"><i class="fa fa-question-circle-o"></i></a>
-                    </div>
+        <!-- chatbot search nlp -->
+        <div class="card b-module-search">
+            <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">TÍCH HỢP TÌM KIẾM NLP</i></li>
+                </ol>
+                <div class="toolbar p-r-10 p-t-10">
+                    <label>
+                        @if (Model.IsMDSearch == true)
+                        {
+                            <input type="checkbox" class="switchery randomText" id="statusSearch" style="display:none" checked value="true">
+                            <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>
+                        }
+                        else
+                        {
+                            <input type="checkbox" class="switchery randomText" id="statusSearch" style="display:none" value="false">
+                            <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>
+                        }
+
+                        @if (Model.IsActiveIntroductory == true)
+                        {
+                            <input type="hidden" id="isActiveIntroduct" value="true" />
+                        }
+                        else
+                        {
+                            <input type="hidden" id="isActiveIntroduct" value="false" />
+                        }
+                    </label>
                 </div>
-                <div class="card-body">
-                    <div class="form-group row">
-                        <div class="col-lg-12 p-b-10">
-                            <p data-msgid="CallbackURL" data-current-language="vi" class="m-b-10">Zalo Webhook Callback URL</p>
-                            <input type="text" class="form-control" value="https://bot.surelrn.vn/api/zalowebhook" disabled>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-lg-3">
+                        <p class="m-b-10">Phương thức:</p>
+                        <select class="form-control">
+                            <option>POST</option>
+                        </select>
+                    </div>
+                    <div class="col-lg-8">
+                        <p class="m-b-10">URL</p>
+                        <input type="text" class="form-control" placeholder="http://172.16.7.71:80/api/qa_for_all/get_related_pair" value="http://172.16.7.71:80/api/qa_for_all/get_related_pair" id="UrlAPI">
+                    </div>
+                    <div class="col-lg-12">
+                        <p data-current-language="vi" class="m-b-10-importan">Headers:</p>
+                    </div>
+                    <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
+                        <div class="col-lg-3">
+                            <input placeholder="key" class="form-control" value="x-api-key" disabled>
                         </div>
-                        <div class="col-lg-12 p-b-10">
-                            <p data-msgid="AccessToken" data-current-language="vi" class="m-b-10">Office Account AccessToken</p>
-                            <input type="text" class="form-control" id="txtZaloPageToken" value="@Model.ZaloPageToken">
+                        <div class="col-lg-8">
+                            <input placeholder="value" class="form-control" value="TGFjdmlldC1RQS1XZWJBUEk=" disabled>
                         </div>
-                        <div class="col-lg-12">
-                            <p data-msgid="AccessToken" data-current-language="vi" class="m-b-10">Office Account QR Code</p>
-                            @*<img class="img-shadow" id="qrcode" src="https://page-photo-qr.zdn.vn/1568857405/0294646d5028b976e039.jpg" alt="OA QRCode" style="max-width:200px !important">*@
-                            @*<div class="ctn-nd qrcode-alias" align="center">
-                                <span id="ZaloQRCode">zalo.me/1991768888787015631</span>
+                        @*<div class="col-lg-1" style="padding: 0px;">
+                                <a href="javascript:void(0)" class="icon-btn">
+                                    <i class="fa fa-trash"></i>
+                                </a>
                             </div>*@
+                    </div>
+                    @*<div class="col-lg-12">
+                            <button class="btn btn-add-condition" data-msgid="+ Add header" data-current-language="vi" style="margin-bottom: 10px;">
+                                + Thêm header
+                            </button>
+                        </div>*@
+                    <div class="col-lg-12">
+                        <p class="m-b-10-importan">Điều kiện lọc:</p>
+                    </div>
+                    <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
+                        <div class="col-lg-3">
+                            <input placeholder="Giá trị" title="" class="form-control" value="Thể loại" disabled>
+                        </div>
+                        <div class="col-lg-3">
+                            <select title="=" class="form-control">
+                                <option value="=">=</option>
+                                <option value="!=">!=</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-5">
+                            <select title="number" id="BotCategoryID" data-live-search="true" class="form-control selectKeyword checkvalid">
+                                <option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Chọn giá trị---</option>
+                                @if (bots.Count() != 0)
+                                {
+                                    foreach (var item in bots)
+                                    {
+                                        <option value="@item.ID">@item.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div> <div class="col-lg-1" style="padding: 0px;">
+                            <a href="javascript:void(0)" title="Xóa điều kiện" class="icon-btn"><i class="fa fa-trash"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
+                        <div class="col-lg-3">
+                            <input placeholder="Giá trị" title="" class="form-control" value="Lĩnh vực" disabled>
+                        </div>
+                        <div class="col-lg-3">
+                            <select title="=" class="form-control">
+                                <option value="=" data-msgid="is" data-current-language="vi">=</option>
+                                <option value="!=" data-msgid="is not" data-current-language="vi">!=</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-5" id="TempAreaID">
+                            <select id="AreaID" data-live-search="true" class="form-control selectKeyword checkvalid" disabled>
+                                <option value="" selected="selected" data-msgid="Select variable" data-current-language="vi">---Tất cả---</option>
+                            </select>
+                        </div> <div class="col-lg-1" style="padding: 0px;">
+                            <a href="javascript:void(0)" title="Xóa điều kiện" class="icon-btn"><i class="fa fa-trash"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 row" style="padding: 0px 0px 10px; width: 100%; margin-left: 0px;">
+                        <div class="col-lg-3">
+                            <input placeholder="Giá trị" title="" class="form-control" value="Trả về" disabled>
+                        </div>
+                        <div class="col-lg-3">
+                            <select title="=" class="form-control">
+                                <option value="=" data-msgid="is" data-current-language="vi">=</option>
+                                <option value="!=" data-msgid="is not" data-current-language="vi">!=</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-5">
+                            <input type="number" placeholder="Giá trị" id="NumberReponse" title="" class="form-control" value="5">
+                        </div>
+                        <div class="col-lg-1" style="padding: 0px;">
+                            <a href="javascript:void(0)" title="Xóa điều kiện" class="icon-btn"><i class="fa fa-trash"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        <!-- chatbot timeout -->
+        <div class="card b-module-search">
+            <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">GỬI TIN NHẮN CHỜ TRONG THỜI GIAN CÀI ĐẶT:</i></li>
+                </ol>
+                <div class="toolbar p-r-10" style="padding-top:13px">
+                    <span>Facebook</span>
+                    <label>
+                        @if (Model.IsProactiveMessageFacebook == true)
+                        {
+                            <input type="checkbox" class="switchery randomText" id="isProactiveMessageFacebook" style="display:none" checked value="true">
+                            <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
+                        else
+                        {
+                            <input type="checkbox" class="switchery randomText" id="isProactiveMessageFacebook" style="display:none" value="false">
+                            <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
+
+                    </label>
+                    <span>Zalo</span>
+                    <label>
+                        @if (Model.IsProactiveMessageZalo == true)
+                        {
+                            <input type="checkbox" class="switchery randomText" id="isProactiveMessageZalo" style="display:none" checked value="true">
+                            <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
+                        else
+                        {
+                            <input type="checkbox" class="switchery randomText" id="isProactiveMessageZalo" style="display:none" value="false">
+                            <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
+
+                    </label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-lg-3">
+                        <p class="m-b-10">Tin nhắn gửi đi sau (giây)</p>
+                        <input type="number" placeholder="Giá trị" id="TimeOut" title="" class="form-control" value="@Model.Timeout">
+                    </div>
+                    <div class="col-lg-3">
+                        <p class="m-b-10">Nội dung gửi</p>
+                        <textarea class="form-control" id="txtProactiveMessageText" style="height:34px;">@Html.Raw(Model.ProactiveMessageText)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- chatbot mantaince -->
+        <div class="card b-module-search">
+            <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">THÔNG BÁO TIN NHẮN VẮNG MẶT:</i></li>
+                </ol>
+                <div class="toolbar p-r-10" style="padding-top:13px">
+                    <label>
+                        @if (Model.IsHaveMaintenance == true)
+                        {
+                            <input type="checkbox" class="switchery randomText" id="isHaveMaintenance" style="display:none" checked value="true">
+                            <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
+                        else
+                        {
+                            <input type="checkbox" class="switchery randomText" id="isHaveMaintenance" style="display:none" value="false">
+                            <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
+
+                    </label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-lg-3">
+                        <p class="m-b-10">Tin nhắn</p>
+                        <textarea class="form-control" id="txtMessageMaintenance" style="height:64px;">@Html.Raw(String.IsNullOrEmpty(Model.MessageMaintenance) == true ? "Xin lỗi quý Anh/Chị hệ thống đang bảo trì, Anh/Chị vui lòng quay lại sau nhé!" : Model.MessageMaintenance)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- chatbot timeout OTP -->
+        <div class="card b-module-search">
+            <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><i class="fa fa-search" href="javascript:void(0)">THÔNG BÁO HẾT THỜI HẠN OTP</i></li>
+                </ol>
+                <div class="toolbar p-r-10" style="padding-top:13px">
+                    <label>
+                        @if (Model.IsHaveTimeoutOTP == true)
+                        {
+                            <input type="checkbox" class="switchery randomText" id="isHaveTimeoutOTP" style="display:none" checked value="true">
+                            <span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left:20px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>}
+                        else
+                        {
+                            <input type="checkbox" class="switchery randomText" id="isHaveTimeoutOTP" style="display:none" value="false">
+                            <span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color:#ddd"></small></span>}
+
+                    </label>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <div class="col-lg-3">
+                        <p class="m-b-10">Thời gian (giây)</p>
+                        <input type="number" placeholder="Giá trị" id="TimeOutOTP" title="" class="form-control" value="@Model.TimeoutOTP">
+                    </div>
+                    <div class="col-lg-3">
+                        <p class="m-b-10">Nội dung gửi</p>
+                        <textarea class="form-control" id="txtMessageTimeoutOTP" style="height:34px;">@Html.Raw(Model.MessageTimeoutOTP)</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- chatbot on web -->
+        <div class="row">
+            <div class="col-xl-6 col-lg-12 col-md-12">
+                <div class="card b-fb-at-work">
+                    <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><i class="fa fa-comment" href="javascript:void(0)">CHATBOT TRÊN WEB</i></li>
+                        </ol>
+                    </div>
+                    <div class="card-body">
+                        <pre id="deploy-bot">         
+            </pre>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-12 col-md-12">
+                <!-- chatbot on facebook-->
+                <div class="card b-module-search">
+                    <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><i class="fab fa-facebook" href="javascript:void(0)">CHATBOT TRÊN FACEBOOK</i></li>
+                        </ol>
+                        <div class="toolbar ml-auto p-r-10 p-t-10">
+                            <a href="javascript:void(0)" title="Cách sử dụng" class="btn-zalo-guide"><i class="fa fa-question-circle-o"></i></a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-lg-12">
+                                <p data-msgid="CallbackURL" data-current-language="vi" class="m-b-10">Webhook Callback URL</p>
+                                <input type="text" class="form-control" value="https://bot.surelrn.vn/api/webhook" disabled>
+                            </div>
+                            <div class="col-lg-12">
+                                <p data-msgid="Code" data-current-language="vi" class="m-b-10">Verify Token</p>
+                                <input type="text" class="form-control" value="lacviet_bot_chat" disabled>
+                            </div>
+                            <div class="col-lg-12">
+                                <p data-msgid="AccessToken" data-current-language="vi" class="m-b-10">Page AccessToken</p>
+                                <input type="text" class="form-control" id="txtFacebookPageToken" value="@Model.FacebookPageToken">
+                            </div>
+                            <div class="col-lg-12">
+                                <p data-msgid="Code" data-current-language="vi" class="m-b-10">Secret Key</p>
+                                <input type="text" class="form-control" id="txtFacebookSecretKey" value="@Model.FacebookAppSecrect">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-12 col-md-12">
+                <!-- chatbot on zalo-->
+                <div class="card b-module-search">
+                    <div class="d-flex" style="border-bottom: 1px solid #e6e6f2;">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><i class="fab fa-facebook" href="javascript:void(0)">CHATBOT TRÊN ZALO</i></li>
+                        </ol>
+                        <div class="toolbar ml-auto p-r-10 p-t-10">
+                            <a href="javascript:void(0)" title="Cách sử dụng" class="btn-zalo-guide"><i class="fa fa-question-circle-o"></i></a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-lg-12 p-b-10">
+                                <p data-msgid="CallbackURL" data-current-language="vi" class="m-b-10">Zalo Webhook Callback URL</p>
+                                <input type="text" class="form-control" value="https://bot.surelrn.vn/api/zalowebhook" disabled>
+                            </div>
+                            <div class="col-lg-12 p-b-10">
+                                <p data-msgid="AccessToken" data-current-language="vi" class="m-b-10">Office Account AccessToken</p>
+                                <input type="text" class="form-control" id="txtZaloPageToken" value="@Model.ZaloPageToken">
+                            </div>
+                            <div class="col-lg-12">
+                                <p data-msgid="AccessToken" data-current-language="vi" class="m-b-10">Office Account QR Code</p>
+                                @*<img class="img-shadow" id="qrcode" src="https://page-photo-qr.zdn.vn/1568857405/0294646d5028b976e039.jpg" alt="OA QRCode" style="max-width:200px !important">*@
+                                @*<div class="ctn-nd qrcode-alias" align="center">
+                                        <span id="ZaloQRCode">zalo.me/1991768888787015631</span>
+                                    </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
 
 </div>
 

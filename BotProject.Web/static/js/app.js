@@ -232,7 +232,7 @@ $('body').on('click', '.fb_dialog', function (e) {
             // init message
             var frame = document.getElementById('dialog_iframe');
             frame.contentWindow.postMessage('init', domainApp);
-        }, 500)
+        }, 200)
     }
     else if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_in_v2")) {
         $("#dialog_iframe").removeClass('fb_customer_chat_bounce_in_v2').addClass('fb_customer_chat_bounce_out_v2');

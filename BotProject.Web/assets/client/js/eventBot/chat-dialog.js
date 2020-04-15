@@ -21,6 +21,38 @@ var configs = {
         T_05: "Rất tiếc! Tôi chưa được học để hiểu câu hỏi này",
         T_06: "Tôi chưa hiểu ạ, bạn nói rõ hơn được không?"
     }
+
+var objHub = $.connection.chatHub;
+$.connection.hub.logging = true;
+$.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
+$.connection.hub.start().done(function () {
+    console.log('signalR started')
+});
+$.connection.hub.error(function (error) {
+    console.log('SignalR error: ' + error)
+});
+var tryingToReconnect = false;
+$.connection.hub.reconnecting(function () {
+    tryingToReconnect = true;
+    console.log('SingalR connect đang kết nối lại')
+    $.connection.hub.start().done(function () {       
+    });
+});
+$.connection.hub.reconnected(function () {
+    tryingToReconnect = false;
+    console.log('SingalR connect đã kết nối lại')
+});
+$.connection.hub.disconnected(function () {
+    console.log('SingalR connect ngắt kết nối')
+    if (tryingToReconnect) {
+        setTimeout(function () {
+            console.log('SingalR connect đang khởi động lại')
+            $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
+            $.connection.hub.start().done(function () {});
+        }, 5000); // Restart connection after 5 seconds.          
+    }
+});
+
 $(function () {
     cboxEvent.init();
 });
@@ -118,6 +150,7 @@ var cboxEvent = {
                     $("._4bqf_btn_submit").hide();
                     $(this).val('');
                     msgEvent.sendMessage(text, '');
+                    objHub.server.sendMessage('user',text);
                 }
             }
         })
@@ -709,3 +742,10 @@ window.addEventListener('message', function (event) {
     //    console.log('message received:  ' + event.data, event);
     //};
 }, false);
+
+
+
+//---------------------------- CHATBOX TRACKING ----------------------------//
+/*
+    
+*/

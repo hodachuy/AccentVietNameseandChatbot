@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Lacvietbots - Dashboard</title>
     <!--CSS -->
-    <link href="~/assets/client/libs/KendoUI/styles/kendo.common.min.css" rel="stylesheet" />
-    <link href="~/assets/client/libs/KendoUI/styles/kendo.metro.min.css" rel="stylesheet" />
-    <link href="~/assets/client/libs/KendoUI/kendo.custom.css" rel="stylesheet" />
+    @RenderSection("headerCSS", required: false)
     <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/assets/client/vendor/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
     <link href="~/assets/client/vendor/fonts/circular-std/style.css" rel="stylesheet" />
@@ -25,7 +23,6 @@
     <link href="~/assets/client/css/sweetalert.min.css.map" rel="stylesheet" type="application/json">
 
     <link href="~/assets/client/vendor/loading-bar/loading.css" rel="stylesheet" />
-    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>*@
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script>
         var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
@@ -146,9 +143,8 @@
         <!-- wrapper  -->
         <!-- ============================================================== -->
         <div class="dashboard-wrapper">
-            <div class="container-fluid">
-                @RenderBody()
-            </div>
+            @RenderBody()
+
         </div>
 
         <!-- ============================================================== -->
@@ -193,6 +189,8 @@
     <script src="~/assets/client/libs/toastr/toastr.min.js"></script>
     <script src="~/assets/client/js/helper/callServiceHelper.js"></script>
     <script src="~/assets/client/js/common.js"></script>
+
+
     @RenderSection("dialogBotJS", required: false)
     @RenderSection("footerJS", required: false)
 
