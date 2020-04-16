@@ -27,6 +27,7 @@ $.connection.hub.logging = true;
 $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
 $.connection.hub.start().done(function () {
     console.log('signalR started')
+    objHub.server.connectChat('customerId', 'agentId', '1', 'CONNECT_GOTO');
 });
 $.connection.hub.error(function (error) {
     console.log('SignalR error: ' + error)
@@ -52,6 +53,12 @@ $.connection.hub.disconnected(function () {
         }, 5000); // Restart connection after 5 seconds.          
     }
 });
+objHub.client.onConnected = function (message, customerID) {
+    console.log(message)
+}
+objHub.client.addCustomerIntoQueue = function (user, threadId) {
+    console.log('admin ' + threadId);
+}
 
 $(function () {
     cboxEvent.init();

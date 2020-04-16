@@ -82,11 +82,8 @@ namespace BotProject.Web.Controllers
                     {
                         foreach(var iCard in lstCard)
                         {
-                            sb.Append("<option value=\"" + iCard.ID + "\"> "+ iCard.Name + "</option>");
+                            sb.Append("<option value=\"" + iCard.ID + "\"> " + iCard.Name + "</option>");
                         }
-                    }else
-                    {
-                        sb.Append("<option value=\"\"></option>");
                     }
                     //item.Cards = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);
                     sb.Append("</optgroup>");
@@ -94,17 +91,13 @@ namespace BotProject.Web.Controllers
                 strCards = sb.ToString();
             }
 
-            formQnAVm.StrTempOtpCards = strCards;
-            ViewBag.BotQnAnswerID = formQnAId;
-            ViewBag.BotName = botName;
-
             var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             serializer.MaxJsonLength = Int32.MaxValue;
             formQnAVm.StrTempOtpCards = serializer.Serialize(strCards).TrimStart('"').TrimEnd('"');
 
+            ViewBag.BotQnAnswerID = formQnAId;
+            ViewBag.BotName = botName;
 
-            //ViewBag.Cards = jsonLstGroupCard;
-            //ViewBag.Cards = strCards;
             return View(formQnAVm);
 		}
 
@@ -145,20 +138,48 @@ namespace BotProject.Web.Controllers
                 return RedirectToAction("Index", "Dashboard");
             }
             var settingDb = _settingService.GetSettingByBotID(id);
-            var lstCard = _cardService.GetListCardByBotID(id);
-            if(lstCard != null && lstCard.Count() != 0)
+
+            string jsonCard = "";
+            StringBuilder sb = new StringBuilder();
+            try
             {
-                lstCard = lstCard.Select(x => new Card
+                var lstGroupCard = _groupCardService.GetListGroupCardByBotID(id).ToList();
+                if (lstGroupCard.Count() != 0)
                 {
-                    ID = x.ID,
-                    Name = x.Name
-                });
+                    sb.Append("<select id=\"sltCard\" data-live-search=\"true\" class=\"form - control selectKeyword checkvalid\"><option value=\"\" selected>---Chọn thẻ---</option>");
+                    foreach (var item in lstGroupCard)
+                    {
+                        sb.Append("<optgroup label=\"" + item.Name.ToUpper() + "\">");
+                        var lstCard = _cardService.GetListCardByGroupCardID(item.ID).ToList();
+                        if (lstCard.Count() != 0)
+                        {
+                            foreach (var iCard in lstCard)
+                            {
+                                sb.Append("<option value=\"" + iCard.ID + "\"> " + iCard.Name + "</option>");
+                            }
+                        }
+                        sb.Append("</optgroup>");
+                    }
+                    sb.Append("</select>");
+                    jsonCard = sb.ToString();
+                }
             }
+            catch (Exception ex)
+            {
+
+            }
+           
+
+            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+            serializer.MaxJsonLength = Int32.MaxValue;
+            jsonCard = serializer.Serialize(jsonCard).TrimStart('"').TrimEnd('"');
+
             var settingVm = Mapper.Map<Setting, BotSettingViewModel>(settingDb);
+            settingVm.JsonCard = jsonCard;
             var lstBot = _botService.GetListBotByUserID(UserInfo.Id);
             var lstBotVm = Mapper.Map<IEnumerable<Bot>,IEnumerable<BotViewModel>>(lstBot);
             var lstSystemConfig = _settingService.GetListSystemConfigByBotId(id);
-            ViewBag.Cards = lstCard;
+
             ViewBag.BotName = name;
             ViewBag.UserID = UserInfo.Id;
             ViewBag.Bots = lstBotVm;

@@ -607,6 +607,8 @@
     <Compile Include="Repositories\AttributeSystemRepository.cs" />
     <Compile Include="Repositories\AttributeZaloUserRepository.cs" />
     <Compile Include="Repositories\ButtonModuleRepository.cs" />
+    <Compile Include="Repositories\CustomerRepository.cs" />
+    <Compile Include="Repositories\DeviceRepository.cs" />
     <Compile Include="Repositories\FileDocumentRepository.cs" />
     <Compile Include="Repositories\FormQuestionAnswerRepository.cs" />
     <Compile Include="Repositories\BotRepository.cs" />

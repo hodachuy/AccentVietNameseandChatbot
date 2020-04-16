@@ -2,7 +2,8 @@
 @{
     ViewBag.Title = "Setting";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var cards = (IEnumerable<BotProject.Model.Models.Card>)ViewBag.Cards;
+    //var cards = (IEnumerable<BotProject.Model.Models.Card>)ViewBag.Cards;
+    //string cards = (string)ViewBag.Cards;
     var bots = (IEnumerable<BotProject.Web.Models.BotViewModel>)ViewBag.Bots;
     var systemConfigs = (IEnumerable<BotProject.Model.Models.SystemConfig>)ViewBag.SystemConfigs;
     var botName = ViewBag.BotName;
@@ -214,13 +215,13 @@
                             <small class="help-block">Tin nhắn đầu tiên gửi cho người dùng</small>
                         </div>
                         <div class="col-12 col-sm-8" id="card-introduction">
-                            <select data-live-search="true" class="form-control selectKeyword checkvalid">
+                            @*<select data-live-search="true" class="form-control selectKeyword checkvalid">
                                 <option value="" selected>---Chọn thẻ---</option>
                                 @foreach (var item in cards)
                                 {
                                     <option value="@item.ID">@item.Name</option>
                                 }
-                            </select>
+                            </select>*@
                         </div>
                     </div>
                     <div class="form-group row">
@@ -578,20 +579,20 @@
 </div>
 
 @section footerJS{
-<script src="~/assets/client/js/setting.js"></script>
 <script>
-    var lstCard = @Html.Raw(Json.Encode(cards));
     var lstBot = @Html.Raw(Json.Encode(bots));
     var lstSystemConfig = @Html.Raw(Json.Encode(systemConfigs));
     function card() {
-        var html = '<select id="sltCard" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected>---Chọn thẻ---</option>';
-        if (lstCard.length != 0) {
-            $.each(lstCard, function (index, value) {
-                html += '<option value="'+value.ID+'">'+value.Name+'</option>';
-            })
-        }
-        html += '</select>';
-        return html;
+        var htmlCard = '@Html.Raw(Model.JsonCard)';
+        //var html = '<select id="sltCard" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected>---Chọn thẻ---</option>';
+        //if (lstCard.length != 0) {
+        //    $.each(lstCard, function (index, value) {
+        //        html += '<option value="'+value.ID+'">'+value.Name+'</option>';
+        //    })
+        //}
+        //html += '</select>';
+        $('#card-introduction').empty().append(htmlCard);
+        //return htmlCard;
     }
     function system() {
         if (lstSystemConfig.length != 0) {
@@ -616,5 +617,7 @@
         }
     };
     system();
+    card();
 </script>
+<script src="~/assets/client/js/setting.js"></script>
 }

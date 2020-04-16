@@ -84,7 +84,6 @@ $(document).ready(function () {
     if (BotSetting.TextIntroductory != "") {
         $('#card-introduction').empty().append('<div id="txtIntro" class="txtStartButton form-control" maxlength="640" contenteditable="true" data-ph="Nhập văn bản (Ví dụ: Chào bạn, tôi là chat bot. Tôi có thể giúp bạn khám phá thời tiết hiện tại nơi bạn đang sống. Hãy chia sẻ vị trí của bạn cho tôi nhé!)">'+BotSetting.TextIntroductory+'</div>');
     } else if (BotSetting.CardID != null || BotSetting.CardID != "") {
-        $('#card-introduction').empty().append(card());
         $("#sltCard").val(BotSetting.CardID)
     }
     if (BotSetting.StopWord != "") {

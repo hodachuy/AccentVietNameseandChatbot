@@ -56,5 +56,6 @@ namespace BotProject.Web.Models
         public string MessageTimeoutOTP { set; get; }
 
         public string PathCssCustom { set; get; }
+        public string JsonCard { set; get; }
     }
 }

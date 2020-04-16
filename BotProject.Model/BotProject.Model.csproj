@@ -79,6 +79,8 @@
   <ItemGroup>
     <Compile Include="Abstract\Auditable.cs" />
     <Compile Include="Abstract\IAuditable.cs" />
+    <Compile Include="Enums\ApplicationChannel.cs" />
+    <Compile Include="Models\ActionChat.cs" />
     <Compile Include="Models\ApplicationFacebookUser.cs" />
     <Compile Include="Models\ApplicationPlatformUser.cs" />
     <Compile Include="Models\ApplicationThirdParty.cs" />
@@ -87,6 +89,10 @@
     <Compile Include="Models\AttributePlatformUser.cs" />
     <Compile Include="Models\AttributeSystem.cs" />
     <Compile Include="Models\AttributeZaloUser.cs" />
+    <Compile Include="Models\Channel.cs" />
+    <Compile Include="Models\Customer.cs" />
+    <Compile Include="Models\Device.cs" />
+    <Compile Include="Models\GroupChannel.cs" />
     <Compile Include="Models\FileDocument.cs" />
     <Compile Include="Models\History.cs" />
     <Compile Include="Models\AIMLFile.cs" />
@@ -119,6 +125,9 @@
     <Compile Include="Models\MdSearchCategory.cs" />
     <Compile Include="Models\MdVoucher.cs" />
     <Compile Include="Models\MedicalSymptom.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\Thread.cs" />
+    <Compile Include="Models\ThreadParticipant.cs" />
     <Compile Include="Models\Module.cs" />
     <Compile Include="Models\ModuleFollowCard.cs" />
     <Compile Include="Models\ModuleKnowledgeMedInfoPatient.cs" />
