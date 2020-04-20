@@ -126,6 +126,7 @@
     <Compile Include="Models\MdVoucher.cs" />
     <Compile Include="Models\MedicalSymptom.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\StatusChat.cs" />
     <Compile Include="Models\Thread.cs" />
     <Compile Include="Models\ThreadParticipant.cs" />
     <Compile Include="Models\Module.cs" />

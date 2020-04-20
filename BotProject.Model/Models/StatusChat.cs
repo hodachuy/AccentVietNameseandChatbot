@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models
 {
-    [Table("ActionChats")]
-    public class ActionChat
+    [Table("StatusChats")]
+    public class StatusChat
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

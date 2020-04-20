@@ -104,6 +104,8 @@
     <Compile Include="HandleModuleService.cs" />
     <Compile Include="HistoryService.cs" />
     <Compile Include="ImageService.cs" />
+    <Compile Include="Livechat\ChannelService.cs" />
+    <Compile Include="Livechat\ChatHubService.cs" />
     <Compile Include="MdAdminContactService.cs" />
     <Compile Include="MdAgeService.cs" />
     <Compile Include="MdEmailService.cs" />

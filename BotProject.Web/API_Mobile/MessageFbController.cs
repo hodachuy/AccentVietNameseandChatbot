@@ -130,19 +130,13 @@ namespace BotProject.Web.API_Mobile
         public HttpResponseMessage Get()
         {
             var querystrings = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
-            foreach (var item in querystrings)
+            if (querystrings["hub.verify_token"] == verifytoken)
             {
-                //LogError(item.Key + " " + item.Value);
-                if (item.Key == "hub.verify_token")
+                return new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    if (item.Value == "lacviet_bot_chat")
-                        return new HttpResponseMessage(HttpStatusCode.OK)
-                        {
-                            Content = new StringContent(querystrings["hub.challenge"], Encoding.UTF8, "text/plain")
-                        };
-                }
+                    Content = new StringContent(querystrings["hub.challenge"], Encoding.UTF8, "text/plain")
+                };
             }
-
             return new HttpResponseMessage(HttpStatusCode.Unauthorized);
         }
 

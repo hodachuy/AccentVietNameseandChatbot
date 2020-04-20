@@ -10,13 +10,14 @@ namespace BotProject.Web.SignalRChat
     public class ChatHub : Hub
     {
         static IHubContext _context = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+
         /// <summary>
         /// Khách hàng kết nối chat tới tổng đài viên
         /// agentId gửi kèm theo trong static/app.js
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="threadId"></param>
-        public void ConnectChat(string customerId, string agentId, string threadId, string typeConnect)
+        public void ConnectChat(string customerId, string agentId, string groupChanelId, string threadId, string typeConnect)
         {
             var connectionId = Context.ConnectionId;
             _context.Groups.Add(connectionId, threadId);
@@ -28,13 +29,13 @@ namespace BotProject.Web.SignalRChat
                     connectInfo = "Connnect Waitting";
                     Clients.Caller.onConnected(connectInfo, customerId);
                     // gửi thread đăng ký tham gia vào vòng đợi tới agent
-                    Clients.OthersInGroup(threadId).addCustomerIntoQueue(agentId,threadId);
+                    Clients.Group(threadId).addCustomerIntoQueue(agentId, threadId);
                     break;
                 // gửi tín hiệu vào chat thẳng
                 case "CONNECT_GOTO":             
                     connectInfo = "Connect Success";
                     Clients.Caller.onConnected(connectInfo, customerId);
-                    Clients.OthersInGroup(threadId).addCustomerGotoChat(agentId, threadId);
+                    Clients.Group(threadId).addCustomerGotoChat(agentId, threadId);
                     break;
                 // gửi tín hiệu kết nối từ agent này tới agent khác hỗ trợ
                 case "CONNECT_SUPPORT":

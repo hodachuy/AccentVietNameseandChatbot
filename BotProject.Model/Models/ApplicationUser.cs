@@ -20,6 +20,8 @@ namespace BotProject.Model.Models
 
         public DateTime? BirthDay { set; get; }
 
+        public int StatusChatValue { set; get; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

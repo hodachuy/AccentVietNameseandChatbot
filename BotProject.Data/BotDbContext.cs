@@ -64,6 +64,15 @@ namespace BotProject.Data
         public DbSet<ApplicationThirdParty> ApplicationThirdParties { set; get; }
         public DbSet<ApplicationPlatformUser> ApplicationPlatformUsers { set; get; }
         public DbSet<AttributePlatformUser> AttributePlatformUsers { set; get;}
+        public DbSet<Message> Messages { set; get; }
+        public DbSet<Channel> Channels { set; get; }
+        public DbSet<GroupChannel> GroupChannels { set; get; }
+        public DbSet<Thread> Threads { set; get; }
+        public DbSet<ThreadParticipant> ThreadParticipants { set; get; }
+        public DbSet<Device> Devices { set; get; }
+        public DbSet<Customer> Customers { set; get; }
+        public DbSet<ActionChat> ActionChats { set; get; }
+        public DbSet<StatusChat> StatusChats { set; get; }
 
         public static BotDbContext Create()
         {

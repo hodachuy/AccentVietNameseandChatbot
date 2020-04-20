@@ -590,8 +590,17 @@
     <Compile Include="Migrations\202002170213494_UpdateMedSymptoms.Designer.cs">
       <DependentUpon>202002170213494_UpdateMedSymptoms.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004200135117_AddMessageLiveChat.cs" />
+    <Compile Include="Migrations\202004200135117_AddMessageLiveChat.Designer.cs">
+      <DependentUpon>202004200135117_AddMessageLiveChat.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004200155548_AddCustomerAndInfoActionChat.cs" />
+    <Compile Include="Migrations\202004200155548_AddCustomerAndInfoActionChat.Designer.cs">
+      <DependentUpon>202004200155548_AddCustomerAndInfoActionChat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\ActionChatRepository.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
     <Compile Include="Repositories\AnswerRepository.cs" />
     <Compile Include="Repositories\ApplicationFacebookUserRepository.cs" />
@@ -607,6 +616,7 @@
     <Compile Include="Repositories\AttributeSystemRepository.cs" />
     <Compile Include="Repositories\AttributeZaloUserRepository.cs" />
     <Compile Include="Repositories\ButtonModuleRepository.cs" />
+    <Compile Include="Repositories\ChannelRepository.cs" />
     <Compile Include="Repositories\CustomerRepository.cs" />
     <Compile Include="Repositories\DeviceRepository.cs" />
     <Compile Include="Repositories\FileDocumentRepository.cs" />
@@ -618,6 +628,7 @@
     <Compile Include="Repositories\ErrorRepository.cs" />
     <Compile Include="Repositories\FileCardRepository.cs" />
     <Compile Include="Repositories\GroupCardRepository.cs" />
+    <Compile Include="Repositories\GroupChannelRepository.cs" />
     <Compile Include="Repositories\HistoryRepository.cs" />
     <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\MdAdminContactRepository.cs" />
@@ -631,6 +642,7 @@
     <Compile Include="Repositories\MdSearchRepository.cs" />
     <Compile Include="Repositories\MdVoucherRepository.cs" />
     <Compile Include="Repositories\MedicalSymptomRepository.cs" />
+    <Compile Include="Repositories\MessageRepository.cs" />
     <Compile Include="Repositories\ModuleCategoryRepository.cs" />
     <Compile Include="Repositories\MdQuestionRepository.cs" />
     <Compile Include="Repositories\ModuleFollowCardRepository.cs" />
@@ -641,10 +653,13 @@
     <Compile Include="Repositories\QuestionRepository.cs" />
     <Compile Include="Repositories\QuickReplyRepository.cs" />
     <Compile Include="Repositories\SettingRepository.cs" />
+    <Compile Include="Repositories\StatusChatRepository.cs" />
     <Compile Include="Repositories\SystemConfigRepository.cs" />
     <Compile Include="Repositories\TemplateGenericGroupRepository.cs" />
     <Compile Include="Repositories\TemplateGenericItemRepository.cs" />
     <Compile Include="Repositories\TemplateTextRepository.cs" />
+    <Compile Include="Repositories\ThreadParticipantRepository.cs" />
+    <Compile Include="Repositories\ThreadRepository.cs" />
     <Compile Include="Repositories\UserTelephoneRepository.cs" />
     <Compile Include="Repositories\VisitorStatisticRepository.cs" />
   </ItemGroup>
@@ -1044,6 +1059,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202002170213494_UpdateMedSymptoms.resx">
       <DependentUpon>202002170213494_UpdateMedSymptoms.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004200135117_AddMessageLiveChat.resx">
+      <DependentUpon>202004200135117_AddMessageLiveChat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004200155548_AddCustomerAndInfoActionChat.resx">
+      <DependentUpon>202004200155548_AddCustomerAndInfoActionChat.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

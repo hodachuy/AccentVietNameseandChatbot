@@ -14,18 +14,23 @@ namespace BotProject.Model.Models
     {
         [Key]
         public string ID { get; set; }
+
         [MaxLength(200)]
         public string FullName { get; set; }
+
         public string Avatar { get; set; }
+
         [MaxLength(200)]
         public string Email { get; set; }
+
         public bool Gender { get; set; }
+
         [MaxLength(20)]
         public string PhoneNumber { get; set; }
         public ApplicationChannel ApplicationChannels { set; get; }
-        public long ChannelChatGroupId { set; get; }
-        public virtual Device Device { set; get; }
-        public int StatusActivityValue { set; get; }
+        public long GroupChannelID { set; get; }
+        public int StatusChatValue { set; get; }
         public int ActionChatValue { set; get; }
+        public virtual IEnumerable<Device> Devices { set; get; }
     }
 }

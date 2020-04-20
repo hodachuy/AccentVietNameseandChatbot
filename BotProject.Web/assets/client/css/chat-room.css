@@ -359,6 +359,16 @@
 
                 .chat-block .chat-content .chat-footer .chat-footer-buttons button {
                     margin-left: 0.5rem;
+                    font-size: 14px;
+                    width: auto;
+                    display: -webkit-inline-box;
+                    display: inline-flex;
+                    font-weight: 600;
+                    -webkit-box-align: center;
+                    align-items: center;
+                    /*padding: 10px 15px;*/
+                    line-height: 14px;
+                    border-radius: 0.5rem;
                 }
 
             .chat-block .chat-content .messages .message-item.message-item-divider span,

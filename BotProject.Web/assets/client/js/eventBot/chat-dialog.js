@@ -22,43 +22,74 @@ var configs = {
         T_06: "Tôi chưa hiểu ạ, bạn nói rõ hơn được không?"
     }
 
+var iconFace = {
+    smiley: ':smiley:',//:)
+    smile: ':smile:',//^_^,^-^
+    grinning: ':grinning:',//:D
+    open_mouth: ':open_mouth:',//:o,:0,:O
+    disappointed: ':disappointed:',//:(
+    expressionless: ':expressionless:',//-_-
+    grin: ':grin:',//:v
+    heart: ':heart:',//<3 "&lt;3"
+    like: ':+1:',//(y)
+    confounded: ':confounded:',   //:3
+    stuck_out_tongue: ':stuck_out_tongue:'//:P
+}
+
+var Customer = {
+    Id: _customerId,
+    Status: '101',
+    GroupChannelID: '1'
+}
+
 var objHub = $.connection.chatHub;
 $.connection.hub.logging = true;
-$.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
-$.connection.hub.start().done(function () {
-    console.log('signalR started')
-    objHub.server.connectChat('customerId', 'agentId', '1', 'CONNECT_GOTO');
-});
-$.connection.hub.error(function (error) {
-    console.log('SignalR error: ' + error)
-});
-var tryingToReconnect = false;
-$.connection.hub.reconnecting(function () {
-    tryingToReconnect = true;
-    console.log('SingalR connect đang kết nối lại')
-    $.connection.hub.start().done(function () {       
+
+$(document).ready(function () {
+    console.log(Customer.Id);
+    $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
+    $.connection.hub.start().done(function () {
+        console.log('Customer: signalR started')
+        objHub.server.connectChat('customerId', 'agentId', '1', '1', 'CONNECT_GOTO');
     });
-});
-$.connection.hub.reconnected(function () {
-    tryingToReconnect = false;
-    console.log('SingalR connect đã kết nối lại')
-});
-$.connection.hub.disconnected(function () {
-    console.log('SingalR connect ngắt kết nối')
-    if (tryingToReconnect) {
-        setTimeout(function () {
-            console.log('SingalR connect đang khởi động lại')
-            $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
-            $.connection.hub.start().done(function () {});
-        }, 5000); // Restart connection after 5 seconds.          
+
+    $.connection.hub.error(function (error) {
+        console.log('Customer: SignalR error: ' + error)
+    });
+
+    var tryingToReconnect = false;
+
+    $.connection.hub.reconnecting(function () {
+        tryingToReconnect = true;
+        console.log('Customer: SingalR connect đang kết nối lại')
+        $.connection.hub.start().done(function () {
+        });
+    });
+
+    $.connection.hub.reconnected(function () {
+        tryingToReconnect = false;
+        console.log('Customer: SingalR connect đã kết nối lại')
+    });
+
+    $.connection.hub.disconnected(function () {
+        console.log('Customer: SingalR connect ngắt kết nối')
+        if (tryingToReconnect) {
+            setTimeout(function () {
+                console.log('Customer: SingalR connect đang khởi động lại')
+                $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
+                $.connection.hub.start().done(function () { });
+            }, 5000); // Restart connection after 5 seconds.          
+        }
+    });
+
+    objHub.client.onConnected = function (message, customerID) {
+        console.log('Customer: ' + message)
     }
-});
-objHub.client.onConnected = function (message, customerID) {
-    console.log(message)
-}
-objHub.client.addCustomerIntoQueue = function (user, threadId) {
-    console.log('admin ' + threadId);
-}
+
+    objHub.client.addCustomerIntoQueue = function (user, threadId) {
+        console.log('Customer: admin ' + threadId);
+    }
+})
 
 $(function () {
     cboxEvent.init();
@@ -157,7 +188,7 @@ var cboxEvent = {
                     $("._4bqf_btn_submit").hide();
                     $(this).val('');
                     msgEvent.sendMessage(text, '');
-                    objHub.server.sendMessage('user',text);
+                    objHub.server.sendMessage('user', text);
                 }
             }
         })
@@ -212,17 +243,17 @@ var cboxEvent = {
             e.stopPropagation();
         })
         //popup
-         $('body').on('click', '._6ir4_popup', function (e) {
-             e.preventDefault();
-             var urlPopup = $(this).attr('href');
-             console.log(urlPopup)
-             //show 1 popup ngoài iframe
-             //var quesID = $(this).attr('data-id');
-             //var domain = 'http://qa.surelrn.vn';//http://localhost:54160;
-             //parent.postMessage(quesID, domain);
-             parent.postMessage(urlPopup, "*");
-             e.stopPropagation();
-         })
+        $('body').on('click', '._6ir4_popup', function (e) {
+            e.preventDefault();
+            var urlPopup = $(this).attr('href');
+            console.log(urlPopup)
+            //show 1 popup ngoài iframe
+            //var quesID = $(this).attr('data-id');
+            //var domain = 'http://qa.surelrn.vn';//http://localhost:54160;
+            //parent.postMessage(quesID, domain);
+            parent.postMessage(urlPopup, "*");
+            e.stopPropagation();
+        })
 
         // Bùa nhớ xóa
         $('body').on('click', '._4fsj-menu1', function (e) {

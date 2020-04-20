@@ -231,18 +231,18 @@
             <!-- begin::chat footer -->
             <div class="chat-footer border-top">
                 <div class="d-flex">
-                    <button class="btn btn-outline-light mr-2" type="button" title="Emoji"
+                    <button class="btn-outline-light mr-2" type="button" title="Emoji"
                             data-toggle="tooltip">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smile width-15 height-15"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
                     </button>
                     <div class="flex-grow-1">
-                        <input type="text" class="form-control" id="input-msg-text" placeholder="Nhập tin nhắn...">
+                        <input type="text" class="form-control" id="input-chat-message" placeholder="Nhập tin nhắn...">
                     </div>
                     <div class="chat-footer-buttons d-flex">
-                        <button class="btn btn-primary" type="submit">
+                        <button class="btn-primary" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send width-15 height-15"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                         </button>
-                        <button class="btn btn-outline-light" type="button" title="Attach files"
+                        <button class="btn-outline-light" type="button" title="Attach files"
                                 data-toggle="tooltip">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip width-15 height-15"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
                         </button>
@@ -250,7 +250,6 @@
                 </div>
             </div>
             <!-- end::chat footer -->
-
         </div>
         <!-- begin::chat content -->
         <!--begin:: chat sidebar customer-->
@@ -316,9 +315,9 @@
 @section footerJS{
     <script src="~/Scripts/jquery.signalR-2.4.0.js"></script>
     <script src="~/signalr/hubs"></script>
-
     <script src="~/static/js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.js"></script>
+    <script src="~/assets/client/js/livechat/chat-agent.js"></script>
     <script>
         $(document).ready(function () {
             var wind_ = $(window),
@@ -344,7 +343,6 @@
         $(document).ready(function () {
             initMap();
         })
-
         function initMap() {
             var posVietNam = { lat: 10.8230, lng: 106.6296 };
             var map = new google.maps.Map(document.getElementById('map'), {
@@ -405,51 +403,10 @@
         }
     </script>
     <script>
-            var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
-            var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
-            var encryptedBotID = CryptoJS.AES.encrypt('5039', "Secret Passphrase").toString();
-            lacviet.load('' + encryptedUrl + '', '' + encryptedUserID + '', '' + encryptedBotID + '', 'U2FsdGVkX19D5jsWIYosQVQ4bBWt2cjbzgkJbDAOSB+Igj5G2vGw1bAq+sh1P/Yc')
+        var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
+        var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
+        var encryptedBotID = CryptoJS.AES.encrypt('5039', "Secret Passphrase").toString();
+        lacviet.load('' + encryptedUrl + '', '' + encryptedUserID + '', '' + encryptedBotID + '', 'U2FsdGVkX19D5jsWIYosQVQ4bBWt2cjbzgkJbDAOSB+Igj5G2vGw1bAq+sh1P/Yc')
     </script>
 
-    <script>
-        var objHub = $.connection.chatHub;
-        $.connection.hub.logging = true;
-        $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
-        $.connection.hub.start().done(function () {
-            console.log('signalR started')
-            objHub.server.connectChat('customerId', 'agentId', '1', 'CONNECT_QUEUE');
-
-        });
-        $.connection.hub.error(function (error) {
-            console.log('SignalR error: ' + error)
-        });
-        var tryingToReconnect = false;
-        $.connection.hub.reconnecting(function () {
-            tryingToReconnect = true;
-            console.log('SingalR connect đang kết nối lại')
-            $.connection.hub.start().done(function () {
-            });
-        });
-        $.connection.hub.reconnected(function () {
-            tryingToReconnect = false;
-            console.log('SingalR connect đã kết nối lại')
-        });
-        $.connection.hub.disconnected(function () {
-            console.log('SingalR connect ngắt kết nối')
-            if (tryingToReconnect) {
-                setTimeout(function () {
-                    console.log('SingalR connect đang khởi động lại')
-                    $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
-                    $.connection.hub.start().done(function () {});
-                }, 5000); // Restart connection after 5 seconds.
-            }
-        });
-        objHub.client.onConnected = function (message, customerID) {
-            console.log(message)
-        }
-
-        objHub.client.addCustomerGotoChat = function (user, threadId) {
-            console.log('admin '+threadId);
-        }
-    </script>
 }

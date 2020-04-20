@@ -47,7 +47,6 @@ namespace BotProject.Web.API_Webhook
         string verifytoken = "lacviet_bot_chat";
         private Dictionary<string, string> _dicAttributeUser = new Dictionary<string, string>();
         private readonly string Domain = Helper.ReadString("Domain");
-        private Dictionary<string, string> _dicNotMatch = new Dictionary<string, string>();
 
         private const string POSTBACK_MODULE = "POSTBACK_MODULE";
         private const string POSTBACK_CARD = "POSTBACK_CARD";
@@ -707,11 +706,18 @@ namespace BotProject.Web.API_Webhook
                 await SendMessage(tempJson, sender);
             }
         }
+
+        /// <summary>
+        /// Hiển thị trạng thái dấu 3 chấm bot đang viết gì đó
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <returns></returns>
         private async Task SendMessageTyping(string sender)
         {
             string senderActionTyping = FacebookTemplate.GetMessageSenderAction("typing_on", sender).ToString();
             await SendMessage(senderActionTyping, sender);
         }
+
         private async Task SendMessage(string templateJson, string sender)
         {
             if (!String.IsNullOrEmpty(templateJson))
