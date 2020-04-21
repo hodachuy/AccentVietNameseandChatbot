@@ -598,6 +598,14 @@
     <Compile Include="Migrations\202004200155548_AddCustomerAndInfoActionChat.Designer.cs">
       <DependentUpon>202004200155548_AddCustomerAndInfoActionChat.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202004210645439_UpdateFacebookBotId.cs" />
+    <Compile Include="Migrations\202004210645439_UpdateFacebookBotId.Designer.cs">
+      <DependentUpon>202004210645439_UpdateFacebookBotId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202004210914328_AddChatWidget.cs" />
+    <Compile Include="Migrations\202004210914328_AddChatWidget.Designer.cs">
+      <DependentUpon>202004210914328_AddChatWidget.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ActionChatRepository.cs" />
@@ -617,6 +625,8 @@
     <Compile Include="Repositories\AttributeZaloUserRepository.cs" />
     <Compile Include="Repositories\ButtonModuleRepository.cs" />
     <Compile Include="Repositories\ChannelRepository.cs" />
+    <Compile Include="Repositories\ChatWidgetCustomizationRepository.cs" />
+    <Compile Include="Repositories\ChatWidgetLanguageRepository.cs" />
     <Compile Include="Repositories\CustomerRepository.cs" />
     <Compile Include="Repositories\DeviceRepository.cs" />
     <Compile Include="Repositories\FileDocumentRepository.cs" />
@@ -1065,6 +1075,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004200155548_AddCustomerAndInfoActionChat.resx">
       <DependentUpon>202004200155548_AddCustomerAndInfoActionChat.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004210645439_UpdateFacebookBotId.resx">
+      <DependentUpon>202004210645439_UpdateFacebookBotId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202004210914328_AddChatWidget.resx">
+      <DependentUpon>202004210914328_AddChatWidget.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -183,13 +183,13 @@
             {
             @Html.ValidationSummary(false, "", new { @class = "error" })
             <h1 class="h3 mb-3 font-weight-normal" style="text-align: center"> Sign in</h1>
-                <div class="social-login">
-                    @*<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+            <div class="social-login">
+                @*<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
                     </fb:login-button>*@
-                    <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fa fa-facebook-f"></i> Sign in with Facebook</span> </button>
-                    <button class="btn google-btn social-btn" type="button"><span><i class="fa fa-google-plus-g"></i> Sign in with Google+</span> </button>
-                </div>
-                            <p style="text-align:center"> OR  </p>
+                <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fa fa-facebook-f"></i> Sign in with Facebook</span> </button>
+                <button class="btn google-btn social-btn" type="button"><span><i class="fa fa-google-plus-g"></i> Sign in with Google+</span> </button>
+            </div>
+                <p style="text-align:center"> OR  </p>
                             <div class="input-group">
                                 @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @placeholder = "Name" })
                                 @*<input type="text" id="inputName" class="form-control" placeholder="Name" required="" autofocus="">*@
@@ -209,7 +209,7 @@
                             <a href="#" id="forgot_pswd">Forgot password?</a>
                             <hr>
                             <!-- <p>Don't have an account!</p>  -->
-                            <button class="btn btn-primary btn-block" type="button" id="btn-signup"><i class="fa fa-user-plus"></i> Đăng ký</button>
+                            <a href="@Url.Action("Register","Account")" class="btn btn-primary btn-block" type="button"><i class="fa fa-user-plus"></i> Đăng ký</a>
         }
         @*@Html.Partial("_ExternalLoginsListPartial", new BotProject.Web.Models.ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })*@
 
@@ -217,25 +217,6 @@
             <input type="email" id="resetEmail" class="form-control" placeholder="Email address" required="" autofocus="">
             <button class="btn btn-primary btn-block" type="submit">Reset Password</button>
             <a href="#" id="cancel_reset"><i class="fa fa-angle-left"></i> Back</a>
-        </form>
-        <form action="#" class="form-signup">
-            <div class="social-login">
-                @*<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-                </fb:login-button>*@
-                <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fab fa-facebook-f"></i> Sign up with Facebook</span> </button>
-            </div>
-            <div class="social-login">
-                <button class="btn google-btn social-btn" type="button"><span><i class="fa fa-google-plus-g"></i> Sign up with Google+</span> </button>
-            </div>
-            <p style="text-align:center">OR</p>
-            <input type="text" id="user-name" class="form-control" placeholder="Full name" required="" autofocus="">
-            <input type="email" id="user-email" class="form-control" placeholder="Email address" required autofocus="">
-            <input type="password" id="user-pass" class="form-control" placeholder="Password" required autofocus="">
-            <input type="password" id="user-repeatpass" class="form-control" placeholder="Confirm Password" required autofocus="">
-            <div class="input-group">
-                <button class="btn btn-md btn-block submit" type="submit"><i class="fa fa-user-plus"></i> Sign Up</button>
-            </div>
-            <a href="#" id="cancel_signup"><i class="fa fa-angle-left"></i> Back</a>
         </form>
         <br>
     </div>
@@ -291,7 +272,7 @@
                 getUserInfo();
             } else {
                 // The person is not logged into your app or we are unable to tell.
-                console.log('Please login')             
+                console.log('Please login')
             }
         }
 
@@ -350,7 +331,7 @@
                 var user = {
                     UserName: response.name,
                     Email: response.email,
-                    Avatar:response.picture.data.url
+                    Avatar: response.picture.data.url
                 }
                 login(user)
             });
@@ -371,7 +352,7 @@
                         window.location.href = _Host + 'Dashboard/Index';
                     }
                 },
-                error: function (error) {                  
+                error: function (error) {
                     console.log(error)
                 },
                 beforeSend: function () {

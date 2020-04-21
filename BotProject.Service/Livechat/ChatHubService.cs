@@ -1,4 +1,5 @@
-﻿using BotProject.Data.Repositories;
+﻿using BotProject.Data.Infrastructure;
+using BotProject.Data.Repositories;
 using BotProject.Model.Models;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotProject.Service.Livechat
+namespace BotProject.Service
 {
     public interface IChatHubSerivce
     {
@@ -17,19 +18,23 @@ namespace BotProject.Service.Livechat
         // Add Message
         Message AddMessage(Message msg);
         IEnumerable<Message> GetListMessage(string condition, int page, int pageSize, string sort);
+        void Save();
     }
     public class ChatHubService : IChatHubSerivce
     {
-        private IThreadRepository _threadRepository;
-        private IThreadParticipantRepository _threadParticipantRepository;
-        private IMessageRepository _messageRepository;
+        IThreadRepository _threadRepository;
+        IThreadParticipantRepository _threadParticipantRepository;
+        IMessageRepository _messageRepository;
+        IUnitOfWork _unitOfWork;
         public ChatHubService(IThreadRepository threadRepository,
                               IThreadParticipantRepository threadParticipantRepository,
-                              IMessageRepository messageRepository)
+                              IMessageRepository messageRepository,
+                              IUnitOfWork unitOfWork)
         {
             _threadRepository = threadRepository;
             _threadParticipantRepository = threadParticipantRepository;
             _messageRepository = messageRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public Thread AddThreadMessage()
@@ -56,6 +61,11 @@ namespace BotProject.Service.Livechat
         public IEnumerable<Message> GetListMessage(string condition, int page, int pageSize, string sort)
         {
             throw new NotImplementedException();
+        }
+
+        public void Save()
+        {
+            _unitOfWork.Commit();
         }
     }
 }

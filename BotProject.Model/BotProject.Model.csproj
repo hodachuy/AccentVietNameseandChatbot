@@ -90,6 +90,8 @@
     <Compile Include="Models\AttributeSystem.cs" />
     <Compile Include="Models\AttributeZaloUser.cs" />
     <Compile Include="Models\Channel.cs" />
+    <Compile Include="Models\ChatWidgetLanguage.cs" />
+    <Compile Include="Models\ChatWidgetCustomization.cs" />
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\GroupChannel.cs" />

@@ -7,24 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotProject.Service.Livechat
+namespace BotProject.Service
 {
     public interface IChannelService
     {
-        IEnumerable<Channel> GetListChannelByGorupChanelID(long groupChannelID);
+        IEnumerable<Channel> GetListChannelByGorupChanelID(int groupChannelID);
         GroupChannel AddGroupChannel(GroupChannel grChannel);
-        GroupChannel GetGroupChannelById(long groupChannelID);
+        GroupChannel GetGroupChannelById(int groupChannelID);
         Channel AddUserToChannel(Channel channel);
         void RemoveUserChannel(string userId);
+        void Save();
     }
     public class ChannelService : IChannelService
     {
-        private IChannelRepository _channelRepository;
-        private IGroupChannelRepository _groupChannelRepository;
-        private UnitOfWork _unitOfWork;
+        IChannelRepository _channelRepository;
+        IGroupChannelRepository _groupChannelRepository;
+        IUnitOfWork _unitOfWork;
         public ChannelService(IChannelRepository channelRepository,
                               IGroupChannelRepository groupChannelRepository,
-                              UnitOfWork unitOfWork)
+                              IUnitOfWork unitOfWork)
         {
             _channelRepository = channelRepository;
             _groupChannelRepository = groupChannelRepository;
@@ -41,12 +42,12 @@ namespace BotProject.Service.Livechat
             return _channelRepository.Add(channel);
         }
 
-        public GroupChannel GetGroupChannelById(long groupChannelID)
+        public GroupChannel GetGroupChannelById(int groupChannelID)
         {
-            return _groupChannelRepository.GetSingleById(Convert.ToInt32(groupChannelID));
+            return _groupChannelRepository.GetSingleById(groupChannelID);
         }
 
-        public IEnumerable<Channel> GetListChannelByGorupChanelID(long groupChannelID)
+        public IEnumerable<Channel> GetListChannelByGorupChanelID(int groupChannelID)
         {
             return _channelRepository.GetMulti(x => x.GroupChannelID == groupChannelID);
         }
@@ -54,6 +55,11 @@ namespace BotProject.Service.Livechat
         public void RemoveUserChannel(string userId)
         {
             throw new NotImplementedException();
+        }
+
+        public void Save()
+        {
+            _unitOfWork.Commit();
         }
     }
 }

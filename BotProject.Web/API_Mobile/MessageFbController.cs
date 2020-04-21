@@ -315,7 +315,6 @@ namespace BotProject.Web.API_Mobile
 
             try
             {
-
                 if (fbUserDb != null)
                 {
                     // chat với admin

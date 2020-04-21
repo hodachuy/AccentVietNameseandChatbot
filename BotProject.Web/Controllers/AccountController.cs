@@ -15,16 +15,21 @@ using BotProject.Web.Infrastructure.Core;
 using BotProject.Service;
 using BotProject.Common;
 
+
 namespace BotProject.Web.Controllers
 {
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        private IChannelService _channelService;
+        public AccountController(ApplicationUserManager userManager,
+                                 ApplicationSignInManager signInManager,
+                                 IChannelService channelService)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            _channelService = channelService;
         }
 
         public ApplicationSignInManager SignInManager
@@ -64,8 +69,8 @@ namespace BotProject.Web.Controllers
 			if (Request.IsAuthenticated)
 			{
 				if(Session[CommonConstants.SessionUser] == null)
-				{
-					ApplicationUser user = _userManager.FindById(User.Identity.GetUserId());
+				{            
+                    ApplicationUser user = _userManager.FindById(User.Identity.GetUserId());
 					var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
 					Session[CommonConstants.SessionUser] = applicationUserViewModel;
 					if (!String.IsNullOrEmpty(returnUrl))
@@ -271,65 +276,51 @@ namespace BotProject.Web.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //[CaptchaValidation("CaptchaCode", "Captcha", "Mã xác nhận không đúng")]
-        //public async Task<ActionResult> Register(RegisterViewModel model)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var userByEmail = await _userManager.FindByEmailAsync(model.Email);
-        //        if (userByEmail != null)
-        //        {
-        //            ModelState.AddModelError("Email", "Email đã tồn tại");
-        //         hoặc là nếu email này đã đăng nhập với mạng xã hội trước đó
-        //          ModelState.AddModelError("Email", "Email này đã đăng nhập từ mạng xã hội ");
-        //            return View(model);
-        //        }
-        //        var userByUserName = await _userManager.FindByNameAsync(model.UserName);
-        //        if (userByUserName != null)
-        //        {
-        //            ModelState.AddModelError("UserName", "Tài khoản đã tồn tại");
-        //            return View(model);
-        //        }
-        //        var user = new ApplicationUser()
-        //        {
-        //            UserName = model.UserName,
-        //            Email = model.Email,
-        //            EmailConfirmed = true,
-        //            BirthDay = DateTime.Now,
-        //            FullName = model.FullName,
-        //            PhoneNumber = model.PhoneNumber,
-        //            Address = model.Address
+        [HttpPost]
+        public async Task<ActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userByUserName = await _userManager.FindByNameAsync(model.UserName);
+                if (userByUserName != null)
+                {
+                    ModelState.AddModelError("UserName", "Tài khoản đã tồn tại");
+                    return View(model);
+                }
 
-        //        };
+                var userByEmail = await _userManager.FindByEmailAsync(model.Email);
+                if (userByEmail != null)
+                {
+                    ModelState.AddModelError("Email", "Email này đã được đăng ký");
+                    return View(model);
+                }
 
-        //        await _userManager.CreateAsync(user, model.Password);
+                var user = new ApplicationUser()
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    EmailConfirmed = false,
+                    BirthDay = DateTime.Now,
+                    FullName = model.FullName,
+                    //PhoneNumber = model.PhoneNumber,
+                    Address = model.Address
 
+                };
 
-        //        var adminUser = await _userManager.FindByEmailAsync(model.Email);
-        //        //if (adminUser != null)
-        //        //    await _userManager.AddToRolesAsync(adminUser.Id, new string[] { "User" });
-
-        //        string content = System.IO.File.ReadAllText(Server.MapPath("/assets/client/template/newuser.html"));
-        //        content = content.Replace("{{UserName}}", adminUser.FullName);
-        //        content = content.Replace("{{Link}}", ConfigHelper.GetByKey("CurrentLink") + "dang-nhap.html");
-
-        //        MailHelper.SendMail(adminUser.Email, "Đăng ký thành công", content);
-
-        //        ViewData["SuccessMsg"] = "Đăng ký thành công";
+                await _userManager.CreateAsync(user, model.Password);
 
 
+                var newUser = await _userManager.FindByEmailAsync(model.Email);
+                if (newUser != null)
+                    await _userManager.AddToRolesAsync(newUser.Id, new string[] { "User" });
 
-        //        ModelState["FullName"].Value = new ValueProviderResult("", "", CultureInfo.CurrentCulture);
-        //        ModelState["Email"].Value = new ValueProviderResult("", "", CultureInfo.CurrentCulture);
-        //        ModelState["Address"].Value = new ValueProviderResult("", "", CultureInfo.CurrentCulture);
-        //        ModelState["PhoneNumber"].Value = new ValueProviderResult("", "", CultureInfo.CurrentCulture);
-        //        ModelState["UserName"].Value = new ValueProviderResult("", "", CultureInfo.CurrentCulture);
-        //        ModelState["Password"].Value = new ValueProviderResult("", "", CultureInfo.CurrentCulture);
-        //    }
+                return RedirectToAction("Login");
+            }
 
-        //    return View();
-        //}
+            return View();
+        }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

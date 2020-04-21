@@ -8,7 +8,7 @@ namespace BotProject.Web.Models
 {
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "Bạn cần nhập tên.")]
+        //[Required(ErrorMessage = "Bạn cần nhập tên.")]
         public string FullName { set; get; }
 
         [Required(ErrorMessage = "Bạn cần nhập tên đăng nhập.")]
@@ -27,7 +27,7 @@ namespace BotProject.Web.Models
 
         public string Address { set; get; }
 
-        [Required(ErrorMessage = "Bạn cần nhập số điện thoại.")]
-        public string PhoneNumber { set; get; }
+        //[Required(ErrorMessage = "Bạn cần nhập số điện thoại.")]
+        //public string PhoneNumber { set; get; }
     }
 }

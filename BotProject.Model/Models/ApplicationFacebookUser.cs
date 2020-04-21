@@ -46,5 +46,6 @@ namespace BotProject.Model.Models
         public DateTime? TimeOut { set; get; }
         public string BranchOTP { set; get; }
         public string TimeStamp { set; get; }
+        public int BotID { set; get; }
     }
 }

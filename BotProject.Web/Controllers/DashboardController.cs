@@ -16,6 +16,7 @@ namespace BotProject.Web.Controllers
     {
         private IBotService _botService;
 		private IQnAService _qnaService;
+
         public DashboardController(IErrorService errorService,
 									IBotService botService,
 									IQnAService qnaService) : base(errorService)

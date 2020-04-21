@@ -16,6 +16,7 @@ namespace BotProject.Web.Models
         public string Password { get; set; }
 
         public bool RememberMe { get; set; }
+
     }
 
     public class LoginSocialViewModel

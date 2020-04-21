@@ -73,6 +73,8 @@ namespace BotProject.Data
         public DbSet<Customer> Customers { set; get; }
         public DbSet<ActionChat> ActionChats { set; get; }
         public DbSet<StatusChat> StatusChats { set; get; }
+        public DbSet<ChatWidgetCustomization> ChatWidgetCustomizations { set; get; }
+        public DbSet<ChatWidgetLanguage> ChatWidgetLanguages { set; get; }
 
         public static BotDbContext Create()
         {

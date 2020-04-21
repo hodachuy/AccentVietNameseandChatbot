@@ -1,41 +1,363 @@
-﻿@model BotProject.Web.Models.RegisterViewModel
+﻿@using BotProject.Web.Models
+@model RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Home Page";
+    Layout = null;
 }
+<!doctype html>
+<html lang="en">
+<head>
+    <meta Http-Equiv="Cache-Control" Content="no-cache">
+    <meta Http-Equiv="Pragma" Content="no-cache">
+    <meta Http-Equiv="Expires" Content="0">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/assets/client/libs/blockUI/jquery.blockUI.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    <style>
+        body {
+            width: 100%;
+            height: auto;
+            background-image: url('../../assets/images/banner.jpg');
+            background-position: center;
+            font-family: "Robato",sans-serif;
+            font-size: 17px;
+            margin-left: auto;
+            margin-right: auto;
+            max-width: 1150px;
+            position: relative;
+            margin-top: -35px;
+            z-index: 1;
+        }
 
-<h2>@ViewBag.Title.</h2>
+        #logreg-forms {
+            width: 412px;
+            margin: 10vh auto;
+            /*background-color: #ffff4d;*/
+            box-shadow: 0 7px 7px rgba(0, 0, 0, 0.12), 0 12px 40px rgba(0,0,0,0.24);
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        }
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
-}
+            #logreg-forms form {
+                width: 100%;
+                max-width: 410px;
+                padding: 15px;
+                margin: auto;
+                background-color: white;
+            }
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+            #logreg-forms .form-control {
+                position: relative;
+                box-sizing: border-box;
+                height: auto;
+                padding: 10px;
+                font-size: 16px;
+            }
+
+                #logreg-forms .form-control:focus {
+                    z-index: 2;
+                }
+
+            #logreg-forms .form-signin input[type="email"] {
+                margin-bottom: -1px;
+                border-bottom-right-radius: 0;
+                border-bottom-left-radius: 0;
+            }
+
+            #logreg-forms .form-signin input[type="password"] {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+
+            #logreg-forms .social-login {
+                width: 390px;
+                margin: 0 auto;
+                margin-bottom: 14px;
+            }
+
+            #logreg-forms .social-btn {
+                font-weight: 100;
+                color: white;
+                width: 190px;
+                font-size: 0.9rem;
+            }
+
+            #logreg-forms a {
+                display: block;
+                padding-top: 10px;
+                color: #000;
+            }
+
+        #logreg-form .lines {
+            width: 200px;
+            border: 1px solid red;
+        }
+
+
+        #logreg-forms button[type="submit"] {
+            margin-top: 10px;
+        }
+
+        #logreg-forms .facebook-btn {
+            background-color: #3C589C;
+        }
+
+        #logreg-forms .google-btn {
+            background-color: #DF4B3B;
+        }
+
+
+            #logreg-forms .form-signup .social-btn {
+                width: 210px;
+            }
+
+            #logreg-forms .form-signup input {
+                margin-bottom: 2px;
+            }
+
+        .form-signup .social-login {
+            width: 210px !important;
+            margin: 0 auto;
+        }
+
+        .submit {
+            background: -webkit-linear-gradient(0deg, #2dfbff 0%, #3c96ff 100%);
+            border-radius: 25px;
+            color: #fff;
+        }
+
+        /* Mobile */
+
+        @@media screen and (max-width:500px) {
+            #logreg-forms {
+                width: 300px;
+            }
+
+                #logreg-forms .social-login {
+                    width: 200px;
+                    margin: 0 auto;
+                    margin-bottom: 10px;
+                }
+
+                #logreg-forms .social-btn {
+                    font-size: 1.3rem;
+                    font-weight: 100;
+                    color: white;
+                    width: 200px;
+                    height: 56px;
+                }
+
+                    #logreg-forms .social-btn:nth-child(1) {
+                        margin-bottom: 5px;
+                    }
+
+                    #logreg-forms .social-btn span {
+                        display: none;
+                    }
+
+                #logreg-forms .facebook-btn:after {
+                    content: 'Facebook';
+                }
+
+                #logreg-forms .google-btn:after {
+                    content: 'Google+';
+                }
+        }
+
+        #ckbRememberMe {
+            margin: 5px 3px 3px 4px !important;
+        }
+    </style>
+    <script>
+        var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
+    </script>
+</head>
+<body>
+    <div id="logreg-forms">
+        @using (Html.BeginForm("Register", "Account", new { returnUrl = @ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-signup", role = "form" }))
+        {
+            <div class="social-login">
+                <button class="btn facebook-btn social-btn" type="button" onclick="checkLoginFbDialog();"><span><i class="fab fa-facebook-f"></i> Sign up with Facebook</span> </button>
+            </div>
+            <div class="social-login">
+                <button class="btn google-btn social-btn" type="button"><span><i class="fa fa-google-plus-g"></i> Sign up with Google+</span> </button>
+            </div>
+            <p style="text-align:center">OR</p>
+            @Html.ValidationMessageFor(model => Model.UserName, "", new { @class = "error" })
+            @*<input type="text" id="user-name" class="form-control" placeholder="Full name" required="" autofocus="">*@
+            @Html.TextBoxFor(model => Model.UserName, new { @class = "form-control", @placeholder = "Tên đăng nhập" })
+            @Html.ValidationMessageFor(model => Model.Email, "", new { @class = "error" })
+            @Html.TextBoxFor(model => Model.Email, new { @class = "form-control", @placeholder = "Email" })
+            @Html.ValidationMessageFor(model => Model.Password, "", new { @class = "error" })
+            @Html.PasswordFor(model => Model.Password, new { @class = "form-control", @placeholder = "Mật khẩu" })
+            @Html.ValidationMessageFor(model => Model.ConfirmPassword, "", new { @class = "error" })
+            @Html.PasswordFor(model => Model.ConfirmPassword, new { @class = "form-control", @placeholder = "Xác nhận Mật khẩu" })
+            <div class="input-group">
+                <button class="btn btn-md btn-block submit" type="submit"><i class="fa fa-user-plus"></i> Đăng ký</button>
+            </div>
+                <a href="@Url.Action("Login","Account")"><i class="fa fa-angle-left"></i> Quay về</a>
+        }
+
+        <br>
+    </div>
+    <script>
+        function toggleResetPswd(e) {
+            e.preventDefault();
+            $('#logreg-forms .form-signin').toggle() // display:block or none
+            $('#logreg-forms .form-reset').toggle() // display:block or none
+        }
+
+        function toggleSignUp(e) {
+            e.preventDefault();
+            $('#logreg-forms .form-signin').toggle(); // display:block or none
+            $('#logreg-forms .form-signup').toggle(); // display:block or none
+        }
+
+        $(() => {
+            // Login Register Form
+            $('#logreg-forms #forgot_pswd').click(toggleResetPswd);
+            $('#logreg-forms #cancel_reset').click(toggleResetPswd);
+            $('#logreg-forms #btn-signup').click(toggleSignUp);
+            $('#logreg-forms #cancel_signup').click(toggleSignUp);
+        })
+    </script>
+
+
+
+
+    <!--FACEBOOK-->
+    <script>
+        //set khi custome rieng
+        function checkLoginFbDialog() {
+            FB.login(function (response) {
+                statusChangeCallback(response);
+            }, {
+                scope: 'manage_pages, pages_show_list, pages_messaging, pages_messaging_subscriptions,email',//pages_messaging,pages_messaging_phone_number,pages_messaging_subscriptions
+                //scope : 'public_profile,email',
+                return_scopes: true
+            });
+        }
+
+
+        // This is called with the results from from FB.getLoginStatus().
+        function statusChangeCallback(response) {
+            console.log('statusChangeCallback');
+            console.log(response);
+            // The response object is returned with a status field that lets the
+            // app know the current login status of the person.
+            // Full docs on the response object can be found in the documentation
+            // for FB.getLoginStatus().
+            if (response.status === 'connected') {
+                // Logged into your app and Facebook.
+                getUserInfo();
+            } else {
+                // The person is not logged into your app or we are unable to tell.
+                console.log('Please login')
+            }
+        }
+
+        // This function is called when someone finishes with the Login
+        // Button.  See the onlogin handler attached to it in the sample
+        // code below.
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        // init auto login
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '2354591768127270', //FB App ID
+                cookie: true,  //enable cookies to allow the server to access the session
+                xfbml: true,  //parse social plugins on this page
+                version: 'v3.2' //use this graph api version 3.2
+            });
+
+            // Now that we've initialized the JavaScript SDK, we call
+            // FB.getLoginStatus().  This function gets the state of the
+            // person visiting this page and can return one of three states to
+            // the callback you provide.  They can be:
+            //
+            // 1. Logged into your app ('connected')
+            // 2. Logged into Facebook, but not your app ('not_authorized')
+            // 3. Not logged into Facebook and can't tell if they are logged into
+            //    your app or not.
+            //
+            // These three cases are handled in the callback function.
+
+            //FB.getLoginStatus(function (response) {
+            //    statusChangeCallback(response);
+            //});
+
+        };
+
+        // Load the SDK asynchronously
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        // Here we run a very simple test of the Graph API after login is
+        // successful.  See statusChangeCallback() for when this call is made.
+        function getUserInfo() {
+            FB.api('/me', { fields: 'name,id,email,picture,accounts' }, function (response) {
+                console.log(response)
+                console.log('Successful login for: ' + response.name);
+                // response account bao gồm các thông tin về trang page_id,accesstoken page
+                var user = {
+                    UserName: response.name,
+                    Email: response.email,
+                    Avatar: response.picture.data.url
+                }
+                login(user)
+            });
+        }
+
+        function login(user) {
+            var block = $('body');
+            user = JSON.stringify(user);
+            $.ajax({
+                type: 'POST',
+                url: _Host + "account/LoginSocial",
+                data: user,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                //async: this._serviceAsync,
+                success: function (response) {
+                    if (response.status) {
+                        window.location.href = _Host + 'Dashboard/Index';
+                    }
+                },
+                error: function (error) {
+                    console.log(error)
+                },
+                beforeSend: function () {
+                    $(block).block({
+                        message: '<i class="fa fa-spinner fa-pulse spinner"></i>',
+                        overlayCSS: {
+                            backgroundColor: '#efeff6',
+                            opacity: 0.8,
+                            cursor: 'wait',
+                            zIndex: 99999999999999
+                        },
+                        css: {
+                            border: 0,
+                            padding: 0,
+                            backgroundColor: 'transparent',
+                        }
+                    });
+                },
+                complete: function (e) {
+                    $(block).unblock();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
