@@ -4,6 +4,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/assets/client/css/chat-room.css" rel="stylesheet" />
+<input type="hidden" id="userID" value="4d1d77aa-42a7-4e88-97a6-baed104c2e60" />
+<input type="hidden" id="botId" value="5039" />
 <div class="content">
     <div class="row no-gutters chat-block">
         <!-- begin::chat sidebar -->
@@ -12,13 +14,16 @@
             <div class="chat-sidebar-header border-bottom">
                 <div class="d-flex">
                     <div class="pr-3">
-                        <div class="avatar">
+                        @*<div class="avatar">
                             <img src="~/assets/client/img/avatar-admin.jpg" class="rounded-circle"
                                  alt="image">
-                        </div>
+                        </div>*@
+                        <span class="avatar avatar-state-secondary">
+                            <span class="avatar-title bg-primary rounded-circle">A</span>
+                        </span>
                     </div>
                     <div>
-                        <p class="mb-0">Huy Ho</p>
+                        <p class="mb-0">Admin</p>
                         <p class="m-0 small text-muted">Agent</p>
                     </div>
                 </div>
@@ -41,7 +46,7 @@
                                 </span>
                             </div>
                             <div class="text-right ml-auto">
-                                <span class="small text-muted">Yesterday</span>
+                                <span class="small text-muted">Hôm nay</span>
                             </div>
                         </a>
                         <a href="#" class="list-group-item d-flex">
@@ -57,14 +62,14 @@
                                     <span>
                                         <img class="css-gkenkv" src="~/assets/client/img/fb-msg-icon-960x960.png" alt="channel-icon">
                                     </span>
-                                    HCM
+                                    facebook-HuyHo
                                 </h6>
                                 <span class="small text-muted">
                                     <i class="fa fa-image mr-1"></i> Photo
                                 </span>
                             </div>
                             <div class="text-right ml-auto">
-                                <span class="small text-muted">Yesterday</span>
+                                <span class="small text-muted">Hôm qua</span>
                             </div>
                         </a>
                         <a href="#" class="list-group-item d-flex">
@@ -80,14 +85,14 @@
                                     <span>
                                         <img class="css-gkenkv" src="~/assets/client/img/zalo-msg-icon.jpg" alt="channel-icon">
                                     </span>
-                                    HCM
+                                    zalo-Huy
                                 </h6>
                                 <span class="small text-muted">
                                     <i class="fa fa-image mr-1"></i> Photo
                                 </span>
                             </div>
                             <div class="text-right ml-auto">
-                                <span class="small text-muted">Yesterday</span>
+                                <span class="small text-muted">Hôm qua</span>
                             </div>
                         </a>
                     </div>
@@ -149,26 +154,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="message-item-content">Hi!</div>
+                    <div class="message-item-content">Chào!</div>
                     <span class="time small text-muted font-italic">02:30 PM</span>
                 </div>
                 <div class="message-item me">
                     <div class="message-avatar">
                         <div class="message-avatar-customer">
                             <div class="pl-3">
-                                <span class="message-avatar-item avatar">
-                                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                                <span class="avatar avatar-state-secondary">
+                                    <span class="avatar-title bg-primary rounded-circle">A</span>
                                 </span>
                             </div>
                         </div>
                     </div>
                     <div class="message-item-content">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                        Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora ullam!
+                        Chào bạn! Bạn cần giúp đỡ gì?
                     </div>
-                    <span class="time small text-muted font-italic">Yesterday</span>
+                    <span class="time small text-muted font-italic">Hôm nay</span>
                 </div>
-                <div class="message-item">
+                @*<div class="message-item">
                     <div class="message-avatar">
                         <div class="message-avatar-customer">
                             <div class="pr-3">
@@ -225,7 +229,7 @@
                 <div class="message-item">
                     <div class="message-item-content">Lorem ipsum dolor sit.</div>
                     <span class="time small text-muted font-italic">02:30 PM</span>
-                </div>
+                </div>*@
             </div>
             <!-- end::messages -->
             <!-- begin::chat footer -->
@@ -402,11 +406,11 @@
             });
         }
     </script>
-    <script>
+    @*<script>
         var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
         var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
         var encryptedBotID = CryptoJS.AES.encrypt('5039', "Secret Passphrase").toString();
         lacviet.load('' + encryptedUrl + '', '' + encryptedUserID + '', '' + encryptedBotID + '', 'U2FsdGVkX19D5jsWIYosQVQ4bBWt2cjbzgkJbDAOSB+Igj5G2vGw1bAq+sh1P/Yc')
-    </script>
+    </script>*@
 
 }
