@@ -314,6 +314,7 @@
     <Compile Include="API_Mobile\MessageZaloController.cs" />
     <Compile Include="API_Mobile\MessageZaloMedicalController.cs" />
     <Compile Include="API_Mobile\MessageZaloTNMTController.cs" />
+    <Compile Include="API_SV_172\CommonController.cs" />
     <Compile Include="API_Webhook\FacebookController.cs" />
     <Compile Include="API_Webhook\ZaloController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />

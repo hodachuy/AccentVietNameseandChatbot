@@ -7,21 +7,68 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>QnA</title>
+
     <link href="~/assets/client/vendor/boostrap-v3/bootstrap.min.css" rel="stylesheet" />
-    <script src="~/assets/client/vendor/boostrap-v3/bootstrap.min.js"></script>
     <link href="~/assets/client/css/faq/style.css" rel="stylesheet" />
     <link href="~/assets/client/css/faq/faq-reponsive.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+        var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
+    </script>
+    <style>
+        /* css form điều luật liên quan*/
+.accordion-style2{margin: 10px 0}
+.ui-accordion .ui-accordion-header {
+    color: #478FCA;
+    font-weight: 400;
+    background-color: #F9F9F9;
+    border: 1px solid #CDD8E3;
+    padding: 8px 8px 9px 24px;
+    cursor:pointer;
+}
+.ui-accordion .ui-accordion-header.ui-state-active {
+    color: #4C8FBD;
+    background-color: #EEF4F9;
+    position: relative;
+    font-weight: 700;
+}
+.ui-accordion .ui-accordion-content {
+    border: 1px solid #CDD8E3;
+    border-top-width: 0;
+    padding: 11px 16px;
+}
+.ui-accordion .ui-accordion-header .ui-accordion-header-icon {
+    /*text-indent: 0;
+    margin-top: 0;
+    position: absolute;
+    left: 10px;
+    top: 7px;*/
+    margin: 0 5px 0 -10px;
+}
+.ui-accordion .ui-accordion-header .ui-accordion-header-icon:before {
+    display: inline;
+    font-family: FontAwesome;
+    font-size: 15px;
+    content: "\f0da";
+}
+.ui-accordion .ui-accordion-header.ui-state-active .ui-accordion-header-icon:before {
+    content: "\f0d7";
+    font-weight: 400;
+}
+    </style>
 </head>
 <body>
+    <input hidden id="quesId" value="@Model.QuesID"/>
     <div class="container">
         <h1>FAQs</h1>
         <div class="row">
-            <article class="question question-type-normal question_author_yes sticky post-2110 type-question status-publish hentry question-category-analytics question_tags-analytics question_tags-programs" id="post-2110" itemscope="" itemtype="https://schema.org/Question">
+            <div class="question">
                 <h2>
                     <a itemprop="url" href="#" title="" rel="bookmark">
                         <i class="icon-pushpin tooltip-n question-sticky" original-title="Sticky"></i>
-                        <span itemprop="name">@Html.Raw(Model.QuesContentHTML)</span>
+                        <span itemprop="name" id="txtContent">@Html.Raw(Model.QuesContentHTML)</span>
                     </a>
                 </h2>              
                 <div class="question-author" itemprop="author" itemscope="" itemtype="https://schema.org/Person">
@@ -33,13 +80,147 @@
                 <div class="question-inner">
                     <div class="clearfix"></div>
                     <div class="question-desc">
-                        <div itemprop="text">@Html.Raw(Model.AnsContentHTML)</div>
+                        <div>@Html.Raw(Model.AnsContentHTML)</div>
                         <div class="no_vote_more"></div>
+                        <div class="clearfix"></div>
                     </div>
-                    <div class="clearfix"></div>
                 </div>
-            </article>
+            </div>
         </div>
+        <div class="row">
+            <div class="question">
+                <div class="law-related" id="articleRelated" style="display:none">
+                    <div class="col-md-12">
+                        <div>
+                            <i style="margin-right:12px" class="fa fa-book icon-question-detail"></i>
+                            <span class="f-bold" id="t-Article">ĐIỀU LUẬT LIÊN QUAN THAM KHẢO</span>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-bottom: 15px;padding-left: 50px;padding-right: 50px;">
+                        <div id="ArtSearch">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+    <script src="~/assets/client/vendor/boostrap-v3/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var content = $('#txtContent').text();
+            //bùa lấy khoảng id của bot pháp luật, lần sau sẽ thêm param botId tới model
+            var quesId = parseInt($('#quesId').val());
+            if (quesId >= 5178 && quesId <= 10443) {
+                SearchRelatedArticles(content);
+            }
+        })
+        SearchRelatedArticles = function (content) {
+            var param = {
+                content: content,
+                number: "5"
+            }
+            //param = JSON.stringify(param)
+            if (content == "") return;
+            $.ajax({
+                url: _Host + 'api/common/getRelatedArticles?content='+content,
+                contentType: 'application/json ; charset:utf-8',
+                type: 'GET',
+                data: param,
+                success: function (result) {
+                    console.log(result)
+                    //var data = JSON.parse(result);
+                    if (result != null && result != "") {
+                        $("#articleRelated").css('display', 'block');
+                        //result = result.reverse();
+                        RenderArticles(result);
+                    }
+                },
+                error: function (error) {
+                }
+            })
+        }
+        RenderArticles = function (data) {
+            //var data = JSON.parse(data);
+            //if (data.Table == null) { return; }
+            //if (data.Table[0] == null)
+            //    return;
+            //var table = data.Table[0].Item;
+            //if (table == null)
+            //    return;
+            var html = '<div id="accordion" class="accordion-style2">';
+            var result = data;
+            if ($.isArray(result)) {
+                for (var i = 0; i < result.length; i++) {
+                    var titleArt = result[i].ArtTitle;
+                    var content = result[i].Contents;
+                    var idx = result[i].Idx;
+                    var idlegal = result[i].LegalID;
+                    var titleLeg = result[i].LegTitle;
+                    var legalcode = result[i].LegalCode;
+                    var docname = result[i].DocName;
+                    var attach = result[i].DocAttach;
+                    html += '<div class="group">';
+                    html += '<h5 class="accordion-header" style="line-height:140%">' + docname + ' ' + legalcode + ' - Điều ' + idx + ': ' + titleArt + '</h5>';
+                    html += '<div class="content-related' + i + '"><p>' + content + '</p>';
+                    html += '' + attach;
+                    html += '<div class="pull-left"><p><i class="fa fa-eye" aria-hidden="true"></i>  <a href="http://qa.surelrn.vn//Law2/Detail?lawId=' + idlegal + '" style="color:#6098C7;text-decoration:none" target="_blank">Xem chi tiết văn bản.</a></p></div>';
+                    html += '<a class="message pull-right" style="cursor:pointer"></a><div class="clearfix"></div></div>';
+
+                    $ShowHideMore = $('.content-related' + i);
+                    //var divchild = $ShowHideMore.children('div').first();
+                    //if (divchild.length == 1) { divchild = $ShowHideMore; }
+                    var divchild = $ShowHideMore;
+                    divchild.each(function () {
+                        var $times = $(this).children('p');
+                        var $times2 = $(this).children('span');
+                        var num = 5;
+                        if ($times.length > num + 1 || $times2.length > num) {
+                            $(this).children(':nth-of-type(n+' + num + ')').addClass('moreShown').hide();
+                            $ShowHideMore.find('a.message').addClass('more-times').html('+ Xem thêm');
+                        }
+                    });
+
+                    $(document).on('click', '.content-related' + i + ' > a.message', function () {
+                        var that = $(this);
+                        var thisParent = divchild;//that.closest('.content-answer');
+                        if (that.hasClass('more-times')) {
+                            thisParent.find('.moreShown').show();
+                            that.toggleClass('more-times', 'less-times').html('- Thu gọn');
+                        } else {
+                            thisParent.find('.moreShown').hide();
+                            that.toggleClass('more-times', 'less-times').html('+ Xem thêm');
+                        }
+                    });
+                }
+            } else {
+                var titleArt = result.ArtTitle;
+                var content = result.Contents;
+                var idx = result.Idx;
+                var idlegal = result.LegalID;
+                var titleLeg = result.LegTitle;
+                var legalcode = result.LegalCode;
+                var docname = result.DocName;
+                var attach = result.DocAttach;
+                html += '<div class="group">';
+                html += '<h5 class="accordion-header" style="line-height:140%">' + docname + ' ' + legalcode + ' - Điều ' + idx + ': ' + titleArt + '</h5>';
+                html += '<div><p>' + content + '</p>';
+                html += '' + attach;
+                html += '<div><p><i class="fa fa-eye" aria-hidden="true"></i>  <a href="http://qa.surelrn.vn/Law2/Detail?lawId=' + idlegal + '"  style="color:#6098C7;text-decoration:none" target="_blank">Xem chi tiết văn bản.</a></p></div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            $("#ArtSearch").html(html);
+            //jquery accordion
+            $("#accordion").accordion({
+                collapsible: true,
+                heightStyle: "content",
+                animate: 250,
+                header: ".accordion-header",
+                active: 'none'
+            })
+        }
+    </script>
 </body>
 </html>

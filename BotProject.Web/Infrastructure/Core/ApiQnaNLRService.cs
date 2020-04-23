@@ -36,6 +36,15 @@ namespace BotProject.Web.Infrastructure.Core
         private string apiAddSymptoms = "/api/med_sym/add";
         private string apiUpdateSymptoms = "/api/med_sym/update";
         private string apiDeleteSymptoms = "/api/med_sym/delete";
+
+
+        /// <summary>
+        /// API LẤY ĐIỀU LUẬT LIÊN QUAN
+        /// </summary>
+        private string apiRelateArticle = "/api/get_related_articles";
+
+
+
         /// <summary>
         /// Gọi api chung
         /// </summary>
@@ -218,5 +227,32 @@ namespace BotProject.Web.Infrastructure.Core
             return ApiAddUpdateQA(urlDelete, null, "Delete");
         }
         #endregion
+
+        #region Lấy điều luật liên quan
+        public List<LawArticle> GetObjectRelatedArticle(string QuestionContent, string number)
+        {
+            var _lstArt = new List<LawArticle>();
+            var param = new
+            {
+                content = QuestionContent,
+                number = number == null ? "5" : number,
+            };
+            string responseString = ApiAddUpdateQA(apiRelateArticle, param, "Post");
+            if (responseString != null)
+            {
+                _lstArt = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<List<LawArticle>>(responseString);
+            }
+            return _lstArt;
+        }
+        #endregion
+        public class LawArticle
+        {
+            public string _id { get; set; }
+            public string title { get; set; }
+            public string content { get; set; }
+            public string legal_id { get; set; }
+            public string id { get; set; }
+            public string html { get; set; }
+        }
     }
 }
