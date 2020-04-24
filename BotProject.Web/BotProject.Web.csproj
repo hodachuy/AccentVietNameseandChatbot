@@ -1068,6 +1068,7 @@
     <Content Include="Views\ChatRoom\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="API_Livechat\" />
     <Folder Include="App_Data\" />
     <Folder Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5019\" />
     <Folder Include="File\AIML\User_a596de6b-5055-4aa0-a4bf-056d0cc8ed8f_BotID_5021\" />

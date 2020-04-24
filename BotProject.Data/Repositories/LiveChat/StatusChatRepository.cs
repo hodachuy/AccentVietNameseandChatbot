@@ -1,5 +1,6 @@
 ﻿using BotProject.Data.Infrastructure;
 using BotProject.Model.Models;
+using BotProject.Model.Models.LiveChat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace BotProject.Data.Repositories
 {
-    public interface IDeviceRepository : IRepository<Device>
+    public interface IStatusChatRepository : IRepository<StatusChat>
     {
     }
 
-    public class DeviceRepository : RepositoryBase<Device>, IDeviceRepository
+    public class StatusChatRepository : RepositoryBase<StatusChat>, IStatusChatRepository
     {
-        public DeviceRepository(IDbFactory dbFactory) : base(dbFactory)
+        public StatusChatRepository(IDbFactory dbFactory) : base(dbFactory)
         {
         }
     }

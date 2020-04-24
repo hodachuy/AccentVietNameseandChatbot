@@ -24,7 +24,7 @@ namespace BotProject.Service
 
         ApplicationGroup Delete(int id);
 
-        bool AddUserToGroups(IEnumerable<ApplicationUserGroup> groups, string userId);
+        ApplicationUserGroup AddUserToGroups(ApplicationUserGroup userGroup);
 
         IEnumerable<ApplicationGroup> GetListGroupByUserId(string userId);
 
@@ -92,14 +92,9 @@ namespace BotProject.Service
             _appGroupRepository.Update(appGroup);
         }
 
-        public bool AddUserToGroups(IEnumerable<ApplicationUserGroup> userGroups, string userId)
+        public ApplicationUserGroup AddUserToGroups(ApplicationUserGroup userGroup)
         {
-            _appUserGroupRepository.DeleteMulti(x => x.UserId == userId);
-            foreach (var userGroup in userGroups)
-            {
-                _appUserGroupRepository.Add(userGroup);
-            }
-            return true;
+            return _appUserGroupRepository.Add(userGroup);
         }
 
         public IEnumerable<ApplicationGroup> GetListGroupByUserId(string userId)

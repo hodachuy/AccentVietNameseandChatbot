@@ -1,10 +1,5 @@
 ﻿using BotProject.Data.Infrastructure;
-using BotProject.Model.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BotProject.Model.Models.LiveChat;
 
 namespace BotProject.Data.Repositories
 {

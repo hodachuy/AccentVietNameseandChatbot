@@ -6,16 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotProject.Model.Models
+namespace BotProject.Model.Models.LiveChat
 {
-    [Table("GroupChannels")]
-    public class GroupChannel
+    [Table("ChatSurveys")]
+    public class ChatSurvey
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public long ID { get; set; }
         public string Name { get; set; }
-        public string OwnerId { get; set; }
-        public IEnumerable<Channel> Channels { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string CustomerID { get; set; }
     }
 }

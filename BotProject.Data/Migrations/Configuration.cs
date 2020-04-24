@@ -23,7 +23,22 @@
             //CreateSlide(context);
             //ContactDetail(context);
 
-             //CreateUser(context);
+            //CreateUser(context);
+
+            // Thêm role : Owner
+            //CreateRoleOwner(context);
+        }
+
+        private void CreateRoleOwner(BotDbContext context)
+        {
+            var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new BotDbContext()));
+            var roleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new BotDbContext()));
+
+            roleManager.Create(new IdentityRole { Name = "Owner" });
+
+            var adminUser = manager.FindByEmail("hodachuy123@gmail.com");
+
+            manager.AddToRoles(adminUser.Id, new string[] {"Owner" });
         }
 
         private void CreateUser(BotDbContext context)

@@ -56,6 +56,11 @@ namespace BotProject.Common
 
         public const string BOT_REQUEST_TEXT = "text";
         public const string BOT_REQUEST_PAYLOAD_POSTBACK = "payload_postback";
+
+        // User
+        public const int GROUP_OWNER = 1;
+        public const int GROUP_ADMIN = 2;
+        public const int GROUP_SUPPORT = 3;
     }
     public class ZaloConstans
     {
@@ -119,4 +124,5 @@ namespace BotProject.Common
         public const string BOT_HISTORY_HANDLE_008 = "Bot không hiểu và Search NLP không tìm thấy";
         public const string BOT_HISTORY_HANDLE_009 = "Nhấn Chat ADMIN";
     }
+
 }

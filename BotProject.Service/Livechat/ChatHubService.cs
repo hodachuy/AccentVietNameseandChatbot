@@ -1,6 +1,7 @@
 ﻿using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
 using BotProject.Model.Models;
+using BotProject.Model.Models.LiveChat;
 using System;
 using System.Collections.Generic;
 using System.Linq;

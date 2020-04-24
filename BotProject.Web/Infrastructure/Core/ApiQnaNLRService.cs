@@ -229,9 +229,9 @@ namespace BotProject.Web.Infrastructure.Core
         #endregion
 
         #region Lấy điều luật liên quan
-        public List<LawArticle> GetObjectRelatedArticle(string QuestionContent, string number)
+        public List<SearchLawArticleViewModel> GetObjectRelatedArticle(string QuestionContent, string number)
         {
-            var _lstArt = new List<LawArticle>();
+            var _lstArt = new List<SearchLawArticleViewModel>();
             var param = new
             {
                 content = QuestionContent,
@@ -240,19 +240,17 @@ namespace BotProject.Web.Infrastructure.Core
             string responseString = ApiAddUpdateQA(apiRelateArticle, param, "Post");
             if (responseString != null)
             {
-                _lstArt = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<List<LawArticle>>(responseString);
+                _lstArt = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<List<SearchLawArticleViewModel>>(responseString);
+                if (_lstArt.Count() != 0)
+                {
+                    foreach(var item in _lstArt)
+                    {
+                        item.html = HttpUtility.HtmlDecode(item.html);
+                    }
+                }
             }
             return _lstArt;
         }
         #endregion
-        public class LawArticle
-        {
-            public string _id { get; set; }
-            public string title { get; set; }
-            public string content { get; set; }
-            public string legal_id { get; set; }
-            public string id { get; set; }
-            public string html { get; set; }
-        }
     }
 }

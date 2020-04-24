@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotProject.Model.Models
+namespace BotProject.Model.Models.LiveChat
 {
     [Table("Devices")]
     public class Device

@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotProject.Model.Models
+namespace BotProject.Model.Models.LiveChat
 {
     [Table("Customers")]
     public class Customer
     {
         [Key]
         public string ID { get; set; }
+        public string ConnectionID { get; set; }
 
         [MaxLength(200)]
         public string FullName { get; set; }

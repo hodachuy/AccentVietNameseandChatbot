@@ -153,18 +153,18 @@
             var result = data;
             if ($.isArray(result)) {
                 for (var i = 0; i < result.length; i++) {
-                    var titleArt = result[i].ArtTitle;
-                    var content = result[i].Contents;
-                    var idx = result[i].Idx;
-                    var idlegal = result[i].LegalID;
-                    var titleLeg = result[i].LegTitle;
-                    var legalcode = result[i].LegalCode;
-                    var docname = result[i].DocName;
-                    var attach = result[i].DocAttach;
+                    var titleArt = result[i].title;
+                    var content = result[i].html;
+                    //var idx = result[i].Idx;
+                    var idlegal = result[i].legal_id;
+                    //var titleLeg = result[i].LegTitle;
+                    //var legalcode = result[i].LegalCode;
+                    //var docname = result[i].DocName;
+                    //var attach = result[i].DocAttach;
                     html += '<div class="group">';
-                    html += '<h5 class="accordion-header" style="line-height:140%">' + docname + ' ' + legalcode + ' - Điều ' + idx + ': ' + titleArt + '</h5>';
+                    html += '<h5 class="accordion-header" style="line-height:140%">' + titleArt + '</h5>';
                     html += '<div class="content-related' + i + '"><p>' + content + '</p>';
-                    html += '' + attach;
+                    //html += '' + attach;
                     html += '<div class="pull-left"><p><i class="fa fa-eye" aria-hidden="true"></i>  <a href="http://qa.surelrn.vn//Law2/Detail?lawId=' + idlegal + '" style="color:#6098C7;text-decoration:none" target="_blank">Xem chi tiết văn bản.</a></p></div>';
                     html += '<a class="message pull-right" style="cursor:pointer"></a><div class="clearfix"></div></div>';
 
@@ -195,18 +195,18 @@
                     });
                 }
             } else {
-                var titleArt = result.ArtTitle;
-                var content = result.Contents;
-                var idx = result.Idx;
-                var idlegal = result.LegalID;
-                var titleLeg = result.LegTitle;
-                var legalcode = result.LegalCode;
-                var docname = result.DocName;
-                var attach = result.DocAttach;
+                var titleArt = result[i].title;
+                var content = result[i].html;
+                //var idx = result[i].Idx;
+                var idlegal = result[i].legal_id;
+                //var titleLeg = result[i].LegTitle;
+                //var legalcode = result[i].LegalCode;
+                //var docname = result[i].DocName;
+                //var attach = result[i].DocAttach;
                 html += '<div class="group">';
-                html += '<h5 class="accordion-header" style="line-height:140%">' + docname + ' ' + legalcode + ' - Điều ' + idx + ': ' + titleArt + '</h5>';
+                html += '<h5 class="accordion-header" style="line-height:140%">' + titleArt + '</h5>';
                 html += '<div><p>' + content + '</p>';
-                html += '' + attach;
+                //html += '' + attach;
                 html += '<div><p><i class="fa fa-eye" aria-hidden="true"></i>  <a href="http://qa.surelrn.vn/Law2/Detail?lawId=' + idlegal + '"  style="color:#6098C7;text-decoration:none" target="_blank">Xem chi tiết văn bản.</a></p></div>';
                 html += '</div>';
             }

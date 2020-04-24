@@ -30,6 +30,7 @@ namespace BotProject.Service
         //Get list role by group id
         IEnumerable<ApplicationRole> GetListRoleByGroupId(int groupId);
 
+
         void Save();
     }
 

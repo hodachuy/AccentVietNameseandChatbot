@@ -14,7 +14,8 @@ using AutoMapper;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Service;
 using BotProject.Common;
-
+using System.Collections.Generic;
+using BotProject.Model.Models.LiveChat;
 
 namespace BotProject.Web.Controllers
 {
@@ -22,14 +23,17 @@ namespace BotProject.Web.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private IApplicationGroupService _appGroupService;
         private IChannelService _channelService;
         public AccountController(ApplicationUserManager userManager,
                                  ApplicationSignInManager signInManager,
-                                 IChannelService channelService)
+                                 IChannelService channelService,
+                                 IApplicationGroupService appGroupService)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _channelService = channelService;
+            _appGroupService = appGroupService;
         }
 
         public ApplicationSignInManager SignInManager
@@ -92,7 +96,13 @@ namespace BotProject.Web.Controllers
                 if (user != null)
                 {
                     var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
+
+                    var listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
+
+                    applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
+
                     Session[CommonConstants.SessionUser] = applicationUserViewModel;
+
                     IAuthenticationManager authenticationManager = HttpContext.GetOwinContext().Authentication;
                     authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
                     ClaimsIdentity identity = _userManager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
@@ -308,12 +318,31 @@ namespace BotProject.Web.Controllers
                 };
 
                 await _userManager.CreateAsync(user, model.Password);
-
-
                 var newUser = await _userManager.FindByEmailAsync(model.Email);
                 if (newUser != null)
-                    await _userManager.AddToRolesAsync(newUser.Id, new string[] { "User" });
+                {
+                    //await _userManager.AddToRolesAsync(newUser.Id, new string[] { "User" });
+                    // Permission add user to group owner
+                    var appUserGroup = new ApplicationUserGroup();
+                    appUserGroup.UserId = newUser.Id;
+                    appUserGroup.GroupId = CommonConstants.GROUP_OWNER;
+                    _appGroupService.AddUserToGroups(appUserGroup);
+                    _appGroupService.Save();
 
+                    // Livechat add user owner group channel
+                    var groupChannel = new GroupChannel();
+                    groupChannel.Name = "General-" + user.UserName;
+                    groupChannel.OwnerId = newUser.Id;
+                    _channelService.AddGroupChannel(groupChannel);
+                    _channelService.Save();
+
+                    //Livechat add user to channel
+                    var lc_Channel = new Channel();
+                    lc_Channel.GroupChannelID = groupChannel.Id;
+                    lc_Channel.UserID = newUser.Id;
+                    _channelService.AddUserToChannel(lc_Channel);
+                    _channelService.Save();
+                }
                 return RedirectToAction("Login");
             }
 

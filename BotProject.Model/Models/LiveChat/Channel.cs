@@ -6,18 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotProject.Model.Models
+namespace BotProject.Model.Models.LiveChat
 {
-    [Table("Messsages")]
-    public class Message
+    [Table("Channels")]
+    public class Channel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long ID { set; get; }
-        public long ThreadID { set; get; }
+        public long ID { set; get;}
+
+        [Required]
         public long GroupChannelID { set; get; }
-        public DateTime Timestamp { set; get; }
-        public string Body { set; get; }
-        public string SenderID { set; get; }
+
+        [ForeignKey("GroupChannelID")]
+        public virtual GroupChannel GroupChannel { set; get; }
+
+        public string UserID { set; get; }
     }
 }

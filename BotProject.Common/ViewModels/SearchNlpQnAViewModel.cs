@@ -24,4 +24,13 @@ namespace BotProject.Common.ViewModels
         public string cause { set; get; }
         public string advice { set; get; }
     }
+    public class SearchLawArticleViewModel
+    {
+        public string _id { get; set; }
+        public string title { get; set; }
+        public string content { get; set; }
+        public string legal_id { get; set; }
+        public string id { get; set; }
+        public string html { get; set; }
+    }
 }

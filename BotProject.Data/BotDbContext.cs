@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
 using BotProject.Model.Models;
 using System.Data.Entity;
+using BotProject.Model.Models.LiveChat;
 
 namespace BotProject.Data
 {
@@ -75,6 +76,7 @@ namespace BotProject.Data
         public DbSet<StatusChat> StatusChats { set; get; }
         public DbSet<ChatWidgetCustomization> ChatWidgetCustomizations { set; get; }
         public DbSet<ChatWidgetLanguage> ChatWidgetLanguages { set; get; }
+        public DbSet<ChatSurvey> ChatSurveys { set; get; }
 
         public static BotDbContext Create()
         {
