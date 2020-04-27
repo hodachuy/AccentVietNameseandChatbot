@@ -172,7 +172,6 @@ namespace BotProject.Web.Controllers
                 {
                     returnUrl = "Dashboard/Index";
                 }
-
                 return Json(new
                 {
                     returnUrl = returnUrl,

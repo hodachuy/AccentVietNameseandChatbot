@@ -1,0 +1,369 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<input type="hidden" id="userID" value="4d1d77aa-42a7-4e88-97a6-baed104c2e60" />
+<input type="hidden" id="botId" value="5039" />
+<style>
+    .css-1ocrak0 {
+        position: relative;
+        display: inline-block;
+        box-sizing: border-box;
+        vertical-align: middle;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+        border-radius: 50%;
+    }
+
+    .css-5r5m5i {
+        display: block;
+        background-size: cover;
+        background-image: url(https://cdn.livechatinc.com/cloud/?uri=https://livechat.s3.amazonaws.com/default/avatars/394ad6e3df2320941ab8e0ca147d5221.png);
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        border-radius: 1000px;
+    }
+
+    .css-1ocrak0 span {
+        width: 14px;
+        height: 14px;
+        right: -2px;
+        top: -2px;
+    }
+
+    .css-1ocrak0 span {
+        background-color: rgb(70, 183, 118);
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+    }
+
+    .css-10zmg9r {
+        position: absolute;
+        display: block;
+        box-sizing: border-box;
+        border-radius: 50%;
+    }
+    /*User invited*/
+    .css-roml46 {
+        position: relative;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        background-color: rgb(244, 247, 249);
+        box-sizing: border-box;
+        text-align: center;
+        border-radius: 50%;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(221, 226, 230);
+        border-image: initial;
+    }
+
+    .css-1e0j3rb {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+    }
+    /*Logged On*/
+    .css-y4ek3x {
+        vertical-align: middle;
+        line-height: 14px;
+    }
+
+    .css-nmb5ix {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
+
+    .css-128qsh2 {
+        position: relative;
+        display: inline-block;
+        width: 38px;
+        height: 38px;
+        line-height: 38px;
+        background-color: rgb(244, 247, 249);
+        box-sizing: border-box;
+        text-align: center;
+        border-radius: 6px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(221, 226, 230);
+        border-image: initial;
+    }
+
+    .css-1fg5nok {
+        position: relative;
+        display: inline-block;
+        box-sizing: border-box;
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+        border-radius: 50%;
+    }
+
+    .css-1k0c4ii {
+        display: block;
+        background-size: cover;
+        background-image: url(https://cdn.livechat-static.com/api/file/lc/img/11860686/2aae748f76709d2e57dbfd73a8508f49.png);
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        border-radius: 1000px;
+    }
+
+    .css-1fg5nok span {
+        width: 14px;
+        height: 14px;
+        right: 0px;
+        top: -5px;
+    }
+
+    .css-1fg5nok span {
+        background-color: rgb(70, 183, 118);
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+    }
+
+    .css-10zmg9r {
+        position: absolute;
+        display: block;
+        box-sizing: border-box;
+        border-radius: 50%;
+    }
+</style>
+<style>
+    .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+    .table:not(.table-bordered) thead th {
+    border-top: none;
+    border-bottom-width: 1px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+    .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+    .table.table-lg td {
+    padding: 1.3rem 0.75rem;
+}
+    .table:not(.table-bordered) td {
+    vertical-align: middle;
+    line-height: 1;
+    white-space: nowrap;
+}
+    .table td, .table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+    .table tbody tr td {
+    /* height: 70px; */
+    border-right: unset;
+}
+    .table td, .table th {
+    padding: .75rem !important;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+</style>
+<div class="container-fluid">
+    <div class="content">
+        <div class="page-header">
+            <h2 class="pageheader-title">Quản trị viên </h2>
+            <p class="pageheader-text"></p>
+            <div class="page-breadcrumb">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Quản trị viên</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="nav nav-tabs mb-3" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="agents-tab" data-toggle="tab" href="#home" role="tab"
+                                   aria-controls="home" aria-selected="true">Quản trị viên (1)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="chatbots-tab" data-toggle="tab" href="#profile" role="tab"
+                                   aria-controls="profile" aria-selected="false">Chatbots (1)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="groups-tab" data-toggle="tab" href="#contact" role="tab"
+                                   aria-controls="contact" aria-selected="false">Groups (1)</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="agents-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table id="tbl-agent" class="table table-lg">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Trạng thái</th>
+                                                        <th>Tên</th>
+                                                        <th>Đăng nhập thiết bị</th>
+                                                        <th>Vai trò</th>
+                                                        <th>Tiện ích</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbl-lst-agent">
+                                                    <tr>
+                                                        <td>
+                                                            <div class="css-roml46"><div class="css-1e0j3rb css-j314r80" width="22px" height="22px" fill="#424d57"><svg fill="#424d57" width="22px" height="22px" viewBox="0 0 20 14"><g fill="inherit" fill-rule="evenodd"><path fill="inherit" fill-rule="evenodd" d="M12.5 7a3.332 3.332 0 1 0 0-6.667A3.332 3.332 0 1 0 12.5 7zM5 5.333v-2.5H3.333v2.5h-2.5V7h2.5v2.5H5V7h2.5V5.333H5zm7.5 3.334c-2.225 0-6.667 1.116-6.667 3.333v1.667h13.334V12c0-2.217-4.442-3.333-6.667-3.333z"></path></g></svg></div></div>
+                                                        </td>
+                                                        <td>
+                                                            Mời thành viên
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>
+                                                        </td>
+                                                        <td>hdhuy@gmail.com</td>
+                                                        <td>
+                                                            <span class="css-y4ek3x" title="Desktop"><div class="css-nmb5ix css-j314r80" width="20px" height="20px"><svg width="20px" height="20px" viewBox="0 0 20 18"><g fill="none" fill-rule="evenodd" opacity=".7"><path d="M0-1h20v20H0z"></path><path fill="#000" fill-rule="nonzero" d="M17.5.667h-15c-.917 0-1.667.75-1.667 1.666v10C.833 13.25 1.583 14 2.5 14h5.833v1.667H6.667v1.666h6.666v-1.666h-1.666V14H17.5c.917 0 1.667-.75 1.667-1.667v-10c0-.916-.75-1.666-1.667-1.666zm0 11.666h-15v-10h15v10z"></path></g></svg></div></span>
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge bg-success-bright text-success">Owner</span>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="chatbots-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table id="tbl-chatbot" class="table table-lg">
+                                                <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Tên</th>
+                                                        <th>Vai trò</th>
+                                                        <th>Kích hoạt</th>
+                                                        <th>Tiện ích</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbl-lst-chatbot">
+                                                    <tr>
+                                                        <td>
+                                                            <div class="css-128qsh2"><div class="css-1lb59ln css-j314r80" width="14px" height="14px" fill="#424d57"><svg fill="#424d57" width="14px" height="14px" viewBox="0 0 14 14"><path fill="inherit" fill-rule="nonzero" d="M14 8H8v6H6V8H0V6h6V0h2v6h6z"></path></svg></div></div>
+                                                        </td>
+                                                        <td>
+                                                            <a href="#" class="active">Tạo chatbot</a>
+                                                        </td>
+                                                        <td></td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>
+                                                        </td>
+                                                        <td>BOT-KIA MOTORS</td>
+                                                        <td>
+                                                            <span class="badge bg-success-bright text-success">Chatbot</span>
+                                                        </td>
+                                                        <td></td>
+                                                        <td><span class="badge bg-info-bright text-dark"></span></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="groups-tab">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table id="tbl-group" class="table table-lg">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Trạng thái</th>
+                                                        <th>Tên</th>
+                                                        <th>Thành viên</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbl-list-group">
+                                                    <tr>
+                                                        <td>
+                                                            <div class="css-128qsh2"><div class="css-1lb59ln css-j314r80" width="14px" height="14px" fill="#424d57"><svg fill="#424d57" width="14px" height="14px" viewBox="0 0 14 14"><path fill="inherit" fill-rule="nonzero" d="M14 8H8v6H6V8H0V6h6V0h2v6h6z"></path></svg></div></div>
+                                                        </td>
+                                                        <td>
+                                                            <a href="#" class="active">Tạo nhóm</a>
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>
+                                                        </td>
+                                                        <td>General (3)</td>
+                                                        <td>
+                                                            <div class="css-15nwuc2" title="ChatBot" style="z-index: 3;"><div size="1" data-test="user-avatar" class="css-1fg5nok css-7e05130"><div class="css-1k0c4ii css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div></div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

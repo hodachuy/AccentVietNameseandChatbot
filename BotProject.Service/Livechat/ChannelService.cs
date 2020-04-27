@@ -1,4 +1,5 @@
-﻿using BotProject.Data.Infrastructure;
+﻿using BotProject.Common.ViewModels.LiveChat;
+using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
 using BotProject.Model.Models;
 using BotProject.Model.Models.LiveChat;
@@ -12,7 +13,7 @@ namespace BotProject.Service
 {
     public interface IChannelService
     {
-        IEnumerable<Channel> GetListChannelByGorupChanelID(int groupChannelID);
+        IEnumerable<SP_Channel> GetListChannelByGorupChanelID(int groupChannelID);
         GroupChannel AddGroupChannel(GroupChannel grChannel);
         GroupChannel GetGroupChannelById(int groupChannelID);
         Channel AddUserToChannel(Channel channel);
@@ -48,9 +49,9 @@ namespace BotProject.Service
             return _groupChannelRepository.GetSingleById(groupChannelID);
         }
 
-        public IEnumerable<Channel> GetListChannelByGorupChanelID(int groupChannelID)
+        public IEnumerable<SP_Channel> GetListChannelByGorupChanelID(int groupChannelID)
         {
-            return _channelRepository.GetMulti(x => x.GroupChannelID == groupChannelID);
+            return _channelRepository.sp_GetListChannel(groupChannelID);
         }
 
         public void RemoveUserChannel(string userId)

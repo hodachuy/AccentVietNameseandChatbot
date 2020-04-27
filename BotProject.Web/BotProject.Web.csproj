@@ -306,6 +306,7 @@
     <Compile Include="API\VoucherController.cs" />
     <Compile Include="API\FacebookWebhookController.cs" />
     <Compile Include="API\ZaloWebhookController.cs" />
+    <Compile Include="API_Livechat\AgentController.cs" />
     <Compile Include="API_Mobile\MessageController.cs" />
     <Compile Include="API_Mobile\MessageFbController.cs" />
     <Compile Include="API_Mobile\MessageFbMedicalController.cs" />
@@ -320,6 +321,9 @@
     <Compile Include="Controllers\Apiv1Controller.cs" />
     <Compile Include="Controllers\ChatRoomController.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />
+    <Compile Include="Controllers\LcAgentController.cs" />
+    <Compile Include="Controllers\LcHistoryController.cs" />
+    <Compile Include="Controllers\LcSettingController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
     <Compile Include="API\FormQnAController.cs" />
@@ -870,6 +874,7 @@
     <Content Include="assets\images\whatsaquestion.jpg" />
     <Content Include="assets\images\img-zalo.png" />
     <Content Include="assets\images\ảnh-dịch-vụ-công.jpg" />
+    <Content Include="assets\livechat\js\agent.js" />
     <Content Include="favicon.ico" />
     <Content Include="File\AIML\config\DefaultPredicates.xml" />
     <Content Include="File\AIML\config\GenderSubstitutions.xml" />
@@ -1066,9 +1071,11 @@
     <Content Include="Views\Home\FaqMedSymptoms.cshtml" />
     <Content Include="Views\Home\PublicService.cshtml" />
     <Content Include="Views\ChatRoom\Index.cshtml" />
+    <Content Include="Views\LcAgent\Index.cshtml" />
+    <Content Include="Views\LcHistory\Index.cshtml" />
+    <Content Include="Views\LcSetting\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="API_Livechat\" />
     <Folder Include="App_Data\" />
     <Folder Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5019\" />
     <Folder Include="File\AIML\User_a596de6b-5055-4aa0-a4bf-056d0cc8ed8f_BotID_5021\" />

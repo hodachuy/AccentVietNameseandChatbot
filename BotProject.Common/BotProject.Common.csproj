@@ -105,6 +105,7 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\HandleResultBotViewModel.cs" />
+    <Compile Include="ViewModels\LiveChat\SP_Channel.cs" />
     <Compile Include="ViewModels\MdQnAViewModel.cs" />
     <Compile Include="ViewModels\QuesTargetViewModel.cs" />
     <Compile Include="ViewModels\SearchNlpQnAViewModel.cs" />
@@ -146,6 +147,7 @@
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
