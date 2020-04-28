@@ -189,3 +189,30 @@
         $("#ChangePasswordModal").modal('hide');
     });
 </script>
+
+<!--modal form create bot qna-->
+<div class="modal fade" id="modalCreateBotQnAnswer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1" aria-hidden="true" style="display:none;">
+    <input type="hidden" id="bot-botQnA-id" value="" />
+    <input type="hidden" id="bot-botQnA-name" value="" />
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create form training</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Name</label>
+                        <input type="text" class="form-control" id="txtBotQnAnswerName" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-primary" id="btnSaveBotQnA">Save</a>
+            </div>
+        </div>
+    </div>
+</div>

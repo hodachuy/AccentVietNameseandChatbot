@@ -50,12 +50,18 @@ namespace BotProject.Web.SignalRChat
             string[] arrExcludeUserConnectionId = new string[] {Context.ConnectionId };
             _context.Clients.Group(threadId, arrExcludeUserConnectionId).getWriting(accountID, isStop);
         }
-        public void SendMessage(string accountId, string message,string userName, string threadId, bool isAccept)
+
+        public void SendMessageAgent(string accountId, string message, string userName, string threadId, bool isAccept)
         {
             if (isAccept)
             {
                 _context.Clients.Group(threadId).getMessages(accountId, userName, message, threadId);
             }
+        }         
+
+        public void SendMessageCustomer(string accountId, string message)
+        {
+            _context.Clients.All.receiveMessageAgent(accountId, message);
         }
 
         public void OnchangeStatus()

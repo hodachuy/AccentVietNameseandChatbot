@@ -215,7 +215,7 @@ var common = {
             html += '<div id="submenu-' + data.ID + '" class="collapse submenu" style="">';
             html += '<ul class="nav flex-column">';
             html += '<li class="nav-item nav-item-bot-sub">';
-            html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/cardcategory?botName=' + data.Name + '" id="bot-card-' + data.ID + '"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
+            html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/cardcategory?botName=' + data.Name + '" id="bot-card-' + data.ID + '"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo thẻ tin nhắn</a>';
             html += '</li>';
             html += '<li class="nav-item nav-item-bot-sub">';
             html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module?botName=' + data.Name + '" id="bot-module-' + data.ID + '"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
@@ -407,7 +407,7 @@ var common = {
                     html += '<div id="submenu-' + data.ID + '" class="submenu collapse show" style="">';
                     html += '<ul class="nav flex-column">';
                     html += '<li class="nav-item nav-item-bot-sub">';
-                    html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/cardcategory?botName=' + data.Name + '" id="bot-card-' + data.ID + '"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo Thẻ</a>';
+                    html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/cardcategory?botName=' + data.Name + '" id="bot-card-' + data.ID + '"><i class="fa fa-plus-circle" aria-hidden="true"></i>Tạo thẻ tin nhắn</a>';
                     html += '</li>';
                     html += '<li class="nav-item nav-item-bot-sub">';
                     html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module?botName=' + data.Name + '" id="bot-module-' + data.ID + '"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';

@@ -322,6 +322,7 @@
     <Compile Include="Controllers\ChatRoomController.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />
     <Compile Include="Controllers\LcAgentController.cs" />
+    <Compile Include="Controllers\LcCustomerController.cs" />
     <Compile Include="Controllers\LcHistoryController.cs" />
     <Compile Include="Controllers\LcSettingController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
@@ -1074,6 +1075,7 @@
     <Content Include="Views\LcAgent\Index.cshtml" />
     <Content Include="Views\LcHistory\Index.cshtml" />
     <Content Include="Views\LcSetting\Index.cshtml" />
+    <Content Include="Views\LcCustomer\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

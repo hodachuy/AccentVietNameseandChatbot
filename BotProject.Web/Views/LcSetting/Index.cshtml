@@ -161,7 +161,7 @@
                 <div class="nav-left-sidebar">
                     <div class="menu-list" style="overflow: hidden; width: auto; height: 100%;">
                         <nav class="navbar navbar-expand-lg navbar-light">
-                            <div class="navbar-collapse collapse" id="navbarNav" style="">
+                            <div class="navbar-collapse collapse" id="navbar-setting" style="">
                                 <ul class="navbar-nav flex-column">
                                     <li class="nav-item">
                                         <a class="nav-link collapsed" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-2" aria-controls="submenu-2">
@@ -170,13 +170,13 @@
                                         <div id="submenu-2" class="submenu collapse" style="">
                                             <ul class="nav flex-column">
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="cards.html"><span>Website</span><span class="badge bg-success-bright text-success">ON</span></a>
+                                                    <a class="nav-link" href="#"><span>Website</span><span class="badge bg-success-bright text-success">ON</span></a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="general.html"><span>Facebook</span></a>
+                                                    <a class="nav-link" href="#"><span>Facebook</span></a>
                                                 </li>
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="carousel.html"><span>Zalo</span></a>
+                                                    <a class="nav-link" href="#"><span>Zalo</span></a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -189,7 +189,7 @@
                                         <div id="submenu-6" class="submenu collapse" style="">
                                             <ul class="nav flex-column">
                                                 <li class="nav-item">
-                                                    <a class="nav-link" href="blank-page.html">Tùy chỉnh</a>
+                                                    <a class="nav-link" href="#">Tùy chỉnh</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -220,21 +220,23 @@
                                             Copy and paste đoạn mã trước thẻ đóng <code class="css-n11q3w css-j0wqu90">&lt;/body&gt;</code> trên website của bạn.
                                             <div class="css-pmv0u9" tabindex="0">
                                                 <textarea id="txt-code" style="width:100%" readonly="" class="css-gikrn2 css-1nbw1t12">
-                                                    &lt;!-- Start of LiveChat (www.bot.surelrn.vn) code --&gt;
-                                                    &lt;script type="text/javascript"&gt;
-                                                    window.__lc = window.__lc || {};
-                                                    window.__lc.license = 11860686;
-                                                    (function() {
-                                                    var lc = document.createElement('script'); lc.type = 'text/javascript'; lc.async = true;
-                                                    lc.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cdn.livechatinc.com/tracking.js';
-                                                    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(lc, s);
-                                                    })();
-                                                    &lt;/script&gt;
-                                                    &lt;noscript&gt;
-                                                    &lt;a href="https://www.livechatinc.com/chat-with/11860686/" rel="nofollow"&gt;Chat with us&lt;/a&gt;,
-                                                    powered by &lt;a href="https://www.livechatinc.com/?welcome" rel="noopener nofollow" target="_blank"&gt;LiveChat&lt;/a&gt;
-                                                    &lt;/noscript&gt;
-                                                    &lt;!-- End of LiveChat code --&gt;
+                                                    ---Thêm đoạn mã vào trang HTML - trong thẻ body---
+                                                    <!--Lacviet-->
+                                                    <script>
+       (function (l, a, c, v, i, e, t){
+         a[v] = a[v] || function (){
+         a[v].t =+ new Date();
+         (a[v].q = a[v].q || []).push(arguments);};
+         i = l.createElement('script');
+         var ii = l.getElementsByTagName('script')[0];
+         i.async = 1;
+         i.src = c;
+         i.id = 'lacviet-script';
+         ii.parentNode.insertBefore(i, ii);
+       })(document, window, 'https://bot.surelrn.vn/static/js/app.js', 'lacviet');
+       setTimeout(function(){lacviet.load('U2FsdGVkX18ubpSE6GDouyP2u43nbG0whHM+hExBRVqeaYOI6lQhGzLxrJEqDgjX','U2FsdGVkX1/2bMpgzB6hpP/CPtPgzC2ukR8BeFirfClAmqZdNCWxUsh40PI8I8wJtGrHFtfpuiUb9PGSAYf3cQ==','U2FsdGVkX18PvghrvS28/XaPnLUIG6rHSd3nAqeQiMw=','U2FsdGVkX1+gmewkMAXcW+kIM9G6smi/B3gH7glCz5o5lATqNElw9Jl5MqMPqpl1');},1500);
+                                                    </script>
+                                                    <!-- End Lacviet -->
                                                 </textarea>
                                                 <div class="css-2j9zgb css-1nbw1t13">
                                                     <button class="lc-btn lc-btn--primary lc-btn--compact" type="button">Copy code</button>
@@ -262,9 +264,9 @@
 @section footerJS{
 
     <script>
-        //$(document).ready(function () {
-        //    $('.navigation-content ul li a').eq(0).click();
-        //})
+        $(document).ready(function () {
+            $('#navbar-setting ul li a').eq(0).click();
+        })
 
         function hoverCopyToClipBoardChange(elm) {
             $(elm).removeClass('css-1ek6qwp').addClass('css-1wtvmve');

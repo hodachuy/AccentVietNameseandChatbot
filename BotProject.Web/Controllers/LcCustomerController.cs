@@ -8,13 +8,12 @@ using BotProject.Service;
 
 namespace BotProject.Web.Controllers
 {
-    public class LcHistoryController : BaseController
+    public class LcCustomerController : BaseController
     {
-        public LcHistoryController(IErrorService errorService) : base(errorService)
+        public LcCustomerController(IErrorService errorService) : base(errorService)
         {
         }
-
-        // GET: LcHistory
+        // GET: LcCustomer
         public ActionResult Index()
         {
             return View();
