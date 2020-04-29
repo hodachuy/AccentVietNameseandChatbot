@@ -139,7 +139,7 @@ namespace BotProject.Web.API_Webhook
             _aimlFileService = aimlFileService;
             _app3rd = app3rd;
             _botService = BotServiceMedical.BotInstance;
-            _accentService = new AccentService();
+            //_accentService = new AccentService();
             _apiNLR = new ApiQnaNLRService();
             _fbUser = new ApplicationFacebookUser();
         }

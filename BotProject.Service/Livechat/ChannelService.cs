@@ -17,6 +17,7 @@ namespace BotProject.Service
         GroupChannel AddGroupChannel(GroupChannel grChannel);
         GroupChannel GetGroupChannelById(int groupChannelID);
         Channel AddUserToChannel(Channel channel);
+        Channel GetChannelByUserId(string userId);
         void RemoveUserChannel(string userId);
         void Save();
     }
@@ -42,6 +43,11 @@ namespace BotProject.Service
         public Channel AddUserToChannel(Channel channel)
         {
             return _channelRepository.Add(channel);
+        }
+
+        public Channel GetChannelByUserId(string userId)
+        {
+            return _channelRepository.GetSingleByCondition(x => x.UserID == userId);
         }
 
         public GroupChannel GetGroupChannelById(int groupChannelID)

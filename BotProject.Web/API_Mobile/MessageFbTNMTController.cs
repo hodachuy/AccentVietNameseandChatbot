@@ -117,7 +117,7 @@ namespace BotProject.Web.API_Webhook
             _aimlFileService = aimlFileService;
             _app3rd = app3rd;
             _botService = BotServiceTNMT.BotInstance;
-            _accentService = new AccentService();
+            //_accentService = new AccentService();
             _apiNLR = new ApiQnaNLRService();
             _fbUser = new ApplicationFacebookUser();
         }
@@ -255,6 +255,7 @@ namespace BotProject.Web.API_Webhook
             {
                 // Thêm dấu tiếng việt
                 bool isActive = true;
+                _accentService = AccentService.SingleInstance;
                 string textAccentVN = GetPredictAccentVN(text, isActive);
                 if (textAccentVN != text)
                 {

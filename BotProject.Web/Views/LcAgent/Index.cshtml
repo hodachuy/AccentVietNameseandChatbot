@@ -24,7 +24,7 @@
     .css-5r5m5i {
         display: block;
         background-size: cover;
-        background-image: url(https://cdn.livechatinc.com/cloud/?uri=https://livechat.s3.amazonaws.com/default/avatars/394ad6e3df2320941ab8e0ca147d5221.png);
+        background-image: url(../../assets/images/logo/icon-user.png);
         height: 100%;
         width: 100%;
         background-repeat: no-repeat;
@@ -130,7 +130,7 @@
     .css-1k0c4ii {
         display: block;
         background-size: cover;
-        background-image: url(https://cdn.livechat-static.com/api/file/lc/img/11860686/2aae748f76709d2e57dbfd73a8508f49.png);
+        background-image: url(../../assets/images/logo/icon-bot-lc.png);
         height: 100%;
         width: 100%;
         background-repeat: no-repeat;
@@ -259,7 +259,7 @@
                                                         <td></td>
                                                         <td></td>
                                                     </tr>
-                                                    <tr>
+                                                    @*<tr>
                                                         <td>
                                                             <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>
                                                         </td>
@@ -271,7 +271,7 @@
                                                             <span class="badge bg-success-bright text-success">Owner</span>
                                                         </td>
                                                         <td></td>
-                                                    </tr>
+                                                    </tr>*@
                                                 </tbody>
                                             </table>
                                         </div>
@@ -303,7 +303,7 @@
                                                         <td></td>
                                                         <td></td>
                                                     </tr>
-                                                    <tr>
+                                                    @*<tr>
                                                         <td>
                                                             <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>
                                                         </td>
@@ -311,9 +311,11 @@
                                                         <td>
                                                             <span class="badge bg-success-bright text-success">Chatbot</span>
                                                         </td>
-                                                        <td></td>
+                                                        <td>
+                                                            <span class="badge bg-warning text-dark">OFF</span>
+                                                        </td>
                                                         <td><span class="badge bg-info-bright text-dark"></span></td>
-                                                    </tr>
+                                                    </tr>*@
                                                 </tbody>
                                             </table>
                                         </div>
@@ -342,7 +344,7 @@
                                                         </td>
                                                         <td></td>
                                                     </tr>
-                                                    <tr>
+                                                    @*<tr>
                                                         <td>
                                                             <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>
                                                         </td>
@@ -350,7 +352,7 @@
                                                         <td>
                                                             <div class="css-15nwuc2" title="ChatBot" style="z-index: 3;"><div size="1" data-test="user-avatar" class="css-1fg5nok css-7e05130"><div class="css-1k0c4ii css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div></div>
                                                         </td>
-                                                    </tr>
+                                                    </tr>*@
                                                 </tbody>
                                             </table>
                                         </div>
@@ -365,5 +367,8 @@
     </div>
 </div>
 
+@section footerJS{
+    <script src="~/assets/livechat/js/agent.js"></script>
 
+}
 

@@ -854,10 +854,12 @@
     <Content Include="assets\images\loader.svg" />
     <Content Include="assets\images\loads.gif" />
     <Content Include="assets\images\logo.png" />
+    <Content Include="assets\images\logo\icon-bot-lc.png" />
     <Content Include="assets\images\logo\icon-bot-v2.png" />
     <Content Include="assets\images\logo\icon-bot.jpg" />
     <Content Include="assets\images\logo\icon-chat-support-v2.png" />
     <Content Include="assets\images\logo\icon-chat-support.png" />
+    <Content Include="assets\images\logo\icon-user.png" />
     <Content Include="assets\images\mail_chimp.png" />
     <Content Include="assets\images\medical-logo.jpg" />
     <Content Include="assets\images\phone.png" />
@@ -1009,6 +1011,8 @@
     <Content Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5020\Card_ID_6050_le-phi-dk-logo.aiml" />
     <Content Include="assets\client\css\sweetalert.min.css.map" />
     <Content Include="File\Datasets_Training_Accent\_1Statistic" />
+    <Content Include="File\Datasets_Training_Accent\news1gram.bin" />
+    <Content Include="File\Datasets_Training_Accent\news2grams.bin" />
     <None Include="Properties\PublishProfiles\BotProject_Publish.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

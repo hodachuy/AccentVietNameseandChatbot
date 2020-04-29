@@ -53,7 +53,12 @@ namespace BotProject.Web.Controllers
         [ChildActionOnly]
         public ActionResult Header()
         {
-			return PartialView(UserInfo);
+            if (UserInfo == null || (UserInfo != null && UserInfo.Groups == null))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            return PartialView(UserInfo);
         }
 
         [ChildActionOnly]

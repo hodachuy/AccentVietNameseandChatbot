@@ -354,7 +354,8 @@ namespace BotProject.Web.API_Mobile
 
             if (!text.Contains("postback") && !text.Contains(_contactAdmin))
             {
-                _accentService = new AccentService();// AccentService.AccentInstance;
+                //_accentService = new AccentService();// AccentService.AccentInstance;
+                _accentService = AccentService.SingleInstance;
                 text = _accentService.GetAccentVN(text);
             }
 

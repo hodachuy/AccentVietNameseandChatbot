@@ -73,106 +73,111 @@ namespace Accent.ConsoleApplication
             //    ReadLine();
             //}
 
-            ////AccentPredictor accent = new AccentPredictor();
+            AccentPredictor accent = new AccentPredictor();
 
-            ////string path1Gram = System.IO.Path.GetFullPath("news1gram");
-            ////string path2Gram = System.IO.Path.GetFullPath("news2grams");
-            ////string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
-            ////accent.InitNgram(path1Gram, path2Gram, path1Statistic);
+            string path1Gram = System.IO.Path.GetFullPath("news1gram.bin");
+            string path2Gram = System.IO.Path.GetFullPath("news2grams.bin");
+            string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
+            accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
 
             ////Console.OutputEncoding = Encoding.UTF8;
             ////----- Test -----//
             ////Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
 
-            ////while (true)
-            ////{
-            ////    Console.InputEncoding = Encoding.Unicode;
-            ////    Console.WriteLine("Nhap chuoi :");
-            ////    string text = Console.ReadLine();
-            ////    if (text == "exit")
-            ////    {
-            ////        break;
-            ////    }
-            ////    string results = accent.predictAccentsWithMultiMatches(text, 10);
-            ////    Console.WriteLine("DS Ket qua : {0}", results);
+            while (true)
+            {
+                Console.InputEncoding = Encoding.Unicode;
+                Console.OutputEncoding = Encoding.UTF8;
+                Console.WriteLine("Nhap chuoi :");
+                string text = Console.ReadLine();
+                if (text == "exit")
+                {
+                    break;
+                }
+                if(text == "1")
+                {
+                    accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
+                }
+                string results = accent.predictAccentsWithMultiMatches(text, 10);
+                Console.WriteLine("DS Ket qua : {0}", results);
 
-            ////    Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
-            ////}
+                Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
+            }
         }
 
-        public class Singleton
-        {
-            private static int _lockFlag = 0; // 0 - free
-            static int instanceCounter = 0;
-            private static readonly Lazy<Singleton> singleInstance = new Lazy<Singleton>(() => new Singleton()); //private static Singleton singleInstance = null;  
-            private Singleton()
-            {
+        //public class Singleton
+        //{
+        //    private static int _lockFlag = 0; // 0 - free
+        //    static int instanceCounter = 0;
+        //    private static readonly Lazy<Singleton> singleInstance = new Lazy<Singleton>(() => new Singleton()); //private static Singleton singleInstance = null;  
+        //    private Singleton()
+        //    {
 
-                if (Interlocked.CompareExchange(ref _lockFlag, 1, 0) == 0)
-                {
-                    // only 1 thread will enter here without locking the object/put the
-                    // other threads to sleep.
+        //        if (Interlocked.CompareExchange(ref _lockFlag, 1, 0) == 0)
+        //        {
+        //            // only 1 thread will enter here without locking the object/put the
+        //            // other threads to sleep.
 
-                    instanceCounter++;
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
+        //            instanceCounter++;
+        //            GC.Collect();
+        //            GC.WaitForPendingFinalizers();
 
-                    AccentPredictor accent = new AccentPredictor();
-                    string path2Gram = System.IO.Path.GetFullPath("ngram2.bin");
-                    accent.InitNgram2(path2Gram);
-                    Monitor.Enter(accent);
-                    // free the lock.
-                    Interlocked.Decrement(ref _lockFlag);
-                    WriteLine("Instances created " + instanceCounter);
-                }
-            }
-            public static Singleton SingleInstance
-            {
-                get
-                {
-                    return singleInstance.Value;
-                }
-            }
-            public void LogMessage(string message)
-            {
-                WriteLine(" created " + instanceCounter);
-                WriteLine("Message " + message);
-            }
-            public class DerivedClass : Singleton
-            {
+        //            AccentPredictor accent = new AccentPredictor();
+        //            string path2Gram = System.IO.Path.GetFullPath("ngram2.bin");
+        //            accent.InitNgram2(path2Gram);
+        //            Monitor.Enter(accent);
+        //            // free the lock.
+        //            Interlocked.Decrement(ref _lockFlag);
+        //            WriteLine("Instances created " + instanceCounter);
+        //        }
+        //    }
+        //    public static Singleton SingleInstance
+        //    {
+        //        get
+        //        {
+        //            return singleInstance.Value;
+        //        }
+        //    }
+        //    public void LogMessage(string message)
+        //    {
+        //        WriteLine(" created " + instanceCounter);
+        //        WriteLine("Message " + message);
+        //    }
+        //    public class DerivedClass : Singleton
+        //    {
 
-            }
-        }
-        public class Disposable : IDisposable
-        {
-            private bool isDisposed;
+        //    }
+        //}
+        //public class Disposable : IDisposable
+        //{
+        //    private bool isDisposed;
 
-            ~Disposable()
-            {
-                Dispose(false);
-            }
+        //    ~Disposable()
+        //    {
+        //        Dispose(false);
+        //    }
 
-            public void Dispose()
-            {
-                Dispose(true);
-                GC.SuppressFinalize(this);
-            }
-            private void Dispose(bool disposing)
-            {
-                if (!isDisposed && disposing)
-                {
-                    DisposeCore();
-                }
+        //    public void Dispose()
+        //    {
+        //        Dispose(true);
+        //        GC.SuppressFinalize(this);
+        //    }
+        //    private void Dispose(bool disposing)
+        //    {
+        //        if (!isDisposed && disposing)
+        //        {
+        //            DisposeCore();
+        //        }
 
-                isDisposed = true;
-            }
+        //        isDisposed = true;
+        //    }
 
-            // Ovveride this to dispose custom objects
-            protected virtual void DisposeCore()
-            {
+        //    // Ovveride this to dispose custom objects
+        //    protected virtual void DisposeCore()
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
         #region T
         public static ProfileUser GetProfileUser(string senderId)

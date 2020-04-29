@@ -1,5 +1,12 @@
 ﻿@model BotProject.Web.Models.ApplicationUserViewModel
+@{ 
+    var lstGorup = Model.Groups.ToList();
+    var groupChannelId = Model.Channels.GroupChannelID;
+}
 <input type="hidden" id="userId" value="@Model.Id"/>
+<input type="hidden" id="appGroupId" value="@lstGorup[0].ID" />
+<input type="hidden" id="appGroupName" value="@lstGorup[0].Name" />
+<input type="hidden" id="groupChannelId" value="@groupChannelId" />
 <nav class="navbar navbar-expand-lg bg-blue fixed-top">
     <a class="navbar-brand" href="@Url.Content("~/Dashboard/Index")">Bot-Lạc Việt</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

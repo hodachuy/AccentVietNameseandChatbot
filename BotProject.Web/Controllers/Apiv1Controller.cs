@@ -34,7 +34,7 @@ namespace BotProject.Web.Controllers
         private readonly string KeyAPI = Helper.ReadString("KeyAPI");
         private string pathAIML = PathServer.PathAIML;
         private string pathSetting = PathServer.PathAIML + "config";
-        private AccentService _accentService;
+
         private BotService _botService;
         private ElasticSearch _elastic;
         private IBotService _botDbService;
@@ -75,7 +75,7 @@ namespace BotProject.Web.Controllers
         {
             _errorService = errorService;
             _elastic = new ElasticSearch();
-            _accentService = new AccentService();// AccentService.AccentInstance;
+            //_accentService = new AccentService();// AccentService.AccentInstance;
             _botDbService = botDbService;
             _settingService = settingService;
             _handleMdService = handleMdService;
@@ -1215,80 +1215,6 @@ namespace BotProject.Web.Controllers
 
         #endregion
 
-        #region ACCENT VN
-        public JsonResult ConvertVN(string text)
-        {
-            string textVN = "";
-            if (!String.IsNullOrEmpty(text))
-                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
-            try
-            {
-                textVN = _accentService.GetAccentVN(text);
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                return Json(message, JsonRequestBehavior.AllowGet);
-            }
-            return Json(textVN, JsonRequestBehavior.AllowGet);
-        }
-
-        //public JsonResult PreHitAccentVN()
-        //{
-        //    try
-        //    {
-        //        _accentService = AccentService.AccentInstance;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        string message = ex.Message;
-        //        return Json(message, JsonRequestBehavior.AllowGet);
-        //    }
-        //    return Json("0", JsonRequestBehavior.AllowGet);
-        //}
-
-        public JsonResult GetAccentVN(string text)
-        {
-            Result rs = new Result();
-            if (!String.IsNullOrEmpty(text))
-                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
-            try
-            {
-                string textVN = _accentService.GetAccentVN(text);
-                string arrTextVN = _accentService.GetMultiMatchesAccentVN(text, 5);
-
-                rs.Item = textVN;
-                rs.ArrItems = arrTextVN.Split(',').Distinct().Skip(1).ToArray();
-
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                return Json(message, JsonRequestBehavior.AllowGet);
-            }
-            return Json(rs, JsonRequestBehavior.AllowGet);
-        }
-
-        public JsonResult GetMultiMatchesAccentVN(string text)
-        {
-            string[] ArrItems;
-            if (!String.IsNullOrEmpty(text))
-                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
-            try
-            {
-                string arrTextVN = _accentService.GetMultiMatchesAccentVN(text, 20);
-                ArrItems = arrTextVN.Split(',').Distinct().ToArray();
-
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                return Json(message, JsonRequestBehavior.AllowGet);
-            }
-            return Json(ArrItems, JsonRequestBehavior.AllowGet);
-        }
-        #endregion
-
         #region --SEARCH ENGINE ELASTICSEARCH--
         public JsonResult GetAll(int page = 1, int pageSize = 10)
         {
@@ -1320,7 +1246,7 @@ namespace BotProject.Web.Controllers
 
             if (isAccentVN)
             {
-                text = _accentService.GetAccentVN(text);
+                //text = _accentService.GetAccentVN(text);
             }
 
             var lstData = _elastic.Search(text);
@@ -1343,7 +1269,7 @@ namespace BotProject.Web.Controllers
 
             if (isAccentVN)
             {
-                text = _accentService.GetAccentVN(text);
+                //text = _accentService.GetAccentVN(text);
             }
 
             var lstSuggest = _elastic.AutoComplete(text);

@@ -76,7 +76,13 @@ namespace BotProject.Web.Controllers
 				{            
                     ApplicationUser user = _userManager.FindById(User.Identity.GetUserId());
 					var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
-					Session[CommonConstants.SessionUser] = applicationUserViewModel;
+
+                    var listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
+                    applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
+
+                    applicationUserViewModel.Channels = _channelService.GetChannelByUserId(user.Id);
+
+                    Session[CommonConstants.SessionUser] = applicationUserViewModel;
 					if (!String.IsNullOrEmpty(returnUrl))
 						return Redirect(returnUrl);
 				}
@@ -98,8 +104,9 @@ namespace BotProject.Web.Controllers
                     var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
 
                     var listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
-
                     applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
+
+                    applicationUserViewModel.Channels = _channelService.GetChannelByUserId(user.Id);
 
                     Session[CommonConstants.SessionUser] = applicationUserViewModel;
 

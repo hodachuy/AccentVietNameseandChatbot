@@ -6,6 +6,7 @@ var configs = { idgrid: "#grid" },
     formData,
     api = {
         getListAgentChannel: "api/lc_agent/getListAgentOfChannel",
+        getListBotByUserId: "api/bot/getall"
     },
     alerts = {
         txtEmpty: "[Trống]",
@@ -14,13 +15,12 @@ var configs = { idgrid: "#grid" },
         txtDeleteOK: "Xóa liệu thành công",
         txtDeleteConfirm: "Bạn có chắc muốn xóa dữ liệu này?"
     },
-    quesModel = {
-        QuesID: '',
-        ContentHTML: '',
-        AreaID: '',
+    userModel = {
         UserID: $("#userId").val(),
         UserName: $("#userName").val(),
-        IsDelete: false
+        appGroupId: $("#appGroupId").val(),
+        appGroupName: $("#appGroupName").val(),
+        groupChannelId: $("#groupChannelId").val()
     },
     ansModel = {
         AnswerID: '',
@@ -28,8 +28,7 @@ var configs = { idgrid: "#grid" },
     }
 $(function () {
     agentTable.init();
-    qnaEvent.init();
-    new commonService().loadEditorTinyMce('.editorQnA', true);
+    //qnaEvent.init();
 });
 var qnaEvent = {
     init: function () {
@@ -105,11 +104,29 @@ var qnaEvent = {
 }
 var agentTable = {
     init: function () {
-        //agentTable.loadAgent();
+        agentTable.getListAgents();
+        agentTable.getListBotByUser();
     },
-    loadAgent: function(){
+    getListBotByUser : function(){
         var param = {
-            groupChannelId: ''
+            userID: userModel.UserID
+        }
+        $.ajax({
+            url: _Host + api.getListBotByUserId,
+            contentType: 'application/json; charset=utf-8',
+            data: param,
+            type: 'GET',
+            success: function (result) {
+                console.log(result)
+                if (result.length != 0) {
+                    new agentTable.renderTempChatbot(result);
+                }
+            },
+        });
+    },
+    getListAgents: function () {
+        var param = {
+            groupChannelId: userModel.groupChannelId
         }
         param = JSON.stringify(param)
         $.ajax({
@@ -118,8 +135,10 @@ var agentTable = {
             data: param,
             type: 'POST',
             success: function (result) {
+                console.log(result)
                 if (result.length != 0) {
-                    new agentTable().renderTempAgent(result);
+                    new agentTable.renderTempAgent(result);
+                    new agentTable.renderTempGroup(result);
                 }
 
             },
@@ -127,25 +146,59 @@ var agentTable = {
     },
     renderTempAgent: function (data) {
         var html = '';
-        html +='<tr>';
-        html += ' <td>';
-        html +='      <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>';
-        html +='  </td>';
-        html +='  <td>hdhuy@gmail.com</td>';
-        html +='  <td>';
-        html +='      <span class="css-y4ek3x" title="Desktop"><div class="css-nmb5ix css-j314r80" width="20px" height="20px"><svg width="20px" height="20px" viewBox="0 0 20 18"><g fill="none" fill-rule="evenodd" opacity=".7"><path d="M0-1h20v20H0z"></path><path fill="#000" fill-rule="nonzero" d="M17.5.667h-15c-.917 0-1.667.75-1.667 1.666v10C.833 13.25 1.583 14 2.5 14h5.833v1.667H6.667v1.666h6.666v-1.666h-1.666V14H17.5c.917 0 1.667-.75 1.667-1.667v-10c0-.916-.75-1.666-1.667-1.666zm0 11.666h-15v-10h15v10z"></path></g></svg></div></span>';
-        html +='  </td>';
-        html +='  <td>';
-        html +='      <span class="badge bg-success-bright text-success">Owner</span>';
-        html +='  </td>';
-        html +='  <td></td>';
-        html +='</tr>';
+        $.each(data, function (index, value) {
+            html += '<tr>';
+            html += ' <td>';
+            html += '      <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>';
+            html += '  </td>';
+            html += '  <td>' + value.Email + '</td>';
+            html += '  <td>';
+            html += '      <span class="css-y4ek3x" title="Desktop"><div class="css-nmb5ix css-j314r80" width="20px" height="20px"><svg width="20px" height="20px" viewBox="0 0 20 18"><g fill="none" fill-rule="evenodd" opacity=".7"><path d="M0-1h20v20H0z"></path><path fill="#000" fill-rule="nonzero" d="M17.5.667h-15c-.917 0-1.667.75-1.667 1.666v10C.833 13.25 1.583 14 2.5 14h5.833v1.667H6.667v1.666h6.666v-1.666h-1.666V14H17.5c.917 0 1.667-.75 1.667-1.667v-10c0-.916-.75-1.666-1.667-1.666zm0 11.666h-15v-10h15v10z"></path></g></svg></div></span>';
+            html += '  </td>';
+            html += '  <td>';
+            html += '      <span class="badge bg-success-bright text-success">' + value.ApplicationGroupName + '</span>';
+            html += '  </td>';
+            html += '  <td></td>';
+            html += '</tr>';
+        })
+        $("#tbl-lst-agent").append(html);
     },
     renderTempChatbot: function (data) {
         var html = '';
-        html += '';
+        $.each(data, function (index, value) {
+            html += '<tr>';
+            html += '<td>';
+            html += '<div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130">';
+            html += '	<div class="css-5r5m5i css-7e05132"></div>';
+            html += '	<span class="css-10zmg9r css-7e05131"></span>';
+            html += '</div>';
+            html += '</td>';
+            html += '<td>'+value.Name+'</td>';
+            html += '<td>';
+            html += '	<span class="badge bg-success-bright text-success">Chatbot</span>';
+            html += '</td>';
+            html += '<td>';
+            html += '	<span class="badge bg-warning text-dark">OFF</span>';
+            html += '</td>';
+            html += '<td>';
+            html += '	<span class="badge bg-info-bright text-dark"></span>';
+            html += '</td>';
+            html += '</tr>';
+        })
+
+        $("#tbl-lst-chatbot").append(html);
     },
     renderTempGroup: function (data) {
-
+        var html = '';
+        html += '<tr>';
+        html += '   <td>';
+        html += '      <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>';
+        html += '   </td>';
+        html += '   <td>'+data[0].GroupChannelName+' ('+data.length+')</td>';
+        html += '   <td>';
+        html += '      <div class="css-15nwuc2" title="ChatBot" style="z-index: 3;"><div size="1" data-test="user-avatar" class="css-1fg5nok css-7e05130"><div class="css-1k0c4ii css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div></div>';
+        html += '   </td>';
+        html += '</tr>';
+        $("#tbl-list-group").append(html);
     }
 };

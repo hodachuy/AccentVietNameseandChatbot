@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BotProject.Model.Models.LiveChat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -24,5 +25,7 @@ namespace BotProject.Web.Models
         public string PhoneNumber { set; get; }
 
         public IEnumerable<ApplicationGroupViewModel> Groups { set; get; }
+
+        public Channel Channels { set; get; }
     }
 }

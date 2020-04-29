@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using BotProject.Service;
+using Newtonsoft.Json.Linq;
 
 namespace BotProject.Web.API_Livechat
 {
@@ -21,11 +22,13 @@ namespace BotProject.Web.API_Livechat
 
         [Route("getListAgentOfChannel")]
         [HttpPost]
-        public HttpResponseMessage GetListAgentOfChannelByGroupChannel(HttpRequestMessage request, int groupChannelId)
+        public HttpResponseMessage GetListAgentOfChannelByGroupChannel(HttpRequestMessage request, JObject jsonData)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response;
+                dynamic json = jsonData;
+                int groupChannelId = json.groupChannelId;
                 var lstAgent = _channelService.GetListChannelByGorupChanelID(groupChannelId);
                 response = request.CreateResponse(HttpStatusCode.OK, lstAgent);
                 return response;

@@ -118,7 +118,7 @@ namespace BotProject.Web.API_Mobile
             _cardService = cardService;
             _appZaloUser = appZaloUser;
             _app3rd = app3rd;
-            _accentService = new AccentService();// AccentService.AccentInstance;
+            //_accentService = new AccentService();// AccentService.AccentInstance;
         }
 
         public HttpResponseMessage Get()
