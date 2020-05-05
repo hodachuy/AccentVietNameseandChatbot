@@ -35,13 +35,15 @@ namespace Accent.ConsoleApplication
     {
         public static void Main(string[] args)
         {
-            string x = Guid.NewGuid().ToString();
-            //var roleId = new Guid("8D04DCE2-969A-435D-BBA4-DF3F325983DC");
-            //var adminId = new Guid("69BD714F-9576-45BA-B5B7-F00649BE00DE");
 
-            //string role = roleId.ToString().ToLower();
-            //string admin = adminId.ToString().ToLower();
-
+            string phone = "0901234561";
+            string newPhone = "";
+            if(phone.Substring(0,3) == "090")
+            {
+                phone = phone.Remove(0, 1);
+                newPhone = "84" + phone;
+            }
+            string x = newPhone;
             //Singleton fromManager = Singleton.SingleInstance;
             //fromManager.LogMessage("Request Message from Manager");
 
@@ -94,7 +96,7 @@ namespace Accent.ConsoleApplication
                 {
                     break;
                 }
-                if(text == "1")
+                if (text == "1")
                 {
                     accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
                 }
@@ -179,43 +181,5 @@ namespace Accent.ConsoleApplication
         //    }
         //}
 
-        #region T
-        public static ProfileUser GetProfileUser(string senderId)
-        {
-            ProfileUser user = new ProfileUser();
-            using (HttpClient client = new HttpClient())
-            {
-                string userId = JObject.FromObject(
-                 new
-                 {
-                     user_id = senderId
-                 }).ToString();
-                HttpResponseMessage res = new HttpResponseMessage();
-                res = client.GetAsync($"https://openapi.zalo.me/v2.0/oa/getprofile?access_token=uSutO3kxTH3lm3zWDxrz4kh7Fs8-f0zhW9ugOnkPA1R7YmyuJh145iMyPJnGb6ulyEX2D2dVVYdofq0PIALSRScm6NPnkZnqzO06L2oI4bUofGjgA8mw6AoIVWjovsa1rUPG5NRyQJItraueBVTRMPBxKNSFs6HfkjDT62NJInkThdKE9RfhUPYYLbWhtqSlzAfbBNMoO3_GdK8z2OPO2gIvKGnzZ7e3pgf11Kg07tVvjo1dVx8yODgB04C7lnyqtCCVCdJF2Z3SjoizNwys8NdiJND4Fgrr5m&data=" + userId).Result;//gender y/c khi sử dụng
-                if (res.IsSuccessStatusCode)
-                {
-                    var serializer = new JavaScriptSerializer();
-                    serializer.MaxJsonLength = Int32.MaxValue;
-                    user = serializer.Deserialize<ProfileUser>(res.Content.ReadAsStringAsync().Result);
-                }
-                return user;
-            }
-        }
-        public class ProfileUser
-        {
-            public ProfileInfo data { set; get; }
-            public int error { set; get; }
-            public string message { set; get; }
-        }
-        public class ProfileInfo
-        {
-            public long user_id { set; get; }
-            public long user_id_by_app { set; get; }
-            public string display_name { set; get; }
-            public int user_gender { set; get; }
-            public string avatar { set; get; }
-            public int birthday { set; get; }
-        }
-        #endregion
     }
 }

@@ -23,6 +23,10 @@ namespace BotProject.Model.Models
 		[MaxLength(256)]
 		public string Alias { set; get; }
 
+        public bool IsTemplate { set; get; }
+
+        public string ImageTemplate { set; get; }
+
         //public DateTime? LastTrainTime { set; get; }
 
         [Required]

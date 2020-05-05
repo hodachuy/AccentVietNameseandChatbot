@@ -2,6 +2,7 @@
 using AutoMapper;
 using BotProject.Common;
 using BotProject.Common.AppThird3PartyTemplate;
+using BotProject.Common.DigiproService.Digipro;
 using BotProject.Common.ViewModels;
 using BotProject.Model.Models;
 using BotProject.Service;
@@ -31,14 +32,17 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
-
+using static BotProject.Common.DigiproService.Digipro.DigiproService;
 
 namespace BotProject.Web.API_Mobile
 {
+    /// <summary>
+    /// FACEBOOK DGP TEAM
+    /// </summary>
     public class MessageFbController : ApiController
     {
-        string pageToken = Helper.ReadString("AccessToken");
-        string appSecret = Helper.ReadString("AppSecret");
+        string pageToken = "EAAh0YR1IQwUBAHZAVkQ7Nrw8WnZAE7QZA8KJ5ZBXQWaVzREgc9xPwpSogRAj0gjcye3sZA1A4N1ZCgPCtQcjMhA9BypuJRSvPZCRHUOZA5tcllhK9EISdPIFzifBYb5MWgLcTWJXtAQ7trrViYShzdoICoF44mMkwMGmfC1FEtHDcgZDZD";
+        string appSecret = "b54f4be0c721316775c49387e4a09f83";
         string verifytoken = Helper.ReadString("VerifyTokenWebHook");
         string _contactAdmin = Helper.ReadString("AdminContact");
         string _titlePayloadContactAdmin = Helper.ReadString("TitlePayloadAdminContact");
@@ -143,7 +147,7 @@ namespace BotProject.Web.API_Mobile
         [HttpPost]
         public async Task<HttpResponseMessage> Post()
         {
-            int botId = 5028;
+            int botId = 5027;
 
             var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
@@ -258,10 +262,10 @@ namespace BotProject.Web.API_Mobile
             text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
             text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
 
-            if(!text.Contains("postback") && !text.Contains(_contactAdmin))
-            {
-                text = _accentService.GetAccentVN(text);
-            }
+            //if(!text.Contains("postback") && !text.Contains(_contactAdmin))
+            //{
+            //    text = _accentService.GetAccentVN(text);
+            //}
 
             string attributeValue = "";
             // Xét payload postback nếu postback từ quickreply sẽ chứa thêm sperator - và tiêu đề nút
@@ -385,7 +389,17 @@ namespace BotProject.Web.API_Mobile
                     fbUserVm.TimeOut = dTimeOut;
                     fbUserDb.CreatedDate = DateTime.Now;
                     fbUserDb.StartedOn = dStartedTime;
+                    fbUserDb.BotID = botId;
                     fbUserDb.UpdateFacebookUser(fbUserVm);
+
+                    ProfileUser profileUser = new ProfileUser();
+                    profileUser = GetProfileUser(sender);
+
+                    fbUserDb.AvatarPicture = profileUser.profile_pic;
+                    fbUserDb.FirstName = profileUser.first_name;
+                    fbUserDb.LastName = profileUser.last_name;
+                    fbUserDb.UserName = fbUserDb.FirstName + " " + fbUserDb.LastName;
+
                     _appFacebookUser.Add(fbUserDb);
                     _appFacebookUser.Save();
                 }
@@ -393,7 +407,7 @@ namespace BotProject.Web.API_Mobile
                 {
                     fbUserDb.StartedOn = dStartedTime;
                     fbUserDb.TimeOut = dTimeOut;
-
+                    fbUserDb.BotID = botId;
                     // Nếu có yêu cầu click thẻ để đi theo luồng
                     if (fbUserDb.IsHaveCardCondition)
                     {
@@ -502,12 +516,45 @@ namespace BotProject.Web.API_Mobile
                         }
                         if (predicateName == "Phone")
                         {
+                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))// nều còn điều kiện phone mà chọn postback
+                            {
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
+                                return await ExcuteMessage(text, sender, botId);
+                            }
+
                             var handlePhone = _handleMdService.HandleIsPhoneNumber(text, botId);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
                             AddHistory(hisVm);
                             if (handlePhone.Status)// đúng số dt
                             {
+                                ProfileUser profileUser = new ProfileUser();
+                                profileUser = GetProfileUser(sender);
+                                profileUser.phone_number = text;
+
+                                ReturnCode rt = new ReturnCode();
+                                rt = DigiproService.SendFbUserToService(sender,
+                                                                   profileUser.first_name,
+                                                                   profileUser.last_name,
+                                                                   profileUser.profile_pic,
+                                                                   profileUser.phone_number);
+                                if (rt.Status == "BadRequest")
+                                {
+                                    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(rt.Message.Replace("\"", String.Empty), sender,"postback_card_6101","Quay về").ToString(), sender);
+                                }
+
+
+                                fbUserDb.AvatarPicture = profileUser.profile_pic;
+                                fbUserDb.FirstName = profileUser.first_name;
+                                fbUserDb.LastName = profileUser.last_name;
+                                fbUserDb.UserName = fbUserDb.FirstName + " " + fbUserDb.LastName;
+
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
@@ -1361,6 +1408,35 @@ namespace BotProject.Web.API_Mobile
 
         #endregion
 
+
+        #region Get User info
+        private ProfileUser GetProfileUser(string senderId)
+        {
+            ProfileUser user = new ProfileUser();
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage res = new HttpResponseMessage();
+                res = client.GetAsync($"https://graph.facebook.com/" + senderId + "?fields=first_name,last_name,profile_pic&access_token=" + pageToken).Result;//gender y/c khi sử dụng
+                if (res.IsSuccessStatusCode)
+                {
+                    var serializer = new JavaScriptSerializer();
+                    serializer.MaxJsonLength = Int32.MaxValue;
+                    user = serializer.Deserialize<ProfileUser>(res.Content.ReadAsStringAsync().Result);
+                }
+                return user;
+            }
+        }
+
+        public class ProfileUser
+        {
+            public string id { set; get; }
+            public string first_name { set; get; }
+            public string last_name { set; get; }
+            public string profile_pic { set; get; }
+            public string phone_number { set; get; }
+            //public string gender { set; get; }
+        }
+        #endregion
 
         private bool VerifySignature(string signature, string body)
         {

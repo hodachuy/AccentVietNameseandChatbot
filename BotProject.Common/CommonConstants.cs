@@ -59,7 +59,7 @@ namespace BotProject.Common
 
         // User
         public const int GROUP_OWNER = 1;
-        public const int GROUP_ADMIN = 2;
+        public const int GROUP_ADMIN = 2; // Chuyển admin sang admin tổng toàn bộ, chỉ còn 2 nhóm owner và support
         public const int GROUP_SUPPORT = 3;
     }
     public class ZaloConstans

@@ -2,6 +2,7 @@
 using AutoMapper;
 using BotProject.Common;
 using BotProject.Common.AppThird3PartyTemplate;
+using BotProject.Common.DigiproService.Digipro;
 using BotProject.Common.ViewModels;
 using BotProject.Model.Models;
 using BotProject.Service;
@@ -9,7 +10,6 @@ using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Extensions;
 using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
-using Common.Logging.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Quartz;
@@ -30,12 +30,13 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Script.Serialization;
+using static BotProject.Common.DigiproService.Digipro.DigiproService;
 
 namespace BotProject.Web.API
 {
     /// <summary>
     /// Webhook
-    /// Receive request from Facebook when user trigger to message
+    /// FACEBOOK DIGIPRO
     /// </summary>
     /// 
     public class FacebookWebhookController : ApiController
@@ -185,7 +186,7 @@ namespace BotProject.Web.API
             if (value.@object != "page")
                 return new HttpResponseMessage(HttpStatusCode.OK);
 
-            BotLog.Info(body);
+            //BotLog.Info(body);
 
             _isHaveTimeOut = settingDb.IsProactiveMessageFacebook;
             _timeOut = settingDb.Timeout;
@@ -377,7 +378,17 @@ namespace BotProject.Web.API
                     fbUserVm.TimeOut = dTimeOut;
                     fbUserDb.CreatedDate = DateTime.Now;
                     fbUserDb.StartedOn = dStartedTime;
+                    fbUserDb.BotID = botId;
                     fbUserDb.UpdateFacebookUser(fbUserVm);
+
+                    ProfileUser profileUser = new ProfileUser();
+                    profileUser = GetProfileUser(sender);
+
+                    fbUserDb.AvatarPicture = profileUser.profile_pic;
+                    fbUserDb.FirstName = profileUser.first_name;
+                    fbUserDb.LastName = profileUser.last_name;
+                    fbUserDb.UserName = fbUserDb.FirstName +" " + fbUserDb.LastName;
+
                     _appFacebookUser.Add(fbUserDb);
                     _appFacebookUser.Save();
                 }
@@ -385,7 +396,7 @@ namespace BotProject.Web.API
                 {
                     fbUserDb.StartedOn = dStartedTime;
                     fbUserDb.TimeOut = dTimeOut;
-
+                    fbUserDb.BotID = botId;
                     // Nếu có yêu cầu click thẻ để đi theo luồng
                     if (fbUserDb.IsHaveCardCondition)
                     {
@@ -496,12 +507,46 @@ namespace BotProject.Web.API
                         }
                         if (predicateName == "Phone")
                         {
+                            if (text.Contains("postback_card") || text.Contains(_contactAdmin))// nều còn điều kiện phone mà chọn postback
+                            {
+                                fbUserDb.IsHavePredicate = false;
+                                fbUserDb.PredicateName = "";
+                                fbUserDb.PredicateValue = "";
+                                fbUserDb.IsHaveCardCondition = false;
+                                fbUserDb.CardConditionPattern = "";
+                                _appFacebookUser.Update(fbUserDb);
+                                _appFacebookUser.Save();
+                                return await ExcuteMessage(text, sender, botId);
+                            }
+
                             var handlePhone = _handleMdService.HandleIsPhoneNumber(text, botId);
 
                             hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
                             AddHistory(hisVm);
                             if (handlePhone.Status)// đúng số dt
                             {
+                                ProfileUser profileUser = new ProfileUser();
+                                profileUser = GetProfileUser(sender);
+                                profileUser.phone_number = text;
+
+                                ReturnCode rt = new ReturnCode();
+                                rt = DigiproService.SendFbUserToService(sender,
+                                                                   profileUser.first_name,
+                                                                   profileUser.last_name,
+                                                                   profileUser.profile_pic,
+                                                                   profileUser.phone_number);
+                                if(rt.Status == "BadRequest")
+                                {
+                                    return await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(rt.Message.Replace("\"",String.Empty), sender, "postback_card_6069", "Quay về").ToString(), sender);
+                                }
+
+
+                                fbUserDb.AvatarPicture = profileUser.profile_pic;
+                                fbUserDb.FirstName = profileUser.first_name;
+                                fbUserDb.LastName = profileUser.last_name;
+                                fbUserDb.UserName = fbUserDb.FirstName + " " + fbUserDb.LastName;
+
+                                fbUserDb.BotID = botId;
                                 fbUserDb.IsHavePredicate = false;
                                 fbUserDb.PredicateName = "";
                                 fbUserDb.PredicateValue = "";
@@ -1354,6 +1399,34 @@ namespace BotProject.Web.API
 
         #endregion
 
+        #region Get User info
+        private ProfileUser GetProfileUser(string senderId)
+        {
+            ProfileUser user = new ProfileUser();
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage res = new HttpResponseMessage();
+                res = client.GetAsync($"https://graph.facebook.com/" + senderId + "?fields=first_name,last_name,profile_pic&access_token=" + pageToken).Result;//gender y/c khi sử dụng
+                if (res.IsSuccessStatusCode)
+                {
+                    var serializer = new JavaScriptSerializer();
+                    serializer.MaxJsonLength = Int32.MaxValue;
+                    user = serializer.Deserialize<ProfileUser>(res.Content.ReadAsStringAsync().Result);
+                }
+                return user;
+            }
+        }
+
+        public class ProfileUser
+        {
+            public string id { set; get; }
+            public string first_name { set; get; }
+            public string last_name { set; get; }
+            public string profile_pic { set; get; }
+            public string phone_number { set; get; }
+            //public string gender { set; get; }
+        }
+        #endregion
 
         private bool VerifySignature(string signature, string body)
         {

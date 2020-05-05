@@ -14,6 +14,7 @@ namespace BotProject.Web.Models
         public string Name { set; get; }
 
 		public string Alias { set; get; }
+
         public string NameAcronym { set; get; }
 
         public DateTime? CreatedDate { set; get; }
@@ -27,6 +28,10 @@ namespace BotProject.Web.Models
         public string MetaKeyword { set; get; }
 
         public string MetaDescription { set; get; }
+
+        public string ImageTemplate { set; get; }
+
+        public bool IsTemplate { set; get; }
 
         public bool Status { set; get; }
 

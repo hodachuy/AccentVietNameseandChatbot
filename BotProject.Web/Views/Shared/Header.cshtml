@@ -223,3 +223,69 @@
         </div>
     </div>
 </div>
+
+<!--modal form create bot-->
+<div class="modal fade" id="modalCreateBot" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tạo bot mới</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Tên</label>
+                        <input type="text" class="form-control" id="txtBotName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Mô tả</label>
+                        <textarea class="form-control" style="resize:none;width:100%"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-dark" id="btnCancleSaveBot">Hủy</a>
+                <a href="#" class="btn btn-primary" id="btnSaveBot">Lưu</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--modal form create clone bot-->
+<div class="modal fade" id="modalBotClone" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tạo bot mới</h5>
+                <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </a>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Mẫu</label>
+                        <input type="text" disabled class="form-control" id="txtBotTemplateTitle" />
+                        <input type="hidden" id="txtBotTemplateId" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Tên</label>
+                        <input type="text" class="form-control" id="txtBotCloneName" />
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Mô tả</label>
+                        <textarea class="form-control" style="resize:none;width:100%"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-dark" id="btnCancleSaveBotClone">Hủy</a>
+                <a href="#" class="btn btn-primary" id="btnSaveBotClone">Lưu</a>
+            </div>
+        </div>
+    </div>
+</div>

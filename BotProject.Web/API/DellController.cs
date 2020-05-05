@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using static BotProject.Common.DigiproService.Digipro.DigiproService;
 
 namespace BotProject.Web.API
 {
@@ -29,6 +30,21 @@ namespace BotProject.Web.API
         {
             return Ok();
         }
+
+        [Route("test2")]
+        [HttpGet]
+        public IHttpActionResult TestSenderFbUser(string senderId, string phoneNumber)
+        {
+            ReturnCode rt = new ReturnCode();
+            string sender = senderId;
+            string first_name = "Huy";
+            string last_name = "Ho";
+            string avatar = "https://platform-lookaside.fbsbx.com/platform/profilepic/?psid=2666433486706739&width=1024&ext=1591152161&hash=AeR0YIW52Gw55qxH";
+            string phone = phoneNumber;
+            rt = DigiproService.SendFbUserToService(sender,first_name,last_name,avatar, phone);
+            return Ok();
+        }
+
 
         [HttpPost]
         [Route("random")]

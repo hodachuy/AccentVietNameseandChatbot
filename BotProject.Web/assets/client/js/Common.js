@@ -1,8 +1,9 @@
 ﻿var urlCreateBot = "api/bot/create",
     urlCreateFormQnA = "api/formqna/create",
     urlSettingBot = "api/setting/getbybotid",
-    urlDeleteBot = "api/bot/deletebot";
-urlGetAllBot = "api/bot/getall"
+    urlDeleteBot = "api/bot/deletebot",
+    urlGetAllBot = "api/bot/getall",
+    urlCloneBot = "api/bot/clone";
 var bot = {
     Name: '',
     Alias: '',
@@ -29,6 +30,7 @@ var common = {
         common.createBot();
         common.createFormBotQnA();
         common.eventNavbar();
+        common.cloneBot();
     },
     eventNavbar: function () {
         //hightlight bot name
@@ -205,6 +207,76 @@ var common = {
 
         return slug;
     },
+    templateBot :function(data){
+        var html = '';
+        html += '<div class="col-lg-4 col-md-6 col-12 bot-role-1" style="padding-bottom: 15px;">';
+        html += '        <div class="dropdown dropleft btn-bot-setting-home show">';
+        html += '            <button data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Menu" class="icon-btn btn-menu-bot">';
+        html += '                <i class="icon-dots-vertical fas fa-ellipsis-h"></i>';
+        html += '            </button>';
+        html += '            <ul class="dropdown-menu dropdown-menu-right hide" x-placement="left-start" style="cursor: auto; box-shadow: rgb(220, 220, 220) 2px 2px 10px; position: absolute; will-change: transform; top: 0px; left: 45px; transform: translate3d(-212px, 3px, 0px);">';
+        html += '                <li>';
+        html += '                     <i class="icon-scenarios fa fa-file"></i>';
+        html += '                    <span class="bot-setting-option">Kịch bản</span>';
+        html += '                </li>';
+        html += '                <li>';
+        html += '                    <i class="icon-nlp fa fa-history"></i>';
+        html += '                    <span class="bot-setting-option">Lịch sử</span>';
+        html += '                </li>';
+        html += '                <li>';
+        html += '                    <i class="icon-message1 fa fa-cog"></i>';
+        html += '                    <span class="bot-setting-option">Cài đặt</span>';
+        html += '                </li>';
+        html += '                <li style="color: rgb(255, 0, 0);">';
+        html += '                    <i class="icon-trash fa fa-trash" style="color: rgb(255, 0, 0);"></i>';
+        html += '                    <span class="bot-setting-option btn-form-delete" data-botID="' + data.ID + '" data-botName="' + data.Name + '" >Xóa Bot</span>';
+        html += '                </li>';
+        html += '            </ul>';
+        html += '        </div>';
+        html += '        <a href="/bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '">';
+        html += '            <div class="bot-style">';
+        html += '                <div class="bot-header">';
+        html += '                    <div class="bot-icon" style="background-color: Color [A=255, R=224, G=192, B=253]; color: rgb(0, 0, 0);">';
+        var arrName = data.Name.split(" ");
+        if (arrName.length > 1) {
+            var nameAcronym = arrName[0].substring(0, 1).toUpperCase() + arrName[1].substring(0, 1).toUpperCase();
+            html += nameAcronym;
+        } else {
+            html += arrName[0].substring(0, 1).toUpperCase();
+        }
+        html += '                    </div>';
+        html += '                    <span title="' + data.Name.toUpperCase() + '" class="bot-dp-name">' + data.Name.toUpperCase() + '</span>';
+        html += '                    <span class="bot-dp-lang"><i class="flag-icon flag-icon-gb"></i> Tiếng Việt</span>';
+        html += '                </div>';
+        html += '                <div class="bot-content">';
+        html += '                    <div class="row">';
+        html += '                        <div title="Ý định" class="col-6" style="padding-right: 0px;">Ý định</div>';
+        html += '                        <div class="col-6">0</div>';
+        html += '                        <div title="Loại thực thể" class="col-6" style="padding-right: 0px;">Loại thực thể</div>';
+        html += '                        <div class="col-6">0</div>';
+        html += '                        <div title="Câu mẫu" class="col-6" style="border-bottom: none;">Câu kịch bản </div>';
+        html += '                        <div class="col-6" style="border-bottom: none;">0</div>';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '                <div class="bot-footer">';
+        html += '                    <div class="row">';
+        html += '                        <div title="Lần huấn luyện gần nhất" class="col-6">Lần huấn luyện gần nhất</div>';
+        html += '                        <div class="col-6"></div>';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '                <div class="bot-footer">';
+        html += '                    <div class="row">';
+        html += '                        <div title="Hoạt động" class="col-6">Đang hoạt động</div>';
+        html += '                        <div class="col-6">';
+        html += '                            <span><img title="Website" src="/assets/images/img-website.jpg" class="img-bot-activing"></span>';
+        html += '                        </div>';
+        html += '                    </div>';
+        html += '                </div>';
+        html += '            </div>';
+        html += '        </a>';
+        html += '    </div>';
+        return html;
+    },
     createBot: function () {
         var temp = function (data) {
             var html = '';
@@ -248,76 +320,7 @@ var common = {
             html += '</li>';
             return html;
         }
-        var tempBot = function (data) {
-            var html = '';
-            html += '<div class="col-lg-4 col-md-6 col-12 bot-role-1" style="padding-bottom: 15px;">';
-            html += '        <div class="dropdown dropleft btn-bot-setting-home show">';
-            html += '            <button data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" title="Menu" class="icon-btn btn-menu-bot">';
-            html += '                <i class="icon-dots-vertical fas fa-ellipsis-h"></i>';
-            html += '            </button>';
-            html += '            <ul class="dropdown-menu dropdown-menu-right hide" x-placement="left-start" style="cursor: auto; box-shadow: rgb(220, 220, 220) 2px 2px 10px; position: absolute; will-change: transform; top: 0px; left: 45px; transform: translate3d(-212px, 3px, 0px);">';
-            html += '                <li>';
-            html += '                     <i class="icon-scenarios fa fa-file"></i>';
-            html += '                    <span class="bot-setting-option">Kịch bản</span>';
-            html += '                </li>';
-            html += '                <li>';
-            html += '                    <i class="icon-nlp fa fa-history"></i>';
-            html += '                    <span class="bot-setting-option">Lịch sử</span>';
-            html += '                </li>';
-            html += '                <li>';
-            html += '                    <i class="icon-message1 fa fa-cog"></i>';
-            html += '                    <span class="bot-setting-option">Cài đặt</span>';
-            html += '                </li>';
-            html += '                <li style="color: rgb(255, 0, 0);">';
-            html += '                    <i class="icon-trash fa fa-trash" style="color: rgb(255, 0, 0);"></i>';
-            html += '                    <span class="bot-setting-option btn-form-delete" data-botID="' + data.ID + '" data-botName="' + data.Name + '" >Xóa Bot</span>';
-            html += '                </li>';
-            html += '            </ul>';
-            html += '        </div>';
-            html += '        <a href="/bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '">';
-            html += '            <div class="bot-style">';
-            html += '                <div class="bot-header">';
-            html += '                    <div class="bot-icon" style="background-color: Color [A=255, R=224, G=192, B=253]; color: rgb(0, 0, 0);">';
-            var arrName = data.Name.split(" ");
-            if (arrName.length > 1) {
-                var nameAcronym = arrName[0].substring(0, 1).toUpperCase() + arrName[1].substring(0, 1).toUpperCase();
-                html += nameAcronym;
-            } else {
-                html += arrName[0].substring(0, 1).toUpperCase();
-            }
-            html += '                    </div>';
-            html += '                    <span title="' + data.Name.toUpperCase() + '" class="bot-dp-name">' + data.Name.toUpperCase() + '</span>';
-            html += '                    <span class="bot-dp-lang"><i class="flag-icon flag-icon-gb"></i> Tiếng Việt</span>';
-            html += '                </div>';
-            html += '                <div class="bot-content">';
-            html += '                    <div class="row">';
-            html += '                        <div title="Ý định" class="col-6" style="padding-right: 0px;">Ý định</div>';
-            html += '                        <div class="col-6">0</div>';
-            html += '                        <div title="Loại thực thể" class="col-6" style="padding-right: 0px;">Loại thực thể</div>';
-            html += '                        <div class="col-6">0</div>';
-            html += '                        <div title="Câu mẫu" class="col-6" style="border-bottom: none;">Câu kịch bản </div>';
-            html += '                        <div class="col-6" style="border-bottom: none;">0</div>';
-            html += '                    </div>';
-            html += '                </div>';
-            html += '                <div class="bot-footer">';
-            html += '                    <div class="row">';
-            html += '                        <div title="Lần huấn luyện gần nhất" class="col-6">Lần huấn luyện gần nhất</div>';
-            html += '                        <div class="col-6"></div>';
-            html += '                    </div>';
-            html += '                </div>';
-            html += '                <div class="bot-footer">';
-            html += '                    <div class="row">';
-            html += '                        <div title="Hoạt động" class="col-6">Đang hoạt động</div>';
-            html += '                        <div class="col-6">';
-            html += '                            <span><img title="Website" src="/assets/images/img-website.jpg" class="img-bot-activing"></span>';
-            html += '                        </div>';
-            html += '                    </div>';
-            html += '                </div>';
-            html += '            </div>';
-            html += '        </a>';
-            html += '    </div>';
-            return html;
-        }
+
         $('body').on('click', '#btnCreateBot', function () {
             $('#txtBotName').val('');
             $('#modalCreateBot').modal('show');
@@ -332,16 +335,11 @@ var common = {
             bot.UserID = $('#userId').val();
             var svr = new AjaxCall(urlCreateBot, JSON.stringify(bot));
             svr.callServicePOST(function (data) {
-                var tempHtml = tempBot(data);
+                var tempHtml = common.templateBot(data);
                 $('#collapseDiv_0').append(tempHtml);
                 //$('#bot-category').append(tempHtml);
                 $('#modalCreateBot').modal('hide');
             });
-        })
-        $('body').on('click', '.card-tmp-bot', function (e) {
-            var txtBotTemplate = $(this).find('.card-title').text();
-            $('#txtBotTemplate').val(txtBotTemplate);
-            $('#modalCreateBot').modal('show');
         })
         $('body').on('click', '.new-blank-bot', function (e) {
             $('#txtBotTemplate').val('');
@@ -350,6 +348,41 @@ var common = {
         
         $('body').on('click', '#btnCancleSaveBot', function (e) {
             $('#modalCreateBot').modal('hide');
+        })
+    },
+    cloneBot: function(){
+        $('body').on('click', '.card-tmp-bot', function (e) {
+            var txtBotTemplate = $(this).find('.card-title').text();
+            var txtBotTemplateId = $(this).find('.card-title').eq(0).attr('data-bot-id');
+            $("#txtBotTemplateId").val(txtBotTemplateId);
+            $("#txtBotTemplateTitle").val(txtBotTemplate);
+            $("#txtBotCloneName").val('');
+            $('#modalBotClone').modal('show');
+        })
+        $('body').on('click', '#btnSaveBotClone', function () {
+            var botName = $('#txtBotCloneName').val();
+            var botId = $("#txtBotTemplateId").val();
+            if (botName == '' || botName == undefined)
+                return false;
+            if (botId == '' || botId == undefined)
+                return false;
+            var params = {
+                botId: botId,
+                userId: $('#userId').val(),
+                botName: botName,
+                botAlias: common.getSeoTitle(botName)
+            }
+            params = JSON.stringify(params);
+            var svr = new AjaxCall(urlCloneBot, params);
+            svr.callServicePOST(function (data) {
+                var tempHtml = common.templateBot(data);
+                $('#collapseDiv_0').append(tempHtml);
+                //$('#bot-category').append(tempHtml);
+                $('#modalBotClone').modal('hide');
+            });
+        })
+        $('body').on('click', '#btnCancleSaveBotClone', function (e) {
+            $('#modalBotClone').modal('hide');
         })
     },
     createFormBotQnA: function () {

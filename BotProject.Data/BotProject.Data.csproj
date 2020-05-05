@@ -610,6 +610,10 @@
     <Compile Include="Migrations\202004240710346_UpdateChatSurvey.Designer.cs">
       <DependentUpon>202004240710346_UpdateChatSurvey.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005040942331_AddPropertiBot_04052020.cs" />
+    <Compile Include="Migrations\202005040942331_AddPropertiBot_04052020.Designer.cs">
+      <DependentUpon>202005040942331_AddPropertiBot_04052020.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\LiveChat\ActionChatRepository.cs" />
@@ -1089,6 +1093,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202004240710346_UpdateChatSurvey.resx">
       <DependentUpon>202004240710346_UpdateChatSurvey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005040942331_AddPropertiBot_04052020.resx">
+      <DependentUpon>202005040942331_AddPropertiBot_04052020.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

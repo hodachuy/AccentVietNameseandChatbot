@@ -1,4 +1,5 @@
 ﻿using BotProject.Common.DigiproService.Digipro.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,10 @@ namespace BotProject.Common.DigiproService.Digipro
         private static string urlGetByServiceTag = "GetttingServicesByServicetag";
         private static string urlGetttingServicesByRofNumber = "GetttingServicesByRofNumber";
         private static string UrlDigipro = ConfigHelper.ReadString("UrlDigipro");
+
+        // Đường dẫn gửi thông tin người dùng facebook
+        private static string UrlDigiproNotifyService = ConfigHelper.ReadString("UrlDigiproNotifyService");
+        private static string FunctionNotifyService = "postSenderId";
 
         //IsOOW : Dịch vụ sửa chữa ngoài bảo hành
         public static string GetDetailServiceDigiproByRofOrSvtag(string nameFunction, string rofNumberOrSvTag, bool IsOOW = true)
@@ -130,6 +135,44 @@ namespace BotProject.Common.DigiproService.Digipro
             return rs;
         }
 
+
+        /// <summary>
+        /// Gửi thông tin người dùng facebook tới service TT DIGIPRO
+        /// </summary>
+        /// <param name="senderId"></param>
+        /// <param name="firstName"></param>
+        /// <param name="lastName"></param>
+        /// <param name="avatar"></param>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        public static ReturnCode SendFbUserToService(string senderId, string firstName,string lastName,string profilePic, string phoneNumber)
+        {
+            ReturnCode rt = new ReturnCode();
+            string newPhone = "";
+            if (!String.IsNullOrEmpty(phoneNumber))
+            {             
+                if(phoneNumber.Substring(0,1) == "0")
+                {
+                    phoneNumber = phoneNumber.Remove(0, 1);
+                    newPhone = "84" + phoneNumber;
+                }
+                else
+                {
+                    newPhone = phoneNumber;
+                }
+            }
+            var param = new
+            {
+                id = senderId,
+                first_name = firstName,
+                last_name = lastName,
+                profile_pic = profilePic,
+                phone_number = newPhone
+            };
+            rt = PostAsync(FunctionNotifyService, param).Result;
+            return rt;
+        }
+
         private static async Task<String> GetAsync(String url)
         {
             try
@@ -154,6 +197,45 @@ namespace BotProject.Common.DigiproService.Digipro
                 //Logger.SlackApplication.PutExceptionMessage(exception, Characters.SlackWebhookURL.DGP_API_SentSMS);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Gửi thông tin người dùng facebook tới service digipro
+        /// </summary>
+        /// <param name="functionName"></param>
+        /// <param name="T"></param>
+        /// <returns></returns>
+        private static async Task<ReturnCode> PostAsync(string functionName, object T)
+        {
+            ReturnCode rt = new ReturnCode();
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(UrlDigiproNotifyService);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    HttpResponseMessage response = new HttpResponseMessage();
+                    string json = JsonConvert.SerializeObject(T);
+                    StringContent httpContent = new StringContent(json, UnicodeEncoding.UTF8, "application/json");
+                    response = client.PostAsync(functionName, httpContent).Result;
+
+                    rt.Status = response.StatusCode.ToString();
+                    rt.Message = await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (Exception exception)
+            {
+                //Logger.SlackApplication.PutExceptionMessage(exception, Characters.SlackWebhookURL.DGP_API_SentSMS);
+                return rt;
+            }
+            return rt;
+        }
+
+        public class ReturnCode
+        {
+            public string Status { set; get; }
+            public string Message { set; get; }
         }
 
         private static string GenDataServiceDigiproToString(string customerName,

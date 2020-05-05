@@ -21,22 +21,30 @@ namespace BotProject.Web.API
 	{
 		private IBotService _botService;
         private ICardService _cardService;
+        private IGroupCardService _groupCardService;
         private ISettingService _settingService;
         private ICommonCardService _commonCardService;
         private IQnAService _qnaService;
-
+        private IModuleService _moduleService;
+        private IAttributeSystemService _attributeSystemService;
         public BotController(IErrorService errorService,
             IBotService botService,
             ICardService cardService,
             ISettingService settingService,
             ICommonCardService commonCardService,
-            IQnAService qnaService) : base(errorService)
+            IGroupCardService groupCardService,
+            IQnAService qnaService,
+            IModuleService moduleService,
+            IAttributeSystemService attributeSystemService) : base(errorService)
 		{
 			_botService = botService;
             _settingService = settingService;
             _cardService = cardService;
             _commonCardService = commonCardService;
             _qnaService = qnaService;
+            _groupCardService = groupCardService;
+            _moduleService = moduleService;
+            _attributeSystemService = attributeSystemService;
 
         }	
 
@@ -176,6 +184,99 @@ namespace BotProject.Web.API
                 //    }
                 //}
                 response = request.CreateResponse(HttpStatusCode.OK, true);
+                return response;
+            });
+        }
+
+
+        /// <summary>
+        /// Sao chép dữ liệu bot
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="jsonData"></param>
+        /// <returns></returns>
+        [Route("clone")]
+        [HttpPost]
+        public HttpResponseMessage CloneBot(HttpRequestMessage request, JObject jsonData)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                dynamic json = jsonData;
+                int botCloneID = json.botId;
+                string botName = json.botName;
+                string userId = json.userId;
+                string botAlias = json.botAlias;
+
+                // create bot
+                Bot botdB = new Bot();
+                botdB = _botService.GetByID(botCloneID);
+                botdB.Alias = botAlias;
+                botdB.Name = botName;
+                botdB.UserID = userId;
+                botdB.IsTemplate = false;
+
+                //_botService.Create(ref botdB);
+                //_botService.Save();
+
+                //  module 
+                var lstModule = _moduleService.GetAllModuleByBotID(botCloneID);
+                if(lstModule != null && lstModule.Count() != 0)
+                {
+                    foreach(var module in lstModule)
+                    {
+                        Module moduleDb = new Module();
+                        moduleDb = module;
+                        moduleDb.BotID = botdB.ID;
+                        //_moduleService.Create(moduleDb);
+                        //_moduleService.Save();
+                    }
+                }
+
+                // attribute setting
+                var lstAttributeSystem = _attributeSystemService.GetListAttributeSystemByBotId(botCloneID);
+                if(lstAttributeSystem != null && lstAttributeSystem.Count() != 0)
+                {
+                    foreach(var attribute in lstAttributeSystem)
+                    {
+                        AttributeSystem attSystemDb = new AttributeSystem();
+                        attSystemDb = attribute;
+                        attSystemDb.BotID = botCloneID;
+                        //_attributeSystemService.Create(attSystemDb);
+                        //_attributeSystemService.Save();
+                    }
+                }
+
+                // get list groupcard
+                var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botCloneID);
+                if(lstGroupCard != null && lstGroupCard.Count() != 0)
+                {
+                    foreach (var groupCard in lstGroupCard)
+                    {
+                        int groupCardCloneID = groupCard.ID;
+
+                        GroupCard groupCardDb = new GroupCard();
+                        groupCardDb = groupCard;
+                        groupCardDb.BotID = botdB.ID;
+                        //_groupCardService.Create(groupCardDb);
+                        //_groupCardService.Save();
+
+                        // get list card
+                        var lstCard = _cardService.GetListCardByGroupCardID(groupCardCloneID);
+                        if(lstCard != null && lstCard.Count() != 0)
+                        {
+                            foreach(var card in lstCard)
+                            {
+                                // get full detail card
+                                Card cardDb = new Card();
+                                cardDb = _commonCardService.GetFullDetailCard(card.ID);
+                                cardDb.BotID = botdB.ID;
+
+                                // get button, image, module, file
+                            }
+                        }
+                    }
+                }
                 return response;
             });
         }
