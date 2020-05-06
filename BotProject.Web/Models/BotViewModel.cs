@@ -37,6 +37,8 @@ namespace BotProject.Web.Models
 
         public string UserID { set; get; }
 
+        public int? BotCloneParentID { set; get; }
+
         public int TotalCard { set; get; }
         public int TotalQuestionScript { set; get; }
         public int TotalIntent { set; get; }

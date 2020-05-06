@@ -49,6 +49,8 @@ namespace BotProject.Model.Models
 
         public int? CardStepID { set; get; } // card đi tiếp không phải click
 
+        public int? CardCloneParentID { set; get; } // cardID sao chép trước đó
+
         [Required]
         public int GroupCardID { set; get; }
 

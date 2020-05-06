@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace BotProject.Web.Controllers
 {
-    [OutputCacheAttribute(VaryByParam = "*", Duration = 0, NoStore = true)]
+    [AllowCrossSite]
     public class AccentVNController : Controller
     {
         private AccentService _accentService;

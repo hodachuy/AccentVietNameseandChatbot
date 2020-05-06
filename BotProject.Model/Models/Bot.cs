@@ -27,6 +27,8 @@ namespace BotProject.Model.Models
 
         public string ImageTemplate { set; get; }
 
+        public int? BotCloneParentID { set; get; }
+
         //public DateTime? LastTrainTime { set; get; }
 
         [Required]

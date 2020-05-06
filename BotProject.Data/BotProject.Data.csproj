@@ -614,6 +614,14 @@
     <Compile Include="Migrations\202005040942331_AddPropertiBot_04052020.Designer.cs">
       <DependentUpon>202005040942331_AddPropertiBot_04052020.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005060608360_UpdateCardCloneParentID.cs" />
+    <Compile Include="Migrations\202005060608360_UpdateCardCloneParentID.Designer.cs">
+      <DependentUpon>202005060608360_UpdateCardCloneParentID.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005060617261_AddBotCloneID.cs" />
+    <Compile Include="Migrations\202005060617261_AddBotCloneID.Designer.cs">
+      <DependentUpon>202005060617261_AddBotCloneID.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\LiveChat\ActionChatRepository.cs" />
@@ -1096,6 +1104,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005040942331_AddPropertiBot_04052020.resx">
       <DependentUpon>202005040942331_AddPropertiBot_04052020.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005060608360_UpdateCardCloneParentID.resx">
+      <DependentUpon>202005060608360_UpdateCardCloneParentID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005060617261_AddBotCloneID.resx">
+      <DependentUpon>202005060617261_AddBotCloneID.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
