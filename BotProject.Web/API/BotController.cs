@@ -14,6 +14,9 @@ using System.Configuration;
 using BotProject.Common;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
+using BotProject.Web.Infrastructure.Log4Net;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BotProject.Web.API
 {
@@ -28,6 +31,16 @@ namespace BotProject.Web.API
         private IQnAService _qnaService;
         private IModuleService _moduleService;
         private IAttributeSystemService _attributeSystemService;
+        private IAIMLFileService _aimlFileService;
+
+        private string[] _userSayStart = new string[]
+        {
+                    CommonConstants.UserSay_IsStartDefault,
+                    CommonConstants.UserSay_IsStartFirst,
+                    CommonConstants.UserSay_IsStartLast,
+                    CommonConstants.UserSay_IsStartDouble
+        };
+
         public BotController(IErrorService errorService,
             IBotService botService,
             ICardService cardService,
@@ -36,6 +49,7 @@ namespace BotProject.Web.API
             IGroupCardService groupCardService,
             IQnAService qnaService,
             IModuleService moduleService,
+            IAIMLFileService aimlFileService,
             IAttributeSystemService attributeSystemService) : base(errorService)
 		{
 			_botService = botService;
@@ -46,7 +60,7 @@ namespace BotProject.Web.API
             _groupCardService = groupCardService;
             _moduleService = moduleService;
             _attributeSystemService = attributeSystemService;
-
+            _aimlFileService = aimlFileService;
         }	
 
 		[Route("getall")]
@@ -208,228 +222,886 @@ namespace BotProject.Web.API
                 string botName = json.botName;
                 string userId = json.userId;
                 string botAlias = json.botAlias;
-
                 // create bot
                 Bot botdB = new Bot();
-                botdB = _botService.GetByID(botCloneID);
-                botdB.Alias = botAlias;
-                botdB.Name = botName;
-                botdB.UserID = userId;
-                botdB.IsTemplate = false;
-                botdB.BotCloneParentID = botCloneID;
-
-                //_botService.Create(ref botdB);
-                //_botService.Save();
-
-                //  module 
-                var lstModule = _moduleService.GetAllModuleByBotID(botCloneID);
-                if(lstModule != null && lstModule.Count() != 0)
+                try
                 {
-                    foreach(var module in lstModule)
+                    botdB = _botService.GetByID(botCloneID);
+                    botdB.Alias = botAlias;
+                    botdB.Name = botName;
+                    botdB.UserID = userId;
+                    botdB.IsTemplate = false;
+                    botdB.BotCloneParentID = botCloneID;
+
+                    _botService.Create(ref botdB);
+                    _botService.Save();
+
+                    Setting settingDb = new Setting();
+                    settingDb = _settingService.GetSettingByBotID(botCloneID);
+                    settingDb.BotID = botdB.ID;
+                    settingDb.Color = "rgb(75, 90, 148);";
+                    settingDb.UserID = botdB.UserID;
+                    settingDb.Logo = "assets/images/user_bot.jpg";
+                    settingDb.FacebookAppSecrect = "";
+                    settingDb.FacebookPageToken = "";
+                    settingDb.ZaloAppSecrect = "";
+                    settingDb.ZaloPageToken = "";
+                    settingDb.ZaloQRCode = "";
+                    _settingService.Create(settingDb);
+                    _settingService.Save();
+
+                    //  module 
+                    var lstModule = _moduleService.GetAllModuleByBotID(botCloneID).ToList();
+                    if (lstModule != null && lstModule.Count() != 0)
                     {
-                        Module moduleDb = new Module();
-                        moduleDb = module;
-                        moduleDb.BotID = botdB.ID;
-                        //_moduleService.Create(moduleDb);
-                        //_moduleService.Save();
-                    }
-                }
-
-                // attribute setting
-                var lstAttributeSystem = _attributeSystemService.GetListAttributeSystemByBotId(botCloneID);
-                if(lstAttributeSystem != null && lstAttributeSystem.Count() != 0)
-                {
-                    foreach(var attribute in lstAttributeSystem)
-                    {
-                        AttributeSystem attSystemDb = new AttributeSystem();
-                        attSystemDb = attribute;
-                        attSystemDb.BotID = botdB.ID;
-                        //_attributeSystemService.Create(attSystemDb);
-                        //_attributeSystemService.Save();
-                    }
-                }
-
-                // get list groupcard
-                var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botCloneID);
-                if(lstGroupCard != null && lstGroupCard.Count() != 0)
-                {
-                    foreach (var groupCard in lstGroupCard)
-                    {
-                        int groupCardCloneID = groupCard.ID;
-
-                        GroupCard groupCardDb = new GroupCard();
-                        groupCardDb = groupCard;
-                        groupCardDb.BotID = botdB.ID;
-                        //_groupCardService.Create(groupCardDb);
-                        //_groupCardService.Save();
-
-                        // get list card
-                        var lstCard = _cardService.GetListCardByGroupCardID(groupCardCloneID);
-                        if(lstCard != null && lstCard.Count() != 0)
+                        foreach (var module in lstModule)
                         {
-                            foreach(var card in lstCard)
+                            Module moduleDb = new Module();
+                            moduleDb = module;
+                            moduleDb.BotID = botdB.ID;
+                            _moduleService.Create(moduleDb);
+                            _moduleService.Save();
+                        }
+                    }
+
+                    // attribute setting
+                    var lstAttributeSystem = _attributeSystemService.GetListAttributeSystemByBotId(botCloneID).ToList();
+                    if (lstAttributeSystem != null && lstAttributeSystem.Count() != 0)
+                    {
+                        foreach (var attribute in lstAttributeSystem)
+                        {
+                            AttributeSystem attSystemDb = new AttributeSystem();
+                            attSystemDb = attribute;
+                            attSystemDb.BotID = botdB.ID;
+                            _attributeSystemService.Create(attSystemDb);
+                            _attributeSystemService.Save();
+                        }
+                    }
+
+                    // get list groupcard
+                    var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botCloneID).ToList();
+                    if (lstGroupCard != null && lstGroupCard.Count() != 0)
+                    {
+                        foreach (var groupCard in lstGroupCard)
+                        {
+                            int groupCardCloneID = groupCard.ID;
+
+                            GroupCard groupCardDb = new GroupCard();
+                            groupCardDb = groupCard;
+                            groupCardDb.BotID = botdB.ID;
+                            _groupCardService.Create(groupCardDb);
+                            _groupCardService.Save();
+
+                            // get list card
+                            var lstCard = _cardService.GetListCardByGroupCardID(groupCardCloneID).ToList();
+                            if (lstCard != null && lstCard.Count() != 0)
                             {
-                                int cardCloneID = card.ID;
-                                // get full detail card
-                                Card cardDb = new Card();
-                                cardDb = _commonCardService.GetFullDetailCard(cardCloneID);
-                                cardDb.BotID = botdB.ID;
-                                cardDb.CardCloneParentID = cardCloneID;
-                                //_cardService.Create(cardDb);
-                                //_cardService.Save();
-
-                                // Save Template generic group
-                                var lstTemplateGenericGroup = card.TemplateGenericGroups;
-                                if(lstTemplateGenericGroup != null && lstTemplateGenericGroup.Count() != 0)
+                                foreach (var card in lstCard)
                                 {
-                                    foreach(var templateGenericGroup in lstTemplateGenericGroup)
-                                    {
-                                        int templateGenericGroupCloneID = templateGenericGroup.ID;
-                                        TemplateGenericGroup tempGenericGroupDb = new TemplateGenericGroup();
-                                        tempGenericGroupDb = templateGenericGroup;
-                                        tempGenericGroupDb.CardID = cardDb.ID;
-                                        //_commonCardService.AddTempGnrGroup(tempGenericGroupDb);
-                                        //_commonCardService.Save();
-                                        var lstTemplateGenericItems = templateGenericGroup.TemplateGenericItems;
-                                        if(lstTemplateGenericItems != null && lstTemplateGenericItems.Count() != 0)
-                                        {
-                                            foreach(var templateGenericItem in lstTemplateGenericItems)
-                                            {
-                                                int templateGenericItemCloneID = templateGenericItem.ID;
-                                                TemplateGenericItem templateGenericItemDb = new TemplateGenericItem();
-                                                templateGenericItemDb = templateGenericItem;
-                                                templateGenericItemDb.CardID = cardDb.ID;
-                                                templateGenericItemDb.TempGnrGroupID = tempGenericGroupDb.ID;
-                                                //_commonCardService.AddTempGnrItem(templateGenericItemDb);
-                                                //_commonCardService.Save();
+                                    int cardCloneID = card.ID;
+                                    // get full detail card
+                                    Card cardDb = new Card();
+                                    cardDb = _commonCardService.GetFullDetailCard(cardCloneID);
+                                    cardDb.BotID = botdB.ID;
+                                    cardDb.GroupCardID = groupCardDb.ID;
+                                    cardDb.CardCloneParentID = cardCloneID;
+                                    _cardService.Create(cardDb);
+                                    _cardService.Save();
 
-                                                var lstButtonLink = templateGenericItem.ButtonLinks;
-                                                if(lstButtonLink != null && lstButtonLink.Count() != 0)
+                                    // Save Template generic group
+                                    var lstTemplateGenericGroup = card.TemplateGenericGroups.ToList();
+                                    if (lstTemplateGenericGroup != null && lstTemplateGenericGroup.Count() != 0)
+                                    {
+                                        foreach (var templateGenericGroup in lstTemplateGenericGroup)
+                                        {
+                                            int templateGenericGroupCloneID = templateGenericGroup.ID;
+                                            TemplateGenericGroup tempGenericGroupDb = new TemplateGenericGroup();
+                                            tempGenericGroupDb = templateGenericGroup;
+                                            tempGenericGroupDb.CardID = cardDb.ID;
+                                            _commonCardService.AddTempGnrGroup(tempGenericGroupDb);
+                                            _commonCardService.Save();
+                                            var lstTemplateGenericItems = templateGenericGroup.TemplateGenericItems.ToList();
+                                            if (lstTemplateGenericItems != null && lstTemplateGenericItems.Count() != 0)
+                                            {
+                                                foreach (var templateGenericItem in lstTemplateGenericItems)
                                                 {
-                                                    foreach(var buttonLink in lstButtonLink)
+                                                    int templateGenericItemCloneID = templateGenericItem.ID;
+                                                    TemplateGenericItem templateGenericItemDb = new TemplateGenericItem();
+                                                    templateGenericItemDb = templateGenericItem;
+                                                    templateGenericItemDb.CardID = cardDb.ID;
+                                                    templateGenericItemDb.TempGnrGroupID = tempGenericGroupDb.ID;
+                                                    _commonCardService.AddTempGnrItem(templateGenericItemDb);
+                                                    _commonCardService.Save();
+
+                                                    var lstButtonLink = templateGenericItem.ButtonLinks.ToList();
+                                                    if (lstButtonLink != null && lstButtonLink.Count() != 0)
                                                     {
-                                                        ButtonLink btnLinkDb = new ButtonLink();
-                                                        btnLinkDb = buttonLink;
-                                                        btnLinkDb.TempGnrItemID = templateGenericItemDb.ID;
-                                                        btnLinkDb.CardID = cardDb.ID;
-                                                        //_commonCardService.AddButtonLink(btnLinkDb);
-                                                        //_commonCardService.Save();
+                                                        foreach (var buttonLink in lstButtonLink)
+                                                        {
+                                                            ButtonLink btnLinkDb = new ButtonLink();
+                                                            btnLinkDb = buttonLink;
+                                                            btnLinkDb.TempGnrItemID = templateGenericItemDb.ID;
+                                                            btnLinkDb.CardID = cardDb.ID;
+                                                            _commonCardService.AddButtonLink(btnLinkDb);
+                                                            _commonCardService.Save();
+                                                        }
+                                                    }
+
+                                                    var lstButtonPostback = templateGenericItem.ButtonPostbacks.ToList();
+                                                    if (lstButtonPostback != null && lstButtonPostback.Count() != 0)
+                                                    {
+                                                        foreach (var buttonPostback in lstButtonPostback)
+                                                        {
+                                                            ButtonPostback btnPostbackDb = new ButtonPostback();
+                                                            btnPostbackDb = buttonPostback;
+                                                            btnPostbackDb.TempGnrItemID = templateGenericItemDb.ID;
+                                                            btnPostbackDb.CardID = cardDb.ID;
+
+                                                            // so sánh cardpayload với cardcloneparentid để update lại
+
+                                                            _commonCardService.AddButtonPostback(btnPostbackDb);
+                                                            _commonCardService.Save();
+                                                        }
                                                     }
                                                 }
-                                                
-                                                var lstButtonPostback = templateGenericItem.ButtonPostbacks;
-                                                if (lstButtonPostback != null && lstButtonPostback.Count() != 0)
+                                            }
+                                        }
+                                    }
+
+                                    // Save Template text
+                                    var lstTemplateText = card.TemplateTexts.ToList();
+                                    if (lstTemplateText != null && lstTemplateText.Count() != 0)
+                                    {
+                                        foreach (var templateText in lstTemplateText)
+                                        {
+                                            int templateTextCloneID = templateText.ID;
+                                            TemplateText templateTextDb = new TemplateText();
+                                            templateTextDb = templateText;
+                                            templateTextDb.CardID = cardDb.ID;
+                                            _commonCardService.AddTempText(templateTextDb);
+                                            _commonCardService.Save();
+
+                                            var lstButtonLink = templateText.ButtonLinks.ToList();
+                                            if (lstButtonLink != null && lstButtonLink.Count() != 0)
+                                            {
+                                                foreach (var buttonLink in lstButtonLink)
                                                 {
-                                                    foreach (var buttonPostback in lstButtonPostback)
-                                                    {
-                                                        ButtonPostback btnPostbackDb = new ButtonPostback();
-                                                        btnPostbackDb = buttonPostback;
-                                                        btnPostbackDb.TempGnrItemID = templateGenericItemDb.ID;
-                                                        btnPostbackDb.CardID = cardDb.ID;
+                                                    ButtonLink btnLinkDb = new ButtonLink();
+                                                    btnLinkDb = buttonLink;
+                                                    btnLinkDb.TempTxtID = templateTextDb.ID;
+                                                    btnLinkDb.CardID = cardDb.ID;
+                                                    _commonCardService.AddButtonLink(btnLinkDb);
+                                                    _commonCardService.Save();
+                                                }
+                                            }
 
-                                                        // so sánh cardpayload với cardcloneparentid để update lại
-
-                                                        //_commonCardService.AddButtonPostback(buttonPostback);
-                                                        //_commonCardService.Save();
-                                                    }
+                                            var lstButtonPostback = templateTextDb.ButtonPostbacks.ToList();
+                                            if (lstButtonPostback != null && lstButtonPostback.Count() != 0)
+                                            {
+                                                foreach (var buttonPostback in lstButtonPostback)
+                                                {
+                                                    ButtonPostback btnPostbackDb = new ButtonPostback();
+                                                    btnPostbackDb = buttonPostback;
+                                                    btnPostbackDb.TempTxtID = templateTextDb.ID;
+                                                    btnPostbackDb.CardID = cardDb.ID;
+                                                    // so sánh cardpayload với cardcloneparentid để update lại
+                                                    _commonCardService.AddButtonPostback(btnPostbackDb);
+                                                    _commonCardService.Save();
                                                 }
                                             }
                                         }
                                     }
-                                }
 
-                                // Save Template text
-                                var lstTemplateText = card.TemplateTexts;
-                                if(lstTemplateText != null && lstTemplateText.Count() != 0)
-                                {
-                                    foreach(var templateText in lstTemplateText)
+                                    // Get list module of card
+                                    //var lstModuleFollowCard = card.ModuleFollowCards;
+                                    //if(lstModuleFollowCard != null && lstModuleFollowCard.Count() != 0)
+                                    //{
+                                    //    foreach(var moduleFollowCard in lstModuleFollowCard)
+                                    //    {
+                                    //        ModuleFollowCard mdFollowCard = new ModuleFollowCard();
+                                    //        mdFollowCard.BotID = botdB.ID;
+                                    //        mdFollowCard.CardID = cardDb.ID;
+                                    //    }
+                                    //}
+
+                                    // Image
+                                    var lstImage = card.Images.ToList();
+                                    if (lstImage != null && lstImage.Count() != 0)
                                     {
-                                        int templateTextCloneID = templateText.ID;
-                                        TemplateText templateTextDb = new TemplateText();
-                                        templateTextDb = templateText;
-                                        templateTextDb.CardID = cardDb.ID;
-                                        //_commonCardService.AddTempText(templateTextDb);
-                                        //_commonCardService.Save();
-
-                                        var lstButtonLink = templateText.ButtonLinks;
-                                        if (lstButtonLink != null && lstButtonLink.Count() != 0)
+                                        foreach (var image in lstImage)
                                         {
-                                            foreach (var buttonLink in lstButtonLink)
-                                            {
-                                                ButtonLink btnLinkDb = new ButtonLink();
-                                                btnLinkDb = buttonLink;
-                                                btnLinkDb.TempTxtID = templateTextDb.ID;
-                                                btnLinkDb.CardID = cardDb.ID;
-                                                //_commonCardService.AddButtonLink(btnLinkDb);
-                                                //_commonCardService.Save();
-                                            }
+                                            Image imageDb = new Image();
+                                            imageDb = image;
+                                            imageDb.BotID = botdB.ID;
+                                            imageDb.CardID = cardDb.ID;
+                                            _commonCardService.AddImage(imageDb);
+                                            _commonCardService.Save();
                                         }
+                                    }
 
-                                        var lstButtonPostback = templateTextDb.ButtonPostbacks;
-                                        if (lstButtonPostback != null && lstButtonPostback.Count() != 0)
+                                    // Quickreply
+                                    var lstQuickReply = card.QuickReplys.ToList();
+                                    if (lstQuickReply != null && lstQuickReply.Count() != 0)
+                                    {
+                                        foreach (var quickReply in lstQuickReply)
                                         {
-                                            foreach (var buttonPostback in lstButtonPostback)
-                                            {
-                                                ButtonPostback btnPostbackDb = new ButtonPostback();
-                                                btnPostbackDb = buttonPostback;
-                                                btnPostbackDb.TempTxtID = templateTextDb.ID;
-                                                btnPostbackDb.CardID = cardDb.ID;
-                                                // so sánh cardpayload với cardcloneparentid để update lại
-                                                //_commonCardService.AddButtonPostback(buttonPostback);
-                                                //_commonCardService.Save();
-                                            }
+                                            Model.Models.QuickReply quickReplyDb = new Model.Models.QuickReply();
+                                            quickReplyDb = quickReply;
+                                            quickReplyDb.CardID = cardDb.ID;
+                                            _commonCardService.AddQuickReply(quickReplyDb);
+                                            _commonCardService.Save();
                                         }
                                     }
                                 }
+                            }
+                        }
+                    }
 
-                                // Get list module of card
-                                //var lstModuleFollowCard = card.ModuleFollowCards;
-                                //if(lstModuleFollowCard != null && lstModuleFollowCard.Count() != 0)
-                                //{
-                                //    foreach(var moduleFollowCard in lstModuleFollowCard)
-                                //    {
-                                //        ModuleFollowCard mdFollowCard = new ModuleFollowCard();
-                                //        mdFollowCard.BotID = botdB.ID;
-                                //        mdFollowCard.CardID = cardDb.ID;
-                                //    }
-                                //}
-
-                                // Image
-                                var lstImage = card.Images;
-                                if(lstImage != null && lstImage.Count() != 0)
+                    // Get list new card and get list button and quickreply update off new Bot
+                    var lstNewCard = _cardService.GetListCardByBotID(botdB.ID).ToList();
+                    if (lstNewCard != null && lstNewCard.Count() != 0)
+                    {
+                        foreach (var newCard in lstNewCard)
+                        {
+                            Card newCardDb = new Card();
+                            newCardDb = _cardService.GetByID(newCard.ID);
+                            if (newCardDb.CardStepID != null)
+                            {
+                                newCardDb.CardStepID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == newCardDb.CardStepID).ID;
+                                _cardService.Update(newCardDb);
+                                _cardService.Save();
+                            }
+                            var lstButtonPostback = _commonCardService.GetListButtonPostbackByCardID(newCard.ID).ToList();
+                            if (lstButtonPostback != null && lstButtonPostback.Count() != 0)
+                            {
+                                foreach (var buttonPostback in lstButtonPostback)
                                 {
-                                    foreach(var image in lstImage)
+                                    ButtonPostback btnPostbackDb = new ButtonPostback();
+                                    btnPostbackDb = buttonPostback;
+                                    // Tìm CardPayloadID của ID card mới tạo tương ứng với
+                                    // cardpayload của card clone trước đó
+                                    int newCardPayloadID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == btnPostbackDb.CardPayloadID).ID;
+                                    btnPostbackDb.CardPayloadID = newCardPayloadID;
+                                    btnPostbackDb.Payload = "postback_card_" + newCardPayloadID;
+                                    _commonCardService.UpdateButtonPostback(btnPostbackDb);
+                                    _commonCardService.Save();
+                                }
+                            }
+                            var lstQuickReply = _commonCardService.GetListQuickReplyByCardID(newCard.ID).ToList();
+                            if (lstQuickReply != null && lstQuickReply.Count() != 0)
+                            {
+                                foreach (var quickReply in lstQuickReply)
+                                {
+                                    Model.Models.QuickReply quickReplyDb = new Model.Models.QuickReply();
+                                    quickReplyDb = quickReply;
+                                    int newCardPayloadID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == quickReplyDb.CardPayloadID).ID;
+                                    quickReplyDb.CardPayloadID = newCardPayloadID;
+                                    quickReplyDb.Payload = "postback_card_" + newCardPayloadID;
+                                    _commonCardService.UpdateQuickReply(quickReplyDb);
+                                    _commonCardService.Save();
+                                }
+                            }
+                        }
+
+                        // create aiml file
+                        foreach(var card in lstNewCard)
+                        {
+                            CreateAIMLFileByCardID(card.ID, botdB.UserID);
+                        }
+                    }
+
+
+                    // update setting card getstarted
+                    if (settingDb.CardID != null)
+                    {
+                        int settingCardID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == settingDb.CardID).ID;
+                        settingDb.CardID = settingCardID;
+                        _settingService.Update(settingDb);
+                        _settingService.Save();
+                    }
+
+                    // get list qna
+                    var lstFormQnA = _qnaService.GetListFormByBotID(botCloneID).ToList();
+                    if(lstFormQnA.Count() != 0)
+                    {
+                        foreach(var formQnA in lstFormQnA)
+                        {
+                            int formQnACloneID = formQnA.ID;
+
+                            FormQuestionAnswer formQnaDb = new FormQuestionAnswer();
+                            formQnaDb = formQnA;
+                            formQnaDb.BotID = botdB.ID;
+                            _qnaService.AddFormQnAnswer(ref formQnaDb);
+                            _qnaService.Save();
+
+                            var lstQuestionGroup = _qnaService.GetListQuestionGroupByFormQnAnswerID(formQnACloneID).ToList();
+                            if(lstQuestionGroup.Count() != 0)
+                            {
+                                foreach(var questionGroup in lstQuestionGroup)
+                                {
+                                    int questionGroupCloneID = questionGroup.ID;
+                                    QuestionGroup questionGroupDb = new QuestionGroup();
+                                    questionGroupDb = questionGroup;
+                                    questionGroupDb.FormQuestionAnswerID = formQnaDb.ID;
+                                    questionGroupDb.BotID = botdB.ID;
+                                    _qnaService.AddQuesGroup(questionGroupDb);
+                                    _qnaService.Save();
+
+                                    var lstQuestion = _qnaService.GetListQuestionByGroupID(questionGroupCloneID).ToList();
+                                    if(lstQuestion.Count() != 0)
                                     {
-                                        Image imageDb = new Image();
-                                        imageDb = image;
-                                        imageDb.BotID = botdB.ID;
-                                        imageDb.CardID = cardDb.ID;
-                                        //_commonCardService.AddImage(imageDb);
-                                        //_commonCardService.Save();
+                                        foreach(var question in lstQuestion)
+                                        {
+                                            Question questionDb = new Question();
+                                            questionDb = question;
+                                            questionDb.QuestionGroupID = questionGroupDb.ID;
+                                            _qnaService.AddQuestion(questionDb);
+                                            _qnaService.Save();
+                                        }
+                                    }
+
+                                    var lstAnswer = _qnaService.GetListAnswerByGroupID(questionGroupCloneID).ToList();
+                                    if (lstAnswer.Count() != 0)
+                                    {
+                                        foreach (var answer in lstAnswer)
+                                        {
+                                            Answer answerDb = new Answer();
+                                            answerDb = answer;
+                                            answerDb.QuestionGroupID = questionGroupDb.ID;
+                                            _qnaService.AddAnswer(answerDb);
+                                            _qnaService.Save();
+                                        }
                                     }
                                 }
+                            }
+                        }
+                    }
 
-                                // Quickreply
-                                var lstQuickReply = card.QuickReplys;
-                                if(lstQuickReply != null && lstQuickReply.Count() != 0)
+                    var lstNewFormQna = _qnaService.GetListFormByBotID(botdB.ID).ToList();
+                    if(lstNewFormQna.Count() != 0)
+                    {
+                        foreach(var formQnA in lstNewFormQna)
+                        {
+                            var lstQuestionGroup = _qnaService.GetListQuestionGroupByFormQnAnswerID(formQnA.ID).ToList();
+                            if(lstQuestionGroup.Count() != 0)
+                            {
+                                foreach(var qGroup in lstQuestionGroup)
                                 {
-                                    foreach(var quickReply in lstQuickReply)
-                                    {
-                                        Model.Models.QuickReply quickReplyDb = new Model.Models.QuickReply();
-                                        quickReplyDb = quickReply;
-                                        quickReplyDb.CardID = cardDb.ID;
-                                        //_commonCardService.AddQuickReply(quickReplyDb);
-                                        //_commonCardService.Save();
-                                    }
-                                }                               
+                                    CreateAIMLFileFormQnaByCardID(qGroup.ID, botdB.ID);
+                                }
+                            }
+                        }
+                    }
+
+                    response = request.CreateResponse(HttpStatusCode.OK, new {status = true, data = botdB });
+                }
+                catch(Exception ex)
+                {
+                    BotLog.Error("Log BotProject.Web/API/BotController/CloneBot: " + ex.Message);
+                    botdB.Status = false;
+                    _botService.Update(botdB);
+                    _botService.Save();
+                    response = request.CreateResponse(HttpStatusCode.BadRequest, new { status = false, data = ex.Message});
+                }
+                return response;
+            });
+        }
+        public void CreateAIMLFileByCardID(int cardId, string userId)
+        {
+            var card = _commonCardService.GetFullDetailCard(cardId);
+            StringBuilder sbAIML = new StringBuilder();
+            try
+            {
+                //StreamWriter sw = new StreamWriter(pathString, true, Encoding.UTF8);
+                sbAIML.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                sbAIML.AppendLine("<aiml>");
+                sbAIML.AppendLine("<category>");
+                sbAIML.AppendLine("<pattern>" + card.PatternText + "</pattern>");
+                sbAIML.AppendLine("<template>");
+
+                //sw.WriteLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                //sw.WriteLine("<aiml>");
+                //sw.WriteLine("<category>");
+                //sw.WriteLine("<pattern>"+card.PatternText+"</pattern>");
+                //sw.WriteLine("<template>");
+                if (card.TemplateTexts != null && card.TemplateTexts.Count() != 0)
+                {
+                    var lstTemplateText = card.TemplateTexts;
+                    foreach (var item in lstTemplateText)
+                    {
+                        // text
+                        string contentText = Regex.Replace(item.Text, "&", "và");
+                        sbAIML.AppendLine("" + contentText + "");
+
+                        //sw.WriteLine(""+item.Text+"");
+                        if (item.ButtonPostbacks != null && item.ButtonPostbacks.Count() != 0)
+                        {
+                            var lstButtonPostbacks = item.ButtonPostbacks;
+                            foreach (var itemBtnPostback in lstButtonPostbacks)
+                            {
+                                //sw.WriteLine("<button>");
+                                //sw.WriteLine("<text>"+itemBtnPostback.Title+"</text>");
+                                //sw.WriteLine("<menu>" + itemBtnPostback.Payload + "</menu>");
+                                //sw.WriteLine("</button>");
+
+                                sbAIML.AppendLine("<button>");
+                                sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnPostback.Title) + "</text>");
+                                sbAIML.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
+                                sbAIML.AppendLine("</button>");
+                            }
+                        }
+                        if (item.ButtonLinks != null && item.ButtonLinks.Count() != 0)
+                        {
+                            var lstButtonLinks = item.ButtonLinks;
+                            foreach (var itemBtnLink in lstButtonLinks)
+                            {
+                                //sw.WriteLine("<button>");
+                                //sw.WriteLine("<text>" + itemBtnLink.Title + "</text>");
+                                //sw.WriteLine("<url>" + itemBtnLink.Url + "</url>");
+                                //sw.WriteLine("</button>");
+
+                                sbAIML.AppendLine("<button>");
+                                sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
+                                sbAIML.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                sbAIML.AppendLine("</button>");
+                            }
+                        }
+                        if (item.ButtonModules != null && item.ButtonModules.Count() != 0)
+                        {
+                            var lstButtonModules = item.ButtonModules;
+                            foreach (var itemBtnModule in lstButtonModules)
+                            {
+                                //sw.WriteLine("<button>");
+                                //sw.WriteLine("<text>" + itemBtnModule.Title + "</text>");
+
+                                sbAIML.AppendLine("<button>");
+                                sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnModule.Title) + "</text>");
+                                if (itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
+                                {
+                                    sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                    //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                }
+                                else if (itemBtnModule.MdSearchID != null && itemBtnModule.MdSearchID != 0)
+                                {
+                                    sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                    //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                }
+                                else if (itemBtnModule.MdVoucherID != null && itemBtnModule.MdVoucherID != 0)
+                                {
+                                    sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdVoucherID + "</module>");
+                                    //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                }
+                                else
+                                {
+                                    sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "</module>");
+                                    //sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
+                                }
+                                //sw.WriteLine("</button>");
+                                sbAIML.AppendLine("</button>");
                             }
                         }
                     }
                 }
+                if (card.TemplateGenericGroups != null && card.TemplateGenericGroups.Count() != 0)
+                {
+                    var lstTempGnrGroup = card.TemplateGenericGroups;
+                    foreach (var item in lstTempGnrGroup)
+                    {
+                        if (item.TemplateGenericItems != null && item.TemplateGenericItems.Count() != 0)
+                        {
+                            var lstTemGnrItem = item.TemplateGenericItems;
+                            StringBuilder sb = new StringBuilder();
+                            StringBuilder sbAIMLChild = new StringBuilder();
+                            foreach (var itemGnr in lstTemGnrItem)
+                            {
+                                sbAIMLChild.AppendLine("<card>");
+                                sb.AppendLine("<card>");
+                                if (!String.IsNullOrEmpty(itemGnr.Image))
+                                {
+                                    sbAIMLChild.AppendLine("<image>" + itemGnr.Image + "</image>");
+                                    sb.AppendLine("<image>" + itemGnr.Image + "</image>");
+                                }
+                                sb.AppendLine("<title>" + HelperMethods.EscapeXml(itemGnr.Title) + "</title>");
+                                sb.AppendLine("<subtitle>" + HelperMethods.EscapeXml(itemGnr.SubTitle) + "</subtitle>");
+                                sb.AppendLine("<link>");
+                                sb.AppendLine("<text>" + itemGnr.Url + "</text>");
+                                sb.AppendLine("<url>" + itemGnr.Url + "</url>");
+                                sb.AppendLine("</link>");
 
+                                sbAIMLChild.AppendLine("<title>" + HelperMethods.EscapeXml(itemGnr.Title) + "</title>");
+                                sbAIMLChild.AppendLine("<subtitle>" + HelperMethods.EscapeXml(itemGnr.SubTitle) + "</subtitle>");
+                                sbAIMLChild.AppendLine("<link>");
+                                sbAIMLChild.AppendLine("<text>" + itemGnr.Url + "</text>");
+                                sbAIMLChild.AppendLine("<url>" + itemGnr.Url + "</url>");
+                                sbAIMLChild.AppendLine("</link>");
+                                if (itemGnr.ButtonPostbacks != null && itemGnr.ButtonPostbacks.Count() != 0)
+                                {
+                                    var lstButtonPostbacks = itemGnr.ButtonPostbacks;
+                                    foreach (var itemBtnPostback in lstButtonPostbacks)
+                                    {
+                                        sb.AppendLine("<button>");
+                                        sb.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnPostback.Title) + "</text>");
+                                        sb.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
+                                        sb.AppendLine("</button>");
 
-                return response;
-            });
+                                        sbAIMLChild.AppendLine("<button>");
+                                        sbAIMLChild.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnPostback.Title) + "</text>");
+                                        sbAIMLChild.AppendLine("<menu>" + itemBtnPostback.Payload + "</menu>");
+                                        sbAIMLChild.AppendLine("</button>");
+                                    }
+                                }
+                                if (itemGnr.ButtonLinks != null && itemGnr.ButtonLinks.Count() != 0)
+                                {
+                                    var lstButtonLinks = itemGnr.ButtonLinks;
+                                    foreach (var itemBtnLink in lstButtonLinks)
+                                    {
+                                        sb.AppendLine("<button>");
+                                        sb.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
+                                        sb.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                        sb.AppendLine("</button>");
+
+                                        sbAIMLChild.AppendLine("<button>");
+                                        sbAIMLChild.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
+                                        sbAIMLChild.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                        sbAIMLChild.AppendLine("</button>");
+                                    }
+                                }
+                                if (itemGnr.ButtonModules != null && itemGnr.ButtonModules.Count() != 0)
+                                {
+                                    var lstButtonModules = itemGnr.ButtonModules;
+                                    foreach (var itemBtnModule in lstButtonModules)
+                                    {
+                                        sbAIMLChild.AppendLine("<button>");
+                                        sbAIMLChild.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnModule.Title) + "</text>");
+
+                                        sb.AppendLine("<button>");
+                                        sb.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnModule.Title) + "</text>");
+                                        if (itemBtnModule.ModuleKnowledgeID != null && itemBtnModule.ModuleKnowledgeID != 0)
+                                        {
+                                            sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                            //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.ModuleKnowledgeID + "</module>");
+                                        }
+                                        else if (itemBtnModule.MdSearchID != null && itemBtnModule.MdSearchID != 0)
+                                        {
+                                            sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                            //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                        }
+                                        else if (itemBtnModule.MdVoucherID != null && itemBtnModule.MdVoucherID != 0)
+                                        {
+                                            sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdVoucherID + "</module>");
+                                            //sw.WriteLine("<module>" + itemBtnModule.Payload + "_" + itemBtnModule.MdSearchID + "</module>");
+                                        }
+                                        else
+                                        {
+                                            sbAIML.AppendLine("<module>" + itemBtnModule.Payload + "</module>");
+                                            //sw.WriteLine("<module>" + itemBtnModule.Payload + "</module>");
+                                        }
+                                        sb.AppendLine("</button>");
+                                        sbAIMLChild.AppendLine("</button>");
+                                    }
+                                }
+                                sb.AppendLine("</card>");
+                                sbAIMLChild.AppendLine("</card>");
+                            }
+
+                            if (lstTemGnrItem.Count() > 1)
+                            {
+                                //carousel
+                                //sw.WriteLine("<carousel>");
+                                //sw.WriteLine(sb.ToString());
+                                //sw.WriteLine("</carousel>");
+
+                                sbAIML.AppendLine("<carousel>");
+                                sbAIML.AppendLine(sbAIMLChild.ToString());
+                                sbAIML.AppendLine("</carousel>");
+                            }
+                            else
+                            {
+                                //card
+                                //sw.WriteLine(sb.ToString());
+                                sbAIML.AppendLine(sbAIMLChild.ToString());
+                            }
+                        }
+                    }
+                }
+                if (card.Images != null && card.Images.Count() != 0)
+                {
+                    foreach (var itemImg in card.Images)
+                    {
+                        sbAIML.AppendLine("<image>" + itemImg.Url + "</image>");
+                        //sw.WriteLine("<image>"+itemImg.Url+"</image>");
+                    }
+                }
+                if (card.FileDocuments != null && card.FileDocuments.Count() != 0)
+                {
+                    foreach (var itemFile in card.FileDocuments)
+                    {
+                        sbAIML.AppendLine("<file>" + itemFile.Url + "</file>");
+                        //sw.WriteLine("<file>"+itemFile.Url+"</file>");
+                    }
+                }
+                if (card.ModuleFollowCards != null && card.ModuleFollowCards.Count() != 0)
+                {
+                    foreach (var itemMdFollowCards in card.ModuleFollowCards)
+                    {
+                        string patternText = itemMdFollowCards.PartternText;
+                        if (itemMdFollowCards.ModuleInfoPatientID != null && itemMdFollowCards.ModuleInfoPatientID != 0)
+                        {
+                            patternText = patternText + "_" + itemMdFollowCards.ModuleInfoPatientID;
+                        }
+                        if (itemMdFollowCards.MdSearchID != null && itemMdFollowCards.MdSearchID != 0)
+                        {
+                            patternText = patternText + "_" + itemMdFollowCards.MdSearchID;
+                        }
+                        if (itemMdFollowCards.MdVoucherID != null && itemMdFollowCards.MdVoucherID != 0)
+                        {
+                            patternText = patternText + "_" + itemMdFollowCards.MdVoucherID;
+                        }
+                        sbAIML.AppendLine(patternText);
+                        //sw.WriteLine(patternText);
+                    }
+                }
+                if (card.QuickReplys != null && card.QuickReplys.Count() != 0)
+                {
+                    var lstQuickReply = card.QuickReplys;
+                    foreach (var itemQ in lstQuickReply)
+                    {
+                        //sw.WriteLine("<button>");
+                        //sw.WriteLine("<text>" + itemQ.Title + "</text>");
+                        //sw.WriteLine("<postback>" + itemQ.Payload + "</postback>");
+                        //sw.WriteLine("</button>");
+
+                        sbAIML.AppendLine("<button>");
+                        sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemQ.Title) + "</text>");
+                        sbAIML.AppendLine("<postback>" + itemQ.Payload + "</postback>");
+                        sbAIML.AppendLine("</button>");
+                    }
+                }
+                //sw.WriteLine("</template>");
+                //sw.WriteLine("</category>");
+
+                sbAIML.AppendLine("</template>");
+                sbAIML.AppendLine("</category>");
+
+                //if (card.ModuleFollowCards != null && card.ModuleFollowCards.Count() != 0)
+                //{
+                //    foreach (var itemMdFollowCards in card.ModuleFollowCards)
+                //    {
+                //        if (itemMdFollowCards.ModuleInfoPatientID != null && itemMdFollowCards.ModuleInfoPatientID != 0)
+                //        {
+                //            var mdGetInfoPatientDb = _mdKnowledgeService.GetByMdMedInfoPatientID(itemMdFollowCards.ModuleInfoPatientID ?? default(int));
+                //            if (!String.IsNullOrEmpty(mdGetInfoPatientDb.Payload))
+                //            {
+                //                //sw.WriteLine("<category>");
+                //                //sw.WriteLine("<pattern>module_patient_" + mdGetInfoPatientDb.Payload + "</pattern>");
+                //                //sw.WriteLine("<template>");
+                //                //sw.WriteLine("<srai>" + mdGetInfoPatientDb.Payload + "</srai>");
+                //                //sw.WriteLine("</template>");
+                //                //sw.WriteLine("</category>");
+
+                //                sbAIML.AppendLine("<category>");
+                //                sbAIML.AppendLine("<pattern>module_patient_" + mdGetInfoPatientDb.Payload + "</pattern>");
+                //                sbAIML.AppendLine("<template>");
+                //                sbAIML.AppendLine("<srai>" + mdGetInfoPatientDb.Payload + "</srai>");
+                //                sbAIML.AppendLine("</template>");
+                //                sbAIML.AppendLine("</category>");
+                //            }
+                //        }
+                //        if (itemMdFollowCards.MdSearchID != null && itemMdFollowCards.MdSearchID != 0)
+                //        {
+                //            var mdSearchDb = _mdSearchService.GetByID(itemMdFollowCards.MdSearchID ?? default(int));
+                //            if (!String.IsNullOrEmpty(mdSearchDb.Payload))
+                //            {
+                //                //sw.WriteLine("<category>");
+                //                //sw.WriteLine("<pattern>module_api_search" + mdSearchDb.Payload + "</pattern>");
+                //                //sw.WriteLine("<template>");
+                //                //sw.WriteLine("<srai>" + mdSearchDb.Payload + "</srai>");
+                //                //sw.WriteLine("</template>");
+                //                //sw.WriteLine("</category>");
+
+                //                sbAIML.AppendLine("<category>");
+                //                sbAIML.AppendLine("<pattern>module_api_search" + mdSearchDb.Payload + "</pattern>");
+                //                sbAIML.AppendLine("<template>");
+                //                sbAIML.AppendLine("<srai>" + mdSearchDb.Payload + "</srai>");
+                //                sbAIML.AppendLine("</template>");
+                //                sbAIML.AppendLine("</category>");
+                //            }
+                //        }
+                //        if (itemMdFollowCards.MdVoucherID != null && itemMdFollowCards.MdVoucherID != 0)
+                //        {
+                //            var mdVoucherDb = _mdVoucherService.GetByID(itemMdFollowCards.MdVoucherID ?? default(int));
+                //            if (!String.IsNullOrEmpty(mdVoucherDb.Payload))
+                //            {
+                //                //sw.WriteLine("<category>");
+                //                //sw.WriteLine("<pattern>module_api_search" + mdSearchDb.Payload + "</pattern>");
+                //                //sw.WriteLine("<template>");
+                //                //sw.WriteLine("<srai>" + mdSearchDb.Payload + "</srai>");
+                //                //sw.WriteLine("</template>");
+                //                //sw.WriteLine("</category>");
+
+                //                sbAIML.AppendLine("<category>");
+                //                sbAIML.AppendLine("<pattern>module_voucher" + mdVoucherDb.Payload + "</pattern>");
+                //                sbAIML.AppendLine("<template>");
+                //                sbAIML.AppendLine("<srai>" + mdVoucherDb.Payload + "</srai>");
+                //                sbAIML.AppendLine("</template>");
+                //                sbAIML.AppendLine("</category>");
+                //            }
+                //        }
+                //    }
+                //}
+                sbAIML.AppendLine("</aiml>");
+                //sw.WriteLine("</aiml>");
+                //sw.Close();
+
+                AIMLFile aimlFileDb = new AIMLFile();
+                aimlFileDb.CardID = card.ID;
+                aimlFileDb.UserID = userId;
+                aimlFileDb.BotID = card.BotID;
+                aimlFileDb.Extension = "aiml";
+                aimlFileDb.Name = card.Name;
+                aimlFileDb.Content = sbAIML.ToString();
+                aimlFileDb.Status = true;
+                _aimlFileService.Create(aimlFileDb);
+                _aimlFileService.Save();
+            }
+            catch(Exception ex)
+            {
+
+            }
+
+        }
+
+        public void CreateAIMLFileFormQnaByCardID(int formQnaID, int botID)
+        {
+            var lstQnaGroup = _qnaService.GetListQuesGroupToAimlByFormQnAnswerID(formQnaID).ToList();
+            StringBuilder sbFormDb = new StringBuilder();
+            try
+            {
+                sbFormDb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+                sbFormDb.AppendLine("<aiml>");
+                sbFormDb.AppendLine("<category>");
+                sbFormDb.AppendLine("<pattern>*</pattern>");
+                sbFormDb.AppendLine("<template>");
+                sbFormDb.AppendLine("<random>");
+                sbFormDb.AppendLine("<li> NOT_MATCH_01 </li>");
+                sbFormDb.AppendLine("<li> NOT_MATCH_02 </li>");
+                sbFormDb.AppendLine("<li> NOT_MATCH_03 </li>");
+                sbFormDb.AppendLine("<li> NOT_MATCH_04 </li>");
+                sbFormDb.AppendLine("<li> NOT_MATCH_05 </li>");
+                sbFormDb.AppendLine("<li> NOT_MATCH_06 </li>");
+                sbFormDb.AppendLine("</random>");
+                sbFormDb.AppendLine("</template>");
+                sbFormDb.AppendLine("</category>");
+                if (lstQnaGroup != null && lstQnaGroup.Count() != 0)
+                {
+                    int total = lstQnaGroup.Count();
+                    for (int indexQGroup = 0; indexQGroup < total; indexQGroup++)
+                    {
+                        var itemQGroup = lstQnaGroup[indexQGroup];
+                        var lstAnswer = itemQGroup.Answers.ToList();
+                        var lstQuestion = itemQGroup.Questions.ToList();
+                        if (lstQuestion.Count() == 0 && lstAnswer.Count() == 0)
+                        {
+                        }
+                        string postbackAnswer = String.Empty;
+                        if (lstAnswer.Count() != 0 && lstAnswer.Count() > 1)
+                        {
+                            StringBuilder sb = new StringBuilder();
+
+                            int totalAnswer = lstAnswer.Count();
+                            postbackAnswer = "postback_answer_" + itemQGroup.ID;
+                            sb.AppendLine("<category>");
+                            sb.AppendLine("<pattern>" + postbackAnswer + "</pattern>");
+                            sb.AppendLine("<template>");
+                            sb.AppendLine("<random>");
+                            for (int indexA = 0; indexA < totalAnswer; indexA++)
+                            {
+                                var itemAnswer = lstAnswer[indexA];
+                                if (!String.IsNullOrEmpty(itemAnswer.ContentText))
+                                {
+                                    sb.AppendLine("<li>" + itemAnswer.ContentText + "</li>");
+                                }
+                                else
+                                {
+                                    sb.AppendLine("<li>" + itemAnswer.CardPayload + "</li>");
+                                }
+                            }
+                            sb.AppendLine("</random>");
+                            sb.AppendLine("</template>");
+                            sb.AppendLine("</category>");
+                            //sw.WriteLine(sb.ToString());
+                            sbFormDb.AppendLine(sb.ToString());
+                        }
+                        else
+                        {
+                            if (!String.IsNullOrEmpty(lstAnswer[0].ContentText))
+                            {
+                                postbackAnswer = lstAnswer[0].ContentText;
+                            }
+                            else
+                            {
+                                postbackAnswer = lstAnswer[0].CardPayload;
+                            }
+                        }
+                        if (lstQuestion.Count != 0)
+                        {
+                            foreach (var item in lstQuestion)
+                            {
+                                for (int indexQ = 0; indexQ < _userSayStart.Length; indexQ++)
+                                {
+                                    var itemQ = item;
+                                    string patternText = "";
+                                    string tempAnswer = postbackAnswer;
+                                    if (postbackAnswer.Contains("postback"))
+                                    {
+                                        tempAnswer = "<srai>" + postbackAnswer + "</srai>";
+                                    }
+                                    //sw.WriteLine("<category>");
+                                    //sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
+                                    //sw.WriteLine("<template>"+ tempAnswer + "</template>");
+                                    //sw.WriteLine("</category>");
+                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDefault)
+                                    {
+                                        patternText = itemQ.ContentText.ToUpper();
+                                    }
+                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartFirst)
+                                    {
+                                        patternText = "* " + itemQ.ContentText.ToUpper();
+                                    }
+                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartLast)
+                                    {
+                                        patternText = itemQ.ContentText.ToUpper() + " *";
+                                    }
+                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDouble)
+                                    {
+                                        patternText = "* " + itemQ.ContentText.ToUpper() + " *";
+                                    }
+                                    sbFormDb.AppendLine("<category>");
+                                    sbFormDb.AppendLine("<pattern>" + patternText + "</pattern>");
+                                    sbFormDb.AppendLine("<template>" + tempAnswer + "</template>");
+                                    sbFormDb.AppendLine("</category>");
+                                }
+                            }
+                        }
+                    }
+                }
+                //sw.WriteLine("</aiml>");
+                sbFormDb.AppendLine("</aiml>");
+                //sw.Close();
+
+                AIMLFile aimlFileDb = new AIMLFile();
+                aimlFileDb.BotID = botID;
+                aimlFileDb.FormQnAnswerID = formQnaID;
+                aimlFileDb.Extension = "aiml";
+                aimlFileDb.Status = true;
+                aimlFileDb.Content = sbFormDb.ToString();
+                _aimlFileService.Create(aimlFileDb);
+                _aimlFileService.Save();
+            }
+            catch (Exception EX)
+            {
+
+            }
         }
     }
 }

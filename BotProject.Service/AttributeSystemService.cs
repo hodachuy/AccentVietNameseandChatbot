@@ -57,7 +57,7 @@ namespace BotProject.Service
 
         public AttributeSystem Create(AttributeSystem attr)
         {
-            if (_attributeRepository.CheckContains(x => x.Name == attr.Name))
+            if (_attributeRepository.CheckContains(x => x.Name == attr.Name && x.BotID == attr.BotID))
                 throw new NameDuplicatedException("Tên không được trùng");
             return _attributeRepository.Add(attr);
         }

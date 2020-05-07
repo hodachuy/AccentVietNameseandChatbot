@@ -72,22 +72,30 @@ namespace BotProject.Web.Controllers
 			// check login with remember me
 			if (Request.IsAuthenticated)
 			{
-				if(Session[CommonConstants.SessionUser] == null)
-				{            
-                    ApplicationUser user = _userManager.FindById(User.Identity.GetUserId());
-					var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
+                string userId = User.Identity.GetUserId();
+                if(String.IsNullOrEmpty(userId))
+                {
+                    LogOut();
+                }
+                ApplicationUser user = _userManager.FindById(userId);
+                var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
+                var listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
+                applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
 
-                    var listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
-                    applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
+                if(applicationUserViewModel.Groups.Count() == 0)
+                {
+                    LogOut();
+                }
 
-                    applicationUserViewModel.Channels = _channelService.GetChannelByUserId(user.Id);
+                applicationUserViewModel.Channels = _channelService.GetChannelByUserId(user.Id);
 
-                    Session[CommonConstants.SessionUser] = applicationUserViewModel;
-					if (!String.IsNullOrEmpty(returnUrl))
-						return Redirect(returnUrl);
-				}
+                Session[CommonConstants.SessionUser] = applicationUserViewModel;
 
-				return RedirectToAction("Index", "Dashboard");
+                if (!String.IsNullOrEmpty(returnUrl))
+                    return Redirect(returnUrl);
+
+
+                return RedirectToAction("Index", "Dashboard");
 			}
 
 			return View();
@@ -105,7 +113,34 @@ namespace BotProject.Web.Controllers
 
                     var listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
                     applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
+                    if (applicationUserViewModel.Groups.Count() == 0)
+                    {
+                        //await _userManager.AddToRolesAsync(newUser.Id, new string[] { "User" });
+                        // Permission add user to group owner
+                        var appUserGroup = new ApplicationUserGroup();
+                        appUserGroup.UserId = applicationUserViewModel.Id;
+                        appUserGroup.GroupId = CommonConstants.GROUP_OWNER;
+                        _appGroupService.AddUserToGroups(appUserGroup);
+                        _appGroupService.Save();
 
+                        listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
+
+                        // Livechat add user owner group channel
+                        var groupChannel = new GroupChannel();
+                        groupChannel.Name = "General-" + user.UserName;
+                        groupChannel.OwnerId = applicationUserViewModel.Id;
+                        _channelService.AddGroupChannel(groupChannel);
+                        _channelService.Save();
+
+                        //Livechat add user to channel
+                        var lc_Channel = new Channel();
+                        lc_Channel.GroupChannelID = groupChannel.Id;
+                        lc_Channel.UserID = applicationUserViewModel.Id;
+                        _channelService.AddUserToChannel(lc_Channel);
+                        _channelService.Save();
+                    }
+
+                    applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
                     applicationUserViewModel.Channels = _channelService.GetChannelByUserId(user.Id);
 
                     Session[CommonConstants.SessionUser] = applicationUserViewModel;

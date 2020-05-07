@@ -352,6 +352,18 @@ var common = {
     },
     cloneBot: function(){
         $('body').on('click', '.card-tmp-bot', function (e) {
+            if ($('#userId').val() == "4d1d77aa-42a7-4e88-97a6-baed104c2e60") {
+                swal({
+                    title: "Thông báo",
+                    text: "Chức năng này không dành cho tài khoản quản trị",
+                    confirmButtonColor: "#EF5350",
+                    type: "success"
+                }, function () {
+                    $("#model-notify").modal('show');
+                    return false;
+                });
+                return false;
+            }
             var txtBotTemplate = $(this).find('.card-title').text();
             var txtBotTemplateId = $(this).find('.card-title').eq(0).attr('data-bot-id');
             $("#txtBotTemplateId").val(txtBotTemplateId);
@@ -360,6 +372,7 @@ var common = {
             $('#modalBotClone').modal('show');
         })
         $('body').on('click', '#btnSaveBotClone', function () {
+            $('#modalBotClone').modal('hide');
             var botName = $('#txtBotCloneName').val();
             var botId = $("#txtBotTemplateId").val();
             if (botName == '' || botName == undefined)
@@ -374,11 +387,27 @@ var common = {
             }
             params = JSON.stringify(params);
             var svr = new AjaxCall(urlCloneBot, params);
-            svr.callServicePOST(function (data) {
-                var tempHtml = common.templateBot(data);
-                $('#collapseDiv_0').append(tempHtml);
-                //$('#bot-category').append(tempHtml);
-                $('#modalBotClone').modal('hide');
+            svr.callServicePOST(function (response) {
+                if (response.status) {
+                    var tempHtml = common.templateBot(response.data);
+                    $('#collapseDiv_0').append(tempHtml);
+                    $("#model-notify").modal('hide');
+                    swal({
+                        title: "Thông báo",
+                        text: "Thêm thành công",
+                        confirmButtonColor: "#EF5350",
+                        type: "success"
+                    }, function () { $("#model-notify").modal('show'); });
+                } else {
+                    console.log(response.data)
+                    $("#model-notify").modal('hide');
+                    swal({
+                        title: "Thông báo",
+                        text: "Lưu thất bại, vui lòng liên hệ quản trị",
+                        confirmButtonColor: "#EF5350",
+                        type: "error"
+                    }, function () { $("#model-notify").modal('show'); });
+                }
             });
         })
         $('body').on('click', '#btnCancleSaveBotClone', function (e) {

@@ -16,13 +16,17 @@ namespace BotProject.Service
         ButtonLink AddButtonLink(ButtonLink btnLink);
         ButtonModule AddButtonModule(ButtonModule btnModule);
         ButtonPostback AddButtonPostback(ButtonPostback btnPostback);
+        IEnumerable<ButtonPostback> GetListButtonPostbackByCardID(int cardId);
+        void UpdateButtonPostback(ButtonPostback btnPostback);
+
         TemplateGenericGroup AddTempGnrGroup(TemplateGenericGroup tempGnrGroup);
         TemplateGenericItem AddTempGnrItem(TemplateGenericItem tempGnrItem);
         TemplateText AddTempText(TemplateText tempText);
         Image AddImage(Image image);
         FileDocument AddFileDocument(FileDocument fileDoc);
         QuickReply AddQuickReply(QuickReply qReply);
-
+        void UpdateQuickReply(QuickReply qReply);
+        IEnumerable<QuickReply> GetListQuickReplyByCardID(int cardId);
 
         //ButtonLink DeleteButtonLink(int id);
         //ButtonPostback DeleteButtonPostback(int id);
@@ -199,6 +203,26 @@ namespace BotProject.Service
         public ModuleFollowCard AddModuleFollowCard(ModuleFollowCard mdFollowCard)
         {
             return _mdFollowCardRepository.Add(mdFollowCard);
+        }
+
+        public void UpdateButtonPostback(ButtonPostback btnPostback)
+        {
+            _buttonPostbackRepository.Update(btnPostback);
+        }
+
+        public void UpdateQuickReply(QuickReply qReply)
+        {
+            _quickReplyRepository.Update(qReply);
+        }
+
+        public IEnumerable<ButtonPostback> GetListButtonPostbackByCardID(int cardId)
+        {
+            return _buttonPostbackRepository.GetMulti(x => x.CardID == cardId);
+        }
+
+        public IEnumerable<QuickReply> GetListQuickReplyByCardID(int cardId)
+        {
+            return _quickReplyRepository.GetMulti(x => x.CardID == cardId);
         }
     }
 }
