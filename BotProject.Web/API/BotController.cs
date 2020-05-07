@@ -567,6 +567,8 @@ namespace BotProject.Web.API
                                         {
                                             Answer answerDb = new Answer();
                                             answerDb = answer;
+                                            answerDb.CardID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == answerDb.CardID).ID;
+                                            answerDb.CardPayload = "postback_card_" + answerDb.CardID;
                                             answerDb.QuestionGroupID = questionGroupDb.ID;
                                             _qnaService.AddAnswer(answerDb);
                                             _qnaService.Save();
