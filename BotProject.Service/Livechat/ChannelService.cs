@@ -13,9 +13,9 @@ namespace BotProject.Service
 {
     public interface IChannelService
     {
-        IEnumerable<SP_Channel> GetListChannelByGorupChanelID(int groupChannelID);
-        GroupChannel AddGroupChannel(GroupChannel grChannel);
-        GroupChannel GetGroupChannelById(int groupChannelID);
+        IEnumerable<SP_Channel> GetListChannelByChannelGroupID(int channelGroupID);
+        ChannelGroup AddChannelGroup(ChannelGroup channelGroup);
+        ChannelGroup GetChannelGroupById(int channelGroupID);
         Channel AddUserToChannel(Channel channel);
         Channel GetChannelByUserId(string userId);
         void RemoveUserChannel(string userId);
@@ -24,20 +24,20 @@ namespace BotProject.Service
     public class ChannelService : IChannelService
     {
         IChannelRepository _channelRepository;
-        IGroupChannelRepository _groupChannelRepository;
+        IChannelGroupRepository _channelGroupRepository;
         IUnitOfWork _unitOfWork;
         public ChannelService(IChannelRepository channelRepository,
-                              IGroupChannelRepository groupChannelRepository,
+                              IChannelGroupRepository channelGroupRepository,
                               IUnitOfWork unitOfWork)
         {
             _channelRepository = channelRepository;
-            _groupChannelRepository = groupChannelRepository;
+            _channelGroupRepository = channelGroupRepository;
             _unitOfWork = unitOfWork;
         }
 
-        public GroupChannel AddGroupChannel(GroupChannel grChannel)
+        public ChannelGroup AddChannelGroup(ChannelGroup grChannel)
         {
-            return _groupChannelRepository.Add(grChannel);
+            return _channelGroupRepository.Add(grChannel);
         }
 
         public Channel AddUserToChannel(Channel channel)
@@ -50,12 +50,12 @@ namespace BotProject.Service
             return _channelRepository.GetSingleByCondition(x => x.UserID == userId);
         }
 
-        public GroupChannel GetGroupChannelById(int groupChannelID)
+        public ChannelGroup GetChannelGroupById(int groupChannelID)
         {
-            return _groupChannelRepository.GetSingleById(groupChannelID);
+            return _channelGroupRepository.GetSingleById(groupChannelID);
         }
 
-        public IEnumerable<SP_Channel> GetListChannelByGorupChanelID(int groupChannelID)
+        public IEnumerable<SP_Channel> GetListChannelByChannelGroupID(int groupChannelID)
         {
             return _channelRepository.sp_GetListChannel(groupChannelID);
         }

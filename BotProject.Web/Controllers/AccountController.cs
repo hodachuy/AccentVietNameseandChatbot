@@ -126,15 +126,15 @@ namespace BotProject.Web.Controllers
                         listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
 
                         // Livechat add user owner group channel
-                        var groupChannel = new GroupChannel();
-                        groupChannel.Name = "General-" + user.UserName;
-                        groupChannel.OwnerId = applicationUserViewModel.Id;
-                        _channelService.AddGroupChannel(groupChannel);
+                        var channelGroup = new ChannelGroup();
+                        channelGroup.Name = "General-" + user.UserName;
+                        channelGroup.OwnerId = applicationUserViewModel.Id;
+                        _channelService.AddChannelGroup(channelGroup);
                         _channelService.Save();
 
                         //Livechat add user to channel
                         var lc_Channel = new Channel();
-                        lc_Channel.GroupChannelID = groupChannel.Id;
+                        lc_Channel.ChannelGroupID = channelGroup.Id;
                         lc_Channel.UserID = applicationUserViewModel.Id;
                         _channelService.AddUserToChannel(lc_Channel);
                         _channelService.Save();
@@ -371,15 +371,15 @@ namespace BotProject.Web.Controllers
                     _appGroupService.Save();
 
                     // Livechat add user owner group channel
-                    var groupChannel = new GroupChannel();
-                    groupChannel.Name = "General-" + user.UserName;
-                    groupChannel.OwnerId = newUser.Id;
-                    _channelService.AddGroupChannel(groupChannel);
+                    var channelGroup = new ChannelGroup();
+                    channelGroup.Name = "General-" + user.UserName;
+                    channelGroup.OwnerId = newUser.Id;
+                    _channelService.AddChannelGroup(channelGroup);
                     _channelService.Save();
 
                     //Livechat add user to channel
                     var lc_Channel = new Channel();
-                    lc_Channel.GroupChannelID = groupChannel.Id;
+                    lc_Channel.ChannelGroupID = channelGroup.Id;
                     lc_Channel.UserID = newUser.Id;
                     _channelService.AddUserToChannel(lc_Channel);
                     _channelService.Save();

@@ -335,7 +335,6 @@ namespace BotProject.Service
                     else
                     {
                         //Tạo mã code đồng nhất cho 2 voucher nếu có
-
                         string telePhoneNumber = phoneNumber;
                         string serialNumber = engineerName;//""
                         string[] strArrSpecial = new string[] {"-", " ",",",":"};
@@ -573,7 +572,6 @@ namespace BotProject.Service
             rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(rsMessage, "{{senderId}}", "", "").ToString();
             return rsHandle;
         }
-
         public HandleResultBotViewModel HandleIsCheckOTP(string OTP, string phoneNumber, string mdVoucherID, string msgTimeOutOTP = "")
         {
             HandleResultBotViewModel rsHandle = new HandleResultBotViewModel();
@@ -663,7 +661,6 @@ namespace BotProject.Service
             rsHandle.TemplateJsonZalo = ZaloTemplate.GetMessageTemplateTextAndQuickReply(msg, "{{senderId}}", "", "").ToString();
             return rsHandle;
         }
-
 
         public HandleResultBotViewModel HandleIsModuleKnowledgeInfoPatient(string mdName, int botID, string notFound)
         {

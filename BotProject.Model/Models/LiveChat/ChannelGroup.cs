@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models.LiveChat
 {
-    [Table("GroupChannels")]
-    public class GroupChannel
+    [Table("ChannelGroups")]
+    public class ChannelGroup
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

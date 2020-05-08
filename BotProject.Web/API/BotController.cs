@@ -156,6 +156,40 @@ namespace BotProject.Web.API
             });
         }
 
+        [Route("activeBotWithLiveChat")]
+        [HttpPost]
+        public HttpResponseMessage ActiveBotWithLivechat(HttpRequestMessage request, JObject jsonData)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                dynamic json = jsonData;
+                int botID = json.botID;
+                string userID = json.userID;
+
+                var lstBot = _botService.GetListBotByUserID(userID).ToList();
+                if(lstBot.Count() != 0)
+                {
+                    foreach(var bot in lstBot)
+                    {
+                        bot.IsActiveLiveChat = false;
+                        _botService.Update(bot);
+                        _botService.Save();
+                    }
+                }
+
+                var botDb = _botService.GetByID(botID);
+                botDb.IsActiveLiveChat = true;
+                _botService.Update(botDb);
+                _botService.Save();
+
+                response = request.CreateResponse(HttpStatusCode.OK, true);
+
+                return response;
+            });
+        }
+
+
         [Route("deletebot")]
         [HttpPost]
         public HttpResponseMessage DeleteBot(HttpRequestMessage request, JObject jsonData)
@@ -241,7 +275,8 @@ namespace BotProject.Web.API
                     settingDb.BotID = botdB.ID;
                     settingDb.Color = "rgb(75, 90, 148);";
                     settingDb.UserID = botdB.UserID;
-                    settingDb.Logo = "assets/images/user_bot.jpg";
+                    settingDb.FormName = botName;
+                    settingDb.PathCssCustom = "";
                     settingDb.FacebookAppSecrect = "";
                     settingDb.FacebookPageToken = "";
                     settingDb.ZaloAppSecrect = "";
@@ -356,9 +391,7 @@ namespace BotProject.Web.API
                                                             btnPostbackDb = buttonPostback;
                                                             btnPostbackDb.TempGnrItemID = templateGenericItemDb.ID;
                                                             btnPostbackDb.CardID = cardDb.ID;
-
                                                             // so sánh cardpayload với cardcloneparentid để update lại
-
                                                             _commonCardService.AddButtonPostback(btnPostbackDb);
                                                             _commonCardService.Save();
                                                         }
@@ -464,13 +497,15 @@ namespace BotProject.Web.API
                         foreach (var newCard in lstNewCard)
                         {
                             Card newCardDb = new Card();
-                            newCardDb = _cardService.GetByID(newCard.ID);
+                            newCardDb = newCard;
                             if (newCardDb.CardStepID != null)
                             {
                                 newCardDb.CardStepID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == newCardDb.CardStepID).ID;
-                                _cardService.Update(newCardDb);
-                                _cardService.Save();
                             }
+                            newCardDb.PatternText = "postback_card_" + newCardDb.ID;
+                            _cardService.Update(newCardDb);
+                            _cardService.Save();
+
                             var lstButtonPostback = _commonCardService.GetListButtonPostbackByCardID(newCard.ID).ToList();
                             if (lstButtonPostback != null && lstButtonPostback.Count() != 0)
                             {
@@ -494,22 +529,25 @@ namespace BotProject.Web.API
                                 {
                                     Model.Models.QuickReply quickReplyDb = new Model.Models.QuickReply();
                                     quickReplyDb = quickReply;
-                                    int newCardPayloadID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == quickReplyDb.CardPayloadID).ID;
-                                    quickReplyDb.CardPayloadID = newCardPayloadID;
-                                    quickReplyDb.Payload = "postback_card_" + newCardPayloadID;
+                                    if(quickReplyDb.CardPayloadID != null)
+                                    {
+                                        int newCardPayloadID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == quickReplyDb.CardPayloadID).ID;
+                                        quickReplyDb.CardPayloadID = newCardPayloadID;
+                                        quickReplyDb.Payload = "postback_card_" + newCardPayloadID;
+                                    }
+
                                     _commonCardService.UpdateQuickReply(quickReplyDb);
                                     _commonCardService.Save();
                                 }
                             }
                         }
 
-                        // create aiml file
-                        foreach(var card in lstNewCard)
+                        // Create new file aiml card
+                        foreach (var card in lstNewCard)
                         {
                             CreateAIMLFileByCardID(card.ID, botdB.UserID);
                         }
                     }
-
 
                     // update setting card getstarted
                     if (settingDb.CardID != null)
@@ -534,16 +572,19 @@ namespace BotProject.Web.API
                             _qnaService.AddFormQnAnswer(ref formQnaDb);
                             _qnaService.Save();
 
-                            var lstQuestionGroup = _qnaService.GetListQuestionGroupByFormQnAnswerID(formQnACloneID).ToList();
+                            var lstQuestionGroup = _qnaService.GetListQuestionGroupByFormQnAnswerPagination(formQnACloneID,1,999999999).ToList();
                             if(lstQuestionGroup.Count() != 0)
                             {
                                 foreach(var questionGroup in lstQuestionGroup)
                                 {
                                     int questionGroupCloneID = questionGroup.ID;
                                     QuestionGroup questionGroupDb = new QuestionGroup();
-                                    questionGroupDb = questionGroup;
+
                                     questionGroupDb.FormQuestionAnswerID = formQnaDb.ID;
                                     questionGroupDb.BotID = botdB.ID;
+                                    questionGroupDb.CreatedDate = questionGroup.CreatedDate;
+                                    questionGroupDb.IsKeyword = questionGroup.IsKeyword;
+                                    questionGroupDb.Index = questionGroup.Index;
                                     _qnaService.AddQuesGroup(questionGroupDb);
                                     _qnaService.Save();
 
@@ -567,8 +608,12 @@ namespace BotProject.Web.API
                                         {
                                             Answer answerDb = new Answer();
                                             answerDb = answer;
-                                            answerDb.CardID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == answerDb.CardID).ID;
-                                            answerDb.CardPayload = "postback_card_" + answerDb.CardID;
+                                            if(answerDb.CardID != null)
+                                            {
+                                                answerDb.CardID = lstNewCard.SingleOrDefault(x => x.CardCloneParentID == answerDb.CardID).ID;
+                                                answerDb.CardPayload = "postback_card_" + answerDb.CardID;
+                                            }
+
                                             answerDb.QuestionGroupID = questionGroupDb.ID;
                                             _qnaService.AddAnswer(answerDb);
                                             _qnaService.Save();
@@ -579,31 +624,24 @@ namespace BotProject.Web.API
                         }
                     }
 
+                    //Create new file aiml formQna
                     var lstNewFormQna = _qnaService.GetListFormByBotID(botdB.ID).ToList();
                     if(lstNewFormQna.Count() != 0)
                     {
                         foreach(var formQnA in lstNewFormQna)
                         {
-                            var lstQuestionGroup = _qnaService.GetListQuestionGroupByFormQnAnswerID(formQnA.ID).ToList();
-                            if(lstQuestionGroup.Count() != 0)
-                            {
-                                foreach(var qGroup in lstQuestionGroup)
-                                {
-                                    CreateAIMLFileFormQnaByCardID(qGroup.ID, botdB.ID);
-                                }
-                            }
+                            CreateAIMLFileFormQnaByCardID(formQnA.ID, formQnA.Name, botdB.UserID, botdB.ID);                          
                         }
                     }
-
                     response = request.CreateResponse(HttpStatusCode.OK, new {status = true, data = botdB });
                 }
                 catch(Exception ex)
                 {
-                    BotLog.Error("Log BotProject.Web/API/BotController/CloneBot: " + ex.Message);
+                    BotLog.Error("Log BotProject.Web/API/BotController/CloneBot: " + ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
                     botdB.Status = false;
                     _botService.Update(botdB);
                     _botService.Save();
-                    response = request.CreateResponse(HttpStatusCode.BadRequest, new { status = false, data = ex.Message});
+                    return request.CreateResponse(HttpStatusCode.OK, new { status = false, data = ex.Message});
                 }
                 return response;
             });
@@ -968,12 +1006,12 @@ namespace BotProject.Web.API
             }
             catch(Exception ex)
             {
-
+                BotLog.Error("Log BotProject.Web/API/BotController/CreateAIMLFileByCardID: " + ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
             }
 
         }
 
-        public void CreateAIMLFileFormQnaByCardID(int formQnaID, int botID)
+        public void CreateAIMLFileFormQnaByCardID(int formQnaID,string formName, string userId, int botID)
         {
             var lstQnaGroup = _qnaService.GetListQuesGroupToAimlByFormQnAnswerID(formQnaID).ToList();
             StringBuilder sbFormDb = new StringBuilder();
@@ -1002,89 +1040,89 @@ namespace BotProject.Web.API
                         var itemQGroup = lstQnaGroup[indexQGroup];
                         var lstAnswer = itemQGroup.Answers.ToList();
                         var lstQuestion = itemQGroup.Questions.ToList();
-                        if (lstQuestion.Count() == 0 && lstAnswer.Count() == 0)
+                        if (lstQuestion.Count() != 0 && lstAnswer.Count() != 0)
                         {
-                        }
-                        string postbackAnswer = String.Empty;
-                        if (lstAnswer.Count() != 0 && lstAnswer.Count() > 1)
-                        {
-                            StringBuilder sb = new StringBuilder();
+                            string postbackAnswer = String.Empty;
+                            if (lstAnswer.Count() != 0 && lstAnswer.Count() > 1)
+                            {
+                                StringBuilder sb = new StringBuilder();
 
-                            int totalAnswer = lstAnswer.Count();
-                            postbackAnswer = "postback_answer_" + itemQGroup.ID;
-                            sb.AppendLine("<category>");
-                            sb.AppendLine("<pattern>" + postbackAnswer + "</pattern>");
-                            sb.AppendLine("<template>");
-                            sb.AppendLine("<random>");
-                            for (int indexA = 0; indexA < totalAnswer; indexA++)
-                            {
-                                var itemAnswer = lstAnswer[indexA];
-                                if (!String.IsNullOrEmpty(itemAnswer.ContentText))
+                                int totalAnswer = lstAnswer.Count();
+                                postbackAnswer = "postback_answer_" + itemQGroup.ID;
+                                sb.AppendLine("<category>");
+                                sb.AppendLine("<pattern>" + postbackAnswer + "</pattern>");
+                                sb.AppendLine("<template>");
+                                sb.AppendLine("<random>");
+                                for (int indexA = 0; indexA < totalAnswer; indexA++)
                                 {
-                                    sb.AppendLine("<li>" + itemAnswer.ContentText + "</li>");
+                                    var itemAnswer = lstAnswer[indexA];
+                                    if (!String.IsNullOrEmpty(itemAnswer.ContentText))
+                                    {
+                                        sb.AppendLine("<li>" + itemAnswer.ContentText + "</li>");
+                                    }
+                                    else
+                                    {
+                                        sb.AppendLine("<li>" + itemAnswer.CardPayload + "</li>");
+                                    }
                                 }
-                                else
-                                {
-                                    sb.AppendLine("<li>" + itemAnswer.CardPayload + "</li>");
-                                }
-                            }
-                            sb.AppendLine("</random>");
-                            sb.AppendLine("</template>");
-                            sb.AppendLine("</category>");
-                            //sw.WriteLine(sb.ToString());
-                            sbFormDb.AppendLine(sb.ToString());
-                        }
-                        else
-                        {
-                            if (!String.IsNullOrEmpty(lstAnswer[0].ContentText))
-                            {
-                                postbackAnswer = lstAnswer[0].ContentText;
+                                sb.AppendLine("</random>");
+                                sb.AppendLine("</template>");
+                                sb.AppendLine("</category>");
+                                //sw.WriteLine(sb.ToString());
+                                sbFormDb.AppendLine(sb.ToString());
                             }
                             else
                             {
-                                postbackAnswer = lstAnswer[0].CardPayload;
-                            }
-                        }
-                        if (lstQuestion.Count != 0)
-                        {
-                            foreach (var item in lstQuestion)
-                            {
-                                for (int indexQ = 0; indexQ < _userSayStart.Length; indexQ++)
+                                if (!String.IsNullOrEmpty(lstAnswer[0].ContentText))
                                 {
-                                    var itemQ = item;
-                                    string patternText = "";
-                                    string tempAnswer = postbackAnswer;
-                                    if (postbackAnswer.Contains("postback"))
-                                    {
-                                        tempAnswer = "<srai>" + postbackAnswer + "</srai>";
-                                    }
-                                    //sw.WriteLine("<category>");
-                                    //sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
-                                    //sw.WriteLine("<template>"+ tempAnswer + "</template>");
-                                    //sw.WriteLine("</category>");
-                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDefault)
-                                    {
-                                        patternText = itemQ.ContentText.ToUpper();
-                                    }
-                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartFirst)
-                                    {
-                                        patternText = "* " + itemQ.ContentText.ToUpper();
-                                    }
-                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartLast)
-                                    {
-                                        patternText = itemQ.ContentText.ToUpper() + " *";
-                                    }
-                                    if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDouble)
-                                    {
-                                        patternText = "* " + itemQ.ContentText.ToUpper() + " *";
-                                    }
-                                    sbFormDb.AppendLine("<category>");
-                                    sbFormDb.AppendLine("<pattern>" + patternText + "</pattern>");
-                                    sbFormDb.AppendLine("<template>" + tempAnswer + "</template>");
-                                    sbFormDb.AppendLine("</category>");
+                                    postbackAnswer = lstAnswer[0].ContentText;
+                                }
+                                else
+                                {
+                                    postbackAnswer = lstAnswer[0].CardPayload;
                                 }
                             }
-                        }
+                            if (lstQuestion.Count != 0)
+                            {
+                                foreach (var item in lstQuestion)
+                                {
+                                    for (int indexQ = 0; indexQ < _userSayStart.Length; indexQ++)
+                                    {
+                                        var itemQ = item;
+                                        string patternText = "";
+                                        string tempAnswer = postbackAnswer;
+                                        if (postbackAnswer.Contains("postback"))
+                                        {
+                                            tempAnswer = "<srai>" + postbackAnswer + "</srai>";
+                                        }
+                                        //sw.WriteLine("<category>");
+                                        //sw.WriteLine("<pattern>"+itemQ.ContentText.ToUpper()+"</pattern>");
+                                        //sw.WriteLine("<template>"+ tempAnswer + "</template>");
+                                        //sw.WriteLine("</category>");
+                                        if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDefault)
+                                        {
+                                            patternText = itemQ.ContentText.ToUpper();
+                                        }
+                                        if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartFirst)
+                                        {
+                                            patternText = "* " + itemQ.ContentText.ToUpper();
+                                        }
+                                        if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartLast)
+                                        {
+                                            patternText = itemQ.ContentText.ToUpper() + " *";
+                                        }
+                                        if (_userSayStart[indexQ] == CommonConstants.UserSay_IsStartDouble)
+                                        {
+                                            patternText = "* " + itemQ.ContentText.ToUpper() + " *";
+                                        }
+                                        sbFormDb.AppendLine("<category>");
+                                        sbFormDb.AppendLine("<pattern>" + patternText + "</pattern>");
+                                        sbFormDb.AppendLine("<template>" + tempAnswer + "</template>");
+                                        sbFormDb.AppendLine("</category>");
+                                    }
+                                }
+                            }
+                        }                  
                     }
                 }
                 //sw.WriteLine("</aiml>");
@@ -1096,13 +1134,15 @@ namespace BotProject.Web.API
                 aimlFileDb.FormQnAnswerID = formQnaID;
                 aimlFileDb.Extension = "aiml";
                 aimlFileDb.Status = true;
+                aimlFileDb.Name = formName;
+                aimlFileDb.UserID = userId;
                 aimlFileDb.Content = sbFormDb.ToString();
                 _aimlFileService.Create(aimlFileDb);
                 _aimlFileService.Save();
             }
-            catch (Exception EX)
+            catch (Exception ex)
             {
-
+                BotLog.Error("Log BotProject.Web/API/BotController/CreateAIMLFileFormQnaByCardID: " + ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
             }
         }
     }

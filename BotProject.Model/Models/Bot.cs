@@ -29,7 +29,7 @@ namespace BotProject.Model.Models
 
         public int? BotCloneParentID { set; get; }
 
-        //public DateTime? LastTrainTime { set; get; }
+        public bool IsActiveLiveChat { set; get; }
 
         [Required]
         [StringLength(128)]

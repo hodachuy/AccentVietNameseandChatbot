@@ -95,7 +95,7 @@
     <Compile Include="Models\LiveChat\ChatWidgetCustomization.cs" />
     <Compile Include="Models\LiveChat\Customer.cs" />
     <Compile Include="Models\LiveChat\Device.cs" />
-    <Compile Include="Models\LiveChat\GroupChannel.cs" />
+    <Compile Include="Models\LiveChat\ChannelGroup.cs" />
     <Compile Include="Models\FileDocument.cs" />
     <Compile Include="Models\History.cs" />
     <Compile Include="Models\AIMLFile.cs" />

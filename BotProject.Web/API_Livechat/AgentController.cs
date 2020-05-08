@@ -28,8 +28,8 @@ namespace BotProject.Web.API_Livechat
             {
                 HttpResponseMessage response;
                 dynamic json = jsonData;
-                int groupChannelId = json.groupChannelId;
-                var lstAgent = _channelService.GetListChannelByGorupChanelID(groupChannelId);
+                int channelGroupID = json.groupChannelId;
+                var lstAgent = _channelService.GetListChannelByChannelGroupID(channelGroupID);
                 response = request.CreateResponse(HttpStatusCode.OK, lstAgent);
                 return response;
             });

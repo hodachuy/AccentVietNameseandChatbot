@@ -67,7 +67,7 @@ namespace BotProject.Data
         public DbSet<AttributePlatformUser> AttributePlatformUsers { set; get;}
         public DbSet<Message> Messages { set; get; }
         public DbSet<Channel> Channels { set; get; }
-        public DbSet<GroupChannel> GroupChannels { set; get; }
+        public DbSet<ChannelGroup> ChannelGroups { set; get; }
         public DbSet<Thread> Threads { set; get; }
         public DbSet<ThreadParticipant> ThreadParticipants { set; get; }
         public DbSet<Device> Devices { set; get; }

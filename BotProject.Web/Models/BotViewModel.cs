@@ -45,6 +45,8 @@ namespace BotProject.Web.Models
         public string FacebookToken { set; get; }
         public string ZaloToken { set; get; }
 
+        public bool IsActiveLiveChat { set; get; }
+
         public virtual ApplicationUserViewModel User { set; get; }
 
         public virtual IEnumerable<CardViewModel> Cards { set; get; }

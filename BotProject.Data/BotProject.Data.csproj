@@ -622,6 +622,18 @@
     <Compile Include="Migrations\202005060617261_AddBotCloneID.Designer.cs">
       <DependentUpon>202005060617261_AddBotCloneID.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005080455585_UpdateChannelGroup.cs" />
+    <Compile Include="Migrations\202005080455585_UpdateChannelGroup.Designer.cs">
+      <DependentUpon>202005080455585_UpdateChannelGroup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005080723273_UpdateBot.cs" />
+    <Compile Include="Migrations\202005080723273_UpdateBot.Designer.cs">
+      <DependentUpon>202005080723273_UpdateBot.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005080732301_UpdateBotActive.cs" />
+    <Compile Include="Migrations\202005080732301_UpdateBotActive.Designer.cs">
+      <DependentUpon>202005080732301_UpdateBotActive.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\LiveChat\ActionChatRepository.cs" />
@@ -655,7 +667,7 @@
     <Compile Include="Repositories\ErrorRepository.cs" />
     <Compile Include="Repositories\FileCardRepository.cs" />
     <Compile Include="Repositories\GroupCardRepository.cs" />
-    <Compile Include="Repositories\LiveChat\GroupChannelRepository.cs" />
+    <Compile Include="Repositories\LiveChat\ChannelGroupRepository.cs" />
     <Compile Include="Repositories\HistoryRepository.cs" />
     <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\MdAdminContactRepository.cs" />
@@ -1110,6 +1122,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005060617261_AddBotCloneID.resx">
       <DependentUpon>202005060617261_AddBotCloneID.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005080455585_UpdateChannelGroup.resx">
+      <DependentUpon>202005080455585_UpdateChannelGroup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005080723273_UpdateBot.resx">
+      <DependentUpon>202005080723273_UpdateBot.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005080732301_UpdateBotActive.resx">
+      <DependentUpon>202005080732301_UpdateBotActive.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

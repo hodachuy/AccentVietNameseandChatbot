@@ -27,5 +27,7 @@ namespace BotProject.Web.Models
         public IEnumerable<ApplicationGroupViewModel> Groups { set; get; }
 
         public Channel Channels { set; get; }
+
+        public int? BotActiveID { set; get; }
     }
 }

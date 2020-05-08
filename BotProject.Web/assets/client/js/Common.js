@@ -399,14 +399,8 @@ var common = {
                         type: "success"
                     }, function () { $("#model-notify").modal('show'); });
                 } else {
+                    alert("Lưu thất bại, vui lòng liên hệ quản trị");
                     console.log(response.data)
-                    $("#model-notify").modal('hide');
-                    swal({
-                        title: "Thông báo",
-                        text: "Lưu thất bại, vui lòng liên hệ quản trị",
-                        confirmButtonColor: "#EF5350",
-                        type: "error"
-                    }, function () { $("#model-notify").modal('show'); });
                 }
             });
         })

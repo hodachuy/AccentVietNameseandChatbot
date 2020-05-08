@@ -17,7 +17,7 @@ namespace BotProject.Model.Models.LiveChat
 
         [Key]
         [Column(Order = 2)]
-        public long GroupChannelID { set; get; }
+        public long ChannelGroupID { set; get; }
 
         public string UserID { set; get; }
 
@@ -25,8 +25,8 @@ namespace BotProject.Model.Models.LiveChat
 
         public DateTime CreatedDate { set; get; }
 
-        [ForeignKey("GroupChannelID")]
-        public virtual GroupChannel GroupChannel { set; get; }
+        [ForeignKey("ChannelGroupID")]
+        public virtual ChannelGroup GroupChannel { set; get; }
 
         [ForeignKey("ThreadID")]
         public virtual Thread Thread { set; get; }

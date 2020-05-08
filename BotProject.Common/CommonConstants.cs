@@ -57,10 +57,18 @@ namespace BotProject.Common
         public const string BOT_REQUEST_TEXT = "text";
         public const string BOT_REQUEST_PAYLOAD_POSTBACK = "payload_postback";
 
-        // User
+
+        #region Nhóm tài khoản livechat
         public const int GROUP_OWNER = 1;
-        public const int GROUP_ADMIN = 2; // Chuyển admin sang admin tổng toàn bộ, chỉ còn 2 nhóm owner và support
+        public const int GROUP_ADMIN = 2;
         public const int GROUP_SUPPORT = 3;
+        #endregion
+
+        /// <summary>
+        /// Nhóm tài khoản quản lý toàn bộ hệ thống,
+        /// xem tất cả danh sách bot tài khoản clone khác, viết dashboard
+        /// </summary>
+        public const int GROUP_SUPER_ADMIN = 4;
     }
     public class ZaloConstans
     {

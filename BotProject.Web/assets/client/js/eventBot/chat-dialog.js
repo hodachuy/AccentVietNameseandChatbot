@@ -24,9 +24,9 @@ var configs = {
 $(function () {
     cboxEvent.init();
     // Chạy ngầm trước để load thư viện có dấu
-    setTimeout(function () {
-        msgEvent.getMessageAccentVN('abc');
-    }, 1500)
+    //setTimeout(function () {
+    //    msgEvent.getMessageAccentVN('abc');
+    //}, 1500)
 });
 var cboxEvent = {
     init: function () {
@@ -249,7 +249,7 @@ var msgEvent = {
     getMessageAccentVN: function (text) {
         var rs = "";
         $.ajax({
-            url: _Host + api.getAccentVN + '?text=' + text,//"https://bot.digipro.vn/"
+            url: "https://bot.digipro.vn/" + api.getAccentVN + '?text=' + text,//"https://bot.digipro.vn/"
             contentType: 'application/json; charset=utf-8',
             type: 'GET',
             async: false,

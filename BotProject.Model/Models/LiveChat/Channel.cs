@@ -16,10 +16,10 @@ namespace BotProject.Model.Models.LiveChat
         public long ID { set; get;}
 
         [Required]
-        public long GroupChannelID { set; get; }
+        public long ChannelGroupID { set; get; }
 
-        [ForeignKey("GroupChannelID")]
-        public virtual GroupChannel GroupChannel { set; get; }
+        [ForeignKey("ChannelGroupID")]
+        public virtual ChannelGroup ChannelGroup { set; get; }
 
         public string UserID { set; get; }
     }
