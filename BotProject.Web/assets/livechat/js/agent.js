@@ -20,12 +20,13 @@ var configs = { idgrid: "#grid" },
         UserName: $("#userName").val(),
         appGroupId: $("#appGroupId").val(),
         appGroupName: $("#appGroupName").val(),
-        groupChannelId: $("#groupChannelId").val()
+        channelGroupId: $("#channelGroupId").val()
     },
     ansModel = {
         AnswerID: '',
         ContentHTML: '',
     }
+console.log(userModel)
 $(function () {
     agentTable.init();
     //qnaEvent.init();
@@ -126,7 +127,7 @@ var agentTable = {
     },
     getListAgents: function () {
         var param = {
-            groupChannelId: userModel.groupChannelId
+            channelGroupId: userModel.channelGroupId
         }
         param = JSON.stringify(param)
         $.ajax({
@@ -177,9 +178,15 @@ var agentTable = {
             html += '<td>';
             html += '	<span class="badge bg-success-bright text-success">Chatbot</span>';
             html += '</td>';
-            html += '<td>';
-            html += '	<span class="badge bg-warning text-dark">OFF</span>';
-            html += '</td>';
+            if (value.IsActiveLiveChat) {
+                html += '<td>';
+                html += '	<span class="badge bg-success-bright text-success">ON</span>';
+                html += '</td>';
+            } else {
+                html += '<td>';
+                html += '	<span class="badge bg-warning text-dark">OFF</span>';
+                html += '</td>';
+            }
             html += '<td>';
             html += '	<span class="badge bg-info-bright text-dark"></span>';
             html += '</td>';

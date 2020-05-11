@@ -8775,7 +8775,7 @@ label.switchery-xs {
         border: solid 2px #e4e9f3;
         background-color: #ffffff;
         padding: 0;
-        cursor: pointer;
+        /*cursor: pointer;*/
     }
 
         #collapseDiv_0 .bot-style .bot-header {
@@ -8964,3 +8964,7 @@ label.switchery-xs {
     font-size: 14px;
     margin-right: 8px;
 }
+
+    .bg-success-bright {
+        background: rgba(40, 199, 111, 0.3) !important;
+    }

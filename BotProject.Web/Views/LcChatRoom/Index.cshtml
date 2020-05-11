@@ -1,11 +1,10 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int botId = ViewBag.BotID;
 }
+<input type="hidden" id="botId" value="@botId" />
 <link href="~/assets/client/css/chat-room.css" rel="stylesheet" />
-<input type="hidden" id="userID" value="4d1d77aa-42a7-4e88-97a6-baed104c2e60" />
-<input type="hidden" id="botId" value="5039" />
 <div class="content">
     <div class="row no-gutters chat-block">
         <!-- begin::chat sidebar -->

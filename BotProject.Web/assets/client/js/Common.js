@@ -3,7 +3,8 @@
     urlSettingBot = "api/setting/getbybotid",
     urlDeleteBot = "api/bot/deletebot",
     urlGetAllBot = "api/bot/getall",
-    urlCloneBot = "api/bot/clone";
+    urlCloneBot = "api/bot/clone",
+    urlActiveBot = "Account/ActiveBotWithLivechat";//"api/bot/activeBotWithLiveChat";
 var bot = {
     Name: '',
     Alias: '',
@@ -175,6 +176,48 @@ var common = {
                     }
                 }
             })
+        });
+
+        $('body').on('click', '.switchery', function () {
+            var tempNonChecked = '<span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>';
+            var tempChecked = '<span class="switchery switchery-default" style="background-color: rgb(100, 189, 99); border-color: rgb(100, 189, 99); box-shadow: rgb(100, 189, 99) 0px 0px 0px 8px inset; transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s, background-color 1.2s ease 0s;"><small style="left: 19px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s; background-color: rgb(255, 255, 255);"></small></span>';
+            $(this).next().remove();
+            if ($(this).prop('checked')) {
+                $(this).next().remove();
+                $(tempChecked).insertAfter($(this))
+                $($(this).parent().parent().next().next()).removeClass("hidden");
+            } else {
+                $(this).next().remove();
+                $(tempNonChecked).insertAfter($(this))
+                $($(this).parent().parent().next().next()).addClass("hidden");
+            }
+        });
+        $('body').on('change', '.chkActiveBotWithLiveChat', function () {
+            var botId = $(this).parent().parent().attr('data-bot-id');
+            var userId = $('#userId').val();
+            var params = {
+                botID: botId,
+                userID: userId,
+                isActiveLivechat: true
+            }
+
+            if ($(this).is(":checked")) {
+                $(this).val('true');
+            } else {
+                $(this).val('false');
+                params.isActiveLivechat = false;
+            }
+            params = JSON.stringify(params);
+            var svr = new AjaxCall(urlActiveBot, params);
+            svr.callServicePOST(function (data) {
+                $("#model-notify").modal('hide');
+                swal({
+                    title: "Thông báo",
+                    text: data.message,
+                    confirmButtonColor: "#EF5350",
+                    type: "success"
+                }, function () { $("#model-notify").modal('show'); });
+            });
         })
     },
     getSeoTitle: function (input) {
@@ -207,7 +250,7 @@ var common = {
 
         return slug;
     },
-    templateBot :function(data){
+    templateBot: function (data) {
         var html = '';
         html += '<div class="col-lg-4 col-md-6 col-12 bot-role-1" style="padding-bottom: 15px;">';
         html += '        <div class="dropdown dropleft btn-bot-setting-home show">';
@@ -345,12 +388,12 @@ var common = {
             $('#txtBotTemplate').val('');
             $('#modalCreateBot').modal('show');
         })
-        
+
         $('body').on('click', '#btnCancleSaveBot', function (e) {
             $('#modalCreateBot').modal('hide');
         })
     },
-    cloneBot: function(){
+    cloneBot: function () {
         $('body').on('click', '.card-tmp-bot', function (e) {
             if ($('#userId').val() == "4d1d77aa-42a7-4e88-97a6-baed104c2e60") {
                 swal({
@@ -447,7 +490,7 @@ var common = {
         var botId = $("#botId").val();
         if (botId != undefined) {
             var param = {
-                userID: $("#userId").val()
+                userId: $("#userId").val()
             }
             var svr = new AjaxCall(urlGetAllBot, param);
             svr.callServiceGET(function (response) {
@@ -458,7 +501,7 @@ var common = {
                     var html = '';
                     html += '<li class="nav-item nav-item-bot">';
                     html += '<a class="nav-link active" id="nav-bot-id-' + data.ID + '" data-id="' + data.ID + '" href="#" data-toggle="collapse" aria-expanded="false" data-target="#submenu-' + data.ID + '" aria-controls="submenu-' + data.ID + '">';
-                    html += '<img src="'+_Host+'/assets/images/logo/icon-bot-v2.png" style="width:40px;height:30px"/>BOT - ' + data.Name.toUpperCase() + '';
+                    html += '<img src="' + _Host + '/assets/images/logo/icon-bot-v2.png" style="width:40px;height:30px"/>BOT - ' + data.Name.toUpperCase() + '';
                     html += '</a>';
                     html += '<div id="submenu-' + data.ID + '" class="submenu collapse show" style="">';
                     html += '<ul class="nav flex-column">';
@@ -510,7 +553,10 @@ var common = {
                     html += '</div>';
                     html += '</li>';
                     $('#bot-category').empty().append(html);
+
                     common.eventNavbar();
+
+                    // Dropdown list category bot
                     var tempHeaderBotCategory = '';
                     tempHeaderBotCategory += '<ul class="navbar-nav mr-auto navbar-left-top">';
                     tempHeaderBotCategory += '<li class="nav-item dropdown nav-bot">';

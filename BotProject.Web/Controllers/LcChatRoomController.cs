@@ -8,15 +8,16 @@ using BotProject.Service;
 
 namespace BotProject.Web.Controllers
 {
-    public class ChatRoomController : BaseController
+    public class LcChatRoomController : BaseController
     {
-        public ChatRoomController(IErrorService errorService) : base(errorService)
+        public LcChatRoomController(IErrorService errorService) : base(errorService)
         {
         }
 
         // GET: ChatRoom
         public ActionResult Index()
         {
+            ViewBag.BotID = UserInfo.BotActiveID; 
             return View();
         }
     }

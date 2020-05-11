@@ -114,7 +114,6 @@ namespace BotProject.Web.API
             });
         }
 
-
         [Route("create")]
         [HttpPost]
         public HttpResponseMessage Create(HttpRequestMessage request, BotViewModel botVm)
@@ -166,6 +165,7 @@ namespace BotProject.Web.API
                 dynamic json = jsonData;
                 int botID = json.botID;
                 string userID = json.userID;
+                bool isActiveLivechat = json.isActiveLivechat;
 
                 var lstBot = _botService.GetListBotByUserID(userID).ToList();
                 if(lstBot.Count() != 0)
@@ -179,7 +179,7 @@ namespace BotProject.Web.API
                 }
 
                 var botDb = _botService.GetByID(botID);
-                botDb.IsActiveLiveChat = true;
+                botDb.IsActiveLiveChat = isActiveLivechat;
                 _botService.Update(botDb);
                 _botService.Save();
 
@@ -637,7 +637,7 @@ namespace BotProject.Web.API
                 }
                 catch(Exception ex)
                 {
-                    BotLog.Error("Log BotProject.Web/API/BotController/CloneBot: " + ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
+                    BotLog.Error(ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
                     botdB.Status = false;
                     _botService.Update(botdB);
                     _botService.Save();
@@ -1006,7 +1006,7 @@ namespace BotProject.Web.API
             }
             catch(Exception ex)
             {
-                BotLog.Error("Log BotProject.Web/API/BotController/CreateAIMLFileByCardID: " + ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
+                BotLog.Error(ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
             }
 
         }
@@ -1142,7 +1142,7 @@ namespace BotProject.Web.API
             }
             catch (Exception ex)
             {
-                BotLog.Error("Log BotProject.Web/API/BotController/CreateAIMLFileFormQnaByCardID: " + ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
+                BotLog.Error(ex.StackTrace + " " + ex.InnerException.Message + ex.Message);
             }
         }
     }

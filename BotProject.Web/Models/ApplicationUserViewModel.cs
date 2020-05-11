@@ -28,6 +28,6 @@ namespace BotProject.Web.Models
 
         public Channel Channels { set; get; }
 
-        public int? BotActiveID { set; get; }
+        public int BotActiveID { set; get; }
     }
 }

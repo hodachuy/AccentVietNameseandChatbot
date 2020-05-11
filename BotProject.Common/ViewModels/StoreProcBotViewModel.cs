@@ -24,7 +24,7 @@ namespace BotProject.Common.ViewModels
         public string MetaKeyword { set; get; }
 
         public string MetaDescription { set; get; }
-
+        public bool IsActiveLiveChat { set; get; }
         public bool Status { set; get; }
         public string UserID { set; get; }
         public int TotalCard { set; get; }

@@ -17,6 +17,7 @@ namespace BotProject.Web.Controllers
         // GET: LcAgent
         public ActionResult Index()
         {
+            ViewBag.BotID = UserInfo.BotActiveID;
             return View();
         }
     }

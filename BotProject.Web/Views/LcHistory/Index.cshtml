@@ -2,7 +2,9 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int botId = ViewBag.BotID;
 }
+<input type="hidden" id="botId" value="@botId" />
 
 <h2>Index</h2>
 

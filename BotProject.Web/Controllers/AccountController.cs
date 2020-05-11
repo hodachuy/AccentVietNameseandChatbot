@@ -25,15 +25,18 @@ namespace BotProject.Web.Controllers
         private ApplicationUserManager _userManager;
         private IApplicationGroupService _appGroupService;
         private IChannelService _channelService;
+        private IBotService _botService;
         public AccountController(ApplicationUserManager userManager,
                                  ApplicationSignInManager signInManager,
                                  IChannelService channelService,
-                                 IApplicationGroupService appGroupService)
+                                 IApplicationGroupService appGroupService,
+                                 IBotService botService)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _channelService = channelService;
             _appGroupService = appGroupService;
+            _botService = botService;
         }
 
         public ApplicationSignInManager SignInManager
@@ -89,6 +92,12 @@ namespace BotProject.Web.Controllers
 
                 applicationUserViewModel.Channels = _channelService.GetChannelByUserId(user.Id);
 
+                var lstBot = _botService.GetListBotByUserID(user.Id).Where(x => x.IsActiveLiveChat).ToList();
+                if (lstBot.Count() != 0)
+                {
+                    applicationUserViewModel.BotActiveID = lstBot[0].ID;
+                }
+
                 Session[CommonConstants.SessionUser] = applicationUserViewModel;
 
                 if (!String.IsNullOrEmpty(returnUrl))
@@ -142,6 +151,12 @@ namespace BotProject.Web.Controllers
 
                     applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
                     applicationUserViewModel.Channels = _channelService.GetChannelByUserId(user.Id);
+
+                    var lstBot = _botService.GetListBotByUserID(user.Id).Where(x=>x.IsActiveLiveChat).ToList();
+                    if(lstBot.Count() != 0)
+                    {
+                        applicationUserViewModel.BotActiveID = lstBot[0].ID;
+                    }
 
                     Session[CommonConstants.SessionUser] = applicationUserViewModel;
 
@@ -251,6 +266,44 @@ namespace BotProject.Web.Controllers
                 status = true
             });
         }
+
+        [HttpPost]
+        public JsonResult ActiveBotWithLivechat(int botID, string userID, bool isActiveLivechat)
+        {
+            var lstBot = _botService.GetListBotByUserID(userID).ToList();
+            if (lstBot.Count() != 0)
+            {
+                foreach (var bot in lstBot)
+                {
+                    bot.IsActiveLiveChat = false;
+                    _botService.Update(bot);
+                    _botService.Save();
+                }
+            }
+
+            var botDb = _botService.GetByID(botID);
+            botDb.IsActiveLiveChat = isActiveLivechat;
+            _botService.Update(botDb);
+            _botService.Save();
+
+            var applicationUser = (ApplicationUserViewModel)Session[CommonConstants.SessionUser];
+            applicationUser.BotActiveID = (isActiveLivechat == false ? 0 : botID);
+            Session[CommonConstants.SessionUser] = applicationUser;
+            if (isActiveLivechat)
+            {
+                return Json(new
+                {
+                    message = "Tích hợp với livechat thành công",
+                    status = true
+                });
+            }
+            return Json(new
+            {
+                message = "Đã ngắt tích hợp với livechat",
+                status = true
+            });
+        }
+
 
         //
         // POST: /Account/ExternalLogin

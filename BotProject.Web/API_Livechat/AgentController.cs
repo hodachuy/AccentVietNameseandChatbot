@@ -28,7 +28,7 @@ namespace BotProject.Web.API_Livechat
             {
                 HttpResponseMessage response;
                 dynamic json = jsonData;
-                int channelGroupID = json.groupChannelId;
+                int channelGroupID = json.channelGroupId;
                 var lstAgent = _channelService.GetListChannelByChannelGroupID(channelGroupID);
                 response = request.CreateResponse(HttpStatusCode.OK, lstAgent);
                 return response;

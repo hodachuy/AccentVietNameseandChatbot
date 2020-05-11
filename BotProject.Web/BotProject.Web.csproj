@@ -319,7 +319,7 @@
     <Compile Include="API_Webhook\FacebookController.cs" />
     <Compile Include="API_Webhook\ZaloController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
-    <Compile Include="Controllers\ChatRoomController.cs" />
+    <Compile Include="Controllers\LcChatRoomController.cs" />
     <Compile Include="Controllers\FacebookBotController.cs" />
     <Compile Include="Controllers\LcAgentController.cs" />
     <Compile Include="Controllers\LcCustomerController.cs" />
@@ -1075,7 +1075,7 @@
     <Content Include="Views\Bot\BotMedicalSymptoms.cshtml" />
     <Content Include="Views\Home\FaqMedSymptoms.cshtml" />
     <Content Include="Views\Home\PublicService.cshtml" />
-    <Content Include="Views\ChatRoom\Index.cshtml" />
+    <Content Include="Views\LcChatRoom\Index.cshtml" />
     <Content Include="Views\LcAgent\Index.cshtml" />
     <Content Include="Views\LcHistory\Index.cshtml" />
     <Content Include="Views\LcSetting\Index.cshtml" />
