@@ -17,7 +17,6 @@ var configs = { idgrid: "#grid" },
     },
     userModel = {
         UserID: $("#userId").val(),
-        UserName: $("#userName").val(),
         appGroupId: $("#appGroupId").val(),
         appGroupName: $("#appGroupName").val(),
         channelGroupId: $("#channelGroupId").val()
@@ -163,6 +162,7 @@ var agentTable = {
             html += '</tr>';
         })
         $("#tbl-lst-agent").append(html);
+        $("#tab-agents-count").html(' (' + data.length + ')');
     },
     renderTempChatbot: function (data) {
         var html = '';
@@ -194,6 +194,8 @@ var agentTable = {
         })
 
         $("#tbl-lst-chatbot").append(html);
+        $("#tab-chatbot-count").html(' (' + data.length + ')');
+
     },
     renderTempGroup: function (data) {
         var html = '';
@@ -201,7 +203,7 @@ var agentTable = {
         html += '   <td>';
         html += '      <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>';
         html += '   </td>';
-        html += '   <td>'+data[0].GroupChannelName+' ('+data.length+')</td>';
+        html += '   <td>' + data[0].ChannelGroupName + ' (' + data.length + ')</td>';
         html += '   <td>';
         html += '      <div class="css-15nwuc2" title="ChatBot" style="z-index: 3;"><div size="1" data-test="user-avatar" class="css-1fg5nok css-7e05130"><div class="css-1k0c4ii css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div></div>';
         html += '   </td>';

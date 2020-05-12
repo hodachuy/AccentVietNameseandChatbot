@@ -15,7 +15,6 @@ namespace BotProject.Model.Models.LiveChat
         [Key]
         public string ID { get; set; }
         public string ConnectionID { get; set; }
-
         [MaxLength(200)]
         public string FullName { get; set; }
 
@@ -29,7 +28,7 @@ namespace BotProject.Model.Models.LiveChat
         [MaxLength(20)]
         public string PhoneNumber { get; set; }
         public ApplicationChannel ApplicationChannels { set; get; }
-        public long GroupChannelID { set; get; }
+        public long ChannelGroupID { set; get; }
         public int StatusChatValue { set; get; }
         public int ActionChatValue { set; get; }
         public virtual IEnumerable<Device> Devices { set; get; }

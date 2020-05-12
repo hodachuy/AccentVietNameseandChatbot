@@ -316,9 +316,6 @@
     </div>
 </div>
 @section footerJS{
-    <script src="~/Scripts/jquery.signalR-2.4.0.js"></script>
-    <script src="~/signalr/hubs"></script>
-    <script src="~/static/js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.js"></script>
     <script src="~/assets/client/js/livechat/chat-agent.js"></script>
     <script>
@@ -405,11 +402,24 @@
             });
         }
     </script>
-    <script>
-        var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
-        var encryptedUserID = CryptoJS.AES.encrypt($("#userId").val(), "Secret Passphrase").toString();
-        var encryptedBotID = CryptoJS.AES.encrypt('5039', "Secret Passphrase").toString();
-        lacviet.load('' + encryptedUrl + '', '' + encryptedUserID + '', '' + encryptedBotID + '', 'U2FsdGVkX19D5jsWIYosQVQ4bBWt2cjbzgkJbDAOSB+Igj5G2vGw1bAq+sh1P/Yc')
-    </script>
 
+    <script src="~/assets/livechat/tracking.js"></script>
+    <script>
+            lacviet.load('U2FsdGVkX19D5jsWIYosQVQ4bBWt2cjbzgkJbDAOSB+Igj5G2vGw1bAq+sh1P/Yc')
+    </script>
 }
+
+<style>
+    .lc-1mpchac {
+        display: inline-block;
+        flex-shrink: 0;
+        /* width: 1em; */
+        height: 1em;
+        font-size: 2rem;
+        margin-top: 15px;
+        user-select: none;
+        fill: currentcolor;
+        z-index: 9999;
+        color: rgb(67, 132, 245);
+    }
+</style>

@@ -15,7 +15,7 @@
     @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/fontawesome.min.css" />*@
     <link href="~/assets/client/vendor/fonts/material-design-iconic-font/css/materialdesignicons.min.css" rel="stylesheet" />
     <link href="~/assets/client/css/style.css" rel="stylesheet" />
-    <link href="~/assets/client/css/chatbot-dialog.css" rel="stylesheet" />
+    @*<link href="~/assets/client/css/chatbot-dialog.css" rel="stylesheet" />*@
     <link href="~/assets/client/vendor/bootstrap-colorpicker/claviska/jquery-minicolors/jquery.minicolors.css" rel="stylesheet" />
     <link href="~/assets/client/libs/toastr/toastr.min.css" rel="stylesheet" />
     <link href="~/assets/client/css/sweetalert.css" rel="stylesheet" />
@@ -104,14 +104,14 @@
                                             <a class="nav-link" href="@Url.Action("Index","LcChatRoom")" data-id="">
                                                 <i class="fa fa-comments" aria-hidden="true"></i>
                                                 Hội thoại
-                                                <span class="badge badge-danger" style="display:inline-block !important; right:20px;">3</span>
+                                                <span class="badge badge-danger animate-noti" style="display:inline-block !important; right:20px;">3</span>
                                             </a>
                                         </li>
                                         <li class="nav-item nav-item-bot-sub">
                                             <a class="nav-link" href="@Url.Action("Index","LcCustomer")" data-id="">
                                                 <i class="fa fa-users" aria-hidden="true"></i>
                                                 Khách hàng
-                                                <span class="badge badge-danger" style="display:inline-block !important; right:20px;">1</span>
+                                                <span class="badge badge-danger animate-noti" style="display:inline-block !important; right:20px;">1</span>
                                             </a>
                                         </li>
                                         <li class="nav-item nav-item-bot-sub">
@@ -196,6 +196,9 @@
     <script src="~/assets/client/js/helper/callServiceHelper.js"></script>
     <script src="~/assets/client/js/common.js"></script>
 
+    <!--signalR-->
+    <script src="~/Scripts/jquery.signalR-2.4.0.js"></script>
+    <script src="~/signalr/hubs"></script>
 
     @RenderSection("dialogBotJS", required: false)
     @RenderSection("footerJS", required: false)

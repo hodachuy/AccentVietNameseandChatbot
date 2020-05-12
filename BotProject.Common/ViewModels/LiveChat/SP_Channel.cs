@@ -8,8 +8,8 @@ namespace BotProject.Common.ViewModels.LiveChat
 {
     public class SP_Channel
     {
-        public long GroupChannelID { get; set; }
-        public string GroupChannelName { get; set; }
+        public long ChannelGroupID { get; set; }
+        public string ChannelGroupName { get; set; }
         public long ChannelID { get; set; }
         public string UserId { get; set; }
         public string Email { get; set; }

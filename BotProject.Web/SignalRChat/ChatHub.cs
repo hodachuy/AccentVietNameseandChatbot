@@ -17,7 +17,7 @@ namespace BotProject.Web.SignalRChat
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="threadId"></param>
-        public void ConnectChat(string customerId, string agentId, string groupChanelId, string threadId, string typeConnect)
+        public void ConnectChat(string customerId, string agentId, string channelGroupId, string threadId, string typeConnect)
         {
             var connectionId = Context.ConnectionId;
             _context.Groups.Add(connectionId, threadId);

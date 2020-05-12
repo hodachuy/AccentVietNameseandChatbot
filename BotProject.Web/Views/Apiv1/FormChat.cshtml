@@ -34,26 +34,7 @@
     @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">*@
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     @*<script src="~/assets/client/vendor/bootstrap-4.3.1/bootstrap.min.js"></script>*@
-    <script>
-        var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
-        var _customerId;
-        (function () {
-            // Khởi tạo biến Id định danh khách hàng
-            if (typeof (Storage) !== "undefined") {
-                _customerId = window.localStorage.getItem("lc_customerId");
-                console.log(_customerId)
-                // Code for localStorage/sessionStorage.
-                if (_customerId == null) {
-                    _customerId = '@Guid.NewGuid().ToString()';
-                    window.localStorage.setItem("lc_customerId", _customerId);
-                }
-            } else {
-                // Sorry! No Web Storage support..
-                console.log("No Web Storage support");
-            }
-        })();
 
-    </script>
     <style>
         .hide {
             display: none !important;

@@ -634,6 +634,14 @@
     <Compile Include="Migrations\202005080732301_UpdateBotActive.Designer.cs">
       <DependentUpon>202005080732301_UpdateBotActive.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005120916306_UpdateCustomer12052020.cs" />
+    <Compile Include="Migrations\202005120916306_UpdateCustomer12052020.Designer.cs">
+      <DependentUpon>202005120916306_UpdateCustomer12052020.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005120928292_UpdateUserConnectionID.cs" />
+    <Compile Include="Migrations\202005120928292_UpdateUserConnectionID.Designer.cs">
+      <DependentUpon>202005120928292_UpdateUserConnectionID.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\LiveChat\ActionChatRepository.cs" />
@@ -1131,6 +1139,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005080732301_UpdateBotActive.resx">
       <DependentUpon>202005080732301_UpdateBotActive.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005120916306_UpdateCustomer12052020.resx">
+      <DependentUpon>202005120916306_UpdateCustomer12052020.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005120928292_UpdateUserConnectionID.resx">
+      <DependentUpon>202005120928292_UpdateUserConnectionID.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

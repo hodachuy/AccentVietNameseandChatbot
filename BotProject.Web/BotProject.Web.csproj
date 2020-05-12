@@ -324,6 +324,7 @@
     <Compile Include="Controllers\LcAgentController.cs" />
     <Compile Include="Controllers\LcCustomerController.cs" />
     <Compile Include="Controllers\LcHistoryController.cs" />
+    <Compile Include="Controllers\LcChatBoxController.cs" />
     <Compile Include="Controllers\LcSettingController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
@@ -877,7 +878,14 @@
     <Content Include="assets\images\whatsaquestion.jpg" />
     <Content Include="assets\images\img-zalo.png" />
     <Content Include="assets\images\ảnh-dịch-vụ-công.jpg" />
-    <Content Include="assets\livechat\js\agent.js" />
+    <Content Include="assets\livechat\css\chatbox-dialog.css" />
+    <Content Include="assets\livechat\css\chatbox-UI.css" />
+    <Content Include="assets\livechat\images\fb-mega-icon-2.png" />
+    <Content Include="assets\livechat\images\fb-mega-icon.png" />
+    <Content Include="assets\livechat\js\lc_agent.js" />
+    <Content Include="assets\livechat\js\lc_chatbox.js" />
+    <Content Include="assets\livechat\js\lc_chatroom.js" />
+    <Content Include="assets\livechat\tracking.js" />
     <Content Include="favicon.ico" />
     <Content Include="File\AIML\config\DefaultPredicates.xml" />
     <Content Include="File\AIML\config\GenderSubstitutions.xml" />
@@ -1080,6 +1088,7 @@
     <Content Include="Views\LcHistory\Index.cshtml" />
     <Content Include="Views\LcSetting\Index.cshtml" />
     <Content Include="Views\LcCustomer\Index.cshtml" />
+    <Content Include="Views\LcChatBox\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

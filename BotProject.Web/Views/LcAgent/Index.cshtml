@@ -222,11 +222,11 @@
                         <ul class="nav nav-tabs mb-3" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" id="agents-tab" data-toggle="tab" href="#home" role="tab"
-                                   aria-controls="home" aria-selected="true">Quản trị viên (1)</a>
+                                   aria-controls="home" aria-selected="true">Quản trị viên <span id="tab-agents-count"></span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="chatbots-tab" data-toggle="tab" href="#profile" role="tab"
-                                   aria-controls="profile" aria-selected="false">Chatbots (1)</a>
+                                   aria-controls="profile" aria-selected="false">Chatbots <span id="tab-chatbot-count"></span></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="groups-tab" data-toggle="tab" href="#contact" role="tab"
@@ -368,7 +368,7 @@
 </div>
 
 @section footerJS{
-    <script src="~/assets/livechat/js/agent.js"></script>
+    <script src="~/assets/livechat/js/lc_agent.js"></script>
 
 }
 

@@ -4317,7 +4317,7 @@ Pills vertical
     }
 
 .badge-danger {
-    background-color: #da0419;
+    background-color: #ea5455;
 }
 
     .badge-danger[href]:focus,
@@ -8968,3 +8968,30 @@ label.switchery-xs {
     .bg-success-bright {
         background: rgba(40, 199, 111, 0.3) !important;
     }
+
+
+
+
+@-webkit-keyframes notify-pulse {
+  0% {
+    box-shadow: 0 0 0 0px rgba(234, 84, 85, 0.7);
+  }
+
+  100% {
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+}
+
+@keyframes notify-pulse {
+  0% {
+    box-shadow: 0 0 0 0px rgba(234, 84, 85, 0.7);
+  }
+
+  100% {
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+}
+
+.animate-noti{
+    -webkit-animation: notify-pulse 1s infinite;
+}
