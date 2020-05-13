@@ -143,7 +143,7 @@ namespace BotProject.Web.Controllers
 
                         //Livechat add user to channel
                         var lc_Channel = new Channel();
-                        lc_Channel.ChannelGroupID = channelGroup.Id;
+                        lc_Channel.ChannelGroupID = channelGroup.ID;
                         lc_Channel.UserID = applicationUserViewModel.Id;
                         _channelService.AddUserToChannel(lc_Channel);
                         _channelService.Save();
@@ -432,7 +432,7 @@ namespace BotProject.Web.Controllers
 
                     //Livechat add user to channel
                     var lc_Channel = new Channel();
-                    lc_Channel.ChannelGroupID = channelGroup.Id;
+                    lc_Channel.ChannelGroupID = channelGroup.ID;
                     lc_Channel.UserID = newUser.Id;
                     _channelService.AddUserToChannel(lc_Channel);
                     _channelService.Save();

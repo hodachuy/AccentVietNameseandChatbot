@@ -7,6 +7,8 @@ using System.Web;
 using Microsoft.AspNet.Identity;
 using BotProject.Common;
 using System.Text.RegularExpressions;
+using BotProject.Model.Models.LiveChat;
+using BotProject.Web.Models.Livechat;
 
 namespace BotProject.Web.Infrastructure.Extensions
 {
@@ -331,6 +333,41 @@ namespace BotProject.Web.Infrastructure.Extensions
             zlUser.CardConditionPattern = zlUserVm.CardConditionPattern;
             zlUser.BranchOTP = zlUserVm.BranchOTP;
             //zlUser.StartedOn = DateTime.Now;
+        }
+        #endregion
+
+        #region Customer
+        public static void UpdateCustomer(this Customer customer, CustomerViewModel customerVm)
+        {
+            customer.ID = customerVm.ID;
+            customer.ConnectionID = customerVm.ConnectionID;
+            customer.Gender = customerVm.Gender;
+            customer.ChannelGroupID = customerVm.ChannelGroupID;
+            customer.Email = customerVm.Email;
+            customer.FullName = customerVm.FullName;
+            customer.PhoneNumber = customerVm.PhoneNumber;
+            customer.ApplicationChannels = customerVm.ApplicationChannels;
+            customer.Avatar = customerVm.Avatar;
+            customer.ActionChatValue = customerVm.ActionChatValue;
+            customer.StatusChatValue = customerVm.StatusChatValue;
+        }
+        #endregion
+        #region Device
+        public static void UpdateDevice(this Device device, DeviceViewModel deviceVm)
+        {
+            device.ID = deviceVm.ID;
+            device.Browser = deviceVm.Browser;
+            device.City = deviceVm.City;
+            device.Country = deviceVm.Country;
+            device.CustomerID = deviceVm.CustomerID;
+            device.FullUserAgent = deviceVm.FullUserAgent;
+            device.IPAddress = deviceVm.IPAddress;
+            device.IsMobile = deviceVm.IsMobile;
+            device.Latitude = deviceVm.Latitude;
+            device.Longtitude = deviceVm.Longtitude;
+            device.OS = deviceVm.OS;
+            device.Region = deviceVm.Region;
+            device.Timezone = deviceVm.Timezone;
         }
         #endregion
     }

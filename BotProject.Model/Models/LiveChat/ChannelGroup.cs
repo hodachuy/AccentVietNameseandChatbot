@@ -13,7 +13,7 @@ namespace BotProject.Model.Models.LiveChat
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public long ID { get; set; }
         public string Name { get; set; }
         public string OwnerId { get; set; }
         public IEnumerable<Channel> Channels { get; set; }

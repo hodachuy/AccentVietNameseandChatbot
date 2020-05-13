@@ -307,6 +307,7 @@
     <Compile Include="API\FacebookWebhookController.cs" />
     <Compile Include="API\ZaloWebhookController.cs" />
     <Compile Include="API_Livechat\AgentController.cs" />
+    <Compile Include="API_Livechat\CustomerController.cs" />
     <Compile Include="API_Mobile\MessageController.cs" />
     <Compile Include="API_Mobile\MessageFbController.cs" />
     <Compile Include="API_Mobile\MessageFbMedicalController.cs" />
@@ -376,6 +377,7 @@
     <Compile Include="Models\ApplicationUserViewModel.cs" />
     <Compile Include="Models\ApplicationZaloUserViewModel.cs" />
     <Compile Include="Models\AttributeSystemViewModel.cs" />
+    <Compile Include="Models\Livechat\CustomerViewModel.cs" />
     <Compile Include="Models\FileDocumentViewModel.cs" />
     <Compile Include="Models\FormQuestionAnswerViewModel.cs" />
     <Compile Include="Models\BotSettingViewModel.cs" />
