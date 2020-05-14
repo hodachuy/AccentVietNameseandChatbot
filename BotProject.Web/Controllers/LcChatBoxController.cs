@@ -11,8 +11,9 @@ namespace BotProject.Web.Controllers
         // GET: LcOpenChat
         public ActionResult Index(int channelGroupId)
         {
-            // Tạo chuỗi ID định danh cho customer
-            ViewBag.CustomerId = Guid.NewGuid().ToString();
+            // Tạo chuỗi ID định danh cho customer nên + channelGroupId,
+            // Vì CustomerId lưu storage sẽ k dc thêm vì trùng ID
+            ViewBag.CustomerId = Guid.NewGuid().ToString() + "-"+ channelGroupId.ToString();
             ViewBag.ChannelGroupID = channelGroupId;
             return View();
         }
