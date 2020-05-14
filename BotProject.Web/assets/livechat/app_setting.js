@@ -149,7 +149,7 @@ var lacviet = {
         styleIframeCustom += 'right: 0px;'
         styleIframeCustom += 'z-index: 5;'
         styleIframeCustom += 'transition: none 0s ease 0s!important;"';
-        url = url + "LcChatBox/Index";
+        url = url + "LcChatBox/Index?channelGroupID=2";
         html += '<span style="vertical-align:bottom;width:0px;height:0px">';
         html += '<iframe name="f12691cd05677d" frameborder="0"allowtransparency="true"allowfullscreen="true"scrolling="no"';
         html += 'allow="encrypted-media"title=""src="' + url + '"';

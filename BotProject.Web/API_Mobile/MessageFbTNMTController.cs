@@ -76,7 +76,7 @@ namespace BotProject.Web.API_Webhook
 
         private string TITLE_PAYLOAD_QUICKREPLY = "";
 
-        private string _contactAdmin = "menu";
+        private string _payloadContactAdmin = "";
         private string _titlePayloadContactAdmin = "Quay về";
 
         // Model user
@@ -167,7 +167,7 @@ namespace BotProject.Web.API_Webhook
             Setting settingDb = _settingService.GetSettingByBotID(botId);
             pageToken = settingDb.FacebookPageToken;
             appSecret = settingDb.FacebookAppSecrect;
-
+            _payloadContactAdmin = "payload_postback_" + settingDb.CardID;
             if (!VerifySignature(signature, body))
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
@@ -424,7 +424,7 @@ namespace BotProject.Web.API_Webhook
                     string randomKey = keyList[rand.Next(keyList.Count)];
                     string contentNotFound = _DICTIONARY_NOT_MATCH[randomKey];
                     string templateNotFound = FacebookTemplate.GetMessageTemplateTextAndQuickReply(
-                        contentNotFound, sender, _contactAdmin, _titlePayloadContactAdmin).ToString();
+                        contentNotFound, sender, _payloadContactAdmin, _titlePayloadContactAdmin).ToString();
                     await SendMessage(templateNotFound, sender);
                 }
             }

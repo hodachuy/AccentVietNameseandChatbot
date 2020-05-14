@@ -1,6 +1,7 @@
 ﻿@{
     Layout = null;
-    string connectionID = ViewBag.ConnectionID;
+    string customerId = ViewBag.CustomerId;
+    int channelGroupId = ViewBag.ChannelGroupId;
 }
 <!DOCTYPE html>
 <html>
@@ -279,15 +280,18 @@
     </style>
     <script>
         var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
-        var _customerId;
+        var _customerId,
+            _channelGroupId = '@channelGroupId',
+            _isSaveCustomer = false;
         (function () {
             // Khởi tạo biến Id định danh khách hàng
             if (typeof (Storage) !== "undefined") {
                 _customerId = window.localStorage.getItem("lc_customerId");
                 console.log(_customerId)
                 if (_customerId == null) {
-                    _customerId = '@connectionID';
+                    _customerId = '@customerId';
                     window.localStorage.setItem("lc_customerId", _customerId);
+                    window.localStorage.setItem("lc_isSaveCustomer", _isSaveCustomer);
                 }
             } else {
                 // Sorry! No Web Storage support..

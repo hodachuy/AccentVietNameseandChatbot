@@ -49,6 +49,7 @@ namespace BotProject.Web.API_Livechat
                     Customer customerDb = new Customer();
                     customerDb.UpdateCustomer(customerVm);
                     _customerService.Create(customerDb);
+                    _customerService.Save();
 
                     Device deviceDb = new Device();
                     deviceDb.UpdateDevice(deviceVm);

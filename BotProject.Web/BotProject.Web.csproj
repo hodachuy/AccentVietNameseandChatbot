@@ -887,7 +887,7 @@
     <Content Include="assets\livechat\js\lc_agent.js" />
     <Content Include="assets\livechat\js\lc_chatbox.js" />
     <Content Include="assets\livechat\js\lc_chatroom.js" />
-    <Content Include="assets\livechat\tracking.js" />
+    <Content Include="assets\livechat\app_setting.js" />
     <Content Include="favicon.ico" />
     <Content Include="File\AIML\config\DefaultPredicates.xml" />
     <Content Include="File\AIML\config\GenderSubstitutions.xml" />
