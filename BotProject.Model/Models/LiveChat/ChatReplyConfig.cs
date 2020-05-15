@@ -8,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models.LiveChat
 {
-    [Table("ChatSurveys")]
-    public class ChatSurvey
+    [Table("ChatReplyConfigs")]
+    public class ChatReplyConfig
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long ID { get; set; }
-        public bool IsShowName { get; set; }
-        public string IsShowEmail { get; set; }
-        public string IsShowPhone { get; set; }
-        public long ChannelGroupID { get; set; }
+        public long ID { set; get; }
+        public bool IsGotoBotReply { set; get; }
+        public long ChannelGroupID { set; get; }
     }
 }

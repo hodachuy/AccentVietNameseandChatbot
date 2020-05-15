@@ -25,6 +25,6 @@ namespace BotProject.Model.Models.LiveChat
 
         public string UrlLogo { set; get; }
 
-        public int BotID { set; get; }
+        public long ChannelGroupID { get; set; }
     }
 }

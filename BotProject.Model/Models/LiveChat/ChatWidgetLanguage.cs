@@ -17,6 +17,6 @@ namespace BotProject.Model.Models.LiveChat
         public string WelcomeMessage { set; get; }
         public int? WelcomeCardID { set; get; }
         public string TickedConfirmMessage { set; get; }
-        public int BotID { set; get; }
+        public long ChannelGroupID { get; set; }
     }
 }

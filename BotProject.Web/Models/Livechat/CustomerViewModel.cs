@@ -10,10 +10,8 @@ namespace BotProject.Web.Models.Livechat
     {
         public string ID { get; set; }
         public string ConnectionID { get; set; }
-        public string FullName { get; set; }
-        public string Avatar { get; set; }
+        public string Name { get; set; }
         public string Email { get; set; }
-        public bool Gender { get; set; }
         public string PhoneNumber { get; set; }
         public ApplicationChannel ApplicationChannels { set; get; }
         public long ChannelGroupID { set; get; }

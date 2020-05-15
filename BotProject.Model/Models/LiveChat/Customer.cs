@@ -16,15 +16,9 @@ namespace BotProject.Model.Models.LiveChat
         public string ID { get; set; }
         public string ConnectionID { get; set; }
         [MaxLength(200)]
-        public string FullName { get; set; }
-
-        public string Avatar { get; set; }
-
+        public string Name { get; set; }
         [MaxLength(200)]
         public string Email { get; set; }
-
-        public bool Gender { get; set; }
-
         [MaxLength(20)]
         public string PhoneNumber { get; set; }
         public ApplicationChannel ApplicationChannels { set; get; }

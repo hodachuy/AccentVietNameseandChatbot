@@ -119,6 +119,8 @@ namespace BotProject.Web.Controllers
                 if (user != null)
                 {
                     var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
+                    user.StatusChatValue = 200;
+                    _userManager.Update(user);
 
                     var listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);
                     applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
@@ -407,7 +409,8 @@ namespace BotProject.Web.Controllers
                     BirthDay = DateTime.Now,
                     FullName = model.FullName,
                     //PhoneNumber = model.PhoneNumber,
-                    Address = model.Address
+                    Address = model.Address,
+                    StatusChatValue = 201
 
                 };
 
@@ -450,6 +453,12 @@ namespace BotProject.Web.Controllers
         public ActionResult LogOut()
         {
             IAuthenticationManager authenticationManager = HttpContext.GetOwinContext().Authentication;
+            
+            string userId = User.Identity.GetUserId();
+            ApplicationUser user = _userManager.FindById(userId);
+            user.StatusChatValue = 201;
+            _userManager.Update(user);
+
             authenticationManager.SignOut();
             Session.Clear();
             Session.Abandon();

@@ -341,13 +341,11 @@ namespace BotProject.Web.Infrastructure.Extensions
         {
             customer.ID = customerVm.ID;
             customer.ConnectionID = customerVm.ConnectionID;
-            customer.Gender = customerVm.Gender;
             customer.ChannelGroupID = customerVm.ChannelGroupID;
             customer.Email = customerVm.Email;
-            customer.FullName = customerVm.FullName;
+            customer.Name = customerVm.Name;
             customer.PhoneNumber = customerVm.PhoneNumber;
             customer.ApplicationChannels = customerVm.ApplicationChannels;
-            customer.Avatar = customerVm.Avatar;
             customer.ActionChatValue = customerVm.ActionChatValue;
             customer.StatusChatValue = customerVm.StatusChatValue;
         }

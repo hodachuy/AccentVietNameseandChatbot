@@ -4,12 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Threading.Tasks;
+using BotProject.Service.Livechat;
+using Microsoft.AspNet.Identity;
 
 namespace BotProject.Web.SignalRChat
 {
     public class ChatHub : Hub
     {
         static IHubContext _context = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
+        private string _connectionID;
+
+        private ICustomerService _customerService;
+        private ApplicationUserManager _userManager;
+        public ChatHub(ICustomerService customerService,
+                       ApplicationUserManager userManager)
+        {
+            _customerService = customerService;
+            _userManager = userManager;
+        }
 
         /// <summary>
         /// Khách hàng kết nối chat tới tổng đài viên
@@ -17,7 +29,8 @@ namespace BotProject.Web.SignalRChat
         /// </summary>
         /// <param name="customerId"></param>
         /// <param name="threadId"></param>
-        public void ConnectChat(string customerId, string agentId, string channelGroupId, string threadId, string typeConnect)
+        /// <param name="threadId"></param>
+        public void ConnectChat(string customerId,string agentId, string channelGroupId, string threadId, string typeConnect)
         {
             var connectionId = Context.ConnectionId;
             _context.Groups.Add(connectionId, threadId);
@@ -64,10 +77,29 @@ namespace BotProject.Web.SignalRChat
             _context.Clients.All.receiveMessageAgent(accountId, message);
         }
 
-        public void OnchangeStatus()
+        public void OnchangeStatusAgent(string agentId, int status)
         {
 
         }
+
+        public void OnchangeStatusCustomer(string customerId, int status)
+        {
+
+        }
+
+        /// <summary>
+        /// Kết nối tới nhóm chat
+        /// </summary>
+        /// <param name="channelGroupId"></param>
+        /// <param name="customerId"></param>
+        /// <param name="agentId"></param>
+        public void GotoConnectionChannelGroup(string channelGroupId, string customerId, string agentId)
+        {
+            _connectionID = Context.ConnectionId;
+            _context.Groups.Add(_connectionID, channelGroupId);
+            
+        }
+
         public override Task OnDisconnected(bool stopCalled)
         {
             return base.OnDisconnected(stopCalled);

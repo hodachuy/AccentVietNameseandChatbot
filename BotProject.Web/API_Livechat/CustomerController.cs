@@ -71,12 +71,13 @@ namespace BotProject.Web.API_Livechat
 
         [Route("getAll")]
         [HttpGet]
-        public HttpResponseMessage GetListCustomer(HttpRequestMessage request, string condition)
+        public HttpResponseMessage GetListCustomer(HttpRequestMessage request, int groupChannelId)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                response = request.CreateResponse(HttpStatusCode.OK, true);
+                var lstCustomer = _customerService.GetListCustomerByChannelGroupId(groupChannelId);           
+                response = request.CreateResponse(HttpStatusCode.OK, lstCustomer);
                 return response;
             });
         }

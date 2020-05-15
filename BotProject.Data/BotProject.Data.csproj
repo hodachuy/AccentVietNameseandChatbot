@@ -646,6 +646,10 @@
     <Compile Include="Migrations\202005130233588_UpdateBotChannel.Designer.cs">
       <DependentUpon>202005130233588_UpdateBotChannel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005150802036_UpdateChatConfig.cs" />
+    <Compile Include="Migrations\202005150802036_UpdateChatConfig.Designer.cs">
+      <DependentUpon>202005150802036_UpdateChatConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\LiveChat\ActionChatRepository.cs" />
@@ -1152,6 +1156,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005130233588_UpdateBotChannel.resx">
       <DependentUpon>202005130233588_UpdateBotChannel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005150802036_UpdateChatConfig.resx">
+      <DependentUpon>202005150802036_UpdateChatConfig.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

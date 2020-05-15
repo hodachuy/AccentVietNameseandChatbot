@@ -14,10 +14,10 @@ namespace BotProject.Service.Livechat
     {
         // customization
         ChatWidgetCustomization AddChatWidgetCustomization(ChatWidgetCustomization customization);
-        ChatWidgetCustomization GetChatWidgetCustomizationByBotId(int botId);
+        ChatWidgetCustomization GetChatWidgetCustomizationByChannelGroupId(int channelGroupId);
         // language
         ChatWidgetLanguage AddChatWidgetLanguage(ChatWidgetLanguage cWidgetLanguage);
-        ChatWidgetLanguage GetChatWidgetLanguageByBotId(int botId);
+        ChatWidgetLanguage GetChatWidgetLanguageByChannelGroupId(int channelGroupId);
     }
     public class ChatWidgetService : IChatWidgetService
     {
@@ -43,14 +43,14 @@ namespace BotProject.Service.Livechat
             return _cWidgetLanguageRepository.Add(cWidgetLanguage);
         }
 
-        public ChatWidgetCustomization GetChatWidgetCustomizationByBotId(int botId)
+        public ChatWidgetCustomization GetChatWidgetCustomizationByChannelGroupId(int channelGroupId)
         {
-            return _cWidgetCustomizationRepository.GetSingleByCondition(x => x.BotID == botId);
+            return _cWidgetCustomizationRepository.GetSingleByCondition(x => x.ChannelGroupID == channelGroupId);
         }
 
-        public ChatWidgetLanguage GetChatWidgetLanguageByBotId(int botId)
+        public ChatWidgetLanguage GetChatWidgetLanguageByChannelGroupId(int channelGroupId)
         {
-            return _cWidgetLanguageRepository.GetSingleByCondition(x => x.BotID == botId);
+            return _cWidgetLanguageRepository.GetSingleByCondition(x => x.ChannelGroupID == channelGroupId);
         }
     }
 }
