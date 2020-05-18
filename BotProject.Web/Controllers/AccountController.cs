@@ -289,7 +289,13 @@ namespace BotProject.Web.Controllers
             _botService.Update(botDb);
             _botService.Save();
 
-            var applicationUser = (ApplicationUserViewModel)Session[CommonConstants.SessionUser];
+			long channelGroupID = _channelService.GetChannelByUserId(userID).ChannelGroupID;
+			var channelGroupDb = _channelService.GetChannelGroupById(Convert.ToInt32(channelGroupID));
+			channelGroupDb.BotID = botID;
+			_channelService.UpdateChannelGroup(channelGroupDb);
+			_channelService.Save();
+
+			var applicationUser = (ApplicationUserViewModel)Session[CommonConstants.SessionUser];
             applicationUser.BotActiveID = (isActiveLivechat == false ? 0 : botID);
             Session[CommonConstants.SessionUser] = applicationUser;
             if (isActiveLivechat)

@@ -15,6 +15,8 @@ namespace BotProject.Service.Livechat
     {
         IEnumerable<SP_Channel> GetListChannelByChannelGroupID(int channelGroupID);
         ChannelGroup AddChannelGroup(ChannelGroup channelGroup);
+		void UpdateChannelGroup(ChannelGroup channelGroup);
+
         ChannelGroup GetChannelGroupById(int channelGroupID);
         Channel AddUserToChannel(Channel channel);
         Channel GetChannelByUserId(string userId);
@@ -69,5 +71,10 @@ namespace BotProject.Service.Livechat
         {
             _unitOfWork.Commit();
         }
-    }
+
+		public void UpdateChannelGroup(ChannelGroup channelGroup)
+		{
+			_channelGroupRepository.Update(channelGroup);
+		}
+	}
 }

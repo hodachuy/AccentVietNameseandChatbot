@@ -35,5 +35,20 @@ namespace BotProject.Web.API_Livechat
                 return response;
             });
         }
-    }
+
+		[Route("getListAgentOnline")]
+		[HttpPost]
+		public HttpResponseMessage GetListAgentOnlineOfChannelByGroupChannel(HttpRequestMessage request, JObject jsonData)
+		{
+			return CreateHttpResponse(request, () =>
+			{
+				HttpResponseMessage response;
+				dynamic json = jsonData;
+				int channelGroupID = json.channelGroupId;
+				var lstAgent = _channelService.GetListChannelByChannelGroupID(channelGroupID).Where(x=>x.StatusChatValue == 201).ToList();
+				response = request.CreateResponse(HttpStatusCode.OK, lstAgent);
+				return response;
+			});
+		}
+	}
 }

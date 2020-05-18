@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using BotProject.Web.Infrastructure.Log4Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using BotProject.Service.Livechat;
 
 namespace BotProject.Web.API
 {
@@ -32,6 +33,7 @@ namespace BotProject.Web.API
         private IModuleService _moduleService;
         private IAttributeSystemService _attributeSystemService;
         private IAIMLFileService _aimlFileService;
+		private IChannelService _channelService;
 
         private string[] _userSayStart = new string[]
         {
@@ -50,7 +52,8 @@ namespace BotProject.Web.API
             IQnAService qnaService,
             IModuleService moduleService,
             IAIMLFileService aimlFileService,
-            IAttributeSystemService attributeSystemService) : base(errorService)
+            IAttributeSystemService attributeSystemService,
+			IChannelService channelService) : base(errorService)
 		{
 			_botService = botService;
             _settingService = settingService;
@@ -61,7 +64,9 @@ namespace BotProject.Web.API
             _moduleService = moduleService;
             _attributeSystemService = attributeSystemService;
             _aimlFileService = aimlFileService;
-        }	
+			_channelService = channelService;
+
+		}	
 
 		[Route("getall")]
 		[HttpGet]
@@ -93,7 +98,29 @@ namespace BotProject.Web.API
 			});
 		}
 
-        [Route("getById")]
+		[Route("getBotActiveLiveChat")]
+		[HttpPost]
+		public HttpResponseMessage GetBotActiveByChannelGroupID(HttpRequestMessage request, JObject jsonData)
+		{
+			return CreateHttpResponse(request, () =>
+			{
+				HttpResponseMessage response;
+				dynamic json = jsonData;
+				int channelGroupId = json.channelGroupId;
+
+				var channelGroup = _channelService.GetChannelGroupById(channelGroupId);
+				if(channelGroup != null)
+				{
+					response = request.CreateResponse(HttpStatusCode.OK, new { status = true, botId = channelGroup.BotID });
+					return response;
+				}
+
+				response = request.CreateResponse(HttpStatusCode.OK, new { status = false});
+				return response;
+			});
+		}
+
+		[Route("getById")]
         [HttpGet]
         public HttpResponseMessage GetBotById(HttpRequestMessage request, int botId)
         {
@@ -151,40 +178,6 @@ namespace BotProject.Web.API
                 _settingService.Save();
                 var reponseData = Mapper.Map<Bot, BotViewModel>(botReturn);
                 response = request.CreateResponse(HttpStatusCode.OK, reponseData);
-                return response;
-            });
-        }
-
-        [Route("activeBotWithLiveChat")]
-        [HttpPost]
-        public HttpResponseMessage ActiveBotWithLivechat(HttpRequestMessage request, JObject jsonData)
-        {
-            return CreateHttpResponse(request, () =>
-            {
-                HttpResponseMessage response = null;
-                dynamic json = jsonData;
-                int botID = json.botID;
-                string userID = json.userID;
-                bool isActiveLivechat = json.isActiveLivechat;
-
-                var lstBot = _botService.GetListBotByUserID(userID).ToList();
-                if(lstBot.Count() != 0)
-                {
-                    foreach(var bot in lstBot)
-                    {
-                        bot.IsActiveLiveChat = false;
-                        _botService.Update(bot);
-                        _botService.Save();
-                    }
-                }
-
-                var botDb = _botService.GetByID(botID);
-                botDb.IsActiveLiveChat = isActiveLivechat;
-                _botService.Update(botDb);
-                _botService.Save();
-
-                response = request.CreateResponse(HttpStatusCode.OK, true);
-
                 return response;
             });
         }

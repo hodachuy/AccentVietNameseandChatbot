@@ -226,13 +226,20 @@ console.log(
     'Latitude: ' + ipInfo.latitude + '\n' +
     'Longtitude: ' + ipInfo.longtitude
 );
+
+
+
+
 var CustomerModel = {
     ID: _customerId,
     ApplicationChannels: 0, //[0: Web, 1: Facebook, 2: Zalo, 3: Kiosk]
     ChannelGroupID: _channelGroupId
 };
+
 var AgentModel = {
-    ChannelGroupID: _channelGroupId
+    ID:'',
+    ChannelGroupID: _channelGroupId,
+    Status:'',
 }
 var DeviceModel = {
         ID: 0,
@@ -246,6 +253,13 @@ var DeviceModel = {
         Latitude: ipInfo.latitude,
         Longtitude: ipInfo.longtitude
 }
+
+var status = {
+    userOffline: false,
+    botActive:false,
+}
+
+
 function saveCustomer() {
     var formData = new FormData();
     formData.append('customer', JSON.stringify(CustomerModel));
@@ -325,7 +339,15 @@ var ChatMessages = {
 
 
 $(document).ready(function () {
+    // Dang ky su kien chatHub
     cHub.register();
+
+    //check agent online
+    checkAgentOnline();
+
+    //check list bot have bot active
+
+
     // close form
     $('body').on('click', '#btn-cbox-close', function (e) {
         parent.postMessage("close", "*");
@@ -388,6 +410,30 @@ var cHub = {
 
     }
 
+}
+
+function checkAgentOnline() {
+    var params = {
+        channelGroupId: _channelGroupId
+    }
+    params = JSON.stringify(params);
+    $.ajax({
+        url: _Host + "api/lc_agent/getListAgentOnline",
+        type: 'POST',
+        data: params,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function (data) {
+            console.log(data);
+            if (data.length == 0) {
+                status.userOffline = true;
+            }
+        },
+        errors: function () {
+
+        }
+    })
 }
 
 

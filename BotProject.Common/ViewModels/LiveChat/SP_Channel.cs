@@ -13,6 +13,7 @@ namespace BotProject.Common.ViewModels.LiveChat
         public long ChannelID { get; set; }
         public string UserId { get; set; }
         public string Email { get; set; }
+		public int StatusChatValue { get; set; }
         public int ApplicationGroupID { get; set; }
         public string ApplicationGroupName { get; set; }
     }

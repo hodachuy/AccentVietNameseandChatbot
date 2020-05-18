@@ -15,7 +15,7 @@ namespace BotProject.Service
         Bot Create(ref Bot bot);
         IEnumerable<Bot> GetListBotByUserID(string userId);
         IEnumerable<StoreProcBotViewModel> GetListBotDashboard(string userId);
-        Bot GetByID(int botId);
+		Bot GetByID(int botId);
         void Update(Bot bot);
         void Save();
     }
