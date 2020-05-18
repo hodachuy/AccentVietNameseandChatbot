@@ -327,7 +327,7 @@ var ChatMessages = {
 $(document).ready(function () {
     cHub.register();
     // close form
-    $('body').on('click', '.cbox-close', function (e) {
+    $('body').on('click', '#btn-cbox-close', function (e) {
         parent.postMessage("close", "*");
     })
 })
@@ -335,7 +335,6 @@ $(document).ready(function () {
 var objHub = $.connection.chatHub;
 var intervalReconnectId,
     timeReconnecting = 6;
-
 var cHub = {
     eventConnect : function(){
         // set time reconecting singnalR
@@ -384,7 +383,11 @@ var cHub = {
                 }, 5000); // Restart connection after 5 seconds.          
             }
         });
+    },
+    getSignalFromServer: function () {
+
     }
+
 }
 
 
@@ -393,16 +396,9 @@ var cbox = {
     init :function(){
 
     },
-    event: function () {
-        
+    event: function () {    
         // Input message
         $("body").on('keyup', '#input-msg-text', function (e) {
-            if (Readers.AccountID == "") {
-                return false;
-            }
-            if (Readers.GroupID != GROUP_READER) {
-                return false;
-            }
             var elInput = $(this);
             var text = elInput.text();
             var threadID = $("#input-thread-" + id).val();
@@ -436,7 +432,6 @@ var cbox = {
     }
     // call api
     // render template
-
 }
 
 

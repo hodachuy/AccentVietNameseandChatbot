@@ -105,7 +105,7 @@
     <Compile Include="HistoryService.cs" />
     <Compile Include="ImageService.cs" />
     <Compile Include="Livechat\ChannelService.cs" />
-    <Compile Include="Livechat\ChatHubService.cs" />
+    <Compile Include="Livechat\ChatCommonService.cs" />
     <Compile Include="Livechat\ChatWidgetService.cs" />
     <Compile Include="Livechat\CustomerService.cs" />
     <Compile Include="MdAdminContactService.cs" />

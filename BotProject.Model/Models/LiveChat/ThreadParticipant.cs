@@ -12,11 +12,11 @@ namespace BotProject.Model.Models.LiveChat
     public class ThreadParticipant
     {
         [Key]
-        [Column(Order = 1)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public long ID { set; get; }
+
         public long ThreadID { set; get; }
 
-        [Key]
-        [Column(Order = 2)]
         public long ChannelGroupID { set; get; }
 
         public string UserID { set; get; }

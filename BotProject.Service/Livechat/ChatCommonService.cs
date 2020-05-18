@@ -8,26 +8,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotProject.Service
+namespace BotProject.Service.Livechat
 {
-    public interface IChatHubSerivce
+    public interface IChatCommonSerivce
     {
         Thread AddThreadMessage();
-        ThreadParticipantRepository AddThreadParticipant(ThreadParticipant threadParticipant);
-        ThreadParticipantRepository GetThreadParticipantByUser(string userId, long groupChannelID);
-
+        ThreadParticipant AddThreadParticipant(ThreadParticipant threadParticipant);
+        IEnumerable<ThreadParticipant> GetThreadParticipantByChannelGroupID(int channelGroupId);
         // Add Message
         Message AddMessage(Message msg);
         IEnumerable<Message> GetListMessage(string condition, int page, int pageSize, string sort);
         void Save();
     }
-    public class ChatHubService : IChatHubSerivce
+    public class ChatCommonService : IChatCommonSerivce
     {
         IThreadRepository _threadRepository;
         IThreadParticipantRepository _threadParticipantRepository;
         IMessageRepository _messageRepository;
         IUnitOfWork _unitOfWork;
-        public ChatHubService(IThreadRepository threadRepository,
+        public ChatCommonService(IThreadRepository threadRepository,
                               IThreadParticipantRepository threadParticipantRepository,
                               IMessageRepository messageRepository,
                               IUnitOfWork unitOfWork)
@@ -44,19 +43,19 @@ namespace BotProject.Service
             return _threadRepository.Add(thread);
         }
 
-        public ThreadParticipantRepository AddThreadParticipant(ThreadParticipant threadParticipant)
+        public ThreadParticipant AddThreadParticipant(ThreadParticipant threadParticipant)
         {
-            throw new NotImplementedException();
+            return _threadParticipantRepository.Add(threadParticipant);
         }
 
-        public ThreadParticipantRepository GetThreadParticipantByUser(string userId, long groupChannelID)
+        public IEnumerable<ThreadParticipant> GetThreadParticipantByChannelGroupID(int channelGroupId)
         {
-            throw new NotImplementedException();
+            return _threadParticipantRepository.GetMulti(x => x.ChannelGroupID == channelGroupId);
         }
 
         public Message AddMessage(Message msg)
         {
-            throw new NotImplementedException();
+            return _messageRepository.Add(msg);
         }
 
         public IEnumerable<Message> GetListMessage(string condition, int page, int pageSize, string sort)

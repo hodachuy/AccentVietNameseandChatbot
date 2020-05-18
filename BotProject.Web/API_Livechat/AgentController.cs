@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using BotProject.Service;
 using Newtonsoft.Json.Linq;
+using BotProject.Service.Livechat;
 
 namespace BotProject.Web.API_Livechat
 {

@@ -6,6 +6,7 @@ using System.Web;
 using System.Threading.Tasks;
 using BotProject.Service.Livechat;
 using Microsoft.AspNet.Identity;
+using BotProject.Model.Models.LiveChat;
 
 namespace BotProject.Web.SignalRChat
 {
@@ -14,13 +15,19 @@ namespace BotProject.Web.SignalRChat
         static IHubContext _context = GlobalHost.ConnectionManager.GetHubContext<ChatHub>();
         private string _connectionID;
 
+        private const string CUSTOMER = "customer";
+        private const string AGENT = "agent";
+
         private ICustomerService _customerService;
+        private IChatCommonSerivce _chatCommonService;
         private ApplicationUserManager _userManager;
         public ChatHub(ICustomerService customerService,
-                       ApplicationUserManager userManager)
+                       ApplicationUserManager userManager,
+                       IChatCommonSerivce chatCommonService)
         {
             _customerService = customerService;
             _userManager = userManager;
+            _chatCommonService = chatCommonService;
         }
 
         /// <summary>
@@ -30,32 +37,51 @@ namespace BotProject.Web.SignalRChat
         /// <param name="customerId"></param>
         /// <param name="threadId"></param>
         /// <param name="threadId"></param>
-        public void ConnectChat(string customerId,string agentId, string channelGroupId, string threadId, string typeConnect)
+        public void ConnectChat(string customerId,string agentId, int channelGroupId, string threadId, string typeUserConnect)
         {
-            var connectionId = Context.ConnectionId;
-            _context.Groups.Add(connectionId, threadId);
-            string connectInfo = "";
-            switch (typeConnect)
+            string connectionId = Context.ConnectionId;
+            try
             {
-                // gửi tín hiệu sếp vào hàng đợi, chờ xác nhận để chat
-                case "CONNECT_QUEUE":
-                    connectInfo = "Connnect Waitting";
-                    Clients.Caller.onConnected(connectInfo, customerId);
-                    // gửi thread đăng ký tham gia vào vòng đợi tới agent
-                    Clients.Group(threadId).addCustomerIntoQueue(agentId, threadId);
-                    break;
-                // gửi tín hiệu vào chat thẳng
-                case "CONNECT_GOTO":             
-                    connectInfo = "Connect Success";
-                    Clients.Caller.onConnected(connectInfo, customerId);
-                    Clients.Group(threadId).addCustomerGotoChat(agentId, threadId);
-                    break;
-                // gửi tín hiệu kết nối từ agent này tới agent khác hỗ trợ
-                case "CONNECT_SUPPORT":
-                    connectInfo = "Connect Support";
-                    string agentSupportConnectionId = Context.ConnectionId;
-                    Clients.Client(agentSupportConnectionId).onConnected(connectInfo, agentId);
-                    break;
+                if(typeUserConnect == CUSTOMER)
+                {
+                    // create thread chat
+                    var threadDb = _chatCommonService.AddThreadMessage();
+                    _chatCommonService.Save();
+
+                    threadId = threadDb.ID.ToString();
+
+                    // add to thread participant
+                    ThreadParticipant threadParticipant = new ThreadParticipant();
+                    threadParticipant.ChannelGroupID = channelGroupId;
+                    threadParticipant.CreatedDate = DateTime.Now;
+                    threadParticipant.ThreadID = threadDb.ID;
+                    threadParticipant.UserID = agentId;
+                    threadParticipant.CustomerID = customerId;
+
+                    _chatCommonService.AddThreadParticipant(threadParticipant);
+
+                    // update connectionId to customer
+                    var customerDb = _customerService.GetById(customerId);
+                    customerDb.ConnectionID = connectionId;
+                    _customerService.Update(customerDb);
+                    _customerService.Save();
+
+                    // add hub group
+                    _context.Groups.Add(connectionId, threadId);
+
+
+                    // gửi tín hiệu thông báo tới các userId trong Channel,
+                    // có tín hiệu sẽ load danh sách customer bên trái kèm threadId,
+                    // agent nào chat thì click vào kèm threadId và add tới groud chat
+                }
+                if(typeUserConnect == AGENT)
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Clients.Caller.NoExistUser();
             }
         }
         public void GetTyping(string threadId, string accountID, bool isStop)
@@ -93,10 +119,10 @@ namespace BotProject.Web.SignalRChat
         /// <param name="channelGroupId"></param>
         /// <param name="customerId"></param>
         /// <param name="agentId"></param>
-        public void GotoConnectionChannelGroup(string channelGroupId, string customerId, string agentId)
+        public void GotoConnectionGroupThread(string threadId, string customerId, string agentId)
         {
             _connectionID = Context.ConnectionId;
-            _context.Groups.Add(_connectionID, channelGroupId);
+            _context.Groups.Add(_connectionID, threadId);
             
         }
 

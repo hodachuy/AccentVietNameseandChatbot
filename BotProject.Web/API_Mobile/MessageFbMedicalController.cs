@@ -368,30 +368,34 @@ namespace BotProject.Web.API_Webhook
             // print postback card
             if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
             {
-                string templateCard = HandlePostbackCard(text, botId);
-                await SendMultiMessageTask(templateCard, sender);
-                if (_fbUser.PredicateName == "AUTO_NEXT_CARD")
+                if(text != _contactAdmin)// trường họp ngoại lệ nút trả lời nhanh hoặc nút postback là chat chuyên viên 
                 {
-                    string partternNextCard = _fbUser.PredicateValue;
-                    string templateNextCard = HandlePostbackCard(partternNextCard, botId);
-                    await SendMultiMessageTask(templateNextCard, sender);
-                }
-                if (templateCard.Contains("Nguyên nhân") || templateCard.Contains("bác sĩ") || templateCard.Contains("Bác sĩ"))
-                {
-                    if (botId == 3019)
+                    string templateCard = HandlePostbackCard(text, botId);
+                    await SendMultiMessageTask(templateCard, sender);
+                    if (_fbUser.PredicateName == "AUTO_NEXT_CARD")
                     {
-                        List<string> lstSymptoms = new List<string>();
-                        lstSymptoms = GetSymptoms(_dicAttributeUser["content_message"]);
-                        if (lstSymptoms.Count() != 0)
+                        string partternNextCard = _fbUser.PredicateValue;
+                        string templateNextCard = HandlePostbackCard(partternNextCard, botId);
+                        await SendMultiMessageTask(templateNextCard, sender);
+                    }
+                    if (templateCard.Contains("Nguyên nhân") || templateCard.Contains("bác sĩ") || templateCard.Contains("Bác sĩ"))
+                    {
+                        if (botId == 3019)
                         {
-                            foreach (var symp in lstSymptoms)
+                            List<string> lstSymptoms = new List<string>();
+                            lstSymptoms = GetSymptoms(_dicAttributeUser["content_message"]);
+                            if (lstSymptoms.Count() != 0)
                             {
-                                await SendMessage(symp, sender);
+                                foreach (var symp in lstSymptoms)
+                                {
+                                    await SendMessage(symp, sender);
+                                }
                             }
                         }
                     }
+                    return new HttpResponseMessage(HttpStatusCode.OK);
                 }
-                return new HttpResponseMessage(HttpStatusCode.OK);
+
             }
 
             AIMLbot.Result rsAIMLBot = GetBotReplyFromAIMLBot(text);
@@ -399,8 +403,8 @@ namespace BotProject.Web.API_Webhook
             rsBOT = CheckTypePostbackFromResultBotReply(rsAIMLBot);
             if (rsBOT.Type == POSTBACK_MODULE)
             {
-                string templateModule = HandlePostbackModule(rsBOT.PatternPayload, text, botId, true);
-                await SendMessage(templateModule, sender);
+                string templateModule = HandlePostbackModule(rsBOT.PatternPayload, text, botId, true);                
+                await SendMultiMessageTask(templateModule, sender);
             }
             if (rsBOT.Type == POSTBACK_CARD)
             {
@@ -497,6 +501,11 @@ namespace BotProject.Web.API_Webhook
                         rsBot.Type = POSTBACK_CARD;
                         rsBot.Total = 1;
                         rsBot.PatternPayload = result;
+                    }else
+                    {
+                        rsBot.Type = POSTBACK_TEXT;
+                        rsBot.Total = 1;
+                        rsBot.PatternPayload = result;
                     }
                 }
                 else if (result.Contains("NOT_MATCH"))
@@ -581,7 +590,7 @@ namespace BotProject.Web.API_Webhook
             }
             if (postbackModule.Contains(CommonConstants.ModuleAdminContact))
             {
-                var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+                var handleAdminContact = _handleMdService.HandleIsAdminContact(postbackModule, botId);
                 templateHandle = handleAdminContact.TemplateJsonFacebook;
                 _fbUser.PredicateValue = postbackModule;
             }

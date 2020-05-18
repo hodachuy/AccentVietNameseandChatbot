@@ -12,6 +12,7 @@ namespace BotProject.Model.Models.LiveChat
     public class Thread
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { set; get; }
     }
 }

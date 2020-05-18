@@ -76,8 +76,9 @@ namespace BotProject.Web.API_Webhook
 
         private string TITLE_PAYLOAD_QUICKREPLY = "";
 
-        private string _payloadContactAdmin = "";
-        private string _titlePayloadContactAdmin = "Quay về";
+
+        private string _payloadContactAdmin = Helper.ReadString("AdminContact");
+        private string _titlePayloadContactAdmin = Helper.ReadString("TitlePayloadAdminContact");
 
         // Model user
         ApplicationFacebookUser _fbUser;
@@ -167,7 +168,7 @@ namespace BotProject.Web.API_Webhook
             Setting settingDb = _settingService.GetSettingByBotID(botId);
             pageToken = settingDb.FacebookPageToken;
             appSecret = settingDb.FacebookAppSecrect;
-            _payloadContactAdmin = "payload_postback_" + settingDb.CardID;
+
             if (!VerifySignature(signature, body))
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
@@ -364,15 +365,19 @@ namespace BotProject.Web.API_Webhook
             // print postback card
             if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
             {
-                string templateCard = HandlePostbackCard(text, botId);
-                await SendMultiMessageTask(templateCard, sender);
-                if (_fbUser.PredicateName == "AUTO_NEXT_CARD")
+                if (text != _payloadContactAdmin)// trường họp ngoại lệ nút trả lời nhanh hoặc nút postback là chat chuyên viên 
                 {
-                    string partternNextCard = _fbUser.PredicateValue;
-                    string templateNextCard = HandlePostbackCard(partternNextCard, botId);
-                    await SendMultiMessageTask(templateNextCard, sender);
+                    string templateCard = HandlePostbackCard(text, botId);
+                    await SendMultiMessageTask(templateCard, sender);
+                    if (_fbUser.PredicateName == "AUTO_NEXT_CARD")
+                    {
+                        string partternNextCard = _fbUser.PredicateValue;
+                        string templateNextCard = HandlePostbackCard(partternNextCard, botId);
+                        await SendMultiMessageTask(templateNextCard, sender);
+                    }
+                    return new HttpResponseMessage(HttpStatusCode.OK);
                 }
-                return new HttpResponseMessage(HttpStatusCode.OK);
+
             }
 
             AIMLbot.Result rsAIMLBot = GetBotReplyFromAIMLBot(text);
@@ -478,6 +483,11 @@ namespace BotProject.Web.API_Webhook
                         rsBot.Type = POSTBACK_CARD;
                         rsBot.Total = 1;
                         rsBot.PatternPayload = result;
+                    }else
+                    {
+                        rsBot.Type = POSTBACK_TEXT;
+                        rsBot.Total = 1;
+                        rsBot.PatternPayload = result;
                     }
                 }
                 else if (result.Contains("NOT_MATCH"))
@@ -562,7 +572,7 @@ namespace BotProject.Web.API_Webhook
             }
             if (postbackModule.Contains(CommonConstants.ModuleAdminContact))
             {
-                var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
+                var handleAdminContact = _handleMdService.HandleIsAdminContact(postbackModule, botId);
                 templateHandle = handleAdminContact.TemplateJsonFacebook;
                 _fbUser.PredicateValue = postbackModule;
             }

@@ -650,6 +650,22 @@
     <Compile Include="Migrations\202005150802036_UpdateChatConfig.Designer.cs">
       <DependentUpon>202005150802036_UpdateChatConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005180246348_UpdateThreads.cs" />
+    <Compile Include="Migrations\202005180246348_UpdateThreads.Designer.cs">
+      <DependentUpon>202005180246348_UpdateThreads.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005180255430_UpdateThreadPar.cs" />
+    <Compile Include="Migrations\202005180255430_UpdateThreadPar.Designer.cs">
+      <DependentUpon>202005180255430_UpdateThreadPar.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005180303514_UpdateThreadParticipant.cs" />
+    <Compile Include="Migrations\202005180303514_UpdateThreadParticipant.Designer.cs">
+      <DependentUpon>202005180303514_UpdateThreadParticipant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005180346115_UpdateThread2.cs" />
+    <Compile Include="Migrations\202005180346115_UpdateThread2.Designer.cs">
+      <DependentUpon>202005180346115_UpdateThread2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\LiveChat\ActionChatRepository.cs" />
@@ -1159,6 +1175,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005150802036_UpdateChatConfig.resx">
       <DependentUpon>202005150802036_UpdateChatConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005180246348_UpdateThreads.resx">
+      <DependentUpon>202005180246348_UpdateThreads.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005180255430_UpdateThreadPar.resx">
+      <DependentUpon>202005180255430_UpdateThreadPar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005180303514_UpdateThreadParticipant.resx">
+      <DependentUpon>202005180303514_UpdateThreadParticipant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005180346115_UpdateThread2.resx">
+      <DependentUpon>202005180346115_UpdateThread2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
