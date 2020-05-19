@@ -20,11 +20,17 @@
             // Khởi tạo biến Id định danh khách hàng
             if (typeof (Storage) !== "undefined") {
                 _customerId = window.localStorage.getItem("lc_customerId");
-                console.log(_customerId)
                 if (_customerId == null) {
                     _customerId = '@customerId';
                     window.localStorage.setItem("lc_customerId", _customerId);
                     window.localStorage.setItem("lc_isSaveCustomer", _isSaveCustomer);
+                } else {     // trường hợp thay đổi đường dẫn kênh chat khác, nên thay đổi lại customerId theo channelGroupID mới
+                    var lastChannelGroupID = _customerId.split('_')[1];
+                    if (lastChannelGroupID != _channelGroupId) {
+                        _customerId = '@customerId';
+                        window.localStorage.setItem("lc_customerId", _customerId);
+                        window.localStorage.setItem("lc_isSaveCustomer", _isSaveCustomer);
+                    }
                 }
             } else {
                 // Sorry! No Web Storage support..
@@ -390,8 +396,9 @@
     </div>
 
     <!--signalR-->
-    <script src="~/Scripts/jquery.signalR-2.4.0.js"></script>
-    <script src="~/signalr/hubs"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.0.min.js"></script>
+    <script src="/signalr/hubs"></script>
+
     <script src="~/assets/client/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="~/assets/livechat/js/lc_chatbox.js"></script>
 </body>

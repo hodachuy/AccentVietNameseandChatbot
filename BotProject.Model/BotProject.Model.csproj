@@ -80,7 +80,6 @@
     <Compile Include="Abstract\Auditable.cs" />
     <Compile Include="Abstract\IAuditable.cs" />
     <Compile Include="Enums\ApplicationChannel.cs" />
-    <Compile Include="Models\LiveChat\ActionChat.cs" />
     <Compile Include="Models\ApplicationFacebookUser.cs" />
     <Compile Include="Models\ApplicationPlatformUser.cs" />
     <Compile Include="Models\ApplicationThirdParty.cs" />

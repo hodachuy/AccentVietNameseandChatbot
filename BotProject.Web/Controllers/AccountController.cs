@@ -120,7 +120,7 @@ namespace BotProject.Web.Controllers
                 if (user != null)
                 {
                     var applicationUserViewModel = Mapper.Map<ApplicationUser, ApplicationUserViewModel>(user);
-                    user.StatusChatValue = 200;
+                    user.StatusChatValue = CommonConstants.USER_ONLINE;
                     _userManager.Update(user);
 
                     var listGroup = _appGroupService.GetListGroupByUserId(applicationUserViewModel.Id);

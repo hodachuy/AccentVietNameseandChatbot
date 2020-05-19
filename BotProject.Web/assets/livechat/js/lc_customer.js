@@ -115,7 +115,7 @@ var customerTable = {
         var params = {
             channelGroupID: channelGroupId
         }
-        params = JSON.stringify(params);
+        //params = JSON.stringify(params);
         $.ajax({
             url: apiCustomer.getAll,
             contentType: 'application/json; charset=utf-8',
@@ -124,7 +124,7 @@ var customerTable = {
             success: function (result) {
                 console.log(result)
                 if (result.length != 0) {
-                    new customerTable.renderTempChatbot(result);
+                    //new customerTable.renderTempChatbot(result);
                 }
             },
         })

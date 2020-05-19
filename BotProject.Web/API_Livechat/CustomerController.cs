@@ -11,6 +11,7 @@ using System.Web.Script.Serialization;
 using BotProject.Web.Models.Livechat;
 using BotProject.Model.Models.LiveChat;
 using BotProject.Web.Infrastructure.Extensions;
+using BotProject.Common;
 
 namespace BotProject.Web.API_Livechat
 {
@@ -23,9 +24,9 @@ namespace BotProject.Web.API_Livechat
             _customerService = customerService;
         }
 
-        [Route("createUpdate")]
+        [Route("create")]
         [HttpPost]
-        public HttpResponseMessage CreateUpdate(HttpRequestMessage request)
+        public HttpResponseMessage Create(HttpRequestMessage request)
         {
             return CreateHttpResponse(request, () => {
                 HttpResponseMessage response = null;
@@ -48,6 +49,8 @@ namespace BotProject.Web.API_Livechat
 
                     Customer customerDb = new Customer();
                     customerDb.UpdateCustomer(customerVm);
+                    customerDb.Name = deviceVm.IPAddress;
+                    customerDb.StatusChatValue = CommonConstants.USER_ONLINE;
                     _customerService.Create(customerDb);
                     _customerService.Save();
 
@@ -71,12 +74,12 @@ namespace BotProject.Web.API_Livechat
 
         [Route("getAll")]
         [HttpGet]
-        public HttpResponseMessage GetListCustomer(HttpRequestMessage request, int groupChannelId)
+        public HttpResponseMessage GetListCustomer(HttpRequestMessage request, int channelGroupId)
         {
             return CreateHttpResponse(request, () =>
             {
                 HttpResponseMessage response = null;
-                var lstCustomer = _customerService.GetListCustomerByChannelGroupId(groupChannelId);           
+                var lstCustomer = _customerService.GetListCustomerByChannelGroupId(channelGroupId);           
                 response = request.CreateResponse(HttpStatusCode.OK, lstCustomer);
                 return response;
             });

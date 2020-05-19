@@ -69,6 +69,11 @@ namespace BotProject.Common
         /// xem tất cả danh sách bot tài khoản clone khác, viết dashboard
         /// </summary>
         public const int GROUP_SUPER_ADMIN = 4;
+
+
+
+        public const int USER_ONLINE = 200;
+        public const int USER_OFFLINE = 201;
     }
     public class ZaloConstans
     {

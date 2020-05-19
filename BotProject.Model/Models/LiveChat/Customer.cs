@@ -24,7 +24,7 @@ namespace BotProject.Model.Models.LiveChat
         public ApplicationChannel ApplicationChannels { set; get; }
         public long ChannelGroupID { set; get; }
         public int StatusChatValue { set; get; }
-        public int ActionChatValue { set; get; }
+        public DateTime CreatedDate { set; get; }
         public virtual IEnumerable<Device> Devices { set; get; }
     }
 }

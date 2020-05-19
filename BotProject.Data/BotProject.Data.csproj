@@ -670,9 +670,12 @@
     <Compile Include="Migrations\202005181500381_UpDateChannelGroup1.Designer.cs">
       <DependentUpon>202005181500381_UpDateChannelGroup1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005190901347_UpdateCustomerDateTime.cs" />
+    <Compile Include="Migrations\202005190901347_UpdateCustomerDateTime.Designer.cs">
+      <DependentUpon>202005190901347_UpdateCustomerDateTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\LiveChat\ActionChatRepository.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
     <Compile Include="Repositories\AnswerRepository.cs" />
     <Compile Include="Repositories\ApplicationFacebookUserRepository.cs" />
@@ -1194,6 +1197,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005181500381_UpDateChannelGroup1.resx">
       <DependentUpon>202005181500381_UpDateChannelGroup1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005190901347_UpdateCustomerDateTime.resx">
+      <DependentUpon>202005190901347_UpdateCustomerDateTime.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

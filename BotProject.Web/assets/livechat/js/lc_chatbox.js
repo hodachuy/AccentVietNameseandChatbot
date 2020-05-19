@@ -227,13 +227,10 @@ console.log(
     'Longtitude: ' + ipInfo.longtitude
 );
 
-
-
-
 var CustomerModel = {
     ID: _customerId,
     ApplicationChannels: 0, //[0: Web, 1: Facebook, 2: Zalo, 3: Kiosk]
-    ChannelGroupID: _channelGroupId
+    ChannelGroupID: _channelGroupId,
 };
 
 var AgentModel = {
@@ -254,18 +251,12 @@ var DeviceModel = {
         Longtitude: ipInfo.longtitude
 }
 
-var status = {
-    userOffline: false,
-    botActive:false,
-}
-
-
 function saveCustomer() {
     var formData = new FormData();
     formData.append('customer', JSON.stringify(CustomerModel));
     formData.append('device', JSON.stringify(DeviceModel));
     $.ajax({
-        url: _Host + "api/lc_customer/createUpdate",
+        url: _Host + "api/lc_customer/create",
         type: 'POST',
         data: formData,
         processData: false,
@@ -337,16 +328,25 @@ var ChatMessages = {
     Time: timeCurrent
 }
 
+var isAgentOnline = false,
+    isBotActive = false;
+
+const TYPE_CONNECT_CUSTOMER = 'customer';
+
+var intervalReconnectId,
+    timeReconnecting = 6;
+var objHub = $.connection.chatHub;
 
 $(document).ready(function () {
-    // Dang ky su kien chatHub
-    cHub.register();
 
     //check agent online
-    checkAgentOnline();
+    isAgentOnline = checkAgentOnline();
 
-    //check list bot have bot active
+    //check have bot active
+    isBotActive = checkBotActive();
 
+    // Dang ky su kien chatHub
+    cHub.register();
 
     // close form
     $('body').on('click', '#btn-cbox-close', function (e) {
@@ -354,9 +354,6 @@ $(document).ready(function () {
     })
 })
 
-var objHub = $.connection.chatHub;
-var intervalReconnectId,
-    timeReconnecting = 6;
 var cHub = {
     eventConnect : function(){
         // set time reconecting singnalR
@@ -375,13 +372,17 @@ var cHub = {
         $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
         $.connection.hub.start().done(function () {
             console.log("signalr started")
-            $('.box-reconecting').addClass('showing');
-            intervalReconnectId = setInterval(new cHub.eventConnect().vary, 1500);
+            // kết nối chat khi agent hoặc bot active
+            if (isAgentOnline == true || isBotActive == true) {
+                objHub.server.connectChat(_customerId, '', _channelGroupId, '', TYPE_CONNECT_CUSTOMER);
+            }
         });
         $.connection.hub.error(function (error) {
             console.log('SignalR error: ' + error)
         });
+
         let tryingToReconnect = false;
+
         $.connection.hub.reconnecting(function () {
             tryingToReconnect = true;
             console.log('SingalR connect đang kết nối lại')
@@ -401,39 +402,57 @@ var cHub = {
                     console.log('SingalR connect đang khởi động lại')
                     $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
                     $.connection.hub.start().done(function () {
+
                     });
                 }, 5000); // Restart connection after 5 seconds.          
             }
         });
     },
-    getSignalFromServer: function () {
-
+    receivedSignalFromServer: function () {
     }
-
 }
 
-function checkAgentOnline() {
+var checkAgentOnline = function () {
+    var isCheck = false;
     var params = {
         channelGroupId: _channelGroupId
     }
     params = JSON.stringify(params);
     $.ajax({
         url: _Host + "api/lc_agent/getListAgentOnline",
-        type: 'POST',
+        contentType: 'application/json; charset=utf-8',
         data: params,
-        processData: false,
-        contentType: false,
-        dataType: "json",
+        async: false,
+        global: false,
+        type: 'POST',
         success: function (data) {
-            console.log(data);
-            if (data.length == 0) {
-                status.userOffline = true;
+            if (data.length != 0) {
+                isCheck = true;
             }
-        },
-        errors: function () {
-
         }
     })
+    return isCheck;
+}
+var checkBotActive = function () {
+    var isCheck = false;
+    var params = {
+        channelGroupId: _channelGroupId
+    }
+    params = JSON.stringify(params);
+    $.ajax({
+        url: _Host + "api/bot/getBotActiveLiveChat",
+        contentType: 'application/json; charset=utf-8',
+        data: params,
+        async: false,
+        global: false,
+        type: 'POST',
+        success: function (data) {
+            if (data.status) {
+                isCheck = true;
+            }
+        }
+    })
+    return isCheck;
 }
 
 

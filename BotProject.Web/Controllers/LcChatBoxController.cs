@@ -13,7 +13,7 @@ namespace BotProject.Web.Controllers
         {
             // Tạo chuỗi ID định danh cho customer nên + channelGroupId,
             // Vì CustomerId lưu storage sẽ k dc thêm vì trùng ID
-            ViewBag.CustomerId = Guid.NewGuid().ToString() + "-"+ channelGroupId.ToString();
+            ViewBag.CustomerId = Guid.NewGuid().ToString() + "_"+ channelGroupId.ToString();
             ViewBag.ChannelGroupID = channelGroupId;
             return View();
         }
