@@ -674,6 +674,26 @@
     <Compile Include="Migrations\202005190901347_UpdateCustomerDateTime.Designer.cs">
       <DependentUpon>202005190901347_UpdateCustomerDateTime.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005200138294_UpdateCustomers2005.cs" />
+    <Compile Include="Migrations\202005200138294_UpdateCustomers2005.Designer.cs">
+      <DependentUpon>202005200138294_UpdateCustomers2005.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005200211207_UpdateThreadParticipant2005.cs" />
+    <Compile Include="Migrations\202005200211207_UpdateThreadParticipant2005.Designer.cs">
+      <DependentUpon>202005200211207_UpdateThreadParticipant2005.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005200807223_UpdateCustomerWithDate.cs" />
+    <Compile Include="Migrations\202005200807223_UpdateCustomerWithDate.Designer.cs">
+      <DependentUpon>202005200807223_UpdateCustomerWithDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005200813120_UpdateCustomerWithLogoutDate.cs" />
+    <Compile Include="Migrations\202005200813120_UpdateCustomerWithLogoutDate.Designer.cs">
+      <DependentUpon>202005200813120_UpdateCustomerWithLogoutDate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202005200850488_UpdateCustomerWithLogoutDate1.cs" />
+    <Compile Include="Migrations\202005200850488_UpdateCustomerWithLogoutDate1.Designer.cs">
+      <DependentUpon>202005200850488_UpdateCustomerWithLogoutDate1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -1200,6 +1220,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005190901347_UpdateCustomerDateTime.resx">
       <DependentUpon>202005190901347_UpdateCustomerDateTime.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005200138294_UpdateCustomers2005.resx">
+      <DependentUpon>202005200138294_UpdateCustomers2005.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005200211207_UpdateThreadParticipant2005.resx">
+      <DependentUpon>202005200211207_UpdateThreadParticipant2005.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005200807223_UpdateCustomerWithDate.resx">
+      <DependentUpon>202005200807223_UpdateCustomerWithDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005200813120_UpdateCustomerWithLogoutDate.resx">
+      <DependentUpon>202005200813120_UpdateCustomerWithLogoutDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005200850488_UpdateCustomerWithLogoutDate1.resx">
+      <DependentUpon>202005200850488_UpdateCustomerWithLogoutDate1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

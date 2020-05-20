@@ -13,10 +13,12 @@ namespace BotProject.Web.Models.Livechat
         public string Name { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
+        public string Avatar { get; set; }
         public ApplicationChannel ApplicationChannels { set; get; }
         public long ChannelGroupID { set; get; }
         public int StatusChatValue { set; get; }
         public DateTime CreatedDate { set; get; }
+        public DateTime? LogoutDate { set; get; }
         public virtual IEnumerable<DeviceViewModel> Devices { set; get; }
     }
     public class DeviceViewModel

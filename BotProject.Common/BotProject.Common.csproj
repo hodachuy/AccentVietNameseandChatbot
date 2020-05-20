@@ -106,6 +106,7 @@
     </Compile>
     <Compile Include="ViewModels\HandleResultBotViewModel.cs" />
     <Compile Include="ViewModels\LiveChat\SP_Channel.cs" />
+    <Compile Include="ViewModels\LiveChat\SP_CustomerJoin.cs" />
     <Compile Include="ViewModels\MdQnAViewModel.cs" />
     <Compile Include="ViewModels\QuesTargetViewModel.cs" />
     <Compile Include="ViewModels\SearchNlpQnAViewModel.cs" />

@@ -600,3 +600,40 @@
     width: 14px !important;
     height: 14px !important;
 }
+
+.avatar.avatar-state-primary, .avatar.avatar-state-success, .avatar.avatar-state-danger, .avatar.avatar-state-warning, .avatar.avatar-state-info, .avatar.avatar-state-secondary, .avatar.avatar-state-light, .avatar.avatar-state-dark,.avatar.avatar-state-online, .avatar.avatar-state-offline {
+    position: relative;
+}
+
+avatar.avatar-state-primary:before,
+.avatar.avatar-state-success:before,
+.avatar.avatar-state-danger:before,
+.avatar.avatar-state-warning:before,
+.avatar.avatar-state-info:before,
+.avatar.avatar-state-secondary:before,
+.avatar.avatar-state-light:before,
+.avatar.avatar-state-dark:before,
+.avatar.avatar-state-online::before,
+.avatar.avatar-state-offline::before {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  top: 0px;
+  right: 0px;
+  border: 3px solid white;
+}
+
+
+.avatar.avatar-state-online::before {
+    background: #28c76f;
+}
+.avatar.avatar-state-offline::before {
+    background:#ddd;
+}
+
+.avatar.avatar-state-warning::before {
+    background: #ddd;
+}

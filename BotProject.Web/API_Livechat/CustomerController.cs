@@ -97,5 +97,18 @@ namespace BotProject.Web.API_Livechat
                 return response;
             });
         }
+
+        [Route("getDeviceByCustomerId")]
+        [HttpGet]
+        public HttpResponseMessage GetDeviceByCustomerID(HttpRequestMessage request, string customerId)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                var deviceDb = _customerService.GetDeviceByCustomerId(customerId);
+                response = request.CreateResponse(HttpStatusCode.OK, deviceDb);
+                return response;
+            });
+        }
     }
 }

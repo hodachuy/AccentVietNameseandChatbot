@@ -331,11 +331,15 @@ var ChatMessages = {
 var isAgentOnline = false,
     isBotActive = false;
 
-const TYPE_CONNECT_CUSTOMER = 'customer';
+var TYPE_USER_CONNECT = {
+    CUSTOMER: 'customer',
+    AGENT: 'agent',
+    BOT:'bot'
+}
 
 var intervalReconnectId,
     timeReconnecting = 6;
-var objHub = $.connection.chatHub;
+var objHub = $.connection.chatHub;;
 
 $(document).ready(function () {
 
@@ -352,7 +356,9 @@ $(document).ready(function () {
     $('body').on('click', '#btn-cbox-close', function (e) {
         parent.postMessage("close", "*");
     })
+
 })
+
 
 var cHub = {
     eventConnect : function(){
@@ -374,7 +380,7 @@ var cHub = {
             console.log("signalr started")
             // kết nối chat khi agent hoặc bot active
             if (isAgentOnline == true || isBotActive == true) {
-                objHub.server.connectChat(_customerId, '', _channelGroupId, '', TYPE_CONNECT_CUSTOMER);
+                objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
             }
         });
         $.connection.hub.error(function (error) {
@@ -409,6 +415,7 @@ var cHub = {
         });
     },
     receivedSignalFromServer: function () {
+
     }
 }
 
@@ -519,4 +526,3 @@ window.addEventListener('message', function (event) {
     //    console.log('message received:  ' + event.data, event);
     //};
 }, false);
-

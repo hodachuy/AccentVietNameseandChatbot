@@ -41,6 +41,7 @@ namespace BotProject.Web.App_Start
                 // providing a cors options with a different policy.
 
                 map.UseCors(CorsOptions.AllowAll);
+
                 var hubConfiguration = new HubConfiguration
                 {
                     // You can enable JSONP by uncommenting line below.

@@ -17,18 +17,18 @@ function getTimeAgo(selector) {
 
     var templates = {
         prefix: "",
-        suffix: " ago",
-        seconds: "less than a minute",
-        minute: "about a minute",
-        minutes: "%d minutes",
-        hour: "about an hour",
-        hours: "about %d hours",
-        day: "a day",
-        days: "%d days",
-        month: "about a month",
-        months: "%d months",
-        year: "about a year",
-        years: "%d years"
+        suffix: " trước",
+        seconds: "Hiện tại",
+        minute: "1 phút",
+        minutes: "%d phút",
+        hour: "1 giờ",
+        hours: "%d giờ",
+        day: "Hôm qua",
+        days: "%d ngày",
+        month: "1 tháng",
+        months: "%d tháng",
+        year: "1 năm",
+        years: "%d năm"
     };
     //prefix: "",
     //suffix: " ago",
@@ -62,18 +62,8 @@ function getTimeAgo(selector) {
         var days = hours / 24;
         var years = days / 365;
 
-        var timePrefix =  templates.prefix + (
-        seconds < 45 && template('seconds', seconds) || seconds < 90 && template('minute', 1) || minutes < 45 && template('minutes', minutes) || minutes < 90 && template('hour', 1) || hours < 24 && template('hours', hours) || hours < 42 && template('day', 1) || days < 30 && template('days', days) || days < 45 && template('month', 1) || days < 365 && template('months', days / 30) || years < 1.5 && template('year', 1) || template('years', years)) + templates.suffix;
-
-        if (timePrefix == "a day ago") {
-            timePrefix = "Hôm qua";
-        } else if (timePrefix == "less than a minute ago") {
-            timePrefix = "Hiện tại";
-        }
-        else if (timePrefix == "about a minute ago") {
-            timePrefix = "1 phút trước";
-        }
-        return timePrefix;
+        return templates.prefix + (
+        seconds < 45 && template('seconds', seconds) || seconds < 90 && template('minute', 1) || minutes < 45 && template('minutes', minutes) || minutes < 90 && template('hour', 1) || hours < 24 && template('hours', hours) || hours < 42 && template('day', 1) || days < 30 && template('days', days) || days < 45 && template('month', 1) || days < 365 && template('months', days / 30) || years < 1.5 && template('year', 1) || template('years', years)); //+templates.suffix
     };
 
     var elements = document.getElementsByClassName('timeago');

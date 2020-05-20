@@ -368,5 +368,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             device.Timezone = deviceVm.Timezone;
         }
         #endregion
+
+       
     }
 }

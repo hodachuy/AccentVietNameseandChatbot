@@ -1,4 +1,5 @@
-﻿using BotProject.Data.Infrastructure;
+﻿using BotProject.Common.ViewModels.LiveChat;
+using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
 using BotProject.Model.Models;
 using BotProject.Model.Models.LiveChat;
@@ -14,10 +15,8 @@ namespace BotProject.Service.Livechat
     {
         Thread AddThreadMessage();
         ThreadParticipant AddThreadParticipant(ThreadParticipant threadParticipant);
-        IEnumerable<ThreadParticipant> GetThreadParticipantByChannelGroupID(int channelGroupId);
-
+        IEnumerable<SP_CustomerJoin> GetCustomerJoinChatByChannelGroupID(string filter, string sort, int pageNumber, int pageSize, long? selectedID);
         bool CheckCustomerInThreadParticipant(string customerId);
-
         // Add Message
         Message AddMessage(Message msg);
         IEnumerable<Message> GetListMessage(string condition, int page, int pageSize, string sort);
@@ -51,9 +50,9 @@ namespace BotProject.Service.Livechat
             return _threadParticipantRepository.Add(threadParticipant);
         }
 
-        public IEnumerable<ThreadParticipant> GetThreadParticipantByChannelGroupID(int channelGroupId)
+        public IEnumerable<SP_CustomerJoin> GetCustomerJoinChatByChannelGroupID(string filter,string sort, int pageNumber, int pageSize, long? selectedID)
         {
-            return _threadParticipantRepository.GetMulti(x => x.ChannelGroupID == channelGroupId);
+            return _threadParticipantRepository.GetCustomerJoinChatChannel(filter, sort, pageNumber, pageSize, selectedID);
         }
 
         public Message AddMessage(Message msg)

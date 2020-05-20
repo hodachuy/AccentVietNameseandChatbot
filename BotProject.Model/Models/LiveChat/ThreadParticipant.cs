@@ -12,18 +12,19 @@ namespace BotProject.Model.Models.LiveChat
     public class ThreadParticipant
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long ID { set; get; }
-
+        [Column(Order = 1)]
         public long ThreadID { set; get; }
 
+        [Key]
+        [Column(Order = 2)]
         public long ChannelGroupID { set; get; }
-
-        public string UserID { set; get; }
 
         public string CustomerID { set; get; }
 
         public DateTime CreatedDate { set; get; }
+
+        [ForeignKey("CustomerID")]
+        public virtual Customer Customer { set; get;}
 
         [ForeignKey("ChannelGroupID")]
         public virtual ChannelGroup GroupChannel { set; get; }

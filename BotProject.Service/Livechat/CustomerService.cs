@@ -15,6 +15,7 @@ namespace BotProject.Service.Livechat
         Customer Create(Customer customer);
         IEnumerable<Customer> GetListCustomerByChannelGroupId(int channelGroupId);
         Customer GetById(string customerId);
+        Customer GetCustomerByConnectionId(string connectionId);
         IEnumerable<Device> GetDeviceByCustomerId(string customerId);
         void Update(Customer customer);
         Customer Delete(Customer customer);
@@ -77,6 +78,11 @@ namespace BotProject.Service.Livechat
         public IEnumerable<Device> GetDeviceByCustomerId(string customerId)
         {
             return _deviceRepository.GetMulti(x => x.CustomerID == customerId);
+        }
+
+        public Customer GetCustomerByConnectionId(string connectionId)
+        {
+            return _customerRepository.GetSingleByCondition(x => x.ConnectionID == connectionId && x.StatusChatValue == 200);
         }
     }
 }
