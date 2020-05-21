@@ -12,6 +12,7 @@ using BotProject.Web.Models.Livechat;
 using BotProject.Model.Models.LiveChat;
 using BotProject.Web.Infrastructure.Extensions;
 using BotProject.Common;
+using AutoMapper;
 
 namespace BotProject.Web.API_Livechat
 {
@@ -93,7 +94,10 @@ namespace BotProject.Web.API_Livechat
             {
                 HttpResponseMessage response = null;
                 var customerDb = _customerService.GetById(customerId);
-                response = request.CreateResponse(HttpStatusCode.OK, customerDb);
+                var customerVm = Mapper.Map<Customer, CustomerViewModel>(customerDb);
+                var deviceDb = _customerService.GetDeviceByCustomerId(customerId).ToList();
+                customerVm.Devices = Mapper.Map<IEnumerable<Device>,IEnumerable<DeviceViewModel>>(deviceDb);
+                response = request.CreateResponse(HttpStatusCode.OK, customerVm);
                 return response;
             });
         }

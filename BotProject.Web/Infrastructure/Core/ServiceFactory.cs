@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Autofac;
+using Autofac.Integration.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -24,6 +26,25 @@ namespace BotProject.Web.Infrastructure.Core
                 return (THelper)HttpContext.Current.Items[key];
             }
             return DependencyResolver.Current.GetService<THelper>();
+        }
+        public static THelper GetService<THelper>()
+        {
+            if (HttpContext.Current != null)
+            {
+                var key = string.Concat("factory-", typeof(THelper).Name);
+                if (!HttpContext.Current.Items.Contains(key))
+                {
+                    var resolvedService = DependencyResolver.Current.GetService<THelper>();
+                    HttpContext.Current.Items.Add(key, resolvedService);
+                }
+                return (THelper)HttpContext.Current.Items[key];
+            }
+
+            using (var c = AutofacDependencyResolver.Current.ApplicationContainer.BeginLifetimeScope("AutofacWebRequest"))
+            {
+                var userRepo = c.Resolve<THelper>();
+                return userRepo;
+            }
         }
     }
 }

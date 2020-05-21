@@ -18,6 +18,7 @@ using Autofac.Integration.WebApi;
 using BotProject.Data;
 using Microsoft.AspNet.SignalR;
 using Microsoft.Owin.Cors;
+using System.Collections.Generic;
 
 [assembly: OwinStartup(typeof(BotProject.Web.App_Start.Startup))]
 

@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BotProject.Common.ViewModels;
 using BotProject.Model.Models;
+using BotProject.Model.Models.LiveChat;
 using BotProject.Web.Models;
+using BotProject.Web.Models.Livechat;
 
 namespace BotProject.Web.Mappings
 {
@@ -26,6 +28,8 @@ namespace BotProject.Web.Mappings
                 cfg.CreateMap<StoreProcQuesGroupViewModel, QuestionGroup>();
                 cfg.CreateMap<MedicalSymptom, MedicalSymptomViewModel>();
                 cfg.CreateMap<StoreProcBotViewModel, BotViewModel>();
+                cfg.CreateMap<Customer, CustomerViewModel>();
+                cfg.CreateMap<Device, DeviceViewModel>();
             });
         }
     }

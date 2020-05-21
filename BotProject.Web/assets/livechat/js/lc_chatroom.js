@@ -4,6 +4,11 @@
     BOT: 'bot'
 }
 
+var UserStatus = {
+    Online :'200',
+    Offline:'201'
+}
+
 var ApplicationChannel = {
     Web: "0",
     Facebook: "1",
@@ -12,7 +17,8 @@ var ApplicationChannel = {
 }
 var configs = {},
     apiChatRoom = {
-        getListCustomerJoin: "api/lc_chatroom/getListCustomerJoinChatChannel"
+        getListCustomerJoin: "api/lc_chatroom/getListCustomerJoinChatChannel",
+        getCustomerById: "api/lc_customer/getById"
     }
 
 var _channelGroupId = $("#channelGroupId").val(),
@@ -30,10 +36,6 @@ $(function () {
     cHub.register();
     cHub.receivedSignalFromServer();
 });
-$(document).ready(function () {
-    //get list customer join chat
-    new customerEvent.getCustomer().GetListCustomerJoinChat();
-})
 
 var cHub = {
     register: function () {
@@ -41,7 +43,10 @@ var cHub = {
         $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
         $.connection.hub.start().done(function () {
             console.log("signalr started")
-            objHub.server.connectAgentToListCustomer(_channelGroupId);
+            //objHub.server.connectAgentToListCustomer(_agentId, _channelGroupId);
+            objHub.server.connectAgent(_agentId, _channelGroupId)
+
+            new customerEvent.customerJoin().GetListCustomerFromDb();
         });
         $.connection.hub.error(function (error) {
             console.log('SignalR error: ' + error)
@@ -79,15 +84,19 @@ var cHub = {
         objHub.client.receiveNewThreadCustomer = function (channelGroupId, threadID, objCustomerDb) {
             // Kiểm tra tín hiệu trả về theo đúng kênh chat
             if (channelGroupId == _channelGroupId) {
-                new customerEvent.getCustomer().GetCustomerRealtime(threadID, objCustomerDb);
+                // customer mới tham gia
+                console.log('customer-' + objCustomerDb.ID + ' new join')
+
+                new customerEvent.customerJoin().GetCustomerJoinRealtime(threadID, objCustomerDb);
+
             }
         };
-        objHub.client.getStatusCustomerOffline = function (customerId, statusOffline) {
+        objHub.client.getStatusCustomerOffline = function (customerId) {
             console.log('customer-' + customerId + ' offline')
             var $elemCustomer = $("#customer-" + customerId + "");
             $elemCustomer.find('span.avatar').removeClass("avatar-state-online").addClass("avatar-state-offline");
         };
-        objHub.client.getStatusCustomerOnline = function (customerId, statusOnline) {
+        objHub.client.getStatusCustomerOnline = function (customerId) {
             console.log('customer-' + customerId + ' online')
             var $elemCustomer = $("#customer-" + customerId + "");
             $elemCustomer.find('span.avatar').removeClass("avatar-state-offline").addClass("avatar-state-online");
@@ -103,14 +112,19 @@ var customerEvent = {
         })
 
     },
-    formChat : function(){
-        this.getFormByCustomer = function (customerId) {
-
-        }
-
+    getFormChat : function(objCustomer){
+        var getFormMessage = function () {
+            var templateDivMessage = '';
+            console.log('formchat')
+        }();
+        var getFormDeviceInfo = function () {
+            var device = objCustomer.Device;
+            var templateDivDevice = '';
+            console.log('device')
+        }();
     },
-    getCustomer : function(){
-        this.GetListCustomerJoinChat = function () {
+    customerJoin : function(){
+        this.GetListCustomerFromDb = function () {
             var params = {
                 channelGroupId: _channelGroupId
             }
@@ -132,17 +146,41 @@ var customerEvent = {
                 },
             });
         },
-        this.GetCustomerRealtime = function (threadID, customer) {
+        this.GetCustomerJoinRealtime = function (threadID, customer) {
             var html = new customerEvent.render(threadID).templateListCustomer(customer);
             $("#div-list-customers").prepend(html);
             getTimeAgo();
+        }
+        this.ViewFormChatById = function (customerId, threadId) {
+            var $elemCustomer = $("#customer-" + customerId + "");
+            // hightlight active
+            $(".list-customer-item").removeClass("active");
+            $elemCustomer.addClass("active");
+            // gửi tín hiệu kết nối tới nhóm có customer mới
+            if ($elemCustomer.find('span.avatar').hasClass("avatar-state-online")) {
+                console.log('customer has online')
+                objHub.server.agentJoinChatCustomer(threadId);
+            }
+            var params = {
+                customerId: customerId
+            }
+            $.ajax({
+                url: _Host + apiChatRoom.getCustomerById,
+                contentType: 'application/json; charset=utf-8',
+                data: params,
+                type: 'GET',
+                success: function (data) {
+                    console.log(data)
+                    new customerEvent.getFormChat(data);
+                },
+            });
         }
     },
     render: function (threadID) {
         this.templateListCustomer = function (customer) {
             var templateHtml = '';
             if (customer.ApplicationChannels == ApplicationChannel.Web) {
-                templateHtml = '<a class="list-group-item d-flex list-customer-item" id="customer-' + (customer.ID == undefined ? customer.CustomerID : customer.ID) + '" data-customer-id="' + (customer.ID == undefined ? customer.CustomerID : customer.ID) + '" data-thread-id="' + threadID + '" href="javascript:void(0)">' +
+                templateHtml = '<a class="list-group-item d-flex list-customer-item" id="customer-' + customer.ID + '" data-customer-id="' + customer.ID + '" data-thread-id="' + threadID + '" href="javascript:new customerEvent.customerJoin().ViewFormChatById(\'' + customer.ID + '\',\'' + threadID + '\')">' +
                                     '<div class="pr-3">' +
                                         '<span class="avatar ' + (customer.StatusChatValue == 200 ? "avatar-state-online" : "avatar-state-offline") + '">' +
                                             '<span class="avatar-title bg-warning rounded-circle">W</span>' +
@@ -151,7 +189,7 @@ var customerEvent = {
                                     '<div class="flex-grow- 1">' +
                                         '<h6 class="mb-1">' + customer.Name + '</h6>' +
                                         '<span class="small text-muted">' +
-                                            '<i class="fa fa-image mr-1"></i> Photo' +
+                                            '<span id="msg-preview-' + customer.ID + '"></span>' +
                                         '</span>' +
                                     '</div>' +
                                     '<div class="text-right ml-auto">' +
@@ -160,7 +198,7 @@ var customerEvent = {
                                '</a>';
             }
             else{
-                templateHtml = '<a class="list-group-item d-flex list-customer-item" id="customer-' + (customer.ID == undefined ? customer.CustomerID : customer.ID) + '" data-customer-id="' + (customer.ID == undefined ? customer.CustomerID : customer.ID) + '" data-thread-id="' + threadID + '" href="javascript:void(0)">' +
+                templateHtml = '<a class="list-group-item d-flex list-customer-item" id="customer-' + customer.ID + '" data-customer-id="' + customer.ID + '" data-thread-id="' + threadID + '" href="javascript:void(0)">' +
                                     '<div class="pr-3">' +
                                         '<span class="avatar ' + (customer.StatusChatValue == 200 ? "avatar-state-online" : "avatar-state-offline") + '">' +
                                                '<img src="'+ _Host + customer.Avatar +'" class="rounded-circle" alt="image">'+
@@ -178,7 +216,7 @@ var customerEvent = {
                                             '</span>'+
                                         '</h6>' +
                                         '<span class="small text-muted">' +
-                                            '<i class="fa fa-image mr-1"></i> Photo' +
+                                           '<span id="msg-preview-' + customer.ID + '"></span>' +
                                         '</span>' +
                                     '</div>' +
                                     '<div class="text-right ml-auto">' +
@@ -188,5 +226,73 @@ var customerEvent = {
             }
             return templateHtml;
         } 
+    }
+}
+
+//Get Map Device IP
+function initLatiLongMap(latitude, longitude) {
+    var posVietNam = { lat: 16.4498, lng: 107.5624 };
+    var zoomSize = 5;
+    if (latitude && longitude) {
+        posVietNam = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
+        zoomSize = 18;
+    }
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: zoomSize,
+        center: posVietNam
+    });
+    marker = new google.maps.Marker({
+        map: map,
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+        position: posVietNam
+    });
+    google.maps.event.addListener(marker, 'dragend', function (event) {
+        document.getElementById("Latitude").value = this.getPosition().lat();
+        document.getElementById("Longitude").value = this.getPosition().lng();
+    });
+    //autocomplete = new google.maps.places.Autocomplete(
+    //    (document.getElementById('address')), { types: ['geocode'] });
+    var input = document.getElementById('Address');
+    autocomplete = new google.maps.places.Autocomplete(input);
+    autocomplete.addListener('place_changed', fillInAddress);
+}
+
+function fillInAddress() {
+    // Get the place details from the autocomplete object.
+    var place = autocomplete.getPlace();
+    document.getElementById("LatiLongTude").value = place.geometry.location.lat() + "," + place.geometry.location.lng();
+    var pos = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 18,
+        center: pos
+    }); var image = {
+        url: "/assets/client/img/gmap_marker.png",
+        anchor: new google.maps.Point(25, 25),
+        scaledSize: new google.maps.Size(45, 45)
+    };
+    marker = new google.maps.Marker({
+        map: map,
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+        position: pos,
+        //icon: image
+    });
+    google.maps.event.addListener(marker, 'dragend', function (event) {
+        document.getElementById("LatiLongTude").value = this.getPosition().lat() + "," + this.getPosition().lng();
+    });
+}
+
+function getLatitudeLongitude(callback, address) {
+    address = address || 'Ferrol, Galicia, Spain';
+    geocoder = new google.maps.Geocoder();
+    if (geocoder) {
+        geocoder.geocode({
+            'address': address
+        }, function (results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                callback(results[0]);
+            }
+        });
     }
 }

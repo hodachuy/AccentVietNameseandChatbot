@@ -3,14 +3,16 @@
     string customerId = ViewBag.CustomerId;
     int channelGroupId = ViewBag.ChannelGroupId;
 }
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Livechat</title>
     <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/assets/livechat/css/chatbox-UI.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/assets/client/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script>
         var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]',
             _customerId,
@@ -396,10 +398,8 @@
     </div>
 
     <!--signalR-->
-    <script src="~/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.2.2.js"></script>
     <script src="~/signalr/hubs"></script>
-
-    <script src="~/assets/client/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="~/assets/livechat/js/lc_chatbox.js"></script>
 </body>
 </html>

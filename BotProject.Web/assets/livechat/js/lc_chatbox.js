@@ -339,7 +339,8 @@ var TYPE_USER_CONNECT = {
 
 var intervalReconnectId,
     timeReconnecting = 6;
-var objHub = $.connection.chatHub;;
+
+var objHub = $.connection.chatHub;
 
 $(document).ready(function () {
 
@@ -350,7 +351,7 @@ $(document).ready(function () {
     isBotActive = checkBotActive();
 
     // Dang ky su kien chatHub
-    cHub.register();
+    cBoxHub.register();
 
     // close form
     $('body').on('click', '#btn-cbox-close', function (e) {
@@ -359,8 +360,7 @@ $(document).ready(function () {
 
 })
 
-
-var cHub = {
+var cBoxHub = {
     eventConnect : function(){
         // set time reconecting singnalR
         var vary = function intervalFunc() {
@@ -413,6 +413,15 @@ var cHub = {
                 }, 5000); // Restart connection after 5 seconds.          
             }
         });
+
+        // gọi Onconnected
+        objHub.client.connected = function () {
+            console.log('connected')
+        }
+        // gọi Onconnected
+        objHub.client.disconnected = function () {
+            console.log('disconnected')
+        }
     },
     receivedSignalFromServer: function () {
 

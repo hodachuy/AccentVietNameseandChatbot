@@ -8,7 +8,7 @@ namespace BotProject.Common.ViewModels.LiveChat
 {
     public class SP_CustomerJoin
     {
-        public string CustomerID { get; set; }
+        public string ID { get; set; }
         public string Name { get; set; }
         public long ThreadID { get; set; }
         public long ChannelGroupID { get; set; }

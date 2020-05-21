@@ -118,30 +118,23 @@
                     </div>
                     <div>
                         <p class="mb-0">HCM</p>
-                        <div class="m-0 small text-success">typing...</div>
+                        @*<div class="m-0 small text-success">typing...</div>*@
                     </div>
                     <div class="ml-auto">
                         <ul class="nav align-items-center">
-                            <li class="mr-4 d-sm-inline d-none">
-                                <a href="#" title="" data-toggle="tooltip" data-original-title="Start Video Call">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video width-18 height-18"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
-                                </a>
-                            </li>
-                            <li class="mr-4 d-sm-inline d-none">
-                                <a href="#" title="" data-toggle="tooltip" data-original-title="Start Voice Call">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-phone-call width-18 height-18"><path d="M15.05 5A5 5 0 0 1 19 8.95M15.05 1A9 9 0 0 1 23 8.94m-1 7.98v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                                </a>
-                            </li>
                             <li class="d-sm-inline d-none">
-                                <a href="#" title="" data-toggle="tooltip" data-original-title="Add to Contact">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user-plus width-18 height-18"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                                <a class="nav-link nav-user-img" href="#" id="form-message-setting" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-fw fa-cog"></i>
                                 </a>
-                            </li>
-                            <li class="ml-4 mobile-chat-close-btn">
-                                <a href="#" class="btn btn-sm btn-danger">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x width-18 height-18"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                </a>
-                            </li>
+                                <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="form-message-setting">
+                                    <a class="dropdown-item" href="javascript:void(0);">
+                                        <label class="checkbox-inline"><input type="checkbox" value="">Chuyển bot trả lời</label>
+                                    </a>
+                                    <a class="dropdown-item" href="javascript:void(0);" id="btnShowAgent">
+                                        <i class="fas fa-fw fa-user"></i> chỉ định chuyên viên
+                                    </a>
+                                </div>
+                            </li>                          
                         </ul>
                     </div>
                 </div>
@@ -166,7 +159,7 @@
                     <div class="message-avatar">
                         <div class="message-avatar-customer">
                             <div class="pl-3">
-                                <span class="avatar avatar-state-secondary">
+                                <span class="avatar">
                                     <span class="avatar-title bg-primary rounded-circle">A</span>
                                 </span>
                             </div>
@@ -290,17 +283,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-12 text-dark font-size-13"><i class="fa fa-clock"></i> 4:40 pm  local time</div>
-                            <div class="col-12 text-dark font-size-13"><i class="fa fa-map-marker-alt"></i> Ho Chi Minh City, Ho Chi Minh, Vietnam</div>
+                            <div class="col-12 text-dark font-size-13"><i class="fa fa-clock"></i><span id="device-clock">4:40 pm  local time</span></div>
+                            <div class="col-12 text-dark font-size-13"><i class="fa fa-map-marker-alt"></i><span id="device-country">Ho Chi Minh City, Ho Chi Minh, Vietnam</span></div>
                         </div>
                         <div class="row">
                             <div class="col-12">
                                 <div id="map" class="map css-181kzs5 css-ahr9p47" style="height:220px;"></div>
-
                             </div>
-                            @*<div data-test="user-data-map" class="css-181kzs5 css-ahr9p47">
-                                    <div id="map" class="cusMap"></div>
-                                </div>*@
                         </div>
                     </div>
                 </div>
@@ -308,10 +297,10 @@
                     <div class="card-body">
                         <h6 class="card-title">Thiết bị</h6>
                         <div class="row">
-                            <div class="col-12 font-size-13"><span class="text-muted">IP Address: </span><span>192.168.1.1</span></div>
-                            <div class="col-12 font-size-13"><span class="text-muted">OS/Device: </span><span>iOS (13.3)</span></div>
-                            <div class="col-12 font-size-13"><span class="text-muted">Browser: </span><span>Chrome (71.0.3578.89)</span></div>
-                            <div class="col-12 font-size-13"><span class="text-muted">User agent: </span><span>Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/71.0.3578.89 Mobile/15E148 Safari/605.1</span></div>
+                            <div class="col-12 font-size-13"><span class="text-muted">IP Address: </span><span id="device-ip">192.168.1.1</span></div>
+                            <div class="col-12 font-size-13"><span class="text-muted">OS/Device: </span><span id="device-os">iOS (13.3)</span></div>
+                            <div class="col-12 font-size-13"><span class="text-muted">Browser: </span><span id="device-browser">Chrome (71.0.3578.89)</span></div>
+                            <div class="col-12 font-size-13"><span class="text-muted">User agent: </span><span id="device-user-agent">Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/71.0.3578.89 Mobile/15E148 Safari/605.1</span></div>
                         </div>
                     </div>
                 </div>
@@ -322,7 +311,7 @@
     </div>
 </div>
 @section footerJS{
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.js"></script>
+    <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=false&key=AIzaSyAfx5a8yx5MqeGoTS3ierzoe35TXoX0ZOY&libraries=places"></script>
     <script src="~/assets/livechat/js/helper/common.js"></script>
     <script src="~/assets/livechat/js/lc_chatroom.js"></script>
     <script>
@@ -345,70 +334,7 @@
         })
 
     </script>
-    <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=false&key=AIzaSyAfx5a8yx5MqeGoTS3ierzoe35TXoX0ZOY&libraries=places"></script>
-    <script>
-        $(document).ready(function () {
-            initMap();
-        })
-        function initMap() {
-            var posVietNam = { lat: 10.8230, lng: 106.6296 };
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 8,
-                center: posVietNam,
-                mapTypeControl: false,
-                zoomControl: false,
-                scaleControl: false,
-                streetViewControl: false,
-                rotateControl: false,
-                fullscreenControl: false
-            }); 
-            var image = {
-                url: "/assets/client/img/gmap_marker.png",
-                anchor: new google.maps.Point(25, 25),
-                scaledSize: new google.maps.Size(25, 25)
-            };
-            marker = new google.maps.Marker({
-                map: map,
-                draggable: false,
-                animation: google.maps.Animation.DROP,
-                position: posVietNam,
-                //icon: image
-            });
-            //google.maps.event.addListener(marker, 'dragend', function (event) {
-            //    document.getElementById("Latitude").value = this.getPosition().lat();
-            //    document.getElementById("Longitude").value = this.getPosition().lng();
-            //});
-            //autocomplete = new google.maps.places.Autocomplete((document.getElementById('address')), {types: ['geocode'] });
-            //var input = document.getElementById('Address');
-            //autocomplete = new google.maps.places.Autocomplete(input);
-            //autocomplete.addListener('place_changed', fillInAddress);
-        }
 
-        function fillInAddress() {
-            // Get the place details from the autocomplete object.
-            var place = autocomplete.getPlace();
-            document.getElementById("LatiLongTude").value = place.geometry.location.lat() + "," + place.geometry.location.lng();
-            var pos = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 18,
-                center: pos
-            }); var image = {
-                url: "/assets/client/img/gmap_marker_active.png",
-                anchor: new google.maps.Point(25, 25),
-                scaledSize: new google.maps.Size(45, 45)
-            };
-            marker = new google.maps.Marker({
-                map: map,
-                draggable: false,
-                animation: google.maps.Animation.DROP,
-                position: pos,
-                //icon: image
-            });
-            google.maps.event.addListener(marker, 'dragend', function (event) {
-                document.getElementById("LatiLongTude").value = this.getPosition().lat() + "," + this.getPosition().lng();
-            });
-        }
-    </script>
     @*<!--Lacviet-->
     <script>
         (function (l, a, c, v, i, e, t) {

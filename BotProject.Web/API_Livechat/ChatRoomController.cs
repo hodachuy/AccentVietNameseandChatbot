@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using BotProject.Service;
 using BotProject.Service.Livechat;
+using BotProject.Common;
 
 namespace BotProject.Web.API_Livechat
 {
@@ -27,7 +28,8 @@ namespace BotProject.Web.API_Livechat
             {
                 HttpResponseMessage response = null;
                 string filter = "tp.ChannelGroupID = " + channelGroupId;
-                var lstCustomerJoinChat = _chatCommonService.GetCustomerJoinChatByChannelGroupID(filter, "", 1, 20, null);
+                var lstCustomerJoinChat = _chatCommonService.GetCustomerJoinChatByChannelGroupID(filter, "", 1, 20, null)
+                                          .OrderByDescending(x=>x.StatusChatValue == CommonConstants.USER_ONLINE);
                 response = request.CreateResponse(HttpStatusCode.OK, lstCustomerJoinChat);
                 return response;
             });

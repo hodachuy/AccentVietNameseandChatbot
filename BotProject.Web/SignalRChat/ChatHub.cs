@@ -8,6 +8,7 @@ using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Log4Net;
 using System.Linq;
 using BotProject.Common;
+using System.Data.SqlClient;
 
 namespace BotProject.Web.SignalRChat
 {
@@ -19,14 +20,20 @@ namespace BotProject.Web.SignalRChat
         private const string USER_AGENT = "agent";
         private const string USER_BOT = "bot";
 
+
+        private string _connectionID = "";
+
+        private readonly string _sqlConnection = Helper.ReadString("SqlConnection");
+
         private ICustomerService _customerService;
         private IChatCommonSerivce _chatCommonService;
         private ApplicationUserManager _userManager;
+
         public ChatHub()
         {
-            _customerService = ServiceFactory.Get<ICustomerService>();
-            _userManager = ServiceFactory.Get<ApplicationUserManager>();
-            _chatCommonService = ServiceFactory.Get<IChatCommonSerivce>();
+            _customerService = ServiceFactory.GetService<ICustomerService>();
+            _userManager = ServiceFactory.GetService<ApplicationUserManager>();
+            _chatCommonService = ServiceFactory.GetService<IChatCommonSerivce>();
         }
 
         /// <summary>
@@ -38,6 +45,7 @@ namespace BotProject.Web.SignalRChat
         /// <param name="threadId"></param>
         public void ConnectCustomerToChannelChat(string customerId, long channelGroupId)
         {
+
             string connectionId = Context.ConnectionId;
             try
             {
@@ -99,33 +107,57 @@ namespace BotProject.Web.SignalRChat
             _context.Clients.Group(threadId, arrExcludeUserConnectionId).getWriting(accountID, isStop);
         }
 
-        public void ConnectAgentToListCustomer(long channelGroupId)
+        public void ConnectAgentToListCustomer(string agentId, long channelGroupId)
         {
-            string connectionId = Context.ConnectionId;
-            // kết nối tới channelGroup
-            ConnectAgentToChannelGroup(connectionId, channelGroupId);
+            _connectionID = Context.ConnectionId;
 
-            string filter = "tp.ChannelGroupID = " + channelGroupId + " and c.StatusChatValue = 200";
-            var lstCustomerOnline = _chatCommonService.GetCustomerJoinChatByChannelGroupID(filter, "", 1, Int32.MaxValue, null);
-            if (lstCustomerOnline != null && lstCustomerOnline.Count() != 0)
+            var agentDb = _userManager.FindById(agentId);
+            agentDb.ConnectionID = _connectionID;
+            agentDb.StatusChatValue = CommonConstants.USER_ONLINE;
+            _userManager.Update(agentDb);
+
+            // kết nối tới channelGroup
+            // agent tham gia kênh
+            _context.Groups.Add(_connectionID, channelGroupId.ToString());
+
+            try
             {
-                foreach(var customer in lstCustomerOnline)
+                string filter = "tp.ChannelGroupID = " + channelGroupId + " and c.StatusChatValue = 200";
+                var lstCustomerOnline = _chatCommonService.GetCustomerJoinChatByChannelGroupID(filter, "", 1, Int32.MaxValue, null).ToList();
+                if (lstCustomerOnline != null && lstCustomerOnline.Count() != 0)
                 {
-                    // kết nối tới từng customer
-                    _context.Groups.Add(connectionId, customer.ThreadID.ToString());
+                    foreach (var customer in lstCustomerOnline)
+                    {
+                        // kết nối tới từng customer
+                        _context.Groups.Add(_connectionID, customer.ThreadID.ToString());
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                BotLog.Error(ex.StackTrace + ex.Message);
             }
         }
 
-        public void ConnectAgentToSingleCustomer(string threadId)
+        public void ConnectAgent(string agentId, long channelGroupId)
         {
-            _context.Groups.Add(Context.ConnectionId, threadId);
+            _connectionID = Context.ConnectionId;
+            var agentDb = _userManager.FindById(agentId);
+            agentDb.ConnectionID = _connectionID;
+            agentDb.StatusChatValue = CommonConstants.USER_ONLINE;
+            _userManager.Update(agentDb);
+
+            // agent tham gia kênh
+            _context.Groups.Add(_connectionID, channelGroupId.ToString());
         }
 
-        public void ConnectAgentToChannelGroup(string connectionId, long channelGroupId)
+
+        public void AgentJoinChatCustomer(string threadId)
         {
-            _context.Groups.Add(connectionId, channelGroupId.ToString());
+            _connectionID = Context.ConnectionId;
+            _context.Groups.Add(_connectionID, threadId);
         }
+
 
         /// <summary>
         /// Gửi tin nhắn tới user tham gia thread (agent và customer)
@@ -152,36 +184,90 @@ namespace BotProject.Web.SignalRChat
 
         public void OnchangeStatusCustomerOffline(string connectionId)
         {
-            var customerDb = _customerService.GetCustomerByConnectionId(connectionId);
-            if (customerDb != null)
+            bool isHasCustomer = false;
+            string customerId = "";
+            long channelGroupId = 0;
+
+            var sqlConnection = new SqlConnection(_sqlConnection);
+            sqlConnection.Open();
+            SqlCommand command = new SqlCommand("Select top 1 * from [Customers] where ConnectionID = @connectionId and StatusChatValue = 200", sqlConnection);
+            command.Parameters.AddWithValue("@connectionId", connectionId);
+            using (SqlDataReader reader = command.ExecuteReader())
             {
-                customerDb.ConnectionID = "";
-                customerDb.StatusChatValue = CommonConstants.USER_OFFLINE;
-                customerDb.LogoutDate = DateTime.Now;
-                _customerService.Update(customerDb);
-                _customerService.Save();
-                _context.Clients.Group(customerDb.ChannelGroupID.ToString(), customerDb.ConnectionID).getStatusCustomerOffline(customerDb.ID, CommonConstants.USER_OFFLINE);
+                if (reader.HasRows)
+                {
+                    isHasCustomer = true;
+                    if (reader.Read())
+                    {
+                        customerId = (string)reader["ID"];
+                        channelGroupId = (long)reader["ChannelGroupID"];
+                    }
+                }
             }
+            command.ExecuteNonQuery();
+            if(isHasCustomer == true)
+            {
+                SqlCommand command2 = new SqlCommand("UPDATE Customers SET StatusChatValue = @statusCode,ConnectionID = @connectionId,LogoutDate = @logoutDate Where ID = @customerId", sqlConnection);
+                command2.Parameters.AddWithValue("@statusCode", 201);
+                command2.Parameters.AddWithValue("@customerId", customerId);
+                command2.Parameters.AddWithValue("@connectionId", String.Empty);
+                command2.Parameters.AddWithValue("@logoutDate", DateTime.Now);
+                command2.ExecuteNonQuery();
+
+                _context.Clients.Group(channelGroupId.ToString()).getStatusCustomerOffline(customerId);
+            }
+            sqlConnection.Close();
         }
         public void OnchangeStatusCustomerOnline(long ChannelGroupID,string customerId, string connectionId)
         {
-            _context.Clients.Group(ChannelGroupID.ToString(), connectionId).getStatusCustomerOnline(customerId, CommonConstants.USER_ONLINE);
+            _context.Clients.Group(ChannelGroupID.ToString(), connectionId).getStatusCustomerOnline(customerId);
         }
 
-        public override System.Threading.Tasks.Task OnDisconnected(bool stopCalled)
+        public void OnchangeStatusAgentOffline(string connectionId)
         {
-            if (stopCalled)
+            bool isHasAgent = false;
+            string agentId = "";
+            var sqlConnection = new SqlConnection(_sqlConnection);
+            sqlConnection.Open();
+            SqlCommand command = new SqlCommand("Select top 1 * from [ApplicationUsers] where ConnectionID = @connectionId and StatusChatValue = 200", sqlConnection);
+            command.Parameters.AddWithValue("@connectionId", connectionId);
+            using (SqlDataReader reader = command.ExecuteReader())
             {
-                // customer
-                OnchangeStatusCustomerOffline(Context.ConnectionId);
-
-                Console.WriteLine(String.Format("Client {0} explicitly closed the connection.", Context.ConnectionId));
+                if (reader.HasRows)
+                {
+                    isHasAgent = true;
+                    if (reader.Read())
+                    {
+                        agentId = (string)reader["Id"];
+                    }
+                }
             }
-            else
+            command.ExecuteNonQuery();
+
+            if (isHasAgent == true)
             {
-                Console.WriteLine(String.Format("Client {0} timed out .", Context.ConnectionId));
+                SqlCommand command2 = new SqlCommand("UPDATE ApplicationUsers SET StatusChatValue = @statusCode,ConnectionID = @connectionId Where Id = @agentId", sqlConnection);
+                command2.Parameters.AddWithValue("@statusCode", 201);
+                command2.Parameters.AddWithValue("@agentId", agentId);
+                command2.Parameters.AddWithValue("@connectionId", String.Empty);
+                command2.ExecuteNonQuery();
             }
+            sqlConnection.Close();
+        }
 
+        public override Task OnConnected()
+        {
+            return base.OnConnected();
+        }
+
+        public override Task OnDisconnected(bool stopCalled)
+        {
+            _connectionID = Context.ConnectionId;
+
+            // agent
+            OnchangeStatusAgentOffline(_connectionID);
+            // customer
+            OnchangeStatusCustomerOffline(_connectionID);
 
             return base.OnDisconnected(stopCalled);
         }
@@ -190,5 +276,6 @@ namespace BotProject.Web.SignalRChat
         {
             OnchangeStatusCustomerOffline(Context.ConnectionId);
         }
+
     }
 }

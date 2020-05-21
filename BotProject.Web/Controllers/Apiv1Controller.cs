@@ -10,8 +10,6 @@ using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
 using ExcelDataReader;
 using Newtonsoft.Json;
-using SearchEngine.Data;
-using SearchEngine.Service;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,7 +34,7 @@ namespace BotProject.Web.Controllers
         private string pathSetting = PathServer.PathAIML + "config";
 
         private BotService _botService;
-        private ElasticSearch _elastic;
+        //private ElasticSearch _elastic;
         private IBotService _botDbService;
         private ISettingService _settingService;
         private IHandleModuleServiceService _handleMdService;
@@ -74,7 +72,7 @@ namespace BotProject.Web.Controllers
                                 IAttributeSystemService attributeService)
         {
             _errorService = errorService;
-            _elastic = new ElasticSearch();
+            //_elastic = new ElasticSearch();
             //_accentService = new AccentService();// AccentService.AccentInstance;
             _botDbService = botDbService;
             _settingService = settingService;
@@ -1215,210 +1213,210 @@ namespace BotProject.Web.Controllers
 
         #endregion
 
-        #region --SEARCH ENGINE ELASTICSEARCH--
-        public JsonResult GetAll(int page = 1, int pageSize = 10)
-        {
-            int totalRow = 0;
-            int from = (page - 1) * pageSize;
-            var lstData = _elastic.GetAll(from, pageSize);
+        //#region --SEARCH ENGINE ELASTICSEARCH--
+        //public JsonResult GetAll(int page = 1, int pageSize = 10)
+        //{
+        //    int totalRow = 0;
+        //    int from = (page - 1) * pageSize;
+        //    var lstData = _elastic.GetAll(from, pageSize);
 
-            if (lstData.Count() != 0)
-            {
-                totalRow = lstData[0].Total;
-            }
+        //    if (lstData.Count() != 0)
+        //    {
+        //        totalRow = lstData[0].Total;
+        //    }
 
-            var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
-            {
-                Items = lstData,
-                Page = page,
-                TotalCount = totalRow,
-                MaxPage = pageSize,
-                TotalPages = (int)Math.Ceiling((decimal)totalRow / pageSize)
-            };
+        //    var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
+        //    {
+        //        Items = lstData,
+        //        Page = page,
+        //        TotalCount = totalRow,
+        //        MaxPage = pageSize,
+        //        TotalPages = (int)Math.Ceiling((decimal)totalRow / pageSize)
+        //    };
 
-            return Json(paginationSet, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(paginationSet, JsonRequestBehavior.AllowGet);
+        //}
 
-        public JsonResult Search(string text, bool isAccentVN = false)
-        {
-            if (!String.IsNullOrEmpty(text))
-                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
+        //public JsonResult Search(string text, bool isAccentVN = false)
+        //{
+        //    if (!String.IsNullOrEmpty(text))
+        //        text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
 
-            if (isAccentVN)
-            {
-                //text = _accentService.GetAccentVN(text);
-            }
+        //    if (isAccentVN)
+        //    {
+        //        //text = _accentService.GetAccentVN(text);
+        //    }
 
-            var lstData = _elastic.Search(text);
+        //    var lstData = _elastic.Search(text);
 
-            var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
-            {
-                Items = lstData,
-                Page = 1,
-                TotalCount = 1,
-                TotalPages = 1
-            };
+        //    var paginationSet = new PaginationSet<SearchEngine.Data.Question>()
+        //    {
+        //        Items = lstData,
+        //        Page = 1,
+        //        TotalCount = 1,
+        //        TotalPages = 1
+        //    };
 
-            return Json(paginationSet, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(paginationSet, JsonRequestBehavior.AllowGet);
+        //}
 
-        public JsonResult Suggest(string text, bool isAccentVN = false)
-        {
-            if (!String.IsNullOrEmpty(text))
-                text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
+        //public JsonResult Suggest(string text, bool isAccentVN = false)
+        //{
+        //    if (!String.IsNullOrEmpty(text))
+        //        text = Regex.Replace(HttpUtility.HtmlDecode(text), @"<(.|\n)*?>", "");
 
-            if (isAccentVN)
-            {
-                //text = _accentService.GetAccentVN(text);
-            }
+        //    if (isAccentVN)
+        //    {
+        //        //text = _accentService.GetAccentVN(text);
+        //    }
 
-            var lstSuggest = _elastic.AutoComplete(text);
-            return Json(lstSuggest, JsonRequestBehavior.AllowGet);
-        }
+        //    var lstSuggest = _elastic.AutoComplete(text);
+        //    return Json(lstSuggest, JsonRequestBehavior.AllowGet);
+        //}
 
-        public JsonResult AddQnA(string question, string answer)
-        {
-            string message = "";
-            if (!String.IsNullOrEmpty(question))
-            {
-                return Json(message, JsonRequestBehavior.AllowGet);
-            }
-            var result = _elastic.Create(question, answer);
-            return Json(result, JsonRequestBehavior.AllowGet);
-        }
+        //public JsonResult AddQnA(string question, string answer)
+        //{
+        //    string message = "";
+        //    if (!String.IsNullOrEmpty(question))
+        //    {
+        //        return Json(message, JsonRequestBehavior.AllowGet);
+        //    }
+        //    var result = _elastic.Create(question, answer);
+        //    return Json(result, JsonRequestBehavior.AllowGet);
+        //}
 
-        public JsonResult ImportExcelQnA()
-        {
-            if (Request.Files.Count > 0)
-                try
-                {
-                    HttpPostedFileBase file = Request.Files[0];
-                    string pathtempt = Helper.ReadString("ExcelTemplateTemptPath1");
-                    if (!Directory.Exists(pathtempt))
-                    {
-                        Directory.CreateDirectory(pathtempt);
-                    }
-                    string path = System.IO.Path.Combine(pathtempt, file.FileName + "_" + DateTime.Now.Ticks.ToString());
-                    file.SaveAs(path);
+        //public JsonResult ImportExcelQnA()
+        //{
+        //    if (Request.Files.Count > 0)
+        //        try
+        //        {
+        //            HttpPostedFileBase file = Request.Files[0];
+        //            string pathtempt = Helper.ReadString("ExcelTemplateTemptPath1");
+        //            if (!Directory.Exists(pathtempt))
+        //            {
+        //                Directory.CreateDirectory(pathtempt);
+        //            }
+        //            string path = System.IO.Path.Combine(pathtempt, file.FileName + "_" + DateTime.Now.Ticks.ToString());
+        //            file.SaveAs(path);
 
-                    var formBotId = System.Web.HttpContext.Current.Request.Unvalidated.Form["botId"];
-                    var botId = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<string>(formBotId);
+        //            var formBotId = System.Web.HttpContext.Current.Request.Unvalidated.Form["botId"];
+        //            var botId = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<string>(formBotId);
 
-                    System.Data.DataTable dt = ReadExcelFileToDataTable(path);
-                    return ReadFileExcelQnA(dt, botId);
-                }
-                catch (Exception ex)
-                {
-                    return Json("ERROR:" + ex.Message.ToString());
-                }
-            else
-            {
-                return Json("Bạn chưa chọn file để tải lên.");
-            }
-        }
+        //            System.Data.DataTable dt = ReadExcelFileToDataTable(path);
+        //            return ReadFileExcelQnA(dt, botId);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return Json("ERROR:" + ex.Message.ToString());
+        //        }
+        //    else
+        //    {
+        //        return Json("Bạn chưa chọn file để tải lên.");
+        //    }
+        //}
 
-        private System.Data.DataTable ReadExcelFileToDataTable(string path)
-        {
-            string POCpath = @"" + path;
-            POCpath = POCpath.Replace("\\\\", "\\");
-            IExcelDataReader dataReader;
-            FileStream fileStream = new FileStream(POCpath, FileMode.Open);
-            if (path.EndsWith(".xls"))
-            {
-                dataReader = ExcelReaderFactory.CreateBinaryReader(fileStream);
-            }
-            else
-            {
-                dataReader = ExcelReaderFactory.CreateOpenXmlReader(fileStream);
-            }
-            DataSet result = dataReader.AsDataSet();
+        //private System.Data.DataTable ReadExcelFileToDataTable(string path)
+        //{
+        //    string POCpath = @"" + path;
+        //    POCpath = POCpath.Replace("\\\\", "\\");
+        //    IExcelDataReader dataReader;
+        //    FileStream fileStream = new FileStream(POCpath, FileMode.Open);
+        //    if (path.EndsWith(".xls"))
+        //    {
+        //        dataReader = ExcelReaderFactory.CreateBinaryReader(fileStream);
+        //    }
+        //    else
+        //    {
+        //        dataReader = ExcelReaderFactory.CreateOpenXmlReader(fileStream);
+        //    }
+        //    DataSet result = dataReader.AsDataSet();
 
-            System.Data.DataTable dt = result.Tables[0];
-            return dt;
-        }
+        //    System.Data.DataTable dt = result.Tables[0];
+        //    return dt;
+        //}
 
-        public JsonResult ReadFileExcelQnA(System.Data.DataTable dt, string botId)
-        {
-            try
-            {
-                if (dt.Rows.Count > 0)
-                {
-                    var quesList = new List<ModuleQnAViewModel>();
-                    for (var i = 1; i < dt.Rows.Count; i++)
-                    {
-                        var mdQnA = new ModuleQnAViewModel();
-                        var item = dt.Rows[i];
-                        mdQnA.QuesID = i;
-                        mdQnA.QuesContent = item[0] == null ? "" : item[0].ToString();
-                        mdQnA.AnsContent = item[1] == null ? "" : item[1].ToString();
-                        mdQnA.AreaName = item[2] == null ? "0" : item[2].ToString();
-                        if (String.IsNullOrEmpty(mdQnA.AreaName))
-                        {
-                            mdQnA.AreaName = "0";
-                        }
-                        if (mdQnA.AreaName.Trim().ToLower().Contains("sở hữu trí tuệ"))
-                        {
-                            mdQnA.AreaName = "1";
-                        }
-                        if (mdQnA.AreaName.Trim().ToLower().Contains("thuế"))
-                        {
-                            mdQnA.AreaName = "2";
-                        }
-                        string mess = "";
-                        bool flag = false;
+        //public JsonResult ReadFileExcelQnA(System.Data.DataTable dt, string botId)
+        //{
+        //    try
+        //    {
+        //        if (dt.Rows.Count > 0)
+        //        {
+        //            var quesList = new List<ModuleQnAViewModel>();
+        //            for (var i = 1; i < dt.Rows.Count; i++)
+        //            {
+        //                var mdQnA = new ModuleQnAViewModel();
+        //                var item = dt.Rows[i];
+        //                mdQnA.QuesID = i;
+        //                mdQnA.QuesContent = item[0] == null ? "" : item[0].ToString();
+        //                mdQnA.AnsContent = item[1] == null ? "" : item[1].ToString();
+        //                mdQnA.AreaName = item[2] == null ? "0" : item[2].ToString();
+        //                if (String.IsNullOrEmpty(mdQnA.AreaName))
+        //                {
+        //                    mdQnA.AreaName = "0";
+        //                }
+        //                if (mdQnA.AreaName.Trim().ToLower().Contains("sở hữu trí tuệ"))
+        //                {
+        //                    mdQnA.AreaName = "1";
+        //                }
+        //                if (mdQnA.AreaName.Trim().ToLower().Contains("thuế"))
+        //                {
+        //                    mdQnA.AreaName = "2";
+        //                }
+        //                string mess = "";
+        //                bool flag = false;
 
-                        if (string.IsNullOrEmpty(mdQnA.QuesContent))
-                        {
-                            mess += "Câu hỏi không được để trống";
-                            flag = true;
-                        }
-                        if (flag)
-                        {
-                            return Json(new { status = false, msg = "File Excel có lỗi ở dòng thứ " + (i + 1) + ":<br/>" + mess });
-                        }
+        //                if (string.IsNullOrEmpty(mdQnA.QuesContent))
+        //                {
+        //                    mess += "Câu hỏi không được để trống";
+        //                    flag = true;
+        //                }
+        //                if (flag)
+        //                {
+        //                    return Json(new { status = false, msg = "File Excel có lỗi ở dòng thứ " + (i + 1) + ":<br/>" + mess });
+        //                }
 
-                        //quesList.Add(mdQnA);
+        //                //quesList.Add(mdQnA);
 
-                        MdQuestion mdQuesDb = new MdQuestion();
-                        MdAnswer mdAnsDb = new MdAnswer();
-                        ApiQnaNLRService apiNLR = new ApiQnaNLRService();
-                        // add Ques
-                        mdQuesDb.UpdateModuleQuestion(mdQnA);
-                        mdQuesDb.BotID = Int32.Parse(botId);
-                        mdQuesDb.AreaID = Int32.Parse(mdQnA.AreaName);
-                        _moduleSearchEngineService.CreateQuestion(mdQuesDb);
-                        _moduleSearchEngineService.Save();
-                        // add Ans
-                        mdAnsDb.UpdateModuleAnswer(mdQnA);
-                        mdAnsDb.MQuestionID = mdQuesDb.ID;
-                        mdAnsDb.BotID = Int32.Parse(botId);
-                        _moduleSearchEngineService.CreateAnswer(mdAnsDb);
+        //                MdQuestion mdQuesDb = new MdQuestion();
+        //                MdAnswer mdAnsDb = new MdAnswer();
+        //                ApiQnaNLRService apiNLR = new ApiQnaNLRService();
+        //                // add Ques
+        //                mdQuesDb.UpdateModuleQuestion(mdQnA);
+        //                mdQuesDb.BotID = Int32.Parse(botId);
+        //                mdQuesDb.AreaID = Int32.Parse(mdQnA.AreaName);
+        //                _moduleSearchEngineService.CreateQuestion(mdQuesDb);
+        //                _moduleSearchEngineService.Save();
+        //                // add Ans
+        //                mdAnsDb.UpdateModuleAnswer(mdQnA);
+        //                mdAnsDb.MQuestionID = mdQuesDb.ID;
+        //                mdAnsDb.BotID = Int32.Parse(botId);
+        //                _moduleSearchEngineService.CreateAnswer(mdAnsDb);
 
-                        _moduleSearchEngineService.Save();
+        //                _moduleSearchEngineService.Save();
 
-                        string rsAPI = apiNLR.AddQues(mdQuesDb.ID.ToString(), mdQuesDb.ContentText, mdAnsDb.ContentText, mdQnA.AreaName, mdQuesDb.ContentHTML, mdAnsDb.ContentHTML, botId);
-                        if (!String.IsNullOrEmpty(rsAPI))
-                        {
-                            mdQuesDb.IsTrained = true;
-                            _moduleSearchEngineService.UpdateQuestion(mdQuesDb);
-                            _moduleSearchEngineService.Save();
-                        }
-                        //CreateQuesForImport("", ques.AreaTitle, ques.ContentsText, ques.AnsContents, null, null, null, null
-                        //, null, null, null);
-                    }
-                    return Json(new { status = true });
-                }
-                else
-                {
-                    return Json(new { status = false, msg = "File không có dữ liệu" });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { status = false, msg = "Lỗi: " + ex.Message.ToString() });
-            }
-        }
-        #endregion
+        //                string rsAPI = apiNLR.AddQues(mdQuesDb.ID.ToString(), mdQuesDb.ContentText, mdAnsDb.ContentText, mdQnA.AreaName, mdQuesDb.ContentHTML, mdAnsDb.ContentHTML, botId);
+        //                if (!String.IsNullOrEmpty(rsAPI))
+        //                {
+        //                    mdQuesDb.IsTrained = true;
+        //                    _moduleSearchEngineService.UpdateQuestion(mdQuesDb);
+        //                    _moduleSearchEngineService.Save();
+        //                }
+        //                //CreateQuesForImport("", ques.AreaTitle, ques.ContentsText, ques.AnsContents, null, null, null, null
+        //                //, null, null, null);
+        //            }
+        //            return Json(new { status = true });
+        //        }
+        //        else
+        //        {
+        //            return Json(new { status = false, msg = "File không có dữ liệu" });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(new { status = false, msg = "Lỗi: " + ex.Message.ToString() });
+        //    }
+        //}
+        //#endregion
 
         #region --DATA SOURCE API--
 
