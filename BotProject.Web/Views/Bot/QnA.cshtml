@@ -16,96 +16,96 @@
 <link href="~/assets/client/css/common-bot.css" rel="stylesheet" />
 <link href="~/assets/client/css/components.css" rel="stylesheet" />
 <style>
-    @@media (min-width: 576px) {
-        .modal-card {
-            max-width: 1320px;
-            margin: 1.75rem auto;
-            max-height: 100%;
-            position: relative;
-            overflow: auto !important;
-            padding-right: unset;
+        @@media (min-width: 576px) {
+            .modal-card {
+                max-width: 1320px;
+                margin: 1.75rem auto;
+                max-height: 100%;
+                position: relative;
+                overflow: auto !important;
+                padding-right: unset;
+            }
         }
-    }
 
-    .icon-spinner4.spinner {
-        color: #fff;
-    }
+        .icon-spinner4.spinner {
+            color: #fff;
+        }
 
-    .icon-spinner4.spinner {
-        font-size: 30px;
-    }
+        .icon-spinner4.spinner {
+            font-size: 30px;
+        }
 
-    .has-error .form-control {
-        border-color: #ed4956;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-        box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-    }
+        .has-error .form-control {
+            border-color: #ed4956;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+        }
 
-    .select2-dropdown {
-        z-index: 999999;
-    }
+        .select2-dropdown {
+            z-index: 999999;
+        }
 
-    .select2-dropdown {
-        background-color: white;
-        border: 1px solid #aaa;
-        border-radius: 4px;
-        box-sizing: border-box;
-        display: block;
-        position: absolute;
-        left: -100000px;
-        width: 100%;
-        z-index: 999999;
-    }
+        .select2-dropdown {
+            background-color: white;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            left: -100000px;
+            width: 100%;
+            z-index: 999999;
+        }
 
-    .select2 {
-        width: 100%;
-    }
+        .select2 {
+            width: 100%;
+        }
 
-    select + .select2-container {
-        width: 100% !important;
-    }
+        select + .select2-container {
+            width: 100% !important;
+        }
 
-    .product-colors input[type=checkbox], input[type=radio] {
-        box-sizing: border-box;
-        padding: 0;
-        display: inline-block;
-    }
+        .product-colors input[type=checkbox], input[type=radio] {
+            box-sizing: border-box;
+            padding: 0;
+            display: inline-block;
+        }
 
-    .ml10 {
-        margin-left: 10px;
-    }
+        .ml10 {
+            margin-left: 10px;
+        }
 
-    .target-field {
-        display: block;
-        width: 100%;
-        font-size: 14px;
-        line-height: 1.42857143;
-        color: #71748d;
-        background-color: #fff;
-        background-image: none;
-        border: 1px solid #d2d2e4;
-        border-radius: 2px;
-        padding: 5px 0px 5px 10px;
-    }
+        .target-field {
+            display: block;
+            width: 100%;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #71748d;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #d2d2e4;
+            border-radius: 2px;
+            padding: 5px 0px 5px 10px;
+        }
 
-    .breadcrumb {
-        padding: .75rem 1rem;
+        .breadcrumb {
+            padding: .75rem 1rem;
+        }
+        .pull-right {
+        float: right !important;
     }
-    .pull-right {
-    float: right !important;
-}
-    #paging .panel-flat{
-  overflow: hidden;
-}
-#paging .panel-flat .pagination{
-  display: block;
-}
-#paging{
-  margin-bottom: 20px;
-}
-	.inner{
-		width:450px !important;
-	}
+        #paging .panel-flat{
+      overflow: hidden;
+    }
+    #paging .panel-flat .pagination{
+      display: block;
+    }
+    #paging{
+      margin-bottom: 20px;
+    }
+        .inner{
+            width:450px !important;
+        }
 </style>
 <input type="hidden" id="botId" value="@Model.BotID" />
 <input type="hidden" id="formQnaID" value="@Model.ID" />
@@ -241,6 +241,33 @@
     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="pageLearning">
         <div class="card form-qna" id="form-qna">
             <div class="wrap-content" data-countpanel="1">
+                <div class="panel panel-flat" indexpanel="1" data-quesgroup-id="15134">
+                    <div class="panel-body">
+                        <i class="fa fa-save icon-bin saveRowQnA"></i><i class="fa fa-plus icon-bin addCtShowNextRow"></i><i class="fa fa-trash icon-bin rmCt"></i><div class="wrMove"><i class="fa fa-arrow-up moveTop" style="display: inline;"></i><i class="fa fa-arrow-down moveBot" style="display: inline;"></i></div>
+                        <div class="row">
+                            <div class="col-lg-5 userSay"><label>Người dùng nói</label><div class="input-group"><ul class="tags checkvalid"><li class="addedTag">menu<span class="tagRemove">x</span><input type="hidden" value="menu" data-ques-id="54560" data-ques-symbol="15134049d5617-3970-496e-85bd-fb8a8be09d39"></li><li class="addedTag">danh mục<span class="tagRemove">x</span><input type="hidden" value="danh mục" data-ques-id="54561" data-ques-symbol="15134b93d319d-0139-4e46-af26-4833a3f7669a"></li><li class="addedTag">intro<span class="tagRemove">x</span><input type="hidden" value="intro" data-ques-id="54562" data-ques-symbol="151341f823fb5-f91d-4776-99db-ebb60a7bb9e4"></li><li class="tagAdd taglist"><input type="text" class="search-field"></li></ul><span class="input-group-addon"><input type="checkbox" class="styled" checked="checked"></span></div></div><div class="col-lg-5 botReply">
+                                <label>Bot trả lời với&nbsp;</label><label class="learn_switchbot"><input type="checkbox" class="learn_switchinput"><span class="learn_sliderbot learn_roundbot"></span></label><div class="checkbox checkbox-switchery switchery-xs pull-right pd0"><label><input type="checkbox" class="switchery randomText" style="display:none"><span class="switchery switchery-default" style="box-shadow: rgb(223, 223, 223) 0px 0px 0px 0px inset; border-color: rgb(223, 223, 223); background-color: rgb(255, 255, 255); transition: border 0.4s ease 0s, box-shadow 0.4s ease 0s;"><small style="left: 0px; transition: background-color 0.4s ease 0s, left 0.2s ease 0s;"></small></span>Ngẫu nhiên</label></div>
+                                <div class="wrbutton" indexbt="1">
+                                    <div class="bt" id="answer-15604" data-answer-id="15604">
+                                        <div class="dropdown bootstrap-select form-control selectKeyword checkvalid">
+                                            <button type="button" class="btn dropdown-toggle btn-light" data-id="select-card-15604" title="GIỚI THIỆU" aria-expanded="true">
+                                                <div class="filter-option">
+                                                    <div class="filter-option-inner">
+                                                        <div class="filter-option-inner-inner">GIỚI THIỆU</div>
+                                                    </div>
+                                                 </div>
+                                            </button>
+                                        </div>
+                                        <i class="fa fa-times icon-bin rmText"></i>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-rounded mt20 w100 hidden"><i class="fa fa-plus"></i> Thêm câu trả lời ngẫu nhiên</button>
+                            </div><div class="col-lg-2 metaTarget">
+                                <label>Ý định</label>    <div class="input-group">               <input type="text" class="target-field" data-target-id="" value=""></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="panel panel-flat" indexpanel="1" data-quesgroup-id="">
                     <div class="panel-body">
                         <i class="fa fa-save icon-bin saveRowQnA"></i>
@@ -355,7 +382,7 @@
 
 
 @section footerJS{
-    <script>       
+    <script>
         //var lstCard = @Html.Raw(strCards);
         //console.log(lstCard)
         function card() {

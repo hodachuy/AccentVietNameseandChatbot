@@ -26,6 +26,9 @@ namespace BotProject.Web.Mappings
                 cfg.CreateMap<AttributeSystem, AttributeSystemViewModel>();
                 cfg.CreateMap<SystemConfig, SystemConfigViewModel>();
                 cfg.CreateMap<StoreProcQuesGroupViewModel, QuestionGroup>();
+                cfg.CreateMap<StoreProcQuesGroupViewModel, QuestionGroupViewModel>();
+                cfg.CreateMap<Answer, AnswerViewModel>();
+                cfg.CreateMap<Question, QuestionViewModel>();
                 cfg.CreateMap<MedicalSymptom, MedicalSymptomViewModel>();
                 cfg.CreateMap<StoreProcBotViewModel, BotViewModel>();
                 cfg.CreateMap<Customer, CustomerViewModel>();

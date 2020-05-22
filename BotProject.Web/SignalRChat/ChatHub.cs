@@ -59,7 +59,7 @@ namespace BotProject.Web.SignalRChat
                 bool isExitsCustomerInThread = _chatCommonService.CheckCustomerInThreadParticipant(customerId);
                 if (isExitsCustomerInThread)
                 {
-                    OnchangeStatusCustomerOnline(channelGroupId, customerDb.ID, connectionId);
+                    //OnchangeStatusCustomerOnline(channelGroupId, customerDb.ID, connectionId);
                     return;
                 }
 
@@ -139,7 +139,7 @@ namespace BotProject.Web.SignalRChat
             }
         }
 
-        public void ConnectAgent(string agentId, long channelGroupId)
+        public void ConnectAgentToChannelChat(string agentId, long channelGroupId)
         {
             _connectionID = Context.ConnectionId;
             var agentDb = _userManager.FindById(agentId);
@@ -218,10 +218,10 @@ namespace BotProject.Web.SignalRChat
             }
             sqlConnection.Close();
         }
-        public void OnchangeStatusCustomerOnline(long ChannelGroupID,string customerId, string connectionId)
-        {
-            _context.Clients.Group(ChannelGroupID.ToString(), connectionId).getStatusCustomerOnline(customerId);
-        }
+        //public void OnchangeStatusCustomerOnline(long ChannelGroupID,string customerId, string connectionId)
+        //{
+        //    _context.Clients.Group(ChannelGroupID.ToString(), connectionId).getStatusCustomerOnline(customerId);
+        //}
 
         public void OnchangeStatusAgentOffline(string connectionId)
         {
@@ -263,11 +263,18 @@ namespace BotProject.Web.SignalRChat
         public override Task OnDisconnected(bool stopCalled)
         {
             _connectionID = Context.ConnectionId;
-
-            // agent
-            OnchangeStatusAgentOffline(_connectionID);
-            // customer
-            OnchangeStatusCustomerOffline(_connectionID);
+            bool isCustomerConnected = false;
+            if (Context.QueryString["isCustomerConnected"] != null)
+            {
+                isCustomerConnected = bool.Parse(Context.QueryString["isCustomerConnected"]);
+                // customer
+                OnchangeStatusCustomerOffline(_connectionID);
+            }
+            else
+            {
+                // agent
+                OnchangeStatusAgentOffline(_connectionID);
+            }
 
             return base.OnDisconnected(stopCalled);
         }

@@ -18,6 +18,7 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 using BotProject.Common.SendSmsMsgService;
 using System.Threading;
+using BotProject.Common.ViewModels;
 
 namespace BotProject.Web.API
 {
@@ -155,6 +156,41 @@ namespace BotProject.Web.API
                 return response;
             });
         }
+
+
+        [Route("getListCardSelect")]
+        [HttpGet]
+        public HttpResponseMessage GetListCardSelect(HttpRequestMessage request,string cardName, int botId, int page, int pageSize)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                int totalRow = 0;
+                string filter = "c.BotID = " + botId;
+                if (!String.IsNullOrEmpty(cardName))
+                {
+                    filter += " AND " + "c.Name LIKE N'%" + cardName + "%'";
+                }
+                var lstSPCard = _cardService.GetListCard(filter, "", page, pageSize, null).ToList();
+
+                if (lstSPCard.Count() != 0)
+                {
+                    totalRow = lstSPCard[0].Total;
+                }
+                var paginationSet = new PaginationSet<SPCardViewModel>()
+                {
+                    Items = lstSPCard,
+                    Page = page,
+                    TotalCount = totalRow,
+                    MaxPage = pageSize,
+                    TotalPages = (int)Math.Ceiling((decimal)totalRow / pageSize)
+                };
+                response = request.CreateResponse(HttpStatusCode.OK, paginationSet);
+                return response;
+            });
+        }
+
+
         [Route("addupdate")]
         [HttpPost]
         public HttpResponseMessage AddUpdate(HttpRequestMessage request, CardViewModel cardVm)

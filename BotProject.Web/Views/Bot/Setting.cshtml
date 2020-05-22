@@ -2,8 +2,6 @@
 @{
     ViewBag.Title = "Setting";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    //var cards = (IEnumerable<BotProject.Model.Models.Card>)ViewBag.Cards;
-    //string cards = (string)ViewBag.Cards;
     var bots = (IEnumerable<BotProject.Web.Models.BotViewModel>)ViewBag.Bots;
     var systemConfigs = (IEnumerable<BotProject.Model.Models.SystemConfig>)ViewBag.SystemConfigs;
     var botName = ViewBag.BotName;
@@ -147,6 +145,7 @@
 <input type="hidden" id="settingID" value="@Model.ID" />
 <input type="hidden" id="botId" value="@Model.BotID" />
 <input type="hidden" id="cardID" value="@Model.CardID" />
+<input type="hidden" id="cardName" value="@Model.CardName" />
 <input type="hidden" id="isMdSearch" value="@Model.IsMDSearch" />
 <input type="hidden" id="txtIntroduct" value="@Model.TextIntroductory" />
 <input type="hidden" id="stopWord" value="@Model.StopWord" />
@@ -584,18 +583,6 @@
 <script>
     var lstBot = @Html.Raw(Json.Encode(bots));
     var lstSystemConfig = @Html.Raw(Json.Encode(systemConfigs));
-    function card() {
-        var htmlCard = '@Html.Raw(Model.JsonCard)';
-        //var html = '<select id="sltCard" data-live-search="true" class="form-control selectKeyword checkvalid"><option value="" selected>---Chọn thẻ---</option>';
-        //if (lstCard.length != 0) {
-        //    $.each(lstCard, function (index, value) {
-        //        html += '<option value="'+value.ID+'">'+value.Name+'</option>';
-        //    })
-        //}
-        //html += '</select>';
-        $('#card-introduction').empty().append(htmlCard);
-        //return htmlCard;
-    }
     function system() {
         if (lstSystemConfig.length != 0) {
             $.each(lstSystemConfig, function (index, value) {
@@ -619,7 +606,6 @@
         }
     };
     system();
-    card();
 </script>
 <script src="~/assets/client/js/setting.js"></script>
 }

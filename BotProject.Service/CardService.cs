@@ -14,6 +14,7 @@ namespace BotProject.Service
     {
         Card Create(Card Card);
         void Update(Card card);
+        IEnumerable<SPCardViewModel> GetListCard(string filter, string sort, int pageNumber, int pageSize, long? selectedID);
         IEnumerable<Card> GetListCardByBotID(int botId);
         IEnumerable<Card> GetListCardByGroupCardID(int grCardId);
         Card GetByID(int CardId);
@@ -71,6 +72,11 @@ namespace BotProject.Service
         public Card GetByCardCloneParentID(int cardCloneParentId)
         {
             return _cardRepository.GetSingleByCondition(x => x.CardCloneParentID == cardCloneParentId);
+        }
+
+        public IEnumerable<SPCardViewModel> GetListCard(string filter, string sort, int pageNumber, int pageSize, long? selectedID)
+        {
+            return _cardRepository.GetListCard(filter, sort, pageNumber, pageSize, selectedID);
         }
     }
 }

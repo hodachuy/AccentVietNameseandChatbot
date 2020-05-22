@@ -20,6 +20,8 @@ namespace BotProject.Web.Models
 
         public int? CardID { set; get; }
 
+        public string CardName { set; get; }
+
         public bool IsProactiveMessageZalo { set; get; }
 
 		public bool IsProactiveMessageFacebook { set; get; }

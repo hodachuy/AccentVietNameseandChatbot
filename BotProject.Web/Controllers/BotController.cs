@@ -139,47 +139,15 @@ namespace BotProject.Web.Controllers
             }
             var settingDb = _settingService.GetSettingByBotID(id);
 
-            string jsonCard = "";
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                var lstGroupCard = _groupCardService.GetListGroupCardByBotID(id).ToList();
-                if (lstGroupCard.Count() != 0)
-                {
-                    sb.Append("<select id=\"sltCard\" data-live-search=\"true\" class=\"form - control selectKeyword checkvalid\"><option value=\"\" selected>---Chọn thẻ---</option>");
-                    foreach (var item in lstGroupCard)
-                    {
-                        sb.Append("<optgroup label=\"" + item.Name.ToUpper() + "\">");
-                        var lstCard = _cardService.GetListCardByGroupCardID(item.ID).ToList();
-                        if (lstCard.Count() != 0)
-                        {
-                            foreach (var iCard in lstCard)
-                            {
-                                sb.Append("<option value=\"" + iCard.ID + "\"> " + iCard.Name + "</option>");
-                            }
-                        }
-                        sb.Append("</optgroup>");
-                    }
-                    sb.Append("</select>");
-                    jsonCard = sb.ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-           
-
-            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-            serializer.MaxJsonLength = Int32.MaxValue;
-            jsonCard = serializer.Serialize(jsonCard).TrimStart('"').TrimEnd('"');
-
             var settingVm = Mapper.Map<Setting, BotSettingViewModel>(settingDb);
-            settingVm.JsonCard = jsonCard;
+            if (settingVm.CardID != null)
+            {
+                settingVm.CardName = _cardService.GetCardByPattern("postback_card_" + settingVm.CardID).Name;
+            }
+
             var lstBot = _botService.GetListBotByUserID(UserInfo.Id);
             var lstBotVm = Mapper.Map<IEnumerable<Bot>,IEnumerable<BotViewModel>>(lstBot);
             var lstSystemConfig = _settingService.GetListSystemConfigByBotId(id);
-
             ViewBag.BotName = name;
             ViewBag.UserID = UserInfo.Id;
             ViewBag.Bots = lstBotVm;

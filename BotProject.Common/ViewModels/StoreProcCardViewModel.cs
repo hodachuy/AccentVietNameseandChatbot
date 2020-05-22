@@ -18,4 +18,14 @@ namespace BotProject.Common.ViewModels
         public string TemplateJsonZalo { set; get; }
         public int? CardStepID { set; get; }
     }
+
+    public class SPCardViewModel
+    {
+        public int ID { set; get; }
+        public string Name { set; get; }
+        public int BotID { set; get; }
+        public int GroupCardID { set; get; }
+        public string GroupCardName { set; get; }
+        public int Total { set; get; }
+    }
 }

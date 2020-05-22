@@ -8,6 +8,7 @@ var BotSetting = {
     Color: $("#formColor").val(),
     Logo: $(".file-preview-image").attr('src'),
     CardID: $("#cardID").val(),
+    CardName: $("#cardName").val(),
     TextIntroductory: ($("#txtIntroduct").val() == null ? "" : $("#txtIntroduct").val()),
     IsActiveIntroductory: $("#isActiveIntroduct").val(),
     IsMDSearch: $('#statusSearch').val(),
@@ -80,11 +81,21 @@ function getFormName(e){
     BotSetting.FormName = name;
 }
 $(document).ready(function () {
+
     // init load
     if (BotSetting.TextIntroductory != "") {
         $('#card-introduction').empty().append('<div id="txtIntro" class="txtStartButton form-control" maxlength="640" contenteditable="true" data-ph="Nhập văn bản (Ví dụ: Chào bạn, tôi là chat bot. Tôi có thể giúp bạn khám phá thời tiết hiện tại nơi bạn đang sống. Hãy chia sẻ vị trí của bạn cho tôi nhé!)">'+BotSetting.TextIntroductory+'</div>');
     } else if (BotSetting.CardID != null || BotSetting.CardID != "") {
-        $("#sltCard").val(BotSetting.CardID)
+        htmlCard = `<div class="dropdown bootstrap-select form-control selectKeyword checkvalid card-select">
+                                            <button type="button" class ="btn dropdown-toggle btn-light" data-card-id="`+ BotSetting.CardID + `" title="` + BotSetting.CardName + `">
+                                                <div class="filter-option">
+                                                    <div class="filter-option-inner">
+                                                        <div class ="filter-option-inner-inner">`+ BotSetting.CardName + `</div>
+                                                    </div>
+                                                 </div>
+                                            </button>
+                                        </div>`;
+        $('#card-introduction').empty().append(htmlCard);
     }
     if (BotSetting.StopWord != "") {
         var arrStopWord = BotSetting.StopWord.split(",");
@@ -312,7 +323,30 @@ $("#startedButton").change(function () {
     if (this.checked) {
         $('#card-introduction').empty().append('<div id="txtIntro" class="txtStartButton form-control" maxlength="640" contenteditable="true" data-ph="Nhập văn bản (Ví dụ: Chào bạn, tôi là chat bot. Tôi có thể giúp bạn khám phá thời tiết hiện tại nơi bạn đang sống. Hãy chia sẻ vị trí của bạn cho tôi nhé!)"></div>');
     } else {
-        $('#card-introduction').empty().append(card());
+        var htmlCard = '';
+        if (BotSetting.CardID != null || BotSetting.CardID != "") {
+            htmlCard = `<div class="dropdown bootstrap-select form-control selectKeyword checkvalid card-select">
+                                            <button type="button" class ="btn dropdown-toggle btn-light" data-card-id="`+ BotSetting.CardID + `" title="` + BotSetting.CardName + `">
+                                                <div class="filter-option">
+                                                    <div class="filter-option-inner">
+                                                        <div class ="filter-option-inner-inner">`+ BotSetting.CardName + `</div>
+                                                    </div>
+                                                 </div>
+                                            </button>
+                                        </div>`;
+        } else {
+            htmlCard = `<div class="dropdown bootstrap-select form-control selectKeyword checkvalid card-select">
+                                            <button type="button" class ="btn dropdown-toggle btn-light" data-card-id="" title="">
+                                                <div class="filter-option">
+                                                    <div class="filter-option-inner">
+                                                        <div class ="filter-option-inner-inner"></div>
+                                                    </div>
+                                                 </div>
+                                            </button>
+                                        </div>`;
+        }
+
+        $('#card-introduction').empty().append(htmlCard);
     }
 });
 

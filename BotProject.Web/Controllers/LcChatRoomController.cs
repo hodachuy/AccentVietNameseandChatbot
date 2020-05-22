@@ -17,8 +17,9 @@ namespace BotProject.Web.Controllers
         // GET: ChatRoom
         public ActionResult Index()
         {
+            ViewBag.UserInfo = UserInfo;
             ViewBag.BotID = UserInfo.BotActiveID; 
-            return View();
+            return View(UserInfo);
         }
     }
 }

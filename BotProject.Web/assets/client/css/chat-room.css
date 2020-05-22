@@ -295,12 +295,14 @@
 
                     .chat-block .chat-content .messages .message-item .message-item-content {
                         max-width: 75%;
-                        background-color: #f0f0f0;
+                        background-color: #0081ff;
                         padding: 7px 15px;
                         line-height: 1.5rem;
                         border-radius: 0.5rem;
                         position: relative;
                         z-index: 2;
+                        color: rgba(255, 255, 255, 0.9);
+                        margin-bottom: 4px;
                     }
 
                     .chat-block .chat-content .messages .message-item.me {
@@ -325,8 +327,8 @@
                     }*/
 
                         .chat-block .chat-content .messages .message-item.me .message-item-content {
-                            background-color: #0081ff;
-                            color: rgba(255, 255, 255, 0.9);
+                            background-color: #f0f0f0;
+                            color: black;
                         }
 
                     .chat-block .chat-content .messages .message-item.message-item-divider {
@@ -540,7 +542,7 @@
     border-radius: 50%;
 }
         .pr-3, .px-3 {
-    padding-right: 1rem !important;
+    padding-right: 0.3rem !important;
 }
         .chat-sidebar-header {
     padding: 0.5rem;
@@ -636,4 +638,8 @@ avatar.avatar-state-primary:before,
 
 .avatar.avatar-state-warning::before {
     background: #ddd;
+}
+
+.writing{
+    background-color:#f0f0f0 !important;
 }

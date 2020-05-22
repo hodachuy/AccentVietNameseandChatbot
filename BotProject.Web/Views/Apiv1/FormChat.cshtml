@@ -34,7 +34,9 @@
     @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">*@
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     @*<script src="~/assets/client/vendor/bootstrap-4.3.1/bootstrap.min.js"></script>*@
-
+    <script>
+        var _Host = '@System.Configuration.ConfigurationManager.AppSettings["Domain"]';
+    </script>
     <style>
         .hide {
             display: none !important;
@@ -669,9 +671,6 @@
             </div>
         </div>
     </div>
-
-    <script src="~/Scripts/jquery.signalR-2.4.0.js"></script>
-    <script src="~/signalr/hubs"></script>
     <script src="~/assets/client/js/eventBot/chat-dialog.js"></script>
     <script>
         var linkCssCustom = '@linkCssCustom';

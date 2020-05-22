@@ -375,6 +375,7 @@ var cBoxHub = {
     },
     register: function () {
         $.connection.hub.logging = true;
+        $.connection.hub.qs = 'isCustomerConnected=true';
         $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
         $.connection.hub.start().done(function () {
             console.log("signalr started")

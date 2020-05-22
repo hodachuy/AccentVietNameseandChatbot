@@ -44,7 +44,7 @@ var cHub = {
         $.connection.hub.start().done(function () {
             console.log("signalr started")
             //objHub.server.connectAgentToListCustomer(_agentId, _channelGroupId);
-            objHub.server.connectAgent(_agentId, _channelGroupId)
+            objHub.server.connectAgentToChannelChat(_agentId, _channelGroupId)
 
             new customerEvent.customerJoin().GetListCustomerFromDb();
         });
@@ -96,11 +96,7 @@ var cHub = {
             var $elemCustomer = $("#customer-" + customerId + "");
             $elemCustomer.find('span.avatar').removeClass("avatar-state-online").addClass("avatar-state-offline");
         };
-        objHub.client.getStatusCustomerOnline = function (customerId) {
-            console.log('customer-' + customerId + ' online')
-            var $elemCustomer = $("#customer-" + customerId + "");
-            $elemCustomer.find('span.avatar').removeClass("avatar-state-offline").addClass("avatar-state-online");
-        }
+
     }
 }
 

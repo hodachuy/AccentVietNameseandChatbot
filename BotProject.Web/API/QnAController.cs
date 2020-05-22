@@ -26,6 +26,7 @@ namespace BotProject.Web.API
         private IAIMLFileService _aimlService;
         private ApiQnaNLRService _apiNLR;
         private IBotService _botService;
+        private ICardService _cardService;
         private string[] _userSayStart = new string[]
         {
             CommonConstants.UserSay_IsStartDefault,
@@ -36,12 +37,14 @@ namespace BotProject.Web.API
         public QnAController(IErrorService errorService,
                             IQnAService qnaService,
                             IAIMLFileService aimlService,
+                            ICardService cardService,
                             IBotService botService) : base(errorService)
         {
             _qnaService = qnaService;
             _aimlService = aimlService;
             _apiNLR = new ApiQnaNLRService();
             _botService = botService;
+            _cardService = cardService;
         }
 
         [Route("create")]
@@ -560,18 +563,32 @@ namespace BotProject.Web.API
                 HttpResponseMessage response = null;
                 int totalRow = 0;
                 var lstQuesGroup = _qnaService.GetListQuestionGroupByFormQnAnswerPagination(formQnaID, page, pageSize).ToList(); 
-                var lstQuesGroupVm = Mapper.Map<IEnumerable<StoreProcQuesGroupViewModel>, IEnumerable<QuestionGroup>>(lstQuesGroup);
+                var lstQuesGroupVm = Mapper.Map<IEnumerable<StoreProcQuesGroupViewModel>, IEnumerable<QuestionGroupViewModel>>(lstQuesGroup);
 
                 if (lstQuesGroupVm.Count() != 0)
                 {
                     totalRow = lstQuesGroup[0].Total;
+
                     foreach (var item in lstQuesGroupVm)
                     {
-                        item.Questions = _qnaService.GetListQuestionByGroupID(item.ID).ToList();
-                        item.Answers = _qnaService.GetListAnswerByGroupID(item.ID).ToList();
+                        item.QnAViewModel = new QnAViewModel();
+                        var lstQuestionDb = _qnaService.GetListQuestionByGroupID(item.ID);
+                        item.QnAViewModel.QuestionViewModels = Mapper.Map<IEnumerable<Question>, IEnumerable<QuestionViewModel>>(lstQuestionDb);
+                        var lstAnswerDb = _qnaService.GetListAnswerByGroupID(item.ID);
+                        item.QnAViewModel.AnswerViewModels = Mapper.Map<IEnumerable<Answer>, IEnumerable<AnswerViewModel>>(lstAnswerDb);
+                        if (item.QnAViewModel.AnswerViewModels != null && item.QnAViewModel.AnswerViewModels.Count() != 0)
+                        {
+                            foreach(var answer in item.QnAViewModel.AnswerViewModels)
+                            {
+                                if(answer.CardID != null)
+                                {
+                                    answer.CardName = _cardService.GetCardByPattern("postback_card_" + answer.CardID).Name;
+                                }
+                            }
+                        }
                     }
                 }
-                var paginationSet = new PaginationSet<QuestionGroup>()
+                var paginationSet = new PaginationSet<QuestionGroupViewModel>()
                 {
                     Items = lstQuesGroupVm,
                     Page = page,

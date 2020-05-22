@@ -1069,8 +1069,8 @@ ActionFormQnA = function () {
             html += '<label>Người dùng nói</label>';
             html += '<div class="input-group">';
             html += '<ul class="tags checkvalid">';
-            if (itemGroupQnA.Questions.length != 0) {
-                var lstQuestion = itemGroupQnA.Questions;
+            if (itemGroupQnA.QnAViewModel.QuestionViewModels.length != 0) {
+                var lstQuestion = itemGroupQnA.QnAViewModel.QuestionViewModels;
                 $.each(lstQuestion, function (index, value) {
                     html += '<li class="addedTag">' + value.ContentText + '<span class="tagRemove">x</span><input type="hidden" value="' + value.ContentText + '" data-ques-id="' + value.ID + '" data-ques-symbol="' + value.CodeSymbol + '"></li>';
                     targetText = value.Target;
@@ -1081,7 +1081,7 @@ ActionFormQnA = function () {
             html += '</li>';
             html += '</ul>';
             html += '<span class="input-group-addon">';
-            if (itemGroupQnA.IsKeyword == true) {
+            if (itemGroupQnA.IsKeyWord == true) {
                 html += '<input type="checkbox" class="styled" checked="checked">';
             } else {
                 html += '<input type="checkbox" class="styled">';
@@ -1091,8 +1091,8 @@ ActionFormQnA = function () {
             html += '</div>';
             html += '<div class="col-lg-5 botReply">';
             html += '<label>Bot trả lời với&nbsp;</label>';
-            if (itemGroupQnA.Answers.length != 0 && itemGroupQnA.Answers.length == 1) {
-                var itemAnswer = itemGroupQnA.Answers[0];
+            if (itemGroupQnA.QnAViewModel.AnswerViewModels.length != 0 && itemGroupQnA.QnAViewModel.AnswerViewModels.length == 1) {
+                var itemAnswer = itemGroupQnA.QnAViewModel.AnswerViewModels[0];
                 if (itemAnswer.ContentText != '') {
                     html += '<label class="learn_switchbot">';
                     html += '<input type="checkbox" class="learn_switchinput" checked="">';
@@ -1148,9 +1148,9 @@ ActionFormQnA = function () {
                     lstCardSelected.push(itemCard)
                 }
             }
-            else if (itemGroupQnA.Answers.length != 0 && itemGroupQnA.Answers.length > 1) {
-                var lstAnswer = itemGroupQnA.Answers;
-                var totalAnswer = itemGroupQnA.Answers.length;
+            else if (itemGroupQnA.QnAViewModel.AnswerViewModels.length != 0 && itemGroupQnA.QnAViewModel.AnswerViewModels.length > 1) {
+                var lstAnswer = itemGroupQnA.QnAViewModel.AnswerViewModels;
+                var totalAnswer = itemGroupQnA.QnAViewModel.AnswerViewModels.length;
                 html += '<label class="learn_switchbot">';
                 if (lstAnswer[0].ContentText != '') {
                     html += '<input type="checkbox" class="learn_switchinput" checked="">';

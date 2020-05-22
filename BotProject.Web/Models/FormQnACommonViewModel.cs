@@ -39,6 +39,7 @@ namespace BotProject.Web.Models
         public string ContentText { set; get; }
 		public int? CardID { set; get; }
 		public string CardPayload { set; get; }
+        public string CardName { set; get; }
 		public int? Index { set; get; }
 		public int QuestionGroupID { set; get; }
 	}

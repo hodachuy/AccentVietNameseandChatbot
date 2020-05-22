@@ -583,3 +583,122 @@ var common = {
     }
 }
 common.init();
+
+
+/*
+**** Danh sách thẻ để chọn, tăng performance
+*/
+var modalCard = {
+    modalEvent: function (elOpenModal) {
+        // action form modal area
+        $(elOpenModal).off().on('click', function () {
+            $("#modalListCard").modal({
+                backdrop: 'static',
+                keyboard: true,
+                show: true
+            });
+            new modalCard.getListCardSelect(1, 10);
+        })
+        $(".btn-close-modal-list-card").off().on('click', function () {
+            $("#modalListCard").modal('hide');
+        })
+    },
+    getListCardSelect: function (page, pageSize, cardName) {
+        var param = {
+            cardName: cardName,
+            botId: $("#botId").val(),
+            page: page,
+            pageSize: pageSize,
+        }
+        $.ajax({
+            url: _Host + 'api/card/getListCardSelect',
+            contentType: 'application/json; charset=utf-8',
+            data: param,
+            type: 'GET',
+            success: function (result) {
+                modalCard.renderTable(result);
+            },
+        });
+    },
+    setValueCard: function (cardId,cardName,elementAppend) {
+        console.log(cardId);
+        console.log(cardName);
+        console.log(elementAppend);
+    },
+    renderTable: function(data){
+        var dataTable = data.Items;
+        var html = '';
+        var paginationListHtml = '';
+        paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
+        paginationListHtml += '<li class="pagination__group"><a href="#0" class="pagination__item">1</a></li>';
+        paginationListHtml += '<li class="pagination__group"><a href="#0" class="pagination__item pagination__control pagination__control_next">next</a></li>';
+
+        var paginationTextHtml = '';
+        var fromPP = 0;
+        var toPP = 0;
+        var totalPP = 0;
+
+        if (dataTable.length != 0) {
+            // đếm số index
+            var iCount = 1;
+            if (data.Page > 1) {
+                iCount = ((data.Page - 1) * pageSize) + 1;
+            }
+
+            $.each(dataTable, function (index, item) {
+                //index = index + 1;
+                html += '<tr>';
+                html += '<td>' + (iCount++) + '</td>';
+                html += '<td>' + (item.GroupCardName.length > 100 ? item.GroupCardName.substring(0, 100) + '...' : item.GroupCardName) + '</td>';
+                html += '<td>' + item.Name + '</td>';
+                html += '<td><a href="javascript:new modalCard.setValueCard(' + item.ID + ',' + item.Name + ',#abc);" class="btn btn-primary action-area"><i class="fa fa-check"></i></a></td>';
+                html += '</tr>';
+            })
+
+            // khoản cách mRangePage <--> " so page chọn" <--> mRangePage
+            var mRangePage;
+            if (data.MaxPage == 5) {
+                mRangePage = data.MaxPage / 2;
+            } else {
+                mRangePage = data.MaxPage / (data.MaxPage / 2);
+            }
+            // render pagination : phân trang table
+            var startPageIndex = Math.max(1, (data.Page - mRangePage));
+            var endPageIndex = Math.min(data.TotalPages, (data.Page + mRangePage));
+            var firstPage = 1;
+            var lastPage = data.TotalPages;
+            var previousPage = data.Page - 1;
+            var nextPage = data.Page + 1;
+
+            paginationListHtml = '';
+            if (data.Page > firstPage) {
+                paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getListCardSelect(' + (data.Page - 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
+            }
+            for (var i = startPageIndex; i <= endPageIndex; i++) {
+                if (data.Page == i) {
+                    paginationListHtml += '<li class="pagination__group"><span class="pagination__item pagination__item_active">' + i + '</span></li>';
+                }
+                else {
+                    paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getListCardSelect(' + i + ',' + pageSize + ')" class="pagination__item">' + i + '</a></li>';
+                }
+            }
+            if (data.Page < lastPage) {
+                paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="getListCardSelect(' + (data.Page + 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_next">next</a></li>';
+            }
+
+            // thông tin số trang
+            fromPP = ((data.Page - 1) * pageSize) + 1;
+            toPP = ((data.Page - 1) * pageSize) + dataTable.length;
+            totalPP = data.TotalCount;
+        }
+
+        $("#table-data-card").empty().append(html);
+        $("#pagination-list-card").empty().append(paginationListHtml);
+
+        paginationTextHtml = 'từ <span style="font-weight: bold">' + fromPP + '</span> đến <span style="font-weight: bold">' + toPP + ' </span>trong <span style="font-weight: bold">' + totalPP + ' </span>mục';
+        $("#pagination-card-number-show").empty().append(paginationTextHtml);
+
+        // scroll top table
+        document.getElementById("table-card").scrollTop = 0;
+    }
+}
