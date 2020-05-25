@@ -454,7 +454,6 @@
     <Content Include="assets\client\js\common.js" />
     <Content Include="assets\client\js\helper\callServiceHelper.js" />
     <Content Include="assets\client\js\history.js" />
-    <Content Include="assets\client\js\livechat\chat-agent.js" />
     <Content Include="assets\client\js\medical\symptoms.js" />
     <Content Include="assets\client\js\moduleBot\lstModuleBot.js" />
     <Content Include="assets\client\js\moduleSearchEngine\search.js" />
