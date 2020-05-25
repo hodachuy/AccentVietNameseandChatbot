@@ -94,7 +94,8 @@ $(document).ready(function () {
                                                     </div>
                                                  </div>
                                             </button>
-                                        </div>`;
+                                        </div>
+                                        <i class ="fa fa-times icon-bin rmCard" style="display: inline;"></i>`;
         $('#card-introduction').empty().append(htmlCard);
     }
     if (BotSetting.StopWord != "") {
@@ -140,6 +141,9 @@ $(document).ready(function () {
         console.log(valBotID)
         getAreaByBotId(valBotID)
     });
+
+    // select card getstarted
+    new modalCard.modalEvent(".card-select");
 })
 
 $("#btnSaveSettings").on('click', function () {
@@ -177,7 +181,8 @@ $("#btnSaveSettings").on('click', function () {
     BotSetting.TextIntroductory = $("#txtIntro").html();
     BotSetting.IsMDSearch = $("#statusSearch").val();
     BotSetting.Logo = $(".file-preview-image").attr('src').replace("" + _Host + "", "");
-    BotSetting.CardID = $("#sltCard").val();
+    BotSetting.CardID = $(".card-select").children().attr('data-card-id');//$("#sltCard").val();
+    BotSetting.CardName = "";
     if (BotSetting.IsMDSearch == "true") {
         if ($("#BotCategoryID").val() == "") {
             swal({
@@ -333,7 +338,9 @@ $("#startedButton").change(function () {
                                                     </div>
                                                  </div>
                                             </button>
-                                        </div>`;
+                                        </div>
+                                        <i class="fa fa-times icon-bin rmCard" style="display: inline;"></i>`;
+
         } else {
             htmlCard = `<div class="dropdown bootstrap-select form-control selectKeyword checkvalid card-select">
                                             <button type="button" class ="btn dropdown-toggle btn-light" data-card-id="" title="">
@@ -343,12 +350,35 @@ $("#startedButton").change(function () {
                                                     </div>
                                                  </div>
                                             </button>
-                                        </div>`;
+                                        </div>
+                                        <i class="fa fa-times icon-bin rmCard" style="display: inline;"></i>`;
         }
 
         $('#card-introduction').empty().append(htmlCard);
+
+        // select card getstarted
+        new modalCard.modalEvent(".card-select");
     }
 });
+$('body').on('click','.rmCard',function(){
+    htmlCard = `<div class="dropdown bootstrap-select form-control selectKeyword checkvalid card-select">
+                                            <button type="button" class ="btn dropdown-toggle btn-light" data-card-id="" title="">
+                                                <div class="filter-option">
+                                                    <div class="filter-option-inner">
+                                                        <div class ="filter-option-inner-inner">Chọn thẻ bắt đầu</div>
+                                                    </div>
+                                                 </div>
+                                            </button>
+                                        </div>
+                                        <i class ="fa fa-times icon-bin rmCard" style="display: inline;"></i>`;
+
+    $('#card-introduction').empty().append(htmlCard);
+
+        // select card getstarted
+    new modalCard.modalEvent(".card-select");
+})
+
+
 
 
 function loadCodeScriptDeployBot() {

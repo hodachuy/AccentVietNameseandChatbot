@@ -307,7 +307,9 @@
                 <form>
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">Tìm kiếm: </label>
-                        <input style="display: inline;" type="text" class="form-control w60" id="txtModalCardName" />
+                        <input style="display:inline; width:60%" type="text" class="form-control w60" id="txt-search-card-name"/>
+                        <a href="#" class="btn" id="btnCardSearch"><i class="fa fa-search"></i></a>
+                        <a href="#" class="btn" id="btnCardRefresh"><i class="fa fa-sync"></i></a>
                     </div>
                 </form>
                 <hr />
@@ -316,9 +318,9 @@
                         <thead>
                             <tr>
                                 <th scope="col" style="width:10%">STT</th>
-                                <th scope="col" style="width:40%">Nhóm thẻ</th>
-                                <th scope="col" style="width:40%">Tên thẻ</th>
-                                <th scope="col" style="width:10%">Tiện ích</th>
+                                <th scope="col" style="width:30%">Nhóm thẻ</th>
+                                <th scope="col" style="width:50%">Tên thẻ</th>
+                                <th scope="col" style="width:10%">Chọn</th>
                             </tr>
                         </thead>
                         <tbody id="table-data-card"></tbody>
@@ -327,7 +329,7 @@
                 <nav class="pagination pagination_type1">
                     <ol class="pagination__list" id="pagination-list-card"></ol>
                     <div class="pagination__list m-l-20">
-                        <select id="results-pp">
+                        <select id="results-pp-card">
                             <option value="5">5</option>
                             <option value="10" selected>10</option>
                             <option value="20">20</option>

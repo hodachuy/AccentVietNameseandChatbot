@@ -53,24 +53,25 @@ $(document).ready(function () {
         new ActionFormQnA().GetQnAnswerById(1, pageSize);
     });
 
-    $('.selectKeyword').selectpicker();
-    $('.selectKeyword').on('show.bs.select', function (e) {
-        var val = $(this).selectpicker('val');
-        $(this).parents('.bt').find('.selectKeyword option').remove();
-        $(this).parents('.bt').find('select.selectKeyword').append(card());
-        $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
-        $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
-    });
-    $('.selectKeyword').on('hidden.bs.select', function (e) {
-        var val = $(this).selectpicker('val');
-        $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
-            if ($(el).find('[value="' + val + '"]').length <= 0) {
-                $(el).remove();
-            }
-        });
-        $(this).parents('.bt').find('.selectKeyword option:not([value="' + val + '"])').remove();
-        $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
-    });
+
+    //$('.selectKeyword').selectpicker();
+    //$('.selectKeyword').on('show.bs.select', function (e) {
+    //    var val = $(this).selectpicker('val');
+    //    $(this).parents('.bt').find('.selectKeyword option').remove();
+    //    $(this).parents('.bt').find('select.selectKeyword').append(card());
+    //    $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
+    //    $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+    //});
+    //$('.selectKeyword').on('hidden.bs.select', function (e) {
+    //    var val = $(this).selectpicker('val');
+    //    $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
+    //        if ($(el).find('[value="' + val + '"]').length <= 0) {
+    //            $(el).remove();
+    //        }
+    //    });
+    //    $(this).parents('.bt').find('.selectKeyword option:not([value="' + val + '"])').remove();
+    //    $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+    //});
 
     $('body').on('change', '.target-field', function (e) {
         if ($(this).val().trim().length > 1) {
@@ -347,6 +348,7 @@ $(document).ready(function () {
     })
 
     $('body').on('click', '.learn_switchinput', function (event) {
+
         //console.log($(this).parent().next().eq(0))
         if ($(this).parents('.wrbutton').length > 0) {
             elParent = $(this).parents('.bt');
@@ -362,32 +364,33 @@ $(document).ready(function () {
         } else {
             vt = $(this).parents('.panel-flat').attr('indexpanel');
             elParent.find('input[type=text]').remove();
-            strHtml = '<select data-live-search="true" class="form-control selectKeyword checkvalid">' +
-                    card() +
-                    '</select>';
+            //strHtml = '<select data-live-search="true" class="form-control selectKeyword checkvalid">' +
+            //        card() +
+            //        '</select>';
+            strHtml = cardSelected()
             elParent.find('.rmText').before(strHtml);
 
-            var $elSelectCard = elParent.find('.rmText').parent().find('.selectKeyword').eq(0);
-            $elSelectCard.selectpicker();
-            $elSelectCard.on('show.bs.select', function (e) {
-                var val = $(this).selectpicker('val');
-                $(this).parents('.bt').find('.selectKeyword option').remove();
-                $(this).parents('.bt').find('select.selectKeyword').append(card());
-                $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
-                $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
-            });
+            //var $elSelectCard = elParent.find('.rmText').parent().find('.selectKeyword').eq(0);
+            //$elSelectCard.selectpicker();
+            //$elSelectCard.on('show.bs.select', function (e) {
+            //    var val = $(this).selectpicker('val');
+            //    $(this).parents('.bt').find('.selectKeyword option').remove();
+            //    $(this).parents('.bt').find('select.selectKeyword').append(card());
+            //    $(this).parents('.bt').find('.selectKeyword').selectpicker('val', val);
+            //    $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+            //});
 
-            $elSelectCard.on('hidden.bs.select', function (e) {
-                var val = $(this).selectpicker('val');
-                console.log(val)
-                $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
-                    if ($(el).find('[value="' + val + '"]').length <= 0) {
-                        $(el).remove();
-                    }
-                });
-                $(this).parents('.bt').find('.selectKeyword option:not([value="' + val + '"])').remove();
-                $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
-            });
+            //$elSelectCard.on('hidden.bs.select', function (e) {
+            //    var val = $(this).selectpicker('val');
+            //    console.log(val)
+            //    $(this).parents('.bt').find('.selectKeyword optgroup').each(function (index, el) {
+            //        if ($(el).find('[value="' + val + '"]').length <= 0) {
+            //            $(el).remove();
+            //        }
+            //    });
+            //    $(this).parents('.bt').find('.selectKeyword option:not([value="' + val + '"])').remove();
+            //    $(this).parents('.bt').find('.selectKeyword').selectpicker('refresh');
+            //});
         }
     });
 
@@ -581,8 +584,8 @@ $(document).ready(function () {
                 });
 
                 $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
-                    if ($(this).find('select.selectKeyword').length > 0) {
-                        cardID = $(this).find('select.selectKeyword').val();
+                    if ($(this).find('.selectKeyword').length > 0) {
+                        cardID = $(this).find('.selectKeyword').children().attr('data-card-id');
                         console.log(cardID)
                         if (cardID == '' || cardID == undefined || cardID == null) {
                             $(this).addClass('has-error');
@@ -644,9 +647,9 @@ $(document).ready(function () {
                 var reply = '',
                     cardID = '',
                     cardPayload = '';
-                if ($(this).find('select.selectKeyword').length > 0) {
-                    cardID = $(this).find('select.selectKeyword').val();
-                    cardPayload = "postback_card_" + $(this).find('select.selectKeyword').val();
+                if ($(this).find('.selectKeyword').length > 0) {
+                    cardID = $(this).find('.selectKeyword').children().attr('data-card-id');
+                    cardPayload = "postback_card_" + cardID;
                 } else {
                     reply = $(this).find('input[type=text]').val();
                 }
@@ -712,7 +715,6 @@ $(document).ready(function () {
                     });
                 }
             })
-
         } else {
             swal({
                 title: "Error",
@@ -721,7 +723,7 @@ $(document).ready(function () {
                 type: "error"
             }, function () {
                 $('html, body').animate({
-                    scrollTop: positionTagError
+                    scrollTop: positionTagError - 80
                 }, 'fast');
             });
         }
@@ -815,196 +817,6 @@ $(document).ready(function () {
                 }, function () { $("#model-notify").modal('show'); });
             }
         });
-
-
-        //if ($('.error-tag').length > 0) {
-        //    if (!checkAlert) {
-        //        checkAlert = true;
-        //        bootbox.alert({
-        //            message: txtAlert,
-        //            callback: function () {
-        //                checkAlert = false;
-        //            }
-        //        });
-        //    }
-        //    return false;
-        //}
-        //// Validate Form
-        //var checkvalid = true;
-        //$('.wrap-content .panel-flat').each(function (index, el) {
-        //    if ($('.wrap-content .panel-flat').length >= 1) {
-        //        $(this).find('.checkvalid:not(".bootstrap-select")').each(function (index1, el1) {
-
-        //            if (!$(this).is('select') && !$(this).hasClass('tags')) {
-        //                var validVal = $(this).val();
-        //                if (validVal.trim() == '') {
-        //                    if ($(this).parents('.bt').length) {
-        //                        $(this).parents('.bt').addClass('has-error');
-        //                    } else {
-        //                        $(this).parents('.input-group').addClass('has-error');
-        //                    }
-        //                    checkvalid = false;
-        //                    positionTagError = $(this).offset().top;
-        //                } else {
-        //                    $(this).parents('.has-error').removeClass('has-error');
-        //                }
-        //            } else if ($(this).hasClass('tags')) {
-        //                if ($(this).children('.addedTag').size() <= 0) {
-        //                    $(this).parent().addClass('has-error');
-        //                } else {
-        //                    $(this).parent().removeClass('has-error');
-        //                }
-        //            } else {
-        //                var validVal = $(this).val();
-        //                if (validVal == null) {
-        //                    if ($(this).parents('.bt').length) {
-        //                        $(this).parents('.bt').addClass('has-error');
-        //                    } else {
-        //                        $(this).parents('.input-group').addClass('has-error');
-        //                    }
-        //                    checkvalid = false;
-        //                    positionTagError = $(this).offset().top;
-        //                } else {
-        //                    $(this).parents('.has-error').removeClass('has-error');
-        //                }
-        //            }
-
-        //        });
-
-        //        $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
-        //            if ($(this).find('select.selectKeyword').length > 0) {
-        //                cardID = $(this).find('select.selectKeyword').val();
-        //                console.log(cardID)
-        //                if (cardID == '' || cardID == undefined || cardID == null) {
-        //                    $(this).addClass('has-error');
-        //                    checkvalid = false;
-        //                    positionTagError = $(this).offset().top;
-        //                } else {
-        //                    $(this).parents('.has-error').removeClass('has-error');
-        //                }
-        //            }
-        //        });
-
-        //        if ($(this).find('.tags .addedTag').length == 0) {
-        //            checkvalid = false;
-        //        }
-        //    }
-        //});
-
-        //if ($('.titleLearning').val() == '') {
-        //    $('.titleLearning').parent().addClass('has-error');
-        //    checkvalid = false;
-        //} else {
-        //    $('.titleLearning').parent().removeClass('has-error');
-        //}
-        //// End Validate Form
-        //if (checkvalid) {
-        //    var arData = [];
-        //    var arrGrpQna = [];
-        //    $('.wrap-content .panel-flat').each(function (index, el) {
-        //        var quesGroupId = $(this).attr('data-quesgroup-id');
-        //        var userSays = [];
-        //        var userExactly = $(this).find('.userSay .styled').is(':checked');
-        //        var targetText = $(this).find('.metaTarget').eq(0).find('input').val();
-        //        //userExactly = userExactly ? 1 : 0;
-        //        $(this).find('.tags .addedTag').each(function (index1, el1) {
-        //            var question = {
-        //                'ContentText': decodeEntities($(el1).children('input').val()).trim(),//decode bỏ các ký tự đặc biệt ngoại trừ dấu *
-        //                'IsThatStar': userExactly,
-        //                'QuestionGroupID': quesGroupId,
-        //                'CodeSymbol': $(el1).children('input').attr('data-ques-symbol'),
-        //                'ID': $(el1).children('input').attr('data-ques-id'),
-        //                'Index': index1,
-        //                'Target': targetText
-        //            }
-        //            userSays.push(question);
-        //        })
-
-        //        var botReplys = [];
-        //        $(this).find('.botReply .wrbutton .bt').each(function (index1, el1) {
-        //            var reply = '',
-        //                cardID = '',
-        //                cardPayload = '';
-        //            if ($(this).find('select.selectKeyword').length > 0) {
-        //                cardID = $(this).find('select.selectKeyword').val();
-        //                cardPayload = "postback_card_" + $(this).find('select.selectKeyword').val();
-        //            } else {
-        //                reply = $(this).find('input[type=text]').val();
-        //            }
-        //            console.log(reply)
-        //            var answer = {
-        //                'ContentText': reply,
-        //                'CardID': cardID,
-        //                'QuestionGroupID': quesGroupId,
-        //                'CardPayload': cardPayload,
-        //                'Index': index1,
-        //                'ID': $(el1).attr('data-answer-id')
-        //            }
-        //            botReplys.push(answer);
-        //        });
-
-        //        var groupQnA = {
-        //            'ID': quesGroupId,
-        //            'Index': index + 1,
-        //            'FormQuestionAnswerID': $("#formQnaID").val(),
-        //            'BotID': $("#botId").val(),
-        //            'IsKeyWord': userExactly,
-        //            'QnAViewModel': {
-        //                'QuestionViewModels': userSays,// k join toi chuoi~
-        //                'AnswerViewModels': botReplys
-        //            }
-        //        }
-        //        arrGrpQna.push(groupQnA);
-        //    });
-        //    var formQnAVm = {
-        //        'BotID': $("#botId").val(),
-        //        'Status': $("#statusFormQnA").val(),
-        //        'TypeAction': TypeAction,
-        //        'FormQuestionAnswerID': $("#formQnaID").val(),
-        //        'QuestionGroupViewModels': arrGrpQna
-
-        //    }
-        //    // Type Action : Add Update
-        //    console.log(formQnAVm)
-        //    var svr = new AjaxCall(urlQnACreate, JSON.stringify(formQnAVm));
-        //    svr.callServicePOST(function (data) {
-        //        //console.log(data)
-        //        if (data == true) {
-        //            // refresh load new data updated
-        //            new ActionFormQnA().GetQnAnswerById(1, pageSize);
-        //            new ActionFormQnA().RenderToAiml($("#statusFormQnA").val());
-        //            $("#model-notify").modal('hide');
-        //            swal({
-        //                title: "Thông báo",
-        //                text: "Đã lưu",
-        //                confirmButtonColor: "#EF5350",
-        //                type: "success"
-        //            }, function () { $("#model-notify").modal('show'); });
-
-        //            $('#dialog_iframe',window.parent.document).attr('src',$('#dialog_iframe',window.parent.document).attr('src'));
-
-        //        } else {
-        //            swal({
-        //                title: "Error",
-        //                text: "Lỗi lưu dữ liệu.",
-        //                confirmButtonColor: "#ed4956",
-        //                type: "error"
-        //            });
-        //        }
-        //    })
-
-        //} else {
-        //    swal({
-        //        title: "Error",
-        //        text: txtError,
-        //        confirmButtonColor: "#ed4956",
-        //        type: "error"
-        //    }, function () {
-        //        $('html, body').animate({
-        //            scrollTop: positionTagError
-        //        }, 'fast');
-        //    });
-        //}
     })
 })
 
@@ -1012,6 +824,9 @@ $(document).ready(function () {
 // CRUD - GET
 ActionFormQnA = function () {
     this.GetQnAnswerById = function (page, pageSize) {
+        // select card getstarted
+        new modalCard.modalEvent(".card-select");
+
         var param = {
             formQnaID: $("#formQnaID").val(),
             page: page,
@@ -1026,9 +841,9 @@ ActionFormQnA = function () {
                 var templateData = templateFormQnA(data);
                 $("#form-qna").empty().append(templateData);
                 // reactive dropdown
-                $.each(lstCardSelected, function (index, value) {
-                    activeDropdown(value.cardID, value.answerID)
-                })
+                //$.each(lstCardSelected, function (index, value) {
+                //    activeDropdown(value.cardID, value.answerID)
+                //})
 
                 // reactive event tag
                 initEventQnA();
@@ -1046,7 +861,7 @@ ActionFormQnA = function () {
     }
     //render template
     function templateFormQnA(data) {
-        lstCardSelected = [];
+        //lstCardSelected = [];
         var html = '';
         html += ' <div class="wrap-content" data-countpanel="' + data.length + '">';
         for (var i = 0; i < data.length; i++) {
@@ -1132,20 +947,21 @@ ActionFormQnA = function () {
                     html += '</div>';
                     html += '<div class="wrbutton" indexbt="1">';
                     html += '<div class="bt" id="answer-' + itemAnswer.ID + '" data-answer-id="' + itemAnswer.ID + '">';
-                    html += '<select id="select-card-' + itemAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
-                    html += card();
-                    html += '</select>';
+                    //html += '<select id="select-card-' + itemAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
+                    //html += card();
+                    //html += '</select>';
+                    html += cardSelected(itemAnswer.CardID, itemAnswer.CardName);
                     html += '<i class="fa fa-times icon-bin rmText"></i>';
                     html += '</div>';
                     html += '</div>';
                     html += '<button type="button" class="btn btn-rounded mt20 w100 hidden">';
                     html += '<i class="fa fa-plus"></i> Thêm câu trả lời ngẫu nhiên';
                     html += '</button>';
-                    var itemCard = {
-                        answerID: itemAnswer.ID,
-                        cardID: itemAnswer.CardID
-                    }
-                    lstCardSelected.push(itemCard)
+                    //var itemCard = {
+                    //    answerID: itemAnswer.ID,
+                    //    cardID: itemAnswer.CardID
+                    //}
+                    //lstCardSelected.push(itemCard)
                 }
             }
             else if (itemGroupQnA.QnAViewModel.AnswerViewModels.length != 0 && itemGroupQnA.QnAViewModel.AnswerViewModels.length > 1) {
@@ -1176,17 +992,19 @@ ActionFormQnA = function () {
                     html += '</div>';
                 } else {
                     html += '<div class="bt" id="answer-' + lstAnswer[0].ID + '" data-answer-id="' + lstAnswer[0].ID + '">';
-                    html += '<select id="select-card-' + lstAnswer[0].ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
-                    html += card();
-                    html += '</select>';
+                    //html += '<select id="select-card-' + lstAnswer[0].ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
+                    //html += card();
+                    //html += '</select>';
+                    html += cardSelected(itemAnswer.CardID, itemAnswer.CardName);
+
                     html += '<i class="fa fa-times icon-bin rmText" style="display: inline;"></i>';
                     html += '</div>';
 
-                    var itemCard = {
-                        answerID: lstAnswer[0].ID,
-                        cardID: lstAnswer[0].CardID
-                    }
-                    lstCardSelected.push(itemCard)
+                    //var itemCard = {
+                    //    answerID: lstAnswer[0].ID,
+                    //    cardID: lstAnswer[0].CardID
+                    //}
+                    //lstCardSelected.push(itemCard)
                 }
 
                 for (var index = 1 ; index < totalAnswer; index++) {
@@ -1202,16 +1020,17 @@ ActionFormQnA = function () {
                         html += '<div class="bt" id="answer-' + iAnswer.ID + '" data-answer-id="' + iAnswer.ID + '">';
                         html += '<label class="mt6">Hoặc </label>';
                         html += '<label class="learn_switchbot"><input type="checkbox" class="learn_switchinput"><div class="learn_sliderbot learn_roundbot"></div></label>';
-                        html += '<select id="select-card-' + iAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
-                        html += card();
-                        html += '</select>';
+                        //html += '<select id="select-card-' + iAnswer.ID + '" data-live-search="true" class="form-control selectKeyword checkvalid">';
+                        //html += card();
+                        //html += '</select>';
+                        html += cardSelected(itemAnswer.CardID, itemAnswer.CardName);
                         html += '<i class="fa fa-times icon-bin rmText" style="display: inline;"></i>';
                         html += '</div>';
-                        var itemCard = {
-                            answerID: iAnswer.ID,
-                            cardID: iAnswer.CardID
-                        }
-                        lstCardSelected.push(itemCard)
+                        //var itemCard = {
+                        //    answerID: iAnswer.ID,
+                        //    cardID: iAnswer.CardID
+                        //}
+                        //lstCardSelected.push(itemCard)
                     }
                 }
                 html += '</div>';
@@ -1304,6 +1123,32 @@ ActionFormQnA = function () {
         });
     }
 }
+
+function cardSelected(cardId, cardName) {
+    var htmlCard = '';
+    if (cardId != undefined && cardName != undefined) {
+        htmlCard = `<div class="dropdown bootstrap-select form-control selectKeyword checkvalid card-select">
+                                            <button type="button" class ="btn dropdown-toggle btn-light" data-card-id= "`+ cardId + `" title= "` + cardName + `" >
+                                                <div class="filter-option">
+                                                    <div class="filter-option-inner">
+                                                        <div class ="filter-option-inner-inner"> `+ cardName + ` </div>
+                                                    </div>
+                                                 </div>
+                                            </button>
+                                        </div>`;
+    } else {
+        htmlCard = `<div class="dropdown bootstrap-select form-control selectKeyword checkvalid card-select">
+                                            <button type="button" class ="btn dropdown-toggle btn-light" data-card-id= "" title= "" >
+                                                <div class="filter-option">
+                                                    <div class="filter-option-inner">
+                                                        <div class ="filter-option-inner-inner">Chọn thẻ tin nhắn</div>
+                                                    </div>
+                                                 </div>
+                                            </button>
+                                        </div>`;
+    }
+    return htmlCard;
+}
 function appendPaging(pagination) {
     //var htmlPaging = '';
     //if (Math.ceil(countData / limitpage) > 1) {
@@ -1351,18 +1196,18 @@ function appendPaging(pagination) {
 
         paginationListHtml = '';
         if (pagination.Page > firstPage) {
-            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="new ActionFormQnA().GetQnAnswerById(' + (pagination.Page - 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
+            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="return new ActionFormQnA().GetQnAnswerById(' + (pagination.Page - 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_prev">prev</a></li>';
         }
         for (var i = startPageIndex; i <= endPageIndex; i++) {
             if (pagination.Page == i) {
                 paginationListHtml += '<li class="pagination__group"><span class="pagination__item pagination__item_active">' + i + '</span></li>';
             }
             else {
-                paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="new ActionFormQnA().GetQnAnswerById(' + i + ',' + pageSize + ')" class="pagination__item">' + i + '</a></li>';
+                paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="return new ActionFormQnA().GetQnAnswerById(' + i + ',' + pageSize + ')" class="pagination__item">' + i + '</a></li>';
             }
         }
         if (pagination.Page < lastPage) {
-            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="new ActionFormQnA().GetQnAnswerById(' + (pagination.Page + 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_next">next</a></li>';
+            paginationListHtml += '<li class="pagination__group"><a href="javascript:void(0);" onclick="return new ActionFormQnA().GetQnAnswerById(' + (pagination.Page + 1) + ',' + pageSize + ')" class="pagination__item pagination__control pagination__control_next">next</a></li>';
         }
 
         // thông tin số trang

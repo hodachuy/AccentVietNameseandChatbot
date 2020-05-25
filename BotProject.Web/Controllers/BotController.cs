@@ -27,7 +27,6 @@ namespace BotProject.Web.Controllers
         private IModuleService _moduleService;
         private IModuleSearchEngineService _mdSearchEngineService;
         private IBotService _botService;
-        private BotServiceMedical _botServiceMed;
         public BotController(IErrorService errorService,
             ICardService cardService,
             IQnAService qnaService,
@@ -60,41 +59,8 @@ namespace BotProject.Web.Controllers
             {
                 return RedirectToAction("Index","Dashboard");
             }
-            if(botId == 3019)
-            {
-                _botServiceMed = BotServiceMedical.BotInstance;
-            }
-            //_accentService = new AccentService();// AccentService.AccentInstance;
-
             var formQnA = _qnaService.GetFormQnAnswerById(formQnAId);
             var formQnAVm = Mapper.Map<FormQuestionAnswer, FormQuestionAnswerViewModel>(formQnA);
-
-            string strCards = "";
-            StringBuilder sb = new StringBuilder();
-            var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botId).ToList();
-            if (lstGroupCard.Count() != 0)
-            {
-                foreach (var item in lstGroupCard)
-                {
-                    sb.Append("<optgroup label=\"" + item.Name.ToUpper() + "\">");
-                    var lstCard = _cardService.GetListCardByGroupCardID(item.ID).ToList();
-                    if(lstCard.Count() != 0)
-                    {
-                        foreach(var iCard in lstCard)
-                        {
-                            sb.Append("<option value=\"" + iCard.ID + "\"> " + iCard.Name + "</option>");
-                        }
-                    }
-                    //item.Cards = Mapper.Map<IEnumerable<Card>, IEnumerable<CardViewModel>>(lstCard);
-                    sb.Append("</optgroup>");
-                }
-                strCards = sb.ToString();
-            }
-
-            var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-            serializer.MaxJsonLength = Int32.MaxValue;
-            formQnAVm.StrTempOtpCards = serializer.Serialize(strCards).TrimStart('"').TrimEnd('"');
-
             ViewBag.BotQnAnswerID = formQnAId;
             ViewBag.BotName = botName;
 
