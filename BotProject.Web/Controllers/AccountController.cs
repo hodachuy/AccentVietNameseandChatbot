@@ -153,13 +153,10 @@ namespace BotProject.Web.Controllers
                     }
 
                     applicationUserViewModel.Groups = Mapper.Map<IEnumerable<ApplicationGroup>, IEnumerable<ApplicationGroupViewModel>>(listGroup);
-                    applicationUserViewModel.Channels = _channelService.GetChannelByUserId(user.Id);
-
-                    var lstBot = _botService.GetListBotByUserID(user.Id).Where(x=>x.IsActiveLiveChat).ToList();
-                    if(lstBot.Count() != 0)
-                    {
-                        applicationUserViewModel.BotActiveID = lstBot[0].ID;
-                    }
+                    var channel = _channelService.GetChannelByUserId(user.Id);
+                    applicationUserViewModel.Channels = channel;
+                    int? botActiveID = _channelService.GetChannelGroupById(Convert.ToInt32(channel.ChannelGroupID)).BotID;
+                    applicationUserViewModel.BotActiveID = botActiveID;
 
                     Session[CommonConstants.SessionUser] = applicationUserViewModel;
 

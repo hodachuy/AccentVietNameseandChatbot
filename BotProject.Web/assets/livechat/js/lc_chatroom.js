@@ -18,7 +18,8 @@ var ApplicationChannel = {
 var configs = {},
     apiChatRoom = {
         getListCustomerJoin: "api/lc_chatroom/getListCustomerJoinChatChannel",
-        getCustomerById: "api/lc_customer/getById"
+        getCustomerById: "api/lc_customer/getById",
+        getListMessage : "api/lc_message/getByThreadId"
     }
 
 var _channelGroupId = $("#channelGroupId").val(),
@@ -96,7 +97,11 @@ var cHub = {
             var $elemCustomer = $("#customer-" + customerId + "");
             $elemCustomer.find('span.avatar').removeClass("avatar-state-online").addClass("avatar-state-offline");
         };
-
+        objHub.client.getStatusCustomerOnline = function (customerId) {
+            console.log('customer-' + customerId + ' online')
+            var $elemCustomer = $("#customer-" + customerId + "");
+            $elemCustomer.find('span.avatar').removeClass("avatar-state-offline").addClass("avatar-state-online");
+        };
     }
 }
 
@@ -106,18 +111,49 @@ var customerEvent = {
             var elmCustomer = $(this);
 
         })
-
     },
-    getFormChat : function(objCustomer){
-        var getFormMessage = function () {
-            var templateDivMessage = '';
-            console.log('formchat')
-        }();
+    getFormChat: function (objCustomer) {
+        // lấy thông tin thiết bị khách hàng truy cập
         var getFormDeviceInfo = function () {
-            var device = objCustomer.Device;
-            var templateDivDevice = '';
-            console.log('device')
+            $("#chat-sidebar-device").show();
+            $("#chat-sidebar-template-loading").hide();
+            var device = objCustomer.Devices[0];
+            $("#device-city").empty().append(device.City == null ? "" : device.City);
+            $("#device-ip").empty().append(device.IPAddress == null ? "" : device.IPAddress);
+            $("#device-os").empty().append(device.OS == null ? "" : device.OS);
+            $("#device-browser").empty().append(device.Browser == null ? "" : device.Browser);
+            $("#device-user-agent").empty().append(device.FullUserAgent == null ? "" : device.FullUserAgent);
+            if (device.Latitude != "") {
+                let latinglongTude = device.Latitude + "," + device.Longtitude;
+                $("#LatiLongTude").val(latinglongTude);
+                initLatiLongMap(device.Latitude, device.Longtitude);
+            }
+            console.log('device');
         }();
+
+        // lấy danh sách tin nhắn
+        var getFormMessage = function () {
+            $("#chat-sidebar-message-header").show();
+            $("#chat-sidebar-message-content").show();
+            $("#chat-sidebar-message-footer").show();
+            $(".customer-name").html(objCustomer.Name);
+            var templateDivMessage = '';
+            console.log('formchat');
+        }();
+
+        // get list message 
+        var params = {
+
+        }
+        $.ajax({
+            url: _Host + apiChatRoom.getListMessage,
+            contentType: 'application/json; charset=utf-8',
+            data: params,
+            type: 'GET',
+            success: function (data) {
+            },
+        })
+
     },
     customerJoin : function(){
         this.GetListCustomerFromDb = function () {
@@ -225,21 +261,100 @@ var customerEvent = {
     }
 }
 
+var chatMessages = {
+    name: "ms1",
+    messageText: {
+        Content: 'abc',
+        Type: 'Text'
+    },
+    avatar:"",
+    showTime: true,
+    time: ''
+}
+var templateTypeMessage = {
+    Text: function () {
+        var html = '';
+        return html;
+    },
+    TextAndButton: function () {
+        var html = '';
+        return html;
+    },
+    Generic: function () {
+        var html = '';
+        return html;
+    },
+    Image: function () {
+        var html = '';
+        return html;
+    },
+    File: function () {
+        var html = '';
+        return html;
+    },
+    Video: function () {
+        var html = '';
+        return html;
+    }
+    ,
+    QuickReply: function () {
+        var html = '';
+        return html;
+    }
+}
+
+function getAvatarMessageUser(nameUser, imageAvatar) {
+    let firstLetterName = nameUser.substring(0, 1).toUppercase();
+    let templateAvatar = '<div class="message-avatar">'+
+                                '<div class="message-avatar-customer">'+
+                                    '<div class="pr-3">'+
+                                        '<span class ="message-avatar-item avatar">'
+                                            if (imageAvatar == undefined || imageAvatar) {
+                                                '<span class ="avatar-title bg-warning rounded-circle">firstLetterName</span>'
+                                            } else {
+                                                '<img src="~/assets/client/img/avatar-admin.jpg" class="rounded-circle" alt="image">'
+                                            }
+                                        '</span>'+
+                                    '</div>'+
+                                '</div>'+
+                           '</div>';
+    return templateAvatar;
+}
+
+function insertChat(who, time, id, contentMessage, typeMessage) {
+    let user_chat_preview = who == "agent" ? "bạn" : "khách";
+    let user_class_chat = who == "agent" ? "me" : "";
+    let date_current = new Date();
+
+    content = '<div class="message-item ' + user_class_chat + '">';
+    content += getAvatarMessageUser()
+    content += '</div>'
+
+    return false;
+}
+
+
 //Get Map Device IP
 function initLatiLongMap(latitude, longitude) {
     var posVietNam = { lat: 16.4498, lng: 107.5624 };
     var zoomSize = 5;
     if (latitude && longitude) {
         posVietNam = { lat: parseFloat(latitude), lng: parseFloat(longitude) };
-        zoomSize = 18;
+        zoomSize = 9;
     }
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: zoomSize,
-        center: posVietNam
+        center: posVietNam,
+        mapTypeControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false
     });
     marker = new google.maps.Marker({
         map: map,
-        draggable: true,
+        draggable: false,
         animation: google.maps.Animation.DROP,
         position: posVietNam
     });
@@ -260,8 +375,14 @@ function fillInAddress() {
     document.getElementById("LatiLongTude").value = place.geometry.location.lat() + "," + place.geometry.location.lng();
     var pos = { lat: place.geometry.location.lat(), lng: place.geometry.location.lng() };
     var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 18,
-        center: pos
+        zoom: 9,
+        center: pos,
+        mapTypeControl: false,
+        zoomControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: false
     }); var image = {
         url: "/assets/client/img/gmap_marker.png",
         anchor: new google.maps.Point(25, 25),
@@ -269,7 +390,7 @@ function fillInAddress() {
     };
     marker = new google.maps.Marker({
         map: map,
-        draggable: true,
+        draggable: false,
         animation: google.maps.Animation.DROP,
         position: pos,
         //icon: image

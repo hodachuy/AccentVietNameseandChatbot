@@ -59,7 +59,7 @@ namespace BotProject.Web.SignalRChat
                 bool isExitsCustomerInThread = _chatCommonService.CheckCustomerInThreadParticipant(customerId);
                 if (isExitsCustomerInThread)
                 {
-                    //OnchangeStatusCustomerOnline(channelGroupId, customerDb.ID, connectionId);
+                    OnchangeStatusCustomerOnline(channelGroupId, customerDb.ID, connectionId);
                     return;
                 }
 
@@ -218,10 +218,10 @@ namespace BotProject.Web.SignalRChat
             }
             sqlConnection.Close();
         }
-        //public void OnchangeStatusCustomerOnline(long ChannelGroupID,string customerId, string connectionId)
-        //{
-        //    _context.Clients.Group(ChannelGroupID.ToString(), connectionId).getStatusCustomerOnline(customerId);
-        //}
+        public void OnchangeStatusCustomerOnline(long ChannelGroupID, string customerId, string connectionId)
+        {
+            _context.Clients.Group(ChannelGroupID.ToString(), connectionId).getStatusCustomerOnline(customerId);
+        }
 
         public void OnchangeStatusAgentOffline(string connectionId)
         {
@@ -279,10 +279,11 @@ namespace BotProject.Web.SignalRChat
             return base.OnDisconnected(stopCalled);
         }
 
-        public void DisconnectedCustomer()
+        public void DisconnectedCustomer(string agentId)
         {
-            OnchangeStatusCustomerOffline(Context.ConnectionId);
+            var agentDb = _userManager.FindById(agentId);
+            agentDb.StatusChatValue = CommonConstants.USER_OFFLINE;
+            _userManager.Update(agentDb);
         }
-
     }
 }

@@ -94,6 +94,7 @@
     <Compile Include="Models\LiveChat\ChatWidgetLanguage.cs" />
     <Compile Include="Models\LiveChat\ChatWidgetCustomization.cs" />
     <Compile Include="Models\LiveChat\Customer.cs" />
+    <Compile Include="Models\LiveChat\CustomerTag.cs" />
     <Compile Include="Models\LiveChat\Device.cs" />
     <Compile Include="Models\LiveChat\ChannelGroup.cs" />
     <Compile Include="Models\FileDocument.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Models\FileCard.cs" />
     <Compile Include="Models\GroupCard.cs" />
     <Compile Include="Models\Image.cs" />
+    <Compile Include="Models\LiveChat\Tag.cs" />
     <Compile Include="Models\MdAge.cs" />
     <Compile Include="Models\MdAnswer.cs" />
     <Compile Include="Models\MdArea.cs" />

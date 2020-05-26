@@ -694,6 +694,10 @@
     <Compile Include="Migrations\202005200850488_UpdateCustomerWithLogoutDate1.Designer.cs">
       <DependentUpon>202005200850488_UpdateCustomerWithLogoutDate1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005260413411_AddTag.cs" />
+    <Compile Include="Migrations\202005260413411_AddTag.Designer.cs">
+      <DependentUpon>202005260413411_AddTag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -1235,6 +1239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005200850488_UpdateCustomerWithLogoutDate1.resx">
       <DependentUpon>202005200850488_UpdateCustomerWithLogoutDate1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005260413411_AddTag.resx">
+      <DependentUpon>202005260413411_AddTag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

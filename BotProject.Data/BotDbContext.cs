@@ -76,7 +76,8 @@ namespace BotProject.Data
         public DbSet<ChatWidgetCustomization> ChatWidgetCustomizations { set; get; }
         public DbSet<ChatWidgetLanguage> ChatWidgetLanguages { set; get; }
         public DbSet<ChatSurvey> ChatSurveys { set; get; }
-
+        public DbSet<Tag> Tags { set; get; }
+        public DbSet<CustomerTag> CustomerTags { set; get; }
         public static BotDbContext Create()
         {
             return new BotDbContext();

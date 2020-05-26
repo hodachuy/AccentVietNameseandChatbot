@@ -489,6 +489,7 @@
     .message-avatar-customer {
         float: left;
         pointer-events: none;
+        align-self:baseline;
     }
 
     .message-avatar-customer-item {

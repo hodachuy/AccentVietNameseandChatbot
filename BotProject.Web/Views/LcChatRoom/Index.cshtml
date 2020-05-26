@@ -14,6 +14,93 @@
      z-index: 0; 
      text-decoration: none; 
 }
+    .dropdown-item{
+        display: block;
+    width: 100%;
+    padding: .25rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    }
+    .chat-block .chat-content .messages .message-item .message-container{
+                display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        overflow: hidden;
+    }
+    .chat-block .chat-content .messages .message-item.me .message-container{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        overflow: hidden;
+    }
+    .txt-align-left {
+    text-align: left;
+}
+        .txt-align-right {
+        text-align: right;
+    }
+    .font-size-08 {
+    font-size: 0.8em;
+}
+    /*Template chat-sidebar-device loading*/
+    .css-16d213k {
+    padding: 25px;
+}
+    .css-1n3wdg1 {
+    height: 10px;
+    margin-bottom: 20px;
+    width: 100px;
+    border-radius: 10px;
+    background: rgba(221, 226, 230, 0.5);
+}
+    .css-1yq2cot::before {
+    width: 16px;
+    height: 16px;
+    margin-right: 20px;
+}
+    .css-1yq2cot::after {
+    width: 130px;
+}
+    .css-1yq2cot::before, .css-1yq2cot::after {
+    height: 10px;
+    margin-bottom: 20px;
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 10px;
+    background: rgba(221, 226, 230, 0.5);
+}
+    .css-10ib5jr {
+    margin-bottom: 40px;
+}
+    .css-1n3wdg1 {
+    height: 10px;
+    margin-bottom: 20px;
+    width: 100px;
+    border-radius: 10px;
+    background: rgba(221, 226, 230, 0.5);
+}
+    .css-16vzca6::before {
+    width: 70px;
+    margin-right: 30px;
+}
+    .css-16vzca6::after {
+    width: 50px;
+}
+    .css-16vzca6::before, .css-16vzca6::after {
+    height: 10px;
+    margin-bottom: 20px;
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 10px;
+    background: rgba(221, 226, 230, 0.5);
+}
 </style>
 <div class="content">
     <div class="row no-gutters chat-block">
@@ -119,15 +206,15 @@
         <!-- begin::chat content -->
         <div class="col-lg-6 chat-content border-right">
             <!-- begin::chat header -->
-            <div class="chat-header border-bottom">
+            <div class="chat-header border-bottom" id="chat-sidebar-message-header" style="display:none">
                 <div class="d-flex align-items-center">
                     <div class="pr-3">
-                        <span class="avatar avatar-state-secondary">
-                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                        <span class="avatar avatar-state-online">
+                            <span class="avatar-title bg-warning rounded-circle">W</span>
                         </span>
                     </div>
                     <div>
-                        <p class="mb-0">HCM</p>
+                        <p class="mb-0 customer-name">HCM</p>
                         @*<div class="m-0 small text-success">typing...</div>*@
                     </div>
                     <div class="ml-auto">
@@ -151,7 +238,7 @@
             </div>
             <!-- end::chat header -->
             <!-- begin::messages -->
-            <div class="messages">
+            <div class="messages" id="chat-sidebar-message-content" style="display:none">
                 <div class="message-item">
                     <div class="message-avatar">
                         <div class="message-avatar-customer">
@@ -162,8 +249,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="message-item-content">Chào!</div>
-                    <span class="time small text-muted font-italic">02:30 PM</span>
+                    <div class="message-container">
+                        <div>
+                            <div class="txt-align-left">
+                                <span class="font-size-08">Support Bot </span>
+                                <span class="font-size-08">15:11</span>
+                            </div>
+                        </div>
+                        @*<span class="time small text-muted font-italic">02:30 PM</span>*@
+                        <div class="message-item-content">Chào!</div>
+                        <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
+                    </div>
+
                 </div>
                 <div class="message-item me">
                     <div class="message-avatar">
@@ -175,19 +272,28 @@
                             </div>
                         </div>
                     </div>
-                    <div class="message-item-content">
-                        Chào bạn! Bạn cần giúp đỡ gì?
+                    <div class="message-container">
+                        <div>
+                            <div class="txt-align-right">
+                                <span class="font-size-08">Support Bot </span>
+                                <span class="font-size-08">15:11</span>
+                            </div>
+                        </div>
+                        @*<span class="time small text-muted font-italic">02:30 PM</span>*@
+                        <div class="message-item-content">Chào bạn! Bạn cần giúp đỡ gì?</div>
+                        <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
                     </div>
-                    <span class="time small text-muted font-italic">Hôm nay</span>
                 </div>
 
                 <!--Text and Button-->
                 <div class="message-item me message-text-button">
-                    <div class="message-avatar-customer">
-                        <div class="pr-3">
-                            <span class="message-avatar-item avatar">
-                                <span class="avatar-title bg-warning rounded-circle">H</span>
-                            </span>
+                    <div class="message-avatar">
+                        <div class="message-avatar-customer">
+                            <div class="pl-3">
+                                <span class="avatar">
+                                    <span class="avatar-title bg-primary rounded-circle">A</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="message-item-content">
@@ -203,11 +309,13 @@
 
                 <!--Template Generic Single-->
                 <div class="message-item me message-type-list">
-                    <div class="message-avatar-customer">
-                        <div class="pr-3">
-                            <span class="message-avatar-item avatar">
-                                <span class="avatar-title bg-warning rounded-circle">H</span>
-                            </span>
+                    <div class="message-avatar">
+                        <div class="message-avatar-customer">
+                            <div class="pl-3">
+                                <span class="avatar">
+                                    <span class="avatar-title bg-primary rounded-circle">A</span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <div class="message-item-template-generic">
@@ -321,7 +429,7 @@
             </div>
             <!-- end::messages -->
             <!-- begin::chat footer -->
-            <div class="chat-footer border-top">
+            <div class="chat-footer border-top" id="chat-sidebar-message-footer" style="display:none">
                 <div class="d-flex">
                     <button class="btn-outline-light mr-2" type="button" title="Emoji"
                             data-toggle="tooltip">
@@ -358,42 +466,51 @@
             <!-- begin::chat sidebar search -->
             <!-- end::chat list -->
             <div class="chat-sidebar-content">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-3">
-                                <div class="pr-3">
-                                    <span class="avatar avatar-state-secondary">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
+                <div id="chat-sidebar-device" style="display:none">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="pr-3">
+                                        <span class="avatar avatar-state-secondary">
+                                            <span class="avatar-title bg-warning rounded-circle">W</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-9">
+                                    <h3 class="customer-name">HCM</h3>
                                 </div>
                             </div>
-                            <div class="col-9">
-                                <h3>HCM</h3>
+                            <div class="row">
+                                <div class="col-12 text-dark font-size-13"><i class="fa fa-clock"></i><span id="device-clock"> 4:40 pm  local time</span></div>
+                                <div class="col-12 text-dark font-size-13"><i class="fa fa-map-marker-alt"></i><span id="device-city"></span></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <input name="LatiLongTude" id="LatiLongTude" class="hidden" />
+                                    <input id="Latitude" class="hidden" />
+                                    <input id="Longitude" class="hidden" />
+                                    <div id="map" class="map css-181kzs5 css-ahr9p47" style="height:220px;"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-12 text-dark font-size-13"><i class="fa fa-clock"></i><span id="device-clock">4:40 pm  local time</span></div>
-                            <div class="col-12 text-dark font-size-13"><i class="fa fa-map-marker-alt"></i><span id="device-country">Ho Chi Minh City, Ho Chi Minh, Vietnam</span></div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div id="map" class="map css-181kzs5 css-ahr9p47" style="height:220px;"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            <h6 class="card-title">Thiết bị</h6>
+                            <div class="row">
+                                <div class="col-12 font-size-13"><span class="text-muted">IP Address: </span><span id="device-ip"></span></div>
+                                <div class="col-12 font-size-13"><span class="text-muted">OS/Device: </span><span id="device-os"></span></div>
+                                <div class="col-12 font-size-13"><span class="text-muted">Browser: </span><span id="device-browser"></span></div>
+                                <div class="col-12 font-size-13"><span class="text-muted">User agent: </span><span id="device-user-agent"></span></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h6 class="card-title">Thiết bị</h6>
-                        <div class="row">
-                            <div class="col-12 font-size-13"><span class="text-muted">IP Address: </span><span id="device-ip">192.168.1.1</span></div>
-                            <div class="col-12 font-size-13"><span class="text-muted">OS/Device: </span><span id="device-os">iOS (13.3)</span></div>
-                            <div class="col-12 font-size-13"><span class="text-muted">Browser: </span><span id="device-browser">Chrome (71.0.3578.89)</span></div>
-                            <div class="col-12 font-size-13"><span class="text-muted">User agent: </span><span id="device-user-agent">Mozilla/5.0 (iPhone; CPU iPhone OS 13_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/71.0.3578.89 Mobile/15E148 Safari/605.1</span></div>
-                        </div>
-                    </div>
-                </div>
+
+
+                <!--template css loading-->
+                <div class="css-q3ued4 css-16d213k" id="chat-sidebar-template-loading"><div class="css-1n3wdg1"></div><div class="css-1yq2cot"></div><div class="css-1yq2cot"></div><div class="css-1yq2cot"></div><div class="css-1yq2cot css-10ib5jr"></div><div class="css-1n3wdg1"></div><div class="css-16vzca6"></div><div class="css-16vzca6 css-10ib5jr"></div><div class="css-1n3wdg1"></div><div class="css-16vzca6"></div><div class="css-16vzca6"></div><div class="css-16vzca6"></div><div class="css-16vzca6 css-10ib5jr"></div><div class="css-1n3wdg1"></div><div class="css-16vzca6"></div><div class="css-16vzca6"></div><div class="css-16vzca6"></div><div class="css-16vzca6"></div></div>
             </div>
             <!-- end::chat list -->
         </div>

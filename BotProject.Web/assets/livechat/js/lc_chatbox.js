@@ -357,7 +357,6 @@ $(document).ready(function () {
     $('body').on('click', '#btn-cbox-close', function (e) {
         parent.postMessage("close", "*");
     })
-
 })
 
 var cBoxHub = {
@@ -515,9 +514,6 @@ var cbox = {
     // call api
     // render template
 }
-
-
-
 
 
 window.addEventListener('message', function (event) {

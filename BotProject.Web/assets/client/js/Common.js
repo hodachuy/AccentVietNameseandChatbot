@@ -18,6 +18,9 @@ var formQnA = {
     BotID: '',
     UserID: ''
 }
+const GROUP_SUPPORT = 3;
+
+var applicationGroupID = $("#applicationGroupId").val();
 var e;
 var common = {
     init: function () {
@@ -26,12 +29,14 @@ var common = {
             sessionStorage.setItem("bot-id", "");
             sessionStorage.setItem("nav-active-sub", "");
         }
-        common.getBotById();
-        common.registerEvents();
-        common.createBot();
-        common.createFormBotQnA();
-        common.eventNavbar();
-        common.cloneBot();
+        if(applicationGroupID != GROUP_SUPPORT){
+                common.getBotById();
+                common.registerEvents();
+                common.createBot();
+                common.createFormBotQnA();
+                common.eventNavbar();
+                common.cloneBot();
+        }
     },
     eventNavbar: function () {
         //hightlight bot name
@@ -598,6 +603,7 @@ var modalCard = {
                 keyboard: true,
                 show: true
             });
+            $("#txt-search-card-name").val('');
             elementCard = $(this);
             new modalCard.card().GetListCardSelect(1, 10, "");
         })

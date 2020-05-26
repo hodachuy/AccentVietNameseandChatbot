@@ -169,7 +169,7 @@ namespace BotProject.Web.API
                 string filter = "c.BotID = " + botId;
                 if (!String.IsNullOrEmpty(cardName))
                 {
-                    filter += " AND " + "c.Name LIKE N'%" + cardName + "%'" + " OR " + "gc.Name LIKE N'%" + cardName + "%'";
+                    filter += " AND " + "(c.Name LIKE N'%" + cardName + "%'" + " OR " + "gc.Name LIKE N'%" + cardName + "%')";
                 }
                 var lstSPCard = _cardService.GetListCard(filter, "", page, pageSize, null).ToList();
 
