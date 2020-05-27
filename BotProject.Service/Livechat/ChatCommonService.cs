@@ -16,7 +16,7 @@ namespace BotProject.Service.Livechat
         Thread AddThreadMessage();
         ThreadParticipant AddThreadParticipant(ThreadParticipant threadParticipant);
         IEnumerable<SP_CustomerJoin> GetCustomerJoinChatByChannelGroupID(string filter, string sort, int pageNumber, int pageSize, long? selectedID);
-        bool CheckCustomerInThreadParticipant(string customerId);
+        ThreadParticipant CheckCustomerInThreadParticipant(string customerId);
         // Add Message
         Message AddMessage(Message msg);
         IEnumerable<Message> GetListMessage(string condition, int page, int pageSize, string sort);
@@ -70,9 +70,9 @@ namespace BotProject.Service.Livechat
             _unitOfWork.Commit();
         }
 
-        public bool CheckCustomerInThreadParticipant(string customerId)
+        public ThreadParticipant CheckCustomerInThreadParticipant(string customerId)
         {
-            return _threadParticipantRepository.CheckContains(x => x.CustomerID == customerId);
+            return _threadParticipantRepository.GetSingleByCondition(x => x.CustomerID == customerId);
         }
     }
 }

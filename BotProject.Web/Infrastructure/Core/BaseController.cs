@@ -47,7 +47,7 @@ namespace BotProject.Web.Infrastructure.Core
         /// <param name="filterContext"></param>
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-			if (Session[CommonConstants.SessionUser] == null)
+            if (Session[CommonConstants.SessionUser] == null)
 			{
 				filterContext.Result = new RedirectResult(Url.Action("Login", "Account", new { returnUrl = CurrentURL }));
 				return;

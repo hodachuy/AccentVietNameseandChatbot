@@ -26,6 +26,7 @@ namespace BotProject.Model.Models.LiveChat
         public long ChannelGroupID { set; get; }
         public int StatusChatValue { set; get; }
         public DateTime CreatedDate { set; get; }
+        public DateTime ConnectedDate { set; get; }
         public DateTime? LogoutDate { set; get; }
         public virtual IEnumerable<Device> Devices { set; get; }
     }

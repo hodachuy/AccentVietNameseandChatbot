@@ -347,6 +347,7 @@ namespace BotProject.Web.Infrastructure.Extensions
             customer.PhoneNumber = customerVm.PhoneNumber;
             customer.ApplicationChannels = customerVm.ApplicationChannels;
             customer.CreatedDate = DateTime.Now;
+            customer.ConnectedDate = DateTime.Now;
             customer.StatusChatValue = customerVm.StatusChatValue;
         }
         #endregion

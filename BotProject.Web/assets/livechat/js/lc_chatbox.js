@@ -352,7 +352,7 @@ $(document).ready(function () {
 
     // Dang ky su kien chatHub
     cBoxHub.register();
-
+    cBoxHub.receivedSignalFromServer();
     // close form
     $('body').on('click', '#btn-cbox-close', function (e) {
         parent.postMessage("close", "*");
@@ -424,7 +424,13 @@ var cBoxHub = {
         }
     },
     receivedSignalFromServer: function () {
+        objHub.client.receiveMessages = function (channelGroupId, threadId, message, agentId, agentName, typeUser) {
+            console.log('threadId:' + threadId + '  agentId-agentName' + agentId + ' : ' + message)
 
+        };
+        objHub.client.receiveTyping = function (channelGroupId, agentId) {
+            console.log('agent-' + agentId + ' typing')
+        };
     }
 }
 

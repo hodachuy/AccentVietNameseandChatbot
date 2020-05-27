@@ -15,6 +15,7 @@ namespace BotProject.Common.ViewModels.LiveChat
         public int StatusChatValue { get; set; }
         public DateTime CreatedDate { get; set; }
         public int ApplicationChannels { get; set; }
+        public string TagName { get; set; }
         public int Total { set; get; }
     }
 }

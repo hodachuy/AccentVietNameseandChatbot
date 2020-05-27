@@ -8,7 +8,46 @@
 <input type="hidden" id="botId" value="@botId" />
 <link href="~/assets/livechat/css/chatbox-UI.css" rel="stylesheet" />
 <link href="~/assets/client/css/chat-room.css" rel="stylesheet" />
+<link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
+<style>
+    .emoji-menu {
+    /*position: fixed;*/
+    /* right: 0; */
+    z-index: 999;
+    width: 225px;
+    overflow: hidden;
+    border: 1px #dfdfdf solid;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    overflow: hidden;
+    -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+    bottom: 0;
+    margin-bottom: 40px;
+}
+    .emoji-picker-icon.parent-has-scroll {
+    right: 25px;
+}
+    .emoji-picker-icon {
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    font-size: 20px;
+    opacity: 0.7;
+    z-index: 100;
+    transition: none;
+    color: black;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
 
+</style>
 <style>
     .list-group-item:focus, .list-group-item:hover {
      z-index: 0; 
@@ -100,6 +139,73 @@
     vertical-align: middle;
     border-radius: 10px;
     background: rgba(221, 226, 230, 0.5);
+}
+</style>
+<style>
+/* The container input message setting*/
+.container {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: -5px;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
 }
 </style>
 <div class="content">
@@ -220,16 +326,20 @@
                     <div class="ml-auto">
                         <ul class="nav align-items-center">
                             <li class="d-sm-inline d-none">
-                                <a class="nav-link nav-user-img" href="#" id="form-message-setting" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link nav-user-img" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fas fa-fw fa-cog"></i>
                                 </a>
-                                <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="form-message-setting">
-                                    <a class="dropdown-item" href="javascript:void(0);">
-                                        <label class="checkbox-inline"><input type="checkbox" value="">Chuyển bot trả lời</label>
+                                <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="form-message-setting" id="form-message-setting">
+                                    @*<a class="dropdown-item" href="javascript:void(0);">
+                                        <label class="container">
+                                            Chuyển bot trả lời
+                                            <input type="checkbox" checked="checked">
+                                            <span class="checkmark"></span>
+                                        </label>
                                     </a>
                                     <a class="dropdown-item" href="javascript:void(0);" id="btnShowAgent">
                                         <i class="fas fa-fw fa-user"></i> Chỉ định chuyên viên
-                                    </a>
+                                    </a>*@
                                 </div>
                             </li>                          
                         </ul>
@@ -239,7 +349,7 @@
             <!-- end::chat header -->
             <!-- begin::messages -->
             <div class="messages" id="chat-sidebar-message-content" style="display:none">
-                <div class="message-item">
+                @*<div class="message-item">
                     <div class="message-avatar">
                         <div class="message-avatar-customer">
                             <div class="pr-3">
@@ -256,11 +366,9 @@
                                 <span class="font-size-08">15:11</span>
                             </div>
                         </div>
-                        @*<span class="time small text-muted font-italic">02:30 PM</span>*@
                         <div class="message-item-content">Chào!</div>
                         <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
                     </div>
-
                 </div>
                 <div class="message-item me">
                     <div class="message-avatar">
@@ -279,12 +387,10 @@
                                 <span class="font-size-08">15:11</span>
                             </div>
                         </div>
-                        @*<span class="time small text-muted font-italic">02:30 PM</span>*@
                         <div class="message-item-content">Chào bạn! Bạn cần giúp đỡ gì?</div>
                         <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
                     </div>
                 </div>
-
                 <!--Text and Button-->
                 <div class="message-item me message-text-button">
                     <div class="message-avatar">
@@ -306,7 +412,6 @@
                     </div>
                     <span class="time small text-muted font-italic">02:30 PM</span>
                 </div>
-
                 <!--Template Generic Single-->
                 <div class="message-item me message-type-list">
                     <div class="message-avatar">
@@ -343,7 +448,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!--Typing-->
                 <div class="message-item">
                     <div class="message-avatar">
@@ -366,85 +470,20 @@
                             </div>
                         </div>
                     </div>
-                </div>
-
-                @*<div class="message-item">
-                    <div class="message-avatar">
-                        <div class="message-avatar-customer">
-                            <div class="pr-3">
-                                <span class="message-avatar-item avatar">
-                                    <img src="~/assets/client/img/avatar-admin.jpg" alt="image" class="rounded-circle">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-item-content">Hello! How are you today?</div>
-                    <span class="time small text-muted font-italic">02:30 PM</span>
-                </div>
-                <div class="message-item me">
-                    <div class="message-avatar">
-                        <div class="message-avatar-customer">
-                            <div class="pl-3">
-                                <span class="message-avatar-item avatar">
-                                    <img src="~/assets/client/img/avatar-admin.jpg" alt="image" class="rounded-circle">
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="message-item-content">Lorem ipsum dolor sit.</div>
-                    <span class="time small text-muted font-italic">02:30 PM</span>
-                </div>
-                <div class="message-item">
-                    <div class="message-item-content d-flex">
-                        <i class="ti-file mr-2 font-size-20 mt-2"></i>
-                        <div>
-                            <div>important_documents.pdf <i class="text-muted small">(50KB)</i></div>
-                            <ul class="list-inline small">
-                                <li class="list-inline-item"><a href="#">Download</a></li>
-                                <li class="list-inline-item"><a href="#">View</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <span class="small text-muted font-italic">02:30 PM</span>
-                </div>
-                <div class="message-item me">
-                    <div class="message-item-content">Lorem ipsum dolor sit.</div>
-                    <span class="time small text-muted font-italic">02:30 PM</span>
-                </div>
-                <div class="message-item">
-                    <div class="message-item-content">Lorem ipsum dolor sit.</div>
-                    <span class="time small text-muted font-italic">02:30 PM</span>
-                </div>
-                <div class="message-item me message-media">
-                    <img src="http://nago.laborasyon.com/demos/assets/media/image/photo1.jpg" alt="image">
-                    <span class="time small text-muted font-italic">02:30 PM</span>
-                </div>
-                <div class="message-item message-item-divider">
-                    <span>Today</span>
-                </div>
-                <div class="message-item">
-                    <div class="message-item-content">Lorem ipsum dolor sit.</div>
-                    <span class="time small text-muted font-italic">02:30 PM</span>
                 </div>*@
+
+        
             </div>
             <!-- end::messages -->
             <!-- begin::chat footer -->
-            <div class="chat-footer border-top" id="chat-sidebar-message-footer" style="display:none">
-                <div class="d-flex">
-                    <button class="btn-outline-light mr-2" type="button" title="Emoji"
-                            data-toggle="tooltip">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-smile width-15 height-15"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
-                    </button>
-                    <div class="flex-grow-1">
-                        <input type="text" class="form-control" id="input-chat-message" placeholder="Nhập tin nhắn...">
+            <div class="chat-footer border-top" style="display:none">
+                <div class="d-flex" id="chat-sidebar-message-footer">
+                    <div class="flex-grow-1" style="position:relative">
+                        <input type="text" class="form-control" id="input-chat-message" placeholder="Nhập tin nhắn..." data-emojiable="true">
                     </div>
                     <div class="chat-footer-buttons d-flex">
                         <button class="btn-primary" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send width-15 height-15"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                        </button>
-                        <button class="btn-outline-light" type="button" title="Attach files"
-                                data-toggle="tooltip">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip width-15 height-15"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
                         </button>
                     </div>
                 </div>
@@ -518,6 +557,14 @@
     </div>
 </div>
 @section footerJS{
+<!--Icon Chat-->
+<script src="~/assets/client/libs/emoji-picker/js/config.js"></script>
+<script src="~/assets/client/libs/emoji-picker/js/util.js"></script>
+<script src="~/assets/client/libs/emoji-picker/js/jquery.emojiarea.js"></script>
+<script src="~/assets/client/libs/emoji-picker/js/emoji-picker.js"></script>
+<script>
+
+</script>
     <script type="text/javascript" src="//maps.google.com/maps/api/js?sensor=false&key=AIzaSyAfx5a8yx5MqeGoTS3ierzoe35TXoX0ZOY&libraries=places"></script>
     <script src="~/assets/livechat/js/helper/common.js"></script>
     <script src="~/assets/livechat/js/lc_chatroom.js"></script>

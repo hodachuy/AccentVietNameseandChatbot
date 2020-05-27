@@ -53,12 +53,14 @@ namespace BotProject.Web.SignalRChat
                 var customerDb = _customerService.GetById(customerId);
                 customerDb.ConnectionID = connectionId;
                 customerDb.StatusChatValue = CommonConstants.USER_ONLINE;
+                customerDb.ConnectedDate = DateTime.Now;
                 _customerService.Update(customerDb);
                 _customerService.Save();
                 // Kiểm tra customer tồn tại trong thread chat chưa
-                bool isExitsCustomerInThread = _chatCommonService.CheckCustomerInThreadParticipant(customerId);
-                if (isExitsCustomerInThread)
+                var threadParticipantExits = _chatCommonService.CheckCustomerInThreadParticipant(customerId);
+                if (threadParticipantExits != null)
                 {
+                    _context.Groups.Add(connectionId, threadParticipantExits.ThreadID.ToString());
                     OnchangeStatusCustomerOnline(channelGroupId, customerDb.ID, connectionId);
                     return;
                 }
@@ -95,16 +97,33 @@ namespace BotProject.Web.SignalRChat
             }
         }
 
-        /// <summary>
-        /// Tín hiệu đang gõ tin nhắn
-        /// </summary>
-        /// <param name="threadId"></param>
-        /// <param name="accountID"></param>
-        /// <param name="isStop"></param>
-        public void GetTyping(string threadId, string accountID, bool isStop)
+
+        public void SendTyping(long channelGroupId, string threadId, string userId)
         {
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
-            _context.Clients.Group(threadId, arrExcludeUserConnectionId).getWriting(accountID, isStop);
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveTyping(channelGroupId.ToString(), userId);
+        }
+
+
+        public void SendMessage(string channelGroupId, string threadId, string message, string userId, string userName, string typeUser)
+        {
+            string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveMessages(channelGroupId, threadId, message, userId, userName, typeUser);
+        }
+
+        /// <summary>
+        /// Gửi tin nhắn tới user tham gia thread (agent và customer)
+        /// </summary>
+        /// <param name="channelGroupId"></param>
+        /// <param name="threadId"></param>
+        /// <param name="message"></param>
+        /// <param name="userId"></param>
+        /// <param name="isBot"></param>
+        /// <param name="typeUserRecievedMessage">customer or agent</param>
+        public void SendMessageToAgent(string channelGroupId, string threadId, string message, string customerId)
+        {
+            string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveMessagesToAgent(channelGroupId, threadId, customerId, message);
         }
 
         public void ConnectAgentToListCustomer(string agentId, long channelGroupId)
@@ -159,20 +178,6 @@ namespace BotProject.Web.SignalRChat
         }
 
 
-        /// <summary>
-        /// Gửi tin nhắn tới user tham gia thread (agent và customer)
-        /// </summary>
-        /// <param name="channelGroupId"></param>
-        /// <param name="threadId"></param>
-        /// <param name="message"></param>
-        /// <param name="userId"></param>
-        /// <param name="isBot"></param>
-        /// <param name="typeUserRecievedMessage">customer or agent</param>
-        public void SendMessageToGroupJoinThread(string channelGroupId, string threadId, string message, string userId, string typeUserRecievedMessage)
-        {
-            _context.Clients.Group(threadId).receiveMessages(channelGroupId, threadId, userId, message, typeUserRecievedMessage);
-        }
-
         //public void OnchangeStatusAgent(long channelGroupId, string agentId, int status)
         //{
         //    var agentDb = _userManager.FindById(agentId);
@@ -214,13 +219,13 @@ namespace BotProject.Web.SignalRChat
                 command2.Parameters.AddWithValue("@logoutDate", DateTime.Now);
                 command2.ExecuteNonQuery();
 
-                _context.Clients.Group(channelGroupId.ToString()).getStatusCustomerOffline(customerId);
+                _context.Clients.Group(channelGroupId.ToString()).getStatusCustomerOffline(channelGroupId, customerId);
             }
             sqlConnection.Close();
         }
-        public void OnchangeStatusCustomerOnline(long ChannelGroupID, string customerId, string connectionId)
+        public void OnchangeStatusCustomerOnline(long channelGroupId, string customerId, string connectionId)
         {
-            _context.Clients.Group(ChannelGroupID.ToString(), connectionId).getStatusCustomerOnline(customerId);
+            _context.Clients.Group(channelGroupId.ToString(), connectionId).getStatusCustomerOnline(channelGroupId, customerId);
         }
 
         public void OnchangeStatusAgentOffline(string connectionId)
@@ -279,11 +284,12 @@ namespace BotProject.Web.SignalRChat
             return base.OnDisconnected(stopCalled);
         }
 
-        public void DisconnectedCustomer(string agentId)
+        public void OnDisconnectedCustomer(string agentId, long channelGroupId)
         {
             var agentDb = _userManager.FindById(agentId);
             agentDb.StatusChatValue = CommonConstants.USER_OFFLINE;
             _userManager.Update(agentDb);
+            _context.Clients.Group(channelGroupId.ToString()).getStatusAgentOffline(agentId);
         }
     }
 }
