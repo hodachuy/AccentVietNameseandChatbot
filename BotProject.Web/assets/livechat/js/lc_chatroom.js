@@ -169,7 +169,7 @@ var customerEvent = {
             $("#form-message-setting").empty().append(htmlChatSetting);
 
             $(".messages").show();
-            $(".messages").empty().append('<div id="container-message-'+objCustomer.ID+'"></div>')
+            $('div.messages').attr('id', 'message-container-' + objCustomer.ID + '');
 
             $(".chat-footer").show();
             var htmlChatFooter = `<div class="flex-grow-1" style="position:relative">
@@ -347,22 +347,22 @@ var customerEvent = {
                                     '<div class="flex-grow- 1">' +
                                         '<h6 class="mb-1">' +
                                             '<span>'
-                                                if(customer.ApplicationChannels == ApplicationChannel.Facebook){
-                                                    '<img class="css-gkenkv" src="~/assets/client/img/fb-msg-icon-960x960.png" alt="channel-icon">'
-                                                }
-                                                else if(customer.ApplicationChannels == ApplicationChannel.Zalo){
-                                                    '<img class="css-gkenkv" src="~/assets/client/img/zalo-msg-icon.png" alt="channel-icon">'
-                                                }
-                                            '</span>'+
-                                        '</h6>' +
-                                        '<span class="small text-muted">' +
-                                           '<span id="msg-preview-' + customer.ID + '"></span>' +
-                                        '</span>' +
-                                    '</div>' +
-                                    '<div class="text-right ml-auto">' +
-                                        '<span class="small text-muted timeago" datetime="' + customer.CreatedDate + '"></span>' +
-                                    '</div>' +
-                               '</a>';
+                if(customer.ApplicationChannels == ApplicationChannel.Facebook){
+                    '<img class="css-gkenkv" src="~/assets/client/img/fb-msg-icon-960x960.png" alt="channel-icon">'
+                }
+                else if(customer.ApplicationChannels == ApplicationChannel.Zalo){
+                    '<img class="css-gkenkv" src="~/assets/client/img/zalo-msg-icon.png" alt="channel-icon">'
+                }
+                '</span>'+
+            '</h6>' +
+            '<span class="small text-muted">' +
+               '<span id="msg-preview-' + customer.ID + '"></span>' +
+            '</span>' +
+        '</div>' +
+        '<div class="text-right ml-auto">' +
+            '<span class="small text-muted timeago" datetime="' + customer.CreatedDate + '"></span>' +
+        '</div>' +
+   '</a>';
             }
             return templateHtml;
         } 
@@ -422,40 +422,42 @@ function insertChat(who, customerId, text, userName, avatar) {
     content += message.getUserIcon(userName, avatar);
     content += message.add(userName, text);
     content += '</div>'
-    $("#container-message-" + customerId).append(content);
+    $("#message-container-" + customerId).append(content);
 
-    $(".messages").getNiceScroll(0).doScrollTop($("#container-message-" + customerId).prop('scrollHeight'));
+    $(".messages").getNiceScroll(0).doScrollTop($("#message-container-" + customerId).prop('scrollHeight'));
     return false;
 }
 
 var message = {
     getUserIcon : function(userName, avatar){
         var firstNameCharacter = userName.substring(0, 1).toUpperCase();
-        var templateAvatar = '<div class="message-avatar">' +
-                                    '<div class="message-avatar-customer">' +
-                                        '<div class="pr-3">' +
-                                            '<span class ="message-avatar-item avatar">'
-                                                if (avatar == "") {
-                                                    '<span class ="avatar-title bg-warning rounded-circle">"' +  firstNameCharacter + '"</span>'
-                                                } else {
-                                                    '<img src="~/assets/client/img/avatar-admin.jpg" class="rounded-circle" alt="image">'
-                                                }
-                                            '</span>' +
-                                        '</div>' +
-                                    '</div>' +
-                                '</div>';
-                                            console.log(templateAvatar)
+        var templateAvatar = '';
+        templateAvatar += '<div class="message-avatar">';
+        templateAvatar +=                            '<div class="message-avatar-customer">';
+        templateAvatar +=                                '<div class="pr-3">';
+        templateAvatar +=                                    '<span class ="message-avatar-item avatar">';
+        if (avatar == "") {
+            templateAvatar +=                                                     '<span class ="avatar-title bg-warning rounded-circle">A</span>';
+        } else {
+            templateAvatar +=                                                     '<img src="~/assets/client/img/avatar-admin.jpg" class="rounded-circle" alt="image">';
+        }
+        templateAvatar +=                                    '</span>';
+        templateAvatar +=                                '</div>';
+        templateAvatar += '</div>';
+        templateAvatar +=                        '</div>';
         return templateAvatar;
     },
     add: function (userName, text) {
-        var template = `<div>
-                            <div class="txt-align-left">
-                                <span class ="font-size-08">Hỗ trợ bởi `+userName+` </span>
+        var template = `<div class="message-body">
+                        <div>
+                            <div class="txt-align-right">
+                                <span class="font-size-08">`+userName+` </span>
                                 <span class="font-size-08">15:11</span>
                             </div>
                         </div>
                         <div class="message-item-content">`+text+`</div>
-                        <div class ="txt-align-left font-size-08">Message not sent, Delivered, Read</div>`
+                        <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
+                    </div>`
         return template;
     }
 }
