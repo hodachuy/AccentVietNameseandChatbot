@@ -113,9 +113,16 @@ var cHub = {
                 isRenewConversation = true;
             }
         };
-        objHub.client.receiveMessages = function (channelGroupId, threadId, message, customerId, agentName, typeUser) {
+        objHub.client.receiveMessages = function (channelGroupId, threadId, message, userId, userName, typeUser) {
             if (channelGroupId == _channelGroupId) {
-                console.log('threadId:' + threadId + '  customer-' + customerId + ' : ' + message)
+                console.log('threadId:' + threadId + '  customer-' + userId + ' : ' + message)
+                var $elmCustomer = $("#customer-" + userId);
+                if (typeUser == TYPE_USER_CONNECT.CUSTOMER) {
+                    if ($elmCustomer.hasClass("active")) {
+                        userName = (userName == "" ? "W" : userName);
+                        insertChat("customer", userId, isValidURLandCodeIcon(message), userName, "");
+                    }
+                }
             }
         };
         objHub.client.receiveTyping = function (channelGroupId, customerId) {
