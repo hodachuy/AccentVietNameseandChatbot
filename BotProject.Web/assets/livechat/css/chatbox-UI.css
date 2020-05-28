@@ -463,18 +463,16 @@
                 }
 
                 .chat-block .chat-content .messages .message-item .message-item-template-generic {
-                    max-width: 75%;
-                    background-color: #f0f0f0;
-                    padding: 7px 15px;
-                    line-height: 1.5rem;
-                    border-radius: 0.5rem;
-                    position: relative;
-                    /*z-index: 2;*/
-                    margin-bottom: 4px;
-                    overflow-wrap: break-word;
-                    order: 2;
-                    width: 100%;
-                    /* word-break: break-word; */
+
+                            background-color: #f0f0f0;
+                            padding-right: 8px;
+                            line-height: 1.5rem;
+                            border-radius: 0.5rem;
+                            position: relative;
+
+                            margin-bottom: 4px;
+                            overflow-wrap: break-word;
+
                 }
 
                 .chat-block .chat-content .messages .message-item.me {
@@ -872,8 +870,8 @@ a.btn_next_quickreply {
 
 
 ._10sf, ._5x6d {
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
 }
 
 ._10sf {
@@ -904,8 +902,8 @@ _3bwv > ._3bwy {
 }
 
 .sp_RQ3p_x3xMG3.sx_dbbd74 {
-    width: 12px;
-    height: 12px;
+    /*width: 12px;
+    height: 12px;*/
     background-position: -51px -142px;
 }
 
@@ -935,7 +933,7 @@ _3bwv > ._3bwy {
     }
 
 ._3-8w {
-    margin-top: 4px;
+    margin-top: 13px;
 }
 
 /*Reconecting*/

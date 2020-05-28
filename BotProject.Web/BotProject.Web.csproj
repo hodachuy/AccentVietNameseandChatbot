@@ -884,7 +884,7 @@
     <Content Include="assets\livechat\css\chatbox-UI.css" />
     <Content Include="assets\livechat\images\fb-mega-icon-2.png" />
     <Content Include="assets\livechat\images\fb-mega-icon.png" />
-    <Content Include="assets\livechat\js\helper\common.js" />
+    <Content Include="assets\livechat\js\helper\lc_common.js" />
     <Content Include="assets\livechat\js\lc_agent.js" />
     <Content Include="assets\livechat\js\lc_chatbox.js" />
     <Content Include="assets\livechat\js\lc_chatroom.js" />

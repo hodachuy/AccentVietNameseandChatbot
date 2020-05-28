@@ -14,6 +14,8 @@ namespace BotProject.Common.ViewModels.LiveChat
         public long ChannelGroupID { get; set; }
         public int StatusChatValue { get; set; }
         public DateTime CreatedDate { get; set; }
+        public DateTime ConnectedDate { get; set; }
+        public DateTime? LogoutDate { get; set; }
         public int ApplicationChannels { get; set; }
         public string TagName { get; set; }
         public int Total { set; get; }

@@ -60,8 +60,11 @@ namespace BotProject.Web.SignalRChat
                 var threadParticipantExits = _chatCommonService.CheckCustomerInThreadParticipant(customerId);
                 if (threadParticipantExits != null)
                 {
+                    // Kết nối lại customer vào thread theo connectionId mới 
                     _context.Groups.Add(connectionId, threadParticipantExits.ThreadID.ToString());
                     OnchangeStatusCustomerOnline(channelGroupId, customerDb.ID, connectionId);
+                    // Gửi lại thread ra customer
+                    Clients.Caller.receiveThreadChat(threadParticipantExits.ThreadID.ToString(), customerDb.ID);
                     return;
                 }
 
@@ -83,12 +86,12 @@ namespace BotProject.Web.SignalRChat
                 // add hub group
                 _context.Groups.Add(connectionId, threadDb.ID.ToString());
 
-                // tín hiệu thông báo tới agent khi có customer
-                Clients.Others.receiveNewThreadCustomer(channelGroupId, threadDb.ID, customerDb);
+                // Gửi lại thread ra customer
+                Clients.Caller.receiveThreadChat(threadParticipantExits.ThreadID.ToString(), customerDb.ID);
 
-                // gửi tín hiệu thông báo tới các userId trong Channel,
-                // có tín hiệu sẽ load danh sách customer bên trái kèm threadId,
-                // agent nào chat thì click vào kèm threadId và add tới groud chat
+                // Gửi thread thông báo customer mới tới agent
+                Clients.Others.receiveNewCustomerToAgent(channelGroupId, threadDb.ID, customerDb);
+
             }
             catch (Exception ex)
             {
@@ -268,14 +271,13 @@ namespace BotProject.Web.SignalRChat
         public override Task OnDisconnected(bool stopCalled)
         {
             _connectionID = Context.ConnectionId;
-            bool isCustomerConnected = false;
             if (Context.QueryString["isCustomerConnected"] != null)
             {
-                isCustomerConnected = bool.Parse(Context.QueryString["isCustomerConnected"]);
+                //bool isCustomerConnected = bool.Parse(Context.QueryString["isCustomerConnected"]);
                 // customer
                 OnchangeStatusCustomerOffline(_connectionID);
             }
-            else
+            else if(Context.QueryString["isAgentConnected"] != null)
             {
                 // agent
                 OnchangeStatusAgentOffline(_connectionID);

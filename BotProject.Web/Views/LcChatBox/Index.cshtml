@@ -11,6 +11,7 @@
     <title>Livechat</title>
     <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/assets/livechat/css/chatbox-UI.css" rel="stylesheet" />
+    <link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/assets/client/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script>
@@ -42,6 +43,50 @@
     </script>
 </head>
 <body>
+    <style>
+        .emoji-menu {
+            /*position: fixed;*/
+            /* right: 0; */
+            z-index: 999;
+            width: 225px;
+            overflow: hidden;
+            border: 1px #dfdfdf solid;
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            overflow: hidden;
+            -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+            bottom: 0;
+            margin-bottom: 40px;
+        }
+
+        .emoji-picker-icon.parent-has-scroll {
+            right: 25px;
+        }
+
+        .emoji-picker-icon {
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            font-size: 20px;
+            opacity: 0.7;
+            z-index: 100;
+            transition: none;
+            color: black;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -o-user-select: none;
+            user-select: none;
+        }
+
+        .emoji-wysiwyg-editor {
+            height: auto !important;
+        }
+    </style>
     <style>
         .message-form {
             -webkit-box-flex: 1;
@@ -235,18 +280,25 @@
         }
     </style>
     <style>
-            .chat-block .chat-content .messages .message-item .message-container{
+            .chat-block .chat-content .messages .message-item .message-body{
                 display: flex;
         flex-direction: column;
         align-items: flex-start;
         overflow: hidden;
         }
-        .chat-block .chat-content .messages .message-item.me .message-container{
+        .chat-block .chat-content .messages .message-item.me .message-body{
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             overflow: hidden;
         }
+       .chat-block .chat-content .messages .message-item.me .message-body .message-align{
+            text-align: left;
+        }
+        .chat-block .chat-content .messages .message-item .message-body .message-align{
+            text-align: right;
+        }
+
         .txt-align-left {
         text-align: left;
     }
@@ -304,9 +356,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="message-container">
+                            <div class="message-body">
                                 <div>
-                                    <div class="txt-align-left">
+                                    <div class="message-align">
                                         <span class="font-size-08">Support Bot </span>
                                         <span class="font-size-08">15:11</span>
                                     </div>
@@ -316,9 +368,9 @@
                             </div>
                         </div>
                         <div class="message-item me">
-                            <div class="message-container">
+                            <div class="message-body">
                                 <div>
-                                    <div class="txt-align-left">
+                                    <div class="message-align">
                                         <span class="font-size-08">Khách </span>
                                         <span class="font-size-08">15:11</span>
                                     </div>
@@ -424,54 +476,59 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="message-item-template-generic">
-                                <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
-                                </div>
-                                <div class="message-template-generic-container _6j2g">
-                                    <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
-                                        💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
-                                    </div>
-                                    <div class="message-generic-subtitle _6j0u">
-                                        <div>
-                                            📧 Emai: support@PhapLuat.com
+                            <div class="message-container" index="0" style="overflow:hidden">
+                                <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
+                                    <div class="message-item-template-generic">
+                                        <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
+                                        </div>
+                                        <div class="message-template-generic-container _6j2g">
+                                            <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                                💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                                            </div>
+                                            <div class="message-generic-subtitle _6j0u">
+                                                <div>
+                                                    📧 Emai: support@PhapLuat.com
+                                                </div>
+                                            </div>
+                                            <div class="message-generic-sublink _6j0y">
+                                                <a target="_blank" href="#">
+                                                    www.facebook.com
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="message-item-button">
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
                                         </div>
                                     </div>
-                                    <div class="message-generic-sublink _6j0y">
-                                        <a target="_blank" href="#">
-                                            www.facebook.com
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="message-item-button">
-                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                </div>
-                            </div>
-                            <div class="message-item-template-generic">
-                                <div class="_6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
-                                </div>
-                                <div class="_6j2g">
-                                    <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
-                                        💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
-                                    </div>
-                                    <div class="_6j0u">
-                                        <div>
-                                            📧 Emai: support@PhapLuat.com
+                                    <div class="message-item-template-generic">
+                                        <div class="_6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
+                                        </div>
+                                        <div class="_6j2g">
+                                            <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                                💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                                            </div>
+                                            <div class="_6j0u">
+                                                <div>
+                                                    📧 Emai: support@PhapLuat.com
+                                                </div>
+                                            </div>
+                                            <div class="_6j0y">
+                                                <a target="_blank" href="#">
+                                                    www.facebook.com
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="message-item-button">
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
                                         </div>
                                     </div>
-                                    <div class="_6j0y">
-                                        <a target="_blank" href="#">
-                                            www.facebook.com
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="message-item-button">
-                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
                                 </div>
                             </div>
+
                             <!-- click lùi-->
                             <a class="btn_back_quickreply _32rk _32rg _1cy6" href="#" style="display: block;">
                                 <div direction="forward" class="_10sf _5x5_">
@@ -667,22 +724,11 @@
             </div>
             <div class="chat-footer">
                 <div class="d-flex">
-                    <button class="btn-outline-light" style="border: 1px solid transparent;" type="button" title="" data-toggle="tooltip" data-original-title="Emoji">
-                        <svg width="24px" height="24px" viewBox="0 0 24 24">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" style="fill: rgb(75, 90, 148);">
-                                <g fill="#ea5269" style="fill: rgb(75, 90, 148);">
-                                    <rect x="2" y="3" width="20" height="1"></rect>
-                                    <rect x="2" y="11" width="20" height="1"></rect>
-                                    <rect x="2" y="19" width="20" height="1"></rect>
-                                </g>
-                            </g>
-                        </svg>
-                    </button>
-                    <div class="flex-grow-1">
-                        <input type="text" class="form-control" id="input-msg-text" autocomplete="off" placeholder="Nhập tin nhắn">
+                    <div class="flex-grow-1" style="position:relative">
+                        <input type="text" class="form-control" id="input-chat-message" placeholder="Nhập tin nhắn..." data-emojiable="true">
                     </div>
                     <div class="chat-footer-buttons d-flex">
-                        <button class="btn-input-msg">
+                        <button type="submit" id="btn-submit-chat-message">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send width-15 height-15"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                         </button>
                     </div>
@@ -694,9 +740,30 @@
         </div>
     </div>
 
-    <!--signalR-->
+
+    <!--Icon Chat-->
     <script src="~/Scripts/jquery.signalR-2.2.2.js"></script>
     <script src="~/signalr/hubs"></script>
+
+    <script src="~/assets/client/libs/emoji-picker/js/config.js"></script>
+    <script src="~/assets/client/libs/emoji-picker/js/util.js"></script>
+    <script src="~/assets/client/libs/emoji-picker/js/jquery.emojiarea.js"></script>
+    <script src="~/assets/client/libs/emoji-picker/js/emoji-picker.js"></script>
+    <script>
+        $(function () {
+            window.emojiPicker = new EmojiPicker({
+                emojiable_selector: '[data-emojiable=true]',
+                //assetsPath: '../asset/emoji-picker/img',
+                assetsPath: _Host + 'assets/client/libs/emoji-picker/img',
+                popupButtonClasses: 'fa fa-smile'
+            });
+            window.emojiPicker.discover();
+        });
+    </script>
+    <!--signalR-->
+
+
+    <script src="~/assets/livechat/js/helper/lc_common.js"></script>
     <script src="~/assets/livechat/js/lc_chatbox.js"></script>
 </body>
 </html>

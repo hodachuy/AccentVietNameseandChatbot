@@ -231,6 +231,7 @@ var CustomerModel = {
     ID: _customerId,
     ApplicationChannels: 0, //[0: Web, 1: Facebook, 2: Zalo, 3: Kiosk]
     ChannelGroupID: _channelGroupId,
+    ThreadID:''
 };
 
 var AgentModel = {
@@ -286,50 +287,11 @@ $(document).ready(function () {
 /*
     
 */
-var configs = {
-    color: $("#botColor").val(),
-    srcLogo: _Host + $("#botLogo").val(),
-    isActiveGetStarted: false,
-    isActiveAccentVN: JSON.parse(localStorage.getItem("cbot_chk_accent")),
-    isActiveViewDetailPopup: JSON.parse(localStorage.getItem("cbot_chk_popup"))
-    },
-    api = {
-        getAccentVN: "apiv1/convertVN",
-        getMessageBot: "apiv1/chatbot"
-    },
-    message_nf = {
-        T_01: "Xin lỗi, Tôi không hiểu",
-        T_02: "Bạn có thể giải thích thêm được không?",
-        T_03: "Tôi không thể tìm thấy, bạn có thể nói rõ hơn?",
-        T_04: "Xin lỗi, Bạn có thể giải thích thêm được không?",
-        T_05: "Rất tiếc! Tôi chưa được học để hiểu câu hỏi này",
-        T_06: "Tôi chưa hiểu ạ, bạn nói rõ hơn được không?"
-    },
-    timeCurrent = new Date();
-
-var TypeMessage = {
-    Text: 'Text',
-    Generic: 'Generic',
-    Image: 'Image',
-    File: 'File',
-    Video: 'Video',
-    QuickReply: 'QuickReply',
-}
-
-var ChatMessages = {
-    Name: "ms1",
-    MessageText: {
-        Content: 'abc',
-        Type: TypeMessage.Text
-    },
-    Delay: 1000,
-    Align: "right",
-    ShowTime: true,
-    Time: timeCurrent
-}
 
 var isAgentOnline = false,
     isBotActive = false;
+
+var isStopTyping = false;
 
 var TYPE_USER_CONNECT = {
     CUSTOMER: 'customer',
@@ -353,6 +315,8 @@ $(document).ready(function () {
     // Dang ky su kien chatHub
     cBoxHub.register();
     cBoxHub.receivedSignalFromServer();
+
+    cBoxMessage.event();
     // close form
     $('body').on('click', '#btn-cbox-close', function (e) {
         parent.postMessage("close", "*");
@@ -431,6 +395,10 @@ var cBoxHub = {
         objHub.client.receiveTyping = function (channelGroupId, agentId) {
             console.log('agent-' + agentId + ' typing')
         };
+        objHub.client.receiveThreadChat = function (threadId, customerId) {
+            console.log('revice- thread' + threadId)
+            CustomerModel.ThreadID = threadId;
+        };
     }
 }
 
@@ -479,52 +447,120 @@ var checkBotActive = function () {
 
 
 // EVENT BOX
-var cbox = {
+var cBoxMessage = {
     init :function(){
 
     },
     event: function () {    
-        // Input message
-        $("body").on('keyup', '#input-msg-text', function (e) {
-            var elInput = $(this);
-            var text = elInput.text();
-            var threadID = $("#input-thread-" + id).val();
-            if (objLawyer[0].IsStopWriting == false) {
-                if (text.length > 0) {
-                    objHub.server.onWritingOfReader(threadID, Readers.AccountID, false);
-                    objLawyer[0].IsStopWriting = true;
+        $($($("#input-chat-message").next()).eq(0)).keyup(function (e) {
+            var edValue = $(this);
+            var text = edValue.text();
+            if (text.length > 0) {
+                if (isStopTyping == false) {
+                    objHub.server.sendTyping(_channelGroupId, CustomerModel.ThreadID, CustomerModel.ID);
+                    isStopTyping = true;
                 }
             } else {
-                if (text.length == 0) {
-                    objHub.server.onWritingOfReader(threadID, Readers.AccountID, true);
-                    objLawyer[0].IsStopWriting = false;
+                isStopTyping = false;
+            }
+        })
+
+        $($($("#input-chat-message").next()).eq(0)).keydown(function (e) {
+            var edValue = $(this);
+            var text = edValue.html();
+            if (e.which == 13) {
+                e.preventDefault(e);
+                if (text !== "") {
+                    //insertChat("customer", CustomerModel.ID, isValidURLandCodeIcon(text), "", "");
+                    // gửi tin nhắn
+                    objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, isValidURLandCodeIcon(text), CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
+                    $(this).val('');
+                    $(this).text('');
+                    isStopTyping = false;
+                    return;
                 }
             }
-        });
-        $("body").on('keydown', '#input-msg-text', function (e) {
-
         })
 
-        // Close chatbox
-        $("body").on('click', '#btn-cbox-close', function () {
-
+        $("#btn-submit-chat-message").on('click', function () {
+            var edValue = $("#input-chat-message");
+            var text = edValue.val();
+            console.log(text)
+            if (text !== "") {
+                //insertChat("customer", CustomerModel.ID, isValidURLandCodeIcon(text), "","");
+                // gửi tin nhắn
+                objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, isValidURLandCodeIcon(text), CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
+                $(this).val('');
+            }
+            return;
         })
-
     },
     callAction: function () {
         this.sendMessage = function () {
-
         }
-
     }
     // call api
     // render template
 }
 
 
+
+function insertChat(who, customerId, text, userName, avatar) {
+    let user_class_chat = (who == "agent" ? "me" : "");
+    let date_current = new Date();
+
+    content = '<div class="message-item ' + user_class_chat + '">';
+    content += message.getUserIcon(userName, avatar);
+    content += message.add(userName, text);
+    content += '</div>';
+
+    // insert body chat
+    $("#message-container-" + customerId).append(content);
+
+    // scroll to bottom
+    setTimeout(function () {
+        $(".messages").getNiceScroll(0).doScrollTop($("#message-container-" + customerId).prop('scrollHeight'));
+    }, 100)
+    return false;
+}
+
+var message = {
+    getUserIcon: function (userName, avatar) {
+        var firstNameCharacter = userName.substring(0, 1).toUpperCase();
+        var templateAvatar = '';
+        templateAvatar += '<div class="message-avatar">';
+        templateAvatar += '<div class="message-avatar-customer">';
+        templateAvatar += '<div class="pr-3">';
+        templateAvatar += '<span class ="message-avatar-item avatar">';
+        if (avatar == "") {
+            templateAvatar += '<span class ="avatar-title bg-primary rounded-circle">' + firstNameCharacter + '</span>';
+        } else {
+            templateAvatar += '<img src="~/assets/client/img/avatar-admin.jpg" class="rounded-circle" alt="image">';
+        }
+        templateAvatar += '</span>';
+        templateAvatar += '</div>';
+        templateAvatar += '</div>';
+        templateAvatar += '</div>';
+        return templateAvatar;
+    },
+    add: function (userName, text) {
+        var templateMsg = '';
+        templateMsg += '<div class="message-body">';
+        templateMsg += '<div>';
+        templateMsg += '<div class ="message-align">';
+        templateMsg += '<span class="font-size-08">' + userName + ' </span>';
+        templateMsg += '<span class="font-size-08">' + showTimeChat() + '</span>';
+        templateMsg += '</div>';
+        templateMsg += '</div>';
+        templateMsg += '<div class="message-item-content">' + text + '</div>';
+        templateMsg += '<div class="txt-align-left font-size-08">Delivered</div>';//Message not sent, , Read
+        templateMsg += '</div>';
+        return templateMsg;
+    }
+}
+
 window.addEventListener('message', function (event) {
     var widthParent = parseInt(event.data);
-    //console.log(event.data)
     if (widthParent <= 425) {
         $("._3-8j").css('margin', '0px 0px 0px');
         $("._6atl").css('height', '100%');
@@ -532,9 +568,4 @@ window.addEventListener('message', function (event) {
         $("._6ati").css('height', '100%');
         $("._6ati").css('width', event.data);
     }
-    //msgEvent.getMessageStarted();
-    //if (event.origin === 'http://localhost:47887') {
-    //    console.log(event.origin)
-    //    console.log('message received:  ' + event.data, event);
-    //};
 }, false);
