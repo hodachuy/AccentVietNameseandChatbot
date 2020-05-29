@@ -11,6 +11,7 @@
     <title>Livechat</title>
     <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/assets/livechat/css/chatbox-UI.css" rel="stylesheet" />
+    <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet" />
     <link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/assets/client/vendor/bootstrap/js/bootstrap.bundle.js"></script>
@@ -285,12 +286,14 @@
         flex-direction: column;
         align-items: flex-start;
         overflow: hidden;
+        width: 100%;
         }
         .chat-block .chat-content .messages .message-item.me .message-body{
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             overflow: hidden;
+            width: 100%;
         }
        .chat-block .chat-content .messages .message-item.me .message-body .message-align{
             text-align: left;
@@ -308,6 +311,12 @@
         .font-size-08 {
         font-size: 0.8em;
     }
+    </style>
+    <style>
+        .bg-primary {
+            background-color: #5969ff !important;
+            color: #fff !important;
+        }
     </style>
     <div dir="ltr" class="chatbox-main">
         <div class="chatbox-container">
@@ -345,8 +354,8 @@
             <div class="box-reconecting">Reconecting...<span id="reconeting-time"></span></div>
             <div class="chat-block">
                 <div class="chat-content">
-                    <div class="messages">
-                        <div class="message-item">
+                    <div class="messages" id="message-content">
+                        @*<div class="message-item">
                             <div class="message-avatar">
                                 <div class="message-avatar-customer">
                                     <div class="pr-3">
@@ -432,10 +441,12 @@
                             <div class="message-item-content">Lorem ipsum dolor sit.</div>
                             <span class="time small text-muted font-italic">02:30 PM</span>
                         </div>
+                        <!--TEMPLATE MESSAGE IMAGE-->
                         <div class="message-item me message-media">
                             <img src="~/images/background_image1.jpg" alt="image" />
                             <span class="time small text-muted font-italic">02:30 PM</span>
                         </div>
+                        <!--TEMPLATE MESSAGE ACTION JOIN-->
                         <div class="message-item message-item-divider">
                             <span>Today</span>
                         </div>
@@ -450,6 +461,7 @@
                             <div class="message-item-content">Testttttttttttttttttttttttt.TesttttttttttttttttttttttttTesttttttttttttttttttttttttTestttttttttttttttttttttttt</div>
                             <span class="time small text-muted font-italic">02:30 PM</span>
                         </div>
+                        <!--TEMPLATE MESSAGE TEXT WITH BUTTON-->
                         <div class="message-item message-text-button">
                             <div class="message-avatar-customer">
                                 <div class="pr-3">
@@ -468,6 +480,7 @@
                             </div>
                             <span class="time small text-muted font-italic">02:30 PM</span>
                         </div>
+                        <!--TEMPLATE MESSAGE TEMPLATE MULTI GENERIC-->
                         <div class="message-item message-type-list">
                             <div class="message-avatar-customer">
                                 <div class="pr-3">
@@ -558,6 +571,7 @@
                                 </div>
                             </a>
                         </div>
+                        <!--TEMPLATE MESSAGE TEMPLATE SINGLE GENERIC-->
                         <div class="message-item message-type-list">
                             <div class="message-avatar-customer">
                                 <div class="pr-3">
@@ -656,7 +670,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>*@
 
 
                         <!--Form Input User-->

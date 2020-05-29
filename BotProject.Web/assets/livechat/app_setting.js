@@ -3,13 +3,11 @@
 
 var lacviet = {
     setup: function (channelGroupId) {
-        console.log(channelGroupId)
         lacviet.initCSS();
         lacviet.initFormChat(channelGroupId);
         //lacviet.tempPopupQnA();
         lacviet.modalContainer();
         //domainApp = decryptedUrl.slice(0, -1);
-
         //var modal = document.querySelector(".bot-modal");
         //var closeButton = document.querySelector(".bot-close-button");
         //function toggleModal() {
@@ -18,7 +16,6 @@ var lacviet = {
         //closeButton.addEventListener("click", toggleModal);
     },
     initFormChat: function (channelGroupId) {
-        //var decryptedUrl = CryptoJS.AES.decrypt(encryptUrl, "Secret Passphrase").toString(CryptoJS.enc.Utf8);
         var styleDiv = 'opacity:1;visibility:visible;z-index:2147483639;position:fixed;bottom:0px;max-width: 100%;max-height:calc(100% - 0px);min-height:0px;min-width: 0px;background-color:transparent; border:0px;overflow:hidden;right: 0px;transition: none 0s ease 0s!important;';
         $("<div id='dialog-form-bot' style=\"" + styleDiv + "\"></div>").appendTo("body");
         var html = '',
@@ -46,16 +43,12 @@ var lacviet = {
         styleIframeCustom += 'transition: none 0s ease 0s!important;"';
         url = url + "LcChatBox/Index?channelGroupID=2";
         html += '<span style="vertical-align:bottom;width:0px;height:0px">';
-        html += '<iframe name="f12691cd05677d" frameborder="0"allowtransparency="true"allowfullscreen="true"scrolling="no"';
-        html += 'allow="encrypted-media"title=""src="' + url + '"';
-        html += styleIframeCustom;
-        //html += 'style="border: none;visibility: visible;width: 288pt;height: 378pt;border-radius: 9pt;bottom: 63pt;padding: 0px;';
-        //html += 'position: fixed;right: 9pt;top: auto;z-index: 2147483646;max-height:0px;"';
-        html += 'class="fb_customer_chat_bounce_out_v2" id="dialog_iframe"></iframe>';
+        html += '<iframe id="dialog_iframe" class="fb_customer_chat_bounce_out_v2 name="f12691cd05677d" frameborder="0"allowtransparency="true"allowfullscreen="true"scrolling="no"';
+        html += 'allow="encrypted-media" src="' + url + '" ' + styleIframeCustom + '"></iframe>';
         html += '</span>';
-        html += '<div class="fb_dialog fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: white; border-radius: 50%; bottom: 18pt;padding:15px; display: inline; height: 45pt; position: fixed; right: 18pt; top: auto; width: 45pt; z-index: 3;">';
+        html += '<div class="fb_dialog fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: white; border-radius: 50%; bottom: 18pt;padding:15px; display: inline; height: 45pt; position: fixed; right: 18pt; top: auto; width: 45pt; z-index: 3; cursor:pointer">';
         html += '<div class="fb_dialog_content" style="background: none;">';
-        html += '<div aria-hidden="true" class="lc-14dk0ui e1dmt1bi0"><svg color="inherit" class="lc-1mpchac" viewBox="0 0 32 32"><path fill="#FE5000" d="M12.63,26.46H8.83a6.61,6.61,0,0,1-6.65-6.07,89.05,89.05,0,0,1,0-11.2A6.5,6.5,0,0,1,8.23,3.25a121.62,121.62,0,0,1,15.51,0A6.51,6.51,0,0,1,29.8,9.19a77.53,77.53,0,0,1,0,11.2,6.61,6.61,0,0,1-6.66,6.07H19.48L12.63,31V26.46"></path><path fill="#ffffff" d="M19.57,21.68h3.67a2.08,2.08,0,0,0,2.11-1.81,89.86,89.86,0,0,0,0-10.38,1.9,1.9,0,0,0-1.84-1.74,113.15,113.15,0,0,0-15,0A1.9,1.9,0,0,0,6.71,9.49a74.92,74.92,0,0,0-.06,10.38,2,2,0,0,0,2.1,1.81h3.81V26.5Z" class="lc-p4hxbu e1nep2br0"></path></svg><div class="lc-1srqfj1 e1dmt1bi1"><svg viewBox="0 0 60 40" width="18px" fill="#ffffff"><circle r="6" cy="20" cx="9" class="lc-hjf0o5 epoxe490"></circle><circle r="6" cy="20" cx="30" class="lc-1yfkiwi epoxe490"></circle><circle r="6" cy="20" cx="51" class="lc-te1k42 epoxe490"></circle></svg></div></div>';
+        html += '<div aria-hidden="true" class="lc-14dk0ui e1dmt1bi0"><svg color="inherit" class="lc-1mpchac" viewBox="0 0 32 32"><path fill="#4384f5" d="M12.63,26.46H8.83a6.61,6.61,0,0,1-6.65-6.07,89.05,89.05,0,0,1,0-11.2A6.5,6.5,0,0,1,8.23,3.25a121.62,121.62,0,0,1,15.51,0A6.51,6.51,0,0,1,29.8,9.19a77.53,77.53,0,0,1,0,11.2,6.61,6.61,0,0,1-6.66,6.07H19.48L12.63,31V26.46"></path><path fill="#ffffff" d="M19.57,21.68h3.67a2.08,2.08,0,0,0,2.11-1.81,89.86,89.86,0,0,0,0-10.38,1.9,1.9,0,0,0-1.84-1.74,113.15,113.15,0,0,0-15,0A1.9,1.9,0,0,0,6.71,9.49a74.92,74.92,0,0,0-.06,10.38,2,2,0,0,0,2.1,1.81h3.81V26.5Z" class="lc-p4hxbu e1nep2br0"></path></svg><div class="lc-1srqfj1 e1dmt1bi1"><div class="_4b0g"><div class="_5pd7"></div><div class="_5pd7"></div><div class="_5pd7"></div></div></div></div>';
         html += '</div>';
         html += '</div>';
         $("#dialog-form-bot").empty().append(html);
@@ -119,9 +112,8 @@ var lacviet = {
     }
 };
 $('body').on('click', '.fb_dialog', function (e) {
-    if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_out_v2")) {
+    if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_out_v2")) { // nếu đang đóng
         $("#dialog_iframe").removeClass('fb_customer_chat_bounce_out_v2').addClass('fb_customer_chat_bounce_in_v2');
-        //$("#dialog_iframe").removeClass('fb_customer_chat_bounce_out_v2').addClass('fb_customer_chat_bounce_in_v2');
         if ($(parent.window).width() <= 768) {
             //console.log($(parent.window).width())
             $('#dialog-form-bot').css('max-height', '100%');
@@ -137,7 +129,6 @@ $('body').on('click', '.fb_dialog', function (e) {
             $('#dialog-form-bot').css('width', '382px');
             $('#dialog-form-bot').css('height', '652px');
         }
-
         setTimeout(function () {
             // bung chiều cao ô chatbox
             $('#dialog_iframe').css('max-height', '100%');
@@ -146,9 +137,11 @@ $('body').on('click', '.fb_dialog', function (e) {
             frame.contentWindow.postMessage('init', domainApp);
         }, 200)
     }
-    else if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_in_v2")) {
+    else if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_in_v2")) { // nếu đang mở
         $("#dialog_iframe").removeClass('fb_customer_chat_bounce_in_v2').addClass('fb_customer_chat_bounce_out_v2');
         setTimeout(function () {
+            $('#dialog-form-bot').css('width', '0px');
+            $('#dialog-form-bot').css('height', '0px');
             $('#dialog_iframe').css('max-height', '0px');
         }, 200)
     }

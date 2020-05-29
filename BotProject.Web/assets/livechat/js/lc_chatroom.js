@@ -34,6 +34,8 @@ var AgentModel = {
 
 //var isRenewConversation = false;
 
+var interval_focus_tab_id;
+
 var objHub = $.connection.chatHub;
 
 $(function () {
@@ -74,6 +76,13 @@ var cHub = {
             console.log('SingalR connect ngắt kết nối')
             if ($.connection.hub.lastError) {
                 console.log("Disconnected. Reason: " + $.connection.hub.lastError.message);
+                setTimeout(function () {
+                    console.log('SingalR connect đang khởi động lại')
+                    $.connection.hub.start({
+                        transport: ['longPolling', 'webSockets']
+                    });
+                    $.connection.hub.start().done(function () { });
+                }, 5000); // Restart connection after 5 seconds.          
             }
 
             if (tryingToReconnect) {
@@ -95,6 +104,8 @@ var cHub = {
                 console.log('customer-' + objCustomerDb.ID + ' new join')
 
                 new customerEvent.customerJoin().GetCustomerJoinRealtime(threadID, objCustomerDb);
+
+                playAudioNotifyMessage();
             }
         };
         objHub.client.getStatusCustomerOffline = function (channelGroupId, customerId) {
@@ -113,21 +124,40 @@ var cHub = {
                 isRenewConversation = true;
             }
         };
-        objHub.client.receiveMessages = function (channelGroupId, threadId, message, userId, userName, typeUser) {
+        objHub.client.receiveMessages = function (channelGroupId, threadId, message, agentId, customerId, userName, typeUser) {
             if (channelGroupId == _channelGroupId) {
-                console.log('threadId:' + threadId + '  customer-' + userId + ' : ' + message)
-                var $elmCustomer = $("#customer-" + userId);
-                if (typeUser == TYPE_USER_CONNECT.CUSTOMER) {
-                    if ($elmCustomer.hasClass("active")) {
-                        userName = (userName == "" ? "W" : userName);
-                        insertChat("customer", userId, isValidURLandCodeIcon(message), userName, "");
+                console.log('threadId:' + threadId + '  customer-' + customerId + ' : ' + message)
+                var $elmCustomer = $("#customer-" + customerId);
+                if ($elmCustomer.hasClass("active")) {
+                    userName = (userName == "" ? "W" : userName);
+                    if (typeUser == TYPE_USER_CONNECT.CUSTOMER) {
+                        insertChat(typeUser, customerId, isValidURLandCodeIcon(message), userName, "");
+                    }
+                    if (typeUser == TYPE_USER_CONNECT.AGENT) {
+                        if (_agentId != agentId) { // nếu tài khoản hổ trợ vào được xem lun tin nhắn
+                            insertChat(typeUser, customerId, isValidURLandCodeIcon(message), userName, "");
+                        }
                     }
                 }
+                playAudioNotifyMessage();
             }
         };
         objHub.client.receiveTyping = function (channelGroupId, customerId) {
             if (channelGroupId == _channelGroupId) {
                 console.log('customer-' + customerId + ' typing')
+            }
+        };
+
+        objHub.client.receiveSignalCustomerFocusTabChat = function (channelGroupId, threadId, customerId, isFocusTab) {
+            if (channelGroupId == _channelGroupId) {
+                isFocusTab = (isFocusTab == true ? "đạng trên tab" : "thoát tab");
+                console.log('customer-' + customerId + ' ' + isFocusTab);
+                var $elmCustomer = $("#customer-" + customerId);
+                if (isFocusTab) {
+                    if ($elmCustomer.hasClass("active")) {
+                        $("#message-container-" + customerId).find('.message-item-action').html("Read");
+                    }
+                }
             }
         };
     }
@@ -142,7 +172,7 @@ var customerEvent = {
             $("#chat-sidebar-device").show();
             $("#chat-sidebar-template-loading").hide();
             var device = objCustomer.Devices[0];
-            $("#device-city").empty().append(device.City == null ? "" : " "+device.City);
+            $("#device-city").empty().append(device.City == null ? "" : " " + device.City);
             $("#device-ip").empty().append(device.IPAddress == null ? "" : device.IPAddress);
             $("#device-os").empty().append(device.OS == null ? "" : device.OS);
             $("#device-browser").empty().append(device.Browser == null ? "" : device.Browser);
@@ -236,7 +266,7 @@ var customerEvent = {
                     // đổi vị trí lên top khi focus chat với customer
                     changePositon("#div-list-customers a:eq(" + indexPosition + ")")
                     // gửi tin nhắn
-                    objHub.server.sendMessage(_channelGroupId, threadId, isValidURLandCodeIcon(text), _agentId, _agentName, TYPE_USER_CONNECT.AGENT);
+                    objHub.server.sendMessage(_channelGroupId, threadId, isValidURLandCodeIcon(text), _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
 
                     $(this).val('');
                     $(this).text('');
@@ -255,7 +285,7 @@ var customerEvent = {
                 insertChat("agent", objCustomer.ID, isValidURLandCodeIcon(text), _agentName, "");
 
                 // gửi tin nhắn
-                objHub.server.sendMessage(_channelGroupId, threadId, isValidURLandCodeIcon(text), _agentId, _agentName, TYPE_USER_CONNECT.AGENT);
+                objHub.server.sendMessage(_channelGroupId, threadId, isValidURLandCodeIcon(text), _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
                 $(this).val('');
             }
             return;
@@ -285,16 +315,16 @@ var customerEvent = {
                         // auto focus customer đầu tiên
                         setTimeout(function () {
                             new customerEvent.customerJoin().ViewFormChatById(data[0].ID, data[0].ThreadID)
-                        },500)
+                        }, 500)
                     }
                 },
             });
         },
-            this.GetCustomerJoinRealtime = function (threadID, customer) {
-                var html = new customerEvent.render(threadID).templateListCustomer(customer);
-                $("#div-list-customers").prepend(html);
-                getTimeAgo();
-            }
+        this.GetCustomerJoinRealtime = function (threadID, customer) {
+            var html = new customerEvent.render(threadID).templateListCustomer(customer);
+            $("#div-list-customers").prepend(html);
+            getTimeAgo();
+        }
         this.ViewFormChatById = function (customerId, threadId) {
             var $elemCustomer = $("#customer-" + customerId + "");
             if ($elemCustomer.hasClass("active")) {
@@ -328,23 +358,27 @@ var customerEvent = {
             var templateHtml = '';
             if (customer.ApplicationChannels == ApplicationChannel.Web) {
                 templateHtml += '<a class="list-group-item d-flex list-customer-item" id="customer-' + customer.ID + '" data-customer-id="' + customer.ID + '" data-thread-id="' + threadID + '" href="javascript:new customerEvent.customerJoin().ViewFormChatById(\'' + customer.ID + '\',\'' + threadID + '\')">';
-                templateHtml +=    '<div class="pr-3">';
-                templateHtml +=    '<span class="avatar ' + (customer.StatusChatValue == 200 ? "avatar-state-online" : "avatar-state-offline") + '">';
-                templateHtml +=    '<span class="avatar-title bg-warning rounded-circle">W</span>';
-                templateHtml +=    '</span>';
-                templateHtml +=    '</div>';
-                templateHtml +=    '<div class="flex-grow- 1">';
-                templateHtml +=    '<h6 class="mb-1">' + customer.Name + '</h6>';
-                templateHtml +=     '<span class="small text-muted">';
-                templateHtml +=    '<span id="msg-preview-' + customer.ID + '"></span>';
-                templateHtml +=    '</span>';
+                templateHtml += '<div class="pr-3">';
+                templateHtml += '<span class="avatar ' + (customer.StatusChatValue == 200 ? "avatar-state-online" : "avatar-state-offline") + '">';
+                templateHtml += '<span class="avatar-title bg-warning rounded-circle">W</span>';
+                templateHtml += '</span>';
                 templateHtml += '</div>';
-                if (customer.LogoutDate != null) {
+                templateHtml += '<div class="flex-grow- 1">';
+                templateHtml += '<h6 class="mb-1">' + customer.Name + '</h6>';
+                templateHtml += '<span class="small text-muted">';
+                templateHtml += '<span id="msg-preview-' + customer.ID + '"></span>';
+                templateHtml += '</span>';
+                templateHtml += '</div>';
+                if (customer.LogoutDate === null) {
+                    templateHtml += '<div class="text-right ml-auto">';
+                    templateHtml += '<span class="small text-muted">1 năm trước</span>';
+                    templateHtml += '</div>';
+                } else {
                     templateHtml += '<div class="text-right ml-auto">';
                     templateHtml += '<span class="small text-muted timeago" datetime="' + customer.LogoutDate + '"></span>';
                     templateHtml += '</div>';
                 }
-                templateHtml +=    '</a>';
+                templateHtml += '</a>';
             } else {
                 templateHtml += '<a class="list-group-item d-flex list-customer-item" id="customer-' + customer.ID + '" data-customer-id="' + customer.ID + '" data-thread-id="' + threadID + '" href="javascript:void(0)">';
                 templateHtml += '<div class="pr-3">';
@@ -419,30 +453,60 @@ var templateTypeMessage = {
 
 
 function insertChat(who, customerId, text, userName, avatar) {
-    let user_class_chat = (who == "agent" ? "me" : "");
-    let date_current = new Date();
+    let user_class_chat = (who == "agent" ? "me" : "guest");
+    let date_current = showTimeChat();
+    var contentMessage = '';
 
-    content = '<div class="message-item ' + user_class_chat + '">';
-    content += message.getUserIcon(userName, avatar);
-    content += message.add(userName, text);
-    content += '</div>';
+    var $elementMessage = document.getElementsByClassName('message-item');
+    if ($elementMessage !== undefined || $elementMessage !== null) {
+        let $elementLastMessage = $($elementMessage[$elementMessage.length - 1]);
+        let timeLastMessage = $elementLastMessage.find('.message-user-time').html();
+        let identity_user = $elementLastMessage.attr('data-user');
+        if ((identity_user == who) && (date_current == timeLastMessage)) {
+            let elementLastMessageAppend = $elementLastMessage.find('.message-item-content').last();
+            appendMessage(elementLastMessageAppend, who, customerId, text);
+            return;
+        }
+    }
 
-    // insert body chat
-    $("#message-container-" + customerId).append(content);
+    contentMessage = '<div class="message-item ' + user_class_chat + '" data-user="' + who + '">';
+    contentMessage += message.getUserIcon(who, userName, avatar);
+    contentMessage += message.getHtmlMessageBody(who, userName, text, date_current);
+    contentMessage += '</div>';
 
+    // append message chat
+    appendMessage("", who, customerId, contentMessage);
+    return;
+}
+function appendMessage(elementLastMessageAppend, who, customerId, text) {
     // insert preview
-    insertPreviewChat(who, customerId, text)
+    insertPreviewChat(who, customerId, text);
+
+    if (elementLastMessageAppend !== "") {
+        // append body message
+        var content = '<div class="message-item-content">' + text + '</div>';
+        $(elementLastMessageAppend).after($(content));
+        // bùa thêm thẻ div trống để active scroll tới bottom trong trường hợp insertAfter k phải elemnt chính nó
+        $("#message-container-" + customerId).append("<div></div>");
+    } else {
+        // append body message
+        $("#message-container-" + customerId).append(text);
+    }
+    // remove action read, delivered, message not send
+    if (who == TYPE_USER_CONNECT.CUSTOMER) {
+        $("#message-container-" + customerId).find('.message-item-action').remove();
+    }
     // scroll to bottom
     setTimeout(function () {
         $(".messages").getNiceScroll(0).doScrollTop($("#message-container-" + customerId).prop('scrollHeight'));
-    },100)
-    return false;
+    }, 200)
 }
+
 
 function insertEventChat(customerId, time) {
     var html = '';
-    html +='<div class="message-item message-item-divider">';
-    html +='                        <span>Hôm nay</span>';
+    html += '<div class="message-item message-item-divider">';
+    html += '                        <span>Hôm nay</span>';
     html += '                    </div>';
     $("#message-container-" + customerId).append(html);
     isRenewConversation = false;
@@ -454,13 +518,12 @@ function insertPreviewChat(who, customerId, text) {
     if (text.length > 20) {
         text = text.substring(0, 19) + "...";
     }
-    text = user + ": " + text;
-    $("#msg-preview-" + customerId).empty().append(text);
-    return;
+    let msg_previve = user + ": " + text;
+    $("#msg-preview-" + customerId).html(msg_previve);
 }
 
 var message = {
-    getUserIcon: function (userName, avatar) {
+    getUserIcon: function (who, userName, avatar) {
         var firstNameCharacter = userName.substring(0, 1).toUpperCase();
         var templateAvatar = '';
         templateAvatar += '<div class="message-avatar">';
@@ -468,7 +531,7 @@ var message = {
         templateAvatar += '<div class="pr-3">';
         templateAvatar += '<span class ="message-avatar-item avatar">';
         if (avatar == "") {
-            templateAvatar += '<span class ="avatar-title bg-primary rounded-circle">' + firstNameCharacter + '</span>';
+            templateAvatar += '<span class ="avatar-title ' + (who == "agent" ? "bg-primary" : "bg-warning") + ' rounded-circle">' + firstNameCharacter + '</span>';
         } else {
             templateAvatar += '<img src="~/assets/client/img/avatar-admin.jpg" class="rounded-circle" alt="image">';
         }
@@ -478,17 +541,19 @@ var message = {
         templateAvatar += '</div>';
         return templateAvatar;
     },
-    add: function (userName, text) {
-        var templateMsg ='';
+    getHtmlMessageBody: function (who, userName, text, date_current) {
+        var templateMsg = '';
         templateMsg += '<div class="message-body">';
-        templateMsg +=                '<div>';
-        templateMsg +=                    '<div class ="message-align">';
-        templateMsg +=                        '<span class="font-size-08">'+userName+' </span>';
-        templateMsg +=                        '<span class="font-size-08">' + showTimeChat() + '</span>';
-        templateMsg +=                    '</div>';
-        templateMsg +=                '</div>';
-        templateMsg +=                '<div class="message-item-content">'+text+'</div>';
-        templateMsg +=                '<div class="txt-align-left font-size-08">Delivered</div>';//Message not sent, , Read
+        templateMsg += '<div>';
+        templateMsg += '<div class ="message-align">';
+        templateMsg += '<span class="message-user-name font-size-08">' + userName + ' </span>';
+        templateMsg += '<span class="message-user-time font-size-08">' + date_current + '</span>';
+        templateMsg += '</div>';
+        templateMsg += '</div>';
+        templateMsg += '<div class="message-item-content">' + text + '</div>';
+        if (who == "agent") {
+            templateMsg += '<div class="message-item-action txt-align-left font-size-08">Delivered</div>';//Message not sent, , Read
+        }
         templateMsg += '</div>';
         return templateMsg;
     }
@@ -528,22 +593,3 @@ function changePositon(selector) {
     $(".chat-sidebar-content").getNiceScroll(0).doScrollTop(0);
     return;
 };
-
-
-// Kiểm tra user có hoạt dộng trên tab trình duyệt của mình không
-// Nếu focus xem màn hình
-var interval_id;
-$(window).focus(function () {
-    if (!interval_id) {
-        interval_id = setInterval(function () {
-            console.log("hoat dong");
-            clearInterval(interval_id);
-        }, 1000);
-    }
-});
-// Nếu không xem màn hình
-$(window).blur(function () {
-    clearInterval(interval_id);
-    interval_id = 0;
-    console.log("k hoat dong")
-});

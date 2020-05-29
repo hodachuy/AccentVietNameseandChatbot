@@ -108,10 +108,21 @@ namespace BotProject.Web.SignalRChat
         }
 
 
-        public void SendMessage(string channelGroupId, string threadId, string message, string userId, string userName, string typeUser)
+        public void SendMessage(string channelGroupId, string threadId, string message, string agentId,string customerId, string userName, string typeUser)
         {
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
-            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveMessages(channelGroupId, threadId, message, userId, userName, typeUser);
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveMessages(channelGroupId, threadId, message, agentId, customerId, userName, typeUser);
+        }
+
+        public void CheckCustomerFocusTabChat(string channelGroupId, string threadId, string customerId, bool isFocusTab)
+        {
+            string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSignalCustomerFocusTabChat(channelGroupId, threadId, customerId, isFocusTab);
+        }
+        public void CheckAgentFocusTabChat(string channelGroupId, string threadId, string customerId, bool isFocusTab)
+        {
+            string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSignalAgentFocusTabChat(channelGroupId, threadId, customerId, isFocusTab);
         }
 
         /// <summary>
