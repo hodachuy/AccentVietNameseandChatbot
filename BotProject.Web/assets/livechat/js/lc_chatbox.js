@@ -35,7 +35,7 @@ var DeviceModel = {
         FullUserAgent: navigator.userAgent,
         IPAddress: ipInfo.ip,
         City: ipInfo.city,
-        Region: ipInfo.region,
+        Region: ipInfo.region, 
         Latitude: ipInfo.latitude,
         Longtitude: ipInfo.longtitude
 }
@@ -108,6 +108,10 @@ $(document).ready(function () {
     cBoxHub.validateFocusTabChat();
 
     cBoxMessage.event();
+
+    let date_current = showTimeChat();
+    let tmp = new messageBot.renderTemplate(date_current).TextAndButton('hi', function () { var html = '<span>abc</span>'; return html; });
+    console.log(tmp)
 })
 
 var varyReconnected = function intervalFunc() {
@@ -339,7 +343,7 @@ function insertChat(who, text, userName, avatar) {
         let identity_user = $elementLastMessage.attr('data-user');
         if ((identity_user == who) && (date_current == timeLastMessage)) {
             let elementLastMessageAppend = $elementLastMessage.find('.message-item-content').last();
-            appendMessage(elementLastMessageAppend, who, customerId, text);
+            appendMessage(elementLastMessageAppend, who, text);
             return;
         }
     }
@@ -410,6 +414,185 @@ var message = {
         }
         templateMsg += '</div>';
         return templateMsg;
+    }
+}
+
+var messageBot = {
+    getIcon: function (who, userName, avatar) {
+        var firstNameCharacter = userName.substring(0, 1).toUpperCase();
+        var templateAvatar = '';
+        templateAvatar += '<div class="message-avatar">';
+        templateAvatar += '<div class="message-avatar-customer">';
+        templateAvatar += '<div class="pr-3">';
+        templateAvatar += '<span class ="message-avatar-item avatar">';
+        templateAvatar += '<img src="' + _Host + 'assets/images/logo/icon-bot-lc.png" class="rounded-circle" alt="image">';
+        templateAvatar += '</span>';
+        templateAvatar += '</div>';
+        templateAvatar += '</div>';
+        templateAvatar += '</div>';
+        return templateAvatar;
+    },
+    renderTemplate: function (date_current) {
+        this.Text = function (text) {
+            var tmpText =              '<div class="message-body">';
+            tmpText +='                    <div>';
+            tmpText +='                        <div class="message-align">';
+            tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
+            tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
+            tmpText +='                        </div>';
+            tmpText +='                    </div>';
+            tmpText += '                    <div class="message-item-content">' + text + '</div>';
+            tmpText +='                </div>';
+            return tmpText;
+        },
+        this.Image = function (urlImage) {
+            var tmpText = '<div class="message-body">';
+            tmpText += '                    <div>';
+            tmpText += '                        <div class="message-align">';
+            tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
+            tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
+            tmpText += '                        </div>';
+            tmpText += '                    </div>';
+            tmpText += '                    <img src="' + urlImage + '"/>';
+            tmpText += '                </div>';
+            return tmpText;
+        },
+        this.TextAndButton = function (text, calbackButton) {
+            var tmpText = '<div class="message-body">';
+            tmpText += '                    <div>';
+            tmpText += '                        <div class="message-align">';
+            tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
+            tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
+            tmpText += '                        </div>';
+            tmpText += '                    </div>';
+            tmpText += '                    <div class="message-item-content">';
+            tmpText +=                          '<span>' + text + '</span>';
+            tmpText += calbackButton();
+            tmpText += '                    </div>';
+            tmpText += '  </div>';
+            return tmpText;
+        },
+        this.ContainerGeneric = function (text, calbackGenericIndex) {
+            var tmpText = '<div class="message-body">';
+            tmpText += '                    <div>';
+            tmpText += '                        <div class="message-align">';
+            tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
+            tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
+            tmpText += '                        </div>';
+            tmpText += '                    </div>';
+
+
+            tmpText += '                <div class="message-container" index="0" style="overflow:hidden">';
+            tmpText += '                                   <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">';
+            tmpText += calbackGenericIndex();
+            tmpText += '                                   </div>';
+            tmpText += '                </div>';
+            tmpText += '</div>';
+            return tmpText;
+        },
+        this.GenericIndex = function (urlBanner, title, subTitle, subLink, calbackButton) {
+            var tmpText = '<div class="message-item-template-generic">';
+            tmpText += '                               <div class="message-banner _6j0s" style="background-image: url('+urlBanner+'); background-position: center center; height: 150px; width: 100%;">';
+            tmpText += '                                </div>';
+            tmpText += '                                <div class="message-template-generic-container _6j2g">';
+            tmpText += '                                    <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">';
+            tmpText += '                                        '+title+''
+            tmpText += '                                    </div>';
+            tmpText += '                                    <div class="message-generic-subtitle _6j0u">';
+            tmpText += '                                        <div>';
+            tmpText += '                                            '+subTitle+''
+            tmpText += '                                        </div>';
+            tmpText += '                                    </div>';
+            tmpText += '                                    <div class="message-generic-sublink _6j0y">';
+            tmpText += '                                        <a target="_blank" href="' + subLink + '">';
+            tmpText += '                                            '+subLink+''
+            tmpText += '                                        </a>';
+            tmpText += '                                    </div>';
+            tmpText += '                                </div>';
+            tmpText += calbackButton();
+            tmpText += '  </div>';
+        },
+        this.BackNextGeneric = function () {
+            var tmpText ='<a class="btn_back_generic _32rk _32rg _1cy6" href="#" style="display: none;">';
+            tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
+            tmpText += '                        <div class="_5x6d">';
+            tmpText += '                            <div class="_3bwv _3bww">';
+            tmpText += '                                <div class="_3bwy">';
+            tmpText += '                                    <div class="_3bwx">';
+            tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>';
+            tmpText += '                                    </div>';
+            tmpText += '                                </div>';
+            tmpText += '                            </div>';
+            tmpText += '                        </div>';
+            tmpText += '                    </div>';
+            tmpText += '                 </a>';
+            tmpText += '                <a class="btn_next_generic _32rk _32rh _1cy6" href="#" style="display: block;">';
+            tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
+            tmpText += '                        <div class="_5x6d">';
+            tmpText += '                            <div class="_3bwv _3bww">';
+            tmpText += '                                <div class="_3bwy">';
+            tmpText += '                                    <div class="_3bwx">';
+            tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>';
+            tmpText += '                                    </div>';
+            tmpText += '                                </div>';
+            tmpText += '                            </div>';
+            tmpText += '                        </div>';
+            tmpText += '                    </div>';
+            tmpText += '                </a>';
+        },
+        this.Button = function (lstButton) {
+            var tmpText = '<div class="message-item-button">';
+            $.each(lstButton, function (index, value) {
+                if (value.type == "postback") {
+                    tmpText += '<a class="message-btn-postback lc-6qcmqf" data-postback="'+value.payload+'">'+value.Title+'</a>';
+                }
+                if (value.type == "web_url") {
+                    tmpText += '<a href="' + value.url + '" class="message-btn-link lc-6qcmqf" target="_blank">' + value.Title + '</a>';
+                }
+            })
+            tmpText += '</div>';
+            return tmpText;
+        },
+        this.QuickReply = function (lstQuickReply) {
+            var tmpText = '        <div class="message-quickreply">';
+            tmpText +='                <div class="message-quickreply-container">';
+            tmpText += '                    <div class="message-quickreply-item" style="position:relative;" index="2">';
+            $.each(lstQuickReply, function (index, value) {
+                tmpText += '                        <button value="0" class="btn-quickreply" data-postback="'+value.payload+'">'+value.title+'</button>';
+            })
+            tmpText +='                    </div>';
+            tmpText += '                </div>';
+            if (lstQuickReply.length > 3) {
+                tmpText += '                <a class="_32rk _32rg _1cy6  btn_back_quickreply" href="#" style="display: none;">';
+                tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
+                tmpText += '                        <div class="_5x6d">';
+                tmpText += '                            <div class="_3bwv _3bww">';
+                tmpText += '                                <div class="_3bwy">';
+                tmpText += '                                    <div class="_3bwx">';
+                tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>';
+                tmpText += '                                    </div>';
+                tmpText += '                                </div>';
+                tmpText += '                            </div>';
+                tmpText += '                        </div>';
+                tmpText += '                    </div>';
+                tmpText += '                </a>';
+                tmpText += '                <a class="_32rk _32rh _1cy6  btn_next_quickreply" href="#" style="display: block;">';
+                tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
+                tmpText += '                        <div class="_5x6d">';
+                tmpText += '                            <div class="_3bwv _3bww">';
+                tmpText += '                                <div class="_3bwy">';
+                tmpText += '                                    <div class="_3bwx">';
+                tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>';
+                tmpText += '                                    </div>';
+                tmpText += '                                </div>';
+                tmpText += '                            </div>';
+                tmpText += '                        </div>';
+                tmpText += '                    </div>';
+                tmpText += '                </a>';
+                tmpText += '            </div>';
+            }
+            return tmpText;
+        }
     }
 }
 

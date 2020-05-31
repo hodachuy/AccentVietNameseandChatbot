@@ -309,6 +309,7 @@
     <Compile Include="API_Livechat\AgentController.cs" />
     <Compile Include="API_Livechat\ChatRoomController.cs" />
     <Compile Include="API_Livechat\CustomerController.cs" />
+    <Compile Include="API_Livechat\LiveChatBotController.cs" />
     <Compile Include="API_Mobile\MessageController.cs" />
     <Compile Include="API_Mobile\MessageFbController.cs" />
     <Compile Include="API_Mobile\MessageFbMedicalController.cs" />
