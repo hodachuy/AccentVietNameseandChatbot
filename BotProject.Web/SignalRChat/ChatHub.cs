@@ -107,7 +107,6 @@ namespace BotProject.Web.SignalRChat
             _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveTyping(channelGroupId.ToString(), userId);
         }
 
-
         public void SendMessage(string channelGroupId, string threadId, string message, string agentId,string customerId, string userName, string typeUser)
         {
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
@@ -119,10 +118,17 @@ namespace BotProject.Web.SignalRChat
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
             _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSignalCustomerFocusTabChat(channelGroupId, threadId, customerId, isFocusTab);
         }
+
         public void CheckAgentFocusTabChat(string channelGroupId, string threadId, string customerId, bool isFocusTab)
         {
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
             _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSignalAgentFocusTabChat(channelGroupId, threadId, customerId, isFocusTab);
+        }
+
+        public void TransferCustomerToBot(string channelGroupId, string threadId, string customerId, int botId)
+        {
+            string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSingalChatWithBot(channelGroupId, threadId, customerId, botId);
         }
 
         /// <summary>

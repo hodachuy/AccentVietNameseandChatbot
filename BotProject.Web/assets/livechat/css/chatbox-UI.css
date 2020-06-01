@@ -467,6 +467,7 @@
                     position: relative;
                     margin-bottom: 4px;
                     overflow-wrap: break-word;
+                    border:.75px solid rgba(0, 0, 0, .10);
                 }
 
                 .chat-block .chat-content .messages .message-item.me {

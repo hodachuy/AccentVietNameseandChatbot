@@ -91,6 +91,7 @@
     <Compile Include="Models\LiveChat\Channel.cs" />
     <Compile Include="Models\LiveChat\ChatReplyConfig.cs" />
     <Compile Include="Models\LiveChat\ChatSurvey.cs" />
+    <Compile Include="Models\LiveChat\Conversation.cs" />
     <Compile Include="Models\LiveChat\ChatWidgetLanguage.cs" />
     <Compile Include="Models\LiveChat\ChatWidgetCustomization.cs" />
     <Compile Include="Models\LiveChat\Customer.cs" />

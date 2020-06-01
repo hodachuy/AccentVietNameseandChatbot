@@ -1,0 +1,194 @@
+﻿
+    .css-1ocrak0 {
+        position: relative;
+        display: inline-block;
+        box-sizing: border-box;
+        vertical-align: middle;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+        border-radius: 50%;
+    }
+
+    .css-5r5m5i {
+        display: block;
+        background-size: cover;
+        background-image: url(../../assets/images/logo/icon-user.png);
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        border-radius: 1000px;
+    }
+
+    .css-1ocrak0 span {
+        width: 14px;
+        height: 14px;
+        right: -2px;
+        top: -2px;
+    }
+
+    .css-1ocrak0 span {
+        background-color: rgb(70, 183, 118);
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+    }
+
+    .css-10zmg9r {
+        position: absolute;
+        display: block;
+        box-sizing: border-box;
+        border-radius: 50%;
+    }
+    /*User invited*/
+    .css-roml46 {
+        position: relative;
+        display: flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        background-color: rgb(244, 247, 249);
+        box-sizing: border-box;
+        text-align: center;
+        border-radius: 50%;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(221, 226, 230);
+        border-image: initial;
+    }
+
+    .css-1e0j3rb {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+    }
+    /*Logged On*/
+    .css-y4ek3x {
+        vertical-align: middle;
+        line-height: 14px;
+    }
+
+    .css-nmb5ix {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+    }
+
+    .css-128qsh2 {
+        position: relative;
+        display: inline-block;
+        width: 38px;
+        height: 38px;
+        line-height: 38px;
+        background-color: rgb(244, 247, 249);
+        box-sizing: border-box;
+        text-align: center;
+        border-radius: 6px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(221, 226, 230);
+        border-image: initial;
+    }
+
+    .css-1fg5nok {
+        position: relative;
+        display: inline-block;
+        box-sizing: border-box;
+        vertical-align: middle;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+        border-radius: 50%;
+    }
+
+    .css-1k0c4ii {
+        display: block;
+        background-size: cover;
+        background-image: url(../../assets/images/logo/icon-bot-lc.png);
+        height: 100%;
+        width: 100%;
+        background-repeat: no-repeat;
+        background-position: center center;
+        border-radius: 1000px;
+    }
+
+    .css-1fg5nok span {
+        width: 14px;
+        height: 14px;
+        right: 0px;
+        top: -5px;
+    }
+
+    .css-1fg5nok span {
+        background-color: rgb(70, 183, 118);
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(255, 255, 255);
+        border-image: initial;
+    }
+
+    .css-10zmg9r {
+        position: absolute;
+        display: block;
+        box-sizing: border-box;
+        border-radius: 50%;
+    }
+
+    .table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+    .table:not(.table-bordered) thead th {
+    border-top: none;
+    border-bottom-width: 1px;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+}
+    .table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+    .table.table-lg td {
+    padding: 1.3rem 0.75rem;
+}
+    .table:not(.table-bordered) td {
+    vertical-align: middle;
+    line-height: 1;
+    white-space: nowrap;
+}
+    .table td, .table th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+    .table tbody tr td {
+    /* height: 70px; */
+    border-right: unset;
+}
+    .table td, .table th {
+    padding: .75rem !important;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}

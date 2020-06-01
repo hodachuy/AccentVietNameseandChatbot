@@ -77,7 +77,10 @@ $(document).ready(function () {
 */
 
 var isAgentOnline = false,
-    isBotActive = false;
+    chatBot = {
+        botId: '',
+        isActive: false
+    };
 
 var isStopTyping = false;
 
@@ -100,8 +103,8 @@ $(document).ready(function () {
     isAgentOnline = checkAgentOnline();
 
     //check have bot active
-    isBotActive = checkBotActive();
-
+    chatBot = checkBotActive();
+    console.log(chatBot)
     // Dang ky su kien chatHub
     cBoxHub.register();
     cBoxHub.receivedSignalFromServer();
@@ -109,9 +112,6 @@ $(document).ready(function () {
 
     cBoxMessage.event();
 
-    let date_current = showTimeChat();
-    let tmp = new messageBot.renderTemplate(date_current).TextAndButton('hi', function () { var html = '<span>abc</span>'; return html; });
-    console.log(tmp)
 })
 
 var varyReconnected = function intervalFunc() {
@@ -131,7 +131,7 @@ var cBoxHub = {
         $.connection.hub.start().done(function () {
             console.log("signalr started")
             // kết nối chat khi agent hoặc bot active
-            if (isAgentOnline == true || isBotActive == true) {
+            if (isAgentOnline == true || chatBot.isActive == true) {
                 objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
             }
         });
@@ -202,6 +202,12 @@ var cBoxHub = {
             console.log('revice- thread' + threadId)
             CustomerModel.ThreadID = threadId;
         };
+        objHub.client.receiveSingalChatWithBot = function (channelGroupId, threadId, customerId, botId) {
+            console.log('revice- signal chat with bot' + botId)
+            CustomerModel.ThreadID = threadId;
+            chatBot.botId = botId;
+            chatBot.isActive = true;
+        };
     },
     validateFocusTabChat: function () {
         // Kiểm tra customer có hoạt dộng trên tab trình duyệt chat
@@ -248,7 +254,11 @@ var checkAgentOnline = function () {
     return isCheck;
 }
 var checkBotActive = function () {
-    var isCheck = false;
+    var chatBot = {
+            botId: '',
+            isActive: false
+    };
+
     var params = {
         channelGroupId: _channelGroupId
     }
@@ -262,11 +272,12 @@ var checkBotActive = function () {
         type: 'POST',
         success: function (data) {
             if (data.status) {
-                isCheck = true;
+                chatBot.botId = data.botId;
+                chatBot.isActive = true;
             }
         }
     })
-    return isCheck;
+    return chatBot;
 }
 
 
@@ -300,11 +311,19 @@ var cBoxMessage = {
             if (e.which == 13) {
                 e.preventDefault(e);
                 if (text !== "") {
-                    insertChat("customer", isValidURLandCodeIcon(text),"", "");
+
+
+                    insertChat("customer", isValidURLandCodeIcon(text), "", "");
                     // gửi tin nhắn
-                    objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, isValidURLandCodeIcon(text),"", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
+                    objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, isValidURLandCodeIcon(text), "", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
+
                     $(this).val('');
                     $(this).text('');
+
+                    if (chatBot.isActive == true) {
+                        new messageBot.getMessage(text, CustomerModel.ThreadID, botId);
+                    }
+
                     isStopTyping = false;
                     return;
                 }
@@ -372,7 +391,7 @@ function appendMessage(elementLastMessageAppend, who, text) {
     }
     // scroll to bottom
     setTimeout(function () {
-        $("#message-content").scrollTop($("#message-content").prop('scrollHeight'));
+        scrollBar();
     }, 200)
 }
 
@@ -418,7 +437,46 @@ var message = {
 }
 
 var messageBot = {
-    getIcon: function (who, userName, avatar) {
+    getMessage:function(text, threadId, botId){
+        var params = {
+            senderId: _customerId,
+            botId: botId,
+            text: text,
+            channelGroupId: _channelGroupId,
+            threadId: threadId
+        }
+        params = JSON.stringify(params);
+        $.ajax({
+            url: _Host + "api/lc_bot/receive",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: params,
+            type: 'POST',
+            success: function (reponse) {
+                console.log(reponse)
+                if (reponse.status == 2) {
+                    var templateHtml = [];
+                    $(response.data, function (index, value) {
+
+                    })
+                }
+            }
+        })
+    },
+    appendMessage: function (element, timeout, text, isSendTyping) {
+        if (!isSendTyping) {
+            isSendTyping = false;
+        }
+        $(element).delay(timeout).queue(function (next) {
+            $(".message-item-typing").remove();
+            $(this).append(text);
+            //console.log(isSendTyping)
+            if (isSendTyping) msgEvent.typing();
+            scrollBar();
+            next();
+        });
+    },
+    getIcon: function (avatarBot) {
         var firstNameCharacter = userName.substring(0, 1).toUpperCase();
         var templateAvatar = '';
         templateAvatar += '<div class="message-avatar">';
@@ -432,9 +490,28 @@ var messageBot = {
         templateAvatar += '</div>';
         return templateAvatar;
     },
-    renderTemplate: function (date_current) {
+    renderTemplate: function (date_current, avatarBot) {
+        this.Typing = function () {
+            var tmpText = '<div class="message-item message-item-typing">';
+            tmpText += new messageBot.getIcon(avatarBot);
+            tmpText += `<div class="message-item-content writing">
+                                <div class="_4xko _13y8">
+                                    <div class="_4a0v _1x3z">
+                                        <div class="_4b0g">
+                                            <div class="_5pd7"></div>
+                                            <div class="_5pd7"></div>
+                                            <div class="_5pd7"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                          </div>`;
+            tmpText += '</div>';
+            $('#message-content').append(html);
+        },
         this.Text = function (text) {
-            var tmpText =              '<div class="message-body">';
+            var tmpText = '<div class="message-item message-item-text">';
+            tmpText += new messageBot.getIcon(avatarBot);
+            tmpText +=              '<div class="message-body">';
             tmpText +='                    <div>';
             tmpText +='                        <div class="message-align">';
             tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
@@ -442,11 +519,14 @@ var messageBot = {
             tmpText +='                        </div>';
             tmpText +='                    </div>';
             tmpText += '                    <div class="message-item-content">' + text + '</div>';
-            tmpText +='                </div>';
+            tmpText += '                </div>';
+            tmpText += '</div>';
             return tmpText;
         },
         this.Image = function (urlImage) {
-            var tmpText = '<div class="message-body">';
+            var tmpText = '<div class="message-item message-item-image">';
+            tmpText += new messageBot.getIcon(avatarBot);
+            tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
             tmpText += '                        <div class="message-align">';
             tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
@@ -455,10 +535,13 @@ var messageBot = {
             tmpText += '                    </div>';
             tmpText += '                    <img src="' + urlImage + '"/>';
             tmpText += '                </div>';
+            tmpText += '</div>';
             return tmpText;
         },
         this.TextAndButton = function (text, calbackButton) {
-            var tmpText = '<div class="message-body">';
+            var tmpText = '<div class="message-item message-item-image">';
+            tmpText += new messageBot.getIcon(avatarBot);
+            tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
             tmpText += '                        <div class="message-align">';
             tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
@@ -470,10 +553,13 @@ var messageBot = {
             tmpText += calbackButton();
             tmpText += '                    </div>';
             tmpText += '  </div>';
+            tmpText += '  </div>';
             return tmpText;
         },
         this.ContainerGeneric = function (text, calbackGenericIndex) {
-            var tmpText = '<div class="message-body">';
+            var tmpText = '<div class="message-item message-item-image">';
+            tmpText += new messageBot.getIcon(avatarBot);
+            tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
             tmpText += '                        <div class="message-align">';
             tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
@@ -487,6 +573,7 @@ var messageBot = {
             tmpText += calbackGenericIndex();
             tmpText += '                                   </div>';
             tmpText += '                </div>';
+            tmpText += '</div>';
             tmpText += '</div>';
             return tmpText;
         },
@@ -594,6 +681,10 @@ var messageBot = {
             return tmpText;
         }
     }
+}
+
+function scrollBar() {
+    $("#message-content").scrollTop($("#message-content").prop('scrollHeight'));
 }
 
 window.addEventListener('message', function (event) {

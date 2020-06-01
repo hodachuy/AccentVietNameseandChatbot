@@ -9,6 +9,7 @@
 <link href="~/assets/livechat/css/chatbox-UI.css" rel="stylesheet" />
 <link href="~/assets/client/css/chat-room.css" rel="stylesheet" />
 <link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
+<link href="~/assets/livechat/css/lc_agent.css" rel="stylesheet" />
 <style>
     .emoji-menu {
         /*position: fixed;*/
@@ -400,16 +401,18 @@
                                     <i class="fas fa-fw fa-cog"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="form-message-setting" id="form-message-setting">
-                                    @*<a class="dropdown-item" href="javascript:void(0);">
-                                            <label class="container">
-                                                Chuyển bot trả lời
-                                                <input type="checkbox" checked="checked">
-                                                <span class="checkmark"></span>
-                                            </label>
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:void(0);" id="btnShowAgent">
-                                            <i class="fas fa-fw fa-user"></i> Chỉ định chuyên viên
-                                        </a>*@
+                                    @*<a class="dropdown-item" href="javascript:void(0);" id="btnTransfer">
+                                        <i class="fa fa-exchange-alt mr-2"></i>
+                                        <input type="checkbox" class="mr-2"/>
+                                        Chuyển tới Bot
+                                    </a>
+                                     <a class="dropdown-item" href="javascript:void(0);" id="btnTicked">
+                                            Nếu chọn hoàn thành cuộc thoại, enalbe true bảng action chat iscomplete, lần sau kết nối tạo conversation id mới
+                                            <i class="fa fa-check mr-2"></i> Hoàn thành cuộc thoại
+                                     </a>
+                                    <a class="dropdown-item" href="javascript:void(0);" id="btnBanChat">
+                                        <i class="fa fa-ban mr-2"></i> Cấm trò chuyện
+                                    </a>*@
                                 </div>
                             </li>
                         </ul>
@@ -716,6 +719,8 @@
         <!--end:: chat sidebar customer-->
     </div>
 </div>
+
+
 @section footerJS{
     <!--Icon Chat-->
     <script src="~/assets/client/libs/emoji-picker/js/config.js"></script>

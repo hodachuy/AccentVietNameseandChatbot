@@ -702,6 +702,10 @@
     <Compile Include="Migrations\202005270922273_UpdateCustomerConnectedDate.Designer.cs">
       <DependentUpon>202005270922273_UpdateCustomerConnectedDate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006010952376_AddConversation.cs" />
+    <Compile Include="Migrations\202006010952376_AddConversation.Designer.cs">
+      <DependentUpon>202006010952376_AddConversation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AIMLFileRepository.cs" />
@@ -1249,6 +1253,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005270922273_UpdateCustomerConnectedDate.resx">
       <DependentUpon>202005270922273_UpdateCustomerConnectedDate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006010952376_AddConversation.resx">
+      <DependentUpon>202006010952376_AddConversation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

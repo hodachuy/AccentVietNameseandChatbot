@@ -57,8 +57,8 @@ namespace BotProject.Web.API_Livechat
 
 		private ApiQnaNLRService _apiNLR;
 		private IErrorService _errorService;
-		private BotServiceMedical _botServiceMedical;
-		private ISettingService _settingService;
+        private BotService _botService;
+        private ISettingService _settingService;
 		private ICardService _cardService;
 		private IAIMLFileService _aimlFileService;
 		private IBotService _botDbService;
@@ -85,8 +85,8 @@ namespace BotProject.Web.API_Livechat
 									  IHistoryService historyService) : base(errorService)
 		{
 			_errorService = errorService;
-			_botServiceMedical = BotServiceMedical.BotInstance;
-			_botDbService = botDbService;
+            _botService = BotService.BotInstance;
+            _botDbService = botDbService;
 			_settingService = settingService;
 			_cardService = cardService;
 			_aimlFileService = aimlFileService;
@@ -156,11 +156,17 @@ namespace BotProject.Web.API_Livechat
 					return response;
 				}
 
-				var botDb = _botDbService.GetByID(botId);
 				var settingDb = _settingService.GetSettingByBotID(botId);
 				var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
 				var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
-				if (lstAttribute.Count() != 0)
+
+                var lstAIML = _aimlFileService.GetByBotId(botId);//_aimlFileService.GetByBotId(botID);
+                var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+                _botService.loadAIMLFromDatabase(lstAIMLVm);
+
+                _user = _botService.loadUserBot(message.senderId);
+
+                if (lstAttribute.Count() != 0)
 				{
 					_dicAttributeUser = new Dictionary<string, string>();
 					foreach (var attr in lstAttribute)
@@ -589,7 +595,7 @@ namespace BotProject.Web.API_Livechat
 				}
 
 
-				AIMLbot.Result aimlBotResult = _botServiceMedical.Chat(text);
+				AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
 				string result = aimlBotResult.OutputSentences[0].ToString();
 
 				// Nếu trả về là module
@@ -1159,7 +1165,9 @@ namespace BotProject.Web.API_Livechat
 			public string senderId { set; get; }//K2542621755855091
 			public string botId { set; get; }
 			public string text { set; get; }
-		}
+            public long channelGroupId { set; get; }
+            public long threadId { set; get; }
+        }
 
 
 		#region --DATA SOURCE API--

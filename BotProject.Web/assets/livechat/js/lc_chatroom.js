@@ -24,7 +24,8 @@ var configs = {},
 
 var _channelGroupId = $("#channelGroupId").val(),
     _agentId = $("#userId").val(),
-    _agentName = $("#userName").val();
+    _agentName = $("#userName").val(),
+    _botId = $("#botId").val()
 
 var AgentModel = {
     ID: _agentId,
@@ -41,6 +42,7 @@ var objHub = $.connection.chatHub;
 $(function () {
     cHub.register();
     cHub.receivedSignalFromServer();
+    actionChat.init();
 });
 
 var cHub = {
@@ -190,16 +192,25 @@ var customerEvent = {
         var renderFormMessage = function () {
             $(".customer-name").html(objCustomer.Name);
             $(".chat-header").show();
-            var htmlChatSetting = `<a class="dropdown-item" href="javascript:void(0);">
-                                        <label class="container">
-                                            Chuyển bot trả lời
-                                            <input type="checkbox" id="chkIsBotChat-` + objCustomer.ID + `" checked="checked">
-                                            <span class="checkmark"></span>
-                                        </label>
-                                    </a>`;
+            var htmlChatSetting = '';
+            if (_botId != null && _botId != undefined) {
+                htmlChatSetting += ' <a class="dropdown-item" href="javascript:void(0);" id="btnTransfer">';
+                htmlChatSetting += '                            <i class="fa fa-exchange-alt mr-2"></i>';
+                htmlChatSetting += '                             <input type="checkbox" class="mr-2" id="chkTransferToBot-' + objCustomer.ID + '"/>';
+                htmlChatSetting += '                             Chuyển tới Bot';
+                htmlChatSetting += '                         </a>';
+            }
+
+            htmlChatSetting += '                          <a class="dropdown-item" href="javascript:void(0);" id="btnCompleteConversation-' + objCustomer.ID + '">';
+            htmlChatSetting +='                                 <i class="fa fa-check mr-2"></i> Hoàn thành cuộc thoại';
+            htmlChatSetting +='                          </a>';
+            htmlChatSetting += '                         <a class="dropdown-item" href="javascript:void(0);" id="btnBanChat-' + objCustomer.ID + '">';
+            htmlChatSetting +='                             <i class="fa fa-ban mr-2"></i> Cấm trò chuyện';
+            htmlChatSetting +='                         </a>';
             $("#form-message-setting").empty().append(htmlChatSetting);
 
             $(".messages").show();
+
             $('div.messages').attr('id', 'message-container-' + objCustomer.ID + '');
 
             $(".chat-footer").show();
@@ -222,23 +233,21 @@ var customerEvent = {
                 });
                 window.emojiPicker.discover();
             });
-
-            var templateDivMessage = '';
-
-            // get list message 
-            //var params = {
-
-            //}
-            //$.ajax({
-            //    url: _Host + apiChatRoom.getListMessage,
-            //    contentType: 'application/json; charset=utf-8',
-            //    data: params,
-            //    type: 'GET',
-            //    success: function (data) {
-            //    },
-            //})
-            // event input text
         }();
+
+
+        $("#chkTransferToBot-" + objCustomer.ID).change(function () {
+            let isTransfer = false;
+            if ($(this).is(":checked")) {
+                $(this).val('true');
+                isTransfer = true;
+            } else {
+                $(this).val('false');
+                isTransfer = false;
+            }
+            objHub.server.transferCustomerToBot(_channelGroupId, threadId, AgentModel.ID, _botId);
+        })
+
 
         $($($("#input-chat-message-" + objCustomer.ID).next()).eq(0)).keyup(function (e) {
             var edValue = $(this);
@@ -407,6 +416,27 @@ var customerEvent = {
             }
             return templateHtml;
         }
+    }
+}
+
+var actionChat = {
+    init:function(){
+        actionChat.Transfer();
+
+    },
+    Transfer: function () {
+        $("body").on('click', '#btnTransfer', function () {
+            $('#modalTransfer').modal('show');
+        })
+    },
+    Ticked: function () {
+
+    },
+    BanChat: function () {
+
+    },
+    StopChat: function () {
+
     }
 }
 
@@ -592,4 +622,103 @@ function changePositon(selector) {
     });
     $(".chat-sidebar-content").getNiceScroll(0).doScrollTop(0);
     return;
+};
+
+
+
+var agentTable = {
+    init: function () {
+        agentTable.getListAgents();
+        agentTable.getListBotByUser();
+    },
+    getListBotByUser: function () {
+        var param = {
+            userID: userModel.UserID
+        }
+        $.ajax({
+            url: _Host + api.getListBotByUserId,
+            contentType: 'application/json; charset=utf-8',
+            data: param,
+            type: 'GET',
+            success: function (result) {
+                console.log(result)
+                if (result.length != 0) {
+                    new agentTable.renderTempChatbot(result);
+                }
+            },
+        });
+    },
+    getListAgents: function () {
+        var param = {
+            channelGroupId: userModel.channelGroupId
+        }
+        param = JSON.stringify(param)
+        $.ajax({
+            url: _Host + api.getListAgentChannel,
+            contentType: 'application/json; charset=utf-8',
+            data: param,
+            type: 'POST',
+            success: function (result) {
+                console.log(result)
+                if (result.length != 0) {
+                    new agentTable.renderTempAgent(result);
+                    new agentTable.renderTempGroup(result);
+                }
+
+            },
+        });
+    },
+    renderTempAgent: function (data) {
+        var html = '';
+        $.each(data, function (index, value) {
+            html += '<tr>';
+            html += ' <td>';
+            html += '      <div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130"><div class="css-5r5m5i css-7e05132"></div><span class="css-10zmg9r css-7e05131"></span></div>';
+            html += '  </td>';
+            html += '  <td>' + value.Email + '</td>';
+            html += '  <td>';
+            html += '      <span class="css-y4ek3x" title="Desktop"><div class="css-nmb5ix css-j314r80" width="20px" height="20px"><svg width="20px" height="20px" viewBox="0 0 20 18"><g fill="none" fill-rule="evenodd" opacity=".7"><path d="M0-1h20v20H0z"></path><path fill="#000" fill-rule="nonzero" d="M17.5.667h-15c-.917 0-1.667.75-1.667 1.666v10C.833 13.25 1.583 14 2.5 14h5.833v1.667H6.667v1.666h6.666v-1.666h-1.666V14H17.5c.917 0 1.667-.75 1.667-1.667v-10c0-.916-.75-1.666-1.667-1.666zm0 11.666h-15v-10h15v10z"></path></g></svg></div></span>';
+            html += '  </td>';
+            html += '  <td>';
+            html += '      <span class="badge bg-success-bright text-success">' + value.ApplicationGroupName + '</span>';
+            html += '  </td>';
+            html += '  <td></td>';
+            html += '</tr>';
+        })
+        $("#tbl-lst-agent").append(html);
+        $("#tab-agents-count").html(' (' + data.length + ')');
+    },
+    renderTempChatbot: function (data) {
+        var html = '';
+        $.each(data, function (index, value) {
+            html += '<tr>';
+            html += '<td>';
+            html += '<div size="2" data-test="user-avatar" class="css-1ocrak0 css-7e05130">';
+            html += '	<div class="css-5r5m5i css-7e05132"></div>';
+            html += '	<span class="css-10zmg9r css-7e05131"></span>';
+            html += '</div>';
+            html += '</td>';
+            html += '<td>' + value.Name + '</td>';
+            html += '<td>';
+            html += '	<span class="badge bg-success-bright text-success">Chatbot</span>';
+            html += '</td>';
+            if (value.IsActiveLiveChat) {
+                html += '<td>';
+                html += '	<span class="badge bg-success-bright text-success">ON</span>';
+                html += '</td>';
+            } else {
+                html += '<td>';
+                html += '	<span class="badge bg-warning text-dark">OFF</span>';
+                html += '</td>';
+            }
+            html += '<td>';
+            html += '	<span class="badge bg-info-bright text-dark"></span>';
+            html += '</td>';
+            html += '</tr>';
+        })
+
+        $("#tbl-lst-chatbot").append(html);
+        $("#tab-chatbot-count").html(' (' + data.length + ')');
+
+    }
 };

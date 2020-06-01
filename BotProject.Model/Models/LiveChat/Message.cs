@@ -14,9 +14,11 @@ namespace BotProject.Model.Models.LiveChat
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { set; get; }
-        public long ThreadID { set; get; }
+        public long ConversationID { set; get; }
         public DateTime Timestamp { set; get; }
         public string Body { set; get; }
-        public string SenderID { set; get; }
+        public string AgentID { set; get; }
+        public string CustomerID { set; get; }
+        public bool IsBotChat { set; get; }
     }
 }
