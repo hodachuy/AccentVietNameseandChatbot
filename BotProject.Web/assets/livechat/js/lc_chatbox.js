@@ -76,11 +76,11 @@ $(document).ready(function () {
     
 */
 
-var isAgentOnline = false,
-    chatBot = {
-        botId: '',
-        isActive: false
-    };
+var setting = {
+    isAgentOnline: false,
+    isTransferToBot: false,
+    BotID:''
+}
 
 var isStopTyping = false;
 
@@ -100,11 +100,8 @@ var objHub = $.connection.chatHub;
 $(document).ready(function () {
 
     //check agent online
-    isAgentOnline = checkAgentOnline();
+    setting.isAgentOnline = checkAgentOnline();
 
-    //check have bot active
-    chatBot = checkBotActive();
-    console.log(chatBot)
     // Dang ky su kien chatHub
     cBoxHub.register();
     cBoxHub.receivedSignalFromServer();
@@ -131,7 +128,7 @@ var cBoxHub = {
         $.connection.hub.start().done(function () {
             console.log("signalr started")
             // kết nối chat khi agent hoặc bot active
-            if (isAgentOnline == true || chatBot.isActive == true) {
+            if (setting.isAgentOnline == true) {
                 objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
             }
         });
@@ -205,8 +202,8 @@ var cBoxHub = {
         objHub.client.receiveSingalChatWithBot = function (channelGroupId, threadId, customerId, botId) {
             console.log('revice- signal chat with bot' + botId)
             CustomerModel.ThreadID = threadId;
-            chatBot.botId = botId;
-            chatBot.isActive = true;
+            setting.isTransferToBot = true;
+            setting.BotID = botId;
         };
     },
     validateFocusTabChat: function () {
@@ -256,7 +253,8 @@ var checkAgentOnline = function () {
 var checkBotActive = function () {
     var chatBot = {
             botId: '',
-            isActive: false
+            isActive: false,
+            isTransfer: false
     };
 
     var params = {
@@ -320,8 +318,8 @@ var cBoxMessage = {
                     $(this).val('');
                     $(this).text('');
 
-                    if (chatBot.isActive == true) {
-                        new messageBot.getMessage(text, CustomerModel.ThreadID, botId);
+                    if (setting.isTransferToBot == true) {
+                        new messageBot.getMessage(text, CustomerModel.ThreadID, setting.BotID);
                     }
 
                     isStopTyping = false;
@@ -452,13 +450,58 @@ var messageBot = {
             dataType: "json",
             data: params,
             type: 'POST',
-            success: function (reponse) {
-                console.log(reponse)
-                if (reponse.status == 2) {
+            success: function (response) {
+                console.log(response)
+                if (response.status == 2) {
                     var templateHtml = [];
+                    let date_current = showTimeChat();
                     $(response.data, function (index, value) {
+                        if (value.message.text != undefined) {
+                            let tempText = new messageBot.renderTemplate(date_current, '').Text(value.message.text);
+                            templateHtml.push(tempText);
+                        }
+                        if (value.message.attachment != undefined) {
+                            if (value.message.attachment.type == "image") {
+                                let tempImage = new messageBot.renderTemplate(date_current, '').Image(value.message.attachment.payload.url);
+                                templateHtml.push(tempText);
+                            }
+                            if (value.message.attachment.type == "template") {
+                                if (value.message.attachment.payload.template_type == "button") {
+                                    let text = value.message.attachment.payload.text;
+                                    let tempTextAndButton = new messageBot.renderTemplate(date_current, '').TextAndButton(text, function () {
+                                        let lstButton = value.message.attachment.payload.buttons;
+                                        new messageBot.renderTemplate(date_current, '').Button(lstButton);
+                                    });
+                                    templateHtml.push(tempTextAndButton);
+                                }
+                                if (value.message.attachment.payload.template_type == "generic") {
+                                    let templateGenerics = '';
+                                    let templateGenericIndex = '';
+                                    let lstGeneric = value.message.attachment.payload.elements;
+                                    $.each(lstGeneric, function (index, value) {
+                                        let genetic = {};
+                                        genetic.title = value.title;
+                                        genetic.item_url = (value.item_url != "" ? _Host +value.item_url : "");
+                                        genetic.image_url = _Host + value.image_url;
+                                        genetic.subtitle = value.subtitle;
+                                        templateGenericIndex += new messageBot.renderTemplate(date_current, '').GenericIndex(genetic, function () {
+                                            let lstButton = value.message.attachment.payload.buttons;
+                                            new messageBot.renderTemplate(date_current, '').Button(lstButton);
+                                        });
+                                    })
 
-                    })
+                                    templateGenerics = new messageBot.renderTemplate(date_current, '').ContainerGeneric(templateGenericIndex, lstGeneric.length);
+
+                                    templateHtml.push(templateGenerics);
+                                }
+                            }
+                        }
+                        if (value.message.quick_replies != undefined) {
+                            let tempQuickReply = new messageBot.renderTemplate(date_current, '').QuickReply(value.message.quick_replies)
+                            templateHtml.push(tempQuickReply);
+                        }
+                    });
+                    console.log(templateHtml);
                 }
             }
         })
@@ -533,13 +576,13 @@ var messageBot = {
             tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
             tmpText += '                        </div>';
             tmpText += '                    </div>';
-            tmpText += '                    <img src="' + urlImage + '"/>';
+            tmpText += '                    <img src="'+_Host+'' + urlImage + '"/>';
             tmpText += '                </div>';
             tmpText += '</div>';
             return tmpText;
         },
         this.TextAndButton = function (text, calbackButton) {
-            var tmpText = '<div class="message-item message-item-image">';
+            var tmpText = '<div class="message-item message-item-text-button">';
             tmpText += new messageBot.getIcon(avatarBot);
             tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
@@ -556,10 +599,10 @@ var messageBot = {
             tmpText += '  </div>';
             return tmpText;
         },
-        this.ContainerGeneric = function (text, calbackGenericIndex) {
-            var tmpText = '<div class="message-item message-item-image">';
+        this.ContainerGeneric = function (templateGenericIndex, genericTotal) {
+            var tmpText = '<div class="message-item message-item-genetics">';
             tmpText += new messageBot.getIcon(avatarBot);
-            tmpText += '<div class="message-body">';
+            tmpText += '     <div class="message-body">';
             tmpText += '                    <div>';
             tmpText += '                        <div class="message-align">';
             tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
@@ -570,74 +613,77 @@ var messageBot = {
 
             tmpText += '                <div class="message-container" index="0" style="overflow:hidden">';
             tmpText += '                                   <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">';
-            tmpText += calbackGenericIndex();
+            tmpText += templateGenericIndex;
             tmpText += '                                   </div>';
             tmpText += '                </div>';
-            tmpText += '</div>';
+            tmpText += '     </div>';
+            if (genericTotal > 1) {
+                tmpText += '<a class="btn_back_generic _32rk _32rg _1cy6" href="#" style="display: none;">';
+                tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
+                tmpText += '                        <div class="_5x6d">';
+                tmpText += '                            <div class="_3bwv _3bww">';
+                tmpText += '                                <div class="_3bwy">';
+                tmpText += '                                    <div class="_3bwx">';
+                tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>';
+                tmpText += '                                    </div>';
+                tmpText += '                                </div>';
+                tmpText += '                            </div>';
+                tmpText += '                        </div>';
+                tmpText += '                    </div>';
+                tmpText += '                 </a>';
+                tmpText += '                <a class="btn_next_generic _32rk _32rh _1cy6" href="#" style="display: block;">';
+                tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
+                tmpText += '                        <div class="_5x6d">';
+                tmpText += '                            <div class="_3bwv _3bww">';
+                tmpText += '                                <div class="_3bwy">';
+                tmpText += '                                    <div class="_3bwx">';
+                tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>';
+                tmpText += '                                    </div>';
+                tmpText += '                                </div>';
+                tmpText += '                            </div>';
+                tmpText += '                        </div>';
+                tmpText += '                    </div>';
+                tmpText += '                </a>';
+            }
             tmpText += '</div>';
             return tmpText;
         },
-        this.GenericIndex = function (urlBanner, title, subTitle, subLink, calbackButton) {
+        this.GenericIndex = function (generic,calbackButton) {
             var tmpText = '<div class="message-item-template-generic">';
-            tmpText += '                               <div class="message-banner _6j0s" style="background-image: url('+urlBanner+'); background-position: center center; height: 150px; width: 100%;">';
+            tmpText += '                               <div class="message-banner _6j0s" style="background-image: url(' + generic.image_url + '); background-position: center center; height: 150px; width: 100%;">';
             tmpText += '                                </div>';
             tmpText += '                                <div class="message-template-generic-container _6j2g">';
             tmpText += '                                    <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">';
-            tmpText += '                                        '+title+''
+            tmpText += '                                        ' + generic.title + ''
             tmpText += '                                    </div>';
             tmpText += '                                    <div class="message-generic-subtitle _6j0u">';
             tmpText += '                                        <div>';
-            tmpText += '                                            '+subTitle+''
+            tmpText += '                                            ' + generic.subTitle + ''
             tmpText += '                                        </div>';
             tmpText += '                                    </div>';
             tmpText += '                                    <div class="message-generic-sublink _6j0y">';
-            tmpText += '                                        <a target="_blank" href="' + subLink + '">';
-            tmpText += '                                            '+subLink+''
+            tmpText += '                                        <a target="_blank" href="' + generic.item_url + '">';
+            tmpText += '                                            ' + generic.item_url + ''
             tmpText += '                                        </a>';
             tmpText += '                                    </div>';
             tmpText += '                                </div>';
             tmpText += calbackButton();
             tmpText += '  </div>';
         },
-        this.BackNextGeneric = function () {
-            var tmpText ='<a class="btn_back_generic _32rk _32rg _1cy6" href="#" style="display: none;">';
-            tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
-            tmpText += '                        <div class="_5x6d">';
-            tmpText += '                            <div class="_3bwv _3bww">';
-            tmpText += '                                <div class="_3bwy">';
-            tmpText += '                                    <div class="_3bwx">';
-            tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>';
-            tmpText += '                                    </div>';
-            tmpText += '                                </div>';
-            tmpText += '                            </div>';
-            tmpText += '                        </div>';
-            tmpText += '                    </div>';
-            tmpText += '                 </a>';
-            tmpText += '                <a class="btn_next_generic _32rk _32rh _1cy6" href="#" style="display: block;">';
-            tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
-            tmpText += '                        <div class="_5x6d">';
-            tmpText += '                            <div class="_3bwv _3bww">';
-            tmpText += '                                <div class="_3bwy">';
-            tmpText += '                                    <div class="_3bwx">';
-            tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>';
-            tmpText += '                                    </div>';
-            tmpText += '                                </div>';
-            tmpText += '                            </div>';
-            tmpText += '                        </div>';
-            tmpText += '                    </div>';
-            tmpText += '                </a>';
-        },
         this.Button = function (lstButton) {
-            var tmpText = '<div class="message-item-button">';
-            $.each(lstButton, function (index, value) {
-                if (value.type == "postback") {
-                    tmpText += '<a class="message-btn-postback lc-6qcmqf" data-postback="'+value.payload+'">'+value.Title+'</a>';
-                }
-                if (value.type == "web_url") {
-                    tmpText += '<a href="' + value.url + '" class="message-btn-link lc-6qcmqf" target="_blank">' + value.Title + '</a>';
-                }
-            })
-            tmpText += '</div>';
+            var tmpText = '';
+            if (lstButton.length > 0) {
+                tmpText = '<div class="message-item-button">';
+                $.each(lstButton, function (index, value) {
+                    if (value.type == "postback") {
+                        tmpText += '<a class="message-btn-postback lc-6qcmqf" data-postback="' + value.payload + '">' + value.title + '</a>';
+                    }
+                    if (value.type == "web_url") {
+                        tmpText += '<a href="' + value.url + '" class="message-btn-link lc-6qcmqf" target="_blank">' + value.title + '</a>';
+                    }
+                })
+                tmpText += '</div>';
+            }
             return tmpText;
         },
         this.QuickReply = function (lstQuickReply) {
