@@ -82,12 +82,12 @@ var setting = {
     BotID:''
 }
 
-var isStopTyping = false;
+var isTyping = false;
 
 var TYPE_USER_CONNECT = {
     CUSTOMER: 'customer',
     AGENT: 'agent',
-    BOT:'bot'
+    BOT: 'bot'
 }
 
 var intervalReconnectId,
@@ -97,15 +97,17 @@ var interval_focus_tab_id;
 
 var objHub = $.connection.chatHub;
 
-$(document).ready(function () {
-
+$(function () {
     //check agent online
     setting.isAgentOnline = checkAgentOnline();
+});
+
+$(document).ready(function () {
 
     // Dang ky su kien chatHub
     cBoxHub.register();
     cBoxHub.receivedSignalFromServer();
-    cBoxHub.validateFocusTabChat();
+    //cBoxHub.validateFocusTabChat();
 
     cBoxMessage.event();
 
@@ -189,11 +191,25 @@ var cBoxHub = {
     receivedSignalFromServer: function () {
         objHub.client.receiveMessages = function (channelGroupId, threadId, message, agentId, customerId, agentName, typeUser) {
             console.log('threadId:' + threadId + '  agentId-agentName' + agentId + ' : ' + message)
+
+            var $elementMessage = document.getElementsByClassName('message-item');
+            if ($elementMessage.length <= 1) {
+                parent.postMessage("open", "*");
+            }
+
             insertChat("agent", isValidURLandCodeIcon(message), agentName, "");
 
         };
-        objHub.client.receiveTyping = function (channelGroupId, agentId) {
-            console.log('agent-' + agentId + ' typing')
+        objHub.client.receiveTyping = function (channelGroupId, threadId, agentId, agentName, customerId, isTyping, typeUser) {
+            if (CustomerModel.ID == customerId) {
+                if (isTyping) {
+                    new message.getTypingUser('');
+                } else {
+                    //remove typing
+                    $(".message-item-typing").remove();
+                }
+                console.log('agentId-' + agentId + ' typing')
+            }
         };
         objHub.client.receiveThreadChat = function (threadId, customerId) {
             console.log('revice- thread' + threadId)
@@ -204,29 +220,43 @@ var cBoxHub = {
             CustomerModel.ThreadID = threadId;
             setting.isTransferToBot = true;
             setting.BotID = botId;
+            new messageBot.renderTemplate('', '').Typing();
+            new messageBot.getMessage('menu', CustomerModel.ThreadID, setting.BotID);
         };
-    },
-    validateFocusTabChat: function () {
-        // Kiểm tra customer có hoạt dộng trên tab trình duyệt chat
-        $(window).focus(function () {
-            if (!interval_focus_tab_id) {
-                interval_focus_tab_id = setInterval(function () {
-                    console.log("customer hoat dong");
-                    let isFocusTab = true;
-                    objHub.server.checkCustomerFocusTabChat(_channelGroupId, CustomerModel.ThreadID, CustomerModel.ID, isFocusTab);
-                    clearInterval(interval_focus_tab_id);
-                }, 1000);
+        objHub.client.receiveActionChat = function (hannelGroupId, threadId, contentAction, agentId, customerId) {
+            insertActionChat(contentAction);
+        };
+
+        objHub.client.receiveSignalAgentFocusTabChat = function (channelGroupId, threadId, customerId, isFocusTab) {
+            if (CustomerModel.ID == customerId) {
+                $('#message-content').find('.message-item-action').html("Read");
             }
-        });
-        // Nếu không xem màn hình
-        $(window).blur(function () {
-            clearInterval(interval_focus_tab_id);
-            interval_focus_tab_id = 0;
-            let isFocusTab = false;
-            objHub.server.checkCustomerFocusTabChat(_channelGroupId, CustomerModel.ThreadID, CustomerModel.ID, isFocusTab);
-            console.log("customer k hoat dong")
-        });
-    }
+        };
+
+    },
+    //validateFocusTabChat: function () {
+    //    // Kiểm tra customer có hoạt dộng trên tab trình duyệt chat
+    //    if (CustomerModel.ThreadID != '') {
+    //        $(window).focus(function () {
+    //            if (!interval_focus_tab_id) {
+    //                interval_focus_tab_id = setInterval(function () {
+    //                    console.log("customer hoat dong");
+    //                    let isFocusTab = true;
+    //                    objHub.server.checkCustomerFocusTabChat(_channelGroupId, CustomerModel.ThreadID, CustomerModel.ID, isFocusTab);
+    //                    clearInterval(interval_focus_tab_id);
+    //                }, 1000);
+    //            }
+    //        });
+    //        // Nếu không xem màn hình
+    //        $(window).blur(function () {
+    //            clearInterval(interval_focus_tab_id);
+    //            interval_focus_tab_id = 0;
+    //            let isFocusTab = false;
+    //            objHub.server.checkCustomerFocusTabChat(_channelGroupId, CustomerModel.ThreadID, CustomerModel.ID, isFocusTab);
+    //            console.log("customer k hoat dong")
+    //        });
+    //    }
+    //}
 }
 
 var checkAgentOnline = function () {
@@ -290,16 +320,37 @@ var cBoxMessage = {
             parent.postMessage("close", "*");
         })
 
+        $($($("#input-chat-message").next()).eq(0)).focus(function (e) {
+            if (!interval_focus_tab_id) {
+                interval_focus_tab_id = setInterval(function () {
+                    console.log("customer click focus");
+                    let isFocusTab = true;
+                    objHub.server.checkCustomerFocusTabChat(_channelGroupId, CustomerModel.ThreadID, CustomerModel.ID, isFocusTab);
+                    clearInterval(interval_focus_tab_id);
+                }, 1000);
+            }
+        })
+        $($($("#input-chat-message").next()).eq(0)).blur(function (e) {
+                 clearInterval(interval_focus_tab_id);
+                 interval_focus_tab_id = 0;
+                 let isFocusTab = false;
+                 objHub.server.checkCustomerFocusTabChat(_channelGroupId, CustomerModel.ThreadID, CustomerModel.ID, isFocusTab);
+                 console.log("customer ngoài focus")
+        })
+
+
         $($($("#input-chat-message").next()).eq(0)).keyup(function (e) {
             var edValue = $(this);
             var text = edValue.text();
             if (text.length > 0) {
-                if (isStopTyping == false) {
-                    objHub.server.sendTyping(_channelGroupId, CustomerModel.ThreadID, CustomerModel.ID);
-                    isStopTyping = true;
+                if (isTyping == false) {
+                    isTyping = true;
+                    objHub.server.sendTyping(_channelGroupId, CustomerModel.ThreadID, '', '', CustomerModel.ID, isTyping, TYPE_USER_CONNECT.CUSTOMER);
+
                 }
             } else {
-                isStopTyping = false;
+                isTyping = false;
+                objHub.server.sendTyping(_channelGroupId, CustomerModel.ThreadID, '', '', CustomerModel.ID, isTyping, TYPE_USER_CONNECT.CUSTOMER);
             }
         })
 
@@ -313,16 +364,17 @@ var cBoxMessage = {
 
                     insertChat("customer", isValidURLandCodeIcon(text), "", "");
                     // gửi tin nhắn
-                    objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, isValidURLandCodeIcon(text), "", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
+                    objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, text, "", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
 
                     $(this).val('');
                     $(this).text('');
 
                     if (setting.isTransferToBot == true) {
+                        new messageBot.renderTemplate('', '').Typing();
                         new messageBot.getMessage(text, CustomerModel.ThreadID, setting.BotID);
                     }
 
-                    isStopTyping = false;
+                    isTyping = false;
                     return;
                 }
             }
@@ -335,7 +387,7 @@ var cBoxMessage = {
             if (text !== "") {
                 insertChat("customer", isValidURLandCodeIcon(text),"","");
                 // gửi tin nhắn
-                objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, isValidURLandCodeIcon(text),"", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
+                objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, text,"", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
                 $(this).val('');
             }
             return;
@@ -349,7 +401,22 @@ var cBoxMessage = {
     // render template
 }
 
+function insertActionChat(contentAction) {
+    var htmlAction = '<div class="message-item message-item-divider">';
+    htmlAction += '<span>' + contentAction + '</span>';
+    htmlAction += '    </div>';
+    $("#message-content").append(htmlAction)
+    // scroll to bottom
+    setTimeout(function () {
+        scrollBar();
+    }, 200)
+}
+
+
 function insertChat(who, text, userName, avatar) {
+    //remove typing
+    $(".message-item-typing").remove();
+
     let user_class_chat = (who == "customer" ? "me" : "agent");
     let date_current = showTimeChat();
 
@@ -366,7 +433,7 @@ function insertChat(who, text, userName, avatar) {
     }
 
     content = '<div class="message-item ' + user_class_chat + '" data-user="' + who + '">';
-    content += message.getUserIcon(who, userName, avatar);
+    content += message.getAgentIcon(avatar);
     content += message.getHtmlMessageBody(who, userName, text, date_current);
     content += '</div>';
 
@@ -394,18 +461,13 @@ function appendMessage(elementLastMessageAppend, who, text) {
 }
 
 var message = {
-    getUserIcon: function (who, userName, avatar) {
-        if (who == "customer")
-            return "";
-
-        var firstNameCharacter = userName.substring(0, 1).toUpperCase();
+    getAgentIcon: function (avatar) {
         var templateAvatar = '';
         templateAvatar += '<div class="message-avatar">';
         templateAvatar += '<div class="message-avatar-customer">';
         templateAvatar += '<div class="pr-3">';
         templateAvatar += '<span class ="message-avatar-item avatar">';
         if (avatar == "") {
-            //templateAvatar += '<span class ="avatar-title bg-primary rounded-circle">' + firstNameCharacter + '</span>';
             templateAvatar += '<img src="' + _Host + 'assets/livechat/images/user_agent-default.png" class="rounded-circle" alt="image">';
         } else {
             templateAvatar += '<img src="~/assets/client/img/avatar-admin.jpg" class="rounded-circle" alt="image">';
@@ -431,6 +493,24 @@ var message = {
         }
         templateMsg += '</div>';
         return templateMsg;
+    },
+    getTypingUser: function (avatar) {
+        $(".message-quickreply").remove();
+        var tmpText = '<div class="message-item message-item-typing">';
+        tmpText += message.getAgentIcon(avatar)
+        tmpText += `<div class="message-item-content writing">
+                                <div class="_4xko _13y8">
+                                    <div class="_4a0v _1x3z">
+                                        <div class="_4b0g">
+                                            <div class="_5pd7"></div>
+                                            <div class="_5pd7"></div>
+                                            <div class="_5pd7"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                          </div>`;
+        tmpText += '</div>';
+        $('#message-content').append(tmpText);
     }
 }
 
@@ -453,55 +533,67 @@ var messageBot = {
             success: function (response) {
                 console.log(response)
                 if (response.status == 2) {
-                    var templateHtml = [];
+                    var lstTemplateHtml = [];
                     let date_current = showTimeChat();
-                    $(response.data, function (index, value) {
+                    $.each(response.data, function (index, value) {
                         if (value.message.text != undefined) {
                             let tempText = new messageBot.renderTemplate(date_current, '').Text(value.message.text);
-                            templateHtml.push(tempText);
+                            lstTemplateHtml.push(tempText);
                         }
                         if (value.message.attachment != undefined) {
                             if (value.message.attachment.type == "image") {
                                 let tempImage = new messageBot.renderTemplate(date_current, '').Image(value.message.attachment.payload.url);
-                                templateHtml.push(tempText);
+                                lstTemplateHtml.push(tempText);
                             }
                             if (value.message.attachment.type == "template") {
                                 if (value.message.attachment.payload.template_type == "button") {
                                     let text = value.message.attachment.payload.text;
+                                    var lstButton = value.message.attachment.payload.buttons;
                                     let tempTextAndButton = new messageBot.renderTemplate(date_current, '').TextAndButton(text, function () {
-                                        let lstButton = value.message.attachment.payload.buttons;
-                                        new messageBot.renderTemplate(date_current, '').Button(lstButton);
+                                        let htmlButton = new messageBot.renderTemplate(date_current, '').Button(lstButton);
+                                        return htmlButton;
                                     });
-                                    templateHtml.push(tempTextAndButton);
+                                    lstTemplateHtml.push(tempTextAndButton);
                                 }
                                 if (value.message.attachment.payload.template_type == "generic") {
                                     let templateGenerics = '';
-                                    let templateGenericIndex = '';
+                                    var templateGenericIndex = '';
                                     let lstGeneric = value.message.attachment.payload.elements;
                                     $.each(lstGeneric, function (index, value) {
                                         let genetic = {};
                                         genetic.title = value.title;
-                                        genetic.item_url = (value.item_url != "" ? _Host +value.item_url : "");
+                                        genetic.item_url = (value.item_url == "" ? "" : value.item_url.substr(value.item_url.indexOf('://') + 3));
                                         genetic.image_url = _Host + value.image_url;
                                         genetic.subtitle = value.subtitle;
+                                        var lstButton = value.buttons;
                                         templateGenericIndex += new messageBot.renderTemplate(date_current, '').GenericIndex(genetic, function () {
-                                            let lstButton = value.message.attachment.payload.buttons;
-                                            new messageBot.renderTemplate(date_current, '').Button(lstButton);
+                                            let htmlButton = new messageBot.renderTemplate(date_current, '').Button(lstButton);
+                                            return htmlButton;
                                         });
                                     })
 
                                     templateGenerics = new messageBot.renderTemplate(date_current, '').ContainerGeneric(templateGenericIndex, lstGeneric.length);
 
-                                    templateHtml.push(templateGenerics);
+                                    lstTemplateHtml.push(templateGenerics);
                                 }
                             }
                         }
                         if (value.message.quick_replies != undefined) {
                             let tempQuickReply = new messageBot.renderTemplate(date_current, '').QuickReply(value.message.quick_replies)
-                            templateHtml.push(tempQuickReply);
+                            lstTemplateHtml.push(tempQuickReply);
                         }
                     });
-                    console.log(templateHtml);
+                    if (lstTemplateHtml.length != 0) {
+                        $.each(lstTemplateHtml, function (index, value) {
+                            let timeAppend = 500 * (index + 1);
+                            let typing = true;
+                            if (lstTemplateHtml.length == (index + 1)) {
+                                typing = false;
+                            }
+                            new messageBot.appendMessage('#message-content', timeAppend, value, typing)
+                            // gửi tin vai trò hiển thị của BOT trong chatroom
+                        })
+                    }
                 }
             }
         })
@@ -509,18 +601,21 @@ var messageBot = {
     appendMessage: function (element, timeout, text, isSendTyping) {
         if (!isSendTyping) {
             isSendTyping = false;
+            //$(".message-item-typing").remove();
         }
         $(element).delay(timeout).queue(function (next) {
             $(".message-item-typing").remove();
             $(this).append(text);
-            //console.log(isSendTyping)
-            if (isSendTyping) msgEvent.typing();
+
+            if (isSendTyping) {
+                new messageBot.renderTemplate('', '').Typing();
+            } 
+            objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, text, "", CustomerModel.ID, "", TYPE_USER_CONNECT.BOT);
             scrollBar();
             next();
         });
     },
     getIcon: function (avatarBot) {
-        var firstNameCharacter = userName.substring(0, 1).toUpperCase();
         var templateAvatar = '';
         templateAvatar += '<div class="message-avatar">';
         templateAvatar += '<div class="message-avatar-customer">';
@@ -534,9 +629,23 @@ var messageBot = {
         return templateAvatar;
     },
     renderTemplate: function (date_current, avatarBot) {
+        function getAvatar() {
+            var templateAvatar = '';
+            templateAvatar += '<div class="message-avatar">';
+            templateAvatar += '<div class="message-avatar-customer">';
+            templateAvatar += '<div class="pr-3">';
+            templateAvatar += '<span class ="message-avatar-item avatar">';
+            templateAvatar += '<img src="' + _Host + 'assets/images/logo/icon-bot-lc.png" class="rounded-circle" alt="image">';
+            templateAvatar += '</span>';
+            templateAvatar += '</div>';
+            templateAvatar += '</div>';
+            templateAvatar += '</div>';
+            return templateAvatar;
+        }
         this.Typing = function () {
+            $(".message-quickreply").remove();
             var tmpText = '<div class="message-item message-item-typing">';
-            tmpText += new messageBot.getIcon(avatarBot);
+            tmpText += messageBot.getIcon('')
             tmpText += `<div class="message-item-content writing">
                                 <div class="_4xko _13y8">
                                     <div class="_4a0v _1x3z">
@@ -549,11 +658,11 @@ var messageBot = {
                                 </div>
                           </div>`;
             tmpText += '</div>';
-            $('#message-content').append(html);
+            $('#message-content').append(tmpText);
         },
         this.Text = function (text) {
-            var tmpText = '<div class="message-item message-item-text">';
-            tmpText += new messageBot.getIcon(avatarBot);
+            var tmpText = '<div class="message-item {bot} message-item-text">';
+            tmpText += messageBot.getIcon('');
             tmpText +=              '<div class="message-body">';
             tmpText +='                    <div>';
             tmpText +='                        <div class="message-align">';
@@ -567,8 +676,8 @@ var messageBot = {
             return tmpText;
         },
         this.Image = function (urlImage) {
-            var tmpText = '<div class="message-item message-item-image">';
-            tmpText += new messageBot.getIcon(avatarBot);
+            var tmpText = '<div class="message-item {bot} message-item-image">';
+            tmpText += messageBot.getIcon(avatarBot);
             tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
             tmpText += '                        <div class="message-align">';
@@ -582,8 +691,8 @@ var messageBot = {
             return tmpText;
         },
         this.TextAndButton = function (text, calbackButton) {
-            var tmpText = '<div class="message-item message-item-text-button">';
-            tmpText += new messageBot.getIcon(avatarBot);
+            var tmpText = '<div class="message-item {bot} message-item-text-button">';
+            tmpText += messageBot.getIcon(avatarBot);
             tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
             tmpText += '                        <div class="message-align">';
@@ -600,8 +709,8 @@ var messageBot = {
             return tmpText;
         },
         this.ContainerGeneric = function (templateGenericIndex, genericTotal) {
-            var tmpText = '<div class="message-item message-item-genetics">';
-            tmpText += new messageBot.getIcon(avatarBot);
+            var tmpText = '<div class="message-item {bot} message-type-list message-item-genetics">';
+            tmpText += messageBot.getIcon(avatarBot);
             tmpText += '     <div class="message-body">';
             tmpText += '                    <div>';
             tmpText += '                        <div class="message-align">';
@@ -618,32 +727,32 @@ var messageBot = {
             tmpText += '                </div>';
             tmpText += '     </div>';
             if (genericTotal > 1) {
-                tmpText += '<a class="btn_back_generic _32rk _32rg _1cy6" href="#" style="display: none;">';
-                tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
-                tmpText += '                        <div class="_5x6d">';
-                tmpText += '                            <div class="_3bwv _3bww">';
-                tmpText += '                                <div class="_3bwy">';
-                tmpText += '                                    <div class="_3bwx">';
-                tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>';
-                tmpText += '                                    </div>';
-                tmpText += '                                </div>';
-                tmpText += '                            </div>';
-                tmpText += '                        </div>';
-                tmpText += '                    </div>';
-                tmpText += '                 </a>';
-                tmpText += '                <a class="btn_next_generic _32rk _32rh _1cy6" href="#" style="display: block;">';
-                tmpText += '                    <div direction="forward" class="_10sf _5x5_">';
-                tmpText += '                        <div class="_5x6d">';
-                tmpText += '                            <div class="_3bwv _3bww">';
-                tmpText += '                                <div class="_3bwy">';
-                tmpText += '                                    <div class="_3bwx">';
-                tmpText += '                                        <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>';
-                tmpText += '                                    </div>';
-                tmpText += '                                </div>';
-                tmpText += '                            </div>';
-                tmpText += '                        </div>';
-                tmpText += '                    </div>';
-                tmpText += '                </a>';
+                tmpText += ` <a class="btn_back_quickreply _32rk _32rg _1cy6" href="#" style="display: none;">
+                                <div direction="forward" class="_10sf _5x5_">
+                                    <div class="_5x6d">
+                                        <div class="_3bwv _3bww">
+                                            <div class="_3bwy">
+                                                <div class="_3bwx">
+                                                    <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            <a class="btn_next_quickreply _32rk _32rh _1cy6" href="#" style="display: block;">
+                                <div direction="forward" class="_10sf _5x5_">
+                                    <div class="_5x6d">
+                                        <div class="_3bwv _3bww">
+                                            <div class="_3bwy">
+                                                <div class="_3bwx">
+                                                    <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>`;
             }
             tmpText += '</div>';
             return tmpText;
@@ -656,19 +765,20 @@ var messageBot = {
             tmpText += '                                    <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">';
             tmpText += '                                        ' + generic.title + ''
             tmpText += '                                    </div>';
-            tmpText += '                                    <div class="message-generic-subtitle _6j0u">';
+            tmpText += '                                    <div class="message-generic-subtitle _6j0u _4ik4">';
             tmpText += '                                        <div>';
-            tmpText += '                                            ' + generic.subTitle + ''
+            tmpText += '                                            ' + generic.subtitle + ''
             tmpText += '                                        </div>';
             tmpText += '                                    </div>';
-            tmpText += '                                    <div class="message-generic-sublink _6j0y">';
-            tmpText += '                                        <a target="_blank" href="' + generic.item_url + '">';
+            tmpText += '                                    <div class="message-generic-sublink _6j0y _4ik4">';
+            tmpText += '                                        <a href="' + generic.item_url + '" target="_blank">';
             tmpText += '                                            ' + generic.item_url + ''
             tmpText += '                                        </a>';
             tmpText += '                                    </div>';
             tmpText += '                                </div>';
             tmpText += calbackButton();
             tmpText += '  </div>';
+            return tmpText;
         },
         this.Button = function (lstButton) {
             var tmpText = '';

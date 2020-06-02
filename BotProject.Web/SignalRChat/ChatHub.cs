@@ -87,7 +87,7 @@ namespace BotProject.Web.SignalRChat
                 _context.Groups.Add(connectionId, threadDb.ID.ToString());
 
                 // Gửi lại thread ra customer
-                Clients.Caller.receiveThreadChat(threadParticipantExits.ThreadID.ToString(), customerDb.ID);
+                Clients.Caller.receiveThreadChat(threadDb.ID, customerDb.ID);
 
                 // Gửi thread thông báo customer mới tới agent
                 Clients.Others.receiveNewCustomerToAgent(channelGroupId, threadDb.ID, customerDb);
@@ -101,16 +101,22 @@ namespace BotProject.Web.SignalRChat
         }
 
 
-        public void SendTyping(long channelGroupId, string threadId, string userId)
+        public void SendTyping(long channelGroupId, string threadId, string agentId,string agentName,string customerId, bool isTyping,string typeUser)
         {
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
-            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveTyping(channelGroupId.ToString(), userId);
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveTyping(channelGroupId.ToString(), threadId, agentId, agentName, customerId, isTyping, typeUser);
         }
 
         public void SendMessage(string channelGroupId, string threadId, string message, string agentId,string customerId, string userName, string typeUser)
         {
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
             _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveMessages(channelGroupId, threadId, message, agentId, customerId, userName, typeUser);
+        }
+
+        public void SendActionChat(string channelGroupId, string threadId, string contentAction, string agentId, string customerId)
+        {
+            string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveActionChat(channelGroupId, threadId, contentAction, agentId, customerId);        
         }
 
         public void CheckCustomerFocusTabChat(string channelGroupId, string threadId, string customerId, bool isFocusTab)
@@ -129,21 +135,6 @@ namespace BotProject.Web.SignalRChat
         {
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
             _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSingalChatWithBot(channelGroupId, threadId, customerId, botId);
-        }
-
-        /// <summary>
-        /// Gửi tin nhắn tới user tham gia thread (agent và customer)
-        /// </summary>
-        /// <param name="channelGroupId"></param>
-        /// <param name="threadId"></param>
-        /// <param name="message"></param>
-        /// <param name="userId"></param>
-        /// <param name="isBot"></param>
-        /// <param name="typeUserRecievedMessage">customer or agent</param>
-        public void SendMessageToAgent(string channelGroupId, string threadId, string message, string customerId)
-        {
-            string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
-            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveMessagesToAgent(channelGroupId, threadId, customerId, message);
         }
 
         public void ConnectAgentToListCustomer(string agentId, long channelGroupId)

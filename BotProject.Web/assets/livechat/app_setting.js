@@ -160,18 +160,8 @@ eventer(messageEvent, function (e) {
     if (e.data == 'close') {
         // có tín hiệu đóng
         $('.fb_dialog').click();
-    } else {
-        //console.log(e.data)
-        //if (e.data != undefined) {
-        //    var modal = document.querySelector(".bot-modal");
-        //    $("#bot-iframe").empty().append('<iframe style="width:49rem" width="100" height="378"frameborder="0"allowtransparency="true"allowfullscreen="true" src="' + e.data + '"></iframe>');
-        //    modal.classList.toggle("bot-show-modal");
-        //}
     }
-    //if (e.origin === domainApp.replace("/tiengviet", "")) {
-    //    if (e.data != 'close') {
-    //        //call function page QnA
-    //        window.GetQuesDetailPopup(event.data)
-    //    }
-    //};
+    if (e.data == 'open') {
+        $('.fb_dialog').click();
+    }
 }, false);

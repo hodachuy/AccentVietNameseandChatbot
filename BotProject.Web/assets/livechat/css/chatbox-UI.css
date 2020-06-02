@@ -432,7 +432,7 @@
                 }
 
                 .chat-block .chat-content .messages .message-item img {
-                    max-width: 30%;
+                    max-width: 100%;
                     border-radius: 0.5rem;
                 }
 
@@ -468,6 +468,7 @@
                     margin-bottom: 4px;
                     overflow-wrap: break-word;
                     border:.75px solid rgba(0, 0, 0, .10);
+                    width:260px;
                 }
 
                 .chat-block .chat-content .messages .message-item.me {
@@ -759,6 +760,30 @@ small {
             text-decoration: none;
         }
 
+.message-item-button a.message-btn-postback {
+        margin-bottom: 8px;
+        font-weight: 400;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: auto;
+        color: #007bff;
+        background-color: white;
+        padding: 8px;
+        overflow: hidden;
+        border-radius: 6px !important;
+        border-width: initial !important;
+        border-style: none !important;
+        border-color: initial !important;
+        border-image: initial !important;
+        cursor:pointer;
+    }
+
+        .message-item-button a.message-btn-postback:hover {
+            /*color: rgb(13, 0, 102);*/
+            background-color: rgb(221, 216, 255);
+            text-decoration: none;
+        }
+
 .lc-6qcmqf {
     font-size: 1em;
     font-family: inherit;
@@ -819,6 +844,7 @@ small {
     width: 100%;
     flex-direction: row;
     position: relative;
+    padding-bottom:25px;
 }
 
     .message-quickreply .message-quickreply-container {

@@ -329,6 +329,7 @@
     <Compile Include="Controllers\LcHistoryController.cs" />
     <Compile Include="Controllers\LcChatBoxController.cs" />
     <Compile Include="Controllers\LcSettingController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Infrastructure\Core\AccentService.cs" />
     <Compile Include="API\BotController.cs" />
     <Compile Include="API\FormQnAController.cs" />
@@ -475,10 +476,12 @@
     <Content Include="assets\client\libs\emoji-picker\img\emoji_spritesheet_2.png" />
     <Content Include="assets\client\libs\emoji-picker\img\emoji_spritesheet_3.png" />
     <Content Include="assets\client\libs\emoji-picker\img\emoji_spritesheet_4.png" />
+    <Content Include="assets\client\libs\emoji-picker\img\h_s.jpg" />
     <Content Include="assets\client\libs\emoji-picker\img\IconsetSmiles.png" />
     <Content Include="assets\client\libs\emoji-picker\img\IconsetSmiles_1x.png" />
     <Content Include="assets\client\libs\emoji-picker\img\IconsetW.png" />
     <Content Include="assets\client\libs\emoji-picker\img\IconsetW_1x.png" />
+    <Content Include="assets\client\libs\emoji-picker\img\me.jpg" />
     <Content Include="assets\client\libs\emoji-picker\js\config.js" />
     <Content Include="assets\client\libs\emoji-picker\js\emoji-picker.js" />
     <Content Include="assets\client\libs\emoji-picker\js\jquery.emojiarea.js" />
@@ -1101,6 +1104,7 @@
     <Content Include="Views\LcSetting\Index.cshtml" />
     <Content Include="Views\LcCustomer\Index.cshtml" />
     <Content Include="Views\LcChatBox\Index.cshtml" />
+    <Content Include="Views\Test\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

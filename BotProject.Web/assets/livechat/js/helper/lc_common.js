@@ -395,8 +395,11 @@ function isValidURLandCodeIcon(string) {
     if (res != null) {
         string = string.replace(res, "<a href='" + res + "' target='_blank' style='text-decoration:underline'>" + res + "</a>");
     }
-    else if (string.includes(":)H")) {
+    else if (string.toLowerCase().includes(":)h")) {
         string = string.replace(':)H', '<img style="display:inline-block;width:25px;height:25px;border-radius:30px" src="' + _Host + 'assets/client/libs/emoji-picker/img/me.jpg" alt="" />');
+    }
+    else if (string.toLowerCase().includes("h_s")) {
+        string = string.replace('h_s', '<img style="display:inline-block;width:25px;height:25px;border-radius:30px" src="' + _Host + 'assets/client/libs/emoji-picker/img/h_s.jpg" alt="" />');
     }
     else if (string.includes(":)")) {
         string = string.replace(':)', returnIcon(iconFace.smiley, -25, 0));

@@ -699,7 +699,7 @@ namespace BotProject.Web.API_Livechat
 						var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
 						if (systemConfigVm.Count() == 0)
 						{
-							string msgTemp = FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", senderId).ToString();
+							string msgTemp = FacebookTemplate.GetMessageTemplateText("Xin lỗi, tôi chưa được học để hiểu nội dung này", senderId).ToString();
 
 							_lstBotReplyResponse.Add(HandleMessageJson(msgTemp, senderId));
 							return await Task.FromResult<List<string>>(_lstBotReplyResponse);

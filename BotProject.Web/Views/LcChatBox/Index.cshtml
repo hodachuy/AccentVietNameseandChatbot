@@ -281,36 +281,41 @@
         }
     </style>
     <style>
-            .chat-block .chat-content .messages .message-item .message-body{
-                display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        overflow: hidden;
-        width: 100%;
+        .chat-block .chat-content .messages .message-item .message-body {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            overflow: hidden;
+            width: 100%;
         }
-        .chat-block .chat-content .messages .message-item.me .message-body{
+
+        .chat-block .chat-content .messages .message-item.me .message-body {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
             overflow: hidden;
             width: 100%;
         }
-       .chat-block .chat-content .messages .message-item.me .message-body .message-align{
-            text-align: left;
-        }
-        .chat-block .chat-content .messages .message-item .message-body .message-align{
+
+            .chat-block .chat-content .messages .message-item.me .message-body .message-align {
+                text-align: left;
+            }
+
+        .chat-block .chat-content .messages .message-item .message-body .message-align {
             text-align: right;
         }
 
         .txt-align-left {
-        text-align: left;
-    }
-            .txt-align-right {
+            text-align: left;
+        }
+
+        .txt-align-right {
             text-align: right;
         }
+
         .font-size-08 {
-        font-size: 0.8em;
-    }
+            font-size: 0.8em;
+        }
     </style>
     <style>
         .bg-primary {
@@ -355,363 +360,359 @@
             <div class="chat-block">
                 <div class="chat-content">
                     <div class="messages" id="message-content">
-                        <div class="message-item message-type-text">
-                            <div class="message-avatar">
-                                <div class="message-avatar-customer">
-                                    <div class="pr-3">
-                                        <span class="message-avatar-item avatar">
-                                            <span class="avatar-title bg-warning rounded-circle">H</span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="message-body">
-                                <div>
-                                    <div class="message-align">
-                                        <span class="font-size-08">Support Bot </span>
-                                        <span class="font-size-08">15:11</span>
-                                    </div>
-                                </div>
-                                <div class="message-item-content">Hi!</div>
-                                <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
-                            </div>
-                        </div>
-                        <div class="message-item me">
-                            <div class="message-body">
-                                <div>
-                                    <div class="message-align">
-                                        <span class="font-size-08">Khách </span>
-                                        <span class="font-size-08">15:11</span>
-                                    </div>
-                                </div>
-                                <div class="message-item-content">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                    Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora ullam!
-                                </div>
-                                <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
-                            </div>
-                        </div>
-                        <div class="message-item">
-                            <div class="message-avatar-customer">
-                                <div class="pr-3">
-                                    <span class="message-avatar-item avatar">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="message-item-content">Hello! How are you today?</div>
-                            <span class="time small text-muted font-italic">02:30 PM</span>
-                        </div>
-                        <div class="message-item me">
-                            <div class="message-item-content">Lorem ipsum dolor sit.</div>
-                            <span class="time small text-muted font-italic">02:30 PM</span>
-                        </div>
-                        <div class="message-item">
-                            <div class="message-avatar-customer">
-                                <div class="pr-3">
-                                    <span class="message-avatar-item avatar">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="message-item-content d-flex">
-                                <i class="ti-file mr-2 font-size-20 mt-2"></i>
-                                <div>
-                                    <div>important_documents.pdf <i class="text-muted small">(50KB)</i></div>
-                                    <ul class="list-inline small">
-                                        <li class="list-inline-item"><a href="#">Download</a></li>
-                                        <li class="list-inline-item"><a href="#">View</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <span class="small text-muted font-italic">02:30 PM</span>
-                        </div>
-                        <div class="message-item me">
-                            <div class="message-item-content">Lorem ipsum dolor sit.</div>
-                            <span class="time small text-muted font-italic">02:30 PM</span>
-                        </div>
-                        <div class="message-item">
-                            <div class="message-avatar-customer">
-                                <div class="pr-3">
-                                    <span class="message-avatar-item avatar">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="message-item-content">Lorem ipsum dolor sit.</div>
-                            <span class="time small text-muted font-italic">02:30 PM</span>
-                        </div>
-                        <!--TEMPLATE MESSAGE IMAGE-->
-                        <div class="message-item message-media">
-                            <div class="message-avatar-customer">
-                                <div class="pr-3">
-                                    <span class="message-avatar-item avatar">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="message-body">
-                                <div>
-                                    <div class="message-align">
-                                        <span class="font-size-08">Support Bot </span>
-                                        <span class="font-size-08">15:11</span>
-                                    </div>
-                                </div>
-                                <img src="~/assets/images/ảnh-dịch-vụ-công.jpg" />
-                            </div>
-                        </div>
-                        <!--TEMPLATE MESSAGE ACTION JOIN-->
-                        <div class="message-item message-item-divider">
-                            <span>Today</span>
-                        </div>
-                        <div class="message-item">
-                            <div class="message-avatar-customer">
-                                <div class="pr-3">
-                                    <span class="message-avatar-item avatar">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="message-item-content">Testttttttttttttttttttttttt.TesttttttttttttttttttttttttTesttttttttttttttttttttttttTestttttttttttttttttttttttt</div>
-                            <span class="time small text-muted font-italic">02:30 PM</span>
-                        </div>
-                        <!--TEMPLATE MESSAGE TEXT WITH BUTTON-->
-                        <div class="message-item message-text-button">
-                            <div class="message-avatar-customer">
-                                <div class="pr-3">
-                                    <span class="message-avatar-item avatar">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <div class="message-body">
-                                <div>
-                                    <div class="message-align">
-                                        <span class="font-size-08">Support Bot </span>
-                                        <span class="font-size-08">15:11</span>
-                                    </div>
-                                </div>
-                                <div class="message-item-content">
-                                    <span>Testttttttttttttttttttttttt.</span>
-                                    <div class="message-item-button">
-                                        <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                        <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                        <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                    </div>
-                                </div>
+                        @*<div class="message-item message-type-text">
+        <div class="message-avatar">
+            <div class="message-avatar-customer">
+                <div class="pr-3">
+                    <span class="message-avatar-item avatar">
+                        <span class="avatar-title bg-warning rounded-circle">H</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="message-body">
+            <div>
+                <div class="message-align">
+                    <span class="font-size-08">Support Bot </span>
+                    <span class="font-size-08">15:11</span>
+                </div>
+            </div>
+            <div class="message-item-content">Hi!</div>
+            <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
+        </div>
+    </div>
+    <div class="message-item me">
+        <div class="message-body">
+            <div>
+                <div class="message-align">
+                    <span class="font-size-08">Khách </span>
+                    <span class="font-size-08">15:11</span>
+                </div>
+            </div>
+            <div class="message-item-content">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora ullam!
+            </div>
+            <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
+        </div>
+    </div>
+    <div class="message-item">
+        <div class="message-avatar-customer">
+            <div class="pr-3">
+                <span class="message-avatar-item avatar">
+                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                </span>
+            </div>
+        </div>
+        <div class="message-item-content">Hello! How are you today?</div>
+        <span class="time small text-muted font-italic">02:30 PM</span>
+    </div>
+    <div class="message-item me">
+        <div class="message-item-content">Lorem ipsum dolor sit.</div>
+        <span class="time small text-muted font-italic">02:30 PM</span>
+    </div>
+    <div class="message-item">
+        <div class="message-avatar-customer">
+            <div class="pr-3">
+                <span class="message-avatar-item avatar">
+                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                </span>
+            </div>
+        </div>
+        <div class="message-item-content d-flex">
+            <i class="ti-file mr-2 font-size-20 mt-2"></i>
+            <div>
+                <div>important_documents.pdf <i class="text-muted small">(50KB)</i></div>
+                <ul class="list-inline small">
+                    <li class="list-inline-item"><a href="#">Download</a></li>
+                    <li class="list-inline-item"><a href="#">View</a></li>
+                </ul>
+            </div>
+        </div>
+        <span class="small text-muted font-italic">02:30 PM</span>
+    </div>
+    <div class="message-item me">
+        <div class="message-item-content">Lorem ipsum dolor sit.</div>
+        <span class="time small text-muted font-italic">02:30 PM</span>
+    </div>
+    <div class="message-item">
+        <div class="message-avatar-customer">
+            <div class="pr-3">
+                <span class="message-avatar-item avatar">
+                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                </span>
+            </div>
+        </div>
+        <div class="message-item-content">Lorem ipsum dolor sit.</div>
+        <span class="time small text-muted font-italic">02:30 PM</span>
+    </div>
+    <!--TEMPLATE MESSAGE IMAGE-->
+    <div class="message-item message-media">
+        <div class="message-avatar-customer">
+            <div class="pr-3">
+                <span class="message-avatar-item avatar">
+                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                </span>
+            </div>
+        </div>
+        <div class="message-body">
+            <div>
+                <div class="message-align">
+                    <span class="font-size-08">Support Bot </span>
+                    <span class="font-size-08">15:11</span>
+                </div>
+            </div>
+            <img src="~/assets/images/ảnh-dịch-vụ-công.jpg" />
+        </div>
+    </div>
+    <!--TEMPLATE MESSAGE ACTION JOIN-->
+    <div class="message-item message-item-divider">
+        <span>Today</span>
+    </div>
+    <div class="message-item">
+        <div class="message-avatar-customer">
+            <div class="pr-3">
+                <span class="message-avatar-item avatar">
+                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                </span>
+            </div>
+        </div>
+        <div class="message-item-content">Testttttttttttttttttttttttt.TesttttttttttttttttttttttttTesttttttttttttttttttttttttTestttttttttttttttttttttttt</div>
+        <span class="time small text-muted font-italic">02:30 PM</span>
+    </div>
+    <!--TEMPLATE MESSAGE TEXT WITH BUTTON-->
+    <div class="message-item message-text-button">
+        <div class="message-avatar-customer">
+            <div class="pr-3">
+                <span class="message-avatar-item avatar">
+                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                </span>
+            </div>
+        </div>
+        <div class="message-body">
+            <div>
+                <div class="message-align">
+                    <span class="font-size-08">Support Bot </span>
+                    <span class="font-size-08">15:11</span>
+                </div>
+            </div>
+            <div class="message-item-content">
+                <span>Testttttttttttttttttttttttt.</span>
+                <div class="message-item-button">
+                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                </div>
+            </div>
 
-                            </div>
+        </div>
 
+    </div>
+    <!--TEMPLATE MESSAGE TEMPLATE MULTI GENERIC-->
+    <div class="message-item message-type-list">
+        <div class="message-avatar-customer">
+            <div class="pr-3">
+                <span class="message-avatar-item avatar">
+                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                </span>
+            </div>
+        </div>
+        <div class="message-body">
+            <div>
+                <div class="message-align">
+                    <span class="font-size-08">Support Bot </span>
+                    <span class="font-size-08">15:11</span>
+                </div>
+            </div>
+            <div class="message-container" index="0" style="overflow:hidden">
+                <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
+                    <div class="message-item-template-generic">
+                        <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
                         </div>
-                        <!--TEMPLATE MESSAGE TEMPLATE MULTI GENERIC-->
-                        <div class="message-item message-type-list">
-                            <div class="message-avatar-customer">
-                                <div class="pr-3">
-                                    <span class="message-avatar-item avatar">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
-                                </div>
+                        <div class="message-template-generic-container _6j2g">
+                            <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
                             </div>
-                            <div class="message-body">
+                            <div class="message-generic-subtitle _6j0u">
                                 <div>
-                                    <div class="message-align">
-                                        <span class="font-size-08">Support Bot </span>
-                                        <span class="font-size-08">15:11</span>
-                                    </div>
-                                </div>
-                                <div class="message-container" index="0" style="overflow:hidden">
-                                    <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
-                                        <div class="message-item-template-generic">
-                                            <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
-                                            </div>
-                                            <div class="message-template-generic-container _6j2g">
-                                                <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
-                                                    💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
-                                                </div>
-                                                <div class="message-generic-subtitle _6j0u">
-                                                    <div>
-                                                        📧 Emai: support@PhapLuat.com
-                                                    </div>
-                                                </div>
-                                                <div class="message-generic-sublink _6j0y">
-                                                    <a target="_blank" href="#">
-                                                        www.facebook.com
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="message-item-button">
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                            </div>
-                                        </div>
-                                        <div class="message-item-template-generic">
-                                            <div class="_6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
-                                            </div>
-                                            <div class="_6j2g">
-                                                <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
-                                                    💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
-                                                </div>
-                                                <div class="_6j0u">
-                                                    <div>
-                                                        📧 Emai: support@PhapLuat.com
-                                                    </div>
-                                                </div>
-                                                <div class="_6j0y">
-                                                    <a target="_blank" href="#">
-                                                        www.facebook.com
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="message-item-button">
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    📧 Emai: support@PhapLuat.com
                                 </div>
                             </div>
-
-
-                            <!-- click lùi-->
-                            <a class="btn_back_quickreply _32rk _32rg _1cy6" href="#" style="display: block;">
-                                <div direction="forward" class="_10sf _5x5_">
-                                    <div class="_5x6d">
-                                        <div class="_3bwv _3bww">
-                                            <div class="_3bwy">
-                                                <div class="_3bwx">
-                                                    <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
-                            <a class="btn_next_quickreply _32rk _32rh _1cy6" href="#" style="display: block;">
-                                <div direction="forward" class="_10sf _5x5_">
-                                    <div class="_5x6d">
-                                        <div class="_3bwv _3bww">
-                                            <div class="_3bwy">
-                                                <div class="_3bwx">
-                                                    <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <!--TEMPLATE MESSAGE TEMPLATE SINGLE GENERIC-->
-                        <div class="message-item message-type-list">
-                            <div class="message-avatar-customer">
-                                <div class="pr-3">
-                                    <span class="message-avatar-item avatar">
-                                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                                    </span>
-                                </div>
+                            <div class="message-generic-sublink _6j0y">
+                                <a target="_blank" href="#">
+                                    www.facebook.com
+                                </a>
                             </div>
-                            <div class="message-body">
-                                <div>
-                                    <div class="message-align">
-                                        <span class="font-size-08">Support Bot </span>
-                                        <span class="font-size-08">15:11</span>
-                                    </div>
-                                </div>
-                                <div class="message-container" index="0" style="overflow:hidden">
-                                    <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
-                                        <div class="message-item-template-generic">
-                                            <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
-                                            </div>
-                                            <div class="message-template-generic-container _6j2g">
-                                                <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
-                                                    💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
-                                                </div>
-                                                <div class="message-generic-subtitle _6j0u">
-                                                    <div>
-                                                        📧 Emai: support@PhapLuat.com
-                                                    </div>
-                                                </div>
-                                                <div class="message-generic-sublink _6j0y">
-                                                    <a target="_blank" href="#">
-                                                        www.facebook.com
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="message-item-button">
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                                <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <!--CHANGE IF HAVE POSTBACK-->
-                        <div class="message-quickreply">
-                            <div class="message-quickreply-container">
-                                <div class="message-quickreply-item" style="position:relative;" index="2">
-                                    <button value="0" class="btn-quickreply">Hủy</button>
-                                    <button value="1" class="btn-quickreply">Có</button>
-                                    <button value="2" class="btn-quickreply">Xem chi tiết</button>
-                                </div>
-                            </div>
-                            <!-- click lùi-->
-                            <a class="_32rk _32rg _1cy6  btn_back_quickreply" href="#" style="display: block;">
-                                <div direction="forward" class="_10sf _5x5_">
-                                    <div class="_5x6d">
-                                        <div class="_3bwv _3bww">
-                                            <div class="_3bwy">
-                                                <div class="_3bwx">
-                                                    <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                            <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
-                            <a class="_32rk _32rh _1cy6  btn_next_quickreply" href="#" style="display: block;">
-                                <div direction="forward" class="_10sf _5x5_">
-                                    <div class="_5x6d">
-                                        <div class="_3bwv _3bww">
-                                            <div class="_3bwy">
-                                                <div class="_3bwx">
-                                                    <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
                         </div>
 
-                        <!--Typing-->
-                        <div class="message-item message-item-typing">
-                            <div class="message-avatar">
-                                <div class="message-avatar-customer">
-                                    <div class="pr-3">
-                                        <span class="message-avatar-item avatar">
-                                            <span class="avatar-title bg-warning rounded-circle">H</span>
-                                        </span>
-                                    </div>
+                        <div class="message-item-button">
+                            <a href="http://www.kiamotorsvietnam.com.vn/San-pham-7/All-New-CERATO-135" class="message-btn-link lc-6qcmqf" target="_blank">👉 XEM CHI TIẾT</a><a href="http://www.kiamotorsvietnam.com.vn/dang-ky-lai-thu-3" class="message-btn-link lc-6qcmqf" target="_blank">📅 ĐĂNG KÝ LÁI THỬ</a>
+                        </div>
+                    </div>
+                    <div class="message-item-template-generic">
+                        <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
+                        </div>
+                        <div class="_6j2g">
+                            <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                            </div>
+                            <div class="_6j0u">
+                                <div>
+                                    📧 Emai: support@PhapLuat.com
                                 </div>
                             </div>
-                            <div class="message-item-content writing">
-                                <div class="_4xko _13y8">
-                                    <div class="_4a0v _1x3z">
-                                        <div class="_4b0g">
-                                            <div class="_5pd7"></div>
-                                            <div class="_5pd7"></div>
-                                            <div class="_5pd7"></div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="_6j0y">
+                                <a target="_blank" href="#">
+                                    www.facebook.com
+                                </a>
                             </div>
                         </div>
+                        <div class="message-item-button">
+                            <a href="http://www.kiamotorsvietnam.com.vn/San-pham-7/All-New-CERATO-135" class="message-btn-link lc-6qcmqf" target="_blank">👉 XEM CHI TIẾT</a><a href="http://www.kiamotorsvietnam.com.vn/dang-ky-lai-thu-3" class="message-btn-link lc-6qcmqf" target="_blank">📅 ĐĂNG KÝ LÁI THỬ</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- click lùi-->
+        <a class="btn_back_quickreply _32rk _32rg _1cy6" href="#" style="display: none;">
+            <div direction="forward" class="_10sf _5x5_">
+                <div class="_5x6d">
+                    <div class="_3bwv _3bww">
+                        <div class="_3bwy">
+                            <div class="_3bwx">
+                                <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
+        <a class="btn_next_quickreply _32rk _32rh _1cy6" href="#" style="display: block;">
+            <div direction="forward" class="_10sf _5x5_">
+                <div class="_5x6d">
+                    <div class="_3bwv _3bww">
+                        <div class="_3bwy">
+                            <div class="_3bwx">
+                                <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    <!--TEMPLATE MESSAGE TEMPLATE SINGLE GENERIC-->
+    <div class="message-item message-type-list">
+        <div class="message-avatar-customer">
+            <div class="pr-3">
+                <span class="message-avatar-item avatar">
+                    <span class="avatar-title bg-warning rounded-circle">H</span>
+                </span>
+            </div>
+        </div>
+        <div class="message-body">
+            <div>
+                <div class="message-align">
+                    <span class="font-size-08">Support Bot </span>
+                    <span class="font-size-08">15:11</span>
+                </div>
+            </div>
+            <div class="message-container" index="0" style="overflow:hidden">
+                <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
+                    <div class="message-item-template-generic">
+                        <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
+                        </div>
+                        <div class="message-template-generic-container _6j2g">
+                            <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                            </div>
+                            <div class="message-generic-subtitle _6j0u _4ik4">
+                                <div>
+                                    📧 Emai: support@PhapLuat.com
+                                </div>
+                            </div>
+                            <div class="message-generic-sublink _6j0y _4ik4">
+                                <a target="_blank" href="#">
+                                    www.facebook.com
+                                </a>
+                            </div>
+                        </div>
+                        <div class="message-item-button">
+                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--CHANGE IF HAVE POSTBACK-->
+    <div class="message-quickreply">
+        <div class="message-quickreply-container">
+            <div class="message-quickreply-item" style="position:relative;" index="2">
+                <button value="0" class="btn-quickreply">Hủy</button>
+                <button value="1" class="btn-quickreply">Có</button>
+                <button value="2" class="btn-quickreply">Xem chi tiết</button>
+            </div>
+        </div>
+        <!-- click lùi-->
+        <a class="_32rk _32rg _1cy6  btn_back_quickreply" href="#" style="display: none;">
+            <div direction="forward" class="_10sf _5x5_">
+                <div class="_5x6d">
+                    <div class="_3bwv _3bww">
+                        <div class="_3bwy">
+                            <div class="_3bwx">
+                                <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
+        <a class="_32rk _32rh _1cy6  btn_next_quickreply" href="#" style="display: block;">
+            <div direction="forward" class="_10sf _5x5_">
+                <div class="_5x6d">
+                    <div class="_3bwv _3bww">
+                        <div class="_3bwy">
+                            <div class="_3bwx">
+                                <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <!--Typing-->
+    <div class="message-item message-item-typing">
+        <div class="message-avatar">
+            <div class="message-avatar-customer">
+                <div class="pr-3">
+                    <span class="message-avatar-item avatar">
+                        <span class="avatar-title bg-warning rounded-circle">H</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="message-item-content writing">
+            <div class="_4xko _13y8">
+                <div class="_4a0v _1x3z">
+                    <div class="_4b0g">
+                        <div class="_5pd7"></div>
+                        <div class="_5pd7"></div>
+                        <div class="_5pd7"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
 
 
                         <!--Form Input User-->

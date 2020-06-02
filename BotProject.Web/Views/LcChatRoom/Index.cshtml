@@ -77,7 +77,7 @@
         flex-direction: column;
         align-items: flex-start;
         overflow: hidden;
-            width: 100%;
+            width: 75%;
     }
 
     .chat-block .chat-content .messages .message-item.me .message-body {
@@ -85,7 +85,7 @@
         flex-direction: column;
         align-items: flex-end;
         overflow: hidden;
-            width: 100%;
+            width: 75%;
     }
     .chat-block .chat-content .messages .message-item.me .message-body .message-align{
         text-align: right;
@@ -392,7 +392,7 @@
                     </div>
                     <div>
                         <p class="mb-0 customer-name">HCM</p>
-                        @*<div class="m-0 small text-success">typing...</div>*@
+                        <div class="m-0 small text-typing"></div>
                     </div>
                     <div class="ml-auto">
                         <ul class="nav align-items-center">
@@ -749,25 +749,4 @@
         })
     </script>
 
-    <!--Lacviet-->
-        <script>
-            (function (l, a, c, v, i, e, t) {
-                t = new Date().getUTCMilliseconds().toString();
-                c += t;
-                i = l.createElement('script');
-                var ii = l.getElementsByTagName('script')[0];
-                r = false;
-                i.async = 1;
-                i.src = c;
-                i.id = 'lacviet-script';
-                ii.parentNode.insertBefore(i, ii);
-                i.onload = i.onreadystatechange = function () {
-                    if (!r && (!this.readyState || this.readyState == 'complete')) {
-                        r = true;
-                        e();//function callback();
-                    }
-                };
-            })(document, window, 'http://localhost:54160/assets/livechat/app_setting.js?v=', 'lacviet', '', function () { lacviet.setup('2') });
-        </script>
-        <!-- End Lacviet -->
 }

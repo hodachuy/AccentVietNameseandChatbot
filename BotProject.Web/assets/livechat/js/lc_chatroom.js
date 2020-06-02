@@ -140,19 +140,29 @@ var cHub = {
                             insertChat(typeUser, customerId, isValidURLandCodeIcon(message), userName, "");
                         }
                     }
+                    if (typeUser == TYPE_USER_CONNECT.BOT) {
+                        if (message != null && message != "") {
+                            let newMessage = message.replace('{bot}', 'me');
+                            $("#message-container-" + customerId).append(newMessage);
+                            // scroll to bottom
+                            setTimeout(function () {
+                                $(".messages").getNiceScroll(0).doScrollTop($("#message-container-" + customerId).prop('scrollHeight'));
+                            }, 200)
+                        }
+                    }
                 }
                 playAudioNotifyMessage();
             }
         };
-        objHub.client.receiveTyping = function (channelGroupId, customerId) {
+        objHub.client.receiveTyping = function (channelGroupId, threadId, agentId, agentName, customerId, isTyping, typeUser) {
             if (channelGroupId == _channelGroupId) {
-                console.log('customer-' + customerId + ' typing')
+                console.log('customerId-' + customerId + ' typing')
             }
         };
 
         objHub.client.receiveSignalCustomerFocusTabChat = function (channelGroupId, threadId, customerId, isFocusTab) {
             if (channelGroupId == _channelGroupId) {
-                isFocusTab = (isFocusTab == true ? "đạng trên tab" : "thoát tab");
+                isFocusTab = (isFocusTab == true ? "đã xem" : " k xem");
                 console.log('customer-' + customerId + ' ' + isFocusTab);
                 var $elmCustomer = $("#customer-" + customerId);
                 if (isFocusTab) {
@@ -167,7 +177,7 @@ var cHub = {
 
 var customerEvent = {
     getFormChat: function (objCustomer, threadId) {
-        let isStopTyping = false;
+        var isTyping = false;
 
         // lấy thông tin thiết bị khách hàng truy cập
         var renderFormDeviceInfo = function () {
@@ -246,19 +256,41 @@ var customerEvent = {
                 isTransfer = false;
             }
             objHub.server.transferCustomerToBot(_channelGroupId, threadId, AgentModel.ID, _botId);
+            let contentAction = showTimeChat() + ' - Bot tham gia hội thoại';
+            objHub.server.sendActionChat(_channelGroupId, threadId, contentAction, AgentModel.ID, objCustomer.ID);
+            insertActionChat(objCustomer.ID, contentAction)
         })
 
+        $($($("#input-chat-message-" + objCustomer.ID).next()).eq(0)).focus(function (e) {
+                if (!interval_focus_tab_id) {
+                    interval_focus_tab_id = setInterval(function () {
+                        console.log("agent xem");
+                        let isFocusTab = true;
+                        objHub.server.checkAgentFocusTabChat(_channelGroupId, threadId, objCustomer.ID, isFocusTab);
+                        clearInterval(interval_focus_tab_id);
+                    }, 1000);
+                }
+        })
+
+        $($($("#input-chat-message-" + objCustomer.ID).next()).eq(0)).blur(function (e) {
+            clearInterval(interval_focus_tab_id);
+            interval_focus_tab_id = 0;
+            let isFocusTab = false;
+            objHub.server.checkAgentFocusTabChat(_channelGroupId, threadId, objCustomer.ID, isFocusTab);
+            console.log("agent k xem")
+        })
 
         $($($("#input-chat-message-" + objCustomer.ID).next()).eq(0)).keyup(function (e) {
             var edValue = $(this);
             var text = edValue.text();
             if (text.length > 0) {
-                if (isStopTyping == false) {
-                    objHub.server.sendTyping(_channelGroupId, threadId, AgentModel.ID);
-                    isStopTyping = true;
+                if (isTyping == false) {
+                    isTyping = true;
+                    objHub.server.sendTyping(_channelGroupId, threadId, AgentModel.ID, AgentModel.Name, objCustomer.ID, isTyping, TYPE_USER_CONNECT.AGENT);
                 }
             } else {
-                isStopTyping = false;
+                isTyping = false;
+                objHub.server.sendTyping(_channelGroupId, threadId, AgentModel.ID, AgentModel.Name, objCustomer.ID, isTyping, TYPE_USER_CONNECT.AGENT);
             }
         })
 
@@ -275,11 +307,11 @@ var customerEvent = {
                     // đổi vị trí lên top khi focus chat với customer
                     changePositon("#div-list-customers a:eq(" + indexPosition + ")")
                     // gửi tin nhắn
-                    objHub.server.sendMessage(_channelGroupId, threadId, isValidURLandCodeIcon(text), _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
+                    objHub.server.sendMessage(_channelGroupId, threadId, text, _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
 
                     $(this).val('');
                     $(this).text('');
-                    isStopTyping = false;
+                    isTyping = false;
                     return;
                 }
             }
@@ -294,7 +326,7 @@ var customerEvent = {
                 insertChat("agent", objCustomer.ID, isValidURLandCodeIcon(text), _agentName, "");
 
                 // gửi tin nhắn
-                objHub.server.sendMessage(_channelGroupId, threadId, isValidURLandCodeIcon(text), _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
+                objHub.server.sendMessage(_channelGroupId, threadId, text, _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
                 $(this).val('');
             }
             return;
@@ -478,6 +510,20 @@ var templateTypeMessage = {
     QuickReply: function () {
         var html = '';
         return html;
+    }
+}
+
+function insertActionChat(customerId, contentAction) {
+    var $elmCustomer = $("#customer-" + customerId);
+    if ($elmCustomer.hasClass('active')) {
+        var htmlAction = '<div class="message-item message-item-divider">';
+        htmlAction +=       '<span>' + contentAction + '</span>';
+        htmlAction +='    </div>';
+        $("#message-container-" + customerId).append(htmlAction)
+        // scroll to bottom
+        setTimeout(function () {
+            $(".messages").getNiceScroll(0).doScrollTop($("#message-container-" + customerId).prop('scrollHeight'));
+        }, 200)
     }
 }
 
