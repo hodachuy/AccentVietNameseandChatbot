@@ -183,17 +183,20 @@ var customerEvent = {
         var renderFormDeviceInfo = function () {
             $("#chat-sidebar-device").show();
             $("#chat-sidebar-template-loading").hide();
-            var device = objCustomer.Devices[0];
-            $("#device-city").empty().append(device.City == null ? "" : " " + device.City);
-            $("#device-ip").empty().append(device.IPAddress == null ? "" : device.IPAddress);
-            $("#device-os").empty().append(device.OS == null ? "" : device.OS);
-            $("#device-browser").empty().append(device.Browser == null ? "" : device.Browser);
-            $("#device-user-agent").empty().append(device.FullUserAgent == null ? "" : device.FullUserAgent);
-            if (device.Latitude != "") {
-                let latinglongTude = device.Latitude + "," + device.Longtitude;
-                $("#LatiLongTude").val(latinglongTude);
-                initLatiLongMap(device.Latitude, device.Longtitude);
+            if (objCustomer.Devices != null) {
+                var device = objCustomer.Devices[0];
+                $("#device-city").empty().append(device.City == null ? "" : " " + device.City);
+                $("#device-ip").empty().append(device.IPAddress == null ? "" : device.IPAddress);
+                $("#device-os").empty().append(device.OS == null ? "" : device.OS);
+                $("#device-browser").empty().append(device.Browser == null ? "" : device.Browser);
+                $("#device-user-agent").empty().append(device.FullUserAgent == null ? "" : device.FullUserAgent);
+                if (device.Latitude != "") {
+                    let latinglongTude = device.Latitude + "," + device.Longtitude;
+                    $("#LatiLongTude").val(latinglongTude);
+                    initLatiLongMap(device.Latitude, device.Longtitude);
+                }
             }
+
 
             $('.chat-sidebar-content').niceScroll();
         }();
