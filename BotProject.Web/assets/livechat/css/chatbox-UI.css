@@ -715,7 +715,7 @@ small {
 }
 
 .showing {
-    display: block;
+    display: block !important;
 }
 
 
@@ -959,6 +959,21 @@ _3bwv > ._3bwy {
 
 /*Reconecting*/
 .box-reconecting {
+    position: relative;
+    /*top: 50px;
+            left: 0px;
+            right: 0px;*/
+    z-index: 2;
+    color: rgb(17, 17, 17);
+    text-align: center;
+    font-size: 0.9em;
+    line-height: 1.9em;
+    background: rgb(255, 208, 0);
+    display: none;
+}
+
+/*Disconected*/
+.box-disconected {
     position: relative;
     /*top: 50px;
             left: 0px;

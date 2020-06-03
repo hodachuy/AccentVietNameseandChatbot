@@ -50,15 +50,21 @@ namespace BotProject.Web.API_Livechat
 
                     Customer customerDb = new Customer();
                     customerDb.UpdateCustomer(customerVm);
-                    customerDb.Name = deviceVm.IPAddress;
                     customerDb.StatusChatValue = CommonConstants.USER_ONLINE;
                     _customerService.Create(customerDb);
-                    _customerService.Save();
 
-                    Device deviceDb = new Device();
-                    deviceDb.UpdateDevice(deviceVm);
-                    deviceDb.CustomerID = customerVm.ID;
-                    _customerService.CreateDevice(deviceDb);
+                    if(deviceVm != null)
+                    {
+                        Device deviceDb = new Device();
+                        deviceDb.UpdateDevice(deviceVm);
+                        deviceDb.CustomerID = customerVm.ID;
+                        _customerService.CreateDevice(deviceDb);
+
+                        if (String.IsNullOrEmpty(customerVm.Name))
+                        {
+                            customerDb.Name = deviceVm.IPAddress;
+                        }
+                    }
 
                     _customerService.Save();
 

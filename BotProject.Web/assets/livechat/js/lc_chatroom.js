@@ -99,13 +99,19 @@ var cHub = {
         });
     },
     receivedSignalFromServer: function () {
-        objHub.client.receiveNewCustomerToAgent = function (channelGroupId, threadID, objCustomerDb) {
+        objHub.client.receiveNewCustomerToAgent = function (channelGroupId, threadId, objCustomer) {
             // Kiểm tra tín hiệu trả về theo đúng kênh chat
             if (channelGroupId == _channelGroupId) {
                 // customer mới tham gia
-                console.log('customer-' + objCustomerDb.ID + ' new join')
+                console.log('customer-' + objCustomer.ID + ' new join')
 
-                new customerEvent.customerJoin().GetCustomerJoinRealtime(threadID, objCustomerDb);
+                new customerEvent.customerJoin().GetCustomerJoinRealtime(threadId, objCustomer);
+
+                objHub.server.agentJoinChatCustomer(threadId);
+
+                objHub.server.sendActionChat(_channelGroupId, threadId, "Hôm nay", AgentModel.ID, objCustomer.ID);
+                objHub.server.sendTyping(_channelGroupId, threadId, AgentModel.ID, AgentModel.Name, objCustomer.ID, true, TYPE_USER_CONNECT.AGENT);
+                objHub.server.sendMessage(_channelGroupId, threadId, "Xin chào! Bạn có vấn đề gì cần giải đáp ạ?", _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
 
                 playAudioNotifyMessage();
             }
@@ -129,6 +135,9 @@ var cHub = {
         objHub.client.receiveMessages = function (channelGroupId, threadId, message, agentId, customerId, userName, typeUser) {
             if (channelGroupId == _channelGroupId) {
                 console.log('threadId:' + threadId + '  customer-' + customerId + ' : ' + message)
+                if (typeUser == TYPE_USER_CONNECT.CUSTOMER) {
+                    insertPreviewChat("customer", customerId, message);
+                }
                 var $elmCustomer = $("#customer-" + customerId);
                 if ($elmCustomer.hasClass("active")) {
                     userName = (userName == "" ? "W" : userName);
@@ -251,16 +260,20 @@ var customerEvent = {
 
         $("#chkTransferToBot-" + objCustomer.ID).change(function () {
             let isTransfer = false;
+            let contentAction = showTimeChat() + ' - Bot tham gia hội thoại';
             if ($(this).is(":checked")) {
                 $(this).val('true');
                 isTransfer = true;
+                contentAction = showTimeChat() + ' - Bot tham gia hội thoại';
             } else {
                 $(this).val('false');
                 isTransfer = false;
+                contentAction = showTimeChat() + ' - Bot thoát hội thoại';
             }
-            objHub.server.transferCustomerToBot(_channelGroupId, threadId, AgentModel.ID, _botId);
-            let contentAction = showTimeChat() + ' - Bot tham gia hội thoại';
+            objHub.server.transferCustomerToBot(_channelGroupId, threadId, AgentModel.ID, _botId, isTransfer);
+
             objHub.server.sendActionChat(_channelGroupId, threadId, contentAction, AgentModel.ID, objCustomer.ID);
+
             insertActionChat(objCustomer.ID, contentAction)
         })
 
@@ -413,15 +426,11 @@ var customerEvent = {
                 templateHtml += '<span id="msg-preview-' + customer.ID + '"></span>';
                 templateHtml += '</span>';
                 templateHtml += '</div>';
-                if (customer.LogoutDate === null) {
-                    templateHtml += '<div class="text-right ml-auto">';
-                    templateHtml += '<span class="small text-muted">1 năm trước</span>';
-                    templateHtml += '</div>';
-                } else {
+                if (customer.LogoutDate != null) {
                     templateHtml += '<div class="text-right ml-auto">';
                     templateHtml += '<span class="small text-muted timeago" datetime="' + customer.LogoutDate + '"></span>';
                     templateHtml += '</div>';
-                }
+                } 
                 templateHtml += '</a>';
             } else {
                 templateHtml += '<a class="list-group-item d-flex list-customer-item" id="customer-' + customer.ID + '" data-customer-id="' + customer.ID + '" data-thread-id="' + threadID + '" href="javascript:void(0)">';
@@ -553,14 +562,14 @@ function insertChat(who, customerId, text, userName, avatar) {
     contentMessage += message.getHtmlMessageBody(who, userName, text, date_current);
     contentMessage += '</div>';
 
+    // insert preview
+    insertPreviewChat(who, customerId, text);
+
     // append message chat
     appendMessage("", who, customerId, contentMessage);
     return;
 }
 function appendMessage(elementLastMessageAppend, who, customerId, text) {
-    // insert preview
-    insertPreviewChat(who, customerId, text);
-
     if (elementLastMessageAppend !== "") {
         // append body message
         var content = '<div class="message-item-content">' + text + '</div>';
@@ -594,11 +603,12 @@ function insertEventChat(customerId, time) {
 
 function insertPreviewChat(who, customerId, text) {
     var user = (who == "agent" ? "Bạn" : "Khách");
+    var msg_previve = '';
     if (text.length > 20) {
         text = text.substring(0, 19) + "...";
     }
-    let msg_previve = user + ": " + text;
-    $("#msg-preview-" + customerId).html(msg_previve);
+    msg_previve = user + ": " + text;
+    $("#msg-preview-" + customerId).empty().append(msg_previve);
 }
 
 var message = {

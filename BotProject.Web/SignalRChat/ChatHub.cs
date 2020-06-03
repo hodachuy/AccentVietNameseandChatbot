@@ -131,10 +131,10 @@ namespace BotProject.Web.SignalRChat
             _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSignalAgentFocusTabChat(channelGroupId, threadId, customerId, isFocusTab);
         }
 
-        public void TransferCustomerToBot(string channelGroupId, string threadId, string customerId, int botId)
+        public void TransferCustomerToBot(string channelGroupId, string threadId, string customerId, int botId, bool isTransfer)
         {
             string[] arrExcludeUserConnectionId = new string[] { Context.ConnectionId };
-            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSingalChatWithBot(channelGroupId, threadId, customerId, botId);
+            _context.Clients.Group(threadId, arrExcludeUserConnectionId).receiveSingalChatWithBot(channelGroupId, threadId, customerId, botId, isTransfer);
         }
 
         public void ConnectAgentToListCustomer(string agentId, long channelGroupId)

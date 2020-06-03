@@ -322,6 +322,12 @@
             background-color: #5969ff !important;
             color: #fff !important;
         }
+        .error{
+            color:red;
+        }
+        .hidden{
+            display:none;
+        }
     </style>
     <div dir="ltr" class="chatbox-main">
         <div class="chatbox-container">
@@ -356,7 +362,9 @@
                 </div>
 
             </div>
-            <div class="box-reconecting">Reconecting...<span id="reconeting-time"></span></div>
+            <div class="box-reconecting">Đang kết nối lại...<span id="reconeting-time"></span></div>
+            <div class="box-disconected">Đã ngắt kết nối, vui lòng kiểm tra đường truyền...<span id="disconected-time"></span></div>
+
             <div class="chat-block">
                 <div class="chat-content">
                     <div class="messages" id="message-content">
@@ -716,7 +724,7 @@
 
 
                         <!--Form Input User-->
-                        @*<div class="message-item message-form">
+                        <div class="message-form-user" style="width:100%;display:none;">
                                 <div class="lc-6yodnr eslhdd60">
                                     <div class="lc-8w32p1 e1jdwequ0">
                                         <div class="lc-25jgss">
@@ -733,9 +741,10 @@
                                                                 <div class="lc-qvffge e108e6fy0">
                                                                     <div class="lc-1etn9kn eptvlbh0">
                                                                         <label for="name" class="lc-xswwe8 e2zxkge0">
-                                                                            <span class="Linkify">Your name:</span>
+                                                                            <span class="Linkify">Tên:</span>
+                                                                            <span class="error hidden cNameError">Vui lòng nhập tên</span>
                                                                         </label>
-                                                                        <input name="name" id="name" autocomplete="name" class="lc-1gz7fd7 e1xplv9i0" value="teomytom@gmail.com">
+                                                                        <input name="name" id="txtCustomerName" class="lc-1gz7fd7 e1xplv9i0" value="">
                                                                     </div>
                                                                 </div>
                                                                 <div class="lc-qvffge e108e6fy0">
@@ -743,28 +752,52 @@
                                                                         <label for="email" class="lc-xswwe8 e2zxkge0">
                                                                             <span class="Linkify">E-mail:</span>
                                                                         </label>
-                                                                        <input name="email" autocomplete="email" id="email" type="email" class="lc-1gz7fd7 e1xplv9i0" value="teomytom@gmail.com">
+                                                                        <input name="email" id="txtCustomerEmail" type="email" class="lc-1gz7fd7 e1xplv9i0" value="">
                                                                     </div>
                                                                 </div>
+                                                                <div class="lc-qvffge e108e6fy0">
+                                                                    <div class="lc-1etn9kn eptvlbh0">
+                                                                        <label for="email" class="lc-xswwe8 e2zxkge0">
+                                                                            <span class="Linkify">Số điện thoại:</span>
+                                                                        </label>
+                                                                        <input name="phone" id="txtCustomerPhone" class="lc-1gz7fd7 e1xplv9i0" value="">
+                                                                    </div>
+                                                                </div>
+                                                                @*<div class="lc-qvffge e108e6fy0">
+                                                                    <div class="lc-1etn9kn eptvlbh0">
+                                                                        <label for="email" class="lc-xswwe8 e2zxkge0">
+                                                                            <span class="Linkify">Tiêu đề:</span>
+                                                                        </label>
+                                                                        <input name="title" id="txtCustomerTitle" type="text" class="lc-1gz7fd7 e1xplv9i0" value="">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="lc-qvffge e108e6fy0">
+                                                                    <div class="lc-1etn9kn eptvlbh0">
+                                                                        <label for="email" class="lc-xswwe8 e2zxkge0">
+                                                                            <span class="Linkify">Nội dung:</span>
+                                                                        </label>
+                                                                        <textarea id="txtCustomerContent" class="lc-1gz7fd7 e1xplv9i0"></textarea>
+                                                                    </div>
+                                                                </div>*@
                                                                 <div class="lc-qvffge e108e6fy0">
                                                                     <div class="lc-1etn9kn eptvlbh0">
                                                                         <fieldset class="lc-nnsuga" name="ujetsxe8nx_156629227881205053">
                                                                             <legend class="lc-19g19dr e1kph7ea0">
                                                                                 <span class="Linkify">
-                                                                                    I agree to have my personal data processed by <strong>LiveChat, Inc.</strong> for chat support. <a href="https://www.livechatinc.com/privacy-policy/" target="_blank" rel="nofollow noopener">Full policy</a>
+                                                                                    Tôi đồng ý để dữ liệu cá nhân của tôi được <strong>Lạc Việt Livechat</strong> xử lý để hỗ trợ trò chuyện. <a href="#" target="_blank" rel="nofollow noopener">Chính sách</a>
                                                                                 </span>
                                                                             </legend>
                                                                             <div class="lc-dwfpgr evnlvbu0">
                                                                                 <label class="lc-197q04t">
                                                                                     <input type="checkbox" id="ujetsxe8nx_156629227881205053_0" name="ujetsxe8nx_156629227881205053" class="lc-5mlnfz e81sjne0" value="index0_0">
                                                                                 </label>
-                                                                                <label for="ujetsxe8nx_156629227881205053_0" class="lc-1n7uoem evnlvbu1">Agree</label>
+                                                                                <label for="ujetsxe8nx_156629227881205053_0" class="lc-1n7uoem evnlvbu1">Đồng ý</label>
                                                                             </div>
                                                                         </fieldset>
                                                                     </div>
                                                                 </div>
                                                                 <div class="lc-13nuv3g e1n7ru1l0">
-                                                                    <button type="submit" color="#427fe1" class="lc-3a63hl esv0owm0">
+                                                                    <button color="#427fe1" class="lc-3a63hl esv0owm0" id="btn-starchat">
                                                                         <div class="lc-ckdrdo esv0owm2">
                                                                             <span>Start chat</span>
                                                                         </div>
@@ -778,7 +811,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>*@
+                            </div>
                     </div>
                 </div>
             </div>

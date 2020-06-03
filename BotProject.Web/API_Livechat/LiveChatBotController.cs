@@ -156,9 +156,9 @@ namespace BotProject.Web.API_Livechat
 					return response;
 				}
 
-				var settingDb = _settingService.GetSettingByBotID(botId);
-				var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
-				var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
+				//var settingDb = _settingService.GetSettingByBotID(botId);
+				//var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
+				//var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
 
                 var lstAIML = _aimlFileService.GetByBotId(botId);//_aimlFileService.GetByBotId(botID);
                 var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
@@ -166,14 +166,14 @@ namespace BotProject.Web.API_Livechat
 
                 _user = _botService.loadUserBot(message.senderId);
 
-                if (lstAttribute.Count() != 0)
-				{
-					_dicAttributeUser = new Dictionary<string, string>();
-					foreach (var attr in lstAttribute)
-					{
-						_dicAttributeUser.Add(attr.AttributeKey, attr.AttributeValue);
-					}
-				}
+    //            if (lstAttribute.Count() != 0)
+				//{
+				//	_dicAttributeUser = new Dictionary<string, string>();
+				//	foreach (var attr in lstAttribute)
+				//	{
+				//		_dicAttributeUser.Add(attr.AttributeKey, attr.AttributeValue);
+				//	}
+				//}
 				// get list message response
 				var lstMsgResponse = MessageResponse(text, senderId, botId).Result;
 				if (lstMsgResponse.Count() == 0)
@@ -238,9 +238,9 @@ namespace BotProject.Web.API_Livechat
 					_lstBotReplyResponse.Add(HandleMessageJson(msg, senderId));
 				}
 				text = textAccentVN;
-				AddAttributeDefault(senderId, botId, "content_message", text);
-				_dicAttributeUser.Remove("content_message");
-				_dicAttributeUser.Add("content_message", text);
+				//AddAttributeDefault(senderId, botId, "content_message", text);
+				//_dicAttributeUser.Remove("content_message");
+				//_dicAttributeUser.Add("content_message", text);
 			}
 
 			// Xét payload postback nếu postback từ quickreply sẽ chứa thêm sperator - và tiêu đề nút
@@ -255,12 +255,12 @@ namespace BotProject.Web.API_Livechat
 				text = arrPostback[0];
 			}
 
-			HistoryViewModel hisVm = new HistoryViewModel();
-			hisVm.BotID = botId;
-			hisVm.CreatedDate = DateTime.Now;
-			hisVm.UserSay = text;
-			hisVm.UserName = senderId;
-			hisVm.Type = CommonConstants.TYPE_KIOSK;
+			//HistoryViewModel hisVm = new HistoryViewModel();
+			//hisVm.BotID = botId;
+			//hisVm.CreatedDate = DateTime.Now;
+			//hisVm.UserSay = text;
+			//hisVm.UserName = senderId;
+			//hisVm.Type = CommonConstants.TYPE_KIOSK;
 
 			DateTime dStartedTime = DateTime.Now;
 			DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
@@ -273,8 +273,8 @@ namespace BotProject.Web.API_Livechat
 					if (plUserDb.PredicateName == "Admin_Contact")
 					{
 						var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
-						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-						AddHistory(hisVm);
+						//hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+						//AddHistory(hisVm);
 						if (text.Contains("postback") || text.Contains(_contactAdmin))
 						{
 							plUserDb.IsHavePredicate = false;
@@ -341,11 +341,11 @@ namespace BotProject.Web.API_Livechat
 					_appPlatformUser.Save();
 
 					// add attribute default user platform
-					AddAttributeDefault(senderId, botId, "sender_id", plUserDb.UserId);
-					AddAttributeDefault(senderId, botId, "sender_name", plUserDb.UserName);
-					AddAttributeDefault(senderId, botId, "sender_first_name", plUserDb.FirstName);
-					AddAttributeDefault(senderId, botId, "sender_last_name", plUserDb.LastName);
-					AddAttributeDefault(senderId, botId, "gender", "N/A");
+					//AddAttributeDefault(senderId, botId, "sender_id", plUserDb.UserId);
+					//AddAttributeDefault(senderId, botId, "sender_name", plUserDb.UserName);
+					//AddAttributeDefault(senderId, botId, "sender_first_name", plUserDb.FirstName);
+					//AddAttributeDefault(senderId, botId, "sender_last_name", plUserDb.LastName);
+					//AddAttributeDefault(senderId, botId, "gender", "N/A");
 				}
 
 				plUserDb.StartedOn = dStartedTime;
@@ -502,8 +502,8 @@ namespace BotProject.Web.API_Livechat
 						string predicateValue = plUserDb.PredicateValue;
 						var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, predicateValue, "");
 
-						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
-						AddHistory(hisVm);
+						//hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
+						//AddHistory(hisVm);
 
 						_lstBotReplyResponse.Add(HandleMessageJson(handleMdSearch.TemplateJsonFacebook, senderId));
 
@@ -532,9 +532,9 @@ namespace BotProject.Web.API_Livechat
 						_appPlatformUser.Update(plUserDb);
 						_appPlatformUser.Save();
 
-						hisVm.UserSay = "[Chat với chuyên viên]";
-						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-						AddHistory(hisVm);
+						//hisVm.UserSay = "[Chat với chuyên viên]";
+						//hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+						//AddHistory(hisVm);
 
 						// Tin nhắn vắng mặt
 						if (_isHaveMessageAbsent)
@@ -583,9 +583,9 @@ namespace BotProject.Web.API_Livechat
 						_appPlatformUser.Update(plUserDb);
 						_appPlatformUser.Save();
 
-						hisVm.UserSay = "[Tra cứu]";
-						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-						AddHistory(hisVm);
+						//hisVm.UserSay = "[Tra cứu]";
+						//hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+						//AddHistory(hisVm);
 
 						//return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
 						string msg = HandleMessageJson(handleMdSearch.TemplateJsonFacebook, senderId);
@@ -672,8 +672,8 @@ namespace BotProject.Web.API_Livechat
 
 				if (result.Contains("NOT_MATCH"))
 				{
-					hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
-					AddHistory(hisVm);
+					//hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
+					//AddHistory(hisVm);
 					try
 					{
 						plUserDb.IsHaveCardCondition = false;
@@ -693,57 +693,57 @@ namespace BotProject.Web.API_Livechat
 						LogError("RS NOT MATCH:" + ex.Message);
 					}
 
-					if (_isSearchAI) //_isSearchAI
-					{
-						var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
-						var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
-						if (systemConfigVm.Count() == 0)
-						{
-							string msgTemp = FacebookTemplate.GetMessageTemplateText("Xin lỗi, tôi chưa được học để hiểu nội dung này", senderId).ToString();
+					//if (_isSearchAI) //_isSearchAI
+					//{
+					//	var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
+					//	var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
+					//	if (systemConfigVm.Count() == 0)
+					//	{
+					//		string msgTemp = FacebookTemplate.GetMessageTemplateText("Xin lỗi, tôi chưa được học để hiểu nội dung này", senderId).ToString();
 
-							_lstBotReplyResponse.Add(HandleMessageJson(msgTemp, senderId));
-							return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-							//return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
-						}
-						string nameFunctionAPI = "";
-						string number = "";
-						string field = "";
-						string valueBotId = "";
-						foreach (var item in systemConfigVm)
-						{
-							if (item.Code == "UrlAPI")
-								nameFunctionAPI = item.ValueString;
-							if (item.Code == "ParamBotID")
-								valueBotId = item.ValueString;
-							if (item.Code == "ParamAreaID")
-								field = item.ValueString;
-							if (item.Code == "ParamNumberResponse")
-								number = item.ValueString;
-						}
-						hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-						AddHistory(hisVm);
-						string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", valueBotId);
-						if (!String.IsNullOrEmpty(resultAPI))
-						{
-							var lstQnaAPI = new JavaScriptSerializer
-							{
-								MaxJsonLength = Int32.MaxValue,
-								RecursionLimit = 100
-							}.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
-							// render template json generic
-							int totalQnA = lstQnaAPI.Count();
-							string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
-							string msgTempTotalSearch = FacebookTemplate.GetMessageTemplateText(totalFind, senderId).ToString();
-							_lstBotReplyResponse.Add(HandleMessageJson(msgTempTotalSearch, senderId));
-							string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(senderId, lstQnaAPI).ToString();
-							_lstBotReplyResponse.Add(HandleMessageJson(strTemplateGenericRelatedQuestion, senderId));
-						}
+					//		_lstBotReplyResponse.Add(HandleMessageJson(msgTemp, senderId));
+					//		return await Task.FromResult<List<string>>(_lstBotReplyResponse);
+					//		//return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
+					//	}
+					//	string nameFunctionAPI = "";
+					//	string number = "";
+					//	string field = "";
+					//	string valueBotId = "";
+					//	foreach (var item in systemConfigVm)
+					//	{
+					//		if (item.Code == "UrlAPI")
+					//			nameFunctionAPI = item.ValueString;
+					//		if (item.Code == "ParamBotID")
+					//			valueBotId = item.ValueString;
+					//		if (item.Code == "ParamAreaID")
+					//			field = item.ValueString;
+					//		if (item.Code == "ParamNumberResponse")
+					//			number = item.ValueString;
+					//	}
+					//	hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+					//	AddHistory(hisVm);
+					//	string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", valueBotId);
+					//	if (!String.IsNullOrEmpty(resultAPI))
+					//	{
+					//		var lstQnaAPI = new JavaScriptSerializer
+					//		{
+					//			MaxJsonLength = Int32.MaxValue,
+					//			RecursionLimit = 100
+					//		}.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
+					//		// render template json generic
+					//		int totalQnA = lstQnaAPI.Count();
+					//		string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+					//		string msgTempTotalSearch = FacebookTemplate.GetMessageTemplateText(totalFind, senderId).ToString();
+					//		_lstBotReplyResponse.Add(HandleMessageJson(msgTempTotalSearch, senderId));
+					//		string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(senderId, lstQnaAPI).ToString();
+					//		_lstBotReplyResponse.Add(HandleMessageJson(strTemplateGenericRelatedQuestion, senderId));
+					//	}
 
-						if (_lstBotReplyResponse.Count() != 0)
-						{
-							return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-						}
-					}
+					//	if (_lstBotReplyResponse.Count() != 0)
+					//	{
+					//		return await Task.FromResult<List<string>>(_lstBotReplyResponse);
+					//	}
+					//}
 
 					_dicNotMatch = new Dictionary<string, string>() {
 						{"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
