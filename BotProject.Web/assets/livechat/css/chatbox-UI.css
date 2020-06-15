@@ -889,6 +889,19 @@ a.btn_next_quickreply {
     right: 0;
 }
 
+a.btn_back_genetics {
+    order: 1;
+    align-self: center;
+    position: absolute;
+    left: 0;
+}
+
+a.btn_next_genetics {
+    order: 3;
+    align-self: center;
+    position: absolute;
+    right: 0;
+}
 
 ._10sf, ._5x6d {
     height: 40px;

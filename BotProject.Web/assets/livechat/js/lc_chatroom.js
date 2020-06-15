@@ -108,11 +108,12 @@ var cHub = {
                 new customerEvent.customerJoin().GetCustomerJoinRealtime(threadId, objCustomer);
 
                 objHub.server.agentJoinChatCustomer(threadId);
-
-                objHub.server.sendActionChat(_channelGroupId, threadId, "Hôm nay", AgentModel.ID, objCustomer.ID);
-                objHub.server.sendTyping(_channelGroupId, threadId, AgentModel.ID, AgentModel.Name, objCustomer.ID, true, TYPE_USER_CONNECT.AGENT);
-                objHub.server.sendMessage(_channelGroupId, threadId, "Xin chào! Bạn có vấn đề gì cần giải đáp ạ?", _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
-
+                setTimeout(function () {
+                    objHub.server.sendActionChat(_channelGroupId, threadId, "Hôm nay", AgentModel.ID, objCustomer.ID);
+                }, 500)
+                setTimeout
+                //objHub.server.sendTyping(_channelGroupId, threadId, AgentModel.ID, AgentModel.Name, objCustomer.ID, true, TYPE_USER_CONNECT.AGENT);
+                //objHub.server.sendMessage(_channelGroupId, threadId, "Xin chào! Bạn có vấn đề gì cần giải đáp ạ?", _agentId, objCustomer.ID, _agentName, TYPE_USER_CONNECT.AGENT);
                 playAudioNotifyMessage();
             }
         };
@@ -122,7 +123,6 @@ var cHub = {
                 var $elemCustomer = $("#customer-" + customerId + "");
                 $elemCustomer.find('span.avatar').removeClass("avatar-state-online").addClass("avatar-state-offline");
             }
-
         };
         objHub.client.getStatusCustomerOnline = function (channelGroupId, customerId) {
             if (channelGroupId == _channelGroupId) {

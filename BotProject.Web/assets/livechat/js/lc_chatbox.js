@@ -383,6 +383,56 @@ var cBoxMessage = {
             parent.postMessage("close", "*");
         })
 
+        $("body").on('click', '.btn_next_genetics', function () {
+            var $form = $(this).closest('.message-item-genetics');
+            var currentIndex = $form.find($('div.message-container')).attr('index');
+            var newIndex = (parseInt(currentIndex) + 1);
+            var maxIndex = $form.find($('div.message-item-template-generic')).length - 1;
+            $form.find($('div.message-container')).attr('index', newIndex);
+            var calPX = -272 * newIndex;
+            var leftPX = '' + calPX + 'px';
+            $form.find('.message-template').css('left', leftPX);
+            // show back
+            $form.find('.btn_back_genetics').css('display', 'block');
+            if (newIndex == maxIndex) {
+                $form.find('.btn_next_genetics').css('display', 'none');
+            }
+        })
+        $("body").on('click', '.btn_back_genetics', function () {
+            var $form = $(this).closest('.message-item-genetics');
+            var currentIndex = $form.find($('div.message-container')).attr('index');
+            var newIndex = (parseInt(currentIndex) - 1);
+            $form.find($('div.message-container')).attr('index', newIndex);
+
+            var calPX = -272 * newIndex;
+            var leftPX = '' + calPX + 'px';
+
+            $form.find('.message-template').css('left', leftPX);
+            if (newIndex == 0) {
+                $form.find('.btn_back_genetics').css('display', 'none');
+            }
+            $form.find('.btn_next_genetics').css('display', 'block');
+        })
+
+        $('body').on('click', '.message-btn-postback', function (e) {
+            var dataPostback = $(this).attr('data-postback');
+            var dataText = $(this).html();
+            insertChat("customer", dataText, CustomerModel.Name, "");
+            // gửi tin nhắn
+            objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, dataText, "", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
+            // bot xử lý
+            new messageBot.getMessage(dataPostback, CustomerModel.ThreadID, setting.BotID);
+        })
+
+        $('body').on('click', '.btn-quickreply', function (e) {
+            var dataPostback = $(this).attr('data-postback');
+            var dataText = $(this).html();
+            insertChat("customer", dataText, CustomerModel.Name, "");
+            // gửi tin nhắn
+            objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, dataText, "", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
+            new messageBot.getMessage(dataPostback, CustomerModel.ThreadID, setting.BotID);
+        })
+
         $($($("#input-chat-message").next()).eq(0)).focus(function (e) {
             if (!interval_focus_tab_id) {
                 interval_focus_tab_id = setInterval(function () {
@@ -616,7 +666,7 @@ var messageBot = {
                         if (value.message.attachment != undefined) {
                             if (value.message.attachment.type == "image") {
                                 let tempImage = new messageBot.renderTemplate(date_current, '').Image(value.message.attachment.payload.url);
-                                lstTemplateHtml.push(tempText);
+                                lstTemplateHtml.push(tempImage);
                             }
                             if (value.message.attachment.type == "template") {
                                 if (value.message.attachment.payload.template_type == "button") {
@@ -801,7 +851,7 @@ var messageBot = {
             tmpText += '                </div>';
             tmpText += '     </div>';
             if (genericTotal > 1) {
-                tmpText += ` <a class="btn_back_quickreply _32rk _32rg _1cy6" href="#" style="display: none;">
+                tmpText += ` <a class="btn_back_genetics _32rk _32rg _1cy6" href="#" style="display: none;">
                                 <div direction="forward" class="_10sf _5x5_">
                                     <div class="_5x6d">
                                         <div class="_3bwv _3bww">
@@ -814,7 +864,7 @@ var messageBot = {
                                     </div>
                                 </div>
                             </a>
-                            <a class="btn_next_quickreply _32rk _32rh _1cy6" href="#" style="display: block;">
+                            <a class ="btn_next_genetics _32rk _32rh _1cy6" href="#" style="display: block;">
                                 <div direction="forward" class="_10sf _5x5_">
                                     <div class="_5x6d">
                                         <div class="_3bwv _3bww">
