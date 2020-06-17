@@ -16,11 +16,11 @@ var lacviet = {
         //closeButton.addEventListener("click", toggleModal);
     },
     initFormChat: function (channelGroupId) {
-        var styleDiv = 'opacity:1;visibility:visible;z-index:2147483639;position:fixed;bottom:0px;max-width: 100%;max-height:calc(100% - 0px);min-height:0px;min-width: 0px;background-color:transparent; border:0px;overflow:hidden;right: 0px;transition: none 0s ease 0s!important;';
-        $("<div id='dialog-form-bot' style=\"" + styleDiv + "\"></div>").appendTo("body");
+        var styleDiv = 'z-index:2;position:fixed;bottom:0px;max-width: 100%;max-height:calc(100% - 0px);min-height:0px;min-width: 0px;background-color:transparent; border:0px;overflow:hidden;right: 0px;transition: none 0s ease 0s!important;';
+        $("<div id='dialog-form-bot'\"></div>").appendTo("body");
         var html = '',
-        styleIframeCustom = 'style= "width: 100%;';
-        styleIframeCustom += 'height: 100%;';//neu mo 100%
+        styleIframeCustom = 'style= "width:0px;';
+        styleIframeCustom += 'height:0px;';//neu mo 100%
         styleIframeCustom += 'min-height: 0px;'
         styleIframeCustom += 'min-width: 0px;'
         styleIframeCustom += 'margin: 0px;'
@@ -35,8 +35,6 @@ var lacviet = {
         styleIframeCustom += 'border-width: 0px;'
         styleIframeCustom += 'float: none;'
         styleIframeCustom += 'position: absolute;'
-        styleIframeCustom += 'top: 0px;'
-        styleIframeCustom += 'left: 0px;'
         styleIframeCustom += 'bottom: 0px;'
         styleIframeCustom += 'right: 0px;'
         styleIframeCustom += 'z-index: 5;'
@@ -116,18 +114,30 @@ $('body').on('click', '.fb_dialog', function (e) {
         $("#dialog_iframe").removeClass('fb_customer_chat_bounce_out_v2').addClass('fb_customer_chat_bounce_in_v2');
         if ($(parent.window).width() <= 768) {
             //console.log($(parent.window).width())
-            $('#dialog-form-bot').css('max-height', '100%');
-            $('#dialog-form-bot').css('width', '100%');
-            $('#dialog-form-bot').css('height', '100%');
-            $('#dialog-form-bot').css('right', '0');
-            $('#dialog-form-bot').css('top', '0');
-            $('#dialog-form-bot').css('bottom', '0');
+            //$('#dialog-form-bot').css('max-height', '100%');
+            //$('#dialog-form-bot').css('width', '100%');
+            //$('#dialog-form-bot').css('height', '100%');
+            //$('#dialog-form-bot').css('right', '0');
+            //$('#dialog-form-bot').css('top', '0');
+            //$('#dialog-form-bot').css('bottom', '0');
+
+            $('#dialog_iframe').css('max-height', '100%');
+            $('#dialog_iframe').css('width', '100%');
+            $('#dialog_iframe').css('height', '100%');
+            $('#dialog_iframe').css('right', '0');
+            $('#dialog_iframe').css('top', '0');
+            $('#dialog_iframe').css('bottom', '0');
+            $('#dialog_iframe').css('left', '0');
+
             var frame = document.getElementById('dialog_iframe');
             frame.contentWindow.postMessage($(parent.window).width(), domainApp);
         }
         else {
-            $('#dialog-form-bot').css('width', '382px');
-            $('#dialog-form-bot').css('height', '652px');
+            $('#dialog_iframe').css('width', '382px');
+            $('#dialog_iframe').css('height', '652px');
+
+            //$('#dialog-form-bot').css('width', '382px');
+            //$('#dialog-form-bot').css('height', '652px');
         }
         setTimeout(function () {
             // bung chiều cao ô chatbox
@@ -140,8 +150,8 @@ $('body').on('click', '.fb_dialog', function (e) {
     else if ($("#dialog_iframe").hasClass("fb_customer_chat_bounce_in_v2")) { // nếu đang mở
         $("#dialog_iframe").removeClass('fb_customer_chat_bounce_in_v2').addClass('fb_customer_chat_bounce_out_v2');
         setTimeout(function () {
-            $('#dialog-form-bot').css('width', '0px');
-            $('#dialog-form-bot').css('height', '0px');
+            //$('#dialog-form-bot').css('width', '0px');
+            //$('#dialog-form-bot').css('height', '0px');
             $('#dialog_iframe').css('max-height', '0px');
         }, 200)
     }
@@ -159,7 +169,9 @@ eventer(messageEvent, function (e) {
     //console.log(domainApp)
     if (e.data == 'close') {
         // có tín hiệu đóng
-        $('.fb_dialog').click();
+        $('#dialog_iframe').css('max-height', '0px');
+        $("#dialog_iframe").removeClass('fb_customer_chat_bounce_in_v2').addClass('fb_customer_chat_bounce_out_v2');
+       //$('.fb_dialog').click();
     }
     if (e.data == 'open') {
         $('.fb_dialog').click();

@@ -203,7 +203,15 @@ var cBoxHub = {
                 console.log('SingalR connect đang khởi động lại')
                 $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
                 $.connection.hub.start().done(function () {
-
+                    // kết nối chat khi agent hoặc bot active
+                    clearInterval(intervalReconnectId);
+                    $('.box-reconecting').removeClass('showing');
+                    if (setting.isAgentOnline == true) {
+                        $(".chat-footer").show();
+                        objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
+                    } else {
+                        $(".chat-footer").hide();
+                    }
                 });
             }, 5000);
         });
@@ -384,31 +392,33 @@ var cBoxMessage = {
         })
 
         $("body").on('click', '.btn_next_genetics', function () {
-            var $form = $(this).closest('.message-item-genetics');
-            var currentIndex = $form.find($('div.message-container')).attr('index');
-            var newIndex = (parseInt(currentIndex) + 1);
-            var maxIndex = $form.find($('div.message-item-template-generic')).length - 1;
-            $form.find($('div.message-container')).attr('index', newIndex);
-            var calPX = -272 * newIndex;
-            var leftPX = '' + calPX + 'px';
-            $form.find('.message-template').css('left', leftPX);
-            // show back
+            var $form = $(this).closest('.message-item-genetics'),
+                currentIndex = $form.find($('div.message-container')).attr('index');
+                minIndex = (parseInt(currentIndex) + 1),
+                maxIndex = $form.find($('div.message-item-template-generic')).length - 1;
+                $form.find($('div.message-container')).attr('index', minIndex);
+
+            var widthByItem = -272 * minIndex,
+                withScroll = '' + widthByItem + 'px';
+
+            $form.find('.message-template').css('left', withScroll);
             $form.find('.btn_back_genetics').css('display', 'block');
-            if (newIndex == maxIndex) {
+            if (minIndex == maxIndex) {
                 $form.find('.btn_next_genetics').css('display', 'none');
             }
         })
         $("body").on('click', '.btn_back_genetics', function () {
-            var $form = $(this).closest('.message-item-genetics');
-            var currentIndex = $form.find($('div.message-container')).attr('index');
-            var newIndex = (parseInt(currentIndex) - 1);
-            $form.find($('div.message-container')).attr('index', newIndex);
+            var $form = $(this).closest('.message-item-genetics'),
+                currentIndex = $form.find($('div.message-container')).attr('index'),
+                index = (parseInt(currentIndex) - 1);
 
-            var calPX = -272 * newIndex;
-            var leftPX = '' + calPX + 'px';
+            $form.find($('div.message-container')).attr('index', index);
 
-            $form.find('.message-template').css('left', leftPX);
-            if (newIndex == 0) {
+            var widthByItem = -272 * index,
+                withScroll = '' + widthByItem + 'px';
+
+            $form.find('.message-template').css('left', withScroll);
+            if (index == 0) {
                 $form.find('.btn_back_genetics').css('display', 'none');
             }
             $form.find('.btn_next_genetics').css('display', 'block');
@@ -433,7 +443,7 @@ var cBoxMessage = {
             new messageBot.getMessage(dataPostback, CustomerModel.ThreadID, setting.BotID);
         })
 
-        $($($("#input-chat-message").next()).eq(0)).focus(function (e) {
+        $("#input-chat-message").focus(function (e) {
             if (!interval_focus_tab_id) {
                 interval_focus_tab_id = setInterval(function () {
                     console.log("customer click focus");
@@ -443,7 +453,7 @@ var cBoxMessage = {
                 }, 1000);
             }
         })
-        $($($("#input-chat-message").next()).eq(0)).blur(function (e) {
+        $("#input-chat-message").blur(function (e) {
             clearInterval(interval_focus_tab_id);
             interval_focus_tab_id = 0;
             let isFocusTab = false;
@@ -452,42 +462,42 @@ var cBoxMessage = {
         })
 
 
-        $($($("#input-chat-message").next()).eq(0)).keyup(function (e) {
+        $("#input-chat-message").keyup(function (e) {
             var edValue = $(this);
-            var text = edValue.text();
+            var text = edValue.val();
             if (text.length > 0) {
+                $(".btn_submit").show();
                 if (isTyping == false) {
                     isTyping = true;
                     objHub.server.sendTyping(_channelGroupId, CustomerModel.ThreadID, '', '', CustomerModel.ID, isTyping, TYPE_USER_CONNECT.CUSTOMER);
-
                 }
             } else {
                 isTyping = false;
                 objHub.server.sendTyping(_channelGroupId, CustomerModel.ThreadID, '', '', CustomerModel.ID, isTyping, TYPE_USER_CONNECT.CUSTOMER);
+                $(".btn_submit").hide();
             }
         })
 
-        $($($("#input-chat-message").next()).eq(0)).keydown(function (e) {
+        $("#input-chat-message").keydown(function (e) {
             var edValue = $(this);
-            var text = edValue.html();
+            var text = edValue.val();
             if (e.which == 13) {
                 e.preventDefault(e);
                 if (text !== "") {
-
-
                     insertChat("customer", isValidURLandCodeIcon(text), CustomerModel.Name, "");
                     // gửi tin nhắn
                     objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, text, "", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
 
                     $(this).val('');
-                    $(this).text('');
 
                     if (setting.isTransferToBot == true) {
                         new messageBot.renderTemplate('', '').Typing();
                         new messageBot.getMessage(text, CustomerModel.ThreadID, setting.BotID);
                     }
-
                     isTyping = false;
+
+                    $(".btn_submit").hide();
+
                     return;
                 }
             }
@@ -504,14 +514,14 @@ var cBoxMessage = {
                 objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, text, "", CustomerModel.ID, "", TYPE_USER_CONNECT.CUSTOMER);
 
                 // emty input
-                $($($("#input-chat-message").next()).eq(0)).val('');
-                $($($("#input-chat-message").next()).eq(0)).text('');
+                $("#input-chat-message").val('');
 
                 if (setting.isTransferToBot == true) {
                     new messageBot.renderTemplate('', '').Typing();
                     new messageBot.getMessage(text, CustomerModel.ThreadID, setting.BotID);
                 }
 
+                $(".btn_submit").hide();
             }
             return;
         })
@@ -525,7 +535,7 @@ var cBoxMessage = {
 }
 
 function insertActionChat(contentAction) {
-    var htmlAction = '<div class="message-item message-item-divider">';
+    var htmlAction = '<div class="message-item message-item-divider clearfix">';
     htmlAction += '<span>' + contentAction + '</span>';
     htmlAction += '    </div>';
     $("#message-content").append(htmlAction)
@@ -555,7 +565,7 @@ function insertChat(who, text, userName, avatar) {
         }
     }
 
-    content = '<div class="message-item ' + user_class_chat + '" data-user="' + who + '">';
+    content = '<div class="message-item ' + user_class_chat + ' clearfix" data-user="' + who + '">';
     content += message.getAgentIcon(avatar);
     content += message.getHtmlMessageBody(who, userName, text, date_current);
     content += '</div>';
@@ -619,7 +629,7 @@ var message = {
     },
     getTypingUser: function (avatar) {
         $(".message-quickreply").remove();
-        var tmpText = '<div class="message-item message-item-typing">';
+        var tmpText = '<div class="message-item message-item-typing clearfix">';
         tmpText += message.getAgentIcon(avatar)
         tmpText += `<div class="message-item-content writing">
                                 <div class="_4xko _13y8">
@@ -634,6 +644,7 @@ var message = {
                           </div>`;
         tmpText += '</div>';
         $('#message-content').append(tmpText);
+        scrollBar();
     }
 }
 
@@ -768,7 +779,7 @@ var messageBot = {
         }
         this.Typing = function () {
             $(".message-quickreply").remove();
-            var tmpText = '<div class="message-item message-item-typing">';
+            var tmpText = '<div class="message-item message-item-typing clearfix">';
             tmpText += messageBot.getIcon('')
             tmpText += `<div class="message-item-content writing">
                                 <div class="_4xko _13y8">
@@ -785,7 +796,7 @@ var messageBot = {
             $('#message-content').append(tmpText);
         },
         this.Text = function (text) {
-            var tmpText = '<div class="message-item {bot} message-item-text">';
+            var tmpText = '<div class="message-item {bot} message-item-text clearfix">';
             tmpText += messageBot.getIcon('');
             tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
@@ -800,7 +811,7 @@ var messageBot = {
             return tmpText;
         },
         this.Image = function (urlImage) {
-            var tmpText = '<div class="message-item {bot} message-item-image">';
+            var tmpText = '<div class="message-item {bot} message-item-image clearfix">';
             tmpText += messageBot.getIcon(avatarBot);
             tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
@@ -815,7 +826,7 @@ var messageBot = {
             return tmpText;
         },
         this.TextAndButton = function (text, calbackButton) {
-            var tmpText = '<div class="message-item {bot} message-item-text-button">';
+            var tmpText = '<div class="message-item {bot} message-item-text-button clearfix">';
             tmpText += messageBot.getIcon(avatarBot);
             tmpText += '<div class="message-body">';
             tmpText += '                    <div>';
@@ -833,7 +844,7 @@ var messageBot = {
             return tmpText;
         },
         this.ContainerGeneric = function (templateGenericIndex, genericTotal) {
-            var tmpText = '<div class="message-item {bot} message-type-list message-item-genetics">';
+            var tmpText = '<div class="message-item {bot} message-item-genetics clearfix">';
             tmpText += messageBot.getIcon(avatarBot);
             tmpText += '     <div class="message-body">';
             tmpText += '                    <div>';
@@ -844,7 +855,7 @@ var messageBot = {
             tmpText += '                    </div>';
 
 
-            tmpText += '                <div class="message-container" index="0" style="overflow:hidden">';
+            tmpText += '                <div class="message-container" index="0">';
             tmpText += '                                   <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">';
             tmpText += templateGenericIndex;
             tmpText += '                                   </div>';
@@ -921,7 +932,7 @@ var messageBot = {
             return tmpText;
         },
         this.QuickReply = function (lstQuickReply) {
-            var tmpText = '        <div class="message-quickreply">';
+            var tmpText = '        <div class="message-quickreply clearfix">';
             tmpText += '                <div class="message-quickreply-container">';
             tmpText += '                    <div class="message-quickreply-item" style="position:relative;" index="2">';
             $.each(lstQuickReply, function (index, value) {
@@ -964,7 +975,7 @@ var messageBot = {
 }
 
 function scrollBar() {
-    $("#message-content").scrollTop($("#message-content").prop('scrollHeight'));
+    $(".messages").scrollTop($(".messages").prop('scrollHeight'));
 }
 
 window.addEventListener('message', function (event) {

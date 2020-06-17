@@ -45,7 +45,6 @@ namespace BotProject.Web.SignalRChat
         /// <param name="threadId"></param>
         public void ConnectCustomerToChannelChat(string customerId, long channelGroupId)
         {
-
             string connectionId = Context.ConnectionId;
             try
             {

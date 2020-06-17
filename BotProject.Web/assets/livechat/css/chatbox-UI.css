@@ -223,10 +223,10 @@
     display: flex;
     flex-direction: column;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     border-radius: 8px;
     background: rgb(246, 246, 247);
-    max-height: calc(100% - 10px);
+    max-height: calc(100vh - 10px);
     height: 100%;
 }
 
@@ -298,10 +298,10 @@
     background-color: white;
     border: none;
     box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.1);
-    height: calc(100vh - 0px);
     overflow: hidden;
     margin-bottom: 0;
     padding-top: 5px;
+    height: calc(100vh - 0px);
 }
 
     .chat-block .card-footer {
@@ -404,7 +404,7 @@
 
         .chat-block .chat-content .messages {
             /*padding: 0.5rem;*/
-            display: -webkit-box;
+            /*display: -webkit-box;
             display: flex;
             -webkit-box-orient: vertical;
             -webkit-box-direction: normal;
@@ -412,8 +412,9 @@
             -webkit-box-align: start;
             align-items: flex-start;
             -webkit-box-flex: 1;
-            flex: 1;
+            flex: 1;*/
             overflow-x: hidden;
+            height:500px;
         }
 
             .chat-block .chat-content .messages .message-item {
@@ -568,6 +569,21 @@ small {
     will-change: opacity;
     backface-visibility: hidden;
     padding: 0em 0.5em 0 0.5em;
+}
+@media(max-width:381px) {
+    .chatbox-main{
+        padding:0px;
+    }
+    .chatbox-container {
+        display: flex;
+        flex-direction: column;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 4px 12px;
+        /*overflow: hidden;*/
+        border-radius: 8px;
+        background: rgb(246, 246, 247);
+        max-height: calc(100vh - 0px);
+        height: 100%;
+    }
 }
 
 .chat-block .chat-sidebar-customer {
@@ -972,7 +988,7 @@ _3bwv > ._3bwy {
 
 /*Reconecting*/
 .box-reconecting {
-    position: relative;
+    /*position: relative;*/
     /*top: 50px;
             left: 0px;
             right: 0px;*/
@@ -987,7 +1003,7 @@ _3bwv > ._3bwy {
 
 /*Disconected*/
 .box-disconected {
-    position: relative;
+    /*position: relative;*/
     /*top: 50px;
             left: 0px;
             right: 0px;*/
@@ -1125,3 +1141,20 @@ _3bwv > ._3bwy {
     animation-duration: 1s;
     animation-iteration-count: 1;
 }
+
+.clearfix:after{
+    clear: both;
+    content: ".";
+    display: block;
+    width: 0px;
+    height: 0px;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+  select:focus,
+  textarea:focus,
+  input:focus {
+    font-size: 16px;
+    background: #eee;
+  }
+}
+/*Input Emoji*/

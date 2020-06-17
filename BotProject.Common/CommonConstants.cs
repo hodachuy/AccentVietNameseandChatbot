@@ -10,6 +10,8 @@ namespace BotProject.Common
     public class CommonConstants
     {
         public const string SessionUser = "User";
+        // session livechat
+        public const string SessionLcCustomer = "Customer";
         public const string Administrator = "Administrator";
         public const string Visitor = "Visitor";
         public const string PathImage = "Card";

@@ -11,8 +11,10 @@
     <title>Livechat</title>
     <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/assets/livechat/css/chatbox-UI.css" rel="stylesheet" />
-    <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet" />
-    <link href="~/assets/client/libs/emoji-picker/css/emoji.css" rel="stylesheet" />
+    <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet"/>
+    <link href="~/assets/client/css/lvbot-chat-dialog/c3_PqmL6kgI3br.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c5_rouofWlolT7.css" rel="stylesheet" />
+    <link href="~/assets/client/css/lvbot-chat-dialog/c2_7E4oLQ9UO5V.css" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/assets/client/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script>
@@ -212,7 +214,7 @@
             background-color: rgb(255, 255, 255);
             font-family: inherit;
             box-shadow: none;
-            font-size: 0.875rem;
+            font-size: 16px;
             font-weight: normal;
             color: rgb(17, 17, 17);
             border-width: 1px;
@@ -285,7 +287,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            overflow: hidden;
+            /*overflow: hidden;*/
             width: 100%;
         }
 
@@ -293,7 +295,7 @@
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            overflow: hidden;
+            /*overflow: hidden;*/
             width: 100%;
         }
 
@@ -781,19 +783,15 @@
                                                                 </div>*@
                                                                 <div class="lc-qvffge e108e6fy0">
                                                                     <div class="lc-1etn9kn eptvlbh0">
-                                                                        <fieldset class="lc-nnsuga" name="ujetsxe8nx_156629227881205053">
-                                                                            <legend class="lc-19g19dr e1kph7ea0">
-                                                                                <span class="Linkify">
-                                                                                    Tôi đồng ý để dữ liệu cá nhân của tôi được <strong>Lạc Việt Livechat</strong> xử lý để hỗ trợ trò chuyện. <a href="#" target="_blank" rel="nofollow noopener">Chính sách</a>
-                                                                                </span>
-                                                                            </legend>
-                                                                            <div class="lc-dwfpgr evnlvbu0">
-                                                                                <label class="lc-197q04t">
-                                                                                    <input type="checkbox" id="ujetsxe8nx_156629227881205053_0" name="ujetsxe8nx_156629227881205053" class="lc-5mlnfz e81sjne0" value="index0_0">
-                                                                                </label>
-                                                                                <label for="ujetsxe8nx_156629227881205053_0" class="lc-1n7uoem evnlvbu1">Đồng ý</label>
-                                                                            </div>
-                                                                        </fieldset>
+                                                                        <span class="Linkify">
+                                                                            Tôi đồng ý để dữ liệu cá nhân của tôi được <strong>Lạc Việt Livechat</strong> xử lý để hỗ trợ trò chuyện. <a href="#" target="_blank" rel="nofollow noopener">Chính sách</a>
+                                                                        </span>
+                                                                        <div class="lc-dwfpgr evnlvbu0">
+                                                                            <label class="lc-197q04t">
+                                                                                <input type="checkbox" id="ujetsxe8nx_156629227881205053_0" name="ujetsxe8nx_156629227881205053" class="lc-5mlnfz e81sjne0" value="index0_0">
+                                                                            </label>
+                                                                            <label for="ujetsxe8nx_156629227881205053_0" class="lc-1n7uoem evnlvbu1">Đồng ý</label>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="lc-13nuv3g e1n7ru1l0">
@@ -816,7 +814,7 @@
                 </div>
             </div>
             <div class="chat-footer">
-                <div class="d-flex">
+                @*<div class="d-flex">
                     <div class="flex-grow-1" style="position:relative">
                         <input type="text" class="form-control" id="input-chat-message" placeholder="Nhập tin nhắn..." data-emojiable="true">
                     </div>
@@ -824,6 +822,43 @@
                         <button type="submit" id="btn-submit-chat-message">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send width-15 height-15"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                         </button>
+                    </div>
+                </div>*@
+                <div class="_336a">
+                    <div class="_4zbw">
+                        <!--BUTTON MENU-->
+                        <div class="_661n _661n_btn_menu_chat" tabindex="0" role="button">
+                            <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" style="fill:rgb(75, 90, 148);">
+                                    <g fill="#ea5269" style="fill:rgb(75, 90, 148);">
+                                        <rect x="2" y="3" width="20" height="1"></rect>
+                                        <rect x="2" y="11" width="20" height="1"></rect>
+                                        <rect x="2" y="19" width="20" height="1"></rect>
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                        <!--INPUT TEXT-->
+                        <div class="_4fwe">
+                            <label class="_58ak _3ct8">
+                                <input class="_58al _58al_input_txt" id="input-chat-message" type="text" autocomplete="off" placeholder="Nhập tin nhắn..." value="">
+                            </label>
+                        </div>
+                        <div class="_kmd">
+                            <div class="_4bqf _64mk _64ml btn_submit" id="btn-submit-chat-message" tabindex="0" role="button" style="display:none">
+                                <svg width="22px" height="22px" viewBox="0 0 22 22">
+                                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                        <g transform="translate(-5.000000, -5.000000)" fill="#0081ff" style="fill:rgb(75, 90, 148);">
+                                            <g>
+                                                <g transform="translate(5.000000, 5.000000)">
+                                                    <path d="M2.0300068,0.145970044 L20.9662955,9.37015518 C22.3445682,10.0420071 22.3445682,11.9582654 20.9662955,12.6296618 L2.0300068,21.853847 C1.09728834,22.3084288 0,21.6475087 0,20.6317597 L0.806953417,13.8945654 C0.882225434,13.2659853 1.39089595,12.7699536 2.03608467,12.6957083 L12.0229514,11.6795038 C12.8612292,11.5943266 12.8612292,10.4054904 12.0229514,10.3203132 L2.03608467,9.30410872 C1.39089595,9.23031889 0.882225434,8.7342872 0.806953417,8.10525162 L0,1.36805729 C0,0.352308292 1.09728834,-0.3081563 2.0300068,0.145970044"></path>
+                                                </g>
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -834,27 +869,9 @@
     </div>
 
 
-    <!--Icon Chat-->
+    <!--SignalR Chat-->
     <script src="~/Scripts/jquery.signalR-2.2.2.js"></script>
     <script src="~/signalr/hubs"></script>
-
-    <script src="~/assets/client/libs/emoji-picker/js/config.js"></script>
-    <script src="~/assets/client/libs/emoji-picker/js/util.js"></script>
-    <script src="~/assets/client/libs/emoji-picker/js/jquery.emojiarea.js"></script>
-    <script src="~/assets/client/libs/emoji-picker/js/emoji-picker.js"></script>
-    <script>
-        $(function () {
-            window.emojiPicker = new EmojiPicker({
-                emojiable_selector: '[data-emojiable=true]',
-                //assetsPath: '../asset/emoji-picker/img',
-                assetsPath: _Host + 'assets/client/libs/emoji-picker/img',
-                popupButtonClasses: 'fa fa-smile'
-            });
-            window.emojiPicker.discover();
-        });
-    </script>
-    <!--signalR-->
-
 
     <script src="~/assets/livechat/js/helper/lc_common.js"></script>
     <script src="~/assets/livechat/js/lc_chatbox.js"></script>
