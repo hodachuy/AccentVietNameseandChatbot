@@ -463,7 +463,7 @@
                 .chat-block .chat-content .messages .message-item .message-item-template-generic {
                     background-color: #f0f0f0;
                     margin-right: 10px;
-                    line-height: 1.5rem;
+                    /*line-height: 1.5rem;*/
                     border-radius: 1.3rem;
                     position: relative;
                     margin-bottom: 4px;
@@ -478,7 +478,6 @@
                     flex-direction: row-reverse;
                     margin-left: auto;
                     padding-left: 0px;
-                    padding-right: 10px;
                 }
 
                     .chat-block .chat-content .messages .message-item.me .time {
@@ -1039,8 +1038,13 @@ _3bwv > ._3bwy {
 }
 
 
-
-
+.message-generic-title{
+    font-size: 10pt;
+    line-height: 1.5rem;
+}
+.message-generic-subtitle{
+   font-size: 10pt;
+}
 
 
 /*Button dialog chat*/

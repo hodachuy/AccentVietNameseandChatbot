@@ -1,5 +1,6 @@
 ﻿using BotProject.Data.Infrastructure;
 using BotProject.Data.Repositories;
+using BotProject.Data.Repositories.LiveChat;
 using BotProject.Model.Models.LiveChat;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,6 @@ namespace BotProject.Service.Livechat
 
         // Device
         Device CreateDevice(Device device);
-
 
         void Save();
     }

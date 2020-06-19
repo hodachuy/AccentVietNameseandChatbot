@@ -373,7 +373,7 @@ var customerEvent = {
                         // auto focus customer đầu tiên
                         setTimeout(function () {
                             new customerEvent.customerJoin().ViewFormChatById(data[0].ID, data[0].ThreadID)
-                        }, 500)
+                        }, 1000)
                     }
                 },
             });
@@ -574,12 +574,13 @@ function appendMessage(elementLastMessageAppend, who, customerId, text) {
     if (elementLastMessageAppend !== "") {
         // append body message
         var content = '<div class="message-item-content">' + text + '</div>';
-        $(elementLastMessageAppend).after($(content));
+        $(elementLastMessageAppend).after($(content).hide().fadeIn(300));
+
         // bùa thêm thẻ div trống để active scroll tới bottom trong trường hợp insertAfter k phải elemnt chính nó
         $("#message-container-" + customerId).append("<div></div>");
     } else {
         // append body message
-        $("#message-container-" + customerId).append(text);
+        $("#message-container-" + customerId).append(text).children(':last').hide().fadeIn(300);
     }
     // remove action read, delivered, message not send
     if (who == TYPE_USER_CONNECT.CUSTOMER) {

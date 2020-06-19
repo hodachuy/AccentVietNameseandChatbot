@@ -36,7 +36,9 @@ var lacviet = {
         styleIframeCustom += 'float: none;'
         styleIframeCustom += 'position: absolute;'
         styleIframeCustom += 'bottom: 0px;'
-        styleIframeCustom += 'right: 0px;'
+        styleIframeCustom += 'right: 10px;'
+        styleIframeCustom += 'border-radius: 8px;'
+        styleIframeCustom += 'top: 20px;'
         styleIframeCustom += 'z-index: 5;'
         styleIframeCustom += 'transition: none 0s ease 0s!important;"';
         url = url + "LcChatBox/Index?channelGroupID=2";

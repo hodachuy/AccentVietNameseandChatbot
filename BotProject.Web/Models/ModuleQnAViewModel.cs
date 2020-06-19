@@ -15,6 +15,7 @@ namespace BotProject.Web.Models
         public string QuesContent { set; get; }
 
         public string AnsContent { set; get; }
+        public string AnsContentHTML { set; get; }
 
         public string AreaName { set; get; }
 

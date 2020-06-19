@@ -135,13 +135,14 @@ var cBoxHub = {
             })
         });
 
+        let tryingToReconnect = false;
+
         $.connection.hub.error(function (error) {
             console.log('SignalR error ngắt kết nối: ' + error)
             $(".box-disconected").addClass('showing');
             $(".chat-footer").hide();
+            tryingToReconnect = true;
         });
-
-        let tryingToReconnect = false;
 
         $.connection.hub.reconnecting(function () {
             tryingToReconnect = true;
@@ -231,7 +232,7 @@ var cBoxHub = {
         objHub.client.receiveTyping = function (channelGroupId, threadId, agentId, agentName, customerId, isTyping, typeUser) {
             if (CustomerModel.ID == customerId) {
                 if (isTyping) {
-                    new message.getTypingUser('');
+                    new messageUser.getTypingUser('');
                 } else {
                     //remove typing
                     $(".message-item-typing").remove();
@@ -540,14 +541,13 @@ function insertActionChat(contentAction) {
     htmlAction += '    </div>';
     $("#message-content").append(htmlAction)
     // scroll to bottom
-    setTimeout(function () {
-        scrollBar();
-    }, 200)
+    scrollBar();
 }
 
 
 function insertChat(who, text, userName, avatar) {
     //remove typing
+    $(".message-quickreply").remove();
     $(".message-item-typing").remove();
 
     let user_class_chat = (who == "customer" ? "me" : "agent");
@@ -566,8 +566,8 @@ function insertChat(who, text, userName, avatar) {
     }
 
     content = '<div class="message-item ' + user_class_chat + ' clearfix" data-user="' + who + '">';
-    content += message.getAgentIcon(avatar);
-    content += message.getHtmlMessageBody(who, userName, text, date_current);
+    content += messageUser.getAgentIcon(avatar);
+    content += messageUser.getHtmlMessageBody(who, userName, text, date_current);
     content += '</div>';
 
     // insert body chat
@@ -578,9 +578,9 @@ function insertChat(who, text, userName, avatar) {
 function appendMessage(elementLastMessageAppend, who, text) {
     if (elementLastMessageAppend !== "") {
         var content = '<div class="message-item-content">' + text + '</div>';
-        $(elementLastMessageAppend).after($(content));
+        $(elementLastMessageAppend).after($(content).hide().fadeIn(300));
     } else {
-        $("#message-content").append(text);
+        $("#message-content").append(text).children(':last').hide().fadeIn(300);
     }
 
     // remove action read, delivered, message not send
@@ -588,12 +588,11 @@ function appendMessage(elementLastMessageAppend, who, text) {
         $("#message-content").find('.message-item-action').remove();
     }
     // scroll to bottom
-    setTimeout(function () {
-        scrollBar();
-    }, 200)
+    scrollBar();
+
 }
 
-var message = {
+var messageUser = {
     getAgentIcon: function (avatar) {
         var templateAvatar = '';
         templateAvatar += '<div class="message-avatar">';
@@ -628,9 +627,8 @@ var message = {
         return templateMsg;
     },
     getTypingUser: function (avatar) {
-        $(".message-quickreply").remove();
         var tmpText = '<div class="message-item message-item-typing clearfix">';
-        tmpText += message.getAgentIcon(avatar)
+        tmpText += messageUser.getAgentIcon(avatar)
         tmpText += `<div class="message-item-content writing">
                                 <div class="_4xko _13y8">
                                     <div class="_4a0v _1x3z">
@@ -643,7 +641,7 @@ var message = {
                                 </div>
                           </div>`;
         tmpText += '</div>';
-        $('#message-content').append(tmpText);
+        $('#message-content').append(tmpText).children(':last').hide().fadeIn(300);
         scrollBar();
     }
 }
@@ -740,13 +738,12 @@ var messageBot = {
         $(element).delay(timeout).queue(function (next) {
             $("#message-content").find('.message-item-action').remove();
             $(".message-item-typing").remove();
-            $(this).append(text);
-
+            $(this).append($(text).addClass('animated moveUp')).append(scrollBar());
             if (isSendTyping) {
                 new messageBot.renderTemplate('', '').Typing();
             }
             objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, text, "", CustomerModel.ID, "", TYPE_USER_CONNECT.BOT);
-            scrollBar();
+
             next();
         });
     },
@@ -793,7 +790,7 @@ var messageBot = {
                                 </div>
                           </div>`;
             tmpText += '</div>';
-            $('#message-content').append(tmpText);
+            $('#message-content').append(tmpText).append(scrollBar());
         },
         this.Text = function (text) {
             var tmpText = '<div class="message-item {bot} message-item-text clearfix">';
@@ -855,7 +852,7 @@ var messageBot = {
             tmpText += '                    </div>';
 
 
-            tmpText += '                <div class="message-container" index="0">';
+            tmpText += '                <div class="message-container" index="0" style="padding-top:15px;">';
             tmpText += '                                   <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">';
             tmpText += templateGenericIndex;
             tmpText += '                                   </div>';
@@ -980,6 +977,7 @@ function scrollBar() {
 
 window.addEventListener('message', function (event) {
     var widthParent = parseInt(event.data);
+    console.log('su kien')
     if (widthParent <= 425) {
         $("._3-8j").css('margin', '0px 0px 0px');
         $("._6atl").css('height', '100%');

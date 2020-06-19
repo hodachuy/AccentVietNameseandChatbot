@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BotProject.Model.Models.LiveChat
 {
-    [Table("Messages")]
+    [Table("Messsages")]
     public class Message
     {
         [Key]

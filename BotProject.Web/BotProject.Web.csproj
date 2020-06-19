@@ -308,6 +308,7 @@
     <Compile Include="API\ZaloWebhookController.cs" />
     <Compile Include="API_Livechat\AgentController.cs" />
     <Compile Include="API_Livechat\ChatRoomController.cs" />
+    <Compile Include="API_Livechat\ConversationController.cs" />
     <Compile Include="API_Livechat\CustomerController.cs" />
     <Compile Include="API_Livechat\LiveChatBotController.cs" />
     <Compile Include="API_Mobile\MessageController.cs" />
@@ -889,6 +890,7 @@
     <Content Include="assets\livechat\css\chatbox-dialog.css" />
     <Content Include="assets\livechat\css\chatbox-UI.css" />
     <Content Include="assets\livechat\css\lc_agent.css" />
+    <Content Include="assets\livechat\css\message-animation.css" />
     <Content Include="assets\livechat\images\user_agent-default.png" />
     <Content Include="assets\livechat\images\fb-mega-icon-2.png" />
     <Content Include="assets\livechat\images\fb-mega-icon.png" />

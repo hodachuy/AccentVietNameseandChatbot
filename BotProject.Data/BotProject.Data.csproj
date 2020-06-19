@@ -727,7 +727,9 @@
     <Compile Include="Repositories\LiveChat\ChatSurveyRepository.cs" />
     <Compile Include="Repositories\LiveChat\ChatWidgetCustomizationRepository.cs" />
     <Compile Include="Repositories\LiveChat\ChatWidgetLanguageRepository.cs" />
+    <Compile Include="Repositories\LiveChat\ConversationRepository.cs" />
     <Compile Include="Repositories\LiveChat\CustomerRepository.cs" />
+    <Compile Include="Repositories\LiveChat\CustomerTagRepository.cs" />
     <Compile Include="Repositories\LiveChat\DeviceRepository.cs" />
     <Compile Include="Repositories\FileDocumentRepository.cs" />
     <Compile Include="Repositories\FormQuestionAnswerRepository.cs" />
