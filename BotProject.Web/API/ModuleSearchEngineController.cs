@@ -141,12 +141,22 @@ namespace BotProject.Web.API
                 {
                     // add Ques
                     mdQuesDb.UpdateModuleQuestion(mdQnA);
+                    if (!String.IsNullOrEmpty(mdQnA.AreaName))
+                    {
+                        var mdArea = _moduleSearchEngineService.GetByAreaName(mdQnA.AreaName);
+                        if (mdArea != null)
+                        {
+                            mdQuesDb.AreaID = mdArea.ID;
+                        }
+                    }
+
                     _moduleSearchEngineService.CreateQuestion(mdQuesDb);
                     _moduleSearchEngineService.Save();
                     // add Ans
                     mdAnsDb.UpdateModuleAnswer(mdQnA);
                     mdAnsDb.MQuestionID = mdQuesDb.ID;
                     _moduleSearchEngineService.CreateAnswer(mdAnsDb);
+                    _moduleSearchEngineService.Save();
 
                 }
                 else
@@ -157,18 +167,19 @@ namespace BotProject.Web.API
                     // update Ans
                     mdAnsDb.UpdateModuleAnswer(mdQnA);
                     _moduleSearchEngineService.UpdateAnswer(mdAnsDb);
+
+                    _moduleSearchEngineService.Save();
                 }
-                _moduleSearchEngineService.Save();
 
                 // api training
                 string nlrQuesID = mdQuesDb.ID.ToString();
                 string nlrQuesContentText = mdQuesDb.ContentText;
                 string nlrAnsContentText = mdAnsDb.ContentText;
                 string nlrAnsContentHTML = mdAnsDb.ContentHTML;
-                string nlrAreaName = mdQnA.AreaName;
-                string nlrAreaID = (String.IsNullOrEmpty(mdQnA.AreaID.ToString()) == true ? "" : mdQnA.AreaID.ToString());
+                string nlrAreaID = (String.IsNullOrEmpty(mdQuesDb.AreaID.ToString()) == true ? "" : mdQuesDb.AreaID.ToString());
                 string nlrBotID = mdQnA.BotID.ToString();
-                //apiNLR.AddQues(nlrQuesID, nlrQuesContentText, nlrAnsContentText, nlrAreaName, nlrAnsContentHTML);
+
+                string rsAPI = apiNLR.AddQues(nlrQuesID, nlrQuesContentText, nlrAnsContentText, nlrAreaID, nlrQuesContentText, nlrAnsContentHTML, nlrBotID);
 
                 response = request.CreateResponse(HttpStatusCode.OK, result);
                 return response;

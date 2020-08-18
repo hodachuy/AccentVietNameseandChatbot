@@ -495,7 +495,6 @@ body.fb_hidden {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    opacity: 0;
     visibility: hidden;
     transform: scale(1.1);
     transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
@@ -507,7 +506,7 @@ body.fb_hidden {
     transform: translate(-50%, -50%);
     background-color: white;
     padding: 1rem 1.5rem;
-    width: 54rem;
+    width: 104rem;
     border-radius: 0.5rem;
 }
 .bot-close-button {
@@ -527,4 +526,43 @@ body.fb_hidden {
     visibility: visible !important;
     transform: scale(1.0);
     transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+
+
+    #dialog_iframer_container {
+  overflow: hidden;
+	 /* Here's the trick: rotate the entire element so the resize handle is in the other corner. */
+	transform: rotateZ(180deg);
+	/* Note that in order to make resize: both work, an overflow is needed with anything other than visible.
+	   Set it to auto so we don't see scrollbars,
+	   but this element should never actually overflow as the only child has fixed 100% width and height.
+	*/
+	resize: both;
+	overflow: hidden;
+	/* Need a little padding for this element for the resize handle to be clickable.
+	   Also note the rotation flips the directions that need padding. */
+	/*padding: 0 8px 8px 0;*/
+	/* Should work for position fixed or absolute, as long as it is bottom/right positioned. */
+	position: fixed;
+	bottom: 63pt;
+	right: 9pt;
+	/* initial size can be anything, but usually wise to set it to something sensible initially. */
+	height: 500px;
+	width: 380px;
+    	min-width:360px;
+	min-height:480px;
+    z-index: 2147483646;
+    display:none;
+}
+
+    #dialog_iframe {
+	/* Rotate everything back so content is right way up: */
+	transform: rotateZ(180deg);
+	/* Grow along with resizable parent: */
+	width: 100%;
+	height: 100%;
+
+	/* make contents scrollable if resizable parent gets to small: */
+	overflow: hidden;
 }

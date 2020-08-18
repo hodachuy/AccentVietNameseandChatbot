@@ -249,7 +249,7 @@ var msgEvent = {
     getMessageAccentVN: function (text) {
         var rs = "";
         $.ajax({
-            url: "https://bot.digipro.vn/" + api.getAccentVN + '?text=' + text,//"https://bot.digipro.vn/"
+            url: "http://bot.digipro.vn/" + api.getAccentVN + '?text=' + text,//"https://bot.digipro.vn/"
             contentType: 'application/json; charset=utf-8',
             type: 'GET',
             async: false,

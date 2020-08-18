@@ -9,6 +9,7 @@ using BotProject.Web.Infrastructure.Extensions;
 using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
 using ExcelDataReader;
+using Microsoft.Owin;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
@@ -96,6 +98,11 @@ namespace BotProject.Web.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public JsonResult Test()
+        {
+            return Json("data");
         }
 
         #region CHATBOT
@@ -250,6 +257,7 @@ namespace BotProject.Web.Controllers
                         isSearchNLP = isMdSearch
                     }, JsonRequestBehavior.AllowGet);
                 }
+
                 //get new predicate from session user bot request
                 var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
                 _user = _botService.loadUserBot(userBot.ID);
@@ -1385,6 +1393,7 @@ namespace BotProject.Web.Controllers
                         mdQuesDb.UpdateModuleQuestion(mdQnA);
                         mdQuesDb.BotID = Int32.Parse(botId);
                         mdQuesDb.AreaID = Int32.Parse(mdQnA.AreaName);
+                        mdQuesDb.ContentHTML = mdQnA.QuesContent;
                         _moduleSearchEngineService.CreateQuestion(mdQuesDb);
                         _moduleSearchEngineService.Save();
                         // add Ans
@@ -1419,6 +1428,8 @@ namespace BotProject.Web.Controllers
             }
         }
         //#endregion
+
+       
 
         #region --DATA SOURCE API--
 

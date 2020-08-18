@@ -128,22 +128,23 @@ var lacviet = {
     initFormChat: function (dencryptUrl, token, botId, color) {
         //var decryptedUrl = CryptoJS.AES.decrypt(encryptUrl, "Secret Passphrase").toString(CryptoJS.enc.Utf8);
         $("<div id='dialog-form-bot'></div>").appendTo("body");
+        var htmlBotYte = '';
         var html = '',
             styleIframeCustom = 'style="border: none;visibility: visible;width: 288pt;height: 378pt;border-radius: 9pt;bottom: 63pt;padding: 0px;position: fixed;right: 9pt;top: auto;z-index: 2147483646;max-height:0px;"';
         if (botId == 3019) {
-
+            htmlBotYte = 'style="width:542px;height:508px;"'
             styleIframeCustom  = 'style="border: none;visibility: visible;width: 415pt;height: 378pt;border-radius: 9pt;bottom: 63pt;padding: 0px;position: fixed;right: 0pt;top: auto;z-index: 2147483646;max-height:0px;"';
         }
         url = dencryptUrl + "apiv1/FormChat?token=" + token + "&botID=" + botId;
-        html += '<span style="vertical-align:bottom;width:0px;height:0px">';
-        html += '<iframe name="f12691cd05677d"width="288"height="378"frameborder="0"allowtransparency="true"allowfullscreen="true"scrolling="no"';
+        html += '<div id="dialog_iframer_container" ' + htmlBotYte + '>';
+        html += '<iframe name="f12691cd05677d" frameborder="0"allowtransparency="true"allowfullscreen="true"scrolling="no"';
         html += 'allow="encrypted-media"title=""src="' + url + '"';
-        html += styleIframeCustom;
+        //html += styleIframeCustom;
         //html += 'style="border: none;visibility: visible;width: 288pt;height: 378pt;border-radius: 9pt;bottom: 63pt;padding: 0px;';
         //html += 'position: fixed;right: 9pt;top: auto;z-index: 2147483646;max-height:0px;"';
         html += 'class="fb_customer_chat_bounce_out_v2"';
         html += 'id="dialog_iframe"></iframe>';
-        html += '</span>';
+        html += '</div>';
         html += '<div class="fb_dialog fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: none; border-radius: 50%; bottom: 18pt; display: inline; height: 45pt; padding: 0px; position: fixed; right: 18pt; top: auto; width: 45pt; z-index: 99999;">';
         html += '<div class="fb_dialog_content" style="background: none;">';
         html += '<div tabindex="0" role="button" style="cursor: pointer; outline: none;">';
@@ -225,11 +226,24 @@ $('body').on('click', '.fb_dialog', function (e) {
             $('#dialog_iframe').css('right', '0');
             $('#dialog_iframe').css('top', '0');
             $('#dialog_iframe').css('bottom', '0');
+
+            $('#dialog_iframer_container').css('height', '100%');
+            $('#dialog_iframer_container').css('width', '100%');
+            $('#dialog_iframer_container').css('max-height', '100%');
+            $('#dialog_iframer_container').css('max-width', '100%');
+            $('#dialog_iframer_container').css('right', '0');
+            $('#dialog_iframer_container').css('top', '0');
+            $('#dialog_iframer_container').css('bottom', '0');
+            $('#dialog_iframer_container').css('padding', '0');
+
             var frame = document.getElementById('dialog_iframe');
             frame.contentWindow.postMessage($(parent.window).width(), domainApp);
         }
         setTimeout(function () {
             $('#dialog_iframe').css('max-height', '100%');
+            $('#dialog_iframer_container').css('max-height', 'unset');
+            $('#dialog_iframer_container').css('resize', 'both');
+            $('#dialog_iframer_container').css('display', 'block');
             // init message
             var frame = document.getElementById('dialog_iframe');
             frame.contentWindow.postMessage('init', domainApp);
@@ -239,6 +253,8 @@ $('body').on('click', '.fb_dialog', function (e) {
         $("#dialog_iframe").removeClass('fb_customer_chat_bounce_in_v2').addClass('fb_customer_chat_bounce_out_v2');
         setTimeout(function () {
             $('#dialog_iframe').css('max-height', '0px');
+            $('#dialog_iframer_container').css('max-height', '0px');
+            $('#dialog_iframer_container').css('resize', 'unset');
         }, 200)
     }
 })
@@ -258,10 +274,12 @@ eventer(messageEvent, function (e) {
         $('.fb_dialog').click();
     } else {
         console.log(e.data)
-        if (e.data != undefined) {
-            var modal = document.querySelector(".bot-modal");
-            $("#bot-iframe").empty().append('<iframe style="width:49rem" width="100" height="378"frameborder="0"allowtransparency="true"allowfullscreen="true" src="' + e.data + '"></iframe>');
-            modal.classList.toggle("bot-show-modal");
+       if (e.data != undefined) {
+			if(e.data.includes("faq")){
+				var modal = document.querySelector(".bot-modal");
+				$("#bot-iframe").empty().append('<iframe style="width:100rem" width="100" height="378"frameborder="0"allowtransparency="true"allowfullscreen="true" src="' + e.data + '"></iframe>');
+				modal.classList.toggle("bot-show-modal");
+			}
         }
     }
     //if (e.origin === domainApp.replace("/tiengviet", "")) {

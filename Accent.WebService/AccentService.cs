@@ -17,7 +17,7 @@ namespace Accent.WebService
         {
             string path1Gram = HostingEnvironment.MapPath("~/Datasets/news1gram");
             string path2Gram = HostingEnvironment.MapPath("~/Datasets/news2grams");
-            accent.InitNgram(path1Gram, path2Gram);
+            //accent.InitNgram(path1Gram, path2Gram);
 
         }
         public static AccentService AccentInstance

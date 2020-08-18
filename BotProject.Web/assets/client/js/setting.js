@@ -382,28 +382,49 @@ $('body').on('click','.rmCard',function(){
 
 
 function loadCodeScriptDeployBot() {
-    var urlApp = _Host + "static/js/app.js";
+    var urlApp = _Host + "static/js/app.js?v=";
     var encryptedUrl = CryptoJS.AES.encrypt(_Host, "Secret Passphrase").toString();
     var encryptedUserID = CryptoJS.AES.encrypt($("#userID").val(), "Secret Passphrase").toString();
     var encryptedBotID = CryptoJS.AES.encrypt($("#botId").val(), "Secret Passphrase").toString();
     var encryptedColor = CryptoJS.AES.encrypt($("#formColor").val(), "Secret Passphrase").toString();
     var html = '';
+    //html += "   ---Thêm đoạn mã vào trang HTML - trong thẻ body---\n";
+    //html += "   <!--Lacviet-->\n";
+    //html += "    <script>\n";
+    //html += "       (function (l, a, c, v, i, e, t){\n";
+    //html += "         a[v] = a[v] || function (){\n";
+    //html += "         a[v].t =+ new Date();\n";
+    //html += "         (a[v].q = a[v].q || []).push(arguments);};\n";
+    //html += "         i = l.createElement('script');\n";
+    //html += "         var ii = l.getElementsByTagName('script')[0];\n";
+    //html += "         i.async = 1;\n";
+    //html += "         i.src = c;\n";
+    //html += "         i.id = 'lacviet-script';\n";
+    //html += "         ii.parentNode.insertBefore(i, ii);\n";
+    //html += "       })(document, window, '" + urlApp + "', 'lacviet');\n";
+    //html += "       setTimeout(function(){lacviet.load('" + encryptedUrl + "','" + encryptedUserID + "','" + encryptedBotID + "','" + encryptedColor + "');},1500);\n";
+    //html += "   </script>\n";  
+    //html += "   <!-- End Lacviet -->"
+
+
     html += "   ---Thêm đoạn mã vào trang HTML - trong thẻ body---\n";
     html += "   <!--Lacviet-->\n";
     html += "    <script>\n";
     html += "       (function (l, a, c, v, i, e, t){\n";
-    html += "         a[v] = a[v] || function (){\n";
-    html += "         a[v].t =+ new Date();\n";
-    html += "         (a[v].q = a[v].q || []).push(arguments);};\n";
-    html += "         i = l.createElement('script');\n";
-    html += "         var ii = l.getElementsByTagName('script')[0];\n";
-    html += "         i.async = 1;\n";
-    html += "         i.src = c;\n";
-    html += "         i.id = 'lacviet-script';\n";
-    html += "         ii.parentNode.insertBefore(i, ii);\n";
-    html += "       })(document, window, '" + urlApp + "', 'lacviet');\n";
-    html += "       setTimeout(function(){lacviet.load('" + encryptedUrl + "','" + encryptedUserID + "','" + encryptedBotID + "','" + encryptedColor + "');},1500);\n";
-    html += "   </script>\n";  
+    html += "           t = new Date().getUTCMilliseconds().toString();c += t;i = l.createElement('script');\n";
+    html += "           var ii = l.getElementsByTagName('script')[0];\n";
+    html += "           r = false;\n";
+    html += "           i.async = 1;\n";
+    html += "           i.src = c;\n";
+    html += "           i.id = 'lacviet-script';\n";
+    html += "           ii.parentNode.insertBefore(i, ii);\n";
+    html += "           i.onload = i.onreadystatechange = function () {\n";
+    html += "               if (!r && (!this.readyState || this.readyState == 'complete')){\n";
+    html += "                   r = true; e();\n";
+    html += "               };\n";
+    html += "           };\n";
+    html += "       })(document, window, '" + urlApp + "', 'lacviet','',function(){lacviet.load('" + encryptedUrl + "','" + encryptedUserID + "','" + encryptedBotID + "','" + encryptedColor + "');});\n";
+    html += "   </script>\n";
     html += "   <!-- End Lacviet -->"
     $('#deploy-bot').empty().text(html);
 }

@@ -18,6 +18,7 @@ namespace BotProject.Service
         MdAnswer CreateAnswer(MdAnswer ans);
         MdArea CreateArea(MdArea area);
         MdArea GetByAreaId(int id);
+        MdArea GetByAreaName(string areaName);
         void UpdateQuestion(MdQuestion ques);
         void UpdateAnswer(MdAnswer ans);
         void UpdateArea(MdArea area);
@@ -95,6 +96,11 @@ namespace BotProject.Service
         public MdArea GetByAreaId(int id)
         {
             return _mdAreaRepository.GetSingleById(id);
+        }
+
+        public MdArea GetByAreaName(string areaName)
+        {
+            return _mdAreaRepository.GetSingleByCondition(x => x.Name.Contains(areaName));
         }
     }
 }

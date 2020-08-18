@@ -198,7 +198,7 @@ function addQnA() {
     var questionContent = $("#txtQuestion").data("kendoEditor").value();//$("#txtQuestion").val();
     var answerContent = $("#txtAnswer").data("kendoEditor").value();//$("#txtAnswer").val(); 
     var areaName = $("#AreaID option:selected").text().replace("----- Tất cả -----", "");
-    var areaID = $("#AreaID").val();
+    var areaID = $("#cboArea").data("kendoComboBox").value();
     var botID = $("#botId").val();
     
     if (questionContent == "") return;
@@ -206,7 +206,7 @@ function addQnA() {
     qnaVm.QuesContent = questionContent;
     qnaVm.AnsContent = answerContent;
     qnaVm.AreaID = areaID;
-    qnaVm.AreaName = areaName;
+    qnaVm.AreaName = $("#cboArea").data("kendoComboBox").text();
     qnaVm.QuesID = $("#quesID").val();
     qnaVm.AnsID = $("#ansID").val();
     qnaVm.BotID = botID;

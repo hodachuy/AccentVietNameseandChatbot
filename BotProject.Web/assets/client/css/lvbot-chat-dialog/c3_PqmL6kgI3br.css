@@ -100,11 +100,11 @@
 
 ._30ss {
     bottom: 0;
-    display: flex;
+    /*display: flex;
     flex-direction: column;
     height: 100%;
     justify-content: flex-end;
-    position: absolute;
+    position: absolute;*/
     -webkit-tap-highlight-color: transparent;
     width: 100%;
 }
@@ -121,8 +121,11 @@
 }
 
 ._6atl {
-    height: 480px;/*!important*/
-    width: 360px;
+    /*height: 480px;
+    width: 360px;*/
+    min-height:480px;
+    height: 100%;
+    width: 100%;
 }
 
 ._6atr {
@@ -164,8 +167,12 @@
 }
 
 ._6ati {
-    height: 100%;
-    width: 360px;
+    /*height: 100%;
+    width: 360px;*/
+
+   height: 100%;
+    width: 100%;
+    min-width:360px;
 }
 
 ._6atj {
