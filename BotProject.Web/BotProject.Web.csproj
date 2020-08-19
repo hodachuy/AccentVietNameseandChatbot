@@ -408,6 +408,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource.resx</DependentUpon>
     </Compile>
+    <Compile Include="SignalRChat\BotHub.cs" />
     <Compile Include="SignalRChat\ChatHub.cs" />
   </ItemGroup>
   <ItemGroup>
