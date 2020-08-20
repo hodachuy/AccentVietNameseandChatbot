@@ -1,23 +1,14 @@
-﻿using AIMLbot;
-using AutoMapper;
-using BotProject.Common;
+﻿using BotProject.Common;
 using BotProject.Common.AppThird3PartyTemplate;
 using BotProject.Common.ViewModels;
 using BotProject.Model.Models;
 using BotProject.Service;
 using BotProject.Web.Infrastructure.Core;
 using BotProject.Web.Infrastructure.Extensions;
-using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Web.Models;
-using Common.Logging.Configuration;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Quartz;
-using Quartz.Impl;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -33,13 +24,12 @@ using System.Web.Script.Serialization;
 namespace BotProject.Web.API_Webhook
 {
     /// <summary>
-    /// Developer Facebook 
-    /// http://developers.facebook.com
+    /// Developer Web Application 
     /// ------------------------------
-    /// Webhook nhận tín hiệu dữ liệu tin nhắn gửi tới từ người dùng trên
-    /// nền tảng facebook.
+    /// Webhook nhận tín hiệu dữ liệu tin nhắn gửi tới từ người dùng trên nền tảng Web.
     /// </summary>
-    public class FacebookController : ApiController
+    [RoutePrefix("api/webapp")]
+    public class WebAppController : ApiControllerBase
     {
         // appSettings
         string pageToken = "";
@@ -62,29 +52,6 @@ namespace BotProject.Web.API_Webhook
            {"NOT_MATCH_05", "Xin lỗi, Tôi chưa được học để hiểu nội dung này?"},
         };
 
-        ///// <summary>
-        ///// Điều kiện để đi tới card tiếp theo
-        ///// </summary>
-        //private readonly string[] ARRAY_CONDITION_NAME = new string[]
-        //{
-        //    "REQUIRE_CLICK_BUTTON_TO_NEXT_CARD",//IsHaveCondition
-        //    "REQUIRE_INPUT_TEXT_TO_NEXT_CARD",//IsConditionWithInputText true + CardStepID NOT NULL
-        //    "VERIFY_TEXT_WITH_AREA_BUTTON",//IsConditionWithAreaButton
-        //    "POSTBACK_MODULE",
-        //    "ADD_ATTRIBUTE_USER", // Thuộc tính người dùng 
-        //    "AUTO_NEXT_CARD" //IsConditionWithInputText false + CardStepID NOT NULL
-        //};
-
-        //private Dictionary<string, string> CONDITION_CARD = new Dictionary<string, string>
-        //{
-        //    {"CONDITION_CLICK","REQUIRE_CLICK_BUTTON_TO_NEXT_CARD"},
-        //    {"CONDITION_INPUT","REQUIRE_INPUT_TEXT_TO_NEXT_CARD"},
-        //    {"CONDITION_VERIFY","VERIFY_TEXT_WITH_AREA_BUTTON"},
-        //    {"POSTBACK_MODULE","POSTBACK_MODULE"},
-        //    {"ADD_ATTRIBUTE_USER","ADD_ATTRIBUTE_USER"},
-        //    {"AUTO_NEXT_CARD","AUTO_NEXT_CARD"},
-        //};
-
         /// <summary>
         /// Thời gian chờ để phản hồi lại tin nhắn,thời gian tính từ tin nhắn cuối cùng
         /// người dùng không tương tác lại
@@ -94,7 +61,7 @@ namespace BotProject.Web.API_Webhook
         /// <summary>
         /// Thẻ bắt đầu khi lần đầu tiên người dùng tương tác
         /// </summary>
-        private string CARD_GET_STARTED = "danh mục"; //default "danh mục knowledgebase"
+        private string CARD_GET_STARTED = "danh mục";
 
         private string TITLE_PAYLOAD_QUICKREPLY = "";
 
@@ -106,20 +73,22 @@ namespace BotProject.Web.API_Webhook
 
         // Services
         private IApplicationFacebookUserService _appFacebookUser;
-        private BotServiceMedical _botService;
+        private BotService _botService;
         private ISettingService _settingService;
         private IHandleModuleServiceService _handleMdService;
         private IErrorService _errorService;
         private IAIMLFileService _aimlFileService;
         private IQnAService _qnaService;
+        private IBotService _botDbService;
         private ApiQnaNLRService _apiNLR;
         private IHistoryService _historyService;
         private ICardService _cardService;
         private AccentService _accentService;
         private IApplicationThirdPartyService _app3rd;
         private IAttributeSystemService _attributeService;
-        public FacebookController(IApplicationFacebookUserService appFacebookUser,
+        public WebAppController(IApplicationFacebookUserService appFacebookUser,
                                   ISettingService settingService,
+                                  IBotService botDbService,
                                   IHandleModuleServiceService handleMdService,
                                   IErrorService errorService,
                                   IAIMLFileService aimlFileService,
@@ -127,9 +96,10 @@ namespace BotProject.Web.API_Webhook
                                   IHistoryService historyService,
                                   ICardService cardService,
                                   IApplicationThirdPartyService app3rd,
-                                  IAttributeSystemService attributeService)
+                                  IAttributeSystemService attributeService) : base(errorService)
         {
             _errorService = errorService;
+            _botDbService = botDbService;
             _appFacebookUser = appFacebookUser;
             _settingService = settingService;
             _historyService = historyService;
@@ -138,27 +108,101 @@ namespace BotProject.Web.API_Webhook
             _handleMdService = handleMdService;
             _aimlFileService = aimlFileService;
             _app3rd = app3rd;
-            _botService = BotServiceMedical.BotInstance;
+            _botService = BotService.BotInstance;
             //_accentService = new AccentService();
             _apiNLR = new ApiQnaNLRService();
             _fbUser = new ApplicationFacebookUser();
         }
 
-        /// <summary>
-        /// Facebook kiểm tra mã bảo mật của đường dẫn webhook thiết lập
-        /// </summary>
-        /// <returns></returns>
-        public HttpResponseMessage Get()
+        [HttpGet]
+        [Route("getStarted")]
+        public async Task<HttpResponseMessage> GetStarted(HttpRequestMessage request, int botId)
         {
-            var querystrings = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
-            if (querystrings["hub.verify_token"] == verifytoken)
+            return CreateHttpResponse(request, () =>
             {
-                return new HttpResponseMessage(HttpStatusCode.OK)
+                HttpResponseMessage response = null;
+                var tempStarted = _settingService.GetSettingByBotID(botId);
+                response = request.CreateResponse(HttpStatusCode.OK, new
                 {
-                    Content = new StringContent(querystrings["hub.challenge"], Encoding.UTF8, "text/plain")
-                };
-            }
-            return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+                    status = "2",
+                    message = "Thành công",
+                    data = "postback_card_" + tempStarted.CardID
+                });
+                return response;
+            });
+        }
+
+        [HttpGet]
+        [Route("receiveMessage")]
+        public async Task<HttpResponseMessage> ReceiveMessage(HttpRequestMessage request, Message message)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                string text = message.text;
+                string senderId = message.senderId;
+                int botId = Int32.Parse(message.botId);
+                if (String.IsNullOrEmpty(text))
+                {
+                    response = request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        status = "-1",
+                        message = "Vui lòng nhập nội dung",
+                        data = new string[] { }
+                    });
+                    return response;
+                }
+                if (String.IsNullOrEmpty(message.botId))
+                {
+                    response = request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        status = "-1",
+                        message = "Không có thông tin Bot",
+                        data = new string[] { }
+                    });
+                    return response;
+                }
+                if (String.IsNullOrEmpty(message.senderId))
+                {
+                    response = request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        status = "-1",
+                        message = "Không có thông tin người dùng",
+                        data = new string[] { }
+                    });
+                    return response;
+                }
+
+                var botDb = _botDbService.GetByID(botId);
+
+                var settingDb = _settingService.GetSettingByBotID(botId);
+                var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
+                var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
+                if (lstAttribute.Count() != 0)
+                {
+                    _dicAttributeUser = new Dictionary<string, string>();
+                    foreach (var attr in lstAttribute)
+                    {
+                        _dicAttributeUser.Add(attr.AttributeKey, attr.AttributeValue);
+                    }
+                }
+
+
+                return response;
+            });
+        }
+
+
+        private async Task MessageResponse(string text, string senderId, int botId)
+        {
+            
+        }
+
+        public class Message
+        {
+            public string senderId { set; get; }//K2542621755855091
+            public string botId { set; get; }
+            public string text { set; get; }
         }
 
         /// <summary>
@@ -189,7 +233,7 @@ namespace BotProject.Web.API_Webhook
             Setting settingDb = _settingService.GetSettingByBotID(botId);
             pageToken = settingDb.FacebookPageToken;
             appSecret = settingDb.FacebookAppSecrect;
-            
+
             if (!VerifySignature(signature, body))
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
 
@@ -459,7 +503,7 @@ namespace BotProject.Web.API_Webhook
 
         private AIMLbot.Result GetBotReplyFromAIMLBot(string text)
         {
-            AIMLbot.Result aimlBotResult = _botService.Chat(text);
+            AIMLbot.Result aimlBotResult = _botService.Chat(text, null);
             return aimlBotResult;
         }
         private ResultBot CheckTypePostbackFromResultBotReply(AIMLbot.Result rsAIMLBot)

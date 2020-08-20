@@ -33,17 +33,44 @@ namespace Accent.ConsoleApplication
 {
     class Program
     {
+        static int amount = 0;
+        static object syncObj = new object();
+
+
+        static void IncreaseAmount()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                lock (syncObj)
+                {
+                    amount++;
+                    if (amount > 0)
+                    {
+                        //Thread.Sleep(1);
+                        Console.Write(amount + "\t");
+                    }
+                }
+            }
+        }
+        static void DecreaseAmount()
+        {
+            for (int i = 0; i < 100; i++)
+            {
+                lock (syncObj)
+                {
+                    amount--;
+                }
+            }
+        }
         public static void Main(string[] args)
         {
+            Thread t1 = new Thread(IncreaseAmount);
+            Thread t2 = new Thread(DecreaseAmount);
 
-            string phone = "0901234561";
-            string newPhone = "";
-            if(phone.Substring(0,3) == "090")
-            {
-                phone = phone.Remove(0, 1);
-                newPhone = "84" + phone;
-            }
-            string x = newPhone;
+            t1.Start();
+            t2.Start();
+
+
             //Singleton fromManager = Singleton.SingleInstance;
             //fromManager.LogMessage("Request Message from Manager");
 
@@ -75,36 +102,36 @@ namespace Accent.ConsoleApplication
             //    ReadLine();
             //}
 
-            AccentPredictor accent = new AccentPredictor();
+            //AccentPredictor accent = new AccentPredictor();
 
-            string path1Gram = System.IO.Path.GetFullPath("news1gram.bin");
-            string path2Gram = System.IO.Path.GetFullPath("news2grams.bin");
-            string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
-            accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
+            //string path1Gram = System.IO.Path.GetFullPath("news1gram.bin");
+            //string path2Gram = System.IO.Path.GetFullPath("news2grams.bin");
+            //string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
+            //accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
 
-            ////Console.OutputEncoding = Encoding.UTF8;
-            ////----- Test -----//
-            ////Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
+            //////Console.OutputEncoding = Encoding.UTF8;
+            //////----- Test -----//
+            //////Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
 
-            while (true)
-            {
-                Console.InputEncoding = Encoding.Unicode;
-                Console.OutputEncoding = Encoding.UTF8;
-                Console.WriteLine("Nhap chuoi :");
-                string text = Console.ReadLine();
-                if (text == "exit")
-                {
-                    break;
-                }
-                if (text == "1")
-                {
-                    accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
-                }
-                string results = accent.predictAccentsWithMultiMatches(text, 10);
-                Console.WriteLine("DS Ket qua : {0}", results);
+            //while (true)
+            //{
+            //    Console.InputEncoding = Encoding.Unicode;
+            //    Console.OutputEncoding = Encoding.UTF8;
+            //    Console.WriteLine("Nhap chuoi :");
+            //    string text = Console.ReadLine();
+            //    if (text == "exit")
+            //    {
+            //        break;
+            //    }
+            //    if (text == "1")
+            //    {
+            //        accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
+            //    }
+            //    string results = accent.predictAccentsWithMultiMatches(text, 10);
+            //    Console.WriteLine("DS Ket qua : {0}", results);
 
-                Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
-            }
+            //    Console.WriteLine("Ket qua : {0}", accent.predictAccents(text));
+            //}
         }
 
         //public class Singleton
