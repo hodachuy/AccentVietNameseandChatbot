@@ -28,79 +28,73 @@ using System.Threading;
 using static System.Console;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Accent.ConsoleApplication
 {
     class Program
     {
-        static int amount = 0;
-        static object syncObj = new object();
-
-
-        static void IncreaseAmount()
+        private static bool FindComputer(string title)
         {
-            for (int i = 0; i < 100; i++)
+            if (title == "Computer")
             {
-                lock (syncObj)
-                {
-                    amount++;
-                    if (amount > 0)
-                    {
-                        //Thread.Sleep(1);
-                        Console.Write(amount + "\t");
-                    }
-                }
+                return true;
             }
-        }
-        static void DecreaseAmount()
-        {
-            for (int i = 0; i < 100; i++)
+            else
             {
-                lock (syncObj)
-                {
-                    amount--;
-                }
+                return false;
             }
         }
         public static void Main(string[] args)
         {
-            Thread t1 = new Thread(IncreaseAmount);
-            Thread t2 = new Thread(DecreaseAmount);
+            List<string> lstDoc = new List<string>();
+            lstDoc.Add("Chuyển nhượng, nhận thừa kế, quà tặng là bất động sản tại Việt Nam");
+            lstDoc.Add("Chuyển nhượng vốn (trừ chuyển nhượng chứng khoán)");
+            lstDoc.Add("Đầu tư vốn (trường hợp nhận cổ tức bằng cổ phiếu, lợi tức ghi tăng vốn)");
+            lstDoc.Add("Khai thuế TNCN theo tháng hoặc quý đối với tổ chức, cá nhân trả thu nhập chịu thuế thu nhập cá nhân");
+            lstDoc.Add("Khai thuế TNCN theo tháng hoặc quý đối với tổ chức, cá nhân trả thu nhập chịu thuế thu nhập cá nhân");
 
-            t1.Start();
-            t2.Start();
+            var lstFind = lstDoc.FindAll(x => x.ToLower().Contains("chuyển nhượng") || x.Contains("a"));
+
+            Console.OutputEncoding = Encoding.UTF8;
+
+            if (lstFind.Count() != 0)
+            {
+                foreach(var item in lstFind)
+                {
+                    Console.WriteLine(item);
+                }
+            }
 
 
-            //Singleton fromManager = Singleton.SingleInstance;
-            //fromManager.LogMessage("Request Message from Manager");
 
-            //Singleton fromEmployee = Singleton.SingleInstance;
-            //fromEmployee.LogMessage("Request Message from Employee");
 
-            //ReadLine();
-            //while (true)
+
+            //LoadBalancer b1 = LoadBalancer.GetLoadBalancer();
+            //LoadBalancer b2 = LoadBalancer.GetLoadBalancer();
+            //LoadBalancer b3 = LoadBalancer.GetLoadBalancer();
+            //LoadBalancer b4 = LoadBalancer.GetLoadBalancer();
+
+            //// Same instance?
+
+            //if (b1 == b2 && b2 == b3 && b3 == b4)
             //{
-            //    Console.InputEncoding = Encoding.Unicode;
-            //    Console.WriteLine("Nhap chuoi :");
-            //    string text = Console.ReadLine();
-            //    if (text == "exit")
-            //        break;
-            //    if (text == "T")
-            //    {
-            //        Singleton fromManager1 = Singleton.SingleInstance;
-            //        fromManager1.LogMessage("Request Message from Manager");
-
-            //        Singleton fromEmployee1 = Singleton.SingleInstance;
-            //        fromEmployee1.LogMessage("Request Message from Employee");
-            //        ReadLine();
-            //    }
-            //    else
-            //    {
-            //        Singleton.DerivedClass derivedClass = new Singleton.DerivedClass();
-            //        derivedClass.LogMessage("new Instances v2");
-            //    }
-            //    ReadLine();
+            //    Console.WriteLine("Same instance\n");
             //}
+
+            //// Load balance 15 server requests
+            //LoadBalancer balancer = LoadBalancer.GetLoadBalancer();
+
+            //for (int i = 0; i < 15; i++)
+            //{
+            //    string server = balancer.Server;
+            //    Console.WriteLine("Dispatch Request to: " + server);
+            //}
+
+            //// Wait for user
+
+            //Console.ReadKey();
+
 
             //AccentPredictor accent = new AccentPredictor();
 
@@ -134,79 +128,62 @@ namespace Accent.ConsoleApplication
             //}
         }
 
-        //public class Singleton
-        //{
-        //    private static int _lockFlag = 0; // 0 - free
-        //    static int instanceCounter = 0;
-        //    private static readonly Lazy<Singleton> singleInstance = new Lazy<Singleton>(() => new Singleton()); //private static Singleton singleInstance = null;  
-        //    private Singleton()
-        //    {
 
-        //        if (Interlocked.CompareExchange(ref _lockFlag, 1, 0) == 0)
-        //        {
-        //            // only 1 thread will enter here without locking the object/put the
-        //            // other threads to sleep.
+        class LoadBalancer
+        {
+            private static LoadBalancer _instance;
+            private List<string> _servers = new List<string>();
+            private Random _random = new Random();
 
-        //            instanceCounter++;
-        //            GC.Collect();
-        //            GC.WaitForPendingFinalizers();
+            // Lock synchronization object
 
-        //            AccentPredictor accent = new AccentPredictor();
-        //            string path2Gram = System.IO.Path.GetFullPath("ngram2.bin");
-        //            accent.InitNgram2(path2Gram);
-        //            Monitor.Enter(accent);
-        //            // free the lock.
-        //            Interlocked.Decrement(ref _lockFlag);
-        //            WriteLine("Instances created " + instanceCounter);
-        //        }
-        //    }
-        //    public static Singleton SingleInstance
-        //    {
-        //        get
-        //        {
-        //            return singleInstance.Value;
-        //        }
-        //    }
-        //    public void LogMessage(string message)
-        //    {
-        //        WriteLine(" created " + instanceCounter);
-        //        WriteLine("Message " + message);
-        //    }
-        //    public class DerivedClass : Singleton
-        //    {
+            private static object syncLock = new object();
 
-        //    }
-        //}
-        //public class Disposable : IDisposable
-        //{
-        //    private bool isDisposed;
+            // Constructor (protected)
 
-        //    ~Disposable()
-        //    {
-        //        Dispose(false);
-        //    }
+            protected LoadBalancer()
+            {
+                // List of available servers
+                _servers.Add("ServerI");
+                _servers.Add("ServerII");
+                _servers.Add("ServerIII");
+                _servers.Add("ServerIV");
+                _servers.Add("ServerV");
+            }
 
-        //    public void Dispose()
-        //    {
-        //        Dispose(true);
-        //        GC.SuppressFinalize(this);
-        //    }
-        //    private void Dispose(bool disposing)
-        //    {
-        //        if (!isDisposed && disposing)
-        //        {
-        //            DisposeCore();
-        //        }
+            public static LoadBalancer GetLoadBalancer()
+            {
+                // Support multithreaded applications through
 
-        //        isDisposed = true;
-        //    }
+                // 'Double checked locking' pattern which (once
 
-        //    // Ovveride this to dispose custom objects
-        //    protected virtual void DisposeCore()
-        //    {
+                // the instance exists) avoids locking each
 
-        //    }
-        //}
+                // time the method is invoked
 
+                if (_instance == null)
+                {
+                    lock (syncLock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new LoadBalancer();
+                        }
+                    }
+                }
+
+                return _instance;
+            }
+
+            // Simple, but effective random load balancer
+            public string Server
+            {
+                get
+                {
+                    int r = _random.Next(_servers.Count);
+                    return _servers[r].ToString();
+                }
+            }
+        }
     }
 }
