@@ -551,31 +551,30 @@ namespace BotProject.Web.API_Webhook
         }
         private ApplicationPlatformUser GetUserById(string senderId, int botId)
         {
-			ApplicationPlatformUser fbUserDb = new ApplicationPlatformUser();
-            fbUserDb = _appPlatformUser.GetByUserId(senderId);
-            if (fbUserDb == null)
+			ApplicationPlatformUser appUserDb = new ApplicationPlatformUser();
+			appUserDb = _appPlatformUser.GetByUserId(senderId);
+            if (appUserDb == null)
             {
                 ProfileUser profileUser = new ProfileUser();
                 profileUser = GetProfileUser(senderId);
 
-                fbUserDb = new ApplicationPlatformUser();
-                fbUserDb.UserId = senderId;
-                fbUserDb.IsHavePredicate = false;
-                fbUserDb.IsProactiveMessage = false;
-                fbUserDb.TimeOut = DateTime.Now.AddSeconds(TIMEOUT_DELAY_SEND_MESSAGE);
-                fbUserDb.CreatedDate = DateTime.Now;
-                fbUserDb.StartedOn = DateTime.Now;
-                fbUserDb.FirstName = profileUser.first_name;
-                fbUserDb.Age = 0;// "N/A";
-                fbUserDb.LastName = profileUser.last_name;
-                fbUserDb.UserName = profileUser.first_name + " " + profileUser.last_name;
-                fbUserDb.Gender = true; //"N/A";
-				_appPlatformUser.Add(fbUserDb);
+				appUserDb = new ApplicationPlatformUser();
+				appUserDb.UserId = senderId;
+				appUserDb.IsHavePredicate = false;
+				appUserDb.IsProactiveMessage = false;
+				appUserDb.TimeOut = DateTime.Now.AddSeconds(TIMEOUT_DELAY_SEND_MESSAGE);
+				appUserDb.CreatedDate = DateTime.Now;
+				appUserDb.StartedOn = DateTime.Now;
+				appUserDb.FirstName = profileUser.first_name;
+				appUserDb.Age = 0;// "N/A";
+				appUserDb.LastName = profileUser.last_name;
+				appUserDb.UserName = profileUser.first_name + " " + profileUser.last_name;
+				appUserDb.Gender = true; //"N/A";
+				_appPlatformUser.Add(appUserDb);
 				_appPlatformUser.Save();
-
-                AddAttributeDefault(senderId, botId, "sender_name", fbUserDb.UserName);
+                AddAttributeDefault(senderId, botId, "sender_name", appUserDb.UserName);
             }
-            return fbUserDb;
+            return appUserDb;
         }
 
         private ProfileUser GetProfileUser(string senderId)
