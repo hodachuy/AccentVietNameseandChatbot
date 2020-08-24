@@ -9,13 +9,11 @@ namespace BotProject.Web.SignalRChat
     public class BotHub : Hub
     {
         static IHubContext _context = GlobalHost.ConnectionManager.GetHubContext<BotHub>();
-        public BotHub()
+        public void SendMessageBot(string userId, string text)
         {
-
-        }
-        public static void SendMessageBot(string conenectionID, string userId, string text)
-        {
-            _context.Clients.AllExcept(conenectionID).receiveMessageBot(userId, text);
-        }
+            //_context.Clients.AllExcept(conenectionID).receiveMessageBot(userId, text);
+			// Gửi lại thread ra customer
+			Clients.Caller.receiveMessageBot(userId, text);
+		}
     }
 }
