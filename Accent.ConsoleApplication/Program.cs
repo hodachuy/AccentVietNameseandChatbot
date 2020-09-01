@@ -29,24 +29,87 @@ using static System.Console;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections;
 
 namespace Accent.ConsoleApplication
 {
     class Program
     {
-        private static bool FindComputer(string title)
+        private static double GetRating()
         {
-            if (title == "Computer")
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            int star5 = 0;
+            int star4 = 2;
+            int star3 = 1;
+            int star2 = 0;
+            int star1 = 3;
+
+            double rating = (double)(5 * star5 + 4 * star4 + 3 * star3 + 2 * star2 + 1 * star1) / (star1 + star2 + star3 + star4 + star5);
+
+            rating = Math.Round(rating, 1);
+
+            return rating;
         }
+
+        public static string HighLightWord(string strString, string strKeyWord, bool bNosign)
+        {
+            if (string.IsNullOrEmpty(strString) || string.IsNullOrEmpty(strKeyWord))
+                return strString;
+
+            string strStringLower = strString.ToLower();
+            string strWord = strKeyWord;
+            if (!string.IsNullOrEmpty(strWord))
+            {
+                int iStartAt = 0, iFound = -1;
+                ArrayList arrOpenTag = new ArrayList();
+                while (iStartAt < strStringLower.Length)
+                {
+                    if ((iFound = strStringLower.IndexOf(strWord, iStartAt)) < 0)
+                        break;
+                    arrOpenTag.Add(iFound);
+                    iStartAt = iFound + 1;
+                }
+
+                for (int i = arrOpenTag.Count - 1; i >= 0; i--)
+                {
+                    int iOpenTag = (int)arrOpenTag[i];
+                    if (iOpenTag > 0)
+                    {
+                        char chPre = strStringLower[iOpenTag - 1];
+                        if (chPre != ' ' && chPre != ',' && chPre != '.' && chPre != ';' && chPre != ':' && chPre != '!' && chPre != '?' && chPre != '\'' && chPre != '"' && chPre != '(' && chPre != ')' && chPre != '|' && chPre != '\r' && chPre != '\n')
+                            continue;
+                    }
+                    int iCloseTag = iOpenTag + strWord.Length;
+                    if (iCloseTag < strStringLower.Length)
+                    {
+                        char chNext = strStringLower[iCloseTag];
+                        if (chNext != ' ' && chNext != ',' && chNext != '.' && chNext != ';' && chNext != ':' && chNext != '!' && chNext != '?' && chNext != '\'' && chNext != '"' && chNext != '(' && chNext != ')' && chNext != '|' && chNext != '\r' && chNext != '\n')
+                            continue;
+                    }
+
+                    strStringLower = strStringLower.Insert(iCloseTag, "</b>");
+                    strStringLower = strStringLower.Insert(iOpenTag, "<b>");
+
+                    strString = strString.Insert(iCloseTag, "</b>");
+                    strString = strString.Insert(iOpenTag, "<b>");
+                }
+            }
+            return strString;
+        }
+
+
         public static void Main(string[] args)
         {
+            string hl = "Chuyển nhượng, nhận thừa kế, quà tặng là bất thừa động sản tại Việt Nam";
+            string hlw = HighLightWord(hl, "thừa", false);
+
+            double rating = GetRating();
+            Console.WriteLine("rating: " + rating);
+            Console.ReadKey();
+
+            string v = "Chuyển nhượng\n, nhận thừa kế\n, quà tặng là bất động sản tại Việt Nam";
+
+            string v2 = Regex.Replace(v, "\n", " ");
+
             List<string> lstDoc = new List<string>();
             lstDoc.Add("Chuyển nhượng, nhận thừa kế, quà tặng là bất động sản tại Việt Nam");
             lstDoc.Add("Chuyển nhượng vốn (trừ chuyển nhượng chứng khoán)");

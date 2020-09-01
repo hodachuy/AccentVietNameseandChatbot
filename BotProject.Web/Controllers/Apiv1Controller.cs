@@ -780,954 +780,954 @@ namespace BotProject.Web.Controllers
 				//}
 			}
 		}
-		#endregion
-		//public JsonResult chatbot(string text, string token, string botId, string titlePostback = "")
-		//      {
-		//          //string nameBotAIML = "User_" + token + "_BotID_" + botId;
-		//          //string fullPathAIML = pathAIML + nameBotAIML;
-		//          //_botService.loadAIMLFromFiles(fullPathAIML);
+        #endregion
+        public JsonResult chatbot(string text, string token, string botId, string titlePostback = "")
+        {
+            //string nameBotAIML = "User_" + token + "_BotID_" + botId;
+            //string fullPathAIML = pathAIML + nameBotAIML;
+            //_botService.loadAIMLFromFiles(fullPathAIML);
 
-		//          string txtOriginal = "";
-		//          List<SearchSymptomViewModel> _lstSymptomVm = new List<SearchSymptomViewModel>();
-		//          List<SearchNlpQnAViewModel> _lstQnAVm = new List<SearchNlpQnAViewModel>();
-		//          isHaveSymptomAndMsgNotMatch = false;
-		//          int valBotID = Int32.Parse(botId);
-		//          try
-		//          {
-		//              if (!String.IsNullOrEmpty(text))
-		//              {
-		//                  text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
-		//                  text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
-		//                  txtOriginal = text;
-		//              }
-		//              if (Session[CommonConstants.SessionUserBot] == null)
-		//              {
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { "Session Timeout" },
-		//                      postback = new List<string>() { null },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
+            string txtOriginal = "";
+            List<SearchSymptomViewModel> _lstSymptomVm = new List<SearchSymptomViewModel>();
+            List<SearchNlpQnAViewModel> _lstQnAVm = new List<SearchNlpQnAViewModel>();
+            isHaveSymptomAndMsgNotMatch = false;
+            int valBotID = Int32.Parse(botId);
+            try
+            {
+                if (!String.IsNullOrEmpty(text))
+                {
+                    text = Regex.Replace(text, @"<(.|\n)*?>", "").Trim();
+                    text = Regex.Replace(text, @"\p{Cs}", "").Trim();// remove emoji
+                    txtOriginal = text;
+                }
+                if (Session[CommonConstants.SessionUserBot] == null)
+                {
+                    return Json(new
+                    {
+                        message = new List<string>() { "Session Timeout" },
+                        postback = new List<string>() { null },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
-		//              //get new predicate from session user bot request
-		//              var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
-		//              _user = _botService.loadUserBot(userBot.ID);
-		//              _user.Predicates.Count = userBot.SettingDicstionary.Count;
-		//              _user.Predicates.SettingNames = userBot.SettingDicstionary.SettingNames;
-		//              _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
-		//              _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
-		//              isMdSearch = bool.Parse(_user.Predicates.settingsHash["ISMDSEARCH"].ToLower());
+                //get new predicate from session user bot request
+                var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
+                _user = _botService.loadUserBot(userBot.ID);
+                _user.Predicates.Count = userBot.SettingDicstionary.Count;
+                _user.Predicates.SettingNames = userBot.SettingDicstionary.SettingNames;
+                _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
+                _user.Predicates.settingsHash = userBot.SettingDicstionary.settingsHash;
+                isMdSearch = bool.Parse(_user.Predicates.settingsHash["ISMDSEARCH"].ToLower());
 
 
-		//              if (!String.IsNullOrEmpty(userBot.StopWord))
-		//              {
-		//                  string[] arrStopWord = userBot.StopWord.Split(',');
-		//                  if (arrStopWord.Length != 0)
-		//                  {
-		//                      foreach (var w in arrStopWord)
-		//                      {
-		//                          text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
-		//                      }
-		//                  }
-		//              }
+                if (!String.IsNullOrEmpty(userBot.StopWord))
+                {
+                    string[] arrStopWord = userBot.StopWord.Split(',');
+                    if (arrStopWord.Length != 0)
+                    {
+                        foreach (var w in arrStopWord)
+                        {
+                            text = Regex.Replace(text, "\\b" + Regex.Escape(w) + "\\b", String.Empty).Trim();
+                        }
+                    }
+                }
 
-		//              //List<string> lstSymptomp = new List<string>();
+                //List<string> lstSymptomp = new List<string>();
 
-		//              if (text.Contains("postback") == false)
-		//              {
-		//                  _user.Predicates.addSetting("content_message", text);
-		//              }
+                if (text.Contains("postback") == false)
+                {
+                    _user.Predicates.addSetting("content_message", text);
+                }
 
-		//              HistoryViewModel hisVm = new HistoryViewModel();
-		//              hisVm.BotID = Int32.Parse(botId);
-		//              hisVm.CreatedDate = DateTime.Now;
-		//              hisVm.UserSay = txtOriginal;
-		//              hisVm.UserName = userBot.ID;
+                HistoryViewModel hisVm = new HistoryViewModel();
+                hisVm.BotID = Int32.Parse(botId);
+                hisVm.CreatedDate = DateTime.Now;
+                hisVm.UserSay = txtOriginal;
+                hisVm.UserName = userBot.ID;
 
-		//              if (bool.Parse(_user.Predicates.grabSetting("cardConditionCheck")))
-		//              {
-		//                  if (text.Contains("postback") == false)
-		//                  {
-		//                      string cardPayload = _user.Predicates.grabSetting("cardConditionPattern");
-		//                      List<string> lstConditionClick = new List<string>();
-		//                      string tplIsConditionClick = tempText("Anh/chị vui lòng chọn lại thông tin bên dưới");
-		//                      lstConditionClick.Add(tplIsConditionClick);
-		//                      Session[CommonConstants.SessionResultBot] = lstConditionClick;
-		//                      return chatbot(cardPayload, token, botId);
-		//                  }
-		//              }
+                if (bool.Parse(_user.Predicates.grabSetting("cardConditionCheck")))
+                {
+                    if (text.Contains("postback") == false)
+                    {
+                        string cardPayload = _user.Predicates.grabSetting("cardConditionPattern");
+                        List<string> lstConditionClick = new List<string>();
+                        string tplIsConditionClick = tempText("Anh/chị vui lòng chọn lại thông tin bên dưới");
+                        lstConditionClick.Add(tplIsConditionClick);
+                        Session[CommonConstants.SessionResultBot] = lstConditionClick;
+                        return chatbot(cardPayload, token, botId);
+                    }
+                }
 
-		//              if (bool.Parse(_user.Predicates.grabSetting("IsHaveSetAttributeSystem")))
-		//              {
-		//                  if (text.Contains("postback") == false)
-		//                  {
-		//                      _user.Predicates.addSetting(_user.Predicates.grabSetting("AttributeName"), text);
-		//                  }
-		//                  else
-		//                  {
-		//                      // lấy ký tự postback
-		//                      _user.Predicates.addSetting(_user.Predicates.grabSetting("AttributeName"), titlePostback);
-		//                  }
-		//              }
+                if (bool.Parse(_user.Predicates.grabSetting("IsHaveSetAttributeSystem")))
+                {
+                    if (text.Contains("postback") == false)
+                    {
+                        _user.Predicates.addSetting(_user.Predicates.grabSetting("AttributeName"), text);
+                    }
+                    else
+                    {
+                        // lấy ký tự postback
+                        _user.Predicates.addSetting(_user.Predicates.grabSetting("AttributeName"), titlePostback);
+                    }
+                }
 
-		//              if (bool.Parse(_user.Predicates.grabSetting("IsConditionWithInputText")))
-		//              {
-		//                  if (text.Contains("postback") == false)
-		//                  {
-		//                      _user.Predicates.addSetting("IsConditionWithInputText", "false");
-		//                      _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
-		//                      return chatbot(_user.Predicates.grabSetting("CardConditionWithInputTextPattern"), token, botId);
-		//                  }
-		//              }
+                if (bool.Parse(_user.Predicates.grabSetting("IsConditionWithInputText")))
+                {
+                    if (text.Contains("postback") == false)
+                    {
+                        _user.Predicates.addSetting("IsConditionWithInputText", "false");
+                        _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+                        return chatbot(_user.Predicates.grabSetting("CardConditionWithInputTextPattern"), token, botId);
+                    }
+                }
 
-		//              // Module lấy thông tin bệnh
-		//              #region Module lấy thông tin bệnh
-		//              // nếu là true
-		//              if (bool.Parse(_user.Predicates.grabSetting("isChkMdGetInfoPatient")))
-		//              {
-		//                  if (text.Contains("module_patient"))
-		//                  {
-		//                      string MdGetInfoPatientId = _user.Predicates.grabSetting("ThreadMdGetInfoPatientId");
-		//                      _user.Predicates.addSetting("med_get_info_patient_check_" + MdGetInfoPatientId, "false");
-		//                      _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
+                // Module lấy thông tin bệnh
+                #region Module lấy thông tin bệnh
+                // nếu là true
+                if (bool.Parse(_user.Predicates.grabSetting("isChkMdGetInfoPatient")))
+                {
+                    if (text.Contains("module_patient"))
+                    {
+                        string MdGetInfoPatientId = _user.Predicates.grabSetting("ThreadMdGetInfoPatientId");
+                        _user.Predicates.addSetting("med_get_info_patient_check_" + MdGetInfoPatientId, "false");
+                        _user.Predicates.addSetting("isChkMdGetInfoPatient", "false");
 
-		//                      _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
+                        _user.Predicates.addSetting("ThreadMdGetInfoPatientId", "");
 
-		//                      //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-		//                      //AddHistory(hisVm);
+                        //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                        //AddHistory(hisVm);
 
-		//                      return chatbot(text, token, botId);
-		//                  }
-		//                  else
-		//                  {
-		//                      string MdGetInfoPatientId = _user.Predicates.grabSetting("ThreadMdGetInfoPatientId");
-		//                      var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient("postback_module_med_get_info_patient_" + MdGetInfoPatientId + "", valBotID, "Tôi không hiểu, vui lòng chọn lại thông tin bên dưới.");
+                        return chatbot(text, token, botId);
+                    }
+                    else
+                    {
+                        string MdGetInfoPatientId = _user.Predicates.grabSetting("ThreadMdGetInfoPatientId");
+                        var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient("postback_module_med_get_info_patient_" + MdGetInfoPatientId + "", valBotID, "Tôi không hiểu, vui lòng chọn lại thông tin bên dưới.");
 
-		//                      hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-		//                      AddHistory(hisVm);
-		//                      return Json(new
-		//                      {
-		//                          message = new List<string>() { handlePatient.Message },
-		//                          postback = new List<string>() { null },
-		//                          messageLstSearchNLP = _lstQnAVm,
-		//                          messageLstSymptoms = _lstSymptomVm,
-		//                          isSearchNLP = isMdSearch
-		//                      }, JsonRequestBehavior.AllowGet);
-		//                  }
-		//              }
-		//              if (text.Contains("postback_module_med_get_info_patient"))
-		//              {
-		//                  var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient(text, valBotID, "");
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                        AddHistory(hisVm);
+                        return Json(new
+                        {
+                            message = new List<string>() { handlePatient.Message },
+                            postback = new List<string>() { null },
+                            messageLstSearchNLP = _lstQnAVm,
+                            messageLstSymptoms = _lstSymptomVm,
+                            isSearchNLP = isMdSearch
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                }
+                if (text.Contains("postback_module_med_get_info_patient"))
+                {
+                    var handlePatient = _handleMdService.HandleIsModuleKnowledgeInfoPatient(text, valBotID, "");
 
-		//                  string MdGetInfoPatientId = text.Replace("postback_module_med_get_info_patient_", "");
-		//                  _user.Predicates.addSetting("ThreadMdGetInfoPatientId", MdGetInfoPatientId);
+                    string MdGetInfoPatientId = text.Replace("postback_module_med_get_info_patient_", "");
+                    _user.Predicates.addSetting("ThreadMdGetInfoPatientId", MdGetInfoPatientId);
 
-		//                  _user.Predicates.addSetting("med_get_info_patient_check_" + MdGetInfoPatientId, "true");
+                    _user.Predicates.addSetting("med_get_info_patient_check_" + MdGetInfoPatientId, "true");
 
-		//                  _user.Predicates.addSetting("isChkMdGetInfoPatient", "true");
+                    _user.Predicates.addSetting("isChkMdGetInfoPatient", "true");
 
-		//                  hisVm.UserSay = "[Lấy thông tin]";
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-		//                  AddHistory(hisVm);
+                    hisVm.UserSay = "[Lấy thông tin]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
 
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handlePatient.Message },
-		//                      postback = new List<string>() { null },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              #endregion
+                    return Json(new
+                    {
+                        message = new List<string>() { handlePatient.Message },
+                        postback = new List<string>() { null },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
 
-		//              // Module tìm kiếm 
-		//              #region Module Tìm kiếm với api
-		//              if (bool.Parse(_user.Predicates.grabSetting("isChkMdSearch")))
-		//              {
-		//                  if (text.Contains("postback_card"))
-		//                  {
-		//                      _user.Predicates.addSetting("isChkMdSearch", "false");
-		//                      _user.Predicates.addSetting("ThreadMdSearchID", "");
-		//                      return chatbot(text, token, botId);
-		//                  }
-		//                  string mdSearchId = _user.Predicates.grabSetting("ThreadMdSearchID");
-		//                  var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
-		//                  bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true;
+                // Module tìm kiếm 
+                #region Module Tìm kiếm với api
+                if (bool.Parse(_user.Predicates.grabSetting("isChkMdSearch")))
+                {
+                    if (text.Contains("postback_card"))
+                    {
+                        _user.Predicates.addSetting("isChkMdSearch", "false");
+                        _user.Predicates.addSetting("ThreadMdSearchID", "");
+                        return chatbot(text, token, botId);
+                    }
+                    string mdSearchId = _user.Predicates.grabSetting("ThreadMdSearchID");
+                    var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
+                    bool chkAPI = !String.IsNullOrEmpty(handleMdSearch.ResultAPI) == true ? false : true;
 
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
-		//                  AddHistory(hisVm);
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
+                    AddHistory(hisVm);
 
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handleMdSearch.Message },
-		//                      postback = new List<string>() { handleMdSearch.Postback },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isCheck = chkAPI
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleMdSearch.Message },
+                        postback = new List<string>() { handleMdSearch.Postback },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isCheck = chkAPI
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
-		//              if (text.Contains("postback_module_api_search"))
-		//              {
-		//                  string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
-		//                  var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
-		//                  _user.Predicates.addSetting("ThreadMdSearchID", mdSearchId);
-		//                  //_user.Predicates.addSetting("api_search_check_" + mdSearchId, "true");
-		//                  _user.Predicates.addSetting("isChkMdSearch", "true");
+                if (text.Contains("postback_module_api_search"))
+                {
+                    string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
+                    var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
+                    _user.Predicates.addSetting("ThreadMdSearchID", mdSearchId);
+                    //_user.Predicates.addSetting("api_search_check_" + mdSearchId, "true");
+                    _user.Predicates.addSetting("isChkMdSearch", "true");
 
-		//                  hisVm.UserSay = "[Tra cứu]";
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-		//                  AddHistory(hisVm);
+                    hisVm.UserSay = "[Tra cứu]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
 
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handleMdSearch.Message },
-		//                      postback = new List<string>() { handleMdSearch.Postback },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              #endregion
+                    return Json(new
+                    {
+                        message = new List<string>() { handleMdSearch.Message },
+                        postback = new List<string>() { handleMdSearch.Postback },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
 
-		//              // Xử lý module phone
-		//              #region 
-		//              bool isCheckPhone = bool.Parse(_user.Predicates.grabSetting("phonecheck"));
-		//              if (isCheckPhone)
-		//              {
-		//                  var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
+                // Xử lý module phone
+                #region 
+                bool isCheckPhone = bool.Parse(_user.Predicates.grabSetting("phonecheck"));
+                if (isCheckPhone)
+                {
+                    var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
 
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-		//                  AddHistory(hisVm);
-		//                  if (handlePhone.Status)// đúng số dt
-		//                  {
-		//                      _user.Predicates.addSetting("phonecheck", "false");
-		//                      _user.Predicates.addSetting("phone", text);
-		//                      if (!String.IsNullOrEmpty(handlePhone.Postback))
-		//                      {
-		//                          return chatbot(handlePhone.Postback, token, botId);
-		//                      }
-		//                  }
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handlePhone.Message },
-		//                      postback = new List<string>() { null },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              if (text.Contains("postback_module_phone"))
-		//              {
-		//                  string numberPhone = _user.Predicates.grabSetting("phone");
-		//                  _user.Predicates.addSetting("phonecheck", "true");
-		//                  var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                    AddHistory(hisVm);
+                    if (handlePhone.Status)// đúng số dt
+                    {
+                        _user.Predicates.addSetting("phonecheck", "false");
+                        _user.Predicates.addSetting("phone", text);
+                        if (!String.IsNullOrEmpty(handlePhone.Postback))
+                        {
+                            return chatbot(handlePhone.Postback, token, botId);
+                        }
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handlePhone.Message },
+                        postback = new List<string>() { null },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                if (text.Contains("postback_module_phone"))
+                {
+                    string numberPhone = _user.Predicates.grabSetting("phone");
+                    _user.Predicates.addSetting("phonecheck", "true");
+                    var handlePhone = _handleMdService.HandleIsPhoneNumber(text, valBotID);
 
-		//                  hisVm.UserSay = "[Số điện thoại]";
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-		//                  AddHistory(hisVm);
-		//                  if (!String.IsNullOrEmpty(numberPhone))// hiển thị số điện thoại nếu đã cung cấp trước đó
-		//                  {
-		//                      string sbPostback = tempNodeBtnModule(numberPhone);
+                    hisVm.UserSay = "[Số điện thoại]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
+                    if (!String.IsNullOrEmpty(numberPhone))// hiển thị số điện thoại nếu đã cung cấp trước đó
+                    {
+                        string sbPostback = tempNodeBtnModule(numberPhone);
 
-		//                      return Json(new
-		//                      {
-		//                          message = new List<string>() { handlePhone.Message },
-		//                          postback = new List<string>() { sbPostback.ToString() },
-		//                          messageLstSearchNLP = _lstQnAVm,
-		//                          messageLstSymptoms = _lstSymptomVm,
-		//                          isSearchNLP = isMdSearch
-		//                      }, JsonRequestBehavior.AllowGet);
-		//                  }
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handlePhone.Message },
-		//                      postback = new List<string>() { null },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              #endregion
+                        return Json(new
+                        {
+                            message = new List<string>() { handlePhone.Message },
+                            postback = new List<string>() { sbPostback.ToString() },
+                            messageLstSearchNLP = _lstQnAVm,
+                            messageLstSymptoms = _lstSymptomVm,
+                            isSearchNLP = isMdSearch
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handlePhone.Message },
+                        postback = new List<string>() { null },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
 
-		//              // Xử lý email
-		//              #region
-		//              bool isCheckMail = bool.Parse(_user.Predicates.grabSetting("emailcheck"));
-		//              if (isCheckMail)
-		//              {
-		//                  var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-		//                  AddHistory(hisVm);
-		//                  if (handleEmail.Status)// đúng email
-		//                  {
-		//                      _user.Predicates.addSetting("emailcheck", "false");
-		//                      _user.Predicates.addSetting("email", text);
-		//                      if (!String.IsNullOrEmpty(handleEmail.Postback))
-		//                      {
-		//                          return chatbot(handleEmail.Postback, token, botId);
-		//                      }
-		//                  }
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handleEmail.Message },
-		//                      postback = new List<string>() { null },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              if (text.Contains("postback_module_email"))
-		//              {
-		//                  string email = _user.Predicates.grabSetting("email");
-		//                  _user.Predicates.addSetting("emailcheck", "true");
-		//                  var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
-		//                  hisVm.UserSay = "[Email]";
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-		//                  AddHistory(hisVm);
-		//                  if (!String.IsNullOrEmpty(email))// hiển thị email đã cung cấp trước đó
-		//                  {
-		//                      string sbPostback = tempNodeBtnModule(email);
-		//                      return Json(new
-		//                      {
-		//                          message = new List<string>() { handleEmail.Message },
-		//                          postback = new List<string>() { sbPostback.ToString() },
-		//                          messageLstSearchNLP = _lstQnAVm,
-		//                          messageLstSymptoms = _lstSymptomVm,
-		//                          isSearchNLP = isMdSearch
-		//                      }, JsonRequestBehavior.AllowGet);
-		//                  }
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handleEmail.Message },
-		//                      postback = new List<string>() { null },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              #endregion
+                // Xử lý email
+                #region
+                bool isCheckMail = bool.Parse(_user.Predicates.grabSetting("emailcheck"));
+                if (isCheckMail)
+                {
+                    var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                    AddHistory(hisVm);
+                    if (handleEmail.Status)// đúng email
+                    {
+                        _user.Predicates.addSetting("emailcheck", "false");
+                        _user.Predicates.addSetting("email", text);
+                        if (!String.IsNullOrEmpty(handleEmail.Postback))
+                        {
+                            return chatbot(handleEmail.Postback, token, botId);
+                        }
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleEmail.Message },
+                        postback = new List<string>() { null },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                if (text.Contains("postback_module_email"))
+                {
+                    string email = _user.Predicates.grabSetting("email");
+                    _user.Predicates.addSetting("emailcheck", "true");
+                    var handleEmail = _handleMdService.HandledIsEmail(text, valBotID);
+                    hisVm.UserSay = "[Email]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
+                    if (!String.IsNullOrEmpty(email))// hiển thị email đã cung cấp trước đó
+                    {
+                        string sbPostback = tempNodeBtnModule(email);
+                        return Json(new
+                        {
+                            message = new List<string>() { handleEmail.Message },
+                            postback = new List<string>() { sbPostback.ToString() },
+                            messageLstSearchNLP = _lstQnAVm,
+                            messageLstSymptoms = _lstSymptomVm,
+                            isSearchNLP = isMdSearch
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleEmail.Message },
+                        postback = new List<string>() { null },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
 
-		//              // Xử lý age
-		//              #region
-		//              bool isCheckAge = bool.Parse(_user.Predicates.grabSetting("agecheck"));
-		//              if (isCheckAge)
-		//              {
-		//                  var handleAge = _handleMdService.HandledIsAge(text, valBotID);
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-		//                  AddHistory(hisVm);
-		//                  if (handleAge.Status)// đúng age
-		//                  {
-		//                      _user.Predicates.addSetting("agecheck", "false");
-		//                      _user.Predicates.addSetting("age", text);
-		//                      if (!String.IsNullOrEmpty(handleAge.Postback))
-		//                      {
-		//                          return chatbot(handleAge.Postback, token, botId);
-		//                      }
-		//                  }
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handleAge.Message },
-		//                      postback = new List<string>() { null },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              if (text.Contains("postback_module_age"))// nếu check đi từ đây trước
-		//              {
-		//                  string age = _user.Predicates.grabSetting("age");
-		//                  _user.Predicates.addSetting("agecheck", "true");
-		//                  var handleAge = _handleMdService.HandledIsAge(text, valBotID);
+                // Xử lý age
+                #region
+                bool isCheckAge = bool.Parse(_user.Predicates.grabSetting("agecheck"));
+                if (isCheckAge)
+                {
+                    var handleAge = _handleMdService.HandledIsAge(text, valBotID);
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                    AddHistory(hisVm);
+                    if (handleAge.Status)// đúng age
+                    {
+                        _user.Predicates.addSetting("agecheck", "false");
+                        _user.Predicates.addSetting("age", text);
+                        if (!String.IsNullOrEmpty(handleAge.Postback))
+                        {
+                            return chatbot(handleAge.Postback, token, botId);
+                        }
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleAge.Message },
+                        postback = new List<string>() { null },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                if (text.Contains("postback_module_age"))// nếu check đi từ đây trước
+                {
+                    string age = _user.Predicates.grabSetting("age");
+                    _user.Predicates.addSetting("agecheck", "true");
+                    var handleAge = _handleMdService.HandledIsAge(text, valBotID);
 
-		//                  hisVm.UserSay = "[Tuổi]";
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-		//                  AddHistory(hisVm);
-		//                  if (!String.IsNullOrEmpty(age))// hiển thị age đã cung cấp trước đó
-		//                  {
-		//                      string sbPostback = tempNodeBtnModule(age);
-		//                      return Json(new
-		//                      {
-		//                          message = new List<string>() { handleAge.Message },
-		//                          postback = new List<string>() { sbPostback.ToString() },
-		//                          messageLstSearchNLP = "",
-		//                          isSearchNLP = isMdSearch
-		//                      }, JsonRequestBehavior.AllowGet);
-		//                  }
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handleAge.Message },
-		//                      postback = new List<string>() { null },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              #endregion
+                    hisVm.UserSay = "[Tuổi]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
+                    if (!String.IsNullOrEmpty(age))// hiển thị age đã cung cấp trước đó
+                    {
+                        string sbPostback = tempNodeBtnModule(age);
+                        return Json(new
+                        {
+                            message = new List<string>() { handleAge.Message },
+                            postback = new List<string>() { sbPostback.ToString() },
+                            messageLstSearchNLP = "",
+                            isSearchNLP = isMdSearch
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleAge.Message },
+                        postback = new List<string>() { null },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
 
-		//              // Xử lý Voucher
-		//              #region Module Voucher
-		//              if (bool.Parse(_user.Predicates.grabSetting("isChkMdVoucher")))
-		//              {
-		//                  string mdVoucherId = _user.Predicates.grabSetting("ThreadMdVoucherID");
-		//                  if (text.Contains("postback_card"))
-		//                  {
-		//                      _user.Predicates.addSetting("isChkMdVoucher", "false");
-		//                      _user.Predicates.addSetting("ThreadMdVoucherID", "");
-		//                      return chatbot(text, token, botId);
-		//                  }
+                // Xử lý Voucher
+                #region Module Voucher
+                if (bool.Parse(_user.Predicates.grabSetting("isChkMdVoucher")))
+                {
+                    string mdVoucherId = _user.Predicates.grabSetting("ThreadMdVoucherID");
+                    if (text.Contains("postback_card"))
+                    {
+                        _user.Predicates.addSetting("isChkMdVoucher", "false");
+                        _user.Predicates.addSetting("ThreadMdVoucherID", "");
+                        return chatbot(text, token, botId);
+                    }
 
-		//                  var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, "", "", "");
+                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, "", "", "");
 
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
-		//                  AddHistory(hisVm);
-		//                  if (handleMdVoucher.Status)
-		//                  {
-		//                      string telePhoneNumber = text;
-		//                      string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
-		//                      //check phonenumber có kèm theo serialnumber không
-		//                      foreach (var item in strArrSpecial)
-		//                      {
-		//                          if (text.Contains(item))
-		//                          {
-		//                              var arrStrPhone = Regex.Split(text, item);
-		//                              telePhoneNumber = arrStrPhone[0];
-		//                              break;
-		//                          }
-		//                      }
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_007;
+                    AddHistory(hisVm);
+                    if (handleMdVoucher.Status)
+                    {
+                        string telePhoneNumber = text;
+                        string[] strArrSpecial = new string[] { "+", "-", " ", ",", ":" };
+                        //check phonenumber có kèm theo serialnumber không
+                        foreach (var item in strArrSpecial)
+                        {
+                            if (text.Contains(item))
+                            {
+                                var arrStrPhone = Regex.Split(text, item);
+                                telePhoneNumber = arrStrPhone[0];
+                                break;
+                            }
+                        }
 
-		//                      _user.Predicates.addSetting("phone", telePhoneNumber);
-		//                      _user.Predicates.addSetting("isChkOTP", "true");
-		//                      _user.Predicates.addSetting("isChkMdVoucher", "false");
-		//                  }
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handleMdVoucher.Message },
-		//                      postback = new List<string>() { handleMdVoucher.Postback },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
+                        _user.Predicates.addSetting("phone", telePhoneNumber);
+                        _user.Predicates.addSetting("isChkOTP", "true");
+                        _user.Predicates.addSetting("isChkMdVoucher", "false");
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleMdVoucher.Message },
+                        postback = new List<string>() { handleMdVoucher.Postback },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
-		//              if (text.Contains("postback_module_voucher"))
-		//              {
-		//                  string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
-		//                  var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, "", "", "");
-		//                  _user.Predicates.addSetting("ThreadMdVoucherID", mdVoucherId);
-		//                  _user.Predicates.addSetting("isChkMdVoucher", "true");
+                if (text.Contains("postback_module_voucher"))
+                {
+                    string mdVoucherId = text.Replace(".", String.Empty).Replace("postback_module_voucher_", "");
+                    var handleMdVoucher = _handleMdService.HandleIsVoucher(text, mdVoucherId, "", "", "");
+                    _user.Predicates.addSetting("ThreadMdVoucherID", mdVoucherId);
+                    _user.Predicates.addSetting("isChkMdVoucher", "true");
 
-		//                  hisVm.UserSay = "[Voucher]";
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-		//                  AddHistory(hisVm);
+                    hisVm.UserSay = "[Voucher]";
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
 
-		//                  return Json(new
-		//                  {
+                    return Json(new
+                    {
 
-		//                      message = new List<string>() { handleMdVoucher.Message },
-		//                      postback = new List<string>() { handleMdVoucher.Postback },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
-		//              #endregion
+                        message = new List<string>() { handleMdVoucher.Message },
+                        postback = new List<string>() { handleMdVoucher.Postback },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                #endregion
 
-		//              // Xử lý OTP từ Voucher
-		//              if (bool.Parse(_user.Predicates.grabSetting("isChkOTP")))
-		//              {
-		//                  string mdVoucherId = _user.Predicates.grabSetting("ThreadMdVoucherID");
-		//                  string numberPhone = _user.Predicates.grabSetting("phone");
-		//                  if (text.Contains("postback_card"))
-		//                  {
-		//                      _user.Predicates.addSetting("isChkOTP", "false");
-		//                      _user.Predicates.addSetting("isChkMdVoucher", "false");
-		//                      _user.Predicates.addSetting("ThreadMdVoucherID", "");
-		//                      return chatbot(text, token, botId);
-		//                  }
-		//                  var handleOTP = _handleMdService.HandleIsCheckOTP(text, numberPhone, mdVoucherId);
-		//                  if (handleOTP.Status)
-		//                  {
-		//                      _user.Predicates.addSetting("isChkOTP", "false");
-		//                      _user.Predicates.addSetting("isChkMdVoucher", "false");
-		//                      _user.Predicates.addSetting("ThreadMdVoucherID", "");
-		//                  }
-		//                  return Json(new
-		//                  {
-		//                      message = new List<string>() { handleOTP.Message },
-		//                      postback = new List<string>() { handleOTP.Postback },
-		//                      messageLstSearchNLP = _lstQnAVm,
-		//                      messageLstSymptoms = _lstSymptomVm,
-		//                      isSearchNLP = isMdSearch
-		//                  }, JsonRequestBehavior.AllowGet);
-		//              }
+                // Xử lý OTP từ Voucher
+                if (bool.Parse(_user.Predicates.grabSetting("isChkOTP")))
+                {
+                    string mdVoucherId = _user.Predicates.grabSetting("ThreadMdVoucherID");
+                    string numberPhone = _user.Predicates.grabSetting("phone");
+                    if (text.Contains("postback_card"))
+                    {
+                        _user.Predicates.addSetting("isChkOTP", "false");
+                        _user.Predicates.addSetting("isChkMdVoucher", "false");
+                        _user.Predicates.addSetting("ThreadMdVoucherID", "");
+                        return chatbot(text, token, botId);
+                    }
+                    var handleOTP = _handleMdService.HandleIsCheckOTP(text, numberPhone, mdVoucherId);
+                    if (handleOTP.Status)
+                    {
+                        _user.Predicates.addSetting("isChkOTP", "false");
+                        _user.Predicates.addSetting("isChkMdVoucher", "false");
+                        _user.Predicates.addSetting("ThreadMdVoucherID", "");
+                    }
+                    return Json(new
+                    {
+                        message = new List<string>() { handleOTP.Message },
+                        postback = new List<string>() { handleOTP.Postback },
+                        messageLstSearchNLP = _lstQnAVm,
+                        messageLstSymptoms = _lstSymptomVm,
+                        isSearchNLP = isMdSearch
+                    }, JsonRequestBehavior.AllowGet);
+                }
 
-		//              // Lấy target from knowledge base QnA trained mongodb
-		//              //if (text.Contains("postback") == false || text.Contains("module") == false)
-		//              //{
-		//              //    string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
-		//              //    if (!String.IsNullOrEmpty(target))
-		//              //    {
-		//              //        target = Regex.Replace(target, "\n", "").Replace("\"", "");
-		//              //        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-		//              //        quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
-		//              //        if (quesTarget != null)
-		//              //        {
-		//              //            text = quesTarget.ContentText;
-		//              //        }
-		//              //        hisVm.BotUnderStands = target;
-		//              //    }
-		//              //}
+                // Lấy target from knowledge base QnA trained mongodb
+                //if (text.Contains("postback") == false || text.Contains("module") == false)
+                //{
+                //    string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
+                //    if (!String.IsNullOrEmpty(target))
+                //    {
+                //        target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                //        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                //        quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
+                //        if (quesTarget != null)
+                //        {
+                //            text = quesTarget.ContentText;
+                //        }
+                //        hisVm.BotUnderStands = target;
+                //    }
+                //}
 
-		//              AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
-		//              string result = aimlBotResult.OutputSentences[0].ToString();
+                AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
+                string result = aimlBotResult.OutputSentences[0].ToString();
 
-		//              //if (result.Contains("NOT_MATCH"))
-		//              //{
-		//                  //if (text.Contains("postback") == false || text.Contains("module") == false)
-		//                  //{
-		//                  //    // Lấy target from knowledge base QnA trained mongodb
-		//                  //    string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
-		//                  //    if (!String.IsNullOrEmpty(target))
-		//                  //    {
-		//                  //        target = Regex.Replace(target, "\n", "").Replace("\"", "");
-		//                  //        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
-		//                  //        quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
-		//                  //        if (quesTarget != null)
-		//                  //        {
-		//                  //            text = quesTarget.ContentText;
-		//                  //        }
-		//                  //        hisVm.BotUnderStands = target;
+                //if (result.Contains("NOT_MATCH"))
+                //{
+                //if (text.Contains("postback") == false || text.Contains("module") == false)
+                //{
+                //    // Lấy target from knowledge base QnA trained mongodb
+                //    string target = _apiNLR.GetPrecidictTextClass(text, valBotID);
+                //    if (!String.IsNullOrEmpty(target))
+                //    {
+                //        target = Regex.Replace(target, "\n", "").Replace("\"", "");
+                //        QuesTargetViewModel quesTarget = new QuesTargetViewModel();
+                //        quesTarget = _qnaService.GetQuesByTarget(target, valBotID);
+                //        if (quesTarget != null)
+                //        {
+                //            text = quesTarget.ContentText;
+                //        }
+                //        hisVm.BotUnderStands = target;
 
-		//                  //        aimlBotResult = _botService.Chat(text, _user);
-		//                  //        result = aimlBotResult.OutputSentences[0].ToString();
-		//                  //    }
-		//                  //}
-		//              //}
+                //        aimlBotResult = _botService.Chat(text, _user);
+                //        result = aimlBotResult.OutputSentences[0].ToString();
+                //    }
+                //}
+                //}
 
-		//              // lưu lịch sử
-		//              if (text.Contains("postback_card"))
-		//              {
-		//                  var cardDb = _cardService.GetSingleCondition(text);
-		//                  if (cardDb != null)
-		//                  {
-		//                      hisVm.UserSay = "[" + cardDb.Name + "]";
-		//                      hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_001;
-		//                      AddHistory(hisVm);
-		//                  }
-		//              }
-		//              else if (text.Contains("postback_module") == false && result.Contains("NOT_MATCH") == false)
-		//              {
-		//                  hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-		//                  AddHistory(hisVm);
-		//              }
-		//              // nếu aiml bot có template trả thẳng ra module k thông qua button text module
-		//              if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
-		//              {
-		//                  if (result.Contains("<module>") != true)// k phải button module trả về
-		//                  {
-		//                      string txtModule = result.Replace("\r\n", "").Replace(".", "").Trim();
-		//                      txtModule = Regex.Replace(txtModule, @"<(.|\n)*?>", "").Trim();
-		//                      int idxModule = txtModule.IndexOf("postback_module");
-		//                      if (idxModule != -1)
-		//                      {
-		//                          string strPostback = txtModule.Substring(idxModule, txtModule.Length - idxModule);
-		//                          var punctuation = strPostback.Where(Char.IsPunctuation).Distinct().ToArray();
-		//                          var words = strPostback.Split().Select(x => x.Trim(punctuation));
-		//                          var contains = words.SingleOrDefault(x => x.Contains("postback_module") == true);
+                // lưu lịch sử
+                if (text.Contains("postback_card"))
+                {
+                    var cardDb = _cardService.GetSingleCondition(text);
+                    if (cardDb != null)
+                    {
+                        hisVm.UserSay = "[" + cardDb.Name + "]";
+                        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_001;
+                        AddHistory(hisVm);
+                    }
+                }
+                else if (text.Contains("postback_module") == false && result.Contains("NOT_MATCH") == false)
+                {
+                    hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
+                    AddHistory(hisVm);
+                }
+                // nếu aiml bot có template trả thẳng ra module k thông qua button text module
+                if (result.Replace("\r\n", "").Trim().Contains("postback_module"))
+                {
+                    if (result.Contains("<module>") != true)// k phải button module trả về
+                    {
+                        string txtModule = result.Replace("\r\n", "").Replace(".", "").Trim();
+                        txtModule = Regex.Replace(txtModule, @"<(.|\n)*?>", "").Trim();
+                        int idxModule = txtModule.IndexOf("postback_module");
+                        if (idxModule != -1)
+                        {
+                            string strPostback = txtModule.Substring(idxModule, txtModule.Length - idxModule);
+                            var punctuation = strPostback.Where(Char.IsPunctuation).Distinct().ToArray();
+                            var words = strPostback.Split().Select(x => x.Trim(punctuation));
+                            var contains = words.SingleOrDefault(x => x.Contains("postback_module") == true);
 
-		//                          if (words.ToList().Count == 1 && (txtModule.Length == contains.Length))
-		//                          {
-		//                              return chatbot(contains, token, botId);
-		//                          }
+                            if (words.ToList().Count == 1 && (txtModule.Length == contains.Length))
+                            {
+                                return chatbot(contains, token, botId);
+                            }
 
-		//                          List<string> msg = new List<string>();
-		//                          msg.Add(aimlBotResult.OutputHtmlMessage[0].Replace(contains, ""));
-		//                          if (contains == "postback_module_api_search")
-		//                          {
-		//                              return chatbot(txtModule, token, botId);
-		//                          }
-		//                          if (contains == "postback_module_med_get_info_patient")
-		//                          {
-		//                              return chatbot(txtModule, token, botId);
-		//                          }
-		//                          if (contains == "postback_module_age")
-		//                          {
-		//                              _user.Predicates.addSetting("agecheck", "true");
-		//                              var handleAge = _handleMdService.HandledIsAge(contains, valBotID);
-		//                              msg.Add(handleAge.Message);
-		//                          }
-		//                          if (contains == "postback_module_email")
-		//                          {
-		//                              _user.Predicates.addSetting("emailcheck", "true");
-		//                              var handleEmail = _handleMdService.HandledIsEmail(contains, valBotID);
-		//                              msg.Add(handleEmail.Message);
-		//                          }
-		//                          if (contains == "postback_module_phone")
-		//                          {
-		//                              _user.Predicates.addSetting("phonecheck", "true");
-		//                              var handlePhone = _handleMdService.HandleIsPhoneNumber(contains, valBotID);
-		//                              msg.Add(handlePhone.Message);
-		//                          }
-		//                          return Json(new
-		//                          {
-		//                              message = msg,
-		//                              postback = aimlBotResult.OutputHtmlPostback,
-		//                              messageLstSearchNLP = _lstQnAVm,
-		//                              messageLstSymptoms = _lstSymptomVm,
-		//                              isSearchNLP = isMdSearch
-		//                          }, JsonRequestBehavior.AllowGet);
-		//                      }
-		//                      //return chatbot(txtModule, group, token, botId, isMdSearch);
-		//                  }
-		//              }
-		//              // K tìm thấy trong Rule gọi tới module tri thức
-		//              if (result.Contains("NOT_MATCH"))
-		//              {
-		//                  if (isMdSearch)
-		//                  {
-		//                      if (userBot.SystemConfigViewModel.Count() != 0)
-		//                      {
-		//                          string nameFuncAPI = "";
-		//                          string valueBotId = "";
-		//                          string number = "";
-		//                          string field = "";
-		//                          foreach (var item in userBot.SystemConfigViewModel)
-		//                          {
-		//                              if (item.Code == "UrlAPI")
-		//                                  nameFuncAPI = item.ValueString;
-		//                              if (item.Code == "ParamBotID")
-		//                                  valueBotId = item.ValueString;
-		//                              if (item.Code == "ParamAreaID")
-		//                                  field = item.ValueString;
-		//                              if (item.Code == "ParamNumberResponse")
-		//                                  number = item.ValueString;
-		//                          }
-		//                          hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-		//                          AddHistory(hisVm);
-		//                          result = GetRelatedQuestion(nameFuncAPI, text, field, number, valueBotId);
-		//                          if (!String.IsNullOrEmpty(result))
-		//                          {
-		//                              _lstQnAVm = new JavaScriptSerializer
-		//                              {
-		//                                  MaxJsonLength = Int32.MaxValue,
-		//                                  RecursionLimit = 100
-		//                              }.Deserialize<List<SearchNlpQnAViewModel>>(result);
-		//                          }
-		//                      }
-		//                      else
-		//                      {
-		//                          return Json(new
-		//                          {
-		//                              message = new List<string>() { "Service API not found" },
-		//                              postback = new List<string>() { null },
-		//                              messageLstSearchNLP = _lstQnAVm,
-		//                              messageLstSymptoms = _lstSymptomVm,
-		//                              isSearchNLP = isMdSearch
-		//                          }, JsonRequestBehavior.AllowGet);
-		//                      }
+                            List<string> msg = new List<string>();
+                            msg.Add(aimlBotResult.OutputHtmlMessage[0].Replace(contains, ""));
+                            if (contains == "postback_module_api_search")
+                            {
+                                return chatbot(txtModule, token, botId);
+                            }
+                            if (contains == "postback_module_med_get_info_patient")
+                            {
+                                return chatbot(txtModule, token, botId);
+                            }
+                            if (contains == "postback_module_age")
+                            {
+                                _user.Predicates.addSetting("agecheck", "true");
+                                var handleAge = _handleMdService.HandledIsAge(contains, valBotID);
+                                msg.Add(handleAge.Message);
+                            }
+                            if (contains == "postback_module_email")
+                            {
+                                _user.Predicates.addSetting("emailcheck", "true");
+                                var handleEmail = _handleMdService.HandledIsEmail(contains, valBotID);
+                                msg.Add(handleEmail.Message);
+                            }
+                            if (contains == "postback_module_phone")
+                            {
+                                _user.Predicates.addSetting("phonecheck", "true");
+                                var handlePhone = _handleMdService.HandleIsPhoneNumber(contains, valBotID);
+                                msg.Add(handlePhone.Message);
+                            }
+                            return Json(new
+                            {
+                                message = msg,
+                                postback = aimlBotResult.OutputHtmlPostback,
+                                messageLstSearchNLP = _lstQnAVm,
+                                messageLstSymptoms = _lstSymptomVm,
+                                isSearchNLP = isMdSearch
+                            }, JsonRequestBehavior.AllowGet);
+                        }
+                        //return chatbot(txtModule, group, token, botId, isMdSearch);
+                    }
+                }
+                // K tìm thấy trong Rule gọi tới module tri thức
+                if (result.Contains("NOT_MATCH"))
+                {
+                    if (isMdSearch)
+                    {
+                        if (userBot.SystemConfigViewModel.Count() != 0)
+                        {
+                            string nameFuncAPI = "";
+                            string valueBotId = "";
+                            string number = "";
+                            string field = "";
+                            foreach (var item in userBot.SystemConfigViewModel)
+                            {
+                                if (item.Code == "UrlAPI")
+                                    nameFuncAPI = item.ValueString;
+                                if (item.Code == "ParamBotID")
+                                    valueBotId = item.ValueString;
+                                if (item.Code == "ParamAreaID")
+                                    field = item.ValueString;
+                                if (item.Code == "ParamNumberResponse")
+                                    number = item.ValueString;
+                            }
+                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
+                            AddHistory(hisVm);
+                            result = GetRelatedQuestion(nameFuncAPI, text, field, number, valueBotId);
+                            if (!String.IsNullOrEmpty(result))
+                            {
+                                _lstQnAVm = new JavaScriptSerializer
+                                {
+                                    MaxJsonLength = Int32.MaxValue,
+                                    RecursionLimit = 100
+                                }.Deserialize<List<SearchNlpQnAViewModel>>(result);
+                            }
+                        }
+                        else
+                        {
+                            return Json(new
+                            {
+                                message = new List<string>() { "Service API not found" },
+                                postback = new List<string>() { null },
+                                messageLstSearchNLP = _lstQnAVm,
+                                messageLstSymptoms = _lstSymptomVm,
+                                isSearchNLP = isMdSearch
+                            }, JsonRequestBehavior.AllowGet);
+                        }
 
-		//                      if (String.IsNullOrEmpty(result))
-		//                      {
-		//                          //result = NOT_MATCH[res.OutputSentences[0]];
-		//                          //result = aimlBotResult.OutputSentences[0].ToString();
-		//                          hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
-		//                          AddHistory(hisVm);
-		//                      }
+                        if (String.IsNullOrEmpty(result))
+                        {
+                            //result = NOT_MATCH[res.OutputSentences[0]];
+                            //result = aimlBotResult.OutputSentences[0].ToString();
+                            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
+                            AddHistory(hisVm);
+                        }
 
-		//                      if(botId == "3019")
-		//                      {
-		//                          string resultSymptomp = _apiNLR.GetListSymptoms(text, 1);
-		//                          if (!String.IsNullOrEmpty(resultSymptomp))
-		//                          {
-		//                              _lstSymptomVm = new JavaScriptSerializer
-		//                              {
-		//                                  MaxJsonLength = Int32.MaxValue,
-		//                                  RecursionLimit = 100
-		//                              }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
-		//                          }
-		//                      }                     
-		//                  }
-		//              }
+                        if (botId == "3019")
+                        {
+                            string resultSymptomp = _apiNLR.GetListSymptoms(text, 1);
+                            if (!String.IsNullOrEmpty(resultSymptomp))
+                            {
+                                _lstSymptomVm = new JavaScriptSerializer
+                                {
+                                    MaxJsonLength = Int32.MaxValue,
+                                    RecursionLimit = 100
+                                }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                            }
+                        }
+                    }
+                }
 
-		//              if (text.Contains("postback_card"))
-		//              {
-		//                  var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
-		//                  if (cardDb != null)
-		//                  {
-		//                      if (cardDb.IsHaveCondition)
-		//                      {
-		//                          _user.Predicates.addSetting("cardConditionCheck", "true");
-		//                          _user.Predicates.addSetting("cardConditionPattern", text.Replace(".", String.Empty));
-		//                      }
-		//                      else
-		//                      {
-		//                          _user.Predicates.addSetting("cardConditionCheck", "false");
-		//                          _user.Predicates.addSetting("cardConditionPattern", "");
-		//                      }
-		//                      if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
-		//                      {
-		//                          _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
-		//                          _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
-		//                      }
-		//                      else
-		//                      {
-		//                          _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
-		//                          _user.Predicates.addSetting("AttributeName", "");
-		//                      }
-		//                      if (cardDb.CardStepID != null)
-		//                      {
-		//                          if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
-		//                          {
-		//                              _user.Predicates.addSetting("IsConditionWithInputText", "true");
-		//                              _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
-		//                          }
-		//                          else
-		//                          {
-		//                              _user.Predicates.addSetting("IsConditionWithInputText", "false");
-		//                              _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
-		//                          }
-		//                      }
-		//                      if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
-		//                      {
-		//                          Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
+                if (text.Contains("postback_card"))
+                {
+                    var cardDb = _cardService.GetSingleCondition(text.Replace(".", String.Empty));
+                    if (cardDb != null)
+                    {
+                        if (cardDb.IsHaveCondition)
+                        {
+                            _user.Predicates.addSetting("cardConditionCheck", "true");
+                            _user.Predicates.addSetting("cardConditionPattern", text.Replace(".", String.Empty));
+                        }
+                        else
+                        {
+                            _user.Predicates.addSetting("cardConditionCheck", "false");
+                            _user.Predicates.addSetting("cardConditionPattern", "");
+                        }
+                        if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
+                        {
+                            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
+                            _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
+                        }
+                        else
+                        {
+                            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+                            _user.Predicates.addSetting("AttributeName", "");
+                        }
+                        if (cardDb.CardStepID != null)
+                        {
+                            if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                            {
+                                _user.Predicates.addSetting("IsConditionWithInputText", "true");
+                                _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
+                            }
+                            else
+                            {
+                                _user.Predicates.addSetting("IsConditionWithInputText", "false");
+                                _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
+                            }
+                        }
+                        if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
+                        {
+                            Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
 
-		//                          return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
-		//                      }
-		//                  }
-		//              }
-		//              // nếu nhập text trả lời ra postback
-		//              string strTempPostback = aimlBotResult.SubQueries[0].Template;
-		//              bool isPostback = Regex.Match(strTempPostback, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
-		//              if (isPostback)
-		//              {
-		//                  strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
-		//                  var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
-		//                  if (cardDb != null)
-		//                  {
-		//                      if (cardDb.IsHaveCondition)
-		//                      {
-		//                          _user.Predicates.addSetting("cardConditionCheck", "true");
-		//                          _user.Predicates.addSetting("cardConditionPattern", strTempPostback.Replace(".", String.Empty));
-		//                      }
-		//                      else
-		//                      {
-		//                          _user.Predicates.addSetting("cardConditionCheck", "false");
-		//                          _user.Predicates.addSetting("cardConditionPattern", "");
-		//                      }
-		//                      if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
-		//                      {
-		//                          _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
-		//                          _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
-		//                      }
-		//                      else
-		//                      {
-		//                          _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
-		//                          _user.Predicates.addSetting("AttributeName", "");
-		//                      }
-		//                      if (cardDb.CardStepID != null)
-		//                      {
-		//                          if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
-		//                          {
-		//                              _user.Predicates.addSetting("IsConditionWithInputText", "true");
-		//                              _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
-		//                          }
-		//                          else
-		//                          {
-		//                              _user.Predicates.addSetting("IsConditionWithInputText", "false");
-		//                              _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
-		//                          }
-		//                      }
-		//                      if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
-		//                      {
-		//                          Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
+                            return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
+                        }
+                    }
+                }
+                // nếu nhập text trả lời ra postback
+                string strTempPostback = aimlBotResult.SubQueries[0].Template;
+                bool isPostback = Regex.Match(strTempPostback, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
+                if (isPostback)
+                {
+                    strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
+                    var cardDb = _cardService.GetSingleCondition(strTempPostback.Replace(".", String.Empty));
+                    if (cardDb != null)
+                    {
+                        if (cardDb.IsHaveCondition)
+                        {
+                            _user.Predicates.addSetting("cardConditionCheck", "true");
+                            _user.Predicates.addSetting("cardConditionPattern", strTempPostback.Replace(".", String.Empty));
+                        }
+                        else
+                        {
+                            _user.Predicates.addSetting("cardConditionCheck", "false");
+                            _user.Predicates.addSetting("cardConditionPattern", "");
+                        }
+                        if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
+                        {
+                            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
+                            _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
+                        }
+                        else
+                        {
+                            _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+                            _user.Predicates.addSetting("AttributeName", "");
+                        }
+                        if (cardDb.CardStepID != null)
+                        {
+                            if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                            {
+                                _user.Predicates.addSetting("IsConditionWithInputText", "true");
+                                _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
+                            }
+                            else
+                            {
+                                _user.Predicates.addSetting("IsConditionWithInputText", "false");
+                                _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
+                            }
+                        }
+                        if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
+                        {
+                            Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
 
-		//                          return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
-		//                      }
-		//                  }
-		//              }
+                            return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
+                        }
+                    }
+                }
 
-		//              bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
-		//              if (isPostbackAnswer)
-		//              {
-		//                  if (result.Contains("postback"))
-		//                  {
-		//                      var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
-		//                      if (cardDb != null)
-		//                      {
-		//                          // Nếu có yêu cầu click thẻ để đi theo luồng
-		//                          if (cardDb.IsHaveCondition)
-		//                          {
-		//                              _user.Predicates.addSetting("cardConditionCheck", "true");
-		//                              _user.Predicates.addSetting("cardConditionPattern", strTempPostback.Replace(".", String.Empty));
-		//                          }
-		//                          else
-		//                          {
-		//                              _user.Predicates.addSetting("cardConditionCheck", "false");
-		//                              _user.Predicates.addSetting("cardConditionPattern", "");
-		//                          }
-		//                          if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
-		//                          {
-		//                              _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
-		//                              _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
-		//                          }
-		//                          else
-		//                          {
-		//                              _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
-		//                              _user.Predicates.addSetting("AttributeName", "");
-		//                          }
-		//                          if (cardDb.CardStepID != null)
-		//                          {
-		//                              if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
-		//                              {
-		//                                  _user.Predicates.addSetting("IsConditionWithInputText", "true");
-		//                                  _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
-		//                              }
-		//                              else
-		//                              {
-		//                                  _user.Predicates.addSetting("IsConditionWithInputText", "false");
-		//                                  _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
-		//                              }
-		//                          }
-		//                          if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
-		//                          {
-		//                              // tạo biến session lưu aimlBotResult.OutputHtmlMessage của lần trước
-		//                              Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
-		//                              return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
-		//                          }
-		//                          return chatbot(result.Replace(".", String.Empty), token, botId);
-		//                      }
-		//                  }
-		//              }
-		//              //set new predicate to session user bot request
-		//              SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
-		//              settingDic.Count = aimlBotResult.user.Predicates.Count;
-		//              settingDic.orderedKeys = aimlBotResult.user.Predicates.orderedKeys;
-		//              settingDic.settingsHash = aimlBotResult.user.Predicates.settingsHash;
-		//              settingDic.SettingNames = aimlBotResult.user.Predicates.SettingNames;
-		//              userBot.SettingDicstionary = settingDic;
-		//              Session[CommonConstants.SessionUserBot] = userBot;
-		//              //var lstMsg = aimlBotResult.OutputHtmlMessage;
-		//              List<string> lstOutputMsg = new List<string>();
-		//              List<string> lstMsg = new List<string>();
-		//              lstMsg = aimlBotResult.OutputHtmlMessage;
+                bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
+                if (isPostbackAnswer)
+                {
+                    if (result.Contains("postback"))
+                    {
+                        var cardDb = _cardService.GetSingleCondition(result.Replace(".", String.Empty));
+                        if (cardDb != null)
+                        {
+                            // Nếu có yêu cầu click thẻ để đi theo luồng
+                            if (cardDb.IsHaveCondition)
+                            {
+                                _user.Predicates.addSetting("cardConditionCheck", "true");
+                                _user.Predicates.addSetting("cardConditionPattern", strTempPostback.Replace(".", String.Empty));
+                            }
+                            else
+                            {
+                                _user.Predicates.addSetting("cardConditionCheck", "false");
+                                _user.Predicates.addSetting("cardConditionPattern", "");
+                            }
+                            if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
+                            {
+                                _user.Predicates.addSetting("IsHaveSetAttributeSystem", "true");
+                                _user.Predicates.addSetting("AttributeName", cardDb.AttributeSystemName);
+                            }
+                            else
+                            {
+                                _user.Predicates.addSetting("IsHaveSetAttributeSystem", "false");
+                                _user.Predicates.addSetting("AttributeName", "");
+                            }
+                            if (cardDb.CardStepID != null)
+                            {
+                                if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
+                                {
+                                    _user.Predicates.addSetting("IsConditionWithInputText", "true");
+                                    _user.Predicates.addSetting("CardConditionWithInputTextPattern", "postback_card_" + cardDb.CardStepID);
+                                }
+                                else
+                                {
+                                    _user.Predicates.addSetting("IsConditionWithInputText", "false");
+                                    _user.Predicates.addSetting("CardConditionWithInputTextPattern", "");
+                                }
+                            }
+                            if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
+                            {
+                                // tạo biến session lưu aimlBotResult.OutputHtmlMessage của lần trước
+                                Session[CommonConstants.SessionResultBot] = aimlBotResult.OutputHtmlMessage;
+                                return chatbot("postback_card_" + cardDb.CardStepID, token, botId);
+                            }
+                            return chatbot(result.Replace(".", String.Empty), token, botId);
+                        }
+                    }
+                }
+                //set new predicate to session user bot request
+                SettingsDictionaryViewModel settingDic = new SettingsDictionaryViewModel();
+                settingDic.Count = aimlBotResult.user.Predicates.Count;
+                settingDic.orderedKeys = aimlBotResult.user.Predicates.orderedKeys;
+                settingDic.settingsHash = aimlBotResult.user.Predicates.settingsHash;
+                settingDic.SettingNames = aimlBotResult.user.Predicates.SettingNames;
+                userBot.SettingDicstionary = settingDic;
+                Session[CommonConstants.SessionUserBot] = userBot;
+                //var lstMsg = aimlBotResult.OutputHtmlMessage;
+                List<string> lstOutputMsg = new List<string>();
+                List<string> lstMsg = new List<string>();
+                lstMsg = aimlBotResult.OutputHtmlMessage;
 
-		//              if(lstMsg.Count() == 1 && _lstSymptomVm.Count() != 0)
-		//              {
-		//                  foreach(var item in lstMsg)
-		//                  {
-		//                      if (item.Contains("NOT_MATCH"))
-		//                      {
-		//                          lstMsg = new List<string>();
-		//                          isHaveSymptomAndMsgNotMatch = true;
-		//                      }
-		//                  }
-		//              }
+                if (lstMsg.Count() == 1 && _lstSymptomVm.Count() != 0)
+                {
+                    foreach (var item in lstMsg)
+                    {
+                        if (item.Contains("NOT_MATCH"))
+                        {
+                            lstMsg = new List<string>();
+                            isHaveSymptomAndMsgNotMatch = true;
+                        }
+                    }
+                }
 
-		//              if(lstMsg.Count() == 1)
-		//              {
-		//                  foreach (var item in lstMsg)
-		//                  {
-		//                      if (item.Contains("NOT_MATCH"))
-		//                      {
-		//                          lstMsg = new List<string>();
-		//                          lstMsg.Add(aimlBotResult.RawOutput.ToString().Replace(".", String.Empty));
-		//                      }
-		//                  }
-		//              }
+                if (lstMsg.Count() == 1)
+                {
+                    foreach (var item in lstMsg)
+                    {
+                        if (item.Contains("NOT_MATCH"))
+                        {
+                            lstMsg = new List<string>();
+                            lstMsg.Add(aimlBotResult.RawOutput.ToString().Replace(".", String.Empty));
+                        }
+                    }
+                }
 
-		//              if(Session[CommonConstants.SessionResultBot] != null)
-		//              {
-		//                  var lstAimlResult = (List<string>)Session[CommonConstants.SessionResultBot];
-		//                  if(lstAimlResult != null && lstAimlResult.Count() != 0)
-		//                  {
-		//                      foreach (string item in lstAimlResult)
-		//                      {
-		//                          string msg = item;
-		//                          if (item.Contains("{{"))
-		//                          {
-		//                              foreach (var i in settingDic.settingsHash)
-		//                              {
-		//                                  string value = String.IsNullOrEmpty(i.Value) == true ? "N/A" : i.Value;
-		//                                  string key = i.Key.ToLower();
-		//                                  if(key == "sender_name")
-		//                                  {
-		//                                      value = "bạn";
-		//                                  }
-		//                                  msg = Regex.Replace(msg, "{{" + key + "}}", value);
-		//                              }
-		//                          }
-		//                          lstOutputMsg.Add(msg);
-		//                      }
-		//                  }
-		//              }
-		//              if (lstMsg.Count() != 0)
-		//              {
-		//                  foreach (string item in lstMsg)
-		//                  {
-		//                      string msg = item;
-		//                      if (item.Contains("{{"))
-		//                      {
-		//                          foreach (var i in settingDic.settingsHash)
-		//                          {
-		//                              string value = String.IsNullOrEmpty(i.Value) == true ? "N/A" : i.Value;
-		//                              string key = i.Key.ToLower();
-		//                              if (key == "sender_name")
-		//                              {
-		//                                  value = "bạn";
-		//                              }
-		//                              msg = Regex.Replace(msg, "{{" + key + "}}", value);
-		//                          }
-		//                      }
-		//                      lstOutputMsg.Add(msg);
-		//                      if(botId == "3019")
-		//                      {
-		//                          if (item.Contains("Nguyên nhân") || item.Contains("bác sĩ") || item.Contains("Bác sĩ"))
-		//                          {
-		//                              // Hiển thị thêm thông tin về triệu chứng đó
-		//                              string resultSymptomp = _apiNLR.GetListSymptoms(_user.Predicates.grabSetting("content_message"), 1);
-		//                              if (!String.IsNullOrEmpty(resultSymptomp))
-		//                              {
-		//                                  _lstSymptomVm = new JavaScriptSerializer
-		//                                  {
-		//                                      MaxJsonLength = Int32.MaxValue,
-		//                                      RecursionLimit = 100
-		//                                  }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
-		//                              }
-		//                          }
-		//                      }
-		//                  }
-		//              }
-		//              Session[CommonConstants.SessionResultBot] = null;
-		//              return Json(new
-		//              {
-		//                  message = lstOutputMsg,
-		//                  postback = aimlBotResult.OutputHtmlPostback,
-		//                  messageLstSearchNLP = _lstQnAVm,
-		//                  messageLstSymptoms = _lstSymptomVm,
-		//                  isSearchNLP = isMdSearch,
-		//                  isHaveSymptomsAndNotMatch = isHaveSymptomAndMsgNotMatch
-		//              }, JsonRequestBehavior.AllowGet);
-		//          }
-		//          catch (Exception ex)
-		//          {
-		//              LogError(ex);
-		//              return Json(new
-		//              {
-		//                  message = new List<string>() { "Error" },
-		//                  postback = new List<string>() { null },
-		//                  messageLstSearchNLP = new List<string>() {},
-		//                  messageLstSymptoms = new List<string>() {},
-		//                  isSearchNLP = isMdSearch,
-		//                  isHaveSymptomsAndNotMatch = isHaveSymptomAndMsgNotMatch
-		//              }, JsonRequestBehavior.AllowGet);
-		//          }
-		//      }
+                if (Session[CommonConstants.SessionResultBot] != null)
+                {
+                    var lstAimlResult = (List<string>)Session[CommonConstants.SessionResultBot];
+                    if (lstAimlResult != null && lstAimlResult.Count() != 0)
+                    {
+                        foreach (string item in lstAimlResult)
+                        {
+                            string msg = item;
+                            if (item.Contains("{{"))
+                            {
+                                foreach (var i in settingDic.settingsHash)
+                                {
+                                    string value = String.IsNullOrEmpty(i.Value) == true ? "N/A" : i.Value;
+                                    string key = i.Key.ToLower();
+                                    if (key == "sender_name")
+                                    {
+                                        value = "bạn";
+                                    }
+                                    msg = Regex.Replace(msg, "{{" + key + "}}", value);
+                                }
+                            }
+                            lstOutputMsg.Add(msg);
+                        }
+                    }
+                }
+                if (lstMsg.Count() != 0)
+                {
+                    foreach (string item in lstMsg)
+                    {
+                        string msg = item;
+                        if (item.Contains("{{"))
+                        {
+                            foreach (var i in settingDic.settingsHash)
+                            {
+                                string value = String.IsNullOrEmpty(i.Value) == true ? "N/A" : i.Value;
+                                string key = i.Key.ToLower();
+                                if (key == "sender_name")
+                                {
+                                    value = "bạn";
+                                }
+                                msg = Regex.Replace(msg, "{{" + key + "}}", value);
+                            }
+                        }
+                        lstOutputMsg.Add(msg);
+                        if (botId == "3019")
+                        {
+                            if (item.Contains("Nguyên nhân") || item.Contains("bác sĩ") || item.Contains("Bác sĩ"))
+                            {
+                                // Hiển thị thêm thông tin về triệu chứng đó
+                                string resultSymptomp = _apiNLR.GetListSymptoms(_user.Predicates.grabSetting("content_message"), 1);
+                                if (!String.IsNullOrEmpty(resultSymptomp))
+                                {
+                                    _lstSymptomVm = new JavaScriptSerializer
+                                    {
+                                        MaxJsonLength = Int32.MaxValue,
+                                        RecursionLimit = 100
+                                    }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                                }
+                            }
+                        }
+                    }
+                }
+                Session[CommonConstants.SessionResultBot] = null;
+                return Json(new
+                {
+                    message = lstOutputMsg,
+                    postback = aimlBotResult.OutputHtmlPostback,
+                    messageLstSearchNLP = _lstQnAVm,
+                    messageLstSymptoms = _lstSymptomVm,
+                    isSearchNLP = isMdSearch,
+                    isHaveSymptomsAndNotMatch = isHaveSymptomAndMsgNotMatch
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                LogError(ex);
+                return Json(new
+                {
+                    message = new List<string>() { "Error" },
+                    postback = new List<string>() { null },
+                    messageLstSearchNLP = new List<string>() { },
+                    messageLstSymptoms = new List<string>() { },
+                    isSearchNLP = isMdSearch,
+                    isHaveSymptomsAndNotMatch = isHaveSymptomAndMsgNotMatch
+                }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
-		public string tempNodeBtnModule(string valModule)
+        public string tempNodeBtnModule(string valModule)
 		{
 			StringBuilder sbPostback = new StringBuilder();
 			sbPostback.AppendLine("<div class=\"_6biu\">");

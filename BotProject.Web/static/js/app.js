@@ -168,7 +168,7 @@ var lacviet = {
     modalContainer: function(){
         var tempModalContainer = '';
         tempModalContainer += '<div class="bot-modal" style="visibility:hidden; z-index:999999999999">';
-        tempModalContainer +='        <div class="bot-modal-content large_bg">';
+        tempModalContainer +='        <div class="bot-modal-content modal-lg modal-sm">';
         tempModalContainer +='            <span class="bot-close-button">×</span>';
         tempModalContainer +='            <div id="bot-iframe">';
         tempModalContainer +='            </div>';
@@ -279,6 +279,11 @@ eventer(messageEvent, function (e) {
 				var modal = document.querySelector(".bot-modal");
 				$("#bot-iframe").empty().append('<iframe style="width:100rem" width="100" height="378"frameborder="0"allowtransparency="true"allowfullscreen="true" src="' + e.data + '"></iframe>');
 				modal.classList.toggle("bot-show-modal");
+			}
+			if (e.data.includes("File/Images")) {
+			    var modal = document.querySelector(".bot-modal");
+			    $("#bot-iframe").empty().append('<image class="cbox-image-reponsive" style="width:100%" src="' + e.data + '"/>');
+			    modal.classList.toggle("bot-show-modal");
 			}
         }
     }

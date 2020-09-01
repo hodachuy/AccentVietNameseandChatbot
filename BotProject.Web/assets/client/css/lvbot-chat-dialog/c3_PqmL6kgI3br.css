@@ -1,4 +1,5 @@
-﻿._3u55 {
+﻿
+._3u55 {
     display: inline-block;
     vertical-align: middle;
 }
@@ -100,11 +101,11 @@
 
 ._30ss {
     bottom: 0;
-    /*display: flex;
+    display: flex;
     flex-direction: column;
     height: 100%;
     justify-content: flex-end;
-    position: absolute;*/
+    position: absolute;
     -webkit-tap-highlight-color: transparent;
     width: 100%;
 }
@@ -750,10 +751,18 @@
     display: block;
     font-size: 11pt;
     line-height: 15pt;
-    margin: 1pt 0;
-    max-width: 88%;
+	
+	/*Đoạn này margin 1pt 0 chia tách từng tin nhắn liền kề*/
+    /* margin: 1pt 0; */
+    /* max-width: 88%; */
+    /* outline: none; */
+    /* padding: 6pt 9pt; */
+	
+	/*Đoạn này dính nhau từng tin nhắn liền kề*/
+	margin: unset;
+    max-width: 90%;
     outline: none;
-    padding: 6pt 9pt;
+    padding: 6pt 5pt;
 }
 
 ._4xkr {
@@ -761,7 +770,9 @@
     border-top-right-radius: 1.3em;
     color: rgba(0, 0, 0, 1);
     float: left;
-	    max-width: 240px;
+	width:100%;
+	    /* max-width: 240px; */
+	/* max-width: 300px; */
 }
 
     ._4xkr a, ._4xkr a:visited {
@@ -1244,7 +1255,8 @@
 }
 
 ._6j2i {
-    width: 260px;
+    /* width: 260px; */
+	width:100%;
 }
 
 ._6j0s {
@@ -1252,6 +1264,7 @@
     border-top-left-radius: 1.3em;
     border-top-right-radius: 1.3em;
     display: block;
+    	cursor:pointer;
 }
 
 ._6j0r {

@@ -175,6 +175,16 @@ var cboxEvent = {
             msgEvent.sendMessage(dataText, dataPostback);
             e.stopPropagation();
         })
+        // image - show popup outside iframe
+        $('body').on('click', '._6popup_image', function (e) {
+            e.preventDefault();
+            var elm = $(this);
+            var imageURL = $(this).css('background-image');
+            imageURL = imageURL.replace(/(url\(|\)|")/g, '');
+            parent.postMessage(imageURL, "*");
+            //window.open(imageURL, '_blank');
+            e.stopPropagation();
+        })
         //popup
         $('body').on('click', '._6ir4_popup', function (e) {
             e.preventDefault();
@@ -698,7 +708,7 @@ function add3Dots(string, limit) {
 
 window.addEventListener('message', function (event) {
     var widthParent = parseInt(event.data);
-    //console.log(event.data)
+    console.log(event.data)
     if (widthParent <= 425) {
         $("._3-8j").css('margin', '0px 0px 0px');
         $("._6atl").css('height', '100%');

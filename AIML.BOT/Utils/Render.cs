@@ -25,7 +25,7 @@ namespace AIML.BOT.Utils
 			_tagHtml.TotalCarousel = 0;
         }
         public TagHtml RenderTagToHtml(string tagName, string outerTagContent, string innerTagContent)
-        {
+       {
             StringBuilder sb = new StringBuilder();
             string dataText = "";
             switch (tagName)
@@ -105,24 +105,27 @@ namespace AIML.BOT.Utils
                 case "image":
                     //Common.ReadString("Domain") host domain lay tu`appconfig cua domain cha truyen` vao`
                     string dataImage = new Regex("<image>(.*)</image>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
-                    sb.AppendLine("<div class=\"_6j0s\" style=\"background-image:url(&quot;"+ Common.ReadString("Domain")+dataImage + "&quot;); background-position: center center; height: 150px; width: 100%;\"></div>");
+                    sb.AppendLine("<div class=\"_6j0s _6popup_image\" style=\"background-image:url(&quot;"+ Common.ReadString("Domain")+dataImage + "&quot;); background-position: center center; height: 150px; width: 100%;\"></div>");
                     _tagHtml.Body = sb.ToString();
                     break;
                 case "file":
                     string dataFile = new Regex("<file>(.*)</file>", RegexOptions.IgnoreCase).Match(outerTagContent).Groups[1].Value;
                     string urlFile = Common.ReadString("Domain")+HttpUtility.HtmlDecode(dataFile);
                     string extension = System.IO.Path.GetExtension(urlFile);
-                    string iconFile = "<i class=\"fa fa-file\" aria-hidden=\"true\" style=\"color:cornflowerblue;\"></i>";
-                    if (extension == "doc" || extension == "docx")
+                    string iconFile = "<i class=\"fa fa-file\" aria-hidden=\"true\" style=\"color:cornflowerblue;padding-right:10px\"></i>";
+                    if (extension == ".doc" || extension == ".docx")
                     {
-                        iconFile = "<i class=\"fa fa-file-word-o\" aria-hidden=\"true\" style=\"color:cornflowerblue;\"></i>";
+                        iconFile = "<i class=\"fa fa-file-word\" aria-hidden=\"true\" style=\"color:cornflowerblue;padding-right:10px\"></i>";
+                        //iconFile = "<i alt=\"\" class=\"img sp_y5OyqnCywpJ sx_df7216\"></i>";
                     }
-                    else if (extension == "pdf")
+                    else if (extension == ".pdf")
                     {
-                        iconFile = "<i class=\"fa fa-file-pdf-o\" aria-hidden=\"true\" style=\"color:red;\"></i>";
+                        iconFile = "<i class=\"fa fa-file-pdf\" aria-hidden=\"true\" style=\"color:red;padding-right:10px\"></i>";
+                        //iconFile = "<i alt=\"\" class=\"img sp_y5OyqnCywpJ sx_df7216\"></i>";
                     }
-                    string nameFile = new Regex("(?:[^/][\\d\\w\\.]+)$(?<=(?:.jpg)|(?:.pdf)|(?:.gif)|(?:.jpeg)|(?:.txt)|(?:.doc)|(?:.docx)|(more_extension))", RegexOptions.IgnoreCase).Match(urlFile).Value;
-                    sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:"+ _color + "; font-family: Segoe UI Light;\"><span>"+ iconFile + "<a href="+ urlFile + " target='_blank'>"+ nameFile + "</a></span></div>");
+                    //string nameFile = new Regex("(?:[^/][\\d\\w\\.]+)$(?<=(?:.jpg)|(?:.pdf)|(?:.gif)|(?:.jpeg)|(?:.txt)|(?:.doc)|(?:.docx)|(more_extension))", RegexOptions.IgnoreCase).Match(urlFile).Value;
+                    string filename = System.IO.Path.GetFileName(urlFile.Split('/').Last());
+                    sb.AppendLine("<div class=\"_4xko _4xkr _tmpB\" tabindex=\"0\" role=\"button\" style=\"background-color:"+ _color + "; font-family: Segoe UI Light;\"><span>"+ iconFile + "<a href='"+ urlFile + "' target='_blank' style=\"text-decoration:none\">" + filename + "</a></span></div>");
                     _tagHtml.Body = sb.ToString();
                     break;
                 case "title":
