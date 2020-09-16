@@ -161,6 +161,16 @@ var cboxEvent = {
             msgEvent.sendMessage(dataText, dataPostback);
             e.stopPropagation();
         })
+		// image - show popup outside iframe
+        $('body').on('click', '._6popup_image', function (e) {
+            e.preventDefault();
+            var elm = $(this);
+            var imageURL = $(this).css('background-image');
+            imageURL = imageURL.replace(/(url\(|\)|")/g, '');
+            parent.postMessage(imageURL, "*");
+            //window.open(imageURL, '_blank');
+            e.stopPropagation();
+        })
         //module
         $('body').on('click', '._6ir4_module', function (e) {
             e.preventDefault();
@@ -173,16 +183,6 @@ var cboxEvent = {
                 }
             })
             msgEvent.sendMessage(dataText, dataPostback);
-            e.stopPropagation();
-        })
-        // image - show popup outside iframe
-        $('body').on('click', '._6popup_image', function (e) {
-            e.preventDefault();
-            var elm = $(this);
-            var imageURL = $(this).css('background-image');
-            imageURL = imageURL.replace(/(url\(|\)|")/g, '');
-            parent.postMessage(imageURL, "*");
-            //window.open(imageURL, '_blank');
             e.stopPropagation();
         })
         //popup
@@ -259,7 +259,7 @@ var msgEvent = {
     getMessageAccentVN: function (text) {
         var rs = "";
         $.ajax({
-            url: "http://bot.digipro.vn/" + api.getAccentVN + '?text=' + text,//"https://bot.digipro.vn/"
+            url: "https://bot.digipro.vn/" + api.getAccentVN + '?text=' + text,//"https://bot.digipro.vn/"
             contentType: 'application/json; charset=utf-8',
             type: 'GET',
             async: false,
@@ -295,7 +295,7 @@ var msgEvent = {
                 }
                 setTimeout(function () {
                     msgEvent.getMessageBot(content);
-                }, 1500)
+                }, 500)
                 configs.isActiveGetStarted = true;
             }
         }
@@ -326,27 +326,27 @@ var msgEvent = {
                 }
                 if (isHaveSymptomsAndNotMatch == true && resultLstMedSymptoms != null && resultLstMedSymptoms.length != 0) {
                     var tempCarouselMedSymptoms = new msgEvent.renderBot().TemplateTextCarouselMedSymptoms(resultLstMedSymptoms);
-                    msgEvent.appendMessage(".conversationContainer", 1500, new msgEvent.renderBot().TemplateText('Bạn vui lòng xem thêm thông tin triệu chứng bên dưới'), true)
-                    msgEvent.appendMessage(".conversationContainer", 2000, tempCarouselMedSymptoms)
+                    msgEvent.appendMessage(".conversationContainer", 500, new msgEvent.renderBot().TemplateText('Bạn vui lòng xem thêm thông tin triệu chứng bên dưới'), true)
+                    msgEvent.appendMessage(".conversationContainer", 1000, tempCarouselMedSymptoms)
                     setTimeout(function () {
                         if (tplPostback !== null) {
                             tplPostback = tplPostback.replace(/{{color}}/g, configs.color);
                             $("#_12cd_event_button").empty().append(tplPostback);
                             scrollBar();
                         }
-                    }, 2000)
+                    }, 1000)
                 }
                 if (resultAPI != null && resultAPI.length != 0 && isSearchNLP == true) {
                     var tempCarouselQnA = new msgEvent.renderBot().TemplateTextCarouselQnA(resultAPI);
-                    msgEvent.appendMessage(".conversationContainer", 1500, new msgEvent.renderBot().TemplateText('Tôi tìm thấy ' + resultAPI.length + ' câu hỏi liên quan đến câu hỏi của bạn.'), true)
-                    msgEvent.appendMessage(".conversationContainer", 2000, tempCarouselQnA)
+                    msgEvent.appendMessage(".conversationContainer", 500, new msgEvent.renderBot().TemplateText('Tôi tìm thấy ' + resultAPI.length + ' câu hỏi liên quan đến câu hỏi của bạn.'), true)
+                    msgEvent.appendMessage(".conversationContainer", 1000, tempCarouselQnA)
                     setTimeout(function () {
                         if (tplPostback !== null) {
                             tplPostback = tplPostback.replace(/{{color}}/g, configs.color);
                             $("#_12cd_event_button").empty().append(tplPostback);
                             scrollBar();
                         }
-                    }, 2000)
+                    }, 1000)
                     return;
                 }
                 if (isHaveSymptomsAndNotMatch == false) {
@@ -375,13 +375,13 @@ var msgEvent = {
 
                         msg = msg.replace(/{{color}}/g, configs.color);
                         msg = msg.replace(/{{image_logo}}/g, configs.srcLogo);
-                        msgEvent.appendMessage(".conversationContainer", 1500, msg)
+                        msgEvent.appendMessage(".conversationContainer", 500, msg)
                         if (tplPostback !== null) {
                             tplPostback = tplPostback.replace(/{{color}}/g, configs.color);
                             setTimeout(function () {
                                 $("#_12cd_event_button").empty().append(tplPostback);
                                 scrollBar();
-                            }, 1500)
+                            }, 500)
                         }
                     }
                     if (lstMessage.length > 1) {
@@ -394,9 +394,9 @@ var msgEvent = {
                             if (index == lstMessage.length) {
                                 isSendTyping = false;
                             }
-                            msgEvent.appendMessage(".conversationContainer", 1500, msg, isSendTyping)
+                            msgEvent.appendMessage(".conversationContainer", 500, msg, isSendTyping)
                         })
-                        var newTimeDelay = parseInt(lstMessage.length * 1500);
+                        var newTimeDelay = parseInt(lstMessage.length * 500);
                         setTimeout(function () {
                             $("._4xkn_writing").remove();
                             if (tplPostback !== null) {
@@ -409,15 +409,15 @@ var msgEvent = {
 
                     if (resultLstMedSymptoms != null && resultLstMedSymptoms.length != 0) {
                         var tempCarouselMedSymptoms = new msgEvent.renderBot().TemplateTextCarouselMedSymptoms(resultLstMedSymptoms);
-                        msgEvent.appendMessage(".conversationContainer", 1500, new msgEvent.renderBot().TemplateText('Bạn vui lòng xem thêm thông tin triệu chứng bên dưới'), true)
-                        msgEvent.appendMessage(".conversationContainer", 2000, tempCarouselMedSymptoms)
+                        msgEvent.appendMessage(".conversationContainer", 500, new msgEvent.renderBot().TemplateText('Bạn vui lòng xem thêm thông tin triệu chứng bên dưới'), true)
+                        msgEvent.appendMessage(".conversationContainer", 1000, tempCarouselMedSymptoms)
                         setTimeout(function () {
                             if (tplPostback !== null) {
                                 tplPostback = tplPostback.replace(/{{color}}/g, configs.color);
                                 $("#_12cd_event_button").empty().append(tplPostback);
                                 scrollBar();
                             }
-                        }, 2000)
+                        }, 1000)
                     }
                 }
                 scrollBar();
@@ -708,7 +708,7 @@ function add3Dots(string, limit) {
 
 window.addEventListener('message', function (event) {
     var widthParent = parseInt(event.data);
-    console.log(event.data)
+    //console.log(event.data)
     if (widthParent <= 425) {
         $("._3-8j").css('margin', '0px 0px 0px');
         $("._6atl").css('height', '100%');

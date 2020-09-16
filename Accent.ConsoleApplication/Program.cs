@@ -99,8 +99,8 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
-            string hl = "Chuyển nhượng, nhận thừa kế, quà tặng là bất thừa động sản tại Việt Nam";
-            string hlw = HighLightWord(hl, "thừa", false);
+            string hl = "chạo ạ bạn";
+            string hlw = HighLightWord(hl, "ạ", false);
 
             double rating = GetRating();
             Console.WriteLine("rating: " + rating);
@@ -191,7 +191,22 @@ namespace Accent.ConsoleApplication
             //}
         }
 
-
+        // Validate string containt SQL-Injection
+        static string CleanInput(string strIn)
+        {
+            // Replace invalid characters with empty strings.
+            try
+            {
+                return Regex.Replace(strIn, @"[^\w\.@-]", "",
+                                     RegexOptions.None, TimeSpan.FromSeconds(1.5));
+            }
+            // If we timeout when replacing invalid characters,
+            // we should return Empty.
+            catch (RegexMatchTimeoutException)
+            {
+                return String.Empty;
+            }
+        }
         class LoadBalancer
         {
             private static LoadBalancer _instance;
