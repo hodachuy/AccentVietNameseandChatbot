@@ -24,7 +24,7 @@ using System.Web.Script.Serialization;
 
 namespace BotProject.Web.API_Mobile
 {
-    [RoutePrefix("api/messagev2")]
+    //[RoutePrefix("api/messagev2")]
     public class MessageKioskController : ApiControllerBase
     {
         // Thẻ chat với chuyên viên

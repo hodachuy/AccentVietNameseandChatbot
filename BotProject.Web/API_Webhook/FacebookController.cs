@@ -60,30 +60,7 @@ namespace BotProject.Web.API_Webhook
            {"NOT_MATCH_03", "Chưa hiểu lắm ạ, anh/chị có thể nói rõ hơn được không ạ?"},
            {"NOT_MATCH_04", "Xin lỗi, Anh/chị có thể giải thích thêm được không?"},
            {"NOT_MATCH_05", "Xin lỗi, Tôi chưa được học để hiểu nội dung này?"},
-        };
-
-        ///// <summary>
-        ///// Điều kiện để đi tới card tiếp theo
-        ///// </summary>
-        //private readonly string[] ARRAY_CONDITION_NAME = new string[]
-        //{
-        //    "REQUIRE_CLICK_BUTTON_TO_NEXT_CARD",//IsHaveCondition
-        //    "REQUIRE_INPUT_TEXT_TO_NEXT_CARD",//IsConditionWithInputText true + CardStepID NOT NULL
-        //    "VERIFY_TEXT_WITH_AREA_BUTTON",//IsConditionWithAreaButton
-        //    "POSTBACK_MODULE",
-        //    "ADD_ATTRIBUTE_USER", // Thuộc tính người dùng 
-        //    "AUTO_NEXT_CARD" //IsConditionWithInputText false + CardStepID NOT NULL
-        //};
-
-        //private Dictionary<string, string> CONDITION_CARD = new Dictionary<string, string>
-        //{
-        //    {"CONDITION_CLICK","REQUIRE_CLICK_BUTTON_TO_NEXT_CARD"},
-        //    {"CONDITION_INPUT","REQUIRE_INPUT_TEXT_TO_NEXT_CARD"},
-        //    {"CONDITION_VERIFY","VERIFY_TEXT_WITH_AREA_BUTTON"},
-        //    {"POSTBACK_MODULE","POSTBACK_MODULE"},
-        //    {"ADD_ATTRIBUTE_USER","ADD_ATTRIBUTE_USER"},
-        //    {"AUTO_NEXT_CARD","AUTO_NEXT_CARD"},
-        //};
+        };    
 
         /// <summary>
         /// Thời gian chờ để phản hồi lại tin nhắn,thời gian tính từ tin nhắn cuối cùng
@@ -101,8 +78,14 @@ namespace BotProject.Web.API_Webhook
         private string _contactAdmin = Helper.ReadString("AdminContact");
         private string _titlePayloadContactAdmin = Helper.ReadString("TitlePayloadAdminContact");
 
+        // Pattern kiểm tra là số
+        private const string NumberPattern = @"^\d+$";
+
         // Model user
         ApplicationFacebookUser _fbUser;
+
+        // BOT PRIVATE CUSTOMIZE
+        private const int BOT_Y_TE = 3019;
 
         // Services
         private IApplicationFacebookUserService _appFacebookUser;
@@ -139,7 +122,7 @@ namespace BotProject.Web.API_Webhook
             _aimlFileService = aimlFileService;
             _app3rd = app3rd;
             _botService = BotServiceMedical.BotInstance;
-            //_accentService = new AccentService();
+            //_accentService = AccentService.SingleInstance;
             _apiNLR = new ApiQnaNLRService();
             _fbUser = new ApplicationFacebookUser();
         }
@@ -284,6 +267,17 @@ namespace BotProject.Web.API_Webhook
                     await SendMessage(msg, sender);
                 }
                 text = textAccentVN;
+                if(botId == BOT_Y_TE)
+                {
+                    AttributeFacebookUser attFbUser = new AttributeFacebookUser();
+                    attFbUser.AttributeKey = "content_message";
+                    attFbUser.AttributeValue = text;
+                    attFbUser.BotID = botId;
+                    attFbUser.UserID = sender;
+                    _dicAttributeUser.Remove("content_message");
+                    _dicAttributeUser.Add("content_message", text);
+                    _attributeService.CreateUpdateAttributeFacebook(attFbUser);
+                }
             }
 
             // Input postback            
@@ -316,11 +310,28 @@ namespace BotProject.Web.API_Webhook
                     {
                         attFbUser.AttributeValue = TITLE_PAYLOAD_QUICKREPLY;
                         isUpdateAttr = true;
-
                     }
                 }
                 if (isUpdateAttr)
                 {
+                    // Kiểm tra giá trị nhập vào theo từng thuộc tính
+                    // Bot Y Tế
+                    // Tuổi
+                    if(attFbUser.AttributeKey == "age")
+                    {
+                        bool isAge = Regex.Match(text, NumberPattern).Success;
+                        if (isAge)
+                        {
+                            attFbUser.AttributeValue = text;
+                        }
+                        else
+                        {
+                            string msg = FacebookTemplate.GetMessageTemplateText("Ký tự phải là số, Anh/chị vui lòng nhập lại độ tuổi", sender).ToString();
+                            await SendMessage(msg, sender);
+                            return new HttpResponseMessage(HttpStatusCode.OK);
+                        }
+                    }
+
                     _dicAttributeUser.Remove(attFbUser.AttributeKey);
                     _dicAttributeUser.Add(attFbUser.AttributeKey, attFbUser.AttributeValue);
                     _attributeService.CreateUpdateAttributeFacebook(attFbUser);
@@ -407,18 +418,35 @@ namespace BotProject.Web.API_Webhook
             if (rsBOT.Type == POSTBACK_CARD)
             {
                 string templateCard = HandlePostbackCard(rsBOT.PatternPayload, botId);
-                await SendMultiMessageTask(templateCard, sender);
-                if (_fbUser.PredicateName == "AUTO_NEXT_CARD")
+                await SendMultiMessageTask(templateCard, sender); // print message card
+                if (_fbUser.PredicateName == "AUTO_NEXT_CARD") // print message card kế tiếp nếu có
                 {
                     string partternNextCard = _fbUser.PredicateValue;
-                    string templateNextCard = HandlePostbackCard(partternNextCard, botId);
-                    await SendMultiMessageTask(templateNextCard, sender);
+                    templateCard = HandlePostbackCard(partternNextCard, botId);
+                    await SendMultiMessageTask(templateCard, sender);
+                }
+                // Trường hợp bot y tế thẻ tin nhắn xuất ra cuối cùng có chứa các từ dưới sẽ lấy tiếp tin nhắn triệu chứng
+                if (botId == BOT_Y_TE)
+                {
+                    if (templateCard.Contains("Nguyên nhân") || templateCard.Contains("bác sĩ") || templateCard.Contains("Bác sĩ"))
+                    {
+                        List<string> lstSymptoms = new List<string>();
+                        lstSymptoms = GetSymptoms(_dicAttributeUser["content_message"]);
+                        if (lstSymptoms.Count() != 0)
+                        {
+                            foreach (var symp in lstSymptoms)
+                            {
+                                await SendMessage(symp, sender);
+                            }
+                        }
+                    }
+
                 }
             }
             if (rsBOT.Type == POSTBACK_NOT_MATCH)
             {
                 List<string> lstSymptoms = new List<string>();
-                if (botId == 3019)
+                if (botId == BOT_Y_TE)
                 {
                     lstSymptoms = GetSymptoms(text);
                     if (lstSymptoms.Count() != 0)
@@ -660,31 +688,6 @@ namespace BotProject.Web.API_Webhook
         #endregion
 
         #region Send API Message Facebook
-        private async Task SendMessageTask(string templateJson, string sender)
-        {
-            if (!String.IsNullOrEmpty(templateJson))
-            {
-                templateJson = templateJson.Replace("{{senderId}}", sender);
-                templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
-                if (templateJson.Contains("{{"))
-                {
-                    if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
-                    {
-                        foreach (var item in _dicAttributeUser)
-                        {
-                            string val = String.IsNullOrEmpty(item.Value) == true ? "N/A" : item.Value;
-                            templateJson = templateJson.Replace("{{" + item.Key + "}}", val);
-                        }
-                    }
-                }
-                using (HttpClient client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    HttpResponseMessage res = await client.PostAsync($"https://graph.facebook.com/v3.2/me/messages?access_token=" + pageToken + "",
-                    new StringContent(templateJson, Encoding.UTF8, "application/json"));
-                }
-            }
-        }
         private async Task SendMultiMessageTask(string templateJson, string sender)
         {
             templateJson = templateJson.Trim();
@@ -724,6 +727,10 @@ namespace BotProject.Web.API_Webhook
             {
                 templateJson = templateJson.Replace("{{senderId}}", sender);
                 templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
+                templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
                 using (HttpClient client = new HttpClient())
                 {
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -803,6 +810,7 @@ namespace BotProject.Web.API_Webhook
             string textVN = text;
             if (isActive)
             {
+                _accentService = AccentService.SingleInstance;
                 textVN = _accentService.GetAccentVN(text);
             }
             return textVN;

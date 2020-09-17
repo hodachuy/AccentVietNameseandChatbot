@@ -24,6 +24,7 @@ using System.Web.Script.Serialization;
 
 namespace BotProject.Web.API_Webhook
 {
+    [RoutePrefix("api/messagev2")]
     public class KioskController : ApiControllerBase
     {
         // Thẻ chat với chuyên viên
@@ -68,9 +69,14 @@ namespace BotProject.Web.API_Webhook
         // Điều kiện có mở search engine
         bool _isSearchAI = true;
 
+        private string TITLE_PAYLOAD_QUICKREPLY = "";
 
         // Model user
         ApplicationPlatformUser _plUserDb;
+
+
+        // BOT PRIVATE CUSTOMIZE
+        private const int BOT_Y_TE = 3019;
 
         // Services
         private ApiQnaNLRService _apiNLR;
@@ -176,8 +182,8 @@ namespace BotProject.Web.API_Webhook
                 }
 
                 var botDb = _botDbService.GetByID(botId);
-                var settingDb = _settingService.GetSettingByBotID(botId);
-                var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
+                //var settingDb = _settingService.GetSettingByBotID(botId);
+                //var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
                 var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
                 if (lstAttribute.Count() != 0)
                 {
@@ -187,11 +193,8 @@ namespace BotProject.Web.API_Webhook
                         _dicAttributeUser.Add(attr.AttributeKey, attr.AttributeValue);
                     }
                 }
-                string typeRequest = "text";
-                if (text.Contains("postback"))
-                {
-                    typeRequest = "payload_postback";
-                }
+                string typeRequest = text.Contains("postback") ? "payload_postback" : "text";
+
                 // get list message response
                 var lstMsgResponse = MessageResponse(text, senderId, botId, typeRequest).Result;
                 if (lstMsgResponse.Count() == 0)
@@ -209,45 +212,6 @@ namespace BotProject.Web.API_Webhook
                 {
                     var result = JsonConvert.DeserializeObject<dynamic>(msg);
                     lstResult.Add(result);
-                }
-                // TH chỉ trả về 1 thẻ cuối cùng yêu cầu đi gặp bác sĩ hoặc trả ra có chứa nguyên nhân,
-                // gọi tiếp api trả ra thông tin triệu chứng
-                if (lstMsgResponse.Count() == 1)
-                {
-                    foreach (var msg in lstMsgResponse)
-                    {
-                        if (botId == 3019)
-                        {
-                            if (msg.Contains("Nguyên nhân") || msg.Contains("bác sĩ") || msg.Contains("Bác sĩ"))
-                            {
-                                List<string> lstSymtom = new List<string>();
-                                string resultSymptomp = _apiNLR.GetListSymptoms(_dicAttributeUser["content_message"], 1);
-                                if (!String.IsNullOrEmpty(resultSymptomp))
-                                {
-                                    var dataSymptomp = new JavaScriptSerializer
-                                    {
-                                        MaxJsonLength = Int32.MaxValue,
-                                        RecursionLimit = 100
-                                    }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
-                                    if (dataSymptomp.Count() != 0)
-                                    {
-                                        string msgFAQs = FacebookTemplate.GetMessageTemplateText("Bạn vui lòng xem thêm thông tin triệu chứng bên dưới", senderId).ToString();
-                                        lstSymtom.Add(msgFAQs);
-                                        string strTemplateGenericRelatedMedical = FacebookTemplate.GetMessageTemplateGenericByListMed(senderId, dataSymptomp).ToString();
-                                        lstSymtom.Add(HandleMessageJson(strTemplateGenericRelatedMedical, senderId));
-                                    }
-                                    if (lstSymtom.Count() != 0)
-                                    {
-                                        foreach (var item in lstSymtom)
-                                        {
-                                            var result = JsonConvert.DeserializeObject<dynamic>(item);
-                                            lstResult.Add(result);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
                 response = request.CreateResponse(HttpStatusCode.OK, new
                 {
@@ -271,21 +235,6 @@ namespace BotProject.Web.API_Webhook
 
             _plUserDb = _appPlatformUser.GetByUserId(senderId);
 
-            int age = 10;
-
-            if (_plUserDb != null && (_plUserDb.PredicateName != "Admin_Contact"))
-            {
-                if (_plUserDb.Age != 0)
-                {
-                    bool isAge = Regex.Match(text, NumberPattern).Success;
-                    if (isAge)
-                    {
-                        age = _plUserDb.Age;
-                    }
-                }
-                //await SendMessageTask(senderActionTyping, sender);
-            }
-
             // Input text
             if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
             {
@@ -295,912 +244,228 @@ namespace BotProject.Web.API_Webhook
                 if (textAccentVN != text)
                 {
                     string msg = FacebookTemplate.GetMessageTemplateText("Ý bạn là: " + textAccentVN + "", senderId).ToString();
-                    _lstBotReplyResponse.Add(HandleMessageJson(msg, senderId));
+                    await SendMessage(msg, senderId);
                 }
                 text = textAccentVN;
+                if (botId == BOT_Y_TE)
+                {
+                    AttributePlatformUser attPlUser = new AttributePlatformUser();
+                    attPlUser.AttributeKey = "content_message";
+                    attPlUser.AttributeValue = text;
+                    attPlUser.BotID = botId;
+                    attPlUser.UserID = senderId;
+                    _dicAttributeUser.Remove("content_message");
+                    _dicAttributeUser.Add("content_message", text);
+
+                    AddAttributeDefault(senderId, botId, attPlUser.AttributeKey, attPlUser.AttributeValue);
+                }
             }
 
-            //if (!text.Contains("postback") && !text.Contains(_contactAdmin))
-            //{
-            //    //_accentService = new AccentService(); 
-            //    _accentService = AccentService.SingleInstance;
-            //    string textAccentVN = _accentService.GetAccentVN(text);
-            //    if (textAccentVN != text)
-            //    {
-            //        string msg = FacebookTemplate.GetMessageTemplateText("Ý bạn là: " + textAccentVN + "", senderId).ToString();
-            //        _lstBotReplyResponse.Add(HandleMessageJson(msg, senderId));
-            //    }
-            //    text = textAccentVN;
-            //    AddAttributeDefault(senderId, botId, "content_message", text);
-            //    _dicAttributeUser.Remove("content_message");
-            //    _dicAttributeUser.Add("content_message", text);
-            //}
-
-            //// Xét payload postback nếu postback từ quickreply sẽ chứa thêm sperator - và tiêu đề nút
-            //string attributeValueFromPostback = "";
-            //if (text.Contains("postback"))
-            //{
-            //    var arrPostback = Regex.Split(text, "-");
-            //    if (arrPostback.Length > 1)
-            //    {
-            //        attributeValueFromPostback = arrPostback[1];
-            //    }
-            //    text = arrPostback[0];
-            //}
-
-            //HistoryViewModel hisVm = new HistoryViewModel();
-            //hisVm.BotID = botId;
-            //hisVm.CreatedDate = DateTime.Now;
-            //hisVm.UserSay = text;
-            //hisVm.UserName = senderId;
-            //hisVm.Type = CommonConstants.TYPE_KIOSK;
-
-            //DateTime dStartedTime = DateTime.Now;
-            //DateTime dTimeOut = DateTime.Now.AddSeconds(_timeOut);
-
-            //if (text == "postback_card_4031")// thẻ chào hỏi
-            //{
-            //    if (_plUserDb.Age == 0)//nếu thông tin tuổi chưa có trả về thẻ hỏi thông tin
-            //    {
-            //        text = "postback_card_8917";//trả về thẻ hỏi thông tin
-            //    }
-            //}
-            //try
-            //{
-            //    if (_plUserDb != null)
-            //    {
-            //        // Chat với admin
-            //        if (_plUserDb.PredicateName == "Admin_Contact")
-            //        {
-            //            var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
-            //            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
-            //            AddHistory(hisVm);
-            //            if (text.Contains("postback") || text.Contains(_contactAdmin))
-            //            {
-            //                _plUserDb.IsHavePredicate = false;
-            //                _plUserDb.PredicateName = "";
-            //                _plUserDb.PredicateValue = "";
-            //                _plUserDb.IsHaveCardCondition = false;
-            //                _plUserDb.CardConditionPattern = "";
-            //                _plUserDb.IsConditionWithAreaButton = false;
-            //                _plUserDb.CardConditionAreaButtonPattern = "";
-            //                _plUserDb.CardStepPattern = "";
-            //                _plUserDb.AttributeName = "";
-            //                _plUserDb.IsHaveSetAttributeSystem = false;
-            //                _plUserDb.IsConditionWithInputText = false;
-            //                _plUserDb.CardConditionWithInputTextPattern = "";
-            //                _plUserDb.TypeDevice = "kiosk";
-            //                _appPlatformUser.Update(_plUserDb);
-            //                _appPlatformUser.Save();
-            //                return await MessageResponse(text, senderId, botId, typeRequest);
-            //            }
-            //            // Tin nhắn vắng mặt
-            //            if (_isHaveMessageAbsent)
-            //            {
-            //                if (HelperMethods.IsTimeInWorks() == false)
-            //                {
-            //                    //await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(),sender);
-            //                    //return new HttpResponseMessage(HttpStatusCode.OK);
-
-            //                    return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //                }
-            //            }
-            //            if (handleAdminContact.Status == false)
-            //            {
-            //                string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");
-            //                if (strArrayJson.Length != 0)
-            //                {
-            //                    var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //                    foreach (var temp in strArray)
-            //                    {
-            //                        string tempJson = HandleMessageJson(temp, senderId);
-            //                        _lstBotReplyResponse.Add(tempJson);
-            //                        //await SendMessageTask(tempJson, sender);
-            //                    }
-            //                    //return new HttpResponseMessage(HttpStatusCode.OK);
-            //                }
-            //            }
-            //            return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        _plUserDb = new ApplicationPlatformUser();
-            //        _plUserDb.UserId = senderId;
-            //        _plUserDb.IsHavePredicate = false;
-            //        _plUserDb.IsProactiveMessage = false;
-            //        _plUserDb.TimeOut = dTimeOut;
-            //        _plUserDb.CreatedDate = DateTime.Now;
-            //        _plUserDb.StartedOn = dStartedTime;
-            //        _plUserDb.FirstName = "N/A"; //profileUser.first_name;
-            //        _plUserDb.Age = 0; //"N/A";
-            //        _plUserDb.LastName = "N/A"; //profileUser.last_name;
-            //        _plUserDb.UserName = "bạn"; //profileUser.first_name + " " + profileUser.last_name;
-            //        _plUserDb.Gender = true; //"N/A";
-            //        _appPlatformUser.Add(_plUserDb);
-            //        _appPlatformUser.Save();
-
-            //        // add attribute default user platform
-            //        AddAttributeDefault(senderId, botId, "sender_id", _plUserDb.UserId);
-            //        AddAttributeDefault(senderId, botId, "sender_name", _plUserDb.UserName);
-            //        AddAttributeDefault(senderId, botId, "sender_first_name", _plUserDb.FirstName);
-            //        AddAttributeDefault(senderId, botId, "sender_last_name", _plUserDb.LastName);
-            //        AddAttributeDefault(senderId, botId, "gender", "N/A");
-            //    }
-
-            //    _plUserDb.StartedOn = dStartedTime;
-            //    _plUserDb.TimeOut = dTimeOut;
-            //    // Nếu có yêu cầu click thẻ để đi theo luồng
-            //    if (_plUserDb.IsHaveCardCondition)
-            //    {
-            //        if (!text.Contains("postback") && !text.Contains(_contactAdmin))
-            //        {
-            //            var cardDb = _cardService.GetCardByPattern(_plUserDb.CardConditionPattern);
-            //            if (cardDb == null)
-            //            {
-            //                return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //            }
-            //            string tempJsonFacebook = cardDb.TemplateJsonFacebook;
-            //            if (!String.IsNullOrEmpty(tempJsonFacebook))
-            //            {
-            //                tempJsonFacebook = tempJsonFacebook.Trim();
-            //                string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");
-            //                if (strArrayJson.Length != 0)
-            //                {
-            //                    //await SendMessageTask(FacebookTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới", sender).ToString(), sender);
-            //                    string msg = FacebookTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới", senderId).ToString();
-            //                    _lstBotReplyResponse.Add(msg);
-            //                    var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //                    foreach (var temp in strArray)
-            //                    {
-            //                        //string tempJson = temp;
-            //                        string tempJson = HandleMessageJson(temp, senderId);
-            //                        _lstBotReplyResponse.Add(tempJson);
-            //                        //await SendMessageTask(tempJson, sender);
-            //                    }
-            //                    //return new HttpResponseMessage(HttpStatusCode.OK);
-            //                    return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //                }
-            //            }
-            //        }
-            //    }
-
-            //    // AttributePlatform nếu thẻ trước có biến cần lưu
-            //    if (_plUserDb.IsHaveSetAttributeSystem)
-            //    {
-            //        AttributePlatformUser attPlUser = new AttributePlatformUser();
-            //        attPlUser.AttributeKey = _plUserDb.AttributeName;
-            //        //attFbUser.AttributeValue = text;
-            //        attPlUser.BotID = botId;
-            //        attPlUser.UserID = senderId;
-            //        if (!text.Contains("postback") && !text.Contains(_contactAdmin))
-            //        {
-            //            attPlUser.AttributeValue = text;
-            //        }
-            //        else if (text.Contains("postback"))
-            //        {
-            //            attPlUser.AttributeValue = attributeValueFromPostback.Trim();
-            //        }
-            //        if (attPlUser.AttributeKey == "age")
-            //        {
-            //            bool isAge = Regex.Match(text, NumberPattern).Success;
-            //            if (isAge)
-            //            {
-            //                attPlUser.AttributeValue = text;
-            //            }
-            //            else
-            //            {
-            //                //await SendMessageTask(FacebookTemplate.GetMessageTemplateText("Ký tự phải là số, Anh/chị vui lòng nhập lại độ tuổi", sender).ToString(), sender);
-            //                //return new HttpResponseMessage(HttpStatusCode.OK);
-            //                string msg = FacebookTemplate.GetMessageTemplateText("Ký tự phải là số, Anh/chị vui lòng nhập lại độ tuổi", senderId).ToString();
-            //                _lstBotReplyResponse.Add(HandleMessageJson(msg, senderId));
-            //                return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //            }
-            //        }
-
-            //        _dicAttributeUser.Remove(attPlUser.AttributeKey);
-            //        _dicAttributeUser.Add(attPlUser.AttributeKey, attPlUser.AttributeValue);
-
-            //        var att = _attributeService.CreateUpdateAttributePlatform(attPlUser);
-
-            //        if (attPlUser.AttributeKey == "age")
-            //        {
-            //            _plUserDb.Age = Int32.Parse(text);
-            //            _plUserDb.IsHaveSetAttributeSystem = false;
-            //            _plUserDb.AttributeName = "";
-            //            _appPlatformUser.Update(_plUserDb);
-            //            _appPlatformUser.Save();
-
-            //            _dicAttributeUser.Remove("age");
-            //            _dicAttributeUser.Add("age", text);
-            //            //return await ExcuteMessage("postback_card_8927", sender, botId); //postback_card_8927 thẻ thông tin người dùng
-            //        }
-            //    }
-
-            //    // Nhập text để đi luồng tiếp theo nhưng CardStepID không được rỗng
-            //    if (_plUserDb.IsConditionWithInputText)
-            //    {
-            //        if (!text.Contains("postback") && !text.Contains(_contactAdmin))
-            //        {
-            //            _plUserDb.IsHaveSetAttributeSystem = false;
-            //            _plUserDb.AttributeName = "";
-            //            _plUserDb.IsConditionWithInputText = false;
-            //            _plUserDb.IsHaveCardCondition = false;
-            //            _appPlatformUser.Update(_plUserDb);
-            //            _appPlatformUser.Save();
-            //            return await MessageResponse(_plUserDb.CardConditionWithInputTextPattern, senderId, botId, typeRequest);
-            //            //return await ExcuteMessage(fbUserDb.CardConditionWithInputTextPattern, sender, botId); //postback_card_8927 thẻ thông tin người dùng
-            //        }
-            //    }
-
-            //    // Nếu có yêu cầu query text theo lĩnh vực button
-            //    // Click button -> card (tên card nên đặt như tên lĩnh vực ngắn gọn)
-            //    // Build lại kịch bản với từ khoán ngắn gọn + tên lĩnh vực
-            //    // ví dụ: thủ tục cấp phép, thủ tục giạn + tên lĩnh vực
-            //    if (_plUserDb.IsConditionWithAreaButton)
-            //    {
-            //        if (!text.Contains("postback") && !text.Contains(_contactAdmin))
-            //        {
-            //            var cardDb = _cardService.GetCardByPattern(_plUserDb.CardConditionAreaButtonPattern);
-            //            if (cardDb == null)
-            //            {
-            //                _lstBotReplyResponse = new List<string>();
-            //                return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //                //return new HttpResponseMessage(HttpStatusCode.OK);
-            //            }
-            //            string area = cardDb.Name;
-            //            text = text + " " + area;// + thêm tên lĩnh vực button và nội dung trong form QnA có chứa từ lĩnh vực
-            //        }
-            //    }
-
-            //    // Điều kiện xử lý module
-            //    if (_plUserDb.IsHavePredicate)
-            //    {
-            //        var predicateName = _plUserDb.PredicateName;
-            //        if (predicateName == "ApiSearch")
-            //        {
-            //            if (text.Contains("postback_card") || text.Contains(_contactAdmin))// nều còn điều kiện search mà chọn postback
-            //            {
-            //                _plUserDb.IsHavePredicate = false;
-            //                _plUserDb.PredicateName = "";
-            //                _plUserDb.PredicateValue = "";
-            //                _plUserDb.IsHaveCardCondition = false;
-            //                _plUserDb.CardConditionPattern = "";
-            //                _plUserDb.IsConditionWithAreaButton = false;
-            //                _plUserDb.CardConditionAreaButtonPattern = "";
-            //                _plUserDb.CardStepPattern = "";
-            //                _plUserDb.AttributeName = "";
-            //                _plUserDb.IsHaveSetAttributeSystem = false;
-            //                _plUserDb.IsConditionWithInputText = false;
-            //                _plUserDb.CardConditionWithInputTextPattern = "";
-            //                _appPlatformUser.Update(_plUserDb);
-            //                _appPlatformUser.Save();
-            //                return await MessageResponse(text, senderId, botId, typeRequest);
-            //                //return await ExcuteMessage(text, sender, botId);
-            //            }
-
-            //            string predicateValue = _plUserDb.PredicateValue;
-            //            var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, predicateValue, "");
-
-            //            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_005;
-            //            AddHistory(hisVm);
-
-            //            _lstBotReplyResponse.Add(HandleMessageJson(handleMdSearch.TemplateJsonFacebook, senderId));
-
-            //            return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //            //return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
-            //        }
-            //    }
-            //    else // Input: Khởi tạo module được chọn
-            //    {
-            //        if (text.Contains(CommonConstants.ModuleAdminContact))
-            //        {
-            //            var handleAdminContact = _handleMdService.HandleIsAdminContact(text, botId);
-
-            //            _plUserDb.IsHavePredicate = true;
-            //            _plUserDb.PredicateName = "Admin_Contact";
-            //            _plUserDb.PredicateValue = "";
-            //            _plUserDb.IsHaveCardCondition = false;
-            //            _plUserDb.CardConditionPattern = "";
-            //            _plUserDb.IsConditionWithAreaButton = false;
-            //            _plUserDb.CardConditionAreaButtonPattern = "";
-            //            _plUserDb.CardStepPattern = "";
-            //            _plUserDb.IsHaveSetAttributeSystem = false;
-            //            _plUserDb.AttributeName = "";
-            //            _plUserDb.IsConditionWithInputText = false;
-            //            _plUserDb.CardConditionWithInputTextPattern = "";
-            //            _appPlatformUser.Update(_plUserDb);
-            //            _appPlatformUser.Save();
-
-            //            hisVm.UserSay = "[Chat với chuyên viên]";
-            //            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-            //            AddHistory(hisVm);
-
-            //            // Tin nhắn vắng mặt
-            //            if (_isHaveMessageAbsent)
-            //            {
-            //                if (HelperMethods.IsTimeInWorks() == false)
-            //                {
-            //                    string msg = FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString();
-            //                    _lstBotReplyResponse.Add(HandleMessageJson(msg, senderId));
-            //                    //await SendMessageTask(FacebookTemplate.GetMessageTemplateTextAndQuickReply(_messageAbsent, "{{senderId}}", _patternCardPayloadProactive, _titleCardPayloadProactive).ToString(), sender);
-            //                    //return new HttpResponseMessage(HttpStatusCode.OK);
-            //                    return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //                }
-            //            }
-            //            string[] strArrayJson = Regex.Split(handleAdminContact.TemplateJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
-            //            if (strArrayJson.Length != 0)
-            //            {
-            //                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //                foreach (var temp in strArray)
-            //                {
-            //                    //string tempJson = temp;
-            //                    //await SendMessageTask(tempJson, sender);
-            //                    string tempJson = HandleMessageJson(temp, senderId);
-            //                    _lstBotReplyResponse.Add(tempJson);
-            //                }
-            //            }
-            //            return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //            //return new HttpResponseMessage(HttpStatusCode.OK);
-            //        }
-
-            //        if (text.Contains(CommonConstants.ModuleSearchAPI))
-            //        {
-            //            string mdSearchId = text.Replace(".", String.Empty).Replace("postback_module_api_search_", "");
-            //            var handleMdSearch = _handleMdService.HandleIsSearchAPI(text, mdSearchId, "");
-            //            _plUserDb.IsHavePredicate = true;
-            //            _plUserDb.PredicateName = "ApiSearch";
-            //            _plUserDb.PredicateValue = mdSearchId;
-            //            _plUserDb.IsHaveCardCondition = false;
-            //            _plUserDb.CardConditionPattern = "";
-            //            _plUserDb.IsConditionWithAreaButton = false;
-            //            _plUserDb.CardConditionAreaButtonPattern = "";
-            //            _plUserDb.CardStepPattern = "";
-            //            _plUserDb.IsHaveSetAttributeSystem = false;
-            //            _plUserDb.AttributeName = "";
-            //            _plUserDb.IsConditionWithInputText = false;
-            //            _plUserDb.CardConditionWithInputTextPattern = "";
-            //            _appPlatformUser.Update(_plUserDb);
-            //            _appPlatformUser.Save();
-
-            //            hisVm.UserSay = "[Tra cứu]";
-            //            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_003;
-            //            AddHistory(hisVm);
-
-            //            //return await SendMessage(handleMdSearch.TemplateJsonFacebook, sender);
-            //            string msg = HandleMessageJson(handleMdSearch.TemplateJsonFacebook, senderId);
-            //            _lstBotReplyResponse.Add(msg);
-            //            return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //        }
-            //    }
-
-            //    if (!text.Contains("postback") && !text.Contains(_contactAdmin))
-            //    {
-            //        if (age <= 7)
-            //        {
-            //            text = "trẻ em " + text;
-            //        }
-            //    }
-
-            //    AIMLbot.Result aimlBotResult = _botServiceMedical.Chat(text);
-            //    string result = aimlBotResult.OutputSentences[0].ToString();
-
-            //    // Nếu trả về là module
-            //    if (result.Replace("\r\n", "").Trim().Contains(CommonConstants.POSTBACK_MODULE))
-            //    {
-            //        if (result.Contains("<module>") != true)// k phải button module trả về
-            //        {
-            //            string txtModule = result.Replace("\r\n", "").Replace(".", "").Trim();
-            //            txtModule = Regex.Replace(txtModule, @"<(.|\n)*?>", "").Trim();
-            //            int idxModule = txtModule.IndexOf("postback_module");
-            //            if (idxModule != -1)
-            //            {
-            //                string strPostback = txtModule.Substring(idxModule, txtModule.Length - idxModule);
-            //                var punctuation = strPostback.Where(Char.IsPunctuation).Distinct().ToArray();
-            //                var words = strPostback.Split().Select(x => x.Trim(punctuation));
-            //                var contains = words.SingleOrDefault(x => x.Contains("postback_module") == true);
-
-            //                if (words.ToList().Count == 1 && (txtModule.Length == contains.Length))
-            //                {
-            //                    return await MessageResponse(contains, senderId, botId, typeRequest);
-            //                    //return await ExcuteMessage(contains, sender, botId);
-            //                }
-
-            //                string rsHandle = "";
-
-            //                if (contains == "postback_module_api_search")
-            //                {
-            //                    return await MessageResponse(txtModule, senderId, botId, typeRequest);
-            //                    //return await ExcuteMessage(txtModule, sender, botId);
-            //                }
-            //                if (contains == "postback_module_med_get_info_patient")
-            //                {
-            //                    return await MessageResponse(txtModule, senderId, botId, typeRequest);
-
-            //                    //return await ExcuteMessage(txtModule, sender, botId);
-            //                }
-            //                if (contains == "postback_module_age")
-            //                {
-            //                    _plUserDb.PredicateName = "Age";
-            //                    var handleAge = _handleMdService.HandledIsAge(contains, botId);
-            //                    rsHandle = handleAge.TemplateJsonFacebook;
-            //                }
-            //                if (contains == "postback_module_email")
-            //                {
-            //                    _plUserDb.PredicateName = "Email";
-            //                    var handleEmail = _handleMdService.HandledIsEmail(contains, botId);
-            //                    rsHandle = handleEmail.TemplateJsonFacebook;
-            //                }
-            //                if (contains == "postback_module_phone")
-            //                {
-            //                    _plUserDb.PredicateName = "Phone";
-            //                    var handlePhone = _handleMdService.HandleIsPhoneNumber(contains, botId);
-            //                    rsHandle = handlePhone.TemplateJsonFacebook;
-            //                }
-            //                _plUserDb.IsHavePredicate = true;
-            //                _plUserDb.PredicateValue = "";
-            //                _plUserDb.IsHaveCardCondition = false;
-            //                _plUserDb.CardConditionPattern = "";
-            //                _plUserDb.CardStepPattern = "";
-            //                _plUserDb.IsHaveSetAttributeSystem = false;
-            //                _plUserDb.AttributeName = "";
-            //                _plUserDb.IsConditionWithInputText = false;
-            //                _plUserDb.CardConditionWithInputTextPattern = "";
-            //                _appPlatformUser.Update(_plUserDb);
-            //                _appPlatformUser.Save();
-
-            //                string msg = HandleMessageJson(rsHandle, senderId);
-            //                _lstBotReplyResponse.Add(msg);
-            //                return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //                //return await SendMessage(rsHandle, sender);
-            //            }
-            //        }
-            //    }
-
-            //    if (result.Contains("NOT_MATCH"))
-            //    {
-            //        hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_002;
-            //        AddHistory(hisVm);
-            //        try
-            //        {
-            //            _plUserDb.IsHaveCardCondition = false;
-            //            _plUserDb.CardConditionPattern = "";
-            //            _plUserDb.IsConditionWithAreaButton = false;
-            //            _plUserDb.CardConditionAreaButtonPattern = "";
-            //            _plUserDb.CardStepPattern = "";
-            //            _plUserDb.IsHaveSetAttributeSystem = false;
-            //            _plUserDb.AttributeName = "";
-            //            _plUserDb.IsConditionWithInputText = false;
-            //            _plUserDb.CardConditionWithInputTextPattern = "";
-            //            _appPlatformUser.Update(_plUserDb);
-            //            _appPlatformUser.Save();
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            LogError("RS NOT MATCH:" + ex.Message);
-            //        }
-
-            //        if (_isSearchAI) //_isSearchAI
-            //        {
-            //            var systemConfigDb = _settingService.GetListSystemConfigByBotId(botId);
-            //            var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfigDb);
-            //            if (systemConfigVm.Count() == 0)
-            //            {
-            //                string msgTemp = FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", senderId).ToString();
-
-            //                _lstBotReplyResponse.Add(HandleMessageJson(msgTemp, senderId));
-            //                return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //                //return await SendMessage(FacebookTemplate.GetMessageTemplateText("Tìm kiếm xử lý ngôn ngữ tự nhiên hiện không hoạt động, bạn vui lòng thử lại sau nhé!", sender));// not match
-            //            }
-            //            string nameFunctionAPI = "";
-            //            string number = "";
-            //            string field = "";
-            //            string valueBotId = "";
-            //            foreach (var item in systemConfigVm)
-            //            {
-            //                if (item.Code == "UrlAPI")
-            //                    nameFunctionAPI = item.ValueString;
-            //                if (item.Code == "ParamBotID")
-            //                    valueBotId = item.ValueString;
-            //                if (item.Code == "ParamAreaID")
-            //                    field = item.ValueString;
-            //                if (item.Code == "ParamNumberResponse")
-            //                    number = item.ValueString;
-            //            }
-            //            hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_006;
-            //            AddHistory(hisVm);
-
-            //            // Hiển thị thêm thông tin về triệu chứng đó
-            //            if (botId == 3019)
-            //            {
-            //                string resultSymptomp = _apiNLR.GetListSymptoms(_dicAttributeUser["content_message"], 1);
-            //                if (!String.IsNullOrEmpty(resultSymptomp))
-            //                {
-            //                    var dataSymptomp = new JavaScriptSerializer
-            //                    {
-            //                        MaxJsonLength = Int32.MaxValue,
-            //                        RecursionLimit = 100
-            //                    }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
-            //                    if (dataSymptomp.Count() != 0)
-            //                    {
-            //                        string msgFAQs = FacebookTemplate.GetMessageTemplateText("Bạn vui lòng xem thêm thông tin triệu chứng bên dưới", senderId).ToString();
-            //                        _lstBotReplyResponse.Add(msgFAQs);
-            //                        string strTemplateGenericRelatedMedical = FacebookTemplate.GetMessageTemplateGenericByListMed(senderId, dataSymptomp).ToString();
-            //                        _lstBotReplyResponse.Add(HandleMessageJson(strTemplateGenericRelatedMedical, senderId));
-            //                    }
-            //                }
-            //            }
-
-            //            string resultAPI = GetRelatedQuestionToFacebook(nameFunctionAPI, text, field, "5", valueBotId);
-            //            if (!String.IsNullOrEmpty(resultAPI))
-            //            {
-            //                var lstQnaAPI = new JavaScriptSerializer
-            //                {
-            //                    MaxJsonLength = Int32.MaxValue,
-            //                    RecursionLimit = 100
-            //                }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
-            //                // render template json generic
-            //                int totalQnA = lstQnaAPI.Count();
-            //                string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
-            //                string msgTempTotalSearch = FacebookTemplate.GetMessageTemplateText(totalFind, senderId).ToString();
-            //                _lstBotReplyResponse.Add(HandleMessageJson(msgTempTotalSearch, senderId));
-            //                //await SendMessageTask(FacebookTemplate.GetMessageTemplateText(totalFind, sender).ToString(), sender);
-            //                string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList(senderId, lstQnaAPI).ToString();
-            //                _lstBotReplyResponse.Add(HandleMessageJson(strTemplateGenericRelatedQuestion, senderId));
-            //                //BotLog.Info(strTemplateGenericRelatedQuestion);
-            //                //return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //                //return await SendMessage(strTemplateGenericRelatedQuestion, sender);
-            //            }
-
-            //            if (_lstBotReplyResponse.Count() != 0)
-            //            {
-            //                return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //            }
-            //        }
-
-            //        _dicNotMatch = new Dictionary<string, string>() {
-            //            {"NOT_MATCH_01", "Xin lỗi,em chưa hiểu ý anh/chị ạ!"},
-            //            {"NOT_MATCH_02", "Anh/chị có thể giải thích thêm được không?"},
-            //            {"NOT_MATCH_03", "Chưa hiểu lắm ạ, anh/chị có thể nói rõ hơn được không ạ?"},
-            //            {"NOT_MATCH_04", "Xin lỗi, Anh/chị có thể giải thích thêm được không?"},
-            //            {"NOT_MATCH_05", "Xin lỗi, Tôi chưa được học để hiểu nội dung này?"}
-            //        };
-
-            //        string strDefaultNotMatch = "";
-            //        foreach (var item in _dicNotMatch)
-            //        {
-            //            string itemNotMatch = item.Key;
-            //            if (itemNotMatch.Contains(result.Trim().Replace(".", String.Empty)))
-            //            {
-            //                strDefaultNotMatch = item.Value;
-            //            }
-            //        }
-
-            //        string msg = FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, senderId, _contactAdmin, _titlePayloadContactAdmin).ToString();
-            //        _lstBotReplyResponse.Add(HandleMessageJson(msg, senderId));
-            //        return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //        //await SendMessage(FacebookTemplate.GetMessageTemplateTextAndQuickReply(strDefaultNotMatch, sender, _contactAdmin, _titlePayloadContactAdmin));// not match
-            //        //return new HttpResponseMessage(HttpStatusCode.OK);
-            //    }
+            // Input postback            
+            if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
+            {
+                string[] arrPayloadQuickReply = Regex.Split(text, "-");
+                if (arrPayloadQuickReply.Length > 1)
+                {
+                    TITLE_PAYLOAD_QUICKREPLY = arrPayloadQuickReply[1];
+                }
+                text = arrPayloadQuickReply[0];
+            }
 
 
-            //    // input là postback
-            //    if (text.Contains("postback_card"))
-            //    {
-            //        var cardDb = _cardService.GetCardByPattern(text.Replace(".", String.Empty));
-            //        if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
-            //        {
-            //            _plUserDb.IsHaveSetAttributeSystem = true;
-            //            _plUserDb.AttributeName = cardDb.AttributeSystemName;
-            //        }
-            //        else
-            //        {
-            //            _plUserDb.IsHaveSetAttributeSystem = false;
-            //            _plUserDb.AttributeName = "";
-            //        }
+            // Xét điều kiện đi tiếp hay cần lưu giá trị của thẻ đi trước
+            if (_plUserDb.IsHaveSetAttributeSystem)
+            {
+                AttributePlatformUser attPlUser = new AttributePlatformUser();
+                attPlUser.AttributeKey = _plUserDb.AttributeName;
+                attPlUser.BotID = botId;
+                attPlUser.UserID = senderId;
+                bool isUpdateAttr = false;
+                if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
+                {
+                    attPlUser.AttributeValue = text;
+                    isUpdateAttr = true;
+                }
+                if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
+                {
+                    if (!String.IsNullOrEmpty(TITLE_PAYLOAD_QUICKREPLY))
+                    {
+                        attPlUser.AttributeValue = TITLE_PAYLOAD_QUICKREPLY;
+                        isUpdateAttr = true;
 
-            //        if (cardDb.CardStepID != null)
-            //        {
-            //            _plUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
-            //            if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
-            //            {
-            //                _plUserDb.IsConditionWithInputText = true;
-            //                _plUserDb.CardConditionWithInputTextPattern = _plUserDb.CardStepPattern;
-            //            }
-            //            else
-            //            {
-            //                _plUserDb.IsConditionWithInputText = false;
-            //                _plUserDb.CardConditionWithInputTextPattern = "";
-            //            }
-            //        }
-            //        else
-            //        {
-            //            _plUserDb.CardStepPattern = "";
-            //        }
-            //        if (cardDb.IsHaveCondition)
-            //        {
-            //            _plUserDb.IsHaveCardCondition = true;
-            //            _plUserDb.CardConditionPattern = text.Replace(".", String.Empty);
-            //        }
-            //        else
-            //        {
-            //            _plUserDb.IsHaveCardCondition = false;
-            //            _plUserDb.CardConditionPattern = "";
-            //        }
+                    }
+                }
+                if (isUpdateAttr)
+                {
+                    // Kiểm tra giá trị nhập vào theo từng thuộc tính
+                    // Bot Y Tế
+                    // Case: Tuổi
+                    if (attPlUser.AttributeKey == "age")
+                    {
+                        bool isAge = Regex.Match(text, NumberPattern).Success;
+                        if (isAge)
+                        {
+                            attPlUser.AttributeValue = text;
+                        }
+                        else
+                        {
+                            string msg = FacebookTemplate.GetMessageTemplateText("Ký tự phải là số, Anh/chị vui lòng nhập lại độ tuổi", senderId).ToString();
+                            await SendMessage(msg, senderId);
+                            return await Task.FromResult<List<string>>(_lstBotReplyResponse);
+                        }
+                    }
+                    _dicAttributeUser.Remove(attPlUser.AttributeKey);
+                    _dicAttributeUser.Add(attPlUser.AttributeKey, attPlUser.AttributeValue);
 
-            //        if (cardDb.IsConditionWithAreaButton)
-            //        {
-            //            _plUserDb.IsConditionWithAreaButton = true;
-            //            _plUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
-            //        }
-            //        else
-            //        {
-            //            _plUserDb.IsConditionWithAreaButton = false;
-            //            _plUserDb.CardConditionAreaButtonPattern = "";
-            //        }
-            //        _appPlatformUser.Update(_plUserDb);
-            //        _appPlatformUser.Save();
-            //        string tempJsonFacebook = cardDb.TemplateJsonFacebook;
-            //        if (!String.IsNullOrEmpty(tempJsonFacebook))
-            //        {
-            //            tempJsonFacebook = tempJsonFacebook.Trim();
-            //            string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
-            //            if (strArrayJson.Length != 0)
-            //            {
-            //                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //                foreach (var temp in strArray)
-            //                {
-            //                    string tempJson = temp;
-            //                    string msg = HandleMessageJson(tempJson, senderId);
-            //                    _lstBotReplyResponse.Add(msg);
-            //                    //await SendMessageTask(tempJson, sender);
-            //                }
-            //            }
-            //        }
-            //        if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
-            //        {
-            //            _plUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
-            //            return await MessageResponse(_plUserDb.CardStepPattern, senderId, botId, typeRequest, true);
-            //        }
-            //        //_lstBotReplyResponse = new List<string>();
-            //        return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //    }
-            //    if (text.Contains(_contactAdmin))//chat admin
-            //    {
-            //        _plUserDb.IsHaveCardCondition = false;
-            //        _plUserDb.CardConditionPattern = "";
-            //        _plUserDb.CardStepPattern = "";
-            //        _plUserDb.IsHaveSetAttributeSystem = false;
 
-            //        _appPlatformUser.Update(_plUserDb);
-            //        _appPlatformUser.Save();
+                    AddAttributeDefault(senderId, botId, attPlUser.AttributeKey, attPlUser.AttributeValue);
 
-            //        string strTempPostbackContactAdmin = aimlBotResult.SubQueries[0].Template;
-            //        bool isPostbackContactAdmin = Regex.Match(strTempPostbackContactAdmin, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
-            //        if (isPostbackContactAdmin)
-            //        {
-            //            strTempPostbackContactAdmin = Regex.Replace(strTempPostbackContactAdmin, @"<(.|\n)*?>", "").Trim();
-            //            var cardDb = _cardService.GetCardByPattern(strTempPostbackContactAdmin.Replace(".", String.Empty));
-            //            string tempJsonFacebook = cardDb.TemplateJsonFacebook;
-            //            if (!String.IsNullOrEmpty(tempJsonFacebook))
-            //            {
-            //                tempJsonFacebook = tempJsonFacebook.Trim();
-            //                string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
-            //                if (strArrayJson.Length != 0)
-            //                {
-            //                    var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //                    foreach (var temp in strArray)
-            //                    {
-            //                        string tempJson = temp;
-            //                        string msg = HandleMessageJson(tempJson, senderId);
-            //                        _lstBotReplyResponse.Add(msg);
-            //                        //await SendMessageTask(tempJson, sender);
-            //                    }
-            //                    return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //                    //return new HttpResponseMessage(HttpStatusCode.OK);
-            //                }
-            //            }
-            //        }
-            //    }
+                }
 
-            //    // nếu nhập text -> output là postback
-            //    string strTempPostback = aimlBotResult.SubQueries[0].Template;
-            //    bool isPostback = Regex.Match(strTempPostback, "<template><srai>postback_card_(\\d+)</srai></template>").Success;
-            //    if (isPostback)
-            //    {
-            //        strTempPostback = Regex.Replace(strTempPostback, @"<(.|\n)*?>", "").Trim();
-            //        var cardDb = _cardService.GetCardByPattern(strTempPostback.Replace(".", String.Empty));
-            //        if (cardDb.ID == 4031)
-            //        {
-            //            if (_plUserDb.Age == 0)//nếu thông tin tuổi chưa có trả về thẻ hỏi thông tin
-            //            {
-            //                return await MessageResponse("postback_card_8917", senderId, botId, typeRequest);
-            //                //return await ExcuteMessage("postback_card_8917", sender, botId);
-            //            }
-            //        }
+                //hisVm.BotID = botId;
+                //hisVm.CreatedDate = DateTime.Now;
+                //hisVm.UserSay = text;
+                //hisVm.UserName = sender;
+                //hisVm.Type = CommonConstants.TYPE_FACEBOOK;
+                //hisVm.BotHandle = MessageBot.BOT_HISTORY_HANDLE_004;
+                //AddHistory(hisVm);
+            }
+            if (_plUserDb.PredicateName == "REQUIRE_CLICK_BUTTON_TO_NEXT_CARD")
+            {
+                if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
+                {
+                    string contentRequireClick = FacebookTemplate.GetMessageTemplateText("Anh/chị vui lòng chọn lại thông tin bên dưới", senderId).ToString();
+                    await SendMessage(contentRequireClick, senderId);
+                    string partternCardRequireClick = _plUserDb.PredicateValue;
+                    string templateCardRequireClick = HandlePostbackCard(partternCardRequireClick, botId);
+                    await SendMultiMessageTask(templateCardRequireClick, senderId);
 
-            //        if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
-            //        {
-            //            _plUserDb.IsHaveSetAttributeSystem = true;
-            //            _plUserDb.AttributeName = cardDb.AttributeSystemName;
-            //        }
-            //        else
-            //        {
-            //            _plUserDb.IsHaveSetAttributeSystem = false;
-            //            _plUserDb.AttributeName = "";
-            //        }
+                    return await Task.FromResult<List<string>>(_lstBotReplyResponse);
 
-            //        if (cardDb.CardStepID != null)
-            //        {
-            //            _plUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
-            //            if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
-            //            {
-            //                _plUserDb.IsConditionWithInputText = true;
-            //                _plUserDb.CardConditionWithInputTextPattern = _plUserDb.CardStepPattern;
-            //            }
-            //            else
-            //            {
-            //                _plUserDb.IsConditionWithInputText = false;
-            //                _plUserDb.CardConditionWithInputTextPattern = "";
-            //            }
-            //        }
-            //        else
-            //        {
-            //            _plUserDb.CardStepPattern = "";
-            //        }
+                }
+            }
+            else if (_plUserDb.PredicateName == "REQUIRE_INPUT_TEXT_TO_NEXT_CARD")
+            {
+                if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
+                {
+                    string partternCardRequireInput = _plUserDb.PredicateValue;
+                    string templateCardRequireInput = HandlePostbackCard(partternCardRequireInput, botId);
+                    await SendMultiMessageTask(templateCardRequireInput, senderId);
+                    return await Task.FromResult<List<string>>(_lstBotReplyResponse);
+                }
+            }
+            else if (_plUserDb.PredicateName == "VERIFY_TEXT_WITH_AREA_BUTTON")
+            {
+                if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
+                {
+                    var cardDb = _cardService.GetCardByPattern(_plUserDb.PredicateValue);
+                    if (cardDb == null)
+                    {
+                        return await Task.FromResult<List<string>>(_lstBotReplyResponse);
+                    }
+                    string area = cardDb.Name;
+                    text = text + " " + area;
+                }
+            }
+            else if (_plUserDb.PredicateName == "POSTBACK_MODULE")
+            {
+                if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
+                {
+                    string postbackModule = _plUserDb.PredicateValue;
+                    string templateModule = HandlePostbackModule(postbackModule, text, botId, false);
+                    await SendMessage(templateModule, senderId);
+                    return await Task.FromResult<List<string>>(_lstBotReplyResponse);
+                }
+            }
 
-            //        if (cardDb.IsHaveCondition)
-            //        {
-            //            _plUserDb.IsHaveCardCondition = true;
-            //            _plUserDb.CardConditionPattern = text.Replace(".", String.Empty);
-            //        }
-            //        else
-            //        {
-            //            _plUserDb.IsHaveCardCondition = false;
-            //            _plUserDb.CardConditionPattern = "";
-            //        }
+            // print postback card
+            if (typeRequest == CommonConstants.BOT_REQUEST_PAYLOAD_POSTBACK)
+            {
+                string templateCard = HandlePostbackCard(text, botId);
+                await SendMultiMessageTask(templateCard, senderId);
+                if (_plUserDb.PredicateName == "AUTO_NEXT_CARD")
+                {
+                    string partternNextCard = _plUserDb.PredicateValue;
+                    string templateNextCard = HandlePostbackCard(partternNextCard, botId);
+                    await SendMultiMessageTask(templateNextCard, senderId);
+                }
+                return await Task.FromResult<List<string>>(_lstBotReplyResponse);
+            }
+            AIMLbot.Result rsAIMLBot = GetBotReplyFromAIMLBot(text);
+            ResultBot rsBOT = new ResultBot();
+            rsBOT = CheckTypePostbackFromResultBotReply(rsAIMLBot);
+            if (rsBOT.Type == POSTBACK_MODULE)
+            {
+                string templateModule = HandlePostbackModule(rsBOT.PatternPayload, text, botId, true);
+                await SendMessage(templateModule, senderId);
+            }
+            if (rsBOT.Type == POSTBACK_CARD)
+            {
+                string templateCard = HandlePostbackCard(rsBOT.PatternPayload, botId);
+                await SendMultiMessageTask(templateCard, senderId); // print message card
+                if (_plUserDb.PredicateName == "AUTO_NEXT_CARD") // print message card kế tiếp nếu có
+                {
+                    string partternNextCard = _plUserDb.PredicateValue;
+                    templateCard = HandlePostbackCard(partternNextCard, botId);
+                    await SendMultiMessageTask(templateCard, senderId);
+                }
+                // Trường hợp bot y tế thẻ tin nhắn xuất ra cuối cùng có chứa các từ dưới sẽ lấy tiếp tin nhắn triệu chứng
+                if (botId == BOT_Y_TE)
+                {
+                    if (templateCard.Contains("Nguyên nhân") || templateCard.Contains("bác sĩ") || templateCard.Contains("Bác sĩ"))
+                    {
+                        List<string> lstSymptoms = new List<string>();
+                        lstSymptoms = GetSymptoms(_dicAttributeUser["content_message"]);
+                        if (lstSymptoms.Count() != 0)
+                        {
+                            foreach (var symp in lstSymptoms)
+                            {
+                                await SendMessage(symp, senderId);
+                            }
+                        }
+                    }
+                }
+            }
+            if (rsBOT.Type == POSTBACK_NOT_MATCH)
+            {
+                List<string> lstSymptoms = new List<string>();
+                if (botId == BOT_Y_TE)
+                {
+                    lstSymptoms = GetSymptoms(text);
+                    if (lstSymptoms.Count() != 0)
+                    {
+                        foreach (var symp in lstSymptoms)
+                        {
+                            await SendMessage(symp, senderId);
+                        }
+                    }
+                }
+                List<string> lstFaq = new List<string>();
+                lstFaq = GetRelatedQuestion(text, "0", "5", botId.ToString());
+                if (lstFaq.Count() != 0)
+                {
+                    foreach (var faq in lstFaq)
+                    {
+                        await SendMessage(faq, senderId);
+                    }
+                }
+                if (lstSymptoms.Count() == 0 && lstFaq.Count() == 0)
+                {
+                    List<string> keyList = new List<string>(_DICTIONARY_NOT_MATCH.Keys);
+                    Random rand = new Random();
+                    string randomKey = keyList[rand.Next(keyList.Count)];
+                    string contentNotFound = _DICTIONARY_NOT_MATCH[randomKey];
+                    string templateNotFound = FacebookTemplate.GetMessageTemplateTextAndQuickReply(
+                        contentNotFound, senderId, _contactAdmin, _titlePayloadContactAdmin).ToString();
+                    await SendMessage(templateNotFound, senderId);
+                }
+            }
+            if (rsBOT.Type == POSTBACK_TEXT)
+            {
+                string templateText = FacebookTemplate.GetMessageTemplateText(rsBOT.PatternPayload, senderId).ToString();
+                await SendMessage(templateText, senderId);
+            }
 
-            //        if (cardDb.IsConditionWithAreaButton)
-            //        {
-            //            _plUserDb.IsConditionWithAreaButton = true;
-            //            _plUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
-            //        }
-            //        else
-            //        {
-            //            _plUserDb.IsConditionWithAreaButton = false;
-            //            _plUserDb.CardConditionAreaButtonPattern = "";
-            //        }
-            //        _appPlatformUser.Update(_plUserDb);
-            //        _appPlatformUser.Save();
-            //        string tempJsonFacebook = cardDb.TemplateJsonFacebook;
-            //        if (!String.IsNullOrEmpty(tempJsonFacebook))
-            //        {
-            //            tempJsonFacebook = tempJsonFacebook.Trim();
-            //            string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
-            //            if (strArrayJson.Length != 0)
-            //            {
-            //                var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //                foreach (var temp in strArray)
-            //                {
-            //                    string tempJson = temp;
-            //                    string msg = HandleMessageJson(tempJson, senderId);
-            //                    _lstBotReplyResponse.Add(msg);
-            //                    //await SendMessageTask(tempJson, sender);
-            //                }
-            //            }
-            //        }
-            //        if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
-            //        {
-            //            _plUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
-            //            return await MessageResponse(_plUserDb.CardStepPattern, senderId, botId, typeRequest, true);
-            //            //return await ExcuteMessage(fbUserDb.CardStepPattern, sender, botId);
-            //        }
-
-            //        //_lstBotReplyResponse = new List<string>();
-            //        return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //        //return new HttpResponseMessage(HttpStatusCode.OK);
-            //    }
-
-            //    //trường hợp trả về câu hỏi random chứa postback
-            //    bool isPostbackAnswer = Regex.Match(strTempPostback, "<template><srai>postback_answer_(\\d+)</srai></template>").Success;
-            //    if (isPostbackAnswer)
-            //    {
-            //        if (result.Contains("postback_card"))
-            //        {
-            //            var cardDb = _cardService.GetCardByPattern(result.Replace(".", String.Empty));
-            //            if (!String.IsNullOrEmpty(cardDb.AttributeSystemName))
-            //            {
-            //                _plUserDb.IsHaveSetAttributeSystem = true;
-            //                _plUserDb.AttributeName = cardDb.AttributeSystemName;
-            //            }
-            //            else
-            //            {
-            //                _plUserDb.IsHaveSetAttributeSystem = false;
-            //                _plUserDb.AttributeName = "";
-            //            }
-
-            //            if (cardDb.CardStepID != null)
-            //            {
-            //                _plUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
-            //                if (cardDb.IsConditionWithInputText)// yêu cầu nhập text để chuyển sang card step
-            //                {
-            //                    _plUserDb.IsConditionWithInputText = true;
-            //                    _plUserDb.CardConditionWithInputTextPattern = _plUserDb.CardStepPattern;
-            //                }
-            //                else
-            //                {
-            //                    _plUserDb.IsConditionWithInputText = false;
-            //                    _plUserDb.CardConditionWithInputTextPattern = "";
-            //                }
-            //            }
-            //            else
-            //            {
-            //                _plUserDb.CardStepPattern = "";
-            //            }
-
-            //            if (cardDb.IsHaveCondition)
-            //            {
-            //                _plUserDb.IsHaveCardCondition = true;
-            //                _plUserDb.CardConditionPattern = text.Replace(".", String.Empty);
-            //            }
-            //            else
-            //            {
-            //                _plUserDb.IsHaveCardCondition = false;
-            //                _plUserDb.CardConditionPattern = "";
-            //            }
-
-            //            if (cardDb.IsConditionWithAreaButton)
-            //            {
-            //                _plUserDb.IsConditionWithAreaButton = true;
-            //                _plUserDb.CardConditionAreaButtonPattern = text.Replace(".", String.Empty);
-            //            }
-            //            else
-            //            {
-            //                _plUserDb.IsConditionWithAreaButton = false;
-            //                _plUserDb.CardConditionAreaButtonPattern = "";
-            //            }
-            //            _appPlatformUser.Update(_plUserDb);
-            //            _appPlatformUser.Save();
-            //            string tempJsonFacebook = cardDb.TemplateJsonFacebook;
-            //            if (!String.IsNullOrEmpty(tempJsonFacebook))
-            //            {
-            //                tempJsonFacebook = tempJsonFacebook.Trim();
-            //                string[] strArrayJson = Regex.Split(tempJsonFacebook, "split");//nhớ thêm bên formcard xử lý lục trên face
-            //                if (strArrayJson.Length != 0)
-            //                {
-            //                    var strArray = strArrayJson.Where(x => !string.IsNullOrEmpty(x)).ToArray();
-            //                    foreach (var temp in strArray)
-            //                    {
-            //                        string tempJson = temp;
-            //                        string msg = HandleMessageJson(tempJson, senderId);
-            //                        _lstBotReplyResponse.Add(msg);
-            //                        //await SendMessageTask(tempJson, sender);
-            //                    }
-            //                }
-            //            }
-            //            if (cardDb.CardStepID != null && cardDb.IsConditionWithInputText == false)
-            //            {
-            //                //_plUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
-            //                //return await ExcuteMessage(fbUserDb.CardStepPattern, sender, botId);
-            //                _plUserDb.CardStepPattern = "postback_card_" + cardDb.CardStepID;
-            //                return await MessageResponse(_plUserDb.CardStepPattern, senderId, botId, typeRequest, true);
-            //            }
-
-            //            //_lstBotReplyResponse = new List<string>();
-            //            return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-            //            //return new HttpResponseMessage(HttpStatusCode.OK);
-            //        }
-            //    }
-            //    // trả lời text bình thường
-            //    string msgText = HandleMessageJson(FacebookTemplate.GetMessageTemplateText(result, senderId).ToString(), senderId);
-            //    _lstBotReplyResponse.Add(msgText);
-            //    return await Task.FromResult<List<string>>(_lstBotReplyResponse);
-                ////return await SendMessage(FacebookTemplate.GetMessageTemplateText(result, sender));
-            //}
-            //catch (Exception ex)
-            //{
-            //    _lstBotReplyResponse = new List<string>();
-            //}
             return await Task.FromResult<List<string>>(_lstBotReplyResponse);
         }
 
@@ -1378,6 +643,46 @@ namespace BotProject.Web.API_Webhook
             return msgJson;
         }
 
+        #region Send API Message Facebook
+        private async Task SendMultiMessageTask(string templateJson, string sender)
+        {
+            templateJson = templateJson.Trim();
+            if (templateJson.Contains("{{"))
+            {
+                if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
+                {
+                    foreach (var item in _dicAttributeUser)
+                    {
+                        string val = String.IsNullOrEmpty(item.Value) == true ? "N/A" : item.Value;
+                        templateJson = templateJson.Replace("{{" + item.Key + "}}", val);
+                    }
+                }
+            }
+            string[] strArrayJson = Regex.Split(templateJson, "split");
+            foreach (var temp in strArrayJson)
+            {
+                string tempJson = temp;
+                await SendMessage(tempJson, sender);
+            }
+        }
+
+        private async Task SendMessage(string templateJson, string sender)
+        {
+            if (!String.IsNullOrEmpty(templateJson))
+            {
+                templateJson = templateJson.Replace("{{senderId}}", sender);
+                templateJson = Regex.Replace(templateJson, "File/", Domain + "File/");
+                templateJson = Regex.Replace(templateJson, "<br />", "\\n");
+                templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                _lstBotReplyResponse.Add(templateJson);
+
+            }
+        }
+
+        #endregion
+
         private void AddAttributeDefault(string userId, int botId, string key, string value)
         {
             AttributePlatformUser attPlatformUser = new AttributePlatformUser();
@@ -1427,6 +732,7 @@ namespace BotProject.Web.API_Webhook
             string textVN = text;
             if (isActive)
             {
+                _accentService = AccentService.SingleInstance;
                 textVN = _accentService.GetAccentVN(text);
             }
             return textVN;
@@ -1503,5 +809,52 @@ namespace BotProject.Web.API_Webhook
             public int Total { set; get; }
             public string PatternPayload { set; get; }
         }
+
+        #region CALL API SEARCH NATURAL LANGUAGE PROCESS
+        private List<string> GetRelatedQuestion(string question, string field, string number, string botId)
+        {
+            List<string> _lstQuestion = new List<string>();
+            string resultAPI = _apiNLR.GetRelatedPair(question, field, number, botId);
+            if (!String.IsNullOrEmpty(resultAPI))
+            {
+                var lstQnaAPI = new JavaScriptSerializer
+                {
+                    MaxJsonLength = Int32.MaxValue,
+                    RecursionLimit = 100
+                }.Deserialize<List<SearchNlpQnAViewModel>>(resultAPI);
+                // render template json generic
+                int totalQnA = lstQnaAPI.Count();
+                string totalFind = "Tôi tìm thấy " + totalQnA + " câu hỏi liên quan đến câu hỏi của bạn";
+                string strTemplateTextFb = FacebookTemplate.GetMessageTemplateText(totalFind, "{{senderId}}").ToString();
+                string strTemplateGenericRelatedQuestion = FacebookTemplate.GetMessageTemplateGenericByList("{{senderId}}", lstQnaAPI).ToString();
+                _lstQuestion.Add(strTemplateTextFb);
+                _lstQuestion.Add(strTemplateGenericRelatedQuestion);
+            }
+
+            return _lstQuestion;
+        }
+        private List<string> GetSymptoms(string text)
+        {
+            List<string> _lstSymptoms = new List<string>();
+            string resultSymptomp = _apiNLR.GetListSymptoms(text, 1);
+            if (!String.IsNullOrEmpty(resultSymptomp))
+            {
+                var dataSymptomp = new JavaScriptSerializer
+                {
+                    MaxJsonLength = Int32.MaxValue,
+                    RecursionLimit = 100
+                }.Deserialize<List<SearchSymptomViewModel>>(resultSymptomp);
+                if (dataSymptomp.Count() != 0)
+                {
+                    string msgSymptoms = "Bạn vui lòng xem thêm thông tin triệu chứng bên dưới";
+                    string strTemplateTextFb = FacebookTemplate.GetMessageTemplateText(msgSymptoms, "{{senderId}}").ToString();
+                    string strTemplateGenericMedicalSymptoms = FacebookTemplate.GetMessageTemplateGenericByListMed("{{senderId}}", dataSymptomp).ToString();
+                    _lstSymptoms.Add(strTemplateTextFb);
+                    _lstSymptoms.Add(strTemplateGenericMedicalSymptoms);
+                }
+            }
+            return _lstSymptoms;
+        }
+        #endregion
     }
 }

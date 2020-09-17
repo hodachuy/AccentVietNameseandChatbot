@@ -2,7 +2,7 @@
 var url_image_generic_default = "File/Images/Card/img_white.jpg"; //"https://developers.zalo.me/web/static/zalo.png"
 
 var botId = $("#botId").val();
-var srcFolderImg = "https://platform.messnow.com/",
+var srcFolderImg = "https://bot.surelrn.vn/",
         srcAddImg = "api/file/create",
         srcRmImg = "api/file/delete",
         srcAddFile = "api/file/createByMedia";//"/bots/addFile/227697874709279",
@@ -14,7 +14,7 @@ var srcFolderImg = "https://platform.messnow.com/",
         srcGetStates = "/bots/getState",
         srcGetCities = "/bots/getCity",
         srcClipboard = "/api/shortener",
-        httpLink = "https://platform.messnow.com/link/",
+        httpLink = "https://bot.surelrn.vn/link/",
         txtCard1 = "Nội dung",
         txtCard2 = "Nhập nội dung",
         txtCard3 = "Số lượng",
