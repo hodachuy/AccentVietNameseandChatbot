@@ -1297,17 +1297,17 @@ namespace AIMLbot
         /// Saves the graphmaster node (and children) to a binary file to avoid processing the AIML each time the 
         /// bot starts
         /// </summary>
-        /// <param name="path">the path to the file for saving</param>
-        public void saveToBinaryFile(string path)
+        /// <param name="pathSaveFile">the path to the file for saving</param>
+        public void saveToBinaryFile(string pathSaveFile)
         {
             // check to delete an existing version of the file
-            FileInfo fi = new FileInfo(path);
+            FileInfo fi = new FileInfo(pathSaveFile);
             if (fi.Exists)
             {
                 fi.Delete();
             }
 
-            FileStream saveFile = File.Create(path);
+            FileStream saveFile = File.Create(pathSaveFile);
             BinaryFormatter bf = new BinaryFormatter();
             bf.Serialize(saveFile, this.Graphmaster);
             saveFile.Close();

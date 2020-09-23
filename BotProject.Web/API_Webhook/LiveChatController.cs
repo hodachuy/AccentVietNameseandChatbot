@@ -24,8 +24,8 @@ using System.Web.Script.Serialization;
 
 namespace BotProject.Web.API_Webhook
 {
-    [RoutePrefix("api/messagev2")]
-    public class KioskController : ApiControllerBase
+    [RoutePrefix("api/livechat")]
+    public class LiveChatController : ApiControllerBase
     {
         // Thẻ chat với chuyên viên
         public string _contactAdmin = Helper.ReadString("AdminContact");
@@ -81,7 +81,7 @@ namespace BotProject.Web.API_Webhook
         // Services
         private ApiQnaNLRService _apiNLR;
         private IErrorService _errorService;
-        private BotServiceMedical _botService;
+        private BotService _botService;
         private ISettingService _settingService;
         private ICardService _cardService;
         private IAIMLFileService _aimlFileService;
@@ -97,7 +97,7 @@ namespace BotProject.Web.API_Webhook
         private AccentService _accentService;
 
         public List<string> _lstBotReplyResponse = new List<string>();
-        public KioskController(IErrorService errorService,
+        public LiveChatController(IErrorService errorService,
                                       IBotService botDbService,
                                       ISettingService settingService,
                                       ICardService cardService,
@@ -108,7 +108,7 @@ namespace BotProject.Web.API_Webhook
                                       IHistoryService historyService) : base(errorService)
         {
             _errorService = errorService;
-            _botService = BotServiceMedical.BotInstance;
+            _botService = BotService.BotInstance;
             _botDbService = botDbService;
             _settingService = settingService;
             _cardService = cardService;
@@ -180,9 +180,16 @@ namespace BotProject.Web.API_Webhook
                     return response;
                 }
 
-                var botDb = _botDbService.GetByID(botId);
+                //var botDb = _botDbService.GetByID(botId);
                 //var settingDb = _settingService.GetSettingByBotID(botId);
                 //var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
+
+                var lstAIML = _aimlFileService.GetByBotId(botId);
+                //var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+                _botService.loadAIMLFile(lstAIML);
+
+                _user = _botService.loadUserBot(message.senderId);
+
                 var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
                 if (lstAttribute.Count() != 0)
                 {
@@ -470,7 +477,7 @@ namespace BotProject.Web.API_Webhook
 
         private AIMLbot.Result GetBotReplyFromAIMLBot(string text)
         {
-            AIMLbot.Result aimlBotResult = _botService.Chat(text);
+            AIMLbot.Result aimlBotResult = _botService.Chat(text,_user);
             return aimlBotResult;
         }
         private ResultBot CheckTypePostbackFromResultBotReply(AIMLbot.Result rsAIMLBot)
@@ -723,6 +730,8 @@ namespace BotProject.Web.API_Webhook
             public string senderId { set; get; }//K2542621755855091
             public string botId { set; get; }
             public string text { set; get; }
+            public long channelGroupId { set; get; }
+            public long threadId { set; get; }
         }
 
         #region Convert AccentVN - Thêm dấu Tiếng việt

@@ -10,19 +10,20 @@ using BotProject.Web.Models;
 using BotProject.Service;
 using System.Xml;
 using BotProject.Web.Infrastructure.Log4Net;
+using BotProject.Model.Models;
 
 namespace BotProject.Web
 {
     sealed class BotService
     {
-        Bot _bot;
+        AIMLbot.Bot _bot;
         User _user;
         private static BotService botInstance = null;
         private static readonly object lockObject = new object();
         private string pathSetting = PathServer.PathAIML + "config";
         private BotService()
         {
-             _bot = new Bot();
+             _bot = new AIMLbot.Bot();
             _bot.isAcceptingUserInput = true;
             _bot.loadSettings(pathSetting);
             
@@ -70,11 +71,17 @@ namespace BotProject.Web
             _bot.loadSettings(pathSetting);
         }
 
+        /// <summary>
+        /// Load tất cả file AIML sẽ kéo vào this.Graphmaster "brain" đầu não của bot,
+        /// tránh load AIML mỗi lần khi start ta nên lưu nó vào file binary với param input this.Graphmaster
+        /// function saveToBinaryFile tại AIML.Bot
+        /// </summary>
+        /// <param name="path"></param>
+
         public void loadAIMLFromFiles(string path)
         {
             _bot.loadAIMLFromFiles(path);
         }
-
         public void loadAIMLFromDatabase(IEnumerable<AIMLViewModel> lstAIML)
         {
             if(lstAIML.Count() != 0)
@@ -93,6 +100,30 @@ namespace BotProject.Web
                         BotLog.Info(msg);
                     }
                 }
+            }
+        }
+
+        public void loadAIMLFile(IEnumerable<AIMLFile> lstAIML)
+        {
+            if (lstAIML.Count() != 0)
+            {
+                foreach (var item in lstAIML)
+                {
+                    try
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(item.Content);
+                        _bot.loadAIMLFromXML(doc, item.Src);                       
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        string msg = item.Content + ex.Message;
+                        BotLog.Info(msg);
+                    }
+                }
+                //string pathFolderAIML2Graphmaster = PathServer.PathAIML2Graphmaster;
+                //_bot.saveToBinaryFile(pathFolderAIML2Graphmaster);
             }
         }
     }

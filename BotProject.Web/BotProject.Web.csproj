@@ -322,6 +322,7 @@
     <Compile Include="API_SV_172\CommonController.cs" />
     <Compile Include="API_Webhook\FacebookController.cs" />
     <Compile Include="API_Webhook\KioskController.cs" />
+    <Compile Include="API_Webhook\LiveChatController.cs" />
     <Compile Include="API_Webhook\ZaloController.cs" />
     <Compile Include="Controllers\Apiv1Controller.cs" />
     <Compile Include="Controllers\LcChatRoomController.cs" />
@@ -913,7 +914,7 @@
     <Content Include="File\Datasets_Training_Accent\AccentInfo.txt" />
     <Content Include="File\Datasets_Training_Accent\test.txt" />
     <Content Include="File\Images\Card\07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg" />
-    <Content Include="File\NLR\StopWord.txt" />
+    <Content Include="File\NLP\StopWord.txt" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\ai.0.22.9-build00167.js" />
@@ -1112,12 +1113,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="File\AIML2Graphmaster\" />
     <Folder Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5019\" />
     <Folder Include="File\AIML\User_a596de6b-5055-4aa0-a4bf-056d0cc8ed8f_BotID_5021\" />
     <Folder Include="File\Document\" />
     <Folder Include="File\Images\Voucher\" />
     <Folder Include="File\MedicalSymptoms\" />
     <Folder Include="Views\FacebookBot\" />
+    <Folder Include="Views\LiveChat\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

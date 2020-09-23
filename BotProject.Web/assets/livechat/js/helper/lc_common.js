@@ -456,8 +456,7 @@ function showTimeChat() {
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
     minutes = minutes < 10 ? '0' + minutes : minutes;
-    var strTime = hours + ':' + minutes + ' ' + ampm;
-    return strTime;
+    return hours + ':' + minutes + ' ' + ampm;
 }
 
 /*
@@ -467,3 +466,38 @@ function playAudioNotifyMessage() {
     var audio = new Audio('' + _Host + 'assets/livechat/audio/notify-message-chat.mp3');
     audio.play();
 }
+
+var Timer = function (opts) {
+    var self = this;
+
+    self.opts = opts || {};
+    self.element = opts.element || null;
+    self.minutes = opts.minutes || 0;
+    self.seconds = opts.seconds || 30;
+
+    self.start = function () {
+        self.interval = setInterval(countDown, 1000);
+    };
+
+    self.stop = function () {
+        clearInterval(self.interval);
+        $('.box-reconecting').removeClass('showing');
+    };
+
+    function countDown() {
+        self.seconds--;
+        if (self.minutes == 0 && self.seconds == 0) {
+            self.stop();
+        }
+
+        if (self.seconds < 0) {
+            self.seconds = 59;
+            self.minutes--;
+        }
+
+        if (self.seconds <= 9) { self.seconds = '0' + self.seconds; }
+
+        self.element.textContent = self.seconds;// self.minutes + ' : ' + self.seconds
+    }
+};
+

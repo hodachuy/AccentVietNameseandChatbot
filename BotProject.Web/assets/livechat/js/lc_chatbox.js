@@ -87,12 +87,18 @@ var varyReconnected = function intervalFunc() {
     timeReconnecting--;
     document.getElementById("reconeting-time").innerHTML = timeReconnecting;
     console.log(timeReconnecting);
-    if (timeReconnecting == 0) {
+    if (timeReconnecting == parseInt("0")) {//timeReconnecting == 0
         clearInterval(intervalReconnectId);
         $('.box-reconecting').removeClass('showing');
         $(".chat-footer").show();
     }
 }
+var reconnectingTime = new Timer({
+    minutes: 0,
+    seconds: 5,
+    element: document.querySelector('#reconeting-time')
+});
+
 var cBoxHub = {
     init: function () {
         cBoxHub.register();
@@ -165,14 +171,16 @@ var cBoxHub = {
             if (tryingToReconnect) {
                 $(".box-disconected").removeClass('showing');
                 $('.box-reconecting').addClass('showing');
-                intervalReconnectId = setInterval(varyReconnected, 1500);
+                //intervalReconnectId = setInterval(varyReconnected, 1500);
+                reconnectingTime.start();
                 setTimeout(function () {
                     console.log('SingalR connect đang khởi động lại')
                     $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
                     $.connection.hub.start().done(function () {
                         // kết nối chat khi agent hoặc bot active
-                        clearInterval(intervalReconnectId);
-                        $('.box-reconecting').removeClass('showing');
+                        //clearInterval(intervalReconnectId);
+                        reconnectingTime.stop();
+                        //$('.box-reconecting').removeClass('showing');
                         if (setting.isAgentOnline == true) {
                             $(".chat-footer").show();
                             objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
@@ -199,14 +207,17 @@ var cBoxHub = {
             console.log("Connected Interned")
             $(".box-disconected").removeClass('showing');
             $('.box-reconecting').addClass('showing');
-            intervalReconnectId = setInterval(varyReconnected, 1500);
+            reconnectingTime.start();
+
+           // intervalReconnectId = setInterval(varyReconnected, 1500);
             setTimeout(function () {
                 console.log('SingalR connect đang khởi động lại')
                 $.connection.hub.start({ transport: ['longPolling', 'webSockets'] });
                 $.connection.hub.start().done(function () {
                     // kết nối chat khi agent hoặc bot active
-                    clearInterval(intervalReconnectId);
-                    $('.box-reconecting').removeClass('showing');
+                    reconnectingTime.stop();
+                    //clearInterval(intervalReconnectId);
+                    //$('.box-reconecting').removeClass('showing');
                     if (setting.isAgentOnline == true) {
                         $(".chat-footer").show();
                         objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
@@ -657,7 +668,7 @@ var messageBot = {
         }
         params = JSON.stringify(params);
         $.ajax({
-            url: _Host + "api/lc_bot/receive",
+            url: _Host + "api/livechat/receive",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             data: params,
@@ -695,7 +706,7 @@ var messageBot = {
                                         let genetic = {};
                                         genetic.title = value.title;
                                         genetic.item_url = (value.item_url == "" ? "" : value.item_url.substr(value.item_url.indexOf('://') + 3));
-                                        genetic.image_url = _Host + value.image_url;
+                                        genetic.image_url = value.image_url; //_Host + 
                                         genetic.subtitle = value.subtitle;
                                         var lstButton = value.buttons;
                                         templateGenericIndex += new messageBot.renderTemplate(date_current, '').GenericIndex(genetic, function () {
@@ -719,6 +730,7 @@ var messageBot = {
                         $.each(lstTemplateHtml, function (index, value) {
                             let timeAppend = 500 * (index + 1);
                             let typing = true;
+                            // nếu append tin nhắn cuối cùng từ 2 tin chở lên thì hủy typing
                             if (lstTemplateHtml.length == (index + 1)) {
                                 typing = false;
                             }
@@ -731,17 +743,14 @@ var messageBot = {
         })
     },
     appendMessage: function (element, timeout, text, isSendTyping) {
-        if (!isSendTyping) {
-            isSendTyping = false;
-            //$(".message-item-typing").remove();
-        }
+        isSendTyping = isSendTyping || false;
         $(element).delay(timeout).queue(function (next) {
             $("#message-content").find('.message-item-action').remove();
             $(".message-item-typing").remove();
             $(this).append($(text).addClass('animated moveUp')).append(scrollBar());
             if (isSendTyping) {
                 new messageBot.renderTemplate('', '').Typing();
-            }
+            } 
             objHub.server.sendMessage(_channelGroupId, CustomerModel.ThreadID, text, "", CustomerModel.ID, "", TYPE_USER_CONNECT.BOT);
 
             next();
@@ -790,7 +799,7 @@ var messageBot = {
                                 </div>
                           </div>`;
             tmpText += '</div>';
-            $('#message-content').append(tmpText).append(scrollBar());
+            $('#message-content').append(tmpText);//$('#message-content').append(tmpText).append(scrollBar())
         },
         this.Text = function (text) {
             var tmpText = '<div class="message-item {bot} message-item-text clearfix">';
@@ -817,7 +826,7 @@ var messageBot = {
             tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
             tmpText += '                        </div>';
             tmpText += '                    </div>';
-            tmpText += '                    <img src="' + _Host + '' + urlImage + '"/>';
+            tmpText += '                    <img src="' + urlImage + '"/>';//' + _Host + '
             tmpText += '                </div>';
             tmpText += '</div>';
             return tmpText;

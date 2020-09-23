@@ -106,7 +106,12 @@ namespace BotProject.Common
 
         public static string PathLogoSetting = HttpContext.Current.Server.MapPath("~/assets/images/logo/");
 
-        public static string PathNLR = HttpContext.Current.Server.MapPath("~/File/NLR/");
+        public static string PathNLR = HttpContext.Current.Server.MapPath("~/File/NLP/");
+
+        /// <summary>
+        /// HttpContext.Current.Server.MapPath("~/File/AIML/");
+        /// </summary>
+        public static string PathAIML2Graphmaster = HttpContext.Current.Server.MapPath("~/File/AIML2Graphmaster/");
 
         /// <summary>
         /// ~/File/MedicalSymptoms/

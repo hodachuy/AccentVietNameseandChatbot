@@ -99,38 +99,37 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
-            string hl = "chạo ạ bạn";
-            string hlw = HighLightWord(hl, "ạ", false);
+            //string hl = "chạo ạ bạn";
+            //string hlw = HighLightWord(hl, "ạ", false);
 
-            double rating = GetRating();
-            Console.WriteLine("rating: " + rating);
-            Console.ReadKey();
-
-            string v = "Chuyển nhượng\n, nhận thừa kế\n, quà tặng là bất động sản tại Việt Nam";
-
-            string v2 = Regex.Replace(v, "\n", " ");
-
-            List<string> lstDoc = new List<string>();
-            lstDoc.Add("Chuyển nhượng, nhận thừa kế, quà tặng là bất động sản tại Việt Nam");
-            lstDoc.Add("Chuyển nhượng vốn (trừ chuyển nhượng chứng khoán)");
-            lstDoc.Add("Đầu tư vốn (trường hợp nhận cổ tức bằng cổ phiếu, lợi tức ghi tăng vốn)");
-            lstDoc.Add("Khai thuế TNCN theo tháng hoặc quý đối với tổ chức, cá nhân trả thu nhập chịu thuế thu nhập cá nhân");
-            lstDoc.Add("Khai thuế TNCN theo tháng hoặc quý đối với tổ chức, cá nhân trả thu nhập chịu thuế thu nhập cá nhân");
-
-            var lstFind = lstDoc.FindAll(x => x.ToLower().Contains("chuyển nhượng") || x.Contains("a"));
+            //double rating = GetRating();
+            //Console.WriteLine("rating: " + rating);
 
             Console.OutputEncoding = Encoding.UTF8;
 
-            if (lstFind.Count() != 0)
+            string unicodeOrigin = "Ừ";
+            string unicodeVN1258 = "Ừ";        
+            string unicode1258 = "Ừ";
+            string unicode1258ToOrigin = UnicodeVN1258ToUnicodeOrigin(unicode1258);
+            string unicodeVN1258ToOrigin = UnicodeVN1258ToUnicodeOrigin(unicodeVN1258);
+            string result = "false";
+            if(unicodeOrigin == unicode1258)
             {
-                foreach(var item in lstFind)
-                {
-                    Console.WriteLine(item);
-                }
+                result = "true";
             }
-
-
-
+            if (unicodeOrigin == unicode1258ToOrigin)
+            {
+                result = "true";
+            }
+            if (unicodeOrigin == unicodeVN1258)
+            {
+                result = "true";
+            }
+            if (unicodeOrigin == unicodeVN1258ToOrigin)
+            {
+                result = "true";
+            }
+            Console.WriteLine("Ket qua : {0}", result);
 
 
             //LoadBalancer b1 = LoadBalancer.GetLoadBalancer();
@@ -262,6 +261,126 @@ namespace Accent.ConsoleApplication
                     return _servers[r].ToString();
                 }
             }
+        }
+
+
+        private static int[] Map_VNOrigin = {194,226,258,259,202,234,212,244,431,432,416,417,272,
+                                273,7840,7841,7842,7843,7844,7845,7846,7847,7848,7849,7850,7851,
+                                7852,7853,7854,7855,7856,7857,7858,7859,7860,7861,7862,7863,7864,
+                                7865,7866,7867,7868,7869,7870,7871,7872,7873,7874,7875,7876,7877,
+                                7878,7879,7880,7881,7882,7883,7884,7885,7886,7887,7888,7889,7890,
+                                7891,7892,7893,7894,7895,7896,7897,7898,7899,7900,7901,7902,7903,
+                                7904,7905,7906,7907,7908,7909,7910,7911,7912,7913,7914,7915,7916,
+                                7917,7918,7919,7920,7921,7922,7923,7924,7925,7926,7927,7928,7929,
+                                192,193,195,200,201,204,205,210,211,213,217,218,221,224,225,227,
+                                232,233,236,237,242,243,245,249,250,253,360,361,296,297};
+
+        private static int[] Map_VN1258 = {194,226,258,259,202,234,212,244,431,432,416,417,272,273,
+                                65,803,97,803,65,777,97,777,194,769,226,769,194,768,226,768,194,777,
+                                226,777,194,771,226,771,194,803,226,803,258,769,259,769,258,768,259,
+                                768,258,777,259,777,258,771,259,771,258,803,259,803,69,803,101,803,
+                                69,777,101,777,69,771,101,771,202,769,234,769,202,768,234,768,202,
+                                777,234,777,202,771,234,771,202,803,234,803,73,777,105,777,73,803,
+                                105,803,79,803,111,803,79,777,111,777,212,769,244,769,212,768,244,
+                                768,212,777,244,777,212,771,244,771,212,803,244,803,416,769,417,769,
+                                416,768,417,768,416,777,417,777,416,771,417,771,416,803,417,803,85,
+                                803,117,803,85,777,117,777,431,769,432,769,431,768,432,768,431,777,
+                                432,777,431,771,432,771,431,803,432,803,89,768,121,768,89,803,121,
+                                803,89,777,121,777,89,771,121,771,65,768,65,769,65,771,69,768,69,
+                                769,73,768,73,769,79,768,79,769,79,771,85,768,85,769,89,769,97,768,
+                                97,769,97,771,101,768,101,769,105,768,105,769,111,768,111,769,111,
+                                771,117,768,117,769,121,769,85,771,117,771,73,771,105,771};
+        /// <summary>
+        /// chuyen doi chuoi Unicode to hop sang chuoi Unicode dung san
+        /// </summary>
+        /// <param name="strUnicode">chuoi Unicode to hop</param>
+        /// <returns>chuoi Unicode dung san</returns>
+        //public static string UnicodeVN1258ToUnicodeOrigin(string strUnicode)
+        public static string UnicodeVN1258ToUnicodeOrigin(object stringUnicode)
+        {
+            //if (strUnicode == null)
+            if (stringUnicode == null)
+                return null;
+            StringBuilder strOriginDest = new StringBuilder();
+            int i = 0;
+            //int iLenOrigin = 134;
+            int iLen1258 = 254;
+
+            //string stTest0_14 = tu 0 den 14 cua Map_VN1258;
+            //string stMapVN1258 = tu 14 den het cua Map_VN1258;
+            string stMapVN1258 = "";
+            for (i = 0; i < iLen1258; i++)
+                stMapVN1258 += (char)Map_VN1258[i];
+            string stMapVN1258_a = stMapVN1258.Substring(0, 14);
+
+            string strUnicode = (string)stringUnicode;
+            i = 0;
+            while (i < strUnicode.Length)
+            {
+                if (strUnicode[i] == 9)
+                {
+                    strOriginDest.Append("\t");
+                    i++;
+                    continue;
+                }
+                if (strUnicode[i] < 'A')
+                {
+                    strOriginDest.Append(strUnicode[i]);
+                    i++;
+                    continue;
+                }
+                if (strUnicode[i] > 'Z' && strUnicode[i] < 'a')
+                {
+                    strOriginDest.Append(strUnicode[i]);
+                    i++;
+                    continue;
+                }
+                if (strUnicode[i] >= 'A' && strUnicode[i] <= 'Z' && strUnicode[i] != 'A' && strUnicode[i] != 'E' && strUnicode[i] != 'I' && strUnicode[i] != 'O' && strUnicode[i] != 'U' && strUnicode[i] != 'Y')
+                {
+                    strOriginDest.Append(strUnicode[i]);
+                    i++;
+                    continue;
+                }
+                if (strUnicode[i] >= 'a' && strUnicode[i] <= 'z' && strUnicode[i] != 'a' && strUnicode[i] != 'e' && strUnicode[i] != 'i' && strUnicode[i] != 'o' && strUnicode[i] != 'u' && strUnicode[i] != 'y')
+                {
+                    strOriginDest.Append(strUnicode[i]);
+                    i++;
+                    continue;
+                }
+                if (i + 1 < strUnicode.Length)
+                {
+                    string stFind = strUnicode[i].ToString() + strUnicode[i + 1];
+                    int k = stMapVN1258.IndexOf(stFind, 14);
+                    if (k != -1)
+                    {
+                        strOriginDest.Append((char)Map_VNOrigin[14 + (k - 14) / 2]);
+                        i += 2;
+                    }
+                    else
+                    {
+                        stFind = strUnicode[i].ToString();
+                        k = stMapVN1258_a.IndexOf(stFind);
+                        if (k != -1)
+                        {
+                            strOriginDest.Append((char)Map_VNOrigin[k]);
+                        }
+                        else strOriginDest.Append(strUnicode[i]);
+                        i++;
+                    }
+                }
+                else
+                {
+                    string stFind = strUnicode[i].ToString();
+                    int k = stMapVN1258_a.IndexOf(stFind);
+                    if (k != -1)
+                    {
+                        strOriginDest.Append((char)Map_VNOrigin[k]);
+                    }
+                    else strOriginDest.Append(strUnicode[i]);
+                    i++;
+                }
+            }
+            return strOriginDest.ToString();
         }
     }
 }
