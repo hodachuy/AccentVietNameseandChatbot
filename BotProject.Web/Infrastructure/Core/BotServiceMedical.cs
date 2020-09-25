@@ -26,9 +26,13 @@ namespace BotProject.Web.Infrastructure.Core
             _bot = new Bot();
             _bot.isAcceptingUserInput = true;
             _bot.loadSettings(pathSetting);
-            _aimlFileService = ServiceFactory.Get<IAIMLFileService>();
-            var lstAimlFile = _aimlFileService.GetByBotId(3019);
-            loadAIMLFromDatabase(lstAimlFile);
+
+            string pathFile = PathServer.PathAIML2Graphmaster + "BotID_3019_ver_24092020_011828613.bin";
+            _bot.loadFromBinaryFile(pathFile);
+
+            //_aimlFileService = ServiceFactory.Get<IAIMLFileService>();
+            //var lstAimlFile = _aimlFileService.GetByBotId(3019);
+            //loadAIMLFromDatabase(lstAimlFile);
             _user = loadUserBot(Guid.NewGuid().ToString());
         }
         public static BotServiceMedical BotInstance

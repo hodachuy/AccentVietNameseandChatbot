@@ -1039,6 +1039,8 @@
     <Content Include="File\Datasets_Training_Accent\news1gram.bin" />
     <Content Include="File\Datasets_Training_Accent\news2grams.bin" />
     <Content Include="assets\livechat\audio\notify-message-chat.m4r" />
+    <Content Include="File\AIML2Graphmaster\BotID_3019_ver_24092020_011828613.bin" />
+    <None Include="File\AIML2Graphmaster\BotID_5043_ver_24092020_095452611.bin" />
     <None Include="Properties\PublishProfiles\BotProject_Publish.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -1113,7 +1115,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="File\AIML2Graphmaster\" />
     <Folder Include="File\AIML\User_4d1d77aa-42a7-4e88-97a6-baed104c2e60_BotID_5019\" />
     <Folder Include="File\AIML\User_a596de6b-5055-4aa0-a4bf-056d0cc8ed8f_BotID_5021\" />
     <Folder Include="File\Document\" />

@@ -148,15 +148,18 @@ namespace BotProject.Web.Controllers
 			var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
 			var systemConfig = _settingService.GetListSystemConfigByBotId(botID);
 			var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfig);
-			//string nameBotAIML = "User_" + token + "_BotID_" + botId;
-			//string fullPathAIML = pathAIML + nameBotAIML;
-			//_botService.loadAIMLFromFiles(fullPathAIML);
+            //string nameBotAIML = "User_" + token + "_BotID_" + botId;
+            //string fullPathAIML = pathAIML + nameBotAIML;
+            //_botService.loadAIMLFromFiles(fullPathAIML);
 
-			var lstAIML = _aimlFileService.GetByBotId(botID);//_aimlFileService.GetByBotId(botID);
-			var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
-			_botService.loadAIMLFromDatabase(lstAIMLVm);
+            var lstAIML = _aimlFileService.GetByBotId(botID);
+            //var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+            _botService.loadAIMLFile(lstAIML, botID.ToString());
 
-			_botHub = new BotHub();
+            //string pathFile = @"D:\HDHUY_V.1\BotProject\BotProject.Web\File\AIML2Graphmaster\BotID_3019_ver_24092020_011828613.bin";
+            //_botService.loadGraphmaster2AIMLFile(pathFile);
+
+            _botHub = new BotHub();
 
 			UserBotViewModel userBot = new UserBotViewModel();
 			userBot.StopWord = settingVm.StopWord;

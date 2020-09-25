@@ -11,6 +11,7 @@ using BotProject.Web.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -145,6 +146,9 @@ namespace BotProject.Web.API_Webhook
         {
             return CreateHttpResponse(request, () =>
             {
+                System.Diagnostics.Stopwatch timer = new Stopwatch();
+                timer.Start();
+
                 HttpResponseMessage response = null;
                 string text = message.text;
                 string senderId = message.senderId;
@@ -183,6 +187,7 @@ namespace BotProject.Web.API_Webhook
                 var botDb = _botDbService.GetByID(botId);
                 //var settingDb = _settingService.GetSettingByBotID(botId);
                 //var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
+
                 var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
                 if (lstAttribute.Count() != 0)
                 {
@@ -212,12 +217,17 @@ namespace BotProject.Web.API_Webhook
                     var result = JsonConvert.DeserializeObject<dynamic>(msg);
                     lstResult.Add(result);
                 }
+
+                timer.Stop();
+                TimeSpan timeTaken = timer.Elapsed;
                 response = request.CreateResponse(HttpStatusCode.OK, new
                 {
+                    timetaken = timeTaken.ToString(),
                     status = "2",
                     message = "Thành công",
-                    data = lstResult
+                    data = lstResult,
                 });
+                
                 return response;
             });
         }
@@ -609,27 +619,6 @@ namespace BotProject.Web.API_Webhook
             _appPlatformUser.Save();
             return appUserVm;
         }
-        private string HandleMessageJson(string msgJson, string senderId)
-        {
-            msgJson = msgJson.Replace("{{senderId}}", senderId);
-            //msgJson = Regex.Replace(msgJson, "File/", Domain + "File/");
-            msgJson = Regex.Replace(msgJson, "<br />", "\\n");
-            msgJson = Regex.Replace(msgJson, "<br/>", "\\n");
-            msgJson = Regex.Replace(msgJson, @"\\n\\n", "\\n");
-            msgJson = Regex.Replace(msgJson, @"\\n\\r\\n", "\\n");
-            if (msgJson.Contains("{{"))
-            {
-                if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
-                {
-                    foreach (var item in _dicAttributeUser)
-                    {
-                        string val = String.IsNullOrEmpty(item.Value) == true ? "N/A" : item.Value;
-                        msgJson = msgJson.Replace("{{" + item.Key + "}}", val);
-                    }
-                }
-            }
-            return msgJson;
-        }
 
         private string HandleMessageSymptomp(string msgJson, string senderId)
         {
@@ -650,6 +639,7 @@ namespace BotProject.Web.API_Webhook
             {
                 if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
                 {
+                    //templateJson = Regex.Replace(templateJson, "{{.+?}}", m => _dicAttributeUser[m.Groups[1].Value]);
                     foreach (var item in _dicAttributeUser)
                     {
                         string val = String.IsNullOrEmpty(item.Value) == true ? "N/A" : item.Value;

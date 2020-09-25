@@ -186,7 +186,7 @@ namespace BotProject.Web.API_Webhook
 
                 var lstAIML = _aimlFileService.GetByBotId(botId);
                 //var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
-                _botService.loadAIMLFile(lstAIML);
+                _botService.loadAIMLFile(lstAIML, botId.ToString());
 
                 _user = _botService.loadUserBot(message.senderId);
 

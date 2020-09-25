@@ -577,12 +577,12 @@ function insertChat(who, text, userName, avatar) {
     }
 
     content = '<div class="message-item ' + user_class_chat + ' clearfix" data-user="' + who + '">';
-    content += messageUser.getAgentIcon(avatar);
+    content += messageUser.getAgentAvatar(avatar);
     content += messageUser.getHtmlMessageBody(who, userName, text, date_current);
     content += '</div>';
 
     // insert body chat
-    appendMessage("", who, content);
+    messageUser.appendMessage("", who, content);
     return false;
 }
 
@@ -593,7 +593,6 @@ function appendMessage(elementLastMessageAppend, who, text) {
     } else {
         $("#message-content").append(text).children(':last').hide().fadeIn(300);
     }
-
     // remove action read, delivered, message not send
     if (who == TYPE_USER_CONNECT.AGENT) {
         $("#message-content").find('.message-item-action').remove();
@@ -604,7 +603,7 @@ function appendMessage(elementLastMessageAppend, who, text) {
 }
 
 var messageUser = {
-    getAgentIcon: function (avatar) {
+    getAgentAvatar: function (avatar) {
         var templateAvatar = '';
         templateAvatar += '<div class="message-avatar">';
         templateAvatar += '<div class="message-avatar-customer">';
@@ -639,7 +638,7 @@ var messageUser = {
     },
     getTypingUser: function (avatar) {
         var tmpText = '<div class="message-item message-item-typing clearfix">';
-        tmpText += messageUser.getAgentIcon(avatar)
+        tmpText += messageUser.getAgentAvatar(avatar)
         tmpText += `<div class="message-item-content writing">
                                 <div class="_4xko _13y8">
                                     <div class="_4a0v _1x3z">
@@ -654,9 +653,22 @@ var messageUser = {
         tmpText += '</div>';
         $('#message-content').append(tmpText).children(':last').hide().fadeIn(300);
         scrollBar();
+    },
+    appendMessage: function (elementLastMessageAppend, who, text) {
+        if (elementLastMessageAppend !== "") {
+            var content = '<div class="message-item-content">' + text + '</div>';
+            $(elementLastMessageAppend).after($(content).hide().fadeIn(300));
+        } else {
+            $("#message-content").append(text).children(':last').hide().fadeIn(300);
+        }
+        // remove action read, delivered, message not send
+        if (who == TYPE_USER_CONNECT.AGENT) {
+            $("#message-content").find('.message-item-action').remove();
+        }
+        // scroll to bottom
+        scrollBar();
     }
 }
-
 var messageBot = {
     getMessage: function (text, threadId, botId) {
         var params = {

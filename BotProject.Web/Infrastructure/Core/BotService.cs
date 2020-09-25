@@ -103,7 +103,7 @@ namespace BotProject.Web
             }
         }
 
-        public void loadAIMLFile(IEnumerable<AIMLFile> lstAIML)
+        public void loadAIMLFile(IEnumerable<AIMLFile> lstAIML, string botId)
         {
             if (lstAIML.Count() != 0)
             {
@@ -122,9 +122,19 @@ namespace BotProject.Web
                         BotLog.Info(msg);
                     }
                 }
-                //string pathFolderAIML2Graphmaster = PathServer.PathAIML2Graphmaster;
-                //_bot.saveToBinaryFile(pathFolderAIML2Graphmaster);
+                //if (botId == "3019")
+                //{
+                //    string version = DateTime.Now.ToString("ddMMyyyy_hhmmssfff");
+                //    string extension = ".bin";
+                //    string pathFolderAIML2Graphmaster = PathServer.PathAIML2Graphmaster + "BotID_" + botId + "_ver_" + version + extension;
+                //    _bot.saveToBinaryFile(pathFolderAIML2Graphmaster);
+                //}
             }
+        }
+
+        public void loadGraphmaster2AIMLFile(string pathFile)
+        {
+            _bot.loadFromBinaryFile(pathFile);
         }
     }
 }

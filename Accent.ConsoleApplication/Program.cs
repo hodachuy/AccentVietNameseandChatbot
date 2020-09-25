@@ -99,37 +99,23 @@ namespace Accent.ConsoleApplication
 
         public static void Main(string[] args)
         {
+
+
+
             //string hl = "chạo ạ bạn";
             //string hlw = HighLightWord(hl, "ạ", false);
 
             //double rating = GetRating();
             //Console.WriteLine("rating: " + rating);
 
-            Console.OutputEncoding = Encoding.UTF8;
+            //Console.OutputEncoding = Encoding.UTF8;
 
-            string unicodeOrigin = "Ừ";
-            string unicodeVN1258 = "Ừ";        
-            string unicode1258 = "Ừ";
-            string unicode1258ToOrigin = UnicodeVN1258ToUnicodeOrigin(unicode1258);
-            string unicodeVN1258ToOrigin = UnicodeVN1258ToUnicodeOrigin(unicodeVN1258);
-            string result = "false";
-            if(unicodeOrigin == unicode1258)
-            {
-                result = "true";
-            }
-            if (unicodeOrigin == unicode1258ToOrigin)
-            {
-                result = "true";
-            }
-            if (unicodeOrigin == unicodeVN1258)
-            {
-                result = "true";
-            }
-            if (unicodeOrigin == unicodeVN1258ToOrigin)
-            {
-                result = "true";
-            }
-            Console.WriteLine("Ket qua : {0}", result);
+            //string unicodeOrigin = "Ừ";
+            //string unicodeVN1258 = "Ừ";        
+            //string unicode1258 = "Ừ";
+            //string unicode1258ToOrigin = UnicodeVN1258ToUnicodeOrigin(unicode1258);
+            //string unicodeVN1258ToOrigin = UnicodeVN1258ToUnicodeOrigin(unicodeVN1258);
+
 
 
             //LoadBalancer b1 = LoadBalancer.GetLoadBalancer();
@@ -158,16 +144,16 @@ namespace Accent.ConsoleApplication
             //Console.ReadKey();
 
 
-            //AccentPredictor accent = new AccentPredictor();
+            AccentPredictor accent = new AccentPredictor();
 
-            //string path1Gram = System.IO.Path.GetFullPath("news1gram.bin");
-            //string path2Gram = System.IO.Path.GetFullPath("news2grams.bin");
-            //string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
-            //accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
+            string path1Gram = System.IO.Path.GetFullPath("news1gram.bin");
+            string path2Gram = System.IO.Path.GetFullPath("news2grams.bin");
+            string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
+            accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
 
-            //////Console.OutputEncoding = Encoding.UTF8;
-            //////----- Test -----//
-            //////Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
+            Console.OutputEncoding = Encoding.UTF8;
+            //-----Test---- -//
+            Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
 
             //while (true)
             //{
