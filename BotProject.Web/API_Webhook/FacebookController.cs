@@ -87,6 +87,8 @@ namespace BotProject.Web.API_Webhook
         // BOT PRIVATE CUSTOMIZE
         private const int BOT_Y_TE = 3019;
 
+        private string _botID;
+
         // Services
         private IApplicationFacebookUserService _appFacebookUser;
         private BotServiceMedical _botService;
@@ -131,8 +133,10 @@ namespace BotProject.Web.API_Webhook
         /// Facebook kiểm tra mã bảo mật của đường dẫn webhook thiết lập
         /// </summary>
         /// <returns></returns>
-        public HttpResponseMessage Get()
+        public HttpResponseMessage Get(string botID)
         {
+            _botID = botID;
+            BotLog.Info("FB Callback url: " + _botID);
             var querystrings = Request.GetQueryNameValuePairs().ToDictionary(x => x.Key, x => x.Value);
             if (querystrings["hub.verify_token"] == verifytoken)
             {
@@ -151,8 +155,11 @@ namespace BotProject.Web.API_Webhook
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public async Task<HttpResponseMessage> Post()
+        public async Task<HttpResponseMessage> Post(string botID = "")
         {
+            _botID = botID;
+            BotLog.Info("FB Callback url: " + _botID);
+
             var signature = Request.Headers.GetValues("X-Hub-Signature").FirstOrDefault().Replace("sha1=", "");
             var body = await Request.Content.ReadAsStringAsync();
             FacebookBotRequest objMsgUser = JsonConvert.DeserializeObject<FacebookBotRequest>(body);

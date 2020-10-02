@@ -14,6 +14,7 @@ namespace BotProject.Service
     {
         Bot Create(ref Bot bot);
         IEnumerable<Bot> GetListBotByUserID(string userId);
+        IEnumerable<Bot> GetListBotByAllUser();
         IEnumerable<StoreProcBotViewModel> GetListBotDashboard(string userId);
 		Bot GetByID(int botId);
         void Update(Bot bot);
@@ -65,6 +66,11 @@ namespace BotProject.Service
         public IEnumerable<StoreProcBotViewModel> GetListBotDashboard(string userId)
         {
             return _botRepository.GetListBotDashboard(userId);
+        }
+
+        public IEnumerable<Bot> GetListBotByAllUser()
+        {
+            return _botRepository.GetMulti(x => x.Status == true);
         }
     }
 }

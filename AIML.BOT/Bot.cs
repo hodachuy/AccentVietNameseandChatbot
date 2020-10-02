@@ -424,163 +424,165 @@ namespace AIMLbot
         /// <param name="pathToSettings">Path to the settings xml file</param>
         public void loadSettings(string pathToSettings)
         {
+
+
             //this.GlobalSettings.loadSettings(pathToSettings);
 
-            //            // Checks for some important default settings
-            //            if (!this.GlobalSettings.containsSettingCalled("version"))
-            //            {
-            //                this.GlobalSettings.addSetting("version",
-            //#if NETSTANDARD
-            //                    Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.RuntimeFramework.Version.ToString()
-            //#else
-            //                    Environment.Version.ToString()
-            //#endif
-            //                    );
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("name"))
-            //            {
-            //                this.GlobalSettings.addSetting("name", "Unknown");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("botmaster"))
-            //            {
-            //                this.GlobalSettings.addSetting("botmaster", "Unknown");
-            //            } 
-            //            if (!this.GlobalSettings.containsSettingCalled("master"))
-            //            {
-            //                this.GlobalSettings.addSetting("botmaster", "Unknown");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("author"))
-            //            {
-            //                this.GlobalSettings.addSetting("author", "Nicholas H.Tollervey");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("location"))
-            //            {
-            //                this.GlobalSettings.addSetting("location", "Unknown");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("gender"))
-            //            {
-            //                this.GlobalSettings.addSetting("gender", "-1");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("birthday"))
-            //            {
-            //                this.GlobalSettings.addSetting("birthday", "2006/11/08");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("birthplace"))
-            //            {
-            //                this.GlobalSettings.addSetting("birthplace", "Towcester, Northamptonshire, UK");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("website"))
-            //            {
-            //                this.GlobalSettings.addSetting("website", "http://sourceforge.net/projects/aimlbot");
-            //            }
-            //            if (this.GlobalSettings.containsSettingCalled("adminemail"))
-            //            {
-            //                string emailToCheck = this.GlobalSettings.grabSetting("adminemail");
-            //                this.AdminEmail = emailToCheck;
-            //            }
-            //            else
-            //            {
-            //                this.GlobalSettings.addSetting("adminemail", "");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("islogging"))
-            //            {
-            //                this.GlobalSettings.addSetting("islogging", "False");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("willcallhome"))
-            //            {
-            //                this.GlobalSettings.addSetting("willcallhome", "False");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("timeout"))
-            //            {
-            //                this.GlobalSettings.addSetting("timeout", "2000");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("timeoutmessage"))
-            //            {
-            //                this.GlobalSettings.addSetting("timeoutmessage", "ERROR: The request has timed out.");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("culture"))
-            //            {
-            //                this.GlobalSettings.addSetting("culture", "en-US");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("splittersfile"))
-            //            {
-            //                this.GlobalSettings.addSetting("splittersfile", "Splitters.xml");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("person2substitutionsfile"))
-            //            {
-            //                this.GlobalSettings.addSetting("person2substitutionsfile", "Person2Substitutions.xml");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("personsubstitutionsfile"))
-            //            {
-            //                this.GlobalSettings.addSetting("personsubstitutionsfile", "PersonSubstitutions.xml");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("gendersubstitutionsfile"))
-            //            {
-            //                this.GlobalSettings.addSetting("gendersubstitutionsfile", "GenderSubstitutions.xml");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("defaultpredicates"))
-            //            {
-            //                this.GlobalSettings.addSetting("defaultpredicates", "DefaultPredicates.xml");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("substitutionsfile"))
-            //            {
-            //                this.GlobalSettings.addSetting("substitutionsfile", "Substitutions.xml");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("aimldirectory"))
-            //            {
-            //                this.GlobalSettings.addSetting("aimldirectory", "aiml");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("configdirectory"))
-            //            {
-            //                this.GlobalSettings.addSetting("configdirectory", "config");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("logdirectory"))
-            //            {
-            //                this.GlobalSettings.addSetting("logdirectory", "logs");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("maxlogbuffersize"))
-            //            {
-            //                this.GlobalSettings.addSetting("maxlogbuffersize", "64");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("notacceptinguserinputmessage"))
-            //            {
-            //                this.GlobalSettings.addSetting("notacceptinguserinputmessage", "This bot is currently set to not accept user input.");
-            //            }
-            //            if (!this.GlobalSettings.containsSettingCalled("stripperregex"))
-            //            {
-            //                this.GlobalSettings.addSetting("stripperregex", "\\s");//[^0-9a-zA-Z] bỏ ký tự chứa dấu "chữ Tiếng Việt"
-            //            }
+            //Checks for some important default settings
+            if (!this.GlobalSettings.containsSettingCalled("version"))
+                {
+                    this.GlobalSettings.addSetting("version",
+#if NETSTANDARD
+                                Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.RuntimeFramework.Version.ToString()
+#else
+                                Environment.Version.ToString()
+#endif
+                                );
+                }
+            if (!this.GlobalSettings.containsSettingCalled("name"))
+            {
+                this.GlobalSettings.addSetting("name", "Unknown");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("botmaster"))
+            {
+                this.GlobalSettings.addSetting("botmaster", "Unknown");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("master"))
+            {
+                this.GlobalSettings.addSetting("botmaster", "Unknown");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("author"))
+            {
+                this.GlobalSettings.addSetting("author", "Nicholas H.Tollervey");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("location"))
+            {
+                this.GlobalSettings.addSetting("location", "Unknown");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("gender"))
+            {
+                this.GlobalSettings.addSetting("gender", "-1");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("birthday"))
+            {
+                this.GlobalSettings.addSetting("birthday", "2006/11/08");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("birthplace"))
+            {
+                this.GlobalSettings.addSetting("birthplace", "Towcester, Northamptonshire, UK");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("website"))
+            {
+                this.GlobalSettings.addSetting("website", "http://sourceforge.net/projects/aimlbot");
+            }
+            if (this.GlobalSettings.containsSettingCalled("adminemail"))
+            {
+                string emailToCheck = this.GlobalSettings.grabSetting("adminemail");
+                this.AdminEmail = emailToCheck;
+            }
+            else
+            {
+                this.GlobalSettings.addSetting("adminemail", "");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("islogging"))
+            {
+                this.GlobalSettings.addSetting("islogging", "False");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("willcallhome"))
+            {
+                this.GlobalSettings.addSetting("willcallhome", "False");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("timeout"))
+            {
+                this.GlobalSettings.addSetting("timeout", "10000000");//2000
+            }
+            if (!this.GlobalSettings.containsSettingCalled("timeoutmessage"))
+            {
+                this.GlobalSettings.addSetting("timeoutmessage", "ERROR: The request has timed out.");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("culture"))
+            {
+                this.GlobalSettings.addSetting("culture", "en-US");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("splittersfile"))
+            {
+                this.GlobalSettings.addSetting("splittersfile", "Splitters.xml");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("person2substitutionsfile"))
+            {
+                this.GlobalSettings.addSetting("person2substitutionsfile", "Person2Substitutions.xml");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("personsubstitutionsfile"))
+            {
+                this.GlobalSettings.addSetting("personsubstitutionsfile", "PersonSubstitutions.xml");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("gendersubstitutionsfile"))
+            {
+                this.GlobalSettings.addSetting("gendersubstitutionsfile", "GenderSubstitutions.xml");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("defaultpredicates"))
+            {
+                this.GlobalSettings.addSetting("defaultpredicates", "DefaultPredicates.xml");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("substitutionsfile"))
+            {
+                this.GlobalSettings.addSetting("substitutionsfile", "Substitutions.xml");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("aimldirectory"))
+            {
+                this.GlobalSettings.addSetting("aimldirectory", "aiml");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("configdirectory"))
+            {
+                this.GlobalSettings.addSetting("configdirectory", "config");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("logdirectory"))
+            {
+                this.GlobalSettings.addSetting("logdirectory", "logs");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("maxlogbuffersize"))
+            {
+                this.GlobalSettings.addSetting("maxlogbuffersize", "64");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("notacceptinguserinputmessage"))
+            {
+                this.GlobalSettings.addSetting("notacceptinguserinputmessage", "This bot is currently set to not accept user input.");
+            }
+            if (!this.GlobalSettings.containsSettingCalled("stripperregex"))
+            {
+                this.GlobalSettings.addSetting("stripperregex", "\\s");//[^0-9a-zA-Z] bỏ ký tự chứa dấu "chữ Tiếng Việt"
+            }
 
             // Load setting.xml
             //string pathSetting = Path.GetDirectoryName(pathToSettings) + "\\config\\Settings.xml";
 
 
-            // Comment 26/12/2019
 
-            string pathSetting = pathToSettings + "\\Settings.xml";
-            //Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("person2substitutionsfile"))
-            this.GlobalSettings.loadSettings(pathSetting);
+            //// Comment 26/12/2019
+            //string pathSetting = pathToSettings + "\\Settings.xml";
+            ////Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("person2substitutionsfile"))
+            //this.GlobalSettings.loadSettings(pathSetting);
 
-            // Load the dictionaries for this Bot from the various configuration files
-            string pathPerson2Substitutions = pathToSettings + "\\Person2Substitutions.xml";
-            //Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("person2substitutionsfile"))
-            this.Person2Substitutions.loadSettings(pathPerson2Substitutions);
+            //// Load the dictionaries for this Bot from the various configuration files
+            //string pathPerson2Substitutions = pathToSettings + "\\Person2Substitutions.xml";
+            ////Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("person2substitutionsfile"))
+            //this.Person2Substitutions.loadSettings(pathPerson2Substitutions);
 
-            //Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("personsubstitutionsfile"))
-            string pathPersonSubstitutions = pathToSettings + "\\PersonSubstitutions.xml";
-            this.PersonSubstitutions.loadSettings(pathPersonSubstitutions);
+            ////Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("personsubstitutionsfile"))
+            //string pathPersonSubstitutions = pathToSettings + "\\PersonSubstitutions.xml";
+            //this.PersonSubstitutions.loadSettings(pathPersonSubstitutions);
 
-            //Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("gendersubstitutionsfile"))
-            string pathGenderSubstitutions = pathToSettings + "\\GenderSubstitutions.xml";
-            this.GenderSubstitutions.loadSettings(pathGenderSubstitutions);
+            ////Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("gendersubstitutionsfile"))
+            //string pathGenderSubstitutions = pathToSettings + "\\GenderSubstitutions.xml";
+            //this.GenderSubstitutions.loadSettings(pathGenderSubstitutions);
 
-            //Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("defaultpredicates"))
-            string pathDefaultPredicates = pathToSettings + "\\DefaultPredicates.xml";
-            this.DefaultPredicates.loadSettings(pathDefaultPredicates);
+            ////Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("defaultpredicates"))
+            //string pathDefaultPredicates = pathToSettings + "\\DefaultPredicates.xml";
+            //this.DefaultPredicates.loadSettings(pathDefaultPredicates);
 
-            //Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("substitutionsfile"))
-            string pathSubstitutions = pathToSettings + "\\Substitutions.xml";
-            this.Substitutions.loadSettings(pathSubstitutions);
+            ////Path.Combine(this.PathToConfigFiles, this.GlobalSettings.grabSetting("substitutionsfile"))
+            //string pathSubstitutions = pathToSettings + "\\Substitutions.xml";
+            //this.Substitutions.loadSettings(pathSubstitutions);
 
             // Grab the splitters for this bot
             //Path.Combine(this.PathToConfigFiles,this.GlobalSettings.grabSetting("splittersfile"))
@@ -1319,10 +1321,28 @@ namespace AIMLbot
         /// <param name="path">the path to the dump file</param>
         public void loadFromBinaryFile(string path)
         {
-            FileStream loadFile = File.OpenRead(path);
-            BinaryFormatter bf = new BinaryFormatter();
-            this.Graphmaster = (Node)bf.Deserialize(loadFile);
-            loadFile.Close();
+            if(this.Graphmaster.NumberOfChildNodes == 0)
+            {
+                FileStream loadFile = File.OpenRead(path);
+                BinaryFormatter bf = new BinaryFormatter();
+                this.Graphmaster = (Node)bf.Deserialize(loadFile);
+                this.Graphmaster.getLastWriteTimeFileAIML2Graphmaster(path);
+                loadFile.Close();
+            }
+            else
+            {
+                // Kiem tra lan luu file cuoi cung AIML2Graphmaster
+                DateTime timeLastWriteFile = File.GetLastWriteTime(path);
+                if (Equals(timeLastWriteFile, this.Graphmaster.TimeLastWriteFileAIML2Graphmaster) == false)
+                {
+                    FileStream loadFile = File.OpenRead(path);
+                    BinaryFormatter bf = new BinaryFormatter();
+                    this.Graphmaster = (Node)bf.Deserialize(loadFile);
+                    this.Graphmaster.getLastWriteTimeFileAIML2Graphmaster(path);
+                    loadFile.Close();
+                }
+            }
+
         }
 
 #endif

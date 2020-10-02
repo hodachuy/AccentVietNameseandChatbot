@@ -11,6 +11,8 @@ using BotProject.Service;
 using System.Xml;
 using BotProject.Web.Infrastructure.Log4Net;
 using BotProject.Model.Models;
+using System.Configuration;
+using System.Text.RegularExpressions;
 
 namespace BotProject.Web
 {
@@ -91,6 +93,7 @@ namespace BotProject.Web
                     try
                     {
                         XmlDocument doc = new XmlDocument();
+                        item.Content = Regex.Replace(item.Content, "<url>(.*?)</url>", m => String.Format("<url>{0}</url>", HttpUtility.HtmlEncode(m.Groups[1].Value)));
                         doc.LoadXml(item.Content);
                         _bot.loadAIMLFromXML(doc, item.Src);
 
@@ -122,19 +125,22 @@ namespace BotProject.Web
                         BotLog.Info(msg);
                     }
                 }
-                //if (botId == "3019")
-                //{
-                //    string version = DateTime.Now.ToString("ddMMyyyy_hhmmssfff");
-                //    string extension = ".bin";
-                //    string pathFolderAIML2Graphmaster = PathServer.PathAIML2Graphmaster + "BotID_" + botId + "_ver_" + version + extension;
-                //    _bot.saveToBinaryFile(pathFolderAIML2Graphmaster);
-                //}
+
+                string pathFolderAIML2Graphmaster = ConfigurationManager.AppSettings["AIML2GraphmasterPath"] + "BotID_" + botId + ".bin";
+                saveGraphmaster2AIMLFile(pathFolderAIML2Graphmaster);
+
             }
         }
-
-        public void loadGraphmaster2AIMLFile(string pathFile)
+        public void saveGraphmaster2AIMLFile(string pathFolderAIML2Graphmaster)
         {
-            _bot.loadFromBinaryFile(pathFile);
+            _bot.saveToBinaryFile(pathFolderAIML2Graphmaster);
         }
+
+        public void loadGraphmaster2AIMLFile(string pathFolderAIML2Graphmaster)
+        {
+            _bot.loadFromBinaryFile(pathFolderAIML2Graphmaster);
+        }
+
+
     }
 }

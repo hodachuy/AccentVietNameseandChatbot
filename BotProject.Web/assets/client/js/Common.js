@@ -4,6 +4,7 @@
     urlDeleteBot = "api/bot/deletebot",
     urlGetAllBot = "api/bot/getall",
     urlCloneBot = "api/bot/clone",
+    urlTrainingBot = "api/bot/training",
     urlActiveBot = "Account/ActiveBotWithLivechat";//"api/bot/activeBotWithLiveChat";
 var bot = {
     Name: '',
@@ -36,6 +37,7 @@ var common = {
                 common.createFormBotQnA();
                 common.eventNavbar();
                 common.cloneBot();
+                common.trainingBot();
         }
     },
     eventNavbar: function () {
@@ -341,7 +343,7 @@ var common = {
             html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module?botName=' + data.Name + '" id="bot-module-' + data.ID + '"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
             html += '</li>';
             html += '<li class="nav-item nav-item-bot-sub">';
-            html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-recycle"></i>Huấn luyện bot';
+            html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-brain"></i>Tri thức bot';
             html += '<span style="float: right;color: lightgray;cursor: pointer;">';
             html += '<i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>';
             html += '</span>';
@@ -356,6 +358,9 @@ var common = {
             html += '</li>';
             html += '<li class="nav-item nav-item-bot-sub">';
             html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/setting/' + data.Alias + '/' + data.ID + '?name=' + data.Name + '" id="bot-setting-' + data.ID + '"><i class="fa fa-cog" aria-hidden="true"></i>Cài đặt</a>';
+            html += '</li>';
+            html += '<li class="nav-item nav-item-bot-sub">';
+            html += '    <a class="nav-link" href="#" id="bot-training-' + data.ID + '"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện</a>';
             html += '</li>';
             //html += '<li class="nav-item">';
             //html += '<a class="nav-link btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
@@ -491,6 +496,33 @@ var common = {
             });
         })
     },
+    trainingBot:function(){
+        $('body').on('click', '#btnTrainingBot', function () {
+            var botId = $(this).attr('data-botID');
+            var params = {
+                botId: botId
+            }
+            params = JSON.stringify(params);
+            var svr = new AjaxCall(urlTrainingBot, params);
+            svr.callServicePOST(function (data) {
+                if (data.status) {
+                    swal({
+                        title: "Thông báo",
+                        text: data.message,
+                        confirmButtonColor: "#EF5350",
+                        type: "success"
+                    }, function () { $("#model-notify").modal('show'); });
+                } else {
+                    swal({
+                        title: "Thông báo",
+                        text: data.message,
+                        confirmButtonColor: "#EF5350",
+                        type: "error"
+                    }, function () { $("#model-notify").modal('show'); });
+                }
+            });
+        })
+    },
     getBotById: function () {
         var botId = $("#botId").val();
         if (botId != undefined) {
@@ -517,7 +549,7 @@ var common = {
                     html += '<a class="nav-link" data-id="' + data.ID + '" href="' + _Host + 'bot/' + data.Alias + '/' + data.ID + '/module?botName=' + data.Name + '" id="bot-module-' + data.ID + '"><i class="fa fa-plug" aria-hidden="true"></i>Tích hợp Module</a>';
                     html += '</li>';
                     html += '<li class="nav-item nav-item-bot-sub">';
-                    html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-recycle"></i>Huấn luyện bot';
+                    html += '<a class="nav-link" href="javascript:void(0)" id="btnCreateBotQnAnswer" data-botId="' + data.ID + '" data-botName="' + data.Name + '"><i class="fa fa-brain"></i>Tri thức bot';
                     html += '<span style="float: right;color: lightgray;cursor: pointer;">';
                     html += '<i class="fa fa-plus-circle fa-icons-right" aria-hidden="true"></i>';
                     html += '</span>';
@@ -527,7 +559,7 @@ var common = {
                     if (data.FormQuestionAnswers.length != 0) {
                         $.each(data.FormQuestionAnswers, function (index, value) {
                             html += '<li class="nav-item nav-item-bot-sub">';
-                            html += '<a class="nav-link bot-qna-link" data-id="' + value.ID + '" id="bot-scenarios-' + data.ID + '-' + value.ID + '" href="' + _Host + 'bot/qna/?formQnAId=' + value.ID + '&botId=' + data.ID + '&botName=' + data.Name + '"><i class="fa fa-file" aria-hidden="true" style="display:unset"></i>' + value.Name + '</a>';
+                            html += '<a class="nav-link bot-qna-link" data-id="' + value.ID + '" id="bot-scenarios-' + data.ID + '-' + value.ID + '" href="' + _Host + 'bot/qna/?formQnAId=' + value.ID + '&botId=' + data.ID + '&botName=' + data.Name + '"><i class="fa fa-file-alt" aria-hidden="true" style="display:unset"></i>' + value.Name + '</a>';
                             html += '</li>';
                         })
                     }
@@ -548,6 +580,9 @@ var common = {
                     //html += '<li class="nav-item">';
                     //html += '<a class="nav-link btn-form-deploy" href="javascript:void(0);" data-botID="' + data.ID + '"><i class="fa fa-rocket" aria-hidden="true"></i>Deploy API</a>';
                     //html += '</li>';
+                    html += '<li class="nav-item nav-item-bot-sub">';
+                    html += '    <a class="nav-link" data-botID="' + data.ID + '" href="#" id="btnTrainingBot"><i class="fa fa-recycle" aria-hidden="true"></i>Huấn luyện</a>';
+                    html += '</li>';
                     html += '<li class="nav-item nav-item-bot-sub">';
                     html += '    <a class="nav-link" href="' + _Host + 'bot/history/' + data.Alias + '/' + data.ID + '?botName=' + data.Name + '" data-id="' + data.ID + '" id="bot-history-' + data.ID + '"><i class="fa fa-history" aria-hidden="true"></i>Lịch sử</a>';
                     html += '</li>';

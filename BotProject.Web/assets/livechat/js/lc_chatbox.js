@@ -15,14 +15,15 @@ console.log(
     'Longtitude: ' + ipInfo.longtitude
 );
 
-var CustomerModel = {
+var CustomerModel = {    
     ID: _customerId,
     ApplicationChannels: 0, //[0: Web, 1: Facebook, 2: Zalo, 3: Kiosk]
     ChannelGroupID: _channelGroupId,
     ThreadID: '',
-    Name: window.localStorage.getItem("lc_CustomerName") || '',
-    Phone: window.localStorage.getItem("lc_CustomerPhone") || '',
-    Email: window.localStorage.getItem("lc_CustomerEmail") || ''
+    BotID:'',
+    Name: window.sessionStorage.getItem("lc_CustomerName") || '',
+    Phone: window.sessionStorage.getItem("lc_CustomerPhone") || '',
+    Email: window.sessionStorage.getItem("lc_CustomerEmail") || ''
 };
 console.log(CustomerModel)
 var AgentModel = {
@@ -55,6 +56,7 @@ var setting = {
     BotID: ''
 }
 
+
 var isTyping = false;
 
 var TYPE_USER_CONNECT = {
@@ -73,14 +75,18 @@ var objHub = $.connection.chatHub;
 $(function () {
     //check agent online
     setting.isAgentOnline = checkAgentOnline();
+
+    // Init bot Y tế cho demo
+    if (!setting.isAgentOnline) {
+        setting.isTransferToBot = true;
+        setting.BotID = '3019';
+    }
 });
 
 $(document).ready(function () {
     // nếu lưu rồi k nên gọi vào tiếp
-    _isSaveCustomer = window.localStorage.getItem("lc_isSaveCustomer");
-
+    _isSaveCustomer = window.sessionStorage.getItem("lc_isSaveCustomer");
     cBoxHub.init();
-
 })
 
 var varyReconnected = function intervalFunc() {
@@ -114,12 +120,20 @@ var cBoxHub = {
             if (_isSaveCustomer == 'false') {
                 $(".chat-footer").hide();
                 $(".message-form-user").show();
-            } else {
+            }
+            else {
                 // kết nối chat khi agent hoặc bot active
                 if (setting.isAgentOnline == true) {
                     $(".chat-footer").show();
                     objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
-                } else {
+                }
+                else if (setting.isTransferToBot == true) {
+                    $(".chat-footer").show();
+                    new messageBot.renderTemplate('', '').Typing();
+                    new messageBot.getMessage('menu', '', setting.BotID);
+                    //objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
+                }
+                else {
                     $(".chat-footer").hide();
                 }
             }
@@ -137,6 +151,7 @@ var cBoxHub = {
                 CustomerModel.Name = customerName;
                 CustomerModel.Email = customerEmail;
                 CustomerModel.Phone = customerPhone;
+                CustomerModel.BotID = setting.BotID;
                 saveCustomer();
             })
         });
@@ -320,18 +335,23 @@ function saveCustomer() {
         dataType: "json",
         success: function (result) {
             if (result) {
-                console.log('OK')
-                console.log(CustomerModel)
-                window.localStorage.setItem("lc_customerName", CustomerModel.Name);
-                window.localStorage.setItem("lc_customerEmail", CustomerModel.Email);
-                window.localStorage.setItem("lc_customerPhone", CustomerModel.Phone);
-                window.localStorage.setItem("lc_isSaveCustomer", true);
+                window.sessionStorage.setItem("lc_customerName", CustomerModel.Name);
+                window.sessionStorage.setItem("lc_customerEmail", CustomerModel.Email);
+                window.sessionStorage.setItem("lc_customerPhone", CustomerModel.Phone);
+                window.sessionStorage.setItem("lc_isSaveCustomer", true);
                 $(".message-form-user").hide();
                 $(".chat-footer").show();
 
                 if (setting.isAgentOnline == true) {
                     objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
-                } else {
+                }
+                else if (setting.isTransferToBot == true) {
+                    $(".chat-footer").show();
+                    new messageBot.renderTemplate('', '').Typing();
+                    new messageBot.getMessage('menu', '', setting.BotID);
+                    //objHub.server.connectCustomerToChannelChat(_customerId, _channelGroupId);
+                }
+                else {
                     $(".chat-footer").hide();
                 }
             }
@@ -774,7 +794,11 @@ var messageBot = {
         templateAvatar += '<div class="message-avatar-customer">';
         templateAvatar += '<div class="pr-3">';
         templateAvatar += '<span class ="message-avatar-item avatar">';
-        templateAvatar += '<img src="' + _Host + 'assets/images/logo/icon-bot-lc.png" class="rounded-circle" alt="image">';
+        if (setting.BotID = '3019') {
+            templateAvatar += '<img src="' + _Host + 'assets/livechat/images/bot-yte-icon.png" class="rounded-circle" alt="image">';
+        } else {
+            templateAvatar += '<img src="' + _Host + 'assets/images/logo/icon-bot-lc.png" class="rounded-circle" alt="image">';
+        }
         templateAvatar += '</span>';
         templateAvatar += '</div>';
         templateAvatar += '</div>';
@@ -817,12 +841,14 @@ var messageBot = {
             var tmpText = '<div class="message-item {bot} message-item-text clearfix">';
             tmpText += messageBot.getIcon('');
             tmpText += '<div class="message-body">';
-            tmpText += '                    <div>';
-            tmpText += '                        <div class="message-align">';
-            tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
-            tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
-            tmpText += '                        </div>';
-            tmpText += '                    </div>';
+            if (setting.BotID != "3019") {
+                tmpText += '                    <div>';
+                tmpText += '                        <div class="message-align">';
+                tmpText += '                            <span class="message-user-name font-size-08">Bot </span>';
+                tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
+                tmpText += '                        </div>';
+                tmpText += '                    </div>';
+            }
             tmpText += '                    <div class="message-item-content">' + text + '</div>';
             tmpText += '                </div>';
             tmpText += '</div>';
@@ -832,12 +858,14 @@ var messageBot = {
             var tmpText = '<div class="message-item {bot} message-item-image clearfix">';
             tmpText += messageBot.getIcon(avatarBot);
             tmpText += '<div class="message-body">';
-            tmpText += '                    <div>';
-            tmpText += '                        <div class="message-align">';
-            tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
-            tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
-            tmpText += '                        </div>';
-            tmpText += '                    </div>';
+            if (setting.BotID != "3019") {
+                tmpText += '                    <div>';
+                tmpText += '                        <div class="message-align">';
+                tmpText += '                            <span class="message-user-name font-size-08">Bot </span>';
+                tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
+                tmpText += '                        </div>';
+                tmpText += '                    </div>';
+            }
             tmpText += '                    <img src="' + urlImage + '"/>';//' + _Host + '
             tmpText += '                </div>';
             tmpText += '</div>';
@@ -847,12 +875,14 @@ var messageBot = {
             var tmpText = '<div class="message-item {bot} message-item-text-button clearfix">';
             tmpText += messageBot.getIcon(avatarBot);
             tmpText += '<div class="message-body">';
-            tmpText += '                    <div>';
-            tmpText += '                        <div class="message-align">';
-            tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
-            tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
-            tmpText += '                        </div>';
-            tmpText += '                    </div>';
+            if (setting.BotID != "3019") {
+                tmpText += '                    <div>';
+                tmpText += '                        <div class="message-align">';
+                tmpText += '                            <span class="message-user-name font-size-08">Bot </span>';
+                tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
+                tmpText += '                        </div>';
+                tmpText += '                    </div>';
+            }
             tmpText += '                    <div class="message-item-content">';
             tmpText += '<span>' + text + '</span>';
             tmpText += calbackButton();
@@ -865,15 +895,18 @@ var messageBot = {
             var tmpText = '<div class="message-item {bot} message-item-genetics clearfix">';
             tmpText += messageBot.getIcon(avatarBot);
             tmpText += '     <div class="message-body">';
-            tmpText += '                    <div>';
-            tmpText += '                        <div class="message-align">';
-            tmpText += '                            <span class="message-user-name font-size-08">Support Bot </span>';
-            tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
-            tmpText += '                        </div>';
-            tmpText += '                    </div>';
+            if (setting.BotID != "3019") {
+                tmpText += '                    <div>';
+                tmpText += '                        <div class="message-align">';
+                tmpText += '                            <span class="message-user-name font-size-08">Bot </span>';
+                tmpText += '                            <span class="message-user-time font-size-08">' + date_current + '</span>';
+                tmpText += '                        </div>';
+                tmpText += '                    </div>';
+            }
 
 
-            tmpText += '                <div class="message-container" index="0" style="padding-top:15px;">';
+
+            tmpText += '                <div class="message-container" index="0">';//style="padding-top:15px;"
             tmpText += '                                   <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">';
             tmpText += templateGenericIndex;
             tmpText += '                                   </div>';

@@ -13,15 +13,16 @@ namespace BotProject.Web.Controllers
         {
             // Tạo chuỗi ID định danh cho customer nên + channelGroupId,
             // Vì CustomerId lưu storage sẽ k dc thêm vì trùng ID
-            ViewBag.CustomerId = Guid.NewGuid().ToString() + "_"+ channelGroupId.ToString();
+            string customerId = Guid.NewGuid().ToString() + "_" + channelGroupId.ToString();
+            ViewBag.CustomerId = customerId;
             ViewBag.ChannelGroupID = channelGroupId;
 
             string customer_Id = string.Empty;
             HttpCookie reqCookies = Request.Cookies["customerInfo"];
-            if(reqCookies == null)
+            if (reqCookies == null)
             {
                 HttpCookie customerInfo = new HttpCookie("customerInfo");
-                customerInfo["customerId"] = Guid.NewGuid().ToString() + "_" + channelGroupId.ToString();
+                customerInfo["customerId"] = customerId;
                 customerInfo.Expires = DateTime.Now.AddMinutes(2);
                 Response.Cookies.Add(customerInfo);
             }
@@ -29,7 +30,6 @@ namespace BotProject.Web.Controllers
             {
                 customer_Id = reqCookies["customerId"].ToString();
             }
-
             return View();
         }
     }

@@ -15,11 +15,13 @@ using Microsoft.Owin;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -69,9 +71,14 @@ namespace BotProject.Web.Controllers
 		private readonly string UrlAPI = Helper.ReadString("UrlAPI");
 		private readonly string KeyAPI = Helper.ReadString("KeyAPI");
 
-		private BotService _botService;
-		//private ElasticSearch _elastic;
-		private IBotService _botDbService;
+        private AIMLBotService _aimlBotService;
+
+        //private BotService _botService;
+
+        private AIMLbot.Bot _botService;
+
+        //private ElasticSearch _elastic;
+        private IBotService _botDbService;
 		private ISettingService _settingService;
 		private IHandleModuleServiceService _handleMdService;
 		private IModuleService _mdService;
@@ -92,9 +99,6 @@ namespace BotProject.Web.Controllers
 
 		public bool isMdSearch = false;
 		public bool isHaveSymptomAndMsgNotMatch = false;
-
-		// signalR chat
-		BotHub _botHub;
 		// Model user
 		ApplicationPlatformUser _appUser;
 		public Apiv1Controller(IErrorService errorService,
@@ -125,14 +129,16 @@ namespace BotProject.Web.Controllers
 			_mdSearchService = mdSearchService;
 			_aimlFileService = aimlFileService;
 			_qnaService = qnaService;
-			_botService = BotService.BotInstance;
 			_moduleSearchEngineService = moduleSearchEngineService;
 			_historyService = historyService;
 			_cardService = cardService;
 			_mdVoucherService = mdVoucherService;
 			_attributeService = attributeService;
 			_appPlatformUser = appPlatformUser;
-		}
+
+            //_botService = BotService.BotInstance;
+            _aimlBotService = AIMLBotService.AIMLBotInstance;
+        }
 
 		// GET: Apiv1
 		public ActionResult Index()
@@ -140,7 +146,7 @@ namespace BotProject.Web.Controllers
 			return View();
 		}
 
-		public ActionResult FormChat(string token, string botId)
+        public ActionResult FormChat(string token, string botId)
 		{
 			int botID = Int32.Parse(botId);
 			var botDb = _botDbService.GetByID(botID);
@@ -148,20 +154,21 @@ namespace BotProject.Web.Controllers
 			var settingVm = Mapper.Map<BotProject.Model.Models.Setting, BotSettingViewModel>(settingDb);
 			var systemConfig = _settingService.GetListSystemConfigByBotId(botID);
 			var systemConfigVm = Mapper.Map<IEnumerable<BotProject.Model.Models.SystemConfig>, IEnumerable<SystemConfigViewModel>>(systemConfig);
-            //string nameBotAIML = "User_" + token + "_BotID_" + botId;
-            //string fullPathAIML = pathAIML + nameBotAIML;
-            //_botService.loadAIMLFromFiles(fullPathAIML);
 
-            var lstAIML = _aimlFileService.GetByBotId(botID);
-            //var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
-            _botService.loadAIMLFile(lstAIML, botID.ToString());
+            //var lstAIML = _aimlFileService.GetByBotId(botID);
+            // _botService.loadAIMLFile(lstAIML, botID.ToString());
 
-            //string pathFile = @"D:\HDHUY_V.1\BotProject\BotProject.Web\File\AIML2Graphmaster\BotID_3019_ver_24092020_011828613.bin";
-            //_botService.loadGraphmaster2AIMLFile(pathFile);
+            //string pathFileBinary = ConfigurationManager.AppSettings["AIML2GraphmasterPath"] + "BotID_" + botId + ".bin";
+            //_botService.loadGraphmaster2AIMLFile(pathFileBinary);
 
-            _botHub = new BotHub();
+            //_botService = new AIMLbot.Bot();
 
-			UserBotViewModel userBot = new UserBotViewModel();
+            _botService = _aimlBotService.GetServerBot(botId);
+
+            string pathAIML2Graphmaster = ConfigurationManager.AppSettings["AIML2GraphmasterPath"] + "BotID_" + botId + ".bin";
+            _aimlBotService.LoadGraphmasterFromAIMLBinaryFile(pathAIML2Graphmaster, _botService);
+
+            UserBotViewModel userBot = new UserBotViewModel();
 			userBot.StopWord = settingVm.StopWord;
 			userBot.SystemConfigViewModel = systemConfigVm;
 
@@ -175,7 +182,7 @@ namespace BotProject.Web.Controllers
 
 			userBot.ID = Guid.NewGuid().ToString();
 			userBot.BotID = botId;
-			_user = _botService.loadUserBot(userBot.ID);
+			_user = _aimlBotService.loadUserBot(userBot.ID, _botService);
 
 			_user.Predicates.addSetting("phone", "");
 			_user.Predicates.addSetting("phonecheck", "false");
@@ -272,6 +279,8 @@ namespace BotProject.Web.Controllers
             //string fullPathAIML = pathAIML + nameBotAIML;
             //_botService.loadAIMLFromFiles(fullPathAIML);
 
+            _botService = _aimlBotService.GetServerBot(botId);
+
             string txtOriginal = "";
             List<SearchSymptomViewModel> _lstSymptomVm = new List<SearchSymptomViewModel>();
             List<SearchNlpQnAViewModel> _lstQnAVm = new List<SearchNlpQnAViewModel>();
@@ -299,7 +308,7 @@ namespace BotProject.Web.Controllers
 
                 //get new predicate from session user bot request
                 var userBot = (UserBotViewModel)Session[CommonConstants.SessionUserBot];
-                _user = _botService.loadUserBot(userBot.ID);
+                _user = _aimlBotService.loadUserBot(userBot.ID,_botService);
                 _user.Predicates.Count = userBot.SettingDicstionary.Count;
                 _user.Predicates.SettingNames = userBot.SettingDicstionary.SettingNames;
                 _user.Predicates.orderedKeys = userBot.SettingDicstionary.orderedKeys;
@@ -767,7 +776,7 @@ namespace BotProject.Web.Controllers
                 //    }
                 //}
 
-                AIMLbot.Result aimlBotResult = _botService.Chat(text, _user);
+                AIMLbot.Result aimlBotResult = _aimlBotService.Chat(text, _user,_botService);
                 string result = aimlBotResult.OutputSentences[0].ToString();
 
                 //if (result.Contains("NOT_MATCH"))

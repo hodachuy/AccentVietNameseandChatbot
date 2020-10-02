@@ -18,6 +18,8 @@ using BotProject.Web.Infrastructure.Log4Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using BotProject.Service.Livechat;
+using System.Xml;
+using System.Web;
 
 namespace BotProject.Web.API
 {
@@ -230,6 +232,58 @@ namespace BotProject.Web.API
             });
         }
 
+        [Route("training")]
+        [HttpPost]
+        public HttpResponseMessage TrainingBot(HttpRequestMessage request, JObject jsonData)
+        {
+            return CreateHttpResponse(request, () =>
+            {
+                HttpResponseMessage response = null;
+                try
+                {
+                    dynamic json = jsonData;
+                    int botID = json.botId;
+
+                    var lstAIMLBotFiles = _aimlFileService.GetByBotId(botID);
+
+                    var aimlBot = new AIMLbot.Bot();
+                    if (lstAIMLBotFiles.Count() != 0)
+                    {
+                        foreach (var item in lstAIMLBotFiles)
+                        {
+                            try
+                            {
+                                XmlDocument doc = new XmlDocument();
+                                // Encode các dấu &,<,>,\ trong url tới xml
+                                item.Content = Regex.Replace(item.Content, "<url>(.*?)</url>", m => String.Format("<url><![CDATA[{0}]]></url>", HttpUtility.HtmlEncode(m.Groups[1].Value)));
+
+                                doc.LoadXml(item.Content);
+                                aimlBot.loadAIMLFromXML(doc, item.Src);
+
+                            }
+                            catch (Exception ex)
+                            {
+                                string msg = item.Content + ex.Message;
+                                BotLog.Info(msg);
+                                response = request.CreateResponse(HttpStatusCode.OK, new { status = false, message = "Vui lòng kiểm tra tập tin tri thức, dữ liệu không được trống" });
+                                return response;
+                            }
+                        }
+                        string pathFolderAIML2Graphmaster = ConfigurationManager.AppSettings["AIML2GraphmasterPath"] + "BotID_" + botID.ToString() + ".bin";
+                        aimlBot.saveToBinaryFile(pathFolderAIML2Graphmaster);
+                    }
+                }
+                catch(Exception ex)
+                {
+                    BotLog.Info(ex.Message);
+                    response = request.CreateResponse(HttpStatusCode.OK, new { status = false, message = "Huấn luyện không thành công" });
+                    return response;
+                }
+                
+                response = request.CreateResponse(HttpStatusCode.OK, new {status = true, message = "Huấn luyện thành công" });
+                return response;
+            });
+        }
 
         /// <summary>
         /// Sao chép dữ liệu bot
@@ -245,7 +299,7 @@ namespace BotProject.Web.API
             {
                 HttpResponseMessage response = null;
                 dynamic json = jsonData;
-                int botCloneID = json.botId;
+                int botParentID = json.botId;
                 string botName = json.botName;
                 string userId = json.userId;
                 string botAlias = json.botAlias;
@@ -253,18 +307,18 @@ namespace BotProject.Web.API
                 Bot botdB = new Bot();
                 try
                 {
-                    botdB = _botService.GetByID(botCloneID);
+                    botdB = _botService.GetByID(botParentID);
                     botdB.Alias = botAlias;
                     botdB.Name = botName;
                     botdB.UserID = userId;
                     botdB.IsTemplate = false;
-                    botdB.BotCloneParentID = botCloneID;
+                    botdB.BotCloneParentID = botParentID;
 
                     _botService.Create(ref botdB);
                     _botService.Save();
 
                     Setting settingDb = new Setting();
-                    settingDb = _settingService.GetSettingByBotID(botCloneID);
+                    settingDb = _settingService.GetSettingByBotID(botParentID);
                     settingDb.BotID = botdB.ID;
                     settingDb.Color = "rgb(75, 90, 148);";
                     settingDb.UserID = botdB.UserID;
@@ -279,7 +333,7 @@ namespace BotProject.Web.API
                     _settingService.Save();
 
                     //  module 
-                    var lstModule = _moduleService.GetAllModuleByBotID(botCloneID).ToList();
+                    var lstModule = _moduleService.GetAllModuleByBotID(botParentID).ToList();
                     if (lstModule != null && lstModule.Count() != 0)
                     {
                         foreach (var module in lstModule)
@@ -293,7 +347,7 @@ namespace BotProject.Web.API
                     }
 
                     // attribute setting
-                    var lstAttributeSystem = _attributeSystemService.GetListAttributeSystemByBotId(botCloneID).ToList();
+                    var lstAttributeSystem = _attributeSystemService.GetListAttributeSystemByBotId(botParentID).ToList();
                     if (lstAttributeSystem != null && lstAttributeSystem.Count() != 0)
                     {
                         foreach (var attribute in lstAttributeSystem)
@@ -307,7 +361,7 @@ namespace BotProject.Web.API
                     }
 
                     // get list groupcard
-                    var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botCloneID).ToList();
+                    var lstGroupCard = _groupCardService.GetListGroupCardByBotID(botParentID).ToList();
                     if (lstGroupCard != null && lstGroupCard.Count() != 0)
                     {
                         foreach (var groupCard in lstGroupCard)
@@ -552,7 +606,7 @@ namespace BotProject.Web.API
                     }
 
                     // get list qna
-                    var lstFormQnA = _qnaService.GetListFormByBotID(botCloneID).ToList();
+                    var lstFormQnA = _qnaService.GetListFormByBotID(botParentID).ToList();
                     if(lstFormQnA.Count() != 0)
                     {
                         foreach(var formQnA in lstFormQnA)

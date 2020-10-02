@@ -34,19 +34,19 @@ var lacviet = {
         styleIframeCustom += 'background-color: rgba(0, 0, 0, 0);'
         styleIframeCustom += 'border-width: 0px;'
         styleIframeCustom += 'float: none;'
-        styleIframeCustom += 'position: absolute;'
+        styleIframeCustom += 'position: fixed;'
         styleIframeCustom += 'bottom: 0px;'
         styleIframeCustom += 'right: 10px;'
         styleIframeCustom += 'border-radius: 8px;'
-        styleIframeCustom += 'top: 20px;'
-        styleIframeCustom += 'z-index: 5;'
+        //styleIframeCustom += 'top: 30px;'
+        styleIframeCustom += 'z-index: 99999;'
         styleIframeCustom += 'transition: none 0s ease 0s!important;"';
-        url = url + "LcChatBox/Index?channelGroupID=2";
+        url = url + "LcChatBox/Index?channelGroupID=" + channelGroupId;
         html += '<span style="vertical-align:bottom;width:0px;height:0px">';
         html += '<iframe id="dialog_iframe" class="fb_customer_chat_bounce_out_v2 name="f12691cd05677d" frameborder="0"allowtransparency="true"allowfullscreen="true"scrolling="no"';
         html += 'allow="encrypted-media" src="' + url + '" ' + styleIframeCustom + '"></iframe>';
         html += '</span>';
-        html += '<div class="fb_dialog fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: white; border-radius: 50%; bottom: 18pt;padding:15px; display: inline; position: fixed; right: 18pt; top: auto; z-index: 3; cursor:pointer">';
+        html += '<div class="fb_dialog fb_dialog_advanced fb_customer_chat_bubble_pop_in fb_customer_chat_bubble_animated_with_badge fb_customer_chat_bubble_animated_no_badge" style="background: white; border-radius: 50%; bottom: 10pt;padding:15px; display: inline; position: fixed; right: 18pt; top: auto; z-index: 3; cursor:pointer">';
         html += '<div class="fb_dialog_content" style="background: none;">';
         html += '<div aria-hidden="true" class="lc-14dk0ui e1dmt1bi0"><svg color="inherit" class="lc-1mpchac" viewBox="0 0 32 32"><path fill="#4384f5" d="M12.63,26.46H8.83a6.61,6.61,0,0,1-6.65-6.07,89.05,89.05,0,0,1,0-11.2A6.5,6.5,0,0,1,8.23,3.25a121.62,121.62,0,0,1,15.51,0A6.51,6.51,0,0,1,29.8,9.19a77.53,77.53,0,0,1,0,11.2,6.61,6.61,0,0,1-6.66,6.07H19.48L12.63,31V26.46"></path><path fill="#ffffff" d="M19.57,21.68h3.67a2.08,2.08,0,0,0,2.11-1.81,89.86,89.86,0,0,0,0-10.38,1.9,1.9,0,0,0-1.84-1.74,113.15,113.15,0,0,0-15,0A1.9,1.9,0,0,0,6.71,9.49a74.92,74.92,0,0,0-.06,10.38,2,2,0,0,0,2.1,1.81h3.81V26.5Z" class="lc-p4hxbu e1nep2br0"></path></svg><div class="lc-1srqfj1 e1dmt1bi1"><div class="_4b0g"><div class="_5pd7"></div><div class="_5pd7"></div><div class="_5pd7"></div></div></div></div>';
         html += '</div>';
@@ -135,7 +135,7 @@ $('body').on('click', '.fb_dialog', function (e) {
             frame.contentWindow.postMessage($(parent.window).width(), domainApp);
         }
         else {
-            $('#dialog_iframe').css('width', '382px');
+            $('#dialog_iframe').css('width', '460px');
             $('#dialog_iframe').css('height', '652px');
 
             //$('#dialog-form-bot').css('width', '382px');

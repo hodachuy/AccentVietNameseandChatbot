@@ -96,26 +96,29 @@ namespace Accent.ConsoleApplication
             return strString;
         }
 
-
         public static void Main(string[] args)
         {
 
+            string test = "abc <url>https://thuedientu.gdt.gov.vn/etaxnnt/Request?&dse_sessionId=KPFbMT9aY7Yq2MEqwYTA8dh&dse_applicationId=-1&dse_pageId=2&dse_operationName=corpIndexProc&dse_errorPage=error_page.jsp&dse_processorState=initial&dse_nextEventName=start</url> asd sad <url>https://thuedientu.gdt.gov.vn/etaxnnt/Request?&dse_sessionId=KPFbMT9aY7Yq2MEqwYTA8dh&dse_applicationId=-1&dse_pageId=2&dse_operationName=corpIndexProc&dse_errorPage=error_page.jsp&dse_processorState=initial&dse_nextEventName=start</url>";
+            test = Regex.Replace(test, "<url>(.*?)</url>", m => String.Format("<url>{0}</url>", HttpUtility.HtmlEncode(m.Groups[1].Value)));
 
+            //var lstAIMLBOT = new List<Tuple<Bot, string>>();
 
-            //string hl = "chạo ạ bạn";
-            //string hlw = HighLightWord(hl, "ạ", false);
+            //lstAIMLBOT.Add(new Tuple<Bot, string>(new Bot(), "1"));
+            //lstAIMLBOT.Add(new Tuple<Bot, string>(new Bot(), "2"));
+            //lstAIMLBOT.Add(new Tuple<Bot, string>(new Bot(), "3"));
 
-            //double rating = GetRating();
-            //Console.WriteLine("rating: " + rating);
-
-            //Console.OutputEncoding = Encoding.UTF8;
-
-            //string unicodeOrigin = "Ừ";
-            //string unicodeVN1258 = "Ừ";        
-            //string unicode1258 = "Ừ";
-            //string unicode1258ToOrigin = UnicodeVN1258ToUnicodeOrigin(unicode1258);
-            //string unicodeVN1258ToOrigin = UnicodeVN1258ToUnicodeOrigin(unicodeVN1258);
-
+            //string botId = "2";
+            //for(int i = 0; i < lstAIMLBOT.Count; i ++)
+            //{
+            //    if(lstAIMLBOT[i].Item2 == botId)
+            //    {
+            //        var z = "2";
+            //    }
+            //}
+            //var x1 = lstAIMLBOT[0].Item1;
+            //var x2 = lstAIMLBOT[1].Item1;
+            //var x3 = lstAIMLBOT[2].Item1;
 
 
             //LoadBalancer b1 = LoadBalancer.GetLoadBalancer();
@@ -144,16 +147,16 @@ namespace Accent.ConsoleApplication
             //Console.ReadKey();
 
 
-            AccentPredictor accent = new AccentPredictor();
+            //AccentPredictor accent = new AccentPredictor();
 
-            string path1Gram = System.IO.Path.GetFullPath("news1gram.bin");
-            string path2Gram = System.IO.Path.GetFullPath("news2grams.bin");
-            string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
-            accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
+            //string path1Gram = System.IO.Path.GetFullPath("news1gram.bin");
+            //string path2Gram = System.IO.Path.GetFullPath("news2grams.bin");
+            //string path1Statistic = System.IO.Path.GetFullPath("_1Statistic");
+            //accent.InitNgram2(path1Gram, path2Gram, path1Statistic);
 
-            Console.OutputEncoding = Encoding.UTF8;
-            //-----Test---- -//
-            Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
+            //Console.OutputEncoding = Encoding.UTF8;
+            ////-----Test---- -//
+            //Console.WriteLine("Accuary: " + accent.getAccuracy(System.IO.Path.GetFullPath("test.txt")) + "%");
 
             //while (true)
             //{
@@ -192,6 +195,7 @@ namespace Accent.ConsoleApplication
                 return String.Empty;
             }
         }
+
         class LoadBalancer
         {
             private static LoadBalancer _instance;

@@ -109,7 +109,7 @@ namespace BotProject.Common
         public static string PathNLR = HttpContext.Current.Server.MapPath("~/File/NLP/");
 
         /// <summary>
-        /// HttpContext.Current.Server.MapPath("~/File/AIML2Graphmaster/");
+        /// HttpContext.Current.Server.MapPath("~/File/AIML/AIML2Graphmaster/");
         /// </summary>
         public static string PathAIML2Graphmaster = HttpContext.Current.Server.MapPath("~/File/AIML2Graphmaster/");
 

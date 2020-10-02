@@ -10,12 +10,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Livechat</title>
     <link href="~/assets/client/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/assets/livechat/css/chatbox-UI.css" rel="stylesheet" />
-    <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet"/>
+    <link href="~/assets/livechat/css/chatbox-UI.css?v_cache=@File.GetLastWriteTime(Server.MapPath("/assets/livechat/css/chatbox-UI.css")).ToString("HHmmssfff")" rel="stylesheet" />
+    <link href="~/assets/client/vendor/fonts/fontawesome/css/fontawesome-all.css" rel="stylesheet" />
     <link href="~/assets/client/css/lvbot-chat-dialog/c3_PqmL6kgI3br.css" rel="stylesheet" />
     <link href="~/assets/client/css/lvbot-chat-dialog/c5_rouofWlolT7.css" rel="stylesheet" />
     <link href="~/assets/client/css/lvbot-chat-dialog/c2_7E4oLQ9UO5V.css" rel="stylesheet" />
     <link href="~/assets/livechat/css/message-animation.css" rel="stylesheet" />
+    <link href="~/assets/livechat/css/chatbox-custom.css?v_cache=@File.GetLastWriteTime(Server.MapPath("/assets/livechat/css/chatbox-custom.css")).ToString("HHmmssfff")" rel="stylesheet" />
     <script src="~/Scripts/jquery-1.10.2.min.js"></script>
     <script src="~/assets/client/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script>
@@ -26,17 +27,18 @@
         (function () {
             // Khởi tạo biến Id định danh khách hàng
             if (typeof (Storage) !== "undefined") {
-                _customerId = window.localStorage.getItem("lc_customerId");
+                _customerId = window.sessionStorage.getItem("lc_customerId");
                 if (_customerId == null) {
                     _customerId = '@customerId';
-                    window.localStorage.setItem("lc_customerId", _customerId);
-                    window.localStorage.setItem("lc_isSaveCustomer", _isSaveCustomer);
-                } else {     // trường hợp thay đổi đường dẫn kênh chat khác, nên thay đổi lại customerId theo channelGroupID mới
+                    window.sessionStorage.setItem("lc_customerId", _customerId);
+                    window.sessionStorage.setItem("lc_isSaveCustomer", _isSaveCustomer);
+                } else {
+                    // trường hợp thay đổi đường dẫn kênh chat khác, nên thay đổi lại customerId theo channelGroupID mới
                     var lastChannelGroupID = _customerId.split('_')[1];
                     if (lastChannelGroupID != _channelGroupId) {
                         _customerId = '@customerId';
-                        window.localStorage.setItem("lc_customerId", _customerId);
-                        window.localStorage.setItem("lc_isSaveCustomer", _isSaveCustomer);
+                        window.sessionStorage.setItem("lc_customerId", _customerId);
+                        window.sessionStorage.setItem("lc_isSaveCustomer", _isSaveCustomer);
                     }
                 }
             } else {
@@ -46,299 +48,14 @@
         })();
     </script>
 </head>
-<body>
-    <style>
-        .emoji-menu {
-            /*position: fixed;*/
-            /* right: 0; */
-            z-index: 999;
-            width: 225px;
-            overflow: hidden;
-            border: 1px #dfdfdf solid;
-            -webkit-border-radius: 3px;
-            -moz-border-radius: 3px;
-            border-radius: 3px;
-            overflow: hidden;
-            -webkit-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
-            -moz-box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
-            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
-            bottom: 0;
-            margin-bottom: 40px;
-        }
-
-        .emoji-picker-icon.parent-has-scroll {
-            right: 25px;
-        }
-
-        .emoji-picker-icon {
-            cursor: pointer;
-            position: absolute;
-            right: 10px;
-            top: 5px;
-            font-size: 20px;
-            opacity: 0.7;
-            z-index: 100;
-            transition: none;
-            color: black;
-            -moz-user-select: none;
-            -khtml-user-select: none;
-            -webkit-user-select: none;
-            -o-user-select: none;
-            user-select: none;
-        }
-
-        .emoji-wysiwyg-editor {
-            height: auto !important;
-        }
-    </style>
-    <style>
-        .message-form {
-            -webkit-box-flex: 1;
-            flex-grow: 1;
-            height: 100%;
-            position: relative;
-            min-height: 0px;
-        }
-        /*Style Form input info user*/
-        .lc-6yodnr {
-            display: flex;
-            margin-bottom: 1em;
-        }
-
-        .lc-8w32p1 {
-            -webkit-box-flex: 1;
-            flex-grow: 1;
-            max-width: 100%;
-            flex-shrink: 1;
-            overflow: hidden;
-        }
-
-        .lc-25jgss {
-            transition-delay: 100ms;
-        }
-
-        .lc-1gvabgf {
-            padding-top: 21px;
-        }
-
-        .lc-ato2gh {
-            background-color: rgb(255, 255, 255);
-            width: 100%;
-            max-width: 270px;
-            position: relative;
-            box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px;
-            left: 50%;
-            right: auto;
-            transform: translateX(-50%);
-            border-radius: 6px;
-            padding: 8px;
-            margin: 2px 0px;
-            border-width: 0px;
-            border-style: initial;
-            border-color: initial;
-            border-image: initial;
-        }
-
-        .lc-1obp8sm {
-            display: flex;
-            flex-direction: row;
-            position: absolute;
-            top: -21px;
-            left: 0px;
-            right: 0px;
-            color: rgb(255, 255, 255);
-        }
-
-        .lc-1wy764u {
-            display: flex;
-            -webkit-box-pack: center;
-            justify-content: center;
-            -webkit-box-align: center;
-            align-items: center;
-            width: 42px;
-            height: 42px;
-            background-color: rgb(66, 127, 225);
-            overflow: hidden;
-            margin: 0px auto;
-            border-radius: 50%;
-        }
-
-        .lc-1mpchac {
-            display: inline-block;
-            flex-shrink: 0;
-            width: 1em;
-            height: 1em;
-            font-size: 2rem;
-            user-select: none;
-            fill: currentcolor;
-        }
-
-        .lc-1drigbt {
-            position: relative;
-            height: auto;
-            margin-top: 12px;
-            overflow: hidden;
-            transition: max-height 300ms cubic-bezier(0.14, 0, 0, 1) 0s;
-        }
-
-        .lc-daub71 {
-            height: auto;
-            overflow: auto;
-            padding: 8px;
-        }
-
-        .lc-qvffge {
-            display: flex;
-            min-width: 0px;
-        }
-
-        .lc-1etn9kn {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin-bottom: 8px;
-        }
-
-        .lc-xswwe8 {
-            width: 100%;
-            display: inline-block;
-            font-size: 0.875rem;
-            font-weight: normal;
-            color: rgb(17, 17, 17);
-            overflow-wrap: break-word;
-            word-break: break-word;
-        }
-
-        .lc-1gz7fd7 {
-            width: 100%;
-            -webkit-appearance: none;
-            background-color: rgb(255, 255, 255);
-            font-family: inherit;
-            box-shadow: none;
-            font-size: 16px;
-            font-weight: normal;
-            color: rgb(17, 17, 17);
-            border-width: 1px;
-            border-style: solid;
-            border-color: rgb(179, 179, 179);
-            border-image: initial;
-            transition: border-color 100ms linear 0s;
-            border-radius: 6px;
-            padding: 8px;
-            margin: 2px 0px;
-        }
-
-        .lc-1etn9kn {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin-bottom: 8px;
-        }
-
-        .lc-nnsuga {
-            max-height: 100%;
-            border-width: initial;
-            border-style: none;
-            border-color: initial;
-            border-image: initial;
-            margin: 0px;
-            padding: 0px;
-        }
-
-        .lc-19g19dr {
-            display: inline-block;
-            width: 100%;
-            font-size: 0.875rem;
-            font-weight: normal;
-            color: rgb(17, 17, 17);
-            overflow-wrap: break-word;
-            word-break: break-word;
-            padding: 0px;
-        }
-
-        .lc-13nuv3g {
-            text-align: center;
-        }
-
-        .lc-3a63hl {
-            font-family: inherit;
-            width: 100%;
-            max-width: 320px;
-            flex-shrink: 0;
-            cursor: pointer;
-            display: flex;
-            -webkit-box-pack: center;
-            justify-content: center;
-            -webkit-box-align: center;
-            align-items: center;
-            font-size: 0.875rem;
-            font-weight: normal;
-            color: rgb(255, 255, 255);
-            background-color: rgb(66, 127, 225);
-            border-width: 0px;
-            border-style: initial;
-            border-color: initial;
-            border-image: initial;
-            border-radius: 6px;
-            padding: 12px;
-        }
-    </style>
-    <style>
-        .chat-block .chat-content .messages .message-item .message-body {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            /*overflow: hidden;*/
-            width: 100%;
-        }
-
-        .chat-block .chat-content .messages .message-item.me .message-body {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            /*overflow: hidden;*/
-            width: 100%;
-        }
-
-            .chat-block .chat-content .messages .message-item.me .message-body .message-align {
-                text-align: left;
-            }
-
-        .chat-block .chat-content .messages .message-item .message-body .message-align {
-            text-align: right;
-        }
-
-        .txt-align-left {
-            text-align: left;
-        }
-
-        .txt-align-right {
-            text-align: right;
-        }
-
-        .font-size-08 {
-            font-size: 0.8em;
-        }
-    </style>
-    <style>
-        .bg-primary {
-            background-color: #5969ff !important;
-            color: #fff !important;
-        }
-        .error{
-            color:red;
-        }
-        .hidden{
-            display:none;
-        }
-    </style>
+<body style="background:transparent !important">
     <div dir="ltr" class="chatbox-main">
         <div class="chatbox-container">
             <div class="header">
                 <div class="header-left">
                     <div class="ml-auto">
                         <div class="dropdown">
-                            <a href="#" data-toggle="dropdown" style="color:black">
+                            <a href="#" data-toggle="dropdown" style="color:#FFF">
                                 <svg color="inherit" class="header-chat-options" viewBox="0 0 32 32" aria-hidden="true">
                                     <path d="M8,18c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S9.1,18,8,18z M16,18c-1.1,0-2-0.9-2-2s0.9-2,2-2
                                     s2,0.9,2,2S17.1,18,16,18z M24,18c-1.1,0-2-0.9-2-2s0.9-2,2-2s2,0.9,2,2S25.1,18,24,18z"></path>
@@ -352,7 +69,7 @@
                     </div>
                 </div>
                 <div class="header-body">
-                    Lac Viet live chat
+                    Healthcare Chatbot
                 </div>
                 <div class="header-right">
                     <div class="mr-auto">
@@ -372,401 +89,401 @@
                 <div class="chat-content">
                     <div class="messages" id="message-content">
                         @*<div class="message-item message-type-text">
-        <div class="message-avatar">
-            <div class="message-avatar-customer">
-                <div class="pr-3">
-                    <span class="message-avatar-item avatar">
-                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="message-body">
-            <div>
-                <div class="message-align">
-                    <span class="font-size-08">Support Bot </span>
-                    <span class="font-size-08">15:11</span>
-                </div>
-            </div>
-            <div class="message-item-content">Hi!</div>
-            <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
-        </div>
-    </div>
-    <div class="message-item me">
-        <div class="message-body">
-            <div>
-                <div class="message-align">
-                    <span class="font-size-08">Khách </span>
-                    <span class="font-size-08">15:11</span>
-                </div>
-            </div>
-            <div class="message-item-content">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora ullam!
-            </div>
-            <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
-        </div>
-    </div>
-    <div class="message-item">
-        <div class="message-avatar-customer">
-            <div class="pr-3">
-                <span class="message-avatar-item avatar">
-                    <span class="avatar-title bg-warning rounded-circle">H</span>
-                </span>
-            </div>
-        </div>
-        <div class="message-item-content">Hello! How are you today?</div>
-        <span class="time small text-muted font-italic">02:30 PM</span>
-    </div>
-    <div class="message-item me">
-        <div class="message-item-content">Lorem ipsum dolor sit.</div>
-        <span class="time small text-muted font-italic">02:30 PM</span>
-    </div>
-    <div class="message-item">
-        <div class="message-avatar-customer">
-            <div class="pr-3">
-                <span class="message-avatar-item avatar">
-                    <span class="avatar-title bg-warning rounded-circle">H</span>
-                </span>
-            </div>
-        </div>
-        <div class="message-item-content d-flex">
-            <i class="ti-file mr-2 font-size-20 mt-2"></i>
-            <div>
-                <div>important_documents.pdf <i class="text-muted small">(50KB)</i></div>
-                <ul class="list-inline small">
-                    <li class="list-inline-item"><a href="#">Download</a></li>
-                    <li class="list-inline-item"><a href="#">View</a></li>
-                </ul>
-            </div>
-        </div>
-        <span class="small text-muted font-italic">02:30 PM</span>
-    </div>
-    <div class="message-item me">
-        <div class="message-item-content">Lorem ipsum dolor sit.</div>
-        <span class="time small text-muted font-italic">02:30 PM</span>
-    </div>
-    <div class="message-item">
-        <div class="message-avatar-customer">
-            <div class="pr-3">
-                <span class="message-avatar-item avatar">
-                    <span class="avatar-title bg-warning rounded-circle">H</span>
-                </span>
-            </div>
-        </div>
-        <div class="message-item-content">Lorem ipsum dolor sit.</div>
-        <span class="time small text-muted font-italic">02:30 PM</span>
-    </div>
-    <!--TEMPLATE MESSAGE IMAGE-->
-    <div class="message-item message-media">
-        <div class="message-avatar-customer">
-            <div class="pr-3">
-                <span class="message-avatar-item avatar">
-                    <span class="avatar-title bg-warning rounded-circle">H</span>
-                </span>
-            </div>
-        </div>
-        <div class="message-body">
-            <div>
-                <div class="message-align">
-                    <span class="font-size-08">Support Bot </span>
-                    <span class="font-size-08">15:11</span>
-                </div>
-            </div>
-            <img src="~/assets/images/ảnh-dịch-vụ-công.jpg" />
-        </div>
-    </div>
-    <!--TEMPLATE MESSAGE ACTION JOIN-->
-    <div class="message-item message-item-divider">
-        <span>Today</span>
-    </div>
-    <div class="message-item">
-        <div class="message-avatar-customer">
-            <div class="pr-3">
-                <span class="message-avatar-item avatar">
-                    <span class="avatar-title bg-warning rounded-circle">H</span>
-                </span>
-            </div>
-        </div>
-        <div class="message-item-content">Testttttttttttttttttttttttt.TesttttttttttttttttttttttttTesttttttttttttttttttttttttTestttttttttttttttttttttttt</div>
-        <span class="time small text-muted font-italic">02:30 PM</span>
-    </div>
-    <!--TEMPLATE MESSAGE TEXT WITH BUTTON-->
-    <div class="message-item message-text-button">
-        <div class="message-avatar-customer">
-            <div class="pr-3">
-                <span class="message-avatar-item avatar">
-                    <span class="avatar-title bg-warning rounded-circle">H</span>
-                </span>
-            </div>
-        </div>
-        <div class="message-body">
-            <div>
-                <div class="message-align">
-                    <span class="font-size-08">Support Bot </span>
-                    <span class="font-size-08">15:11</span>
-                </div>
-            </div>
-            <div class="message-item-content">
-                <span>Testttttttttttttttttttttttt.</span>
-                <div class="message-item-button">
-                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                </div>
-            </div>
-
-        </div>
-
-    </div>
-    <!--TEMPLATE MESSAGE TEMPLATE MULTI GENERIC-->
-    <div class="message-item message-type-list">
-        <div class="message-avatar-customer">
-            <div class="pr-3">
-                <span class="message-avatar-item avatar">
-                    <span class="avatar-title bg-warning rounded-circle">H</span>
-                </span>
-            </div>
-        </div>
-        <div class="message-body">
-            <div>
-                <div class="message-align">
-                    <span class="font-size-08">Support Bot </span>
-                    <span class="font-size-08">15:11</span>
-                </div>
-            </div>
-            <div class="message-container" index="0" style="overflow:hidden">
-                <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
-                    <div class="message-item-template-generic">
-                        <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
-                        </div>
-                        <div class="message-template-generic-container _6j2g">
-                            <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
-                                💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
-                            </div>
-                            <div class="message-generic-subtitle _6j0u">
-                                <div>
-                                    📧 Emai: support@PhapLuat.com
+                                <div class="message-avatar">
+                                    <div class="message-avatar-customer">
+                                        <div class="pr-3">
+                                            <span class="message-avatar-item avatar">
+                                                <span class="avatar-title bg-warning rounded-circle">H</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="message-body">
+                                    <div>
+                                        <div class="message-align">
+                                            <span class="font-size-08">Support Bot </span>
+                                            <span class="font-size-08">15:11</span>
+                                        </div>
+                                    </div>
+                                    <div class="message-item-content">Hi!</div>
+                                    <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
                                 </div>
                             </div>
-                            <div class="message-generic-sublink _6j0y">
-                                <a target="_blank" href="#">
-                                    www.facebook.com
-                                </a>
-                            </div>
-                        </div>
-
-                        <div class="message-item-button">
-                            <a href="http://www.kiamotorsvietnam.com.vn/San-pham-7/All-New-CERATO-135" class="message-btn-link lc-6qcmqf" target="_blank">👉 XEM CHI TIẾT</a><a href="http://www.kiamotorsvietnam.com.vn/dang-ky-lai-thu-3" class="message-btn-link lc-6qcmqf" target="_blank">📅 ĐĂNG KÝ LÁI THỬ</a>
-                        </div>
-                    </div>
-                    <div class="message-item-template-generic">
-                        <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
-                        </div>
-                        <div class="_6j2g">
-                            <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
-                                💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
-                            </div>
-                            <div class="_6j0u">
-                                <div>
-                                    📧 Emai: support@PhapLuat.com
+                            <div class="message-item me">
+                                <div class="message-body">
+                                    <div>
+                                        <div class="message-align">
+                                            <span class="font-size-08">Khách </span>
+                                            <span class="font-size-08">15:11</span>
+                                        </div>
+                                    </div>
+                                    <div class="message-item-content">
+                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                                        Exercitationem fuga iure iusto libero, possimus quasi quis repellat sint tempora ullam!
+                                    </div>
+                                    <div class="txt-align-left font-size-08">Message not sent, Delivered, Read</div>
                                 </div>
                             </div>
-                            <div class="_6j0y">
-                                <a target="_blank" href="#">
-                                    www.facebook.com
-                                </a>
+                            <div class="message-item">
+                                <div class="message-avatar-customer">
+                                    <div class="pr-3">
+                                        <span class="message-avatar-item avatar">
+                                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="message-item-content">Hello! How are you today?</div>
+                                <span class="time small text-muted font-italic">02:30 PM</span>
                             </div>
-                        </div>
-                        <div class="message-item-button">
-                            <a href="http://www.kiamotorsvietnam.com.vn/San-pham-7/All-New-CERATO-135" class="message-btn-link lc-6qcmqf" target="_blank">👉 XEM CHI TIẾT</a><a href="http://www.kiamotorsvietnam.com.vn/dang-ky-lai-thu-3" class="message-btn-link lc-6qcmqf" target="_blank">📅 ĐĂNG KÝ LÁI THỬ</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- click lùi-->
-        <a class="btn_back_quickreply _32rk _32rg _1cy6" href="#" style="display: none;">
-            <div direction="forward" class="_10sf _5x5_">
-                <div class="_5x6d">
-                    <div class="_3bwv _3bww">
-                        <div class="_3bwy">
-                            <div class="_3bwx">
-                                <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
+                            <div class="message-item me">
+                                <div class="message-item-content">Lorem ipsum dolor sit.</div>
+                                <span class="time small text-muted font-italic">02:30 PM</span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
-        <a class="btn_next_quickreply _32rk _32rh _1cy6" href="#" style="display: block;">
-            <div direction="forward" class="_10sf _5x5_">
-                <div class="_5x6d">
-                    <div class="_3bwv _3bww">
-                        <div class="_3bwy">
-                            <div class="_3bwx">
-                                <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                            <div class="message-item">
+                                <div class="message-avatar-customer">
+                                    <div class="pr-3">
+                                        <span class="message-avatar-item avatar">
+                                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="message-item-content d-flex">
+                                    <i class="ti-file mr-2 font-size-20 mt-2"></i>
+                                    <div>
+                                        <div>important_documents.pdf <i class="text-muted small">(50KB)</i></div>
+                                        <ul class="list-inline small">
+                                            <li class="list-inline-item"><a href="#">Download</a></li>
+                                            <li class="list-inline-item"><a href="#">View</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <span class="small text-muted font-italic">02:30 PM</span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-    </div>
-    <!--TEMPLATE MESSAGE TEMPLATE SINGLE GENERIC-->
-    <div class="message-item message-type-list">
-        <div class="message-avatar-customer">
-            <div class="pr-3">
-                <span class="message-avatar-item avatar">
-                    <span class="avatar-title bg-warning rounded-circle">H</span>
-                </span>
-            </div>
-        </div>
-        <div class="message-body">
-            <div>
-                <div class="message-align">
-                    <span class="font-size-08">Support Bot </span>
-                    <span class="font-size-08">15:11</span>
-                </div>
-            </div>
-            <div class="message-container" index="0" style="overflow:hidden">
-                <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
-                    <div class="message-item-template-generic">
-                        <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
-                        </div>
-                        <div class="message-template-generic-container _6j2g">
-                            <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
-                                💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                            <div class="message-item me">
+                                <div class="message-item-content">Lorem ipsum dolor sit.</div>
+                                <span class="time small text-muted font-italic">02:30 PM</span>
                             </div>
-                            <div class="message-generic-subtitle _6j0u _4ik4">
-                                <div>
-                                    📧 Emai: support@PhapLuat.com
+                            <div class="message-item">
+                                <div class="message-avatar-customer">
+                                    <div class="pr-3">
+                                        <span class="message-avatar-item avatar">
+                                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="message-item-content">Lorem ipsum dolor sit.</div>
+                                <span class="time small text-muted font-italic">02:30 PM</span>
+                            </div>
+                            <!--TEMPLATE MESSAGE IMAGE-->
+                            <div class="message-item message-media">
+                                <div class="message-avatar-customer">
+                                    <div class="pr-3">
+                                        <span class="message-avatar-item avatar">
+                                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="message-body">
+                                    <div>
+                                        <div class="message-align">
+                                            <span class="font-size-08">Support Bot </span>
+                                            <span class="font-size-08">15:11</span>
+                                        </div>
+                                    </div>
+                                    <img src="~/assets/images/ảnh-dịch-vụ-công.jpg" />
                                 </div>
                             </div>
-                            <div class="message-generic-sublink _6j0y _4ik4">
-                                <a target="_blank" href="#">
-                                    www.facebook.com
+                            <!--TEMPLATE MESSAGE ACTION JOIN-->
+                            <div class="message-item message-item-divider">
+                                <span>Today</span>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-avatar-customer">
+                                    <div class="pr-3">
+                                        <span class="message-avatar-item avatar">
+                                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="message-item-content">Testttttttttttttttttttttttt.TesttttttttttttttttttttttttTesttttttttttttttttttttttttTestttttttttttttttttttttttt</div>
+                                <span class="time small text-muted font-italic">02:30 PM</span>
+                            </div>
+                            <!--TEMPLATE MESSAGE TEXT WITH BUTTON-->
+                            <div class="message-item message-text-button">
+                                <div class="message-avatar-customer">
+                                    <div class="pr-3">
+                                        <span class="message-avatar-item avatar">
+                                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="message-body">
+                                    <div>
+                                        <div class="message-align">
+                                            <span class="font-size-08">Support Bot </span>
+                                            <span class="font-size-08">15:11</span>
+                                        </div>
+                                    </div>
+                                    <div class="message-item-content">
+                                        <span>Testttttttttttttttttttttttt.</span>
+                                        <div class="message-item-button">
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <!--TEMPLATE MESSAGE TEMPLATE MULTI GENERIC-->
+                            <div class="message-item message-type-list">
+                                <div class="message-avatar-customer">
+                                    <div class="pr-3">
+                                        <span class="message-avatar-item avatar">
+                                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="message-body">
+                                    <div>
+                                        <div class="message-align">
+                                            <span class="font-size-08">Support Bot </span>
+                                            <span class="font-size-08">15:11</span>
+                                        </div>
+                                    </div>
+                                    <div class="message-container" index="0" style="overflow:hidden">
+                                        <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
+                                            <div class="message-item-template-generic">
+                                                <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
+                                                </div>
+                                                <div class="message-template-generic-container _6j2g">
+                                                    <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                                        💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                                                    </div>
+                                                    <div class="message-generic-subtitle _6j0u">
+                                                        <div>
+                                                            📧 Emai: support@PhapLuat.com
+                                                        </div>
+                                                    </div>
+                                                    <div class="message-generic-sublink _6j0y">
+                                                        <a target="_blank" href="#">
+                                                            www.facebook.com
+                                                        </a>
+                                                    </div>
+                                                </div>
+
+                                                <div class="message-item-button">
+                                                    <a href="http://www.kiamotorsvietnam.com.vn/San-pham-7/All-New-CERATO-135" class="message-btn-link lc-6qcmqf" target="_blank">👉 XEM CHI TIẾT</a><a href="http://www.kiamotorsvietnam.com.vn/dang-ky-lai-thu-3" class="message-btn-link lc-6qcmqf" target="_blank">📅 ĐĂNG KÝ LÁI THỬ</a>
+                                                </div>
+                                            </div>
+                                            <div class="message-item-template-generic">
+                                                <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
+                                                </div>
+                                                <div class="_6j2g">
+                                                    <div class="_6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                                        💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                                                    </div>
+                                                    <div class="_6j0u">
+                                                        <div>
+                                                            📧 Emai: support@PhapLuat.com
+                                                        </div>
+                                                    </div>
+                                                    <div class="_6j0y">
+                                                        <a target="_blank" href="#">
+                                                            www.facebook.com
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="message-item-button">
+                                                    <a href="http://www.kiamotorsvietnam.com.vn/San-pham-7/All-New-CERATO-135" class="message-btn-link lc-6qcmqf" target="_blank">👉 XEM CHI TIẾT</a><a href="http://www.kiamotorsvietnam.com.vn/dang-ky-lai-thu-3" class="message-btn-link lc-6qcmqf" target="_blank">📅 ĐĂNG KÝ LÁI THỬ</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- click lùi-->
+                                <a class="btn_back_quickreply _32rk _32rg _1cy6" href="#" style="display: none;">
+                                    <div direction="forward" class="_10sf _5x5_">
+                                        <div class="_5x6d">
+                                            <div class="_3bwv _3bww">
+                                                <div class="_3bwy">
+                                                    <div class="_3bwx">
+                                                        <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
+                                <a class="btn_next_quickreply _32rk _32rh _1cy6" href="#" style="display: block;">
+                                    <div direction="forward" class="_10sf _5x5_">
+                                        <div class="_5x6d">
+                                            <div class="_3bwv _3bww">
+                                                <div class="_3bwy">
+                                                    <div class="_3bwx">
+                                                        <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </a>
                             </div>
-                        </div>
-                        <div class="message-item-button">
-                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                            <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <!--CHANGE IF HAVE POSTBACK-->
-    <div class="message-quickreply">
-        <div class="message-quickreply-container">
-            <div class="message-quickreply-item" style="position:relative;" index="2">
-                <button value="0" class="btn-quickreply">Hủy</button>
-                <button value="1" class="btn-quickreply">Có</button>
-                <button value="2" class="btn-quickreply">Xem chi tiết</button>
-            </div>
-        </div>
-        <!-- click lùi-->
-        <a class="_32rk _32rg _1cy6  btn_back_quickreply" href="#" style="display: none;">
-            <div direction="forward" class="_10sf _5x5_">
-                <div class="_5x6d">
-                    <div class="_3bwv _3bww">
-                        <div class="_3bwy">
-                            <div class="_3bwx">
-                                <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
+                            <!--TEMPLATE MESSAGE TEMPLATE SINGLE GENERIC-->
+                            <div class="message-item message-type-list">
+                                <div class="message-avatar-customer">
+                                    <div class="pr-3">
+                                        <span class="message-avatar-item avatar">
+                                            <span class="avatar-title bg-warning rounded-circle">H</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="message-body">
+                                    <div>
+                                        <div class="message-align">
+                                            <span class="font-size-08">Support Bot </span>
+                                            <span class="font-size-08">15:11</span>
+                                        </div>
+                                    </div>
+                                    <div class="message-container" index="0" style="overflow:hidden">
+                                        <div class="message-template" style="left: 0;position: relative;transition: left 500ms ease-out;white-space: nowrap; display: flex; width: 100%; flex-direction: row;">
+                                            <div class="message-item-template-generic">
+                                                <div class="message-banner _6j0s" style="background-image: url('https://bot.surelrn.vn/File/Images/Card/07be0196-b52c-404d-9056-093f5bd635c5-banner_resize_3.jpg'); background-position: center center; height: 150px; width: 100%;">
+                                                </div>
+                                                <div class="message-template-generic-container _6j2g">
+                                                    <div class="message-generic-title _6j0t _4ik4 _4ik5" style="-webkit-line-clamp: 3;">
+                                                        💁 Vui lòng nhấn vào các mục bên dưới để chúng tôi có thể hỗ trợ bạn nhanh nhất!
+                                                    </div>
+                                                    <div class="message-generic-subtitle _6j0u _4ik4">
+                                                        <div>
+                                                            📧 Emai: support@PhapLuat.com
+                                                        </div>
+                                                    </div>
+                                                    <div class="message-generic-sublink _6j0y _4ik4">
+                                                        <a target="_blank" href="#">
+                                                            www.facebook.com
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="message-item-button">
+                                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                                    <a href="#" class="message-btn-link lc-6qcmqf">Xem chi tiết</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
-        <a class="_32rk _32rh _1cy6  btn_next_quickreply" href="#" style="display: block;">
-            <div direction="forward" class="_10sf _5x5_">
-                <div class="_5x6d">
-                    <div class="_3bwv _3bww">
-                        <div class="_3bwy">
-                            <div class="_3bwx">
-                                <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
-    </div>
 
-    <!--Typing-->
-    <div class="message-item message-item-typing">
-        <div class="message-avatar">
-            <div class="message-avatar-customer">
-                <div class="pr-3">
-                    <span class="message-avatar-item avatar">
-                        <span class="avatar-title bg-warning rounded-circle">H</span>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="message-item-content writing">
-            <div class="_4xko _13y8">
-                <div class="_4a0v _1x3z">
-                    <div class="_4b0g">
-                        <div class="_5pd7"></div>
-                        <div class="_5pd7"></div>
-                        <div class="_5pd7"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>*@
+
+                            <!--CHANGE IF HAVE POSTBACK-->
+                            <div class="message-quickreply">
+                                <div class="message-quickreply-container">
+                                    <div class="message-quickreply-item" style="position:relative;" index="2">
+                                        <button value="0" class="btn-quickreply">Hủy</button>
+                                        <button value="1" class="btn-quickreply">Có</button>
+                                        <button value="2" class="btn-quickreply">Xem chi tiết</button>
+                                    </div>
+                                </div>
+                                <!-- click lùi-->
+                                <a class="_32rk _32rg _1cy6  btn_back_quickreply" href="#" style="display: none;">
+                                    <div direction="forward" class="_10sf _5x5_">
+                                        <div class="_5x6d">
+                                            <div class="_3bwv _3bww">
+                                                <div class="_3bwy">
+                                                    <div class="_3bwx">
+                                                        <i class="_3-8w img sp_RQ3p_x3xMG2 sx_c4c7bc" alt=""></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <!-- click tiến tới xem ngang thêm style thẻ card đầu tiên style="left:-272px; và cộng thêm index-->
+                                <a class="_32rk _32rh _1cy6  btn_next_quickreply" href="#" style="display: block;">
+                                    <div direction="forward" class="_10sf _5x5_">
+                                        <div class="_5x6d">
+                                            <div class="_3bwv _3bww">
+                                                <div class="_3bwy">
+                                                    <div class="_3bwx">
+                                                        <i class="_3-8w img sp_RQ3p_x3xMG3 sx_dbbd74" alt=""></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!--Typing-->
+                            <div class="message-item message-item-typing">
+                                <div class="message-avatar">
+                                    <div class="message-avatar-customer">
+                                        <div class="pr-3">
+                                            <span class="message-avatar-item avatar">
+                                                <span class="avatar-title bg-warning rounded-circle">H</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="message-item-content writing">
+                                    <div class="_4xko _13y8">
+                                        <div class="_4a0v _1x3z">
+                                            <div class="_4b0g">
+                                                <div class="_5pd7"></div>
+                                                <div class="_5pd7"></div>
+                                                <div class="_5pd7"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
 
 
                         <!--Form Input User-->
                         <div class="message-form-user" style="width:100%;display:none;">
-                                <div class="lc-6yodnr eslhdd60">
-                                    <div class="lc-8w32p1 e1jdwequ0">
-                                        <div class="lc-25jgss">
-                                            <div class="lc-1gvabgf">
-                                                <div class="lc-ato2gh e1r9cm3y0">
-                                                    <div aria-hidden="true" class="lc-1obp8sm e1q4zsg90">
-                                                        <div class="lc-1wy764u e1q4zsg91">
-                                                            <svg color="#ffffff" class="lc-1mpchac" viewBox="0 0 32 32"><path d="M18.8,16.3C17.9,16.8,17,17,16,17c-1,0-1.9-0.2-2.8-0.7c-3.2,0.8-5.2,2.8-5.2,5c0,0.8,0,0.9,0,2c0,0,0,0,0.1,0	c0.4,0.1,1,0.3,1.9,0.4c1.6,0.2,3.8,0.3,6.1,0.3s4.5-0.1,6.1-0.3c0.8-0.1,1.4-0.2,1.9-0.4c0,0,0.1,0,0.1,0v-2	C24,19.2,21.9,17.1,18.8,16.3z M20.6,14.8c3.2,1.2,5.4,3.7,5.4,6.5v2.4c0,1.8-3.7,2.2-10,2.2S6,25.5,6,23.8c0-1.5,0-1.5,0-2.4	c0-2.9,2.2-5.3,5.4-6.5c-0.9-1-1.4-2.4-1.4-3.8c0-3.3,2.7-6,6-6s6,2.7,6,6C22,12.5,21.5,13.8,20.6,14.8z M16,15c2.2,0,4-1.8,4-4	s-1.8-4-4-4s-4,1.8-4,4S13.8,15,16,15z"></path></svg>
-                                                        </div>
+                            <div class="lc-6yodnr eslhdd60">
+                                <div class="lc-8w32p1 e1jdwequ0">
+                                    <div class="lc-25jgss">
+                                        <div class="lc-1gvabgf">
+                                            <div class="lc-ato2gh e1r9cm3y0">
+                                                <div aria-hidden="true" class="lc-1obp8sm e1q4zsg90">
+                                                    <div class="lc-1wy764u e1q4zsg91">
+                                                        <svg color="#ffffff" class="lc-1mpchac" viewBox="0 0 32 32"><path d="M18.8,16.3C17.9,16.8,17,17,16,17c-1,0-1.9-0.2-2.8-0.7c-3.2,0.8-5.2,2.8-5.2,5c0,0.8,0,0.9,0,2c0,0,0,0,0.1,0	c0.4,0.1,1,0.3,1.9,0.4c1.6,0.2,3.8,0.3,6.1,0.3s4.5-0.1,6.1-0.3c0.8-0.1,1.4-0.2,1.9-0.4c0,0,0.1,0,0.1,0v-2	C24,19.2,21.9,17.1,18.8,16.3z M20.6,14.8c3.2,1.2,5.4,3.7,5.4,6.5v2.4c0,1.8-3.7,2.2-10,2.2S6,25.5,6,23.8c0-1.5,0-1.5,0-2.4	c0-2.9,2.2-5.3,5.4-6.5c-0.9-1-1.4-2.4-1.4-3.8c0-3.3,2.7-6,6-6s6,2.7,6,6C22,12.5,21.5,13.8,20.6,14.8z M16,15c2.2,0,4-1.8,4-4	s-1.8-4-4-4s-4,1.8-4,4S13.8,15,16,15z"></path></svg>
                                                     </div>
-                                                    <div class="lc-1drigbt e9s6ynt0" style="max-height: none;">
-                                                        <div class="lc-daub71 e1cdxu9o0">
-                                                            <form name="form_156629227881203446" class="lc-hwylbc e1nyj5rz0">
-                                                                <div class="lc-qvffge e108e6fy0">
-                                                                    <div class="lc-1etn9kn eptvlbh0">
-                                                                        <label for="name" class="lc-xswwe8 e2zxkge0">
-                                                                            <span class="Linkify">Tên:</span>
-                                                                            <span class="error hidden cNameError">Vui lòng nhập tên</span>
-                                                                        </label>
-                                                                        <input name="name" id="txtCustomerName" class="lc-1gz7fd7 e1xplv9i0" value="">
-                                                                    </div>
+                                                </div>
+                                                <div class="lc-1drigbt e9s6ynt0" style="max-height: none;">
+                                                    <div class="lc-daub71 e1cdxu9o0">
+                                                        <form name="form_156629227881203446" class="lc-hwylbc e1nyj5rz0">
+                                                            <div class="lc-qvffge e108e6fy0">
+                                                                <div class="lc-1etn9kn eptvlbh0">
+                                                                    <label for="name" class="lc-xswwe8 e2zxkge0">
+                                                                        <span class="Linkify">Tên:</span>
+                                                                        <span class="error hidden cNameError">Vui lòng nhập tên</span>
+                                                                    </label>
+                                                                    <input name="name" id="txtCustomerName" class="lc-1gz7fd7 e1xplv9i0" value="">
                                                                 </div>
-                                                                <div class="lc-qvffge e108e6fy0">
-                                                                    <div class="lc-1etn9kn eptvlbh0">
-                                                                        <label for="email" class="lc-xswwe8 e2zxkge0">
-                                                                            <span class="Linkify">E-mail:</span>
-                                                                        </label>
-                                                                        <input name="email" id="txtCustomerEmail" type="email" class="lc-1gz7fd7 e1xplv9i0" value="">
-                                                                    </div>
+                                                            </div>
+                                                            <div class="lc-qvffge e108e6fy0">
+                                                                <div class="lc-1etn9kn eptvlbh0">
+                                                                    <label for="email" class="lc-xswwe8 e2zxkge0">
+                                                                        <span class="Linkify">E-mail:</span>
+                                                                    </label>
+                                                                    <input name="email" id="txtCustomerEmail" type="email" class="lc-1gz7fd7 e1xplv9i0" value="">
                                                                 </div>
-                                                                <div class="lc-qvffge e108e6fy0">
-                                                                    <div class="lc-1etn9kn eptvlbh0">
-                                                                        <label for="email" class="lc-xswwe8 e2zxkge0">
-                                                                            <span class="Linkify">Số điện thoại:</span>
-                                                                        </label>
-                                                                        <input name="phone" id="txtCustomerPhone" class="lc-1gz7fd7 e1xplv9i0" value="">
-                                                                    </div>
+                                                            </div>
+                                                            <div class="lc-qvffge e108e6fy0">
+                                                                <div class="lc-1etn9kn eptvlbh0">
+                                                                    <label for="email" class="lc-xswwe8 e2zxkge0">
+                                                                        <span class="Linkify">Số điện thoại:</span>
+                                                                    </label>
+                                                                    <input name="phone" id="txtCustomerPhone" class="lc-1gz7fd7 e1xplv9i0" value="">
                                                                 </div>
-                                                                @*<div class="lc-qvffge e108e6fy0">
+                                                            </div>
+                                                            @*<div class="lc-qvffge e108e6fy0">
                                                                     <div class="lc-1etn9kn eptvlbh0">
                                                                         <label for="email" class="lc-xswwe8 e2zxkge0">
                                                                             <span class="Linkify">Tiêu đề:</span>
@@ -782,28 +499,27 @@
                                                                         <textarea id="txtCustomerContent" class="lc-1gz7fd7 e1xplv9i0"></textarea>
                                                                     </div>
                                                                 </div>*@
-                                                                <div class="lc-qvffge e108e6fy0">
-                                                                    <div class="lc-1etn9kn eptvlbh0">
-                                                                        <span class="Linkify">
-                                                                            Tôi đồng ý để dữ liệu cá nhân của tôi được <strong>Lạc Việt Livechat</strong> xử lý để hỗ trợ trò chuyện. <a href="#" target="_blank" rel="nofollow noopener">Chính sách</a>
-                                                                        </span>
-                                                                        <div class="lc-dwfpgr evnlvbu0">
-                                                                            <label class="lc-197q04t">
-                                                                                <input type="checkbox" id="ujetsxe8nx_156629227881205053_0" name="ujetsxe8nx_156629227881205053" class="lc-5mlnfz e81sjne0" value="index0_0">
-                                                                            </label>
-                                                                            <label for="ujetsxe8nx_156629227881205053_0" class="lc-1n7uoem evnlvbu1">Đồng ý</label>
-                                                                        </div>
+                                                            <div class="lc-qvffge e108e6fy0">
+                                                                <div class="lc-1etn9kn eptvlbh0">
+                                                                    <span class="Linkify">
+                                                                        Tôi đồng ý để dữ liệu cá nhân của tôi được <strong>Lạc Việt Livechat</strong> xử lý để hỗ trợ trò chuyện. <a href="#" target="_blank" rel="nofollow noopener">Chính sách</a>
+                                                                    </span>
+                                                                    <div class="lc-dwfpgr evnlvbu0">
+                                                                        <label class="lc-197q04t">
+                                                                            <input type="checkbox" id="ujetsxe8nx_156629227881205053_0" name="ujetsxe8nx_156629227881205053" class="lc-5mlnfz e81sjne0" value="index0_0">
+                                                                        </label>
+                                                                        <label for="ujetsxe8nx_156629227881205053_0" class="lc-1n7uoem evnlvbu1">Đồng ý</label>
                                                                     </div>
                                                                 </div>
-                                                                <div class="lc-13nuv3g e1n7ru1l0">
-                                                                    <button color="#427fe1" class="lc-3a63hl esv0owm0" id="btn-starchat">
-                                                                        <div class="lc-ckdrdo esv0owm2">
-                                                                            <span>Start chat</span>
-                                                                        </div>
-                                                                    </button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
+                                                            </div>
+                                                            <div class="lc-13nuv3g e1n7ru1l0">
+                                                                <button color="#427fe1" class="lc-3a63hl esv0owm0" id="btn-starchat">
+                                                                    <div class="lc-ckdrdo esv0owm2">
+                                                                        <span>Start chat</span>
+                                                                    </div>
+                                                                </button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -811,20 +527,21 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="chat-footer">
                 @*<div class="d-flex">
-                    <div class="flex-grow-1" style="position:relative">
-                        <input type="text" class="form-control" id="input-chat-message" placeholder="Nhập tin nhắn..." data-emojiable="true">
-                    </div>
-                    <div class="chat-footer-buttons d-flex">
-                        <button type="submit" id="btn-submit-chat-message">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send width-15 height-15"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                        </button>
-                    </div>
-                </div>*@
+                        <div class="flex-grow-1" style="position:relative">
+                            <input type="text" class="form-control" id="input-chat-message" placeholder="Nhập tin nhắn..." data-emojiable="true">
+                        </div>
+                        <div class="chat-footer-buttons d-flex">
+                            <button type="submit" id="btn-submit-chat-message">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send width-15 height-15"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            </button>
+                        </div>
+                    </div>*@
                 <div class="_336a">
                     <div class="_4zbw">
                         <!--BUTTON MENU-->
@@ -873,8 +590,7 @@
     <!--SignalR Chat-->
     <script src="~/Scripts/jquery.signalR-2.2.2.js"></script>
     <script src="~/signalr/hubs"></script>
-
     <script src="~/assets/livechat/js/helper/lc_common.js"></script>
-    <script src="~/assets/livechat/js/lc_chatbox.js"></script>
+    <script src="~/assets/livechat/js/lc_chatbox.js?v_cache=@File.GetLastWriteTime(Server.MapPath("/assets/livechat/js/lc_chatbox.js")).ToString("HHmmssfff")"></script>
 </body>
 </html>

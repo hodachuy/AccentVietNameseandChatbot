@@ -13,6 +13,7 @@ using BotProject.Model.Models.LiveChat;
 using BotProject.Web.Infrastructure.Extensions;
 using BotProject.Common;
 using AutoMapper;
+using BotProject.Model.Models;
 
 namespace BotProject.Web.API_Livechat
 {
@@ -20,9 +21,12 @@ namespace BotProject.Web.API_Livechat
     public class CustomerController : ApiControllerBase
     {
         private ICustomerService _customerService;
-        public CustomerController(IErrorService errorService, ICustomerService customerService) : base(errorService)
+        private IAttributeSystemService _attributeService;
+
+        public CustomerController(IErrorService errorService, ICustomerService customerService, IAttributeSystemService attributeService) : base(errorService)
         {
             _customerService = customerService;
+            _attributeService = attributeService;
         }
 
         [Route("create")]
@@ -48,12 +52,22 @@ namespace BotProject.Web.API_Livechat
                     }
                     var deviceVm = new JavaScriptSerializer { MaxJsonLength = Int32.MaxValue, RecursionLimit = 100 }.Deserialize<DeviceViewModel>(device);
 
-                    Customer customerDb = new Customer();
+                    var customerDb = new Customer();
                     customerDb.UpdateCustomer(customerVm);
                     customerDb.StatusChatValue = CommonConstants.USER_ONLINE;
                     _customerService.Create(customerDb);
 
-                    if(deviceVm != null)
+                    // Set Name
+                    AttributePlatformUser attPlatformUser = new AttributePlatformUser();
+                    attPlatformUser.UserID = customerVm.ID;
+                    attPlatformUser.BotID = customerVm.BotID;
+                    attPlatformUser.AttributeKey = "sender_name";
+                    attPlatformUser.AttributeValue = customerVm.Name;
+                    attPlatformUser.TypeDevice = "Web";
+                    _attributeService.CreateUpdateAttributePlatform(attPlatformUser);
+                    _attributeService.Save();
+
+                    if (deviceVm != null)
                     {
                         Device deviceDb = new Device();
                         deviceDb.UpdateDevice(deviceVm);

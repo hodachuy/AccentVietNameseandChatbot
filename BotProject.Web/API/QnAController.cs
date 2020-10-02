@@ -536,7 +536,10 @@ namespace BotProject.Web.API
                 {
 
                 }
-                //}
+
+                // Tạo file AIML2Graphmaste
+
+                
                 response = request.CreateResponse(HttpStatusCode.OK, new { res = IsAiml, msg = "Thành công" });
                 return response;
             });

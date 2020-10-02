@@ -27,8 +27,8 @@ namespace BotProject.Web.Infrastructure.Core
             _bot.isAcceptingUserInput = true;
             _bot.loadSettings(pathSetting);
 
-            string pathFile = PathServer.PathAIML2Graphmaster + "BotID_3019_ver_24092020_011828613.bin";
-            _bot.loadFromBinaryFile(pathFile);
+            //string pathFile = PathServer.PathAIML2Graphmaster + "BotID_3019.bin";
+            //_bot.loadFromBinaryFile(pathFile);
 
             //_aimlFileService = ServiceFactory.Get<IAIMLFileService>();
             //var lstAimlFile = _aimlFileService.GetByBotId(3019);
@@ -88,6 +88,11 @@ namespace BotProject.Web.Infrastructure.Core
                     }
                 }
             }
+        }
+
+        public void loadAIMLFromFileBinary(string pathFile)
+        {
+            _bot.loadFromBinaryFile(pathFile);
         }
     }
 }

@@ -19,6 +19,7 @@ using Newtonsoft.Json.Linq;
 using BotProject.Common.SendSmsMsgService;
 using System.Threading;
 using BotProject.Common.ViewModels;
+using System.Web;
 
 namespace BotProject.Web.API
 {
@@ -644,7 +645,7 @@ namespace BotProject.Web.API
 
                                     sbAIML.AppendLine("<button>");
                                     sbAIML.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
-                                    sbAIML.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                    sbAIML.AppendLine("<url>" + HttpUtility.HtmlEncode(itemBtnLink.Url) + "</url>");
                                     sbAIML.AppendLine("</button>");
                                 }
                             }
@@ -713,8 +714,8 @@ namespace BotProject.Web.API
                                     sbAIMLChild.AppendLine("<title>" + HelperMethods.EscapeXml(itemGnr.Title) + "</title>");
                                     sbAIMLChild.AppendLine("<subtitle>" + HelperMethods.EscapeXml(itemGnr.SubTitle) + "</subtitle>");
                                     sbAIMLChild.AppendLine("<link>");
-                                    sbAIMLChild.AppendLine("<text>" + itemGnr.Url + "</text>");
-                                    sbAIMLChild.AppendLine("<url>" + itemGnr.Url + "</url>");
+                                    sbAIMLChild.AppendLine("<text>" + HttpUtility.HtmlEncode(itemGnr.Url) + "</text>");
+                                    sbAIMLChild.AppendLine("<url>" + HttpUtility.HtmlEncode(itemGnr.Url) + "</url>");
                                     sbAIMLChild.AppendLine("</link>");
                                     if (itemGnr.ButtonPostbacks != null && itemGnr.ButtonPostbacks.Count() != 0)
                                     {
@@ -739,12 +740,12 @@ namespace BotProject.Web.API
                                         {
                                             sb.AppendLine("<button>");
                                             sb.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
-                                            sb.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                            sb.AppendLine("<url>" + HttpUtility.HtmlEncode(itemBtnLink.Url) + "</url>");
                                             sb.AppendLine("</button>");
 
                                             sbAIMLChild.AppendLine("<button>");
                                             sbAIMLChild.AppendLine("<text>" + HelperMethods.EscapeXml(itemBtnLink.Title) + "</text>");
-                                            sbAIMLChild.AppendLine("<url>" + itemBtnLink.Url + "</url>");
+                                            sbAIMLChild.AppendLine("<url>" + HttpUtility.HtmlEncode(itemBtnLink.Url) + "</url>");
                                             sbAIMLChild.AppendLine("</button>");
                                         }
                                     }

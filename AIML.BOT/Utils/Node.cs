@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Xml;
 
@@ -30,6 +31,11 @@ namespace AIMLbot.Utils
         }
 
         /// <summary>
+        /// Thoi gian doc file lan cuoi
+        /// </summary>
+        public DateTime TimeLastWriteFileAIML2Graphmaster;
+
+        /// <summary>
         /// The template (if any) associated with this node
         /// </summary>
         public string template = string.Empty;
@@ -45,6 +51,16 @@ namespace AIMLbot.Utils
         public string word=string.Empty;
 
         #endregion
+
+        /// <summary>
+        /// Get last time write file aiml2graphmaster
+        /// Init file only one
+        /// </summary>
+        /// <param name="pathAIMLFile"></param>
+        public void getLastWriteTimeFileAIML2Graphmaster(string pathAIMLFile)
+        {
+            TimeLastWriteFileAIML2Graphmaster = File.GetLastWriteTime(pathAIMLFile);
+        }
 
         #region Methods
 

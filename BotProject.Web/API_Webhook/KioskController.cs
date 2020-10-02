@@ -11,6 +11,7 @@ using BotProject.Web.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -79,10 +80,15 @@ namespace BotProject.Web.API_Webhook
         // BOT PRIVATE CUSTOMIZE
         private const int BOT_Y_TE = 3019;
 
+        // AIML Bot Services
+        private AIMLBotService _aimlBotService;
+
+        private AIMLbot.Bot _botService;
+
         // Services
         private ApiQnaNLRService _apiNLR;
         private IErrorService _errorService;
-        private BotServiceMedical _botService;
+        //private BotServiceMedical _botService;
         private ISettingService _settingService;
         private ICardService _cardService;
         private IAIMLFileService _aimlFileService;
@@ -109,7 +115,7 @@ namespace BotProject.Web.API_Webhook
                                       IHistoryService historyService) : base(errorService)
         {
             _errorService = errorService;
-            _botService = BotServiceMedical.BotInstance;
+            _aimlBotService = AIMLBotService.AIMLBotInstance;
             _botDbService = botDbService;
             _settingService = settingService;
             _cardService = cardService;
@@ -184,9 +190,15 @@ namespace BotProject.Web.API_Webhook
                     return response;
                 }
 
-                var botDb = _botDbService.GetByID(botId);
-                //var settingDb = _settingService.GetSettingByBotID(botId);
-                //var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
+                //var botDb = _botDbService.GetByID(botId);
+                //string pathFileBinary = ConfigurationManager.AppSettings["AIML2GraphmasterPath"] + "BotID_" + message.botId + ".bin";
+                //_botService.loadAIMLFromFileBinary(pathFileBinary);
+
+
+                // Khởi động lấy "brain" của bot service theo id
+                GetServerAIMLBot(message.botId);
+                // Khởi tạo user theo bot service
+                InitUserByServerAIMLBot(message.senderId);
 
                 var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
                 if (lstAttribute.Count() != 0)
@@ -231,6 +243,16 @@ namespace BotProject.Web.API_Webhook
                 return response;
             });
         }
+        public void GetServerAIMLBot(string botId)
+        {
+            _botService = _aimlBotService.GetServerBot(botId);
+            string pathAIML2Graphmaster = ConfigurationManager.AppSettings["AIML2GraphmasterPath"] + "BotID_" + botId + ".bin";
+            _aimlBotService.LoadGraphmasterFromAIMLBinaryFile(pathAIML2Graphmaster, _botService);
+        }
+        public void InitUserByServerAIMLBot(string senderId)
+        {
+            _user = _aimlBotService.loadUserBot(senderId, _botService);
+        }
         private async Task<List<string>> MessageResponse(string text, string senderId, int botId, string typeRequest, bool isHavePreviousResponse = false)
         {
             if (!isHavePreviousResponse)
@@ -250,12 +272,17 @@ namespace BotProject.Web.API_Webhook
                 // Thêm dấu tiếng việt
                 bool isActive = true;
                 string textAccentVN = GetPredictAccentVN(text, isActive);
-                if (textAccentVN != text)
+
+                if (!String.IsNullOrEmpty(textAccentVN))
                 {
-                    string msg = FacebookTemplate.GetMessageTemplateText("Ý bạn là: " + textAccentVN + "", senderId).ToString();
-                    await SendMessage(msg, senderId);
+                    if (textAccentVN != text)
+                    {
+                        string msg = FacebookTemplate.GetMessageTemplateText("Ý bạn là: " + textAccentVN + "", senderId).ToString();
+                        await SendMessage(msg, senderId);
+                    }
+                    text = textAccentVN;
                 }
-                text = textAccentVN;
+
                 if (botId == BOT_Y_TE)
                 {
                     AttributePlatformUser attPlUser = new AttributePlatformUser();
@@ -480,7 +507,7 @@ namespace BotProject.Web.API_Webhook
 
         private AIMLbot.Result GetBotReplyFromAIMLBot(string text)
         {
-            AIMLbot.Result aimlBotResult = _botService.Chat(text);
+            AIMLbot.Result aimlBotResult = _aimlBotService.Chat(text, _user, _botService);
             return aimlBotResult;
         }
         private ResultBot CheckTypePostbackFromResultBotReply(AIMLbot.Result rsAIMLBot)
@@ -639,7 +666,6 @@ namespace BotProject.Web.API_Webhook
             {
                 if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
                 {
-                    //templateJson = Regex.Replace(templateJson, "{{.+?}}", m => _dicAttributeUser[m.Groups[1].Value]);
                     foreach (var item in _dicAttributeUser)
                     {
                         string val = String.IsNullOrEmpty(item.Value) == true ? "N/A" : item.Value;

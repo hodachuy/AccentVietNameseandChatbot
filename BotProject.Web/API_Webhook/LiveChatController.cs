@@ -11,6 +11,7 @@ using BotProject.Web.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -78,10 +79,15 @@ namespace BotProject.Web.API_Webhook
         // BOT PRIVATE CUSTOMIZE
         private const int BOT_Y_TE = 3019;
 
+        // AIML Bot Services
+        private AIMLBotService _aimlBotService;
+
+        private AIMLbot.Bot _botService;
+
         // Services
         private ApiQnaNLRService _apiNLR;
         private IErrorService _errorService;
-        private BotService _botService;
+        //private BotServiceMedical _botService;
         private ISettingService _settingService;
         private ICardService _cardService;
         private IAIMLFileService _aimlFileService;
@@ -108,7 +114,7 @@ namespace BotProject.Web.API_Webhook
                                       IHistoryService historyService) : base(errorService)
         {
             _errorService = errorService;
-            _botService = BotService.BotInstance;
+            _aimlBotService = AIMLBotService.AIMLBotInstance;
             _botDbService = botDbService;
             _settingService = settingService;
             _cardService = cardService;
@@ -184,11 +190,14 @@ namespace BotProject.Web.API_Webhook
                 //var settingDb = _settingService.GetSettingByBotID(botId);
                 //var systemConfig = _settingService.GetListSystemConfigByBotId(botId);
 
-                var lstAIML = _aimlFileService.GetByBotId(botId);
-                //var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
-                _botService.loadAIMLFile(lstAIML, botId.ToString());
+                //var lstAIML = _aimlFileService.GetByBotId(botId);
+                ////var lstAIMLVm = Mapper.Map<IEnumerable<AIMLFile>, IEnumerable<AIMLViewModel>>(lstAIML);
+                //_botService.loadAIMLFile(lstAIML, botId.ToString());
 
-                _user = _botService.loadUserBot(message.senderId);
+                // Khởi động lấy "brain" của bot service theo id
+                GetServerAIMLBot(message.botId);
+                // Khởi tạo user theo bot service
+                InitUserByServerAIMLBot(message.senderId);
 
                 var lstAttribute = _attributeService.GetListAttributePlatform(senderId, botId).ToList();
                 if (lstAttribute.Count() != 0)
@@ -199,6 +208,7 @@ namespace BotProject.Web.API_Webhook
                         _dicAttributeUser.Add(attr.AttributeKey, attr.AttributeValue);
                     }
                 }
+
                 string typeRequest = text.Contains("postback") ? "payload_postback" : "text";
 
                 // get list message response
@@ -228,6 +238,18 @@ namespace BotProject.Web.API_Webhook
                 return response;
             });
         }
+
+        public void GetServerAIMLBot(string botId)
+        {
+            _botService = _aimlBotService.GetServerBot(botId);
+            string pathAIML2Graphmaster = ConfigurationManager.AppSettings["AIML2GraphmasterPath"] + "BotID_" + botId + ".bin";
+            _aimlBotService.LoadGraphmasterFromAIMLBinaryFile(pathAIML2Graphmaster, _botService);
+        }
+        public void InitUserByServerAIMLBot(string senderId)
+        {
+            _user = _aimlBotService.loadUserBot(senderId, _botService);
+        }
+
         private async Task<List<string>> MessageResponse(string text, string senderId, int botId, string typeRequest, bool isHavePreviousResponse = false)
         {
             if (!isHavePreviousResponse)
@@ -241,18 +263,43 @@ namespace BotProject.Web.API_Webhook
 
             _plUserDb = _appPlatformUser.GetByUserId(senderId);
 
+            if(_plUserDb == null)
+            {
+                // Lấy profileUser nếu có thông tin từ bảng Customers thì lấy bên customer
+
+                _plUserDb = new ApplicationPlatformUser();
+                _plUserDb.UserId = senderId;
+                _plUserDb.IsHavePredicate = false;
+                _plUserDb.IsProactiveMessage = false;
+                _plUserDb.TimeOut = DateTime.Now;
+                _plUserDb.CreatedDate = DateTime.Now;
+                _plUserDb.StartedOn = DateTime.Now;
+                _plUserDb.FirstName = "N/A"; //profileUser.first_name;
+                _plUserDb.Age = 0; //"N/A";
+                _plUserDb.LastName = "N/A"; //profileUser.last_name;
+                _plUserDb.UserName = "bạn"; //profileUser.first_name + " " + profileUser.last_name;
+                _plUserDb.Gender = true; //"N/A";
+                _appPlatformUser.Add(_plUserDb);
+                _appPlatformUser.Save();
+            }
+
             // Input text
             if (typeRequest == CommonConstants.BOT_REQUEST_TEXT)
             {
                 // Thêm dấu tiếng việt
                 bool isActive = true;
+                text = text.Replace("Chat với chuyên viên", "trò chuyện với chuyên viên");
                 string textAccentVN = GetPredictAccentVN(text, isActive);
-                if (textAccentVN != text)
+                if (!String.IsNullOrEmpty(textAccentVN))
                 {
-                    string msg = FacebookTemplate.GetMessageTemplateText("Ý bạn là: " + textAccentVN + "", senderId).ToString();
-                    await SendMessage(msg, senderId);
+                    if (textAccentVN != text)
+                    {
+                        string msg = FacebookTemplate.GetMessageTemplateText("Ý bạn là: " + textAccentVN + "", senderId).ToString();
+                        await SendMessage(msg, senderId);
+                    }
+                    text = textAccentVN;
                 }
-                text = textAccentVN;
+
                 if (botId == BOT_Y_TE)
                 {
                     AttributePlatformUser attPlUser = new AttributePlatformUser();
@@ -260,10 +307,14 @@ namespace BotProject.Web.API_Webhook
                     attPlUser.AttributeValue = text;
                     attPlUser.BotID = botId;
                     attPlUser.UserID = senderId;
-                    _dicAttributeUser.Remove("content_message");
-                    _dicAttributeUser.Add("content_message", text);
+
 
                     AddAttributeDefault(senderId, botId, attPlUser.AttributeKey, attPlUser.AttributeValue);
+                    if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
+                    {
+                        _dicAttributeUser.Remove("content_message");
+                        _dicAttributeUser.Add("content_message", text);
+                    }
                 }
             }
 
@@ -320,9 +371,11 @@ namespace BotProject.Web.API_Webhook
                             return await Task.FromResult<List<string>>(_lstBotReplyResponse);
                         }
                     }
-                    _dicAttributeUser.Remove(attPlUser.AttributeKey);
-                    _dicAttributeUser.Add(attPlUser.AttributeKey, attPlUser.AttributeValue);
-
+                    if (_dicAttributeUser != null && _dicAttributeUser.Count() != 0)
+                    {
+                        _dicAttributeUser.Remove(attPlUser.AttributeKey);
+                        _dicAttributeUser.Add(attPlUser.AttributeKey, attPlUser.AttributeValue);
+                    }
 
                     AddAttributeDefault(senderId, botId, attPlUser.AttributeKey, attPlUser.AttributeValue);
 
@@ -477,7 +530,7 @@ namespace BotProject.Web.API_Webhook
 
         private AIMLbot.Result GetBotReplyFromAIMLBot(string text)
         {
-            AIMLbot.Result aimlBotResult = _botService.Chat(text,_user);
+            AIMLbot.Result aimlBotResult = _aimlBotService.Chat(text,_user,_botService); //_botService.Chat(text,_user);
             return aimlBotResult;
         }
         private ResultBot CheckTypePostbackFromResultBotReply(AIMLbot.Result rsAIMLBot)
@@ -646,6 +699,8 @@ namespace BotProject.Web.API_Webhook
             msgJson = Regex.Replace(msgJson, "<br/>", "\\n");
             msgJson = Regex.Replace(msgJson, @"\\n\\n", "\\n");
             msgJson = Regex.Replace(msgJson, @"\\n\\r\\n", "\\n");
+            msgJson = Regex.Replace(msgJson, @"\\n", "<br/>");
+
             return msgJson;
         }
 
@@ -682,6 +737,8 @@ namespace BotProject.Web.API_Webhook
                 templateJson = Regex.Replace(templateJson, "<br/>", "\\n");
                 templateJson = Regex.Replace(templateJson, @"\\n\\n", "\\n");
                 templateJson = Regex.Replace(templateJson, @"\\n\\r\\n", "\\n");
+                templateJson = Regex.Replace(templateJson, @"\\n", "<br/>");
+
                 _lstBotReplyResponse.Add(templateJson);
 
             }
@@ -696,7 +753,7 @@ namespace BotProject.Web.API_Webhook
             attPlatformUser.BotID = botId;
             attPlatformUser.AttributeKey = key;
             attPlatformUser.AttributeValue = value;
-            attPlatformUser.TypeDevice = "kiosk";
+            attPlatformUser.TypeDevice = "Web";
             _attributeService.CreateUpdateAttributePlatform(attPlatformUser);
             _attributeService.Save();
         }
@@ -720,7 +777,7 @@ namespace BotProject.Web.API_Webhook
         {
             History hisDb = new History();
             hisDb.UpdateHistory(hisVm);
-            hisDb.Type = "kiosk";
+            hisDb.Type = "Web";
             _historyService.Create(hisDb);
             _historyService.Save();
         }
